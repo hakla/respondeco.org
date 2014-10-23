@@ -49,6 +49,8 @@
                                 </span>
                             </a>
                             <ul class="dropdown-menu" ng-controller="MenuController">
+                                <li ng-switch-when="true"><a href="#/profile_picture"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;profile_picture</a></li>
+                                <li ng-switch-when="true"><a href="#/profilepicture"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;profilepicture</a></li>
                                 <!-- JHipster will add entities to the menu here -->
                             </ul>
                         </li>
@@ -168,6 +170,12 @@
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
+        <script src="scripts/profile_picture/router_profile_picture.js"></script>
+        <script src="scripts/profile_picture/controller_profile_picture.js"></script>
+        <script src="scripts/profile_picture/service_profile_picture.js"></script>
+        <script src="scripts/profilepicture/router_profilepicture.js"></script>
+        <script src="scripts/profilepicture/controller_profilepicture.js"></script>
+        <script src="scripts/profilepicture/service_profilepicture.js"></script>
         <!-- endbuild -->
 </body>
 </html>

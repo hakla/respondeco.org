@@ -44,6 +44,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 100)
     private String email;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "login")
+    private ProfilePicture profilePicture;
+
     private boolean activated = false;
 
     @Size(min = 2, max = 5)
@@ -107,6 +111,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public ProfilePicture getProfilePicture() { return profilePicture; }
+
+    public void setProfilePicture(ProfilePicture profilePicture) { this.profilePicture = profilePicture; }
 
     public boolean getActivated() {
         return activated;

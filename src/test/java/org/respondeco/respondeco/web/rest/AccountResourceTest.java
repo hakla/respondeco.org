@@ -1,7 +1,9 @@
 package org.respondeco.respondeco.web.rest;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Authority;
+import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;

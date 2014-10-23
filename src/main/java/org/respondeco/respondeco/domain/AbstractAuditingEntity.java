@@ -43,6 +43,9 @@ public abstract class AbstractAuditingEntity {
     @Column(name = "last_modified_date")
     private DateTime lastModifiedDate = DateTime.now();
 
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
     public String getCreatedBy() {
         return createdBy;
     }
@@ -74,4 +77,8 @@ public abstract class AbstractAuditingEntity {
     public void setLastModifiedDate(DateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
+
+    public boolean isActive() { return isActive; }
+
+    public void setActive(boolean isActive) { this.isActive = isActive; }
 }
