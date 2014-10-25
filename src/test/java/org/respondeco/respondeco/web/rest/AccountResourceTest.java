@@ -3,6 +3,7 @@ package org.respondeco.respondeco.web.rest;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Authority;
+import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.UserRepository;
@@ -31,6 +32,8 @@ import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -94,9 +97,12 @@ public class AccountResourceTest {
 
         User user = new User();
         user.setLogin("test");
+        user.setTitle("Dr.");
+        user.setGender(Gender.MALE);
         user.setFirstName("john");
         user.setLastName("doe");
         user.setEmail("john.doe@jhipter.com");
+        user.setDescription("just a regular everyday normal guy");
         user.setAuthorities(authorities);
         when(userService.getUserWithAuthorities()).thenReturn(user);
 
@@ -105,9 +111,12 @@ public class AccountResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.login").value("test"))
+                .andExpect(jsonPath("$.title").value("Dr."))
+                .andExpect(jsonPath("$.gender").value(Gender.MALE.name()))
                 .andExpect(jsonPath("$.firstName").value("john"))
                 .andExpect(jsonPath("$.lastName").value("doe"))
                 .andExpect(jsonPath("$.email").value("john.doe@jhipter.com"))
+                .andExpect(jsonPath("$.description").value("just a regular everyday normal guy"))
                 .andExpect(jsonPath("$.roles").value(AuthoritiesConstants.ADMIN));
     }
 
@@ -119,4 +128,5 @@ public class AccountResourceTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
     }
+
 }

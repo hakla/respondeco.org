@@ -74,8 +74,8 @@ public class AccountResource {
             .map(user -> new ResponseEntity<>(HttpStatus.NOT_MODIFIED))
             .orElseGet(() -> {
                 User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
-                        userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail().toLowerCase(),
-                        userDTO.getLangKey());
+                        userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(), userDTO.getLastName(),
+                        userDTO.getEmail().toLowerCase(), userDTO.getDescription(), userDTO.getLangKey());
                 final Locale locale = Locale.forLanguageTag(user.getLangKey());
                 String content = createHtmlContentFromTemplate(user, locale, request, response);
                 mailService.sendActivationEmail(user.getEmail(), content, locale);
@@ -121,9 +121,12 @@ public class AccountResource {
                 new UserDTO(
                     user.getLogin(),
                     null,
+                    user.getTitle(),
+                    user.getGender().name(),
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
+                    user.getDescription(),
                     user.getLangKey(),
                     user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList())),
                 HttpStatus.OK))
@@ -138,7 +141,8 @@ public class AccountResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public void saveAccount(@RequestBody UserDTO userDTO) {
-        userService.updateUserInformation(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail());
+        userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
+                userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription());
     }
 
     /**

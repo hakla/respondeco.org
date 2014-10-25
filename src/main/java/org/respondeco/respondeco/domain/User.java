@@ -31,6 +31,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 100)
     private String password;
 
+    @Column(name = "title", length = 20)
+    private String title;
+
+    @NotNull
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @Size(min = 0, max = 50)
     @Column(name = "first_name", length = 50)
     private String firstName;
@@ -43,6 +51,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Size(min = 0, max = 100)
     @Column(length = 100)
     private String email;
+
+    @Column(name = "description", length = 2048)
+    private String description;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "login")
@@ -88,6 +99,22 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.password = password;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -112,9 +139,21 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.email = email;
     }
 
-    public ProfilePicture getProfilePicture() { return profilePicture; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setProfilePicture(ProfilePicture profilePicture) { this.profilePicture = profilePicture; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ProfilePicture getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(ProfilePicture profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 
     public boolean getActivated() {
         return activated;
@@ -184,9 +223,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return "User{" +
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
+                ", title='" + title + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", description='" + description + '\'' +
                 ", activated='" + activated + '\'' +
                 ", langKey='" + langKey + '\'' +
                 ", activationKey='" + activationKey + '\'' +
