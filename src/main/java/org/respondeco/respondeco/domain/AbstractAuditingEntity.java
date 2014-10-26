@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
@@ -26,6 +27,7 @@ import javax.validation.constraints.NotNull;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditingEntity {
 
+    @JsonIgnore
     @CreatedBy
     @NotNull
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
@@ -46,8 +48,9 @@ public abstract class AbstractAuditingEntity {
     @Column(name = "last_modified_date")
     private DateTime lastModifiedDate = DateTime.now();
 
+    @JsonIgnore
     @Column(name = "is_active")
-    private boolean isActive = true;
+    private boolean active = true;
 
     public String getCreatedBy() {
         return createdBy;
@@ -81,7 +84,7 @@ public abstract class AbstractAuditingEntity {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public boolean isActive() { return isActive; }
+    public boolean isActive() { return active; }
 
-    public void setActive(boolean isActive) { this.isActive = isActive; }
+    public void setActive(boolean isActive) { this.active = isActive; }
 }

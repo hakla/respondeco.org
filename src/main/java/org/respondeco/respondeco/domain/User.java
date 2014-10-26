@@ -59,6 +59,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name = "login")
     private ProfilePicture profilePicture;
 
+    @JsonIgnore
     private boolean activated = false;
 
     @Size(min = 2, max = 5)

@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -93,7 +94,21 @@ public class AccountResourceTest {
         this.defaultAdmin.setAuthorities(adminAuthorities);
 
     }
+    @Test
+    public void testCRUDAccountResource() throws Exception {
 
+        System.out.println(new String(TestUtil.convertObjectToJsonBytes(this.defaultAdmin), "UTF-8"));
+        when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
+        // Update Account
+        defaultAdmin.setFirstName("jane");
+        defaultAdmin.setDescription("just a regular everyday normal girl");
+
+        restUserMockMvc.perform(post("/app/rest/account")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(defaultAdmin)))
+                .andExpect(status().isOk());
+
+    }
     @Test
     public void testNonAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/app/rest/authenticate")
