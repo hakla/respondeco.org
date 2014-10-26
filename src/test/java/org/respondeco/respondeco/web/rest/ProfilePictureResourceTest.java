@@ -74,10 +74,15 @@ public class ProfilePictureResourceTest {
         profilepicture.setLabel(DEFAULT_LABEL);
         profilepicture.setData(DEFAULT_DATA);
         profilepicture.setActive(true);
+        profilepicture.setCreatedBy("admin");
+        profilepicture.setCreatedDate(null);
+        profilepicture.setLastModifiedDate(null);
     }
 
     @Test
     public void testCRUDProfilePicture() throws Exception {
+
+        System.out.println(new String(TestUtil.convertObjectToJsonBytes(profilepicture), "UTF-8"));
 
         // Create ProfilePicture
         restProfilePictureMockMvc.perform(post("/app/rest/profilepictures")
