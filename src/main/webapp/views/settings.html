@@ -13,6 +13,25 @@
             <form name="form" role="form" novalidate ng-submit="save()" show-validation>
 
                 <div class="form-group">
+                    <label translate="settings.form.title">Title</label>
+                    <input type="text" class="form-control" name="title" placeholder="{{'settings.form.title.placeholder' | translate}}"
+                           ng-model="settingsAccount.title" ng-minlength=1 ng-maxlength=50 required maxlength="50">
+                    <div ng-show="form.title.$dirty && form.title.$invalid">
+                        <p class="help-block"
+                           ng-show="form.title.$error.required" translate="settings.messages.validate.title.required">
+                            Your first name is required.
+                        </p>
+                        <p class="help-block"
+                           ng-show="form.title.$error.minlength" translate="settings.messages.validate.title.minlength">
+                            Your first name is required to be at least 1 character
+                        </p>
+                        <p class="help-block"
+                           ng-show="form.title.$error.maxlength" translate="settings.messages.validate.title.maxlength">
+                            Your first name cannot be longer than 50 characters
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label translate="settings.form.firstname">First Name</label>
                     <input type="text" class="form-control" name="firstName" placeholder="{{'settings.form.firstname.placeholder' | translate}}"
                            ng-model="settingsAccount.firstName" ng-minlength=1 ng-maxlength=50 required maxlength="50">
@@ -51,6 +70,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label translate="settings.form.gender">Gender</label>
+                    <select class="form-control" name="gender" ng-options="g for g in gender | filter:lowercase" ng-model="settingsAccount.gender">
+                    </select>
+                    <div ng-show="form.gender.$dirty && form.gender.$invalid">
+                        <p class="help-block"
+                           ng-show="form.gender.$error.required" translate="settings.messages.validate.gender.required">
+                            Your gender is required.
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label translate="global.form.email">E-mail</label>
                     <input type="email" class="form-control" name="email" placeholder="{{'global.form.email.placeholder' | translate}}"
                            ng-model="settingsAccount.email" ng-minlength=5 ng-maxlength=100 required maxlength="100">
@@ -70,6 +100,17 @@
                         <p class="help-block"
                                ng-show="form.email.$error.maxlength" translate="global.messages.validate.email.maxlength">
                             Your e-mail cannot be longer than 100 characters
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label translate="global.form.description">Description</label>
+                    <textarea class="form-control" name="description" placeholder="{{'settings.form.description.placeholder' | translate}}"
+                           ng-model="settingsAccount.description" ng-minlength=0 ng-maxlength=2048 maxlength="2048"/>
+                    <div ng-show="form.description.$dirty && form.description.$invalid">
+                        <p class="help-block"
+                           ng-show="form.description.$error.maxlength" translate="global.messages.validate.description.maxlength">
+                            Your description cannot be longer than 2048 characters
                         </p>
                     </div>
                 </div>

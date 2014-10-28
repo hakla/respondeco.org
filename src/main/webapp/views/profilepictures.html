@@ -19,11 +19,6 @@
                         <h4 class="modal-title" id="myProfilePictureLabel">Create or edit a ProfilePicture</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="profilepicture.id" readonly>
-                        </div>
 
                         <div class="form-group">
                             <label>userlogin</label>
@@ -60,7 +55,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>userlogin</th>
                     <th>label</th>
                     <th>data</th>
@@ -69,18 +63,17 @@
             </thead>
             <tbody>
                 <tr ng-repeat="profilepicture in profilepictures">
-                    <td>{{profilepicture.id}}</td>
                     <td>{{profilepicture.userlogin}}</td>
                     <td>{{profilepicture.label}}</td>
                     <td>{{profilepicture.data}}</td>
                     <td>
                         <button type="submit"
-                                ng-click="update(profilepicture.id)"
+                                ng-click="update(profilepicture.userlogin)"
                                 class="btn">
                             <span class="glyphicon glyphicon-pencil"></span> Edit
                         </button>
                         <button type="submit"
-                                ng-click="delete(profilepicture.id)"
+                                ng-click="delete(profilepicture.userlogin)"
                                 class="btn btn-danger">
                             <span class="glyphicon glyphicon-remove-circle"></span> Delete
                         </button>

@@ -2,7 +2,8 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope) {
+respondecoApp.controller('MainController', function ($scope, Account) {
+        $scope.account = Account.get();
     });
 
 respondecoApp.controller('AdminController', function ($scope) {
@@ -44,6 +45,11 @@ respondecoApp.controller('SettingsController', function ($scope, Account) {
         $scope.success = null;
         $scope.error = null;
         $scope.settingsAccount = Account.get();
+        $scope.gender = [
+            "UNSPECIFIED",
+            "MALE",
+            "FEMALE"
+        ];
 
         $scope.save = function () {
             Account.save($scope.settingsAccount,
