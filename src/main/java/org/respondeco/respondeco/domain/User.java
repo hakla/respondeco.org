@@ -55,10 +55,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "description", length = 2048)
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "login")
-    private ProfilePicture profilePicture;
-
     @JsonIgnore
     private boolean activated = false;
 
@@ -146,14 +142,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public ProfilePicture getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(ProfilePicture profilePicture) {
-        this.profilePicture = profilePicture;
     }
 
     public boolean getActivated() {

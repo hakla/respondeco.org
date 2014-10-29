@@ -17,6 +17,17 @@
             <form name="form" role="form" novalidate ng-submit="save()" show-validation>
                 <div class="col-md-8" ng-show="edit.account">
                     <div class="form-group">
+                        <label translate="settings.form.title">Title</label>
+                        <input type="text" class="form-control" name="title" placeholder="{{'settings.form.title.placeholder' | translate}}"
+                               ng-model="settingsAccount.title" ng-minlength=1 ng-maxlength=20 required maxlength="20">
+                        <div ng-show="form.title.$dirty && form.title.$invalid">
+                            <p class="help-block"
+                               ng-show="form.title.$error.maxlength" translate="settings.messages.validate.title.maxlength">
+                                Your first name cannot be longer than 20 characters
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label translate="settings.form.firstname">First Name</label>
                         <input type="text" class="form-control" name="firstName" placeholder="{{'settings.form.firstname.placeholder' | translate}}" ng-model="settingsAccount.firstName" ng-minlength=1 ng-maxlength=50 required maxlength="50">
                         <div ng-show="form.firstName.$dirty && form.firstName.$invalid">
@@ -47,6 +58,17 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label translate="settings.account.gender">Gender</label>
+                        <select class="form-control" name="gender" ng-options="g|lowercase for g in gender" ng-model="settingsAccount.gender" required>
+                        </select>
+                        <div ng-show="form.gender.$dirty && form.gender.$invalid">
+                            <p class="help-block"
+                               ng-show="form.gender.$error.required" translate="settings.messages.validate.gender.required">
+                                Your gender is required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label translate="global.form.email">E-mail</label>
                         <input type="email" class="form-control" name="email" placeholder="{{'global.form.email.placeholder' | translate}}" ng-model="settingsAccount.email" ng-minlength=5 ng-maxlength=100 required maxlength="100">
                         <div ng-show="form.email.$dirty && form.email.$invalid">
@@ -63,7 +85,20 @@
                                 Your e-mail cannot be longer than 100 characters
                             </p>
                         </div>
+
                     </div>
+                    <div class="form-group">
+                        <label translate="global.form.description">Description</label>
+                        <textarea class="form-control" name="description"
+                                  ng-model="settingsAccount.description" ng-minlength=0 ng-maxlength=2048 maxlength="2048"/>
+                        <div ng-show="form.description.$dirty && form.description.$invalid">
+                            <p class="help-block"
+                               ng-show="form.description.$error.maxlength" translate="global.messages.validate.description.maxlength">
+                                Your description cannot be longer than 2048 characters
+                            </p>
+                        </div>
+                    </div>
+
                     <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="general.button.save" ng-click="edit.account = !edit.account">Save
                     </button>
                     <a class="btn btn-link" translate="general.button.cancel" ng-click="edit.account = !edit.account">Cancel
@@ -96,7 +131,7 @@
                             <dt>
                                 <span translate="settings.account.gender">Gender</span>:
                             </dt>
-                            <dd>{{settingsAccount.gender}}</dd>
+                            <dd>{{ settingsAccount.gender | lowercase }}</dd>
                             <dt>
                                 <span translate="settings.account.email">E-Mail</span>:
                             </dt>
@@ -108,6 +143,7 @@
                         <div>
                             {{settingsAccount.description}}
                         </div>
+
                     </div>
                     <div class="text-right" ng-hide="edit.account">
                         <a ng-click="edit.account = !edit.account">
@@ -133,9 +169,6 @@
                         </li>
                     </ul>
                 </div>
-
-
-
 
             </form>
         </div>

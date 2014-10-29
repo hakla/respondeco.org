@@ -94,10 +94,10 @@ public class AccountResourceTest {
         this.defaultAdmin.setAuthorities(adminAuthorities);
 
     }
+
     @Test
     public void testCRUDAccountResource() throws Exception {
 
-        System.out.println(new String(TestUtil.convertObjectToJsonBytes(this.defaultAdmin), "UTF-8"));
         when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
         // Update Account
         defaultAdmin.setFirstName("jane");

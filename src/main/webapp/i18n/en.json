@@ -26,6 +26,7 @@
             "language": "Language"
         },
         "form": {
+            "title": "Title",
             "username": "Login",
             "username.placeholder": "Your login",
             "newpassword": "New password",
@@ -33,7 +34,8 @@
             "confirmpassword": "New password confirmation",
             "confirmpassword.placeholder": "Confirm the new password",
             "email": "E-mail",
-            "email.placeholder": "Your e-mail"
+            "email.placeholder": "Your e-mail",
+            "description": "Description"
         },
         "messages": {
             "info": {
@@ -124,10 +126,15 @@
     "settings": {
         "title": "User settings for [<b>{{username}}</b>]",
         "form": {
+            "title": "Title",
+            "title.placeholder": "Your academic title",
             "firstname": "First Name",
             "firstname.placeholder": "Your first name",
             "lastname": "Last Name",
             "lastname.placeholder": "Your last name",
+            "gender": "Gender",
+            "description": "Description",
+            "description.placeholder": "A description of yourself",
             "button": "Save"
         },
         "messages": {
