@@ -40,7 +40,7 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService) {
+respondecoApp.controller('SettingsController', function ($scope, Account) {
     $scope.success = null;
     $scope.error = null;
     Account.get().$promise.then(function(x) {
@@ -95,19 +95,6 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         account: false
     };
 
-    $scope.save = function () {
-        Account.save($scope.settingsAccount,
-            function (value, responseHeaders) {
-                $scope.error = null;
-                $scope.success = 'OK';
-                $scope.settingsAccount = Account.get();
-                $scope.edit.account = false;
-            },
-            function (httpResponse) {
-                $scope.success = null;
-                $scope.error = "ERROR";
-            });
-    };
 });
 
 respondecoApp.controller('RegisterController', function ($scope, $translate, Register) {

@@ -154,6 +154,7 @@
             "gender": "Geschlecht",
             "button.save": "Speichern",
             "button.delete": "Account löschen"
+
         },
         "messages": {
             "error": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Einstellungen konnten nicht gespeichert werden.",
