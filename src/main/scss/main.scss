@@ -43,40 +43,88 @@ body {
     background-color: red;
 }
 
-.hipster {
-  display: inline-block;
-  width: 463px;
-  height: 640px;
-  background-image: url("../images/hipster.jpg");
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
 /* make sure browsers use the pointer cursor for anchors, even with no href */
 a:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
-
 
 /* start Password strength bar style */
 ul#strength {
-    display:inline;
-    list-style:none;
-    margin:0;
-    margin-left:15px;
-    padding:0;
-    vertical-align:2px;
+    display: inline;
+    list-style: none;
+    margin: 0;
+    margin-left: 15px;
+    padding: 0;
+    vertical-align: 2px;
 }
 
 .point:last {
-    margin:0 !important;
+    margin: 0 !important;
 }
+
 .point {
-    background:#DDD;
-    border-radius:2px;
-    display:inline-block;
-    height:5px;
-    margin-right:1px;
-    width:20px;
+    background: #DDD;
+    border-radius: 2px;
+    display: inline-block;
+    height: 5px;
+    margin-right: 1px;
+    width: 20px;
 }
+
 /* end Password strength bar style */
+
+/************************
+ * Nav
+ ************************/
+
+.navbar-nav {
+    margin-top: 15px;
+}
+
+.navbar-header {
+    height: 80px;
+
+    .navbar-brand {
+        img {
+            height: 50px;
+        }
+    }
+}
+
+/************************
+ * Settings
+ ************************/
+img {
+    border-radius: 2px;
+}
+
+.profile {
+    img {
+        width: 100%;
+    }
+}
+
+.member {
+    li {
+        padding: 0 5px 7px 5px;
+        border: 1px solid #e3e3e3;
+
+        .pull-left {
+            padding: 0 10px 10px 0;
+
+            img {
+                border-radius: 2px;
+                width: 100%;
+            }
+        }
+    }
+}
+
+.profile, .account, .member {
+    transition: .3s ease opacity;
+    opacity: 1;
+
+    &.ng-hide {
+        opacity: 0;
+    }
+}
