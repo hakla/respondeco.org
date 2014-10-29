@@ -4,9 +4,13 @@
             <h1 translate="main.title">Welcome to respondeco!</h1>
 
             <div ng-switch="authenticated">
-                <div class="alert alert-success" ng-switch-when="true"
-                     translate="main.logged.message" translate-values="{username: '{{account.login}}'}">
-                    You are logged in as user "Admin".
+
+                <div ng-switch-when="true">
+                    <div class="alert alert-success"
+                         translate="main.logged.message" translate-values="{username: '{{account.login}}'}">
+                        You are logged in as user "Admin".
+                    </div>
+
                 </div>
             </div>
         </div>

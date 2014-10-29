@@ -31,6 +31,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 100)
     private String password;
 
+    @Column(name = "title", length = 20)
+    private String title;
+
+    @NotNull
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @Size(min = 0, max = 50)
     @Column(name = "first_name", length = 50)
     private String firstName;
@@ -44,6 +52,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 100)
     private String email;
 
+    @Column(name = "description", length = 2048)
+    private String description;
+
+    @JsonIgnore
     private boolean activated = false;
 
     @Size(min = 2, max = 5)
@@ -84,6 +96,22 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.password = password;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -106,6 +134,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean getActivated() {
@@ -176,9 +212,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return "User{" +
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
+                ", title='" + title + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", description='" + description + '\'' +
                 ", activated='" + activated + '\'' +
                 ", langKey='" + langKey + '\'' +
                 ", activationKey='" + activationKey + '\'' +

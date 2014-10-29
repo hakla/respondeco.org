@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope) {
-});
+respondecoApp.controller('MainController', function ($scope, Account) {
+    });
 
 respondecoApp.controller('AdminController', function ($scope) {
 });
@@ -45,8 +45,36 @@ respondecoApp.controller('SettingsController', function ($scope, Account) {
     $scope.error = null;
     Account.get().$promise.then(function(x) {
         $scope.settingsAccount = x;
-        $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
+
+        if($scope.settingsAccount.firstName == null) {
+            $scope.fullName = $scope.settingsAccount.lastName;
+        } else if($scope.settingsAccount.lastName == null) {
+            $scope.fullName = $scope.settingsAccount.firstName;
+        } else {
+            $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
+        }
+
         $scope.profilePicture = "images/profile_empty.png";
+        $scope.success = null;
+        $scope.error = null;
+        $scope.gender = [
+            "UNSPECIFIED",
+            "MALE",
+            "FEMALE"
+        ];
+
+        $scope.save = function () {
+            Account.save($scope.settingsAccount,
+                function (value, responseHeaders) {
+                    $scope.error = null;
+                    $scope.success = 'OK';
+                    $scope.settingsAccount = Account.get();
+                },
+                function (httpResponse) {
+                    $scope.success = null;
+                    $scope.error = "ERROR";
+                });
+        };
     });
 
     $scope.edit = {

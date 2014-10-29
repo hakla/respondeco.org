@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.Authority;
+import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.PersistentToken;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.AuthorityRepository;
@@ -58,8 +59,8 @@ public class UserService {
             .orElse(null);
     }
 
-    public User createUserInformation(String login, String password, String firstName, String lastName, String email,
-                                      String langKey) {
+    public User createUserInformation(String login, String password, String title, String firstName, String lastName,
+                                      String email, String gender, String description, String langKey) {
         User newUser = new User();
         Authority authority = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
@@ -67,9 +68,17 @@ public class UserService {
         newUser.setLogin(login);
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
+        newUser.setTitle(title);
+        Gender newGender = Gender.valueOf(gender);
+        if(newGender == null) {
+            newUser.setGender(Gender.UNSPECIFIED);
+        } else {
+            newUser.setGender(newGender);
+        }
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
         newUser.setEmail(email);
+        newUser.setDescription(description);
         newUser.setLangKey(langKey);
         // new user is not active
         newUser.setActivated(false);
@@ -82,11 +91,20 @@ public class UserService {
         return newUser;
     }
 
-    public void updateUserInformation(String firstName, String lastName, String email) {
+    public void updateUserInformation(String title, String gender, String firstName, String lastName, String email,
+                                      String description) {
         User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        currentUser.setTitle(title);
+        Gender newGender = Gender.valueOf(gender);
+        if(newGender == null) {
+            currentUser.setGender(Gender.UNSPECIFIED);
+        } else {
+            currentUser.setGender(newGender);
+        }
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
         currentUser.setEmail(email);
+        currentUser.setDescription(description);
         userRepository.save(currentUser);
         log.debug("Changed Information for User: {}", currentUser);
     }
@@ -101,6 +119,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
+        log.debug("getUserWithAuthorities() called");
         User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
         currentUser.getAuthorities().size(); // eagerly load the association
         return currentUser;

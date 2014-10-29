@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_normalize\.scss}line{font-family:\000039}}
 html {
@@ -1409,7 +1410,7 @@ body {
   font-size: 14px;
   line-height: 1.42857;
   color: #333333;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_scaffolding\.scss}line{font-family:\0000336}}
@@ -1465,8 +1466,8 @@ img {
 .img-thumbnail {
   padding: 4px;
   line-height: 1.42857;
-  background-color: white;
-  border: 1px solid #dddddd;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 4px;
   -webkit-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
@@ -1966,8 +1967,8 @@ code {
 kbd {
   padding: 2px 4px;
   font-size: 90%;
-  color: white;
-  background-color: #333333;
+  color: #fff;
+  background-color: #333;
   border-radius: 3px;
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
@@ -1982,8 +1983,8 @@ pre {
   word-break: break-all;
   word-wrap: break-word;
   color: #333333;
-  background-color: whitesmoke;
-  border: 1px solid #cccccc;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
   border-radius: 4px;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_code\.scss}line{font-family:\0000348}}
@@ -3146,12 +3147,12 @@ th {
   padding: 8px;
   line-height: 1.42857;
   vertical-align: top;
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000335}}
 .table > thead > tr > th {
   vertical-align: bottom;
-  border-bottom: 2px solid #dddddd;
+  border-bottom: 2px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000344}}
 .table > caption + thead > tr:first-child > th,
@@ -3164,11 +3165,11 @@ th {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000351}}
 .table > tbody + tbody {
-  border-top: 2px solid #dddddd;
+  border-top: 2px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000356}}
 .table .table {
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000369}}
@@ -3183,7 +3184,7 @@ th {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000382}}
 .table-bordered {
-  border: 1px solid #dddddd;
+  border: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000388}}
 .table-bordered > thead > tr > th,
@@ -3192,7 +3193,7 @@ th {
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > th,
 .table-bordered > tfoot > tr > td {
-  border: 1px solid #dddddd;
+  border: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\0000395}}
 .table-bordered > thead > tr > th,
@@ -3209,7 +3210,7 @@ th {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\00003123}}
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\00003135}}
@@ -3238,7 +3239,7 @@ table th[class*="col-"] {
 .table > tfoot > tr > th.active,
 .table > tfoot > tr.active > td,
 .table > tfoot > tr.active > th {
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_table-row\.scss}line{font-family:\0000320}}
@@ -3335,7 +3336,7 @@ table th[class*="col-"] {
     overflow-y: hidden;
     overflow-x: scroll;
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    border: 1px solid #dddddd;
+    border: 1px solid #ddd;
     -webkit-overflow-scrolling: touch;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tables\.scss}line{font-family:\00003182}}
@@ -3470,9 +3471,9 @@ output {
   font-size: 14px;
   line-height: 1.42857;
   color: #555555;
-  background-color: white;
+  background-color: #fff;
   background-image: none;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -3974,7 +3975,7 @@ select[multiple].input-lg,
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000330}}
 .btn:hover, .btn:focus {
-  color: #333333;
+  color: #333;
   text-decoration: none;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000336}}
@@ -3996,13 +3997,13 @@ select[multiple].input-lg,
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000357}}
 .btn-default {
-  color: #333333;
-  background-color: white;
-  border-color: #cccccc;
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000311}}
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .btn-default.dropdown-toggle {
-  color: #333333;
+  color: #333;
   background-color: #e6e6e6;
   border-color: #adadad;
 }
@@ -4012,24 +4013,24 @@ select[multiple].input-lg,
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000328}}
 .btn-default.disabled, .btn-default.disabled:hover, .btn-default.disabled:focus, .btn-default.disabled:active, .btn-default.disabled.active, .btn-default[disabled], .btn-default[disabled]:hover, .btn-default[disabled]:focus, .btn-default[disabled]:active, .btn-default[disabled].active, fieldset[disabled] .btn-default, fieldset[disabled] .btn-default:hover, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:active, fieldset[disabled] .btn-default.active {
-  background-color: white;
-  border-color: #cccccc;
+  background-color: #fff;
+  border-color: #ccc;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000338}}
 .btn-default .badge {
-  color: white;
-  background-color: #333333;
+  color: #fff;
+  background-color: #333;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000360}}
 .btn-primary {
-  color: white;
+  color: #fff;
   background-color: #428bca;
   border-color: #357ebd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000311}}
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
-  color: white;
+  color: #fff;
   background-color: #3071a9;
   border-color: #285e8e;
 }
@@ -4045,18 +4046,18 @@ select[multiple].input-lg,
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000338}}
 .btn-primary .badge {
   color: #428bca;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000364}}
 .btn-success {
-  color: white;
+  color: #fff;
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000311}}
 .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
-  color: white;
+  color: #fff;
   background-color: #449d44;
   border-color: #398439;
 }
@@ -4072,18 +4073,18 @@ select[multiple].input-lg,
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000338}}
 .btn-success .badge {
   color: #5cb85c;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000368}}
 .btn-info {
-  color: white;
+  color: #fff;
   background-color: #5bc0de;
   border-color: #46b8da;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000311}}
 .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open > .btn-info.dropdown-toggle {
-  color: white;
+  color: #fff;
   background-color: #31b0d5;
   border-color: #269abc;
 }
@@ -4099,18 +4100,18 @@ select[multiple].input-lg,
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000338}}
 .btn-info .badge {
   color: #5bc0de;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000372}}
 .btn-warning {
-  color: white;
+  color: #fff;
   background-color: #f0ad4e;
   border-color: #eea236;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000311}}
 .btn-warning:hover, .btn-warning:focus, .btn-warning:active, .btn-warning.active, .open > .btn-warning.dropdown-toggle {
-  color: white;
+  color: #fff;
   background-color: #ec971f;
   border-color: #d58512;
 }
@@ -4126,18 +4127,18 @@ select[multiple].input-lg,
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000338}}
 .btn-warning .badge {
   color: #f0ad4e;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000376}}
 .btn-danger {
-  color: white;
+  color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000311}}
 .btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active, .open > .btn-danger.dropdown-toggle {
-  color: white;
+  color: #fff;
   background-color: #c9302c;
   border-color: #ac2925;
 }
@@ -4153,7 +4154,7 @@ select[multiple].input-lg,
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_buttons\.scss}line{font-family:\0000338}}
 .btn-danger .badge {
   color: #d9534f;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000385}}
@@ -4306,8 +4307,8 @@ tbody.collapse.in {
   list-style: none;
   font-size: 14px;
   text-align: left;
-  background-color: white;
-  border: 1px solid #cccccc;
+  background-color: #fff;
+  border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -4341,12 +4342,12 @@ tbody.collapse.in {
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   text-decoration: none;
   color: #262626;
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_dropdowns\.scss}line{font-family:\0000386}}
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-  color: white;
+  color: #fff;
   text-decoration: none;
   outline: 0;
   background-color: #428bca;
@@ -4733,7 +4734,7 @@ tbody.collapse.in {
   color: #555555;
   text-align: center;
   background-color: #eeeeee;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   border-radius: 4px;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_input-groups\.scss}line{font-family:\0000381}}
@@ -4882,7 +4883,7 @@ tbody.collapse.in {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\0000376}}
 .nav-tabs {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\0000378}}
 .nav-tabs > li {
@@ -4898,13 +4899,13 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\0000389}}
 .nav-tabs > li > a:hover {
-  border-color: #eeeeee #eeeeee #dddddd;
+  border-color: #eeeeee #eeeeee #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\0000396}}
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
   color: #555555;
-  background-color: white;
-  border: 1px solid #dddddd;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-bottom-color: transparent;
   cursor: default;
 }
@@ -4923,7 +4924,7 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\00003131}}
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-  color: white;
+  color: #fff;
   background-color: #428bca;
 }
 
@@ -4982,12 +4983,12 @@ tbody.collapse.in {
 .nav-tabs.nav-justified > .active > a:hover,
 .nav-tabs-justified > .active > a:focus,
 .nav-tabs.nav-justified > .active > a:focus {
-  border: 1px solid #dddddd;
+  border: 1px solid #ddd;
 }
 @media (min-width: 768px) {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\00003206}}
   .nav-tabs-justified > li > a, .nav-tabs.nav-justified > li > a {
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid #ddd;
     border-radius: 4px 4px 0 0;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navs\.scss}line{font-family:\00003210}}
@@ -4996,7 +4997,7 @@ tbody.collapse.in {
   .nav-tabs.nav-justified > .active > a:hover,
   .nav-tabs-justified > .active > a:focus,
   .nav-tabs.nav-justified > .active > a:focus {
-    border-bottom-color: white;
+    border-bottom-color: #fff;
   }
 }
 
@@ -5386,7 +5387,7 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003397}}
 .navbar-default .navbar-brand {
-  color: #777777;
+  color: #777;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003399}}
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
@@ -5395,38 +5396,38 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003406}}
 .navbar-default .navbar-text {
-  color: #777777;
+  color: #777;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003411}}
 .navbar-default .navbar-nav > li > a {
-  color: #777777;
+  color: #777;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003414}}
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-  color: #333333;
+  color: #333;
   background-color: transparent;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003421}}
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-  color: #555555;
+  color: #555;
   background-color: #e7e7e7;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003429}}
 .navbar-default .navbar-nav > .disabled > a, .navbar-default .navbar-nav > .disabled > a:hover, .navbar-default .navbar-nav > .disabled > a:focus {
-  color: #cccccc;
+  color: #ccc;
   background-color: transparent;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003438}}
 .navbar-default .navbar-toggle {
-  border-color: #dddddd;
+  border-color: #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003440}}
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-  background-color: #dddddd;
+  background-color: #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003444}}
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #888888;
+  background-color: #888;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003449}}
 .navbar-default .navbar-collapse,
@@ -5436,53 +5437,53 @@ tbody.collapse.in {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003458}}
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
   background-color: #e7e7e7;
-  color: #555555;
+  color: #555;
 }
 @media (max-width: 767px) {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003469}}
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-    color: #777777;
+    color: #777;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003471}}
   .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #333333;
+    color: #333;
     background-color: transparent;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003478}}
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #555555;
+    color: #555;
     background-color: #e7e7e7;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003486}}
   .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a, .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-    color: #cccccc;
+    color: #ccc;
     background-color: transparent;
   }
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003502}}
 .navbar-default .navbar-link {
-  color: #777777;
+  color: #777;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003504}}
 .navbar-default .navbar-link:hover {
-  color: #333333;
+  color: #333;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003509}}
 .navbar-default .btn-link {
-  color: #777777;
+  color: #777;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003511}}
 .navbar-default .btn-link:hover, .navbar-default .btn-link:focus {
-  color: #333333;
+  color: #333;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003517}}
 .navbar-default .btn-link[disabled]:hover, .navbar-default .btn-link[disabled]:focus, fieldset[disabled] .navbar-default .btn-link:hover, fieldset[disabled] .navbar-default .btn-link:focus {
-  color: #cccccc;
+  color: #ccc;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003527}}
 .navbar-inverse {
-  background-color: #222222;
+  background-color: #222;
   border-color: #090909;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003531}}
@@ -5491,7 +5492,7 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003533}}
 .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
-  color: white;
+  color: #fff;
   background-color: transparent;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003540}}
@@ -5504,30 +5505,30 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003548}}
 .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-  color: white;
+  color: #fff;
   background-color: transparent;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003555}}
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
-  color: white;
+  color: #fff;
   background-color: #090909;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003563}}
 .navbar-inverse .navbar-nav > .disabled > a, .navbar-inverse .navbar-nav > .disabled > a:hover, .navbar-inverse .navbar-nav > .disabled > a:focus {
-  color: #444444;
+  color: #444;
   background-color: transparent;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003573}}
 .navbar-inverse .navbar-toggle {
-  border-color: #333333;
+  border-color: #333;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003575}}
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
-  background-color: #333333;
+  background-color: #333;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003579}}
 .navbar-inverse .navbar-toggle .icon-bar {
-  background-color: white;
+  background-color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003584}}
 .navbar-inverse .navbar-collapse,
@@ -5537,7 +5538,7 @@ tbody.collapse.in {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003592}}
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
   background-color: #090909;
-  color: white;
+  color: #fff;
 }
 @media (max-width: 767px) {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003603}}
@@ -5554,17 +5555,17 @@ tbody.collapse.in {
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003611}}
   .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: white;
+    color: #fff;
     background-color: transparent;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003618}}
   .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: white;
+    color: #fff;
     background-color: #090909;
   }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003626}}
   .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a, .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-    color: #444444;
+    color: #444;
     background-color: transparent;
   }
 }
@@ -5574,7 +5575,7 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003639}}
 .navbar-inverse .navbar-link:hover {
-  color: white;
+  color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003644}}
 .navbar-inverse .btn-link {
@@ -5582,11 +5583,11 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003646}}
 .navbar-inverse .btn-link:hover, .navbar-inverse .btn-link:focus {
-  color: white;
+  color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_navbar\.scss}line{font-family:\00003652}}
 .navbar-inverse .btn-link[disabled]:hover, .navbar-inverse .btn-link[disabled]:focus, fieldset[disabled] .navbar-inverse .btn-link:hover, fieldset[disabled] .navbar-inverse .btn-link:focus {
-  color: #444444;
+  color: #444;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_breadcrumbs\.scss}line{font-family:\000036}}
@@ -5594,7 +5595,7 @@ tbody.collapse.in {
   padding: 8px 15px;
   margin-bottom: 20px;
   list-style: none;
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
   border-radius: 4px;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_breadcrumbs\.scss}line{font-family:\0000313}}
@@ -5603,9 +5604,9 @@ tbody.collapse.in {
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_breadcrumbs\.scss}line{font-family:\0000316}}
 .breadcrumb > li + li:before {
-  content: "/\00a0";
+  content: "/ ";
   padding: 0 5px;
-  color: #cccccc;
+  color: #ccc;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_breadcrumbs\.scss}line{font-family:\0000323}}
 .breadcrumb > .active {
@@ -5632,8 +5633,8 @@ tbody.collapse.in {
   line-height: 1.42857;
   text-decoration: none;
   color: #428bca;
-  background-color: white;
-  border: 1px solid #dddddd;
+  background-color: #fff;
+  border: 1px solid #ddd;
   margin-left: -1px;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_pagination\.scss}line{font-family:\0000325}}
@@ -5655,7 +5656,7 @@ tbody.collapse.in {
 .pagination > li > span:focus {
   color: #2a6496;
   background-color: #eeeeee;
-  border-color: #dddddd;
+  border-color: #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_pagination\.scss}line{font-family:\0000351}}
 .pagination > .active > a, .pagination > .active > a:hover, .pagination > .active > a:focus,
@@ -5663,7 +5664,7 @@ tbody.collapse.in {
 .pagination > .active > span:hover,
 .pagination > .active > span:focus {
   z-index: 2;
-  color: white;
+  color: #fff;
   background-color: #428bca;
   border-color: #428bca;
   cursor: default;
@@ -5676,8 +5677,8 @@ tbody.collapse.in {
 .pagination > .disabled > a:hover,
 .pagination > .disabled > a:focus {
   color: #999999;
-  background-color: white;
-  border-color: #dddddd;
+  background-color: #fff;
+  border-color: #ddd;
   cursor: not-allowed;
 }
 
@@ -5744,8 +5745,8 @@ tbody.collapse.in {
 .pager li > span {
   display: inline-block;
   padding: 5px 14px;
-  background-color: white;
-  border: 1px solid #dddddd;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 15px;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_pager\.scss}line{font-family:\0000323}}
@@ -5770,7 +5771,7 @@ tbody.collapse.in {
 .pager .disabled > a:focus,
 .pager .disabled > span {
   color: #999999;
-  background-color: white;
+  background-color: #fff;
   cursor: not-allowed;
 }
 
@@ -5781,7 +5782,7 @@ tbody.collapse.in {
   font-size: 75%;
   font-weight: bold;
   line-height: 1;
-  color: white;
+  color: #fff;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
@@ -5799,7 +5800,7 @@ tbody.collapse.in {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_labels\.scss}line{font-family:\0000333}}
 a.label:hover, a.label:focus {
-  color: white;
+  color: #fff;
   text-decoration: none;
   cursor: pointer;
 }
@@ -5865,7 +5866,7 @@ a.label:hover, a.label:focus {
   padding: 3px 7px;
   font-size: 12px;
   font-weight: bold;
-  color: white;
+  color: #fff;
   line-height: 1;
   vertical-align: baseline;
   white-space: nowrap;
@@ -5890,7 +5891,7 @@ a.label:hover, a.label:focus {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_badges\.scss}line{font-family:\0000339}}
 a.list-group-item.active > .badge, .nav-pills > .active > a > .badge {
   color: #428bca;
-  background-color: white;
+  background-color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_badges\.scss}line{font-family:\0000344}}
 .nav-pills > li > a > .badge {
@@ -5899,7 +5900,7 @@ a.list-group-item.active > .badge, .nav-pills > .active > a > .badge {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_badges\.scss}line{font-family:\0000351}}
 a.badge:hover, a.badge:focus {
-  color: white;
+  color: #fff;
   text-decoration: none;
   cursor: pointer;
 }
@@ -5958,8 +5959,8 @@ a.badge:hover, a.badge:focus {
   padding: 4px;
   margin-bottom: 20px;
   line-height: 1.42857;
-  background-color: white;
-  border: 1px solid #dddddd;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 4px;
   -webkit-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
@@ -6086,12 +6087,9 @@ a.thumbnail.active {
 }
 
 @keyframes progress-bar-stripes {
-  /* line 10, ../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/_progress-bars.scss */
   from {
     background-position: 40px 0;
   }
-
-  /* line 11, ../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/_progress-bars.scss */
   to {
     background-position: 0 0;
   }
@@ -6101,7 +6099,7 @@ a.thumbnail.active {
   overflow: hidden;
   height: 20px;
   margin-bottom: 20px;
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -6114,7 +6112,7 @@ a.thumbnail.active {
   height: 100%;
   font-size: 12px;
   line-height: 20px;
-  color: white;
+  color: #fff;
   text-align: center;
   background-color: #428bca;
   -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
@@ -6251,8 +6249,8 @@ a.thumbnail.active {
   display: block;
   padding: 10px 15px;
   margin-bottom: -1px;
-  background-color: white;
-  border: 1px solid #dddddd;
+  background-color: #fff;
+  border: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_list-group\.scss}line{font-family:\0000331}}
 .list-group-item:first-child {
@@ -6276,17 +6274,17 @@ a.thumbnail.active {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_list-group\.scss}line{font-family:\0000354}}
 a.list-group-item {
-  color: #555555;
+  color: #555;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_list-group\.scss}line{font-family:\0000357}}
 a.list-group-item .list-group-item-heading {
-  color: #333333;
+  color: #333;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_list-group\.scss}line{font-family:\0000362}}
 a.list-group-item:hover, a.list-group-item:focus {
   text-decoration: none;
-  color: #555555;
-  background-color: whitesmoke;
+  color: #555;
+  background-color: #f5f5f5;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_list-group\.scss}line{font-family:\0000372}}
@@ -6305,7 +6303,7 @@ a.list-group-item:hover, a.list-group-item:focus {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_list-group\.scss}line{font-family:\0000388}}
 .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
   z-index: 2;
-  color: white;
+  color: #fff;
   background-color: #428bca;
   border-color: #428bca;
 }
@@ -6437,7 +6435,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\000037}}
 .panel {
   margin-bottom: 20px;
-  background-color: white;
+  background-color: #fff;
   border: 1px solid transparent;
   border-radius: 4px;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -6485,8 +6483,8 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\0000345}}
 .panel-footer {
   padding: 10px 15px;
-  background-color: whitesmoke;
-  border-top: 1px solid #dddddd;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
 }
@@ -6582,7 +6580,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003139}}
 .panel > .panel-body + .table,
 .panel > .panel-body + .table-responsive {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003143}}
 .panel > .table > tbody:first-child > tr:first-child th,
@@ -6671,7 +6669,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003209}}
 .panel-group .panel-heading + .panel-collapse .panel-body {
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003213}}
 .panel-group .panel-footer {
@@ -6679,26 +6677,26 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003215}}
 .panel-group .panel-footer + .panel-collapse .panel-body {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #ddd;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003223}}
 .panel-default {
-  border-color: #dddddd;
+  border-color: #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_panels\.scss}line{font-family:\000036}}
 .panel-default > .panel-heading {
   color: #333333;
-  background-color: whitesmoke;
-  border-color: #dddddd;
+  background-color: #f5f5f5;
+  border-color: #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_panels\.scss}line{font-family:\0000311}}
 .panel-default > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #dddddd;
+  border-top-color: #ddd;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_panels\.scss}line{font-family:\0000316}}
 .panel-default > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #dddddd;
+  border-bottom-color: #ddd;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_panels\.scss}line{font-family:\00003226}}
@@ -6707,7 +6705,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/mixins\/_panels\.scss}line{font-family:\000036}}
 .panel-primary > .panel-heading {
-  color: white;
+  color: #fff;
   background-color: #428bca;
   border-color: #428bca;
 }
@@ -6831,7 +6829,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
-  background-color: whitesmoke;
+  background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -6861,14 +6859,14 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: black;
-  text-shadow: 0 1px 0 white;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
   opacity: 0.2;
   filter: alpha(opacity=20);
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_close\.scss}line{font-family:\0000315}}
 .close:hover, .close:focus {
-  color: black;
+  color: #000;
   text-decoration: none;
   cursor: pointer;
   opacity: 0.5;
@@ -6932,8 +6930,8 @@ button.close {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\0000348}}
 .modal-content {
   position: relative;
-  background-color: white;
-  border: 1px solid #999999;
+  background-color: #fff;
+  border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
@@ -6950,7 +6948,7 @@ button.close {
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: black;
+  background-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\0000370}}
 .modal-backdrop.fade {
@@ -7090,10 +7088,10 @@ button.close {
 .tooltip-inner {
   max-width: 200px;
   padding: 3px 8px;
-  color: white;
+  color: #fff;
   text-align: center;
   text-decoration: none;
-  background-color: black;
+  background-color: #000;
   border-radius: 4px;
 }
 
@@ -7112,21 +7110,21 @@ button.close {
   left: 50%;
   margin-left: -5px;
   border-width: 5px 5px 0;
-  border-top-color: black;
+  border-top-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000350}}
 .tooltip.top-left .tooltip-arrow {
   bottom: 0;
   left: 5px;
   border-width: 5px 5px 0;
-  border-top-color: black;
+  border-top-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000356}}
 .tooltip.top-right .tooltip-arrow {
   bottom: 0;
   right: 5px;
   border-width: 5px 5px 0;
-  border-top-color: black;
+  border-top-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000362}}
 .tooltip.right .tooltip-arrow {
@@ -7134,7 +7132,7 @@ button.close {
   left: 0;
   margin-top: -5px;
   border-width: 5px 5px 5px 0;
-  border-right-color: black;
+  border-right-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000369}}
 .tooltip.left .tooltip-arrow {
@@ -7142,7 +7140,7 @@ button.close {
   right: 0;
   margin-top: -5px;
   border-width: 5px 0 5px 5px;
-  border-left-color: black;
+  border-left-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000376}}
 .tooltip.bottom .tooltip-arrow {
@@ -7150,21 +7148,21 @@ button.close {
   left: 50%;
   margin-left: -5px;
   border-width: 0 5px 5px;
-  border-bottom-color: black;
+  border-bottom-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000383}}
 .tooltip.bottom-left .tooltip-arrow {
   top: 0;
   left: 5px;
   border-width: 0 5px 5px;
-  border-bottom-color: black;
+  border-bottom-color: #000;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_tooltip\.scss}line{font-family:\0000389}}
 .tooltip.bottom-right .tooltip-arrow {
   top: 0;
   right: 5px;
   border-width: 0 5px 5px;
-  border-bottom-color: black;
+  border-bottom-color: #000;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_popovers\.scss}line{font-family:\000036}}
@@ -7177,9 +7175,9 @@ button.close {
   max-width: 276px;
   padding: 1px;
   text-align: left;
-  background-color: white;
+  background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -7256,7 +7254,7 @@ button.close {
   bottom: 1px;
   margin-left: -10px;
   border-bottom-width: 0;
-  border-top-color: white;
+  border-top-color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_popovers\.scss}line{font-family:\0000386}}
 .popover.right > .arrow {
@@ -7273,7 +7271,7 @@ button.close {
   left: 1px;
   bottom: -10px;
   border-left-width: 0;
-  border-right-color: white;
+  border-right-color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_popovers\.scss}line{font-family:\00003101}}
 .popover.bottom > .arrow {
@@ -7290,7 +7288,7 @@ button.close {
   top: 1px;
   margin-left: -10px;
   border-top-width: 0;
-  border-bottom-color: white;
+  border-bottom-color: #fff;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_popovers\.scss}line{font-family:\00003117}}
 .popover.left > .arrow {
@@ -7306,7 +7304,7 @@ button.close {
   content: " ";
   right: 1px;
   border-right-width: 0;
-  border-left-color: white;
+  border-left-color: #fff;
   bottom: -10px;
 }
 
@@ -7386,7 +7384,7 @@ button.close {
   opacity: 0.5;
   filter: alpha(opacity=50);
   font-size: 20px;
-  color: white;
+  color: #fff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
@@ -7411,7 +7409,7 @@ button.close {
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\0000392}}
 .carousel-control:hover, .carousel-control:focus {
   outline: 0;
-  color: white;
+  color: #fff;
   text-decoration: none;
   opacity: 0.9;
   filter: alpha(opacity=90);
@@ -7474,7 +7472,7 @@ button.close {
   height: 10px;
   margin: 1px;
   text-indent: -999px;
-  border: 1px solid white;
+  border: 1px solid #fff;
   border-radius: 10px;
   cursor: pointer;
   background-color: #000 \9;
@@ -7485,7 +7483,7 @@ button.close {
   margin: 0;
   width: 12px;
   height: 12px;
-  background-color: white;
+  background-color: #fff;
 }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\00003189}}
@@ -7497,7 +7495,7 @@ button.close {
   z-index: 10;
   padding-top: 20px;
   padding-bottom: 20px;
-  color: white;
+  color: #fff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
