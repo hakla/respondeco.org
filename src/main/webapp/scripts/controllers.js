@@ -40,7 +40,7 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService) {
     $scope.success = null;
     $scope.error = null;
     Account.get().$promise.then(function(x) {
