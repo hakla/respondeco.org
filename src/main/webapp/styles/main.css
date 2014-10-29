@@ -8011,3 +8011,13 @@ img {
   border-radius: 2px;
   width: 100%;
 }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/scss\/main\.scss}line{font-family:\00003123}}
+.profile, .account, .member {
+  transition: .3s ease opacity;
+  opacity: 1;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/c\:\/Users\/Klaus\/projects\/uni\/ase\/src\/main\/scss\/main\.scss}line{font-family:\00003127}}
+.profile.ng-hide, .account.ng-hide, .member.ng-hide {
+  opacity: 0;
+}

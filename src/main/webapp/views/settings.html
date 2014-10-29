@@ -64,8 +64,10 @@
                             </p>
                         </div>
                     </div>
-                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="settings.form.button" ng-click="edit.account != edit.account">Save
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="general.button.save" ng-click="edit.account = !edit.account">Save
                     </button>
+                    <a class="btn btn-link" translate="general.button.cancel" ng-click="edit.account = !edit.account">Cancel
+                    </a>
                 </div>
 
                 <div class="col-md-3 profile" ng-hide="edit.account">
@@ -107,7 +109,7 @@
                             {{settingsAccount.description}}
                         </div>
                     </div>
-                    <div class="pull-right" ng-hide="edit.account">
+                    <div class="text-right" ng-hide="edit.account">
                         <a ng-click="edit.account = !edit.account">
                             <span translate="general.edit">edit</span>
                         </a>

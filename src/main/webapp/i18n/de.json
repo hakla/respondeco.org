@@ -125,7 +125,11 @@
         }
     },
     "general": {
-        "edit": "Bearbeiten"
+        "edit": "Bearbeiten",
+        "button": {
+            "save": "Speichern",
+            "cancel": "Abbrechen"
+        }
     },
     "settings": {
         "title": "Einstellungen für Benutzer [<b>{{username}}</b>]",
@@ -133,8 +137,7 @@
             "firstname": "Vorname",
             "firstname.placeholder": "Ihr Vorname",
             "lastname": "Nachname",
-            "lastname.placeholder": "Ihr Nachname",
-            "button": "Speichern"
+            "lastname.placeholder": "Ihr Nachname"
         },
         "account": {
             "info_heading": "Account Informationen",

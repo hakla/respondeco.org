@@ -119,3 +119,12 @@ img {
         }
     }
 }
+
+.profile, .account, .member {
+    transition: .3s ease opacity;
+    opacity: 1;
+
+    &.ng-hide {
+        opacity: 0;
+    }
+}
