@@ -14,19 +14,19 @@ respondecoApp.controller('ProfilePictureController', function ($scope, resolvedP
                 });
         };
 
-        $scope.update = function (id) {
-            $scope.profilepicture = ProfilePicture.get({id: id});
+        $scope.update = function (userlogin) {
+            $scope.profilepicture = ProfilePicture.get({userlogin: userlogin});
             $('#saveProfilePictureModal').modal('show');
         };
 
-        $scope.delete = function (id) {
-            ProfilePicture.delete({id: id},
+        $scope.delete = function (userlogin) {
+            ProfilePicture.delete({userlogin: userlogin},
                 function () {
                     $scope.profilepictures = ProfilePicture.query();
                 });
         };
 
         $scope.clear = function () {
-            $scope.profilepicture = {userlogin: null, label: null, data: null, id: null};
+            $scope.profilepicture = {userlogin: null, label: null, data: null};
         };
     });
