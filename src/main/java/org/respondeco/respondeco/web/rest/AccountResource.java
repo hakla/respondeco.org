@@ -6,6 +6,7 @@ import org.respondeco.respondeco.domain.PersistentToken;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.UserService;
@@ -22,6 +23,7 @@ import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.context.SpringWebContext;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -143,6 +145,21 @@ public class AccountResource {
     public void saveAccount(@RequestBody UserDTO userDTO) {
         userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
                 userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription());
+    }
+
+    /**
+     * DELETE /rest/account -> deactivate the account
+     */
+    @RequestMapping(value = "/rest/account",
+            method = RequestMethod.DELETE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @Timed
+    public void deactivateAccount() {
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser != null) {
+            currentUser.setActive(false);
+            userRepository.save(currentUser);
+        }
     }
 
     /**
