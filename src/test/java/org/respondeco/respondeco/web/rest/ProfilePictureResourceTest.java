@@ -86,8 +86,6 @@ public class ProfilePictureResourceTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        System.out.println(userService.getClass());
-
         ProfilePictureResource profilepictureResource = new ProfilePictureResource();
         ReflectionTestUtils.setField(profilePictureService, "userService", userService);
         ReflectionTestUtils.setField(profilepictureResource, "profilePictureRepository", profilePictureRepository);
@@ -133,21 +131,18 @@ public class ProfilePictureResourceTest {
     @Test
     public void testCRUDProfilePicture() throws Exception {
 
-        doReturn(defaultAdmin).when(userService).getUserWithAuthorities();
+        when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
 
         ProfilePictureDTO profilePictureDTO = new ProfilePictureDTO(DEFAULT_LABEL, DEFAULT_DATA);
-
-        System.out.println(new String(TestUtil.convertObjectToJsonBytes(profilePictureDTO), "UTF-8"));
 
         // Create ProfilePicture
         restProfilePictureMockMvc.perform(post("/app/rest/profilepictures")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(profilePictureDTO)))
-                .andDo(print())
                 .andExpect(status().isOk());
 
         // Read ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures"))
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/{userlogin}", defaultAdmin.getLogin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.userlogin").value(defaultAdmin.getLogin()))

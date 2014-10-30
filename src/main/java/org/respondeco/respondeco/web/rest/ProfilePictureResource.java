@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.repository.ProfilePictureRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.ProfilePictureService;
 import org.respondeco.respondeco.web.rest.dto.ProfilePictureDTO;
 import org.slf4j.Logger;
@@ -43,9 +44,12 @@ public class ProfilePictureResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({AuthoritiesConstants.ADMIN, AuthoritiesConstants.USER})
     @Timed
-    public void create(@RequestBody ProfilePictureDTO profilePictureDTO) throws UnsupportedEncodingException {
+    public ResponseEntity<?> create(@RequestBody ProfilePictureDTO profilePictureDTO) throws UnsupportedEncodingException {
         log.debug("REST request to save ProfilePicture : {}", profilePictureDTO);
-        profilePictureService.createProfilePicture(profilePictureDTO.getLabel(), profilePictureDTO.getData());
+        return Optional.ofNullable(
+                profilePictureService.createProfilePicture(profilePictureDTO.getLabel(), profilePictureDTO.getData()))
+                    .map(profilePicture -> new ResponseEntity<>(HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     /**

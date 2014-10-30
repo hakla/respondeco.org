@@ -27,6 +27,7 @@ public class ProfilePictureService {
 
     public ProfilePicture createProfilePicture(String label, byte[] data) throws UnsupportedEncodingException {
         User currentUser = userService.getUserWithAuthorities();
+        log.debug("current user is {}", currentUser);
         ProfilePicture newProfilePicture = null;
         if(currentUser != null) {
             newProfilePicture = new ProfilePicture();

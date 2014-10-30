@@ -152,11 +152,14 @@
             "email": "E-Mail",
             "description": "Beschreibung",
             "gender": "Geschlecht",
-            "button": "Speichern"
+            "button.save": "Speichern",
+            "button.delete": "Account löschen"
+
         },
         "messages": {
             "error": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Einstellungen konnten nicht gespeichert werden.",
             "success": "<strong>Einstellungen wurden gespeichert!</strong>",
+            "account.deleted": "<strong>Ihr Account wurde erfolgreich gelöscht!</strong>",
             "validate": {
                 "firstname": {
                     "required": "Ihr Vorname wird benötigt.",
