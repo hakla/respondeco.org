@@ -22,7 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 /**
- * Test class for the UserResource REST controller.
+ * Test class for the UserController REST controller.
  *
  * @see UserService
  */

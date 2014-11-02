@@ -6,6 +6,7 @@ import org.respondeco.respondeco.domain.PersistentToken;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.UserService;
@@ -22,6 +23,7 @@ import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.context.SpringWebContext;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -36,9 +38,9 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/app")
-public class AccountResource {
+public class AccountController {
 
-    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+    private final Logger log = LoggerFactory.getLogger(AccountController.class);
 
     @Inject
     private ServletContext servletContext;
@@ -74,8 +76,8 @@ public class AccountResource {
             .map(user -> new ResponseEntity<>(HttpStatus.NOT_MODIFIED))
             .orElseGet(() -> {
                 User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
-                        userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(), userDTO.getLastName(),
-                        userDTO.getEmail().toLowerCase(), userDTO.getDescription(), userDTO.getLangKey());
+                        userDTO.getTitle(), userDTO.getFirstName(), userDTO.getLastName(),
+                        userDTO.getEmail().toLowerCase(), userDTO.getGender(),userDTO.getDescription(), userDTO.getLangKey());
                 final Locale locale = Locale.forLanguageTag(user.getLangKey());
                 String content = createHtmlContentFromTemplate(user, locale, request, response);
                 mailService.sendActivationEmail(user.getEmail(), content, locale);
@@ -143,6 +145,21 @@ public class AccountResource {
     public void saveAccount(@RequestBody UserDTO userDTO) {
         userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
                 userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription());
+    }
+
+    /**
+     * DELETE /rest/account -> deactivate the account
+     */
+    @RequestMapping(value = "/rest/account",
+            method = RequestMethod.DELETE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @Timed
+    public void deactivateAccount() {
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser != null) {
+            currentUser.setActive(false);
+            userRepository.save(currentUser);
+        }
     }
 
     /**

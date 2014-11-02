@@ -23,9 +23,9 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/app")
-public class UserResource {
+public class UserController {
 
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Inject
     private UserRepository userRepository;

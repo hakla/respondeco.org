@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -21,16 +20,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Test class for the UserResource REST controller.
+ * Test class for the UserController REST controller.
  *
- * @see UserResource
+ * @see UserController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 
-public class UserResourceTest {
+public class UserControllerTest {
 
     @Inject
     private UserRepository userRepository;
@@ -39,9 +38,9 @@ public class UserResourceTest {
 
     @Before
     public void setup() {
-        UserResource userResource = new UserResource();
-        ReflectionTestUtils.setField(userResource, "userRepository", userRepository);
-        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
+        UserController userController = new UserController();
+        ReflectionTestUtils.setField(userController, "userRepository", userRepository);
+        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
     @Test

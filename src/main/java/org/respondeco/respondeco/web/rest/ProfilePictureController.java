@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.security.util.SecurityConstants;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -25,9 +24,9 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/app")
-public class ProfilePictureResource {
+public class ProfilePictureController {
 
-    private final Logger log = LoggerFactory.getLogger(ProfilePictureResource.class);
+    private final Logger log = LoggerFactory.getLogger(ProfilePictureController.class);
 
     @Inject
     private ProfilePictureRepository profilePictureRepository;
@@ -43,9 +42,12 @@ public class ProfilePictureResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({AuthoritiesConstants.ADMIN, AuthoritiesConstants.USER})
     @Timed
-    public void create(@RequestBody ProfilePictureDTO profilePictureDTO) throws UnsupportedEncodingException {
+    public ResponseEntity<?> create(@RequestBody ProfilePictureDTO profilePictureDTO) throws UnsupportedEncodingException {
         log.debug("REST request to save ProfilePicture : {}", profilePictureDTO);
-        profilePictureService.createProfilePicture(profilePictureDTO.getLabel(), profilePictureDTO.getData());
+        return Optional.ofNullable(
+                profilePictureService.createProfilePicture(profilePictureDTO.getLabel(), profilePictureDTO.getData()))
+                    .map(profilePicture -> new ResponseEntity<>(HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     /**

@@ -1,11 +1,9 @@
 package org.respondeco.respondeco.web.rest;
 
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,7 +25,6 @@ import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.web.rest.dto.ProfilePictureDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -41,15 +38,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.repository.ProfilePictureRepository;
-import org.springframework.util.ReflectionUtils;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Test class for the ProfilePictureResource REST controller.
+ * Test class for the ProfilePictureController REST controller.
  *
- * @see ProfilePictureResource
+ * @see ProfilePictureController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -57,7 +53,7 @@ import java.util.Set;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
-public class ProfilePictureResourceTest {
+public class ProfilePictureControllerTest {
 
     private static final String DEFAULT_USERLOGIN = "testuser";
 
@@ -86,14 +82,12 @@ public class ProfilePictureResourceTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        System.out.println(userService.getClass());
-
-        ProfilePictureResource profilepictureResource = new ProfilePictureResource();
+        ProfilePictureController profilepictureController = new ProfilePictureController();
         ReflectionTestUtils.setField(profilePictureService, "userService", userService);
-        ReflectionTestUtils.setField(profilepictureResource, "profilePictureRepository", profilePictureRepository);
-        ReflectionTestUtils.setField(profilepictureResource, "profilePictureService", profilePictureService);
+        ReflectionTestUtils.setField(profilepictureController, "profilePictureRepository", profilePictureRepository);
+        ReflectionTestUtils.setField(profilepictureController, "profilePictureService", profilePictureService);
 
-        this.restProfilePictureMockMvc = MockMvcBuilders.standaloneSetup(profilepictureResource).build();
+        this.restProfilePictureMockMvc = MockMvcBuilders.standaloneSetup(profilepictureController).build();
 
         profilepicture = new ProfilePicture();
 
@@ -133,21 +127,18 @@ public class ProfilePictureResourceTest {
     @Test
     public void testCRUDProfilePicture() throws Exception {
 
-        doReturn(defaultAdmin).when(userService).getUserWithAuthorities();
+        when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
 
         ProfilePictureDTO profilePictureDTO = new ProfilePictureDTO(DEFAULT_LABEL, DEFAULT_DATA);
-
-        System.out.println(new String(TestUtil.convertObjectToJsonBytes(profilePictureDTO), "UTF-8"));
 
         // Create ProfilePicture
         restProfilePictureMockMvc.perform(post("/app/rest/profilepictures")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(profilePictureDTO)))
-                .andDo(print())
                 .andExpect(status().isOk());
 
         // Read ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures"))
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/{userlogin}", defaultAdmin.getLogin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.userlogin").value(defaultAdmin.getLogin()))

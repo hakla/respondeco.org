@@ -1,10 +1,8 @@
 package org.respondeco.respondeco.web.rest;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
@@ -16,14 +14,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
@@ -34,13 +29,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class for the AccountResource REST controller.
+ * Test class for the AccountController REST controller.
  *
  * @see UserService
  */
@@ -49,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 
-public class AccountResourceTest {
+public class AccountControllerTest {
 
     @Inject
     private UserRepository userRepository;
@@ -67,10 +61,10 @@ public class AccountResourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        AccountResource accountResource = new AccountResource();
-        ReflectionTestUtils.setField(accountResource, "userRepository", userRepository);
-        ReflectionTestUtils.setField(accountResource, "userService", userService);
-        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
+        AccountController accountController = new AccountController();
+        ReflectionTestUtils.setField(accountController, "userRepository", userRepository);
+        ReflectionTestUtils.setField(accountController, "userService", userService);
+        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
 
         adminAuthorities = new HashSet<>();
         userAuthorities = new HashSet<>();

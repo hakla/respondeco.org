@@ -18,7 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/app")
-public class AuditResource {
+public class AuditController {
 
     @Inject
     private AuditEventService auditEventService;
