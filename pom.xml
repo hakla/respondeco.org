@@ -21,6 +21,7 @@
     </prerequisites>
 
     <properties>
+        <lombok.version>1.14.2</lombok.version>
         <HikariCP.version>1.4.0</HikariCP.version>
         <assertj-core.version>1.6.1</assertj-core.version>
         <awaitility.version>1.4.0</awaitility.version>
@@ -46,6 +47,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
