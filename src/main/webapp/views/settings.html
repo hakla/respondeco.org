@@ -13,13 +13,16 @@
                 <strong>An error has occured!</strong>
                 Settings could not be saved.
             </div>
+            <div class="alert alert-success" ng-show="accountdeleted" translate="settings.messages.account.deleted">
+                <strong>Your account was successfully deleted!</strong>
+            </div>
 
             <form name="form" role="form" novalidate ng-submit="save()" show-validation>
                 <div class="col-md-8" ng-show="edit.account">
                     <div class="form-group">
                         <label translate="settings.form.title">Title</label>
                         <input type="text" class="form-control" name="title" placeholder="{{'settings.form.title.placeholder' | translate}}"
-                               ng-model="settingsAccount.title" ng-minlength=1 ng-maxlength=20 required maxlength="20">
+                               ng-model="settingsAccount.title" ng-minlength=1 ng-maxlength=20 maxlength="20">
                         <div ng-show="form.title.$dirty && form.title.$invalid">
                             <p class="help-block"
                                ng-show="form.title.$error.maxlength" translate="settings.messages.validate.title.maxlength">
@@ -103,6 +106,9 @@
                     </button>
                     <a class="btn btn-link" translate="general.button.cancel" ng-click="edit.account = !edit.account">Cancel
                     </a>
+                    <a class="pull-right" translate="settings.account.button.delete" ng-click="delete()">Delete Account
+                    </a>
+
                 </div>
 
                 <div class="col-md-3 profile" ng-hide="edit.account">
