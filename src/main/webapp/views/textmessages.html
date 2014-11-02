@@ -1,0 +1,99 @@
+<div>
+
+    <h2>TextMessages</h2>
+
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveTextMessageModal" ng-click="clear()">
+        <span class="glyphicon glyphicon-flash"></span> Create a new TextMessage
+    </button>
+    <div class="modal fade" id="saveTextMessageModal" tabindex="-1" role="dialog" aria-labelledby="myTextMessageLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="create()">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="myTextMessageLabel">Create or edit a TextMessage</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>ID</label>
+                            <input type="text" class="form-control" name="id"
+                                   ng-model="textmessage.id" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>sender</label>
+                            <input type="text" class="form-control"
+                                   ng-model="textmessage.sender">
+                        </div>
+                        <div class="form-group">
+                            <label>receiver</label>
+                            <input type="text" class="form-control"
+                                   ng-model="textmessage.receiver">
+                        </div>
+                        <div class="form-group">
+                            <label>timestamp</label>
+                            <input type="date" class="form-control"
+                                   ng-model="textmessage.timestamp">
+                        </div>
+                        <div class="form-group">
+                            <label>content</label>
+                            <input type="text" class="form-control"
+                                   ng-model="textmessage.content">
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </button>
+                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-save"></span> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>sender</th>
+                    <th>receiver</th>
+                    <th>timestamp</th>
+                    <th>content</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="textmessage in textmessages">
+                    <td>{{textmessage.id}}</td>
+                    <td>{{textmessage.sender}}</td>
+                    <td>{{textmessage.receiver}}</td>
+                    <td>{{textmessage.timestamp}}</td>
+                    <td>{{textmessage.content}}</td>
+                    <td>
+                        <button type="submit"
+                                ng-click="update(textmessage.id)"
+                                class="btn">
+                            <span class="glyphicon glyphicon-pencil"></span> Edit
+                        </button>
+                        <button type="submit"
+                                ng-click="delete(textmessage.id)"
+                                class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
