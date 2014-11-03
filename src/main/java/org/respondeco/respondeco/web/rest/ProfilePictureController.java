@@ -28,11 +28,15 @@ public class ProfilePictureController {
 
     private final Logger log = LoggerFactory.getLogger(ProfilePictureController.class);
 
-    @Inject
     private ProfilePictureRepository profilePictureRepository;
+    private ProfilePictureService profilePictureService;
 
     @Inject
-    private ProfilePictureService profilePictureService;
+    public ProfilePictureController(ProfilePictureRepository profilePictureRepository,
+                                    ProfilePictureService profilePictureService) {
+        this.profilePictureRepository = profilePictureRepository;
+        this.profilePictureService = profilePictureService;
+    }
 
     /**
      * POST  /rest/profilepictures -> Create a new profilepicture.

@@ -1,5 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,15 +11,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.inject.Inject;
 
+import javafx.scene.effect.Reflection;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.domain.Authority;
+import org.respondeco.respondeco.domain.Gender;
+import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.TextMessageService;
+import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.web.rest.dto.TextMessageDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -31,6 +45,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.repository.TextMessageRepository;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Test class for the TextMessageController REST controller.
@@ -60,29 +77,155 @@ public class TextMessageControllerTest {
     private static final String UPDATED_CONTENT = "UPDATED_TEXT";
         
     @Inject
-    private TextMessageRepository textmessageRepository;
+    private TextMessageRepository textMessageRepository;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    private TextMessageService textMessageService;
 
     private MockMvc restTextMessageMockMvc;
 
-    private TextMessage textmessage;
-
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        TextMessageController textmessageController = new TextMessageController();
-        ReflectionTestUtils.setField(textmessageController, "textmessageRepository", textmessageRepository);
+        textMessageService = new TextMessageService(textMessageRepository, userService, userRepository);
+        TextMessageController textMessageController =
+                new TextMessageController(textMessageRepository, textMessageService);
+        this.restTextMessageMockMvc = MockMvcBuilders.standaloneSetup(textMessageController).build();
 
-        this.restTextMessageMockMvc = MockMvcBuilders.standaloneSetup(textmessageController).build();
+        User admin = new User();
+        admin.setLogin("admin");
+        admin.setTitle("Dr.");
+        admin.setFirstName("ad");
+        admin.setLastName("min");
+        admin.setGender(Gender.MALE);
+        admin.setEmail("ad@min.at");
+        admin.setActivated(true);
+        when(userService.getUserWithAuthorities()).thenReturn(admin);
 
-        textmessage = new TextMessage();
-        textmessage.setId(DEFAULT_ID);
-
-        textmessage.setSender(DEFAULT_SENDER);
-        textmessage.setReceiver(DEFAULT_RECEIVER);
-        textmessage.setTimestamp(DEFAULT_TIMESTAMP);
-        textmessage.setContent(DEFAULT_CONTENT);
     }
 
+    @Test
+    public void testSenderCanSaveMessage() throws Exception {
+
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        Set<Authority> receiverAuthorities = new HashSet<>();
+        receiverAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User receiver = new User();
+        receiver.setLogin("testReceiver");
+        receiver.setAuthorities(receiverAuthorities);
+
+        when(userService.getUserWithAuthorities()).thenReturn(sender);
+        when(userRepository.exists("testReceiver")).thenReturn(true);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("testReceiver");
+        textMessageDTO.setContent(DEFAULT_CONTENT);
+
+        System.out.println(userService.getUserWithAuthorities());
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void testReceiverCanReadMessage() throws Exception {
+
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        Set<Authority> receiverAuthorities = new HashSet<>();
+        receiverAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User receiver = new User();
+        receiver.setLogin("testReceiver");
+        receiver.setAuthorities(receiverAuthorities);
+
+        when(userService.getUserWithAuthorities()).thenReturn(sender);
+        when(userRepository.exists("testReceiver")).thenReturn(true);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("testReceiver");
+        textMessageDTO.setContent(DEFAULT_CONTENT);
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isOk());
+
+        when(userService.getUserWithAuthorities()).thenReturn(receiver);
+
+        restTextMessageMockMvc.perform(get("/app/rest/textmessages"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].sender").value("testSender"))
+                .andExpect(jsonPath("$[0].receiver").value("testReceiver"))
+                .andExpect(jsonPath("$[0].content").value(DEFAULT_CONTENT));
+
+    }
+
+    @Test
+    public void testReceiverCanNotBeEqualToSender() throws Exception {
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        when(userService.getUserWithAuthorities()).thenReturn(sender);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("testSender");
+        textMessageDTO.setContent(DEFAULT_CONTENT);
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testReceiverMustExist() throws Exception {
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        when(userService.getUserWithAuthorities()).thenReturn(sender);
+        when(userRepository.exists("nonexistingReceiver")).thenReturn(false);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("nonexistingReceiver");
+        textMessageDTO.setContent(DEFAULT_CONTENT);
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+/**
     @Test
     public void testCRUDTextMessage() throws Exception {
 
@@ -93,7 +236,7 @@ public class TextMessageControllerTest {
                 .andExpect(status().isOk());
 
         // Read TextMessage
-        restTextMessageMockMvc.perform(get("/app/rest/textmessages/{id}", DEFAULT_ID))
+        restTextMessageMockMvc.perform(get("/app/rest/textmessages/{receiver}", DEFAULT_RECEIVER))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
@@ -134,4 +277,5 @@ public class TextMessageControllerTest {
                 .andExpect(status().isNotFound());
 
     }
+    */
 }

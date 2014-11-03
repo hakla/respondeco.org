@@ -1,8 +1,10 @@
 package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,7 @@ import java.util.Set;
 /**
  * A ProfilePicture.
  */
+@Data
 @Entity
 @Table(name = "T_PROFILEPICTURE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -29,30 +32,6 @@ public class ProfilePicture extends AbstractAuditingEntity implements Serializab
     @Column(name = "data")
     @Lob
     private byte[] data;
-
-    public String getUserlogin() {
-        return userlogin;
-    }
-
-    public void setUserlogin(String userlogin) {
-        this.userlogin = userlogin;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -62,9 +62,6 @@ public class ProfilePictureControllerTest {
         
     private static final byte[] DEFAULT_DATA = new byte[] { 1,1,1,1,1,1,1,1,1,1,1,1,1,1 };
     private static final byte[] UPDATED_DATA = new byte[] { 2,2,2,2,2,2,2,2,2,2,2,2,2,2 };
-        
-    @Inject
-    private ProfilePictureService profilePictureService;
 
     @Inject
     private ProfilePictureRepository profilePictureRepository;
@@ -81,11 +78,9 @@ public class ProfilePictureControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
-        ProfilePictureController profilepictureController = new ProfilePictureController();
-        ReflectionTestUtils.setField(profilePictureService, "userService", userService);
-        ReflectionTestUtils.setField(profilepictureController, "profilePictureRepository", profilePictureRepository);
-        ReflectionTestUtils.setField(profilepictureController, "profilePictureService", profilePictureService);
+        ProfilePictureService profilePictureService = new ProfilePictureService(profilePictureRepository, userService);
+        ProfilePictureController profilepictureController =
+                new ProfilePictureController(profilePictureRepository, profilePictureService);
 
         this.restProfilePictureMockMvc = MockMvcBuilders.standaloneSetup(profilepictureController).build();
 
@@ -154,7 +149,7 @@ public class ProfilePictureControllerTest {
                 .andExpect(status().isOk());
 
         // Read updated ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures"))
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/{userlogin}", defaultAdmin.getLogin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.userlogin").value(defaultAdmin.getLogin()))
@@ -167,7 +162,7 @@ public class ProfilePictureControllerTest {
                 .andExpect(status().isOk());
 
         // Read nonexisting ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures")
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/nonexistent")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 

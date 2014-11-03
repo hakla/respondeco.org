@@ -17,7 +17,7 @@
             </column>
             <column name="sender" type="varchar(255)"/>
             <column name="receiver" type="varchar(255)"/>
-            <column name="timestamp" type="date"/>
+            <column name="timestamp" type="timestamp"/>
             <column name="content" type="varchar(255)"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>

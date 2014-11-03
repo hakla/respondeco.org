@@ -27,11 +27,15 @@ public class TextMessageController {
 
     private final Logger log = LoggerFactory.getLogger(TextMessageController.class);
 
-    @Inject
-    private TextMessageRepository textmessageRepository;
+    private TextMessageRepository textMessageRepository;
+
+    private TextMessageService textMessageService;
 
     @Inject
-    private TextMessageService textMessageService;
+    public TextMessageController(TextMessageRepository textMessageRepository, TextMessageService textMessageService) {
+        this.textMessageRepository = textMessageRepository;
+        this.textMessageService =  textMessageService;
+    }
 
     /**
      * POST  /rest/textmessages -> Create a new textmessage.
@@ -47,7 +51,7 @@ public class TextMessageController {
         try {
             textMessageService.createTextMessage(textMessageDTO.getReceiver(), textMessageDTO.getContent());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchUserException e) {
+        } catch (NoSuchUserException | IllegalArgumentException e) {
             log.error("could not save text TextMessage", e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -63,7 +67,7 @@ public class TextMessageController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public List<TextMessage> getAllForCurrentUser() {
-        log.debug("REST request to get all TextMessages for receiver {}");
+        log.debug("REST request to get all TextMessages for current user");
         return textMessageService.getTextMessagesForCurrentUser();
     }
 
@@ -75,9 +79,9 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    public List<TextMessage> getForUser(@PathVariable String receiver) {
+    public List<TextMessage> getAllForReceiver(@PathVariable String receiver) {
         log.debug("REST request to get TextMessages for : {}", receiver);
-        return textmessageRepository.findByReceiver(receiver);
+        return textMessageRepository.findByReceiver(receiver);
     }
 
     /**
@@ -90,6 +94,6 @@ public class TextMessageController {
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     public void delete(@PathVariable Long id) {
         log.debug("REST request to delete TextMessage : {}", id);
-        textmessageRepository.delete(id);
+        textMessageRepository.delete(id);
     }
 }

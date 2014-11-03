@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
 import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
 import org.hibernate.annotations.Cache;
