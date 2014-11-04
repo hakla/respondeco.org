@@ -39,8 +39,9 @@ public class TextMessageService {
     }
 
     public TextMessage createTextMessage(String receiver, String content) throws NoSuchUserException {
-        log.debug("userService.getUserWithAuthorities returns: {}", userService.getUserWithAuthorities());
-        log.debug("userRepository.findOne(..) returns: {}", userRepository.findOne(receiver));
+        if(content == null || content.length() <= 0) {
+            throw new IllegalArgumentException("Content must not be empty");
+        }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getLogin().equals(receiver)) {
             throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver));
@@ -58,9 +59,23 @@ public class TextMessageService {
     }
 
     public List<TextMessage> getTextMessagesForCurrentUser() {
-        log.debug("userService.getUserWithAuthorities returns: {}", userService.getUserWithAuthorities());
         User currentUser = userService.getUserWithAuthorities();
-        return textMessageRepository.findByReceiver(currentUser.getLogin());
+        return textMessageRepository.findByReceiverAndActiveIsTrue(currentUser.getLogin());
+    }
+
+    public TextMessage deleteTextMessage(Long id) {
+        TextMessage textMessage = textMessageRepository.findOne(id);
+        if(textMessage == null) {
+            throw new IllegalArgumentException(String.format("A text message with id %d does not exist", id));
+        }
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser.getLogin().equals(textMessage.getReceiver()) == false) {
+            throw new IllegalArgumentException(
+                    String.format("User %s is not the receiver of the text message %d", currentUser.getLogin(), id));
+        }
+        textMessage.setActive(false);
+        textMessageRepository.save(textMessage);
+        return textMessage;
     }
 
 }

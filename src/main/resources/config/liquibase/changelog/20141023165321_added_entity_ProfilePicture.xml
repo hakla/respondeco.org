@@ -25,7 +25,7 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
-            <column name="is_active" type="boolean"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
         
     </changeSet>

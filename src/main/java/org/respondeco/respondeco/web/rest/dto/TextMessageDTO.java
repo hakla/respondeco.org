@@ -1,18 +1,23 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Created by clemens on 02/11/14.
+ * Created by Clemens Puehringer on 02/11/14.
  */
 
 @Data
+@ApiModel(value = "Text Message", description = "A text message DTO")
 public class TextMessageDTO {
 
+    @ApiModelProperty(value = "The receiver of the message", required = true)
     private String receiver;
-    private String content;
 
+    @ApiModelProperty(value = "The content of the message", required = true)
+    private String content;
 
 }

@@ -12,4 +12,6 @@ public interface TextMessageRepository extends JpaRepository<TextMessage, Long> 
 
     List<TextMessage> findByReceiver(String receiver);
 
+    List<TextMessage> findByReceiverAndActiveIsTrue(String receiver);
+
 }

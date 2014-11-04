@@ -1,6 +1,8 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.repository.ProfilePictureRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
@@ -22,6 +24,7 @@ import java.util.Optional;
 /**
  * REST controller for managing ProfilePicture.
  */
+@Api(value = "profilepictures", description = "Profile Picture API")
 @RestController
 @RequestMapping("/app")
 public class ProfilePictureController {
@@ -41,6 +44,7 @@ public class ProfilePictureController {
     /**
      * POST  /rest/profilepictures -> Create a new profilepicture.
      */
+    @ApiOperation(value = "Create profile picture", notes = "Create or change the current user's profile picture")
     @RequestMapping(value = "/rest/profilepictures",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,21 +59,9 @@ public class ProfilePictureController {
     }
 
     /**
-     * GET  /rest/profilepictures -> get all the profilepictures.
+     * GET  /rest/profilepictures/:userlogin -> get the "userlogin" profilepicture.
      */
-    @RequestMapping(value = "/rest/profilepictures",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @Timed
-    public List<ProfilePicture> getAll() {
-        log.debug("REST request to get all ProfilePictures");
-        return profilePictureRepository.findAll();
-    }
-
-    /**
-     * GET  /rest/profilepictures/:id -> get the "id" profilepicture.
-     */
+    @ApiOperation(value = "Get profile picture", notes = "Get the profile picture of the 'userlogin' user")
     @RequestMapping(value = "/rest/profilepictures/{userlogin}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,6 +78,7 @@ public class ProfilePictureController {
     /**
      * DELETE  /rest/profilepictures -> delete the profilepicture of the currently authenticated user.
      */
+    @ApiOperation(value = "Delete profile picture", notes = "Delete the current user's profile picture")
     @RequestMapping(value = "/rest/profilepictures",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -99,6 +92,8 @@ public class ProfilePictureController {
     /**
      * DELETE  /rest/profilepictures/:id -> delete the "id" profilepicture.
      */
+    @ApiOperation(value = "Delete profile picture",
+            notes = "Delete the profile picture of a specific user (admin only)")
     @RequestMapping(value = "/rest/profilepictures/{userlogin}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
