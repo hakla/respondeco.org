@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody TextMessageDTO textMessageDTO) {
+    public ResponseEntity<?> create(@RequestBody @Valid TextMessageDTO textMessageDTO) {
         log.debug("REST request to save TextMessage : {}", textMessageDTO);
         ResponseEntity<?> responseEntity;
         try {
@@ -81,7 +82,7 @@ public class TextMessageController {
      */
     @ApiOperation(value = "Get text messages",
             notes = "Get all text messages for the given userlogin (admin only)")
-    @RequestMapping(value = "/rest/textmessages/{receiver}",
+    @RequestMapping(value = "/rest/textmessages/admin/{receiver}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

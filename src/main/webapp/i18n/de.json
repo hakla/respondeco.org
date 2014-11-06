@@ -12,6 +12,7 @@
             },
             "account": {
                 "main": "Zugang",
+                "messages": "Nachrichten",
                 "settings": "Einstellungen",
                 "password": "Passwort",
                 "sessions": "Sitzungen",
@@ -67,6 +68,23 @@
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
                 }
             }
+        },
+        "textmessages": {
+            "title": "Nachrichten",
+            "createmessage": "Neue Nachricht",
+            "sender": "Absender",
+            "date": "Datum",
+            "receiver": "Empfänger",
+            "content": "Nachricht",
+            "reply": "Antworten",
+            "delete": "Löschen",
+            "view": "Ansehen",
+            "error": {
+                "saveerror": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden."
+            }
+        },
+        "textmessage": {
+            "title": "Nachricht von "
         }
     },
     "main": {

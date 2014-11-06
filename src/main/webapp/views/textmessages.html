@@ -1,9 +1,10 @@
 <div>
 
-    <h2>TextMessages</h2>
+    <h2 translate="global.textmessages.title">Messages</h2>
 
     <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveTextMessageModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-flash"></span> Create a new TextMessage
+        <span class="glyphicon glyphicon-plus"></span>
+        <span translate="global.textmessages.createmessage">Create a new TextMessage</span>
     </button>
     <div class="modal fade" id="saveTextMessageModal" tabindex="-1" role="dialog" aria-labelledby="myTextMessageLabel"
          aria-hidden="true">
@@ -16,37 +17,23 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myTextMessageLabel">Create or edit a TextMessage</h4>
+                        <h4 class="modal-title" id="myTextMessageLabel">Create a TextMessage</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="textmessage.id" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label>sender</label>
-                            <input type="text" class="form-control"
-                                   ng-model="textmessage.sender">
-                        </div>
-                        <div class="form-group">
                             <label>receiver</label>
                             <input type="text" class="form-control"
-                                   ng-model="textmessage.receiver">
-                        </div>
-                        <div class="form-group">
-                            <label>timestamp</label>
-                            <input type="date" class="form-control"
-                                   ng-model="textmessage.timestamp">
+                                   ng-model="textMessage.receiver">
                         </div>
                         <div class="form-group">
                             <label>content</label>
-                            <input type="text" class="form-control"
-                                   ng-model="textmessage.content">
+                            <textarea type="text" class="form-control"
+                                   ng-model="textMessage.content"></textarea>
                         </div>
-
-
+                        <div class="alert alert-danger" ng-show="saveerror" translate="global.textmessages.error.saveerror">
+                            <strong>An error has occured!</strong>
+                            Message could not be sent.
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -65,31 +52,36 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>sender</th>
-                    <th>receiver</th>
-                    <th>timestamp</th>
-                    <th>content</th>
+                    <th translate="global.textmessages.sender">sender</th>
+                    <th translate="global.textmessages.date">timestamp</th>
+                    <th translate="global.textmessages.content">content</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="textmessage in textmessages">
-                    <td>{{textmessage.id}}</td>
-                    <td>{{textmessage.sender}}</td>
-                    <td>{{textmessage.receiver}}</td>
-                    <td>{{textmessage.timestamp}}</td>
-                    <td>{{textmessage.content}}</td>
+                <tr ng-repeat="message in textMessages">
+                    <td>{{message.sender}}</td>
+                    <td>{{message.timestamp | date}}</td>
+                    <td>{{message.content}}</td>
+
                     <td>
                         <button type="submit"
-                                ng-click="update(textmessage.id)"
-                                class="btn">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit
+                                ng-click="viewMessage(message)"
+                                class="btn btn-primary">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            <span translate="global.textmessages.view">View</span>
                         </button>
                         <button type="submit"
-                                ng-click="delete(textmessage.id)"
+                                ng-click="reply(message.sender)"
+                                class="btn btn-success">
+                            <span class="glyphicon glyphicon-retweet"></span>
+                            <span translate="global.textmessages.reply">Respond</span>
+                        </button>
+                        <button type="submit"
+                                ng-click="delete(message.id)"
                                 class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                            <span class="glyphicon glyphicon-trash"></span>
+                            <span translate="global.textmessages.delete">Delete</span>
                         </button>
                     </td>
                 </tr>

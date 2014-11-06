@@ -114,7 +114,7 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testSenderCanSaveMessage() throws Exception {
+    public void testPOST_SenderCanSaveMessage() throws Exception {
 
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
@@ -138,7 +138,72 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testReceiverCanReadMessage() throws Exception {
+    public void testPOST_ReceiverCanNotBeEqualToSender() throws Exception {
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("testSender");
+        textMessageDTO.setContent(DEFAULT_CONTENT);
+
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPOST_ReceiverMustExist() throws Exception {
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("nonexistingReceiver");
+        textMessageDTO.setContent(DEFAULT_CONTENT);
+
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
+        when(userRepositoryMock.exists("nonexistingReceiver")).thenReturn(false);
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPOST_ContentMustNotBeEmpty() throws Exception {
+        Set<Authority> senderAuthorities = new HashSet<>();
+        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        User sender = new User();
+        sender.setLogin("testSender");
+        sender.setAuthorities(senderAuthorities);
+
+        TextMessageDTO textMessageDTO = new TextMessageDTO();
+        textMessageDTO.setReceiver("testReceiver");
+        textMessageDTO.setContent("");
+
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
+        when(userRepositoryMock.exists("testReceiver")).thenReturn(true);
+
+        // Create TextMessage
+        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGET_ReceiverCanReadMessage() throws Exception {
 
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
@@ -178,50 +243,7 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testReceiverCanNotBeEqualToSender() throws Exception {
-        Set<Authority> senderAuthorities = new HashSet<>();
-        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
-        User sender = new User();
-        sender.setLogin("testSender");
-        sender.setAuthorities(senderAuthorities);
-
-        TextMessageDTO textMessageDTO = new TextMessageDTO();
-        textMessageDTO.setReceiver("testSender");
-        textMessageDTO.setContent(DEFAULT_CONTENT);
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-
-        // Create TextMessage
-        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testReceiverMustExist() throws Exception {
-        Set<Authority> senderAuthorities = new HashSet<>();
-        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
-        User sender = new User();
-        sender.setLogin("testSender");
-        sender.setAuthorities(senderAuthorities);
-
-        TextMessageDTO textMessageDTO = new TextMessageDTO();
-        textMessageDTO.setReceiver("nonexistingReceiver");
-        textMessageDTO.setContent(DEFAULT_CONTENT);
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists("nonexistingReceiver")).thenReturn(false);
-
-        // Create TextMessage
-        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testReceiverCanDeleteMessage() throws Exception {
+    public void testDELETE_ReceiverCanDeleteMessage() throws Exception {
         Set<Authority> receiverAuthorities = new HashSet<>();
         receiverAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User receiver = new User();
@@ -246,7 +268,7 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testCannotDeleteForeignMessages() throws Exception {
+    public void testDELETE_CannotDeleteForeignMessages() throws Exception {
         Set<Authority> unauthorizedUserAuthorities = new HashSet<>();
         unauthorizedUserAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User unauthorizedUser = new User();
@@ -269,28 +291,6 @@ public class TextMessageControllerTest {
         assertTrue(textMessage.isActive());
         verify(textMessageRepositoryMock, times(1)).findOne(1L);
         verify(textMessageRepositoryMock, times(0)).save(textMessage);
-    }
-
-    @Test
-    public void testContentMustNotBeEmpty() throws Exception {
-        Set<Authority> senderAuthorities = new HashSet<>();
-        senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
-        User sender = new User();
-        sender.setLogin("testSender");
-        sender.setAuthorities(senderAuthorities);
-
-        TextMessageDTO textMessageDTO = new TextMessageDTO();
-        textMessageDTO.setReceiver("testReceiver");
-        textMessageDTO.setContent("");
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists("testReceiver")).thenReturn(true);
-
-        // Create TextMessage
-        restTextMessageMockMvc.perform(post("/app/rest/textmessages")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(textMessageDTO)))
-                .andExpect(status().isBadRequest());
     }
 
 }

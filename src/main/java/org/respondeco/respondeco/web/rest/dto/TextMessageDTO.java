@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * Created by Clemens Puehringer on 02/11/14.
  */
@@ -15,9 +18,13 @@ import lombok.Setter;
 public class TextMessageDTO {
 
     @ApiModelProperty(value = "The receiver of the message", required = true)
+    @NotNull
+    @Size(min = 1, max = 20)
     private String receiver;
 
     @ApiModelProperty(value = "The content of the message", required = true)
+    @NotNull
+    @Size(min = 1, max = 2048)
     private String content;
 
 }

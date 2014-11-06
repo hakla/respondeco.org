@@ -1,31 +1,49 @@
 'use strict';
 
-respondecoApp.controller('TextMessageController', function ($scope, resolvedTextMessage, TextMessage) {
+respondecoApp.controller('TextMessageController', function ($scope, $location, resolvedTextMessage, TextMessage) {
 
-        $scope.textmessages = resolvedTextMessage;
+        $scope.textMessage = {
+            receiver: null,
+            content: null
+        };
+        $scope.textMessages = resolvedTextMessage;
+        $scope.cachedTextMessage = TextMessage.retrieveTextMessage();
 
         $scope.create = function () {
-            TextMessage.save($scope.textmessage,
+            TextMessage.save($scope.textMessage,
                 function () {
                     $scope.textmessages = TextMessage.query();
                     $('#saveTextMessageModal').modal('hide');
                     $scope.clear();
+                },
+                function () {
+                    $scope.saveerror = "ERROR";
                 });
-        };
-
-        $scope.update = function (id) {
-            $scope.textmessage = TextMessage.get({id: id});
-            $('#saveTextMessageModal').modal('show');
         };
 
         $scope.delete = function (id) {
             TextMessage.delete({id: id},
                 function () {
-                    $scope.textmessages = TextMessage.query();
+                    if($location.path() == "/textmessages") {
+                        $scope.textMessages = TextMessage.query();
+                    } else {
+                        //path is /textmessage, switch back to /textmessages
+                        $location.path("/textmessages");
+                    }
                 });
         };
 
+        $scope.reply = function (sender) {
+            $scope.textMessage.receiver = sender;
+            $('#saveTextMessageModal').modal('show');
+        }
+
         $scope.clear = function () {
-            $scope.textmessage = {sender: null, receiver: null, timestamp: null, content: null, id: null};
+            $scope.textMessage = {receiver: null, content: null};
         };
+
+        $scope.viewMessage = function(message) {
+            TextMessage.cacheTextMessage(message);
+            $location.path("/textmessage");
+        }
     });
