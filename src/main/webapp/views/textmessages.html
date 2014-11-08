@@ -1,11 +1,97 @@
 <div>
 
-    <h2 translate="global.textmessages.title">Messages</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 translate="global.textmessages.title">Messages</h2>
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#saveTextMessageModal" ng-click="clear()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span translate="global.textmessages.createmessage">Create a new TextMessage</span>
+            </button>
+        </div>
+    </div>
 
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveTextMessageModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-plus"></span>
-        <span translate="global.textmessages.createmessage">Create a new TextMessage</span>
-    </button>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th translate="global.textmessages.sender">sender</th>
+                            <th translate="global.textmessages.date">timestamp</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="message in textMessages" ng-click="viewMessage(message)">
+                        <td><strong>{{message.sender}}</strong></td>
+                        <td>{{message.timestamp | date}}</td>
+
+                        <td ng-click="$event.stopPropagation()">
+                            <div class="pull-right">
+                            <button type="submit"
+                                    ng-click="reply(message.sender)"
+                                    class="btn btn-success">
+                                <span class="glyphicon glyphicon-retweet"></span>
+                            </button>
+                            <button type="submit"
+                                    ng-click="prepareDelete(message)"
+                                    class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-default" ng-show="viewedTextMessage != null">
+                <div class="panel-heading clearfix">
+                    <div class="panel-title pull-left">
+                        <table>
+                            <tr>
+                                <td>
+                                    <strong translate="global.textmessages.from">From </strong>:
+                                </td>
+                                <td>
+                                    <span>{{ viewedTextMessage.sender }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong translate="global.textmessages.atdate">on </strong>:
+                                </td>
+                                <td>
+                                    <span>{{ viewedTextMessage.timestamp | date }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit"
+                                ng-click="reply(viewedTextMessage.sender)"
+                                class="btn btn-success">
+                            <span class="glyphicon glyphicon-retweet"></span>
+                            <span translate="global.textmessages.reply">Reply</span>
+                        </button>
+                        <button type="submit"
+                                ng-click="prepareDelete(viewedTextMessage)"
+                                class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            <span translate="global.textmessages.delete">Delete</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    {{ viewedTextMessage.content }}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="saveTextMessageModal" tabindex="-1" role="dialog" aria-labelledby="myTextMessageLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -17,18 +103,18 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myTextMessageLabel">Create a TextMessage</h4>
+                        <h4 class="modal-title" id="myTextMessageLabel" translate="global.textmessages.createmessage">Create a TextMessage</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>receiver</label>
+                            <label translate="global.textmessages.receiver">Receiver</label>
                             <input type="text" class="form-control"
-                                   ng-model="textMessage.receiver">
+                                   ng-model="textMessageToSend.receiver">
                         </div>
                         <div class="form-group">
-                            <label>content</label>
+                            <label translate="global.textmessages.content">Content</label>
                             <textarea type="text" class="form-control"
-                                   ng-model="textMessage.content"></textarea>
+                                      ng-model="textMessageToSend.content"></textarea>
                         </div>
                         <div class="alert alert-danger" ng-show="saveerror" translate="global.textmessages.error.saveerror">
                             <strong>An error has occured!</strong>
@@ -37,10 +123,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                            <span class="glyphicon glyphicon-ban-circle"></span>
+                            <span translate="global.form.cancel">Cancel</span>
                         </button>
                         <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span> Save
+                            <span class="glyphicon glyphicon-save"></span>
+                            <span translate="global.form.send">Send</span>
                         </button>
                     </div>
                 </form>
@@ -48,44 +136,25 @@
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th translate="global.textmessages.sender">sender</th>
-                    <th translate="global.textmessages.date">timestamp</th>
-                    <th translate="global.textmessages.content">content</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="message in textMessages">
-                    <td>{{message.sender}}</td>
-                    <td>{{message.timestamp | date}}</td>
-                    <td>{{message.content}}</td>
-
-                    <td>
-                        <button type="submit"
-                                ng-click="viewMessage(message)"
-                                class="btn btn-primary">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                            <span translate="global.textmessages.view">View</span>
-                        </button>
-                        <button type="submit"
-                                ng-click="reply(message.sender)"
-                                class="btn btn-success">
-                            <span class="glyphicon glyphicon-retweet"></span>
-                            <span translate="global.textmessages.reply">Respond</span>
-                        </button>
-                        <button type="submit"
-                                ng-click="delete(message.id)"
-                                class="btn btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span>
-                            <span translate="global.textmessages.delete">Delete</span>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="modal fade" id="deleteTextMessageModal" tabindex="-1" role="dialog" aria-labelledby="deleteTextMessageLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span translate="global.textmessages.confirmdelete">Do you really want to delete the message?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >
+                        <span class="glyphicon glyphicon-ban-circle"></span>
+                        <span translate="global.form.cancel">Cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-danger" ng-click="confirmDelete()">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        <span translate="global.textmessages.delete">Cancel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>

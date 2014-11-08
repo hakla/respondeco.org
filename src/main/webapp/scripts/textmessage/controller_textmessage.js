@@ -2,18 +2,21 @@
 
 respondecoApp.controller('TextMessageController', function ($scope, $location, resolvedTextMessage, TextMessage) {
 
-        $scope.textMessage = {
+        $scope.textMessageToSend = {
             receiver: null,
             content: null
         };
+        $scope.viewedTextMessage = null;
         $scope.textMessages = resolvedTextMessage;
-        $scope.cachedTextMessage = TextMessage.retrieveTextMessage();
+        $scope.toDelete = null;
+
 
         $scope.create = function () {
-            TextMessage.save($scope.textMessage,
+            TextMessage.save($scope.textMessageToSend,
                 function () {
                     $scope.textmessages = TextMessage.query();
                     $('#saveTextMessageModal').modal('hide');
+                    $scope.saveerror = null;
                     $scope.clear();
                 },
                 function () {
@@ -24,26 +27,33 @@ respondecoApp.controller('TextMessageController', function ($scope, $location, r
         $scope.delete = function (id) {
             TextMessage.delete({id: id},
                 function () {
-                    if($location.path() == "/textmessages") {
-                        $scope.textMessages = TextMessage.query();
-                    } else {
-                        //path is /textmessage, switch back to /textmessages
-                        $location.path("/textmessages");
-                    }
+                    $scope.textMessages = TextMessage.query();
+                    $scope.viewedTextMessage = null;
                 });
         };
 
         $scope.reply = function (sender) {
-            $scope.textMessage.receiver = sender;
+            $scope.textMessageToSend.receiver = sender;
             $('#saveTextMessageModal').modal('show');
         }
 
         $scope.clear = function () {
-            $scope.textMessage = {receiver: null, content: null};
+            $scope.textMessageToSend = {receiver: null, content: null};
         };
 
         $scope.viewMessage = function(message) {
-            TextMessage.cacheTextMessage(message);
-            $location.path("/textmessage");
+            $scope.viewedTextMessage = message;
+        }
+
+        $scope.prepareDelete = function(message) {
+            $scope.toDelete = message;
+            $('#deleteTextMessageModal').modal('show');
+        }
+
+        $scope.confirmDelete = function() {
+            if($scope.toDelete != null) {
+                $scope.delete($scope.toDelete.id);
+            }
+            $('#deleteTextMessageModal').modal('hide');
         }
     });

@@ -39,7 +39,10 @@
             "confirmpassword.placeholder": "Bestätigen Sie ihr neues Passwort",
             "email": "E-Mail Adresse",
             "email.placeholder": "Ihre E-Mail Adresse",
-            "description": "Beschreibung"
+            "description": "Beschreibung",
+            "send": "Absenden",
+            "cancel": "Abbrechen",
+            "confirm": "Bestätigen"
         },
         "messages": {
             "info": {
@@ -78,7 +81,10 @@
             "content": "Nachricht",
             "reply": "Antworten",
             "delete": "Löschen",
+            "confirmdelete": "<strong>Nachricht wirklich löschen?</strong>",
             "view": "Ansehen",
+            "from": "Von",
+            "atdate": "am",
             "error": {
                 "saveerror": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden."
             }

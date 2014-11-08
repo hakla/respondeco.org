@@ -48,6 +48,12 @@ a:hover {
     cursor: pointer;
 }
 
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+  cursor: pointer;
+}
+
 /* start Password strength bar style */
 ul#strength {
     display: inline;
