@@ -1,44 +1,64 @@
 'use strict';
 
-respondecoApp.controller('TextMessageController', function ($scope, $location, resolvedTextMessage, TextMessage) {
+respondecoApp.controller('TextMessageController', function ($scope, TextMessage) {
 
         $scope.textMessageToSend = {
             receiver: null,
             content: null
         };
         $scope.viewedTextMessage = null;
-        $scope.textMessages = resolvedTextMessage;
+        $scope.textMessages = TextMessage.query();
         $scope.toDelete = null;
+
+        $scope.sendsuccess = null;
+        $scope.senderror = null;
+
+        $scope.deletesuccess = null;
+        $scope.deleteerror = null;
 
 
         $scope.create = function () {
             TextMessage.save($scope.textMessageToSend,
                 function () {
-                    $scope.textmessages = TextMessage.query();
-                    $('#saveTextMessageModal').modal('hide');
-                    $scope.saveerror = null;
+                    $scope.hideNewMessageModal();
                     $scope.clear();
+                    $scope.senderror = null;
+                    $scope.sendsuccess = "SUCCESS";
                 },
                 function () {
-                    $scope.saveerror = "ERROR";
+                    $scope.senderror = "ERROR";
+                    $scope.sendsuccess = null;
                 });
         };
 
         $scope.delete = function (id) {
             TextMessage.delete({id: id},
                 function () {
+                    $scope.clear();
                     $scope.textMessages = TextMessage.query();
                     $scope.viewedTextMessage = null;
+                    $scope.deleteerror = null;
+                    $scope.deletesuccess = "SUCCESS";
+                },
+                function () {
+                    $scope.clear();
+                    $scope.deleteerror = "ERROR";
+                    $scope.deletesuccess = null;
                 });
         };
 
         $scope.reply = function (sender) {
             $scope.textMessageToSend.receiver = sender;
-            $('#saveTextMessageModal').modal('show');
+            $scope.showNewMessageModal();
         }
 
         $scope.clear = function () {
             $scope.textMessageToSend = {receiver: null, content: null};
+            $scope.toDelete = null;
+            $scope.sendsuccess = null;
+            $scope.senderror = null;
+            $scope.deletesuccess = null;
+            $scope.deleteerror = null;
         };
 
         $scope.viewMessage = function(message) {
@@ -47,13 +67,29 @@ respondecoApp.controller('TextMessageController', function ($scope, $location, r
 
         $scope.prepareDelete = function(message) {
             $scope.toDelete = message;
-            $('#deleteTextMessageModal').modal('show');
+            $scope.showDeleteMessageModal();
         }
 
         $scope.confirmDelete = function() {
             if($scope.toDelete != null) {
                 $scope.delete($scope.toDelete.id);
             }
+            $scope.hideDeleteMessageModal();
+        }
+
+        $scope.showNewMessageModal = function() {
+            $('#saveTextMessageModal').modal('show');
+        }
+
+        $scope.hideNewMessageModal = function() {
+            $('#saveTextMessageModal').modal('hide');
+        }
+
+        $scope.showDeleteMessageModal = function() {
+            $('#deleteTextMessageModal').modal('show');
+        }
+
+        $scope.hideDeleteMessageModal = function() {
             $('#deleteTextMessageModal').modal('hide');
         }
     });

@@ -85,8 +85,21 @@
             "view": "Ansehen",
             "from": "Von",
             "atdate": "am",
+            "success": {
+                "delete": "<strong>Die Nachricht wurde erfolgreich gelöscht.</strong>",
+                "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
+            },
             "error": {
-                "saveerror": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden."
+                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden.",
+                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden."
+            },
+            "validate": {
+                "receiver": {
+                    "minlength": "Der Empfänger muss aus mindestens 1 Zeichen bestehen."
+                },
+                "content": {
+                    "minlength": "Die Nachricht muss aus mindestens 1 Zeichen bestehen."
+                }
             }
         },
         "textmessage": {
