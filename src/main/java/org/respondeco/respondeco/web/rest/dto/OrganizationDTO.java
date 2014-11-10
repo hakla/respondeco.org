@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest.dto;
 
 import lombok.Data;
+import org.respondeco.respondeco.domain.User;
 
 import java.util.List;
 @Data

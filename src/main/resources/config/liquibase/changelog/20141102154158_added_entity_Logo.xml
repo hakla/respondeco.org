@@ -12,11 +12,11 @@
     -->
     <changeSet id="20141102154158" author="jhipster">
         <createTable tableName="T_LOGO">
-            <column name="org_name" type="varchar(255)">
+            <column name="org_ID" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="label" type="varchar(255)"/>
-            <column name="data" type="varchar(255)"/>
+            <column name="data" type="blob"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>

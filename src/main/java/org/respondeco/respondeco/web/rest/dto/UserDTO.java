@@ -1,5 +1,7 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
 public class UserDTO {

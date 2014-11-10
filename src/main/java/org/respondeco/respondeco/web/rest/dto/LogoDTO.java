@@ -14,6 +14,6 @@ public class LogoDTO {
 
     private byte[] data;
 
-    private String orgName;
+    private Long orgId;
 
 }

@@ -19,8 +19,8 @@ public class Logo extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @NotNull
-    @Column(name = "org_name")
-    private String orgName;
+    @Column(name = "org_ID")
+    private Long orgId;
 
     @Column(name = "label")
     private String label;

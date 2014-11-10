@@ -13,8 +13,12 @@
     <changeSet id="20141102153005" author="jhipster">
         <createTable tableName="T_ORGANIZATION">
 
-            <column name="name" type="varchar(255)">
+
+            <column name="org_id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(255)"/>
             <column name="email" type="varchar(255)"/>

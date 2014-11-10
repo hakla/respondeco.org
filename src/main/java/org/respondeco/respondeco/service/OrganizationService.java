@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -27,39 +25,49 @@ public class OrganizationService {
 
     private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
 
-    @Inject
     private OrganizationRepository organizationRepository;
 
-    @Inject
     private UserService userService;
 
+    @Inject
+    public OrganizationService(OrganizationRepository organizationRepository, UserService userService) {
+        this.organizationRepository = organizationRepository;
+        this.userService = userService;
+    }
+
     public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, String owner) {
-        Organization newOrganization = new Organization();
+        if(organizationRepository.findByName(name)==null) {
+            Organization newOrganization = new Organization();
 
-        newOrganization.setName(name);
+            newOrganization.setName(name);
+            newOrganization.setDescription(description);
+            newOrganization.setEmail(email);
+            newOrganization.setIsNpo(isNpo);
 
-        newOrganization.setDescription(description);
-        newOrganization.setEmail(email);
-
-        newOrganization.setIsNpo(isNpo);
-        if(organizationRepository.findByOwner(owner)==null) {
-            newOrganization.setOwner(owner);
+            if(organizationRepository.findByOwner(owner)==null) {
+                newOrganization.setOwner(owner);
+            }
+            else {
+                log.debug("Couldn't Create Information for Organization: {}", newOrganization);
+                //TODO ADD Exception
+                return null;
+            }
+            organizationRepository.save(newOrganization);
+            log.debug("Created Information for Organization: {}", newOrganization);
+            return newOrganization;
         }
         else {
-            log.debug("Couldn't Created Information for Organization: {}", newOrganization);
+            log.debug("Couldn't Create Information for Organization because it already exists");
             //TODO ADD Exception
             return null;
         }
-        organizationRepository.save(newOrganization);
-        log.debug("Created Information for Organization: {}", newOrganization);
-        return newOrganization;
     }
 
     @Transactional(readOnly = true)
     public Organization getOrganizationByName(String orgName) {
         log.debug("getOrganizationByName(orgName) called");
 
-        Organization currentOrganization = organizationRepository.findOne(orgName);
+        Organization currentOrganization = organizationRepository.findByName(orgName);
         if(currentOrganization != null) {
             log.debug("Found Information for Organization: {}", currentOrganization);
             return currentOrganization;
@@ -104,8 +112,6 @@ public class OrganizationService {
             log.debug("Couldn't Change Information for Organization: {}", name);
             //TODO ADD Exception
         }
-
-
     }
 
     public void deleteOrganizationInformation() {
@@ -119,7 +125,7 @@ public class OrganizationService {
             log.debug("Couldn't Delete Information for Organization: {}");
             //TODO ADD Exception
         }
-
     }
+
 
 }

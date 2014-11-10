@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,7 +13,16 @@ import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.domain.Authority;
+import org.respondeco.respondeco.domain.Gender;
+import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -29,6 +39,9 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Test class for the OrganizationController REST controller.
  *
@@ -41,81 +54,92 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 public class OrganizationControllerTest {
-    
-    private static final String DEFAULT_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_NAME = "UPDATED_TEXT";
-        
-    private static final String DEFAULT_DESCRIPTION = "SAMPLE_TEXT";
-    private static final String UPDATED_DESCRIPTION = "UPDATED_TEXT";
-        
-    private static final String DEFAULT_EMAIL = "SAMPLE_TEXT";
-    private static final String UPDATED_EMAIL = "UPDATED_TEXT";
-        
-    private static final String DEFAULT_OWNER = "SAMPLE_TEXT";
-    private static final String UPDATED_OWNER = "UPDATED_TEXT";
-        
-    private static final Boolean DEFAULT_IS_NPO = false;
-    private static final Boolean UPDATED_IS_NPO = true;
+
     @Inject
     private OrganizationRepository organizationRepository;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private OrganizationService organizationService;
+
     private MockMvc restOrganizationMockMvc;
 
-    private Organization organization;
+    private OrganizationDTO organizationDTO;
+    private User defaultUser;
+    private Set<Authority> userAuthorities;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganizationController organizationController = new OrganizationController();
-        ReflectionTestUtils.setField(organizationController, "organizationRepository", organizationRepository);
+        OrganizationService organizationService = new OrganizationService(organizationRepository, userService);
+        OrganizationController organizationController = new OrganizationController(organizationRepository, organizationService, userService);
+
+        userAuthorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setName(AuthoritiesConstants.USER);
+        userAuthorities.add(authority);
+
+        this.defaultUser = new User();
+        this.defaultUser.setCreatedDate(null);
+        this.defaultUser.setLastModifiedDate(null);
+        this.defaultUser.setLogin("testuser");
+        this.defaultUser.setCreatedBy(this.defaultUser.getLogin());
+        this.defaultUser.setTitle("Dr.");
+        this.defaultUser.setGender(Gender.MALE);
+        this.defaultUser.setFirstName("john");
+        this.defaultUser.setLastName("doe");
+        this.defaultUser.setEmail("john.doe@jhipter.com");
+        this.defaultUser.setDescription("just a regular everyday normal guy");
+        this.defaultUser.setAuthorities(userAuthorities);
 
         this.restOrganizationMockMvc = MockMvcBuilders.standaloneSetup(organizationController).build();
 
-        organization = new Organization();
+        organizationDTO = new OrganizationDTO();
 
-        organization.setName(DEFAULT_NAME);
-        organization.setDescription(DEFAULT_DESCRIPTION);
-        organization.setEmail(DEFAULT_EMAIL);
-        organization.setOwner(DEFAULT_OWNER);
-        organization.setIsNpo(DEFAULT_IS_NPO);
+        organizationDTO.setName("testorg");
+        organizationDTO.setDescription("testdescription");
+        organizationDTO.setEmail("testorg@email.com");
+        organizationDTO.setOwner(defaultUser.getLogin());
+        organizationDTO.setNpo(false);
     }
 
     @Test
     public void testCRUDOrganization() throws Exception {
-
+        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         // Create Organization
         restOrganizationMockMvc.perform(post("/app/rest/organizations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(organization)))
+                .content(TestUtil.convertObjectToJsonBytes(organizationDTO)))
                 .andExpect(status().isOk());
 
         // Read Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_NAME))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
-                .andExpect(jsonPath("$.owner").value(DEFAULT_OWNER.toString()))
-                .andExpect(jsonPath("$.isNpo").value(DEFAULT_IS_NPO.booleanValue()));
-
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", "testorg"))
+        .andExpect(status().isOk())
+                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                 .andExpect(jsonPath("$.name").value("testorg"))
+                 .andExpect(jsonPath("$.description").value("testdescription"))
+                 .andExpect(jsonPath("$.email").value("testorg@email.com"))
+                 .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
+                 .andExpect(jsonPath("$.isNpo").value(false));
+    /*
         // Update Organization
-        organization.setName(UPDATED_NAME);
-        organization.setDescription(UPDATED_DESCRIPTION);
-        organization.setEmail(UPDATED_EMAIL);
-        organization.setOwner(UPDATED_OWNER);
-        organization.setIsNpo(UPDATED_IS_NPO);
+        organizationDTO.setDescription(UPDATED_DESCRIPTION);
+        organizationDTO.setEmail(UPDATED_EMAIL);
+        organizationDTO.setOwner(UPDATED_OWNER);
+        organizationDTO.setNpo(UPDATED_IS_NPO);
 
         restOrganizationMockMvc.perform(post("/app/rest/organizations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(organization)))
+                .content(TestUtil.convertObjectToJsonBytes(organizationDTO)))
                 .andExpect(status().isOk());
 
         // Read updated Organization
         restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(UPDATED_NAME.toString()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
                 .andExpect(jsonPath("$.description").value(UPDATED_DESCRIPTION.toString()))
                 .andExpect(jsonPath("$.email").value(UPDATED_EMAIL.toString()))
                 .andExpect(jsonPath("$.owner").value(UPDATED_OWNER.toString()))
@@ -130,6 +154,6 @@ public class OrganizationControllerTest {
         restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_NAME)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
-
+*/
     }
 }

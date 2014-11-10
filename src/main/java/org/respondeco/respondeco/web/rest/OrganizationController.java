@@ -31,14 +31,16 @@ public class OrganizationController {
 
     private final Logger log = LoggerFactory.getLogger(OrganizationController.class);
 
-    @Inject
     private OrganizationRepository organizationRepository;
-
-    @Inject
     private OrganizationService organizationService;
+    private UserService userService;
 
     @Inject
-    private UserService userService;
+    public OrganizationController (OrganizationRepository organizationRepository, OrganizationService organizationService, UserService userService) {
+        this.organizationRepository = organizationRepository;
+        this.organizationService = organizationService;
+        this.userService = userService;
+    }
     /**
      * POST  /rest/organizations -> Create a new organization.
      */
@@ -85,7 +87,7 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/organizations/:owner -> get the "owner" organization.
+     * GET  /rest/organizations/:owner -> get the organization of current owner.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations/myOrganization",
@@ -128,4 +130,5 @@ public class OrganizationController {
         log.debug("REST request to delete Organization : {}", orgName);
         organizationService.deleteOrganizationInformation();
     }
+
 }

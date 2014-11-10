@@ -44,8 +44,7 @@ public class LogoControllerTest {
     
     private static final Long DEFAULT_ID = new Long(1L);
     
-    private static final String DEFAULT_ORG_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_ORG_NAME = "UPDATED_TEXT";
+    private static final Long DEFAULT_ORG_ID = new Long(0L);
         
     private static final String DEFAULT_LABEL = "SAMPLE_TEXT";
     private static final String UPDATED_LABEL = "UPDATED_TEXT";
@@ -70,7 +69,7 @@ public class LogoControllerTest {
 
         logo = new Logo();
 
-        logo.setOrgName(DEFAULT_ORG_NAME);
+        logo.setOrgId(DEFAULT_ORG_ID);
         logo.setLabel(DEFAULT_LABEL);
         logo.setData(DEFAULT_DATA);
     }
@@ -85,15 +84,14 @@ public class LogoControllerTest {
                 .andExpect(status().isOk());
 
         // Read Logo
-        restLogoMockMvc.perform(get("/app/rest/logos/{orgName}", DEFAULT_ORG_NAME))
+        restLogoMockMvc.perform(get("/app/rest/logos/{orgId}", DEFAULT_ORG_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.orgName").value(DEFAULT_ORG_NAME.toString()))
+                .andExpect(jsonPath("$.orgId").value(DEFAULT_ORG_ID.toString()))
                 .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
                 .andExpect(jsonPath("$.data").value(DEFAULT_DATA.toString()));
 
         // Update Logo
-        logo.setOrgName(UPDATED_ORG_NAME);
         logo.setLabel(UPDATED_LABEL);
         logo.setData(UPDATED_DATA);
 
@@ -103,20 +101,19 @@ public class LogoControllerTest {
                 .andExpect(status().isOk());
 
         // Read updated Logo
-        restLogoMockMvc.perform(get("/app/rest/logos/{orgName}", DEFAULT_ORG_NAME))
+        restLogoMockMvc.perform(get("/app/rest/logos/{orgId}", DEFAULT_ORG_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.orgName").value(UPDATED_ORG_NAME.toString()))
                 .andExpect(jsonPath("$.label").value(UPDATED_LABEL.toString()))
                 .andExpect(jsonPath("$.data").value(UPDATED_DATA.toString()));
 
         // Delete Logo
-        restLogoMockMvc.perform(delete("/app/rest/logos/{orgName}", DEFAULT_ORG_NAME)
+        restLogoMockMvc.perform(delete("/app/rest/logos/{orgId}", DEFAULT_ORG_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         // Read nonexisting Logo
-        restLogoMockMvc.perform(get("/app/rest/logos/{orgName}", DEFAULT_ORG_NAME)
+        restLogoMockMvc.perform(get("/app/rest/logos/{orgId}", DEFAULT_ORG_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 

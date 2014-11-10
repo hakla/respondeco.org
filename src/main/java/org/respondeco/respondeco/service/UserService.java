@@ -1,10 +1,8 @@
 package org.respondeco.respondeco.service;
 
-import org.respondeco.respondeco.domain.Authority;
-import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.PersistentToken;
-import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.AuthorityRepository;
+import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.SecurityUtils;
@@ -45,6 +43,11 @@ public class UserService {
     @Inject
     private AuthorityRepository authorityRepository;
 
+    @Inject
+    private OrganizationRepository organizationRepository;
+
+
+
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return Optional.ofNullable(userRepository.getUserByActivationKey(key))
@@ -66,6 +69,7 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(login);
+        newUser.setOrgId(null);
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setTitle(title);
@@ -163,5 +167,37 @@ public class UserService {
             log.debug("Deleting not activated user {}", user.getLogin());
             userRepository.delete(user);
         }
+    }
+
+    public void deleteMember(String userlogin) {
+        User user = getUserWithAuthorities();
+        User member = userRepository.findOne(userlogin);
+        if(member != null) {
+            Organization organization = organizationRepository.findOne(member.getOrgId());
+            if(organization != null) {
+                if(organization.getOwner().equals(user.getLogin())) {
+                    log.debug("Deleting member from organization", user.getLogin(), organization.getName());
+                    member.setOrgId(null);
+                }
+            }
+        }
+        else {
+            log.debug("Couldn't Delete member from organization");
+            return;
+        }
+
+    }
+
+    public List<User> getUserByOrgId(Long orgId) {
+        Organization organization = organizationRepository.findOne(orgId);
+        User user = getUserWithAuthorities();
+        if(organization != null) {
+            if(organization.getOwner().equals(user.getLogin())) {
+                log.debug("Finding members of organization", organization.getName());
+                return userRepository.findUserByOrgId(orgId);
+            }
+        }
+        log.debug("Couldn't Find members of organization");
+        return null;
     }
 }

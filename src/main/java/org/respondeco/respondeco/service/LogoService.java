@@ -32,22 +32,22 @@ public class LogoService {
     private OrganizationRepository organizationRepository;
 
 
-    public Logo createLogo(String label, byte[] data, String orgName) throws UnsupportedEncodingException {
-        Organization organization = organizationRepository.findOne(orgName);
+    public Logo createLogo(String label, byte[] data, Long orgId) throws UnsupportedEncodingException {
+        Organization organization = organizationRepository.findOne(orgId);
         User currentUser = userService.getUserWithAuthorities();
         log.debug("current user is {}", currentUser);
         Logo newLogo = null;
-        if(currentUser != null) {
+        if(organization != null && currentUser != null) {
             newLogo = new Logo();
             if(currentUser.getLogin().equals(organization.getOwner())) {
                 newLogo.setLabel(label);
-                newLogo.setOrgName(orgName);
+                newLogo.setOrgId(organization.getId());
                 newLogo.setData(data);
                 logoRepository.save(newLogo);
-                log.debug("Created organization logo for {}", orgName);
+                log.debug("Created organization logo for {}", organization.getName());
             }
             else {
-                log.debug("Cannot create logo/Wrong owner", orgName);
+                log.debug("Cannot create logo/Wrong owner", organization.getName());
                 //TODO ADD EXCEPTION
             }
 
@@ -59,13 +59,21 @@ public class LogoService {
         User currentUser = userService.getUserWithAuthorities();
         Organization organization = organizationRepository.findByOwner(currentUser.getLogin());
 
-        logoRepository.delete(organization.getName());
+        logoRepository.delete(organization.getId());
         log.debug("Deleted organization logo for {}", organization.getName());
     }
 
     public void deleteLogo(String orgName) {
-        logoRepository.delete(orgName);
+        Organization organization = organizationRepository.findByName(orgName);
+        logoRepository.delete(organization.getId());
         log.debug("Deleted organization logo for {}", orgName);
+    }
+
+    public Logo findLogoByOrgName(String orgName) {
+        Organization organization = organizationRepository.findByName(orgName);
+        Logo logo = logoRepository.findOne(organization.getId());
+        log.debug("Find organization logo for {}", orgName);
+        return logo;
     }
 
 }

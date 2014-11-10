@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
@@ -16,6 +17,7 @@ import java.util.Set;
  * A user.
  */
 @Entity
+@Data
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractAuditingEntity implements Serializable {
@@ -54,6 +56,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "description", length = 2048)
     private String description;
+
+    private Long orgId;
 
     @JsonIgnore
     private boolean activated = false;
@@ -142,6 +146,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(Long orgId) {
+        this.orgId = orgId;
     }
 
     public boolean getActivated() {

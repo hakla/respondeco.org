@@ -6,6 +6,6 @@ import org.respondeco.respondeco.domain.Logo;
 /**
  * Spring Data JPA repository for the Logo entity.
  */
-public interface LogoRepository extends JpaRepository<Logo, String> {
+public interface LogoRepository extends JpaRepository<Logo, Long> {
 
 }
