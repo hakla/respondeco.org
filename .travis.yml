@@ -2,15 +2,10 @@ language: node_js
 node_js:
   - 0.10
 
-jdk:
-  - oraclejdk8
-
 before_script:
  - npm install
  - npm install -g grunt-cli bower
  - bower install
- - mvn spring-boot:run
 
 script:
   - grunt test
-  - mvn test
