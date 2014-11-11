@@ -122,12 +122,12 @@ public class OrganizationController {
      * DELETE  /rest/organizations/:orgName -> delete the "orgName" organization.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations/{orgName}",
+    @RequestMapping(value = "/rest/organizations",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void delete(@PathVariable String orgName) {
-        log.debug("REST request to delete Organization : {}", orgName);
+    public void delete() {
+        log.debug("REST request to delete Organization : {}");
         organizationService.deleteOrganizationInformation();
     }
 

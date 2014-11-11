@@ -38,7 +38,8 @@ public class OrgJoinRequestService {
         this.organizationRepository=organizationRepository;
     }
     public OrgJoinRequest createOrgJoinRequest(Long orgId, String userlogin) {
-        if(organizationRepository.findOne(orgId) != null) {
+        User user = userRepository.findOne(userlogin);
+        if(organizationRepository.findOne(orgId) != null && user != null) {
             OrgJoinRequest orgJoinRequest = new OrgJoinRequest();
             orgJoinRequest.setOrgId(orgId);
             orgJoinRequest.setUserLogin(userlogin);
@@ -84,7 +85,7 @@ public class OrgJoinRequestService {
         User user = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(requestId);
         if(orgJoinRequest != null) {
-            Organization organization = organizationRepository.findOne(orgJoinRequest.getId());
+            Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
             if(organization.getOwner().equals(user.getLogin())) {
                 if(organization != null) {
                     User member = userRepository.findOne(orgJoinRequest.getUserLogin());
@@ -98,7 +99,6 @@ public class OrgJoinRequestService {
         }
         else {
             log.debug("Couldn't Accept OrgJoinRequest: {}", requestId);
-            return;
         }
     }
 
@@ -106,7 +106,7 @@ public class OrgJoinRequestService {
         User user = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(requestId);
         if(orgJoinRequest != null) {
-            Organization organization = organizationRepository.findOne(orgJoinRequest.getId());
+            Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
             if(organization.getOwner().equals(user.getLogin())) {
                 orgJoinRequestRepository.delete(requestId);
                 log.debug("Declined User and Deleted OrgJoinRequest: {}", requestId);
@@ -114,7 +114,6 @@ public class OrgJoinRequestService {
         }
         else {
             log.debug("Couldn't Decline OrgJoinRequest: {}", requestId);
-            return;
         }
     }
 

@@ -101,6 +101,7 @@ public class OrganizationService {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser.getLogin());
         if(currentOrganization!=null) {
+            currentOrganization.setName(name);
             currentOrganization.setDescription(description);
             currentOrganization.setEmail(email);
             currentOrganization.setIsNpo(isNpo);

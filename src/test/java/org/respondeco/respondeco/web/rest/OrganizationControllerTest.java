@@ -70,6 +70,18 @@ public class OrganizationControllerTest {
     private User defaultUser;
     private Set<Authority> userAuthorities;
 
+    private static final String DEFAULT_ORGNAME = "testorg";
+    private static final String UPDATED_ORGNAME = "testorg1";
+
+    private static final String DEFAULT_DESCRIPTION = "SAMPLE_TEXT";
+    private static final String UPDATED_DESCRIPTION = "UPDATED_TEXT";
+
+    private static final String DEFAULT_EMAIL = "SAMPLE@EMAIL.COM";
+    private static final String UPDATED_EMAIL = "UPDATED@EMAIL.COM";
+
+    private static final Boolean DEFAULT_NPO = true;
+    private static final Boolean UPDATED_NPO = false;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -98,11 +110,11 @@ public class OrganizationControllerTest {
 
         organizationDTO = new OrganizationDTO();
 
-        organizationDTO.setName("testorg");
-        organizationDTO.setDescription("testdescription");
-        organizationDTO.setEmail("testorg@email.com");
+        organizationDTO.setName(DEFAULT_ORGNAME);
+        organizationDTO.setDescription(DEFAULT_DESCRIPTION);
+        organizationDTO.setEmail(DEFAULT_EMAIL);
         organizationDTO.setOwner(defaultUser.getLogin());
-        organizationDTO.setNpo(false);
+        organizationDTO.setNpo(DEFAULT_NPO);
     }
 
     @Test
@@ -114,46 +126,60 @@ public class OrganizationControllerTest {
                 .content(TestUtil.convertObjectToJsonBytes(organizationDTO)))
                 .andExpect(status().isOk());
 
+        // Read All Organization
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
         // Read Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", "testorg"))
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_ORGNAME))
         .andExpect(status().isOk())
                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                 .andExpect(jsonPath("$.name").value("testorg"))
-                 .andExpect(jsonPath("$.description").value("testdescription"))
-                 .andExpect(jsonPath("$.email").value("testorg@email.com"))
+                 .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
+                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                 .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
                  .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
-                 .andExpect(jsonPath("$.isNpo").value(false));
-    /*
+                 .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
+
+        // Read my Organization
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/myOrganization", DEFAULT_ORGNAME))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
+                .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
+                .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
+
         // Update Organization
+        organizationDTO.setName(UPDATED_ORGNAME);
         organizationDTO.setDescription(UPDATED_DESCRIPTION);
         organizationDTO.setEmail(UPDATED_EMAIL);
-        organizationDTO.setOwner(UPDATED_OWNER);
-        organizationDTO.setNpo(UPDATED_IS_NPO);
+        organizationDTO.setNpo(UPDATED_NPO);
 
-        restOrganizationMockMvc.perform(post("/app/rest/organizations")
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/updateOrganization")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(organizationDTO)))
                 .andExpect(status().isOk());
 
         // Read updated Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_NAME))
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", UPDATED_ORGNAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(UPDATED_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.email").value(UPDATED_EMAIL.toString()))
-                .andExpect(jsonPath("$.owner").value(UPDATED_OWNER.toString()))
-                .andExpect(jsonPath("$.isNpo").value(UPDATED_IS_NPO.booleanValue()));
+                .andExpect(jsonPath("$.name").value(UPDATED_ORGNAME))
+                .andExpect(jsonPath("$.description").value(UPDATED_DESCRIPTION))
+                .andExpect(jsonPath("$.email").value(UPDATED_EMAIL))
+                .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
+                .andExpect(jsonPath("$.isNpo").value(UPDATED_NPO));
 
         // Delete Organization
-        restOrganizationMockMvc.perform(delete("/app/rest/organizations/{orgName}", DEFAULT_NAME)
+        restOrganizationMockMvc.perform(delete("/app/rest/organizations")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         // Read nonexisting Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_NAME)
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", UPDATED_ORGNAME)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
-*/
     }
 }
