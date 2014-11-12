@@ -1,12 +1,18 @@
 package org.respondeco.respondeco.web.rest;
 
+import org.mockito.Mock;
 import org.respondeco.respondeco.Application;
+import org.respondeco.respondeco.repository.AuthorityRepository;
+import org.respondeco.respondeco.repository.OrganizationRepository;
+import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.respondeco.respondeco.service.UserService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -36,9 +42,24 @@ public class UserControllerTest {
 
     private MockMvc restUserMockMvc;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private OrganizationRepository organizationRepository;
+
+    @Mock
+    private PersistentTokenRepository persistentTokenRepository;
+
+    @Mock
+    private AuthorityRepository authorityRepository;
+
     @Before
     public void setup() {
-        UserController userController = new UserController();
+        UserController userController = new UserController(userRepository,userService);
         ReflectionTestUtils.setField(userController, "userRepository", userRepository);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
