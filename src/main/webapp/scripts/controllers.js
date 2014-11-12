@@ -43,6 +43,9 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
 respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService) {
     $scope.success = null;
     $scope.error = null;
+
+    $scope.settingsAccount = {};
+    $scope.profilePicture = "images/profile_empty.png";
     Account.get().$promise.then(function(x) {
         $scope.settingsAccount = x;
 
@@ -53,49 +56,49 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         } else {
             $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
         }
-
         $scope.profilePicture = "images/profile_empty.png";
-        $scope.success = null;
-        $scope.error = null;
-        $scope.gender = [
-            "UNSPECIFIED",
-            "MALE",
-            "FEMALE"
-        ];
-
-        $scope.save = function () {
-            Account.save($scope.settingsAccount,
-                function (value, responseHeaders) {
-                    $scope.error = null;
-                    $scope.success = 'OK';
-                    $scope.settingsAccount = Account.get();
-                },
-                function (httpResponse) {
-                    $scope.success = null;
-                    $scope.error = "ERROR";
-                });
-        };
-
-        $scope.delete = function() {
-            Account.delete(
-                function (value, responseHeaders) {
-                    $scope.error = null;
-                    $scope.accountdeleted = "OK";
-                    AuthenticationSharedService.logout();
-                },
-                function (httpResponse) {
-                    $scope.accountdeleted = null;
-                    $scope.error = "ERROR";
-                });
-        }
     });
+
+    $scope.success = null;
+    $scope.error = null;
+    $scope.gender = [
+        "UNSPECIFIED",
+        "MALE",
+        "FEMALE"
+    ];
+
+    $scope.save = function () {
+        Account.save($scope.settingsAccount,
+            function (value, responseHeaders) {
+                $scope.error = null;
+                $scope.success = 'OK';
+                $scope.settingsAccount = Account.get();
+            },
+            function (httpResponse) {
+                $scope.success = null;
+                $scope.error = "ERROR";
+            });
+    };
+     $scope.delete = function() {
+        Account.delete(
+            function (value, responseHeaders) {
+                $scope.error = null;
+                $scope.accountdeleted = "OK";
+                AuthenticationSharedService.logout();
+            },
+            function (httpResponse) {
+                $scope.accountdeleted = null;
+                $scope.error = "ERROR";
+            });
+    }
 
     $scope.edit = {
         image: false,
         account: false
     };
-
 });
+
+
 
 respondecoApp.controller('RegisterController', function ($scope, $translate, Register) {
     $scope.success = null;

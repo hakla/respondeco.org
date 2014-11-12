@@ -19,21 +19,28 @@ public class ProfilePictureService {
 
     private final Logger log = LoggerFactory.getLogger(ProfilePictureService.class);
 
-    @Inject
     private ProfilePictureRepository profilePictureRepository;
+    private UserService userService;
 
     @Inject
-    private UserService userService;
+    public ProfilePictureService(ProfilePictureRepository profilePictureRepository, UserService userService) {
+        this.profilePictureRepository = profilePictureRepository;
+        this.userService = userService;
+    }
 
     public ProfilePicture createProfilePicture(String label, byte[] data) throws UnsupportedEncodingException {
         User currentUser = userService.getUserWithAuthorities();
         log.debug("current user is {}", currentUser);
         ProfilePicture newProfilePicture = null;
         if(currentUser != null) {
+            if(profilePictureRepository.exists(currentUser.getLogin())) {
+                profilePictureRepository.delete(currentUser.getLogin());
+            }
             newProfilePicture = new ProfilePicture();
             newProfilePicture.setUserlogin(currentUser.getLogin());
             newProfilePicture.setLabel(label);
             newProfilePicture.setData(data);
+            log.debug("Creating profile picture : {}", newProfilePicture);
             profilePictureRepository.save(newProfilePicture);
             log.debug("Created profile picture for {}", currentUser);
         }

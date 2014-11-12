@@ -60,18 +60,22 @@ describe('Controllers Tests ', function () {
     });
 
     describe('SettingsController', function () {
-        var $scope, AccountService;
+        var $scope, AccountService, AuthenticationService;
 
-        beforeEach(inject(function ($rootScope, $controller, Account) {
+        beforeEach(inject(function ($rootScope, $controller, Account, AuthenticationSharedService) {
             $scope = $rootScope.$new();
-
             AccountService = Account;
-            $controller('SettingsController',{$scope:$scope, resolvedAccount:AccountService, Account:AccountService});
+            AuthenticationService = AuthenticationSharedService;
+            $controller('SettingsController', {
+                $scope:$scope,
+                Account:AccountService,
+                AuthenticationSharedService:AuthenticationService
+            });
         }));
 
         it('should save account', function () {
             //GIVEN
-            $scope.settingsAccount = {firstName: "John", lastName: "Doe"};
+            $scope.settingsAccount = {title: "", firstName: "John", lastName: "Doe", gender: "UNDEFINED", email: "john@doe.at", description: ""};
 
             //SET SPY
             spyOn(AccountService, 'save');
@@ -81,7 +85,10 @@ describe('Controllers Tests ', function () {
 
             //THEN
             expect(AccountService.save).toHaveBeenCalled();
-                        expect(AccountService.save).toHaveBeenCalledWith({firstName: "John", lastName: "Doe"}, jasmine.any(Function), jasmine.any(Function));
+            expect(AccountService.save).toHaveBeenCalledWith(
+                {title: "", firstName: "John", lastName: "Doe", gender: "UNDEFINED", email: "john@doe.at", description: ""},
+                jasmine.any(Function),
+                jasmine.any(Function));
 
             //SIMULATE SUCCESS CALLBACK CALL FROM SERVICE
             AccountService.save.calls.mostRecent().args[1]();

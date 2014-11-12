@@ -32,4 +32,8 @@ public class TestUtil {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper.writeValueAsBytes(object);
     }
+
+    public static void makeFieldAccessible(Class<?> clazz, String fieldName) throws NoSuchFieldException {
+        clazz.getDeclaredField(fieldName).setAccessible(true);
+    }
 }

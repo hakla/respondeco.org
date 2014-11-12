@@ -55,16 +55,11 @@ import java.util.Set;
     TransactionalTestExecutionListener.class })
 public class ProfilePictureControllerTest {
 
-    private static final String DEFAULT_USERLOGIN = "testuser";
-
     private static final String DEFAULT_LABEL = "SAMPLE_TEXT";
     private static final String UPDATED_LABEL = "UPDATED_TEXT";
         
     private static final byte[] DEFAULT_DATA = new byte[] { 1,1,1,1,1,1,1,1,1,1,1,1,1,1 };
     private static final byte[] UPDATED_DATA = new byte[] { 2,2,2,2,2,2,2,2,2,2,2,2,2,2 };
-        
-    @Inject
-    private ProfilePictureService profilePictureService;
 
     @Inject
     private ProfilePictureRepository profilePictureRepository;
@@ -74,62 +69,30 @@ public class ProfilePictureControllerTest {
 
     private MockMvc restProfilePictureMockMvc;
 
-    private ProfilePicture profilepicture;
-    private User defaultAdmin;
-    private User defaultUser;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
-        ProfilePictureController profilepictureController = new ProfilePictureController();
-        ReflectionTestUtils.setField(profilePictureService, "userService", userService);
-        ReflectionTestUtils.setField(profilepictureController, "profilePictureRepository", profilePictureRepository);
-        ReflectionTestUtils.setField(profilepictureController, "profilePictureService", profilePictureService);
+        ProfilePictureService profilePictureService = new ProfilePictureService(profilePictureRepository, userService);
+        ProfilePictureController profilepictureController =
+                new ProfilePictureController(profilePictureRepository, profilePictureService);
 
         this.restProfilePictureMockMvc = MockMvcBuilders.standaloneSetup(profilepictureController).build();
-
-        profilepicture = new ProfilePicture();
-
-        profilepicture.setUserlogin(DEFAULT_USERLOGIN);
-        profilepicture.setLabel(DEFAULT_LABEL);
-        profilepicture.setData(DEFAULT_DATA);
-        profilepicture.setActive(true);
-        profilepicture.setCreatedBy("system");
-        profilepicture.setCreatedDate(null);
-        profilepicture.setLastModifiedDate(null);
-
-        Set<Authority> adminAuthorities = new HashSet<>();
-        Set<Authority> userAuthorities = new HashSet<>();
-        Authority authority = new Authority();
-        authority.setName(AuthoritiesConstants.USER);
-        userAuthorities.add(authority);
-        authority = new Authority();
-        authority.setName(AuthoritiesConstants.ADMIN);
-        adminAuthorities.add(authority);
-        this.defaultAdmin = new User();
-        this.defaultAdmin.setCreatedDate(null);
-        this.defaultAdmin.setLastModifiedDate(null);
-        this.defaultAdmin.setLogin("testadmin");
-        this.defaultAdmin.setCreatedBy("system");
-        this.defaultAdmin.setGender(Gender.FEMALE);
-        this.defaultAdmin.setAuthorities(adminAuthorities);
-
-        this.defaultUser = new User();
-        this.defaultUser.setCreatedDate(null);
-        this.defaultUser.setLastModifiedDate(null);
-        this.defaultUser.setLogin("testuser");
-        this.defaultUser.setCreatedBy("system");
-        this.defaultUser.setGender(Gender.MALE);
-        this.defaultUser.setAuthorities(userAuthorities);
     }
 
     @Test
     public void testCRUDProfilePicture() throws Exception {
+        Set<Authority> adminAuthorities = new HashSet<>();
+        adminAuthorities.add(new Authority(AuthoritiesConstants.USER));
+        adminAuthorities.add(new Authority(AuthoritiesConstants.ADMIN));
+        User admin = new User();
+        admin.setLogin("admin");
+        admin.setAuthorities(adminAuthorities);
 
-        when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
+        when(userService.getUserWithAuthorities()).thenReturn(admin);
 
-        ProfilePictureDTO profilePictureDTO = new ProfilePictureDTO(DEFAULT_LABEL, DEFAULT_DATA);
+        ProfilePictureDTO profilePictureDTO = new ProfilePictureDTO();
+        profilePictureDTO.setLabel(DEFAULT_LABEL);
+        profilePictureDTO.setData(DEFAULT_DATA);
 
         // Create ProfilePicture
         restProfilePictureMockMvc.perform(post("/app/rest/profilepictures")
@@ -138,15 +101,17 @@ public class ProfilePictureControllerTest {
                 .andExpect(status().isOk());
 
         // Read ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/{userlogin}", defaultAdmin.getLogin()))
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/{userlogin}", admin.getLogin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.userlogin").value(defaultAdmin.getLogin()))
+                .andExpect(jsonPath("$.userlogin").value(admin.getLogin()))
                 .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
                 .andExpect(jsonPath("$.data").value(Base64.encodeBase64String(DEFAULT_DATA)));
 
         // Update ProfilePicture
-        profilePictureDTO = new ProfilePictureDTO(UPDATED_LABEL, UPDATED_DATA);
+        profilePictureDTO = new ProfilePictureDTO();
+        profilePictureDTO.setLabel(UPDATED_LABEL);
+        profilePictureDTO.setData(UPDATED_DATA);
 
         restProfilePictureMockMvc.perform(post("/app/rest/profilepictures")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -154,10 +119,10 @@ public class ProfilePictureControllerTest {
                 .andExpect(status().isOk());
 
         // Read updated ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures"))
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/{userlogin}", admin.getLogin()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.userlogin").value(defaultAdmin.getLogin()))
+                .andExpect(jsonPath("$.userlogin").value(admin.getLogin()))
                 .andExpect(jsonPath("$.label").value(UPDATED_LABEL.toString()))
                 .andExpect(jsonPath("$.data").value(Base64.encodeBase64String(UPDATED_DATA)));
 
@@ -167,9 +132,10 @@ public class ProfilePictureControllerTest {
                 .andExpect(status().isOk());
 
         // Read nonexisting ProfilePicture
-        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures")
+        restProfilePictureMockMvc.perform(get("/app/rest/profilepictures/nonexistent")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 
     }
+
 }
