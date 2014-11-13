@@ -24,15 +24,11 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class TextMessage extends AbstractAuditingEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long id;
-
     @Column(name = "sender")
-    private String sender;
+    private Long sender;
 
     @Column(name = "receiver")
-    private String receiver;
+    private Long receiver;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "timestamp", nullable = false)

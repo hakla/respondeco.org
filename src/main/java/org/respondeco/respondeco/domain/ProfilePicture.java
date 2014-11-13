@@ -21,10 +21,8 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProfilePicture extends AbstractAuditingEntity implements Serializable {
 
-    @Id
     @NotNull
-    @Column(name = "userlogin")
-    private String userlogin;
+    private Long userlogin;
 
     @Column(name = "label")
     private String label;
