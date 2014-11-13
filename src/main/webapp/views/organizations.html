@@ -1,77 +1,17 @@
 <div>
 
-    <h2>Organizations</h2>
-
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveOrganizationModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-flash"></span> Create a new Organization
+    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#saveOrganizationModal" ng-click="redirectToNew()" ng-show="authenticated">
+        <span class="glyphicon glyphicon-flash"></span> <span translate="organization.new">Create a new Organization</span>
     </button>
-    <div class="modal fade" id="saveOrganizationModal" tabindex="-1" role="dialog" aria-labelledby="myOrganizationLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="form" role="form" novalidate
-                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                      ng-submit="create()">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myOrganizationLabel">Create or edit a Organization</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="organization.id" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label>name</label>
-                            <input type="text" class="form-control"
-                                   ng-model="organization.name">
-                        </div>
-                        <div class="form-group">
-                            <label>description</label>
-                            <input type="text" class="form-control"
-                                   ng-model="organization.description">
-                        </div>
-                        <div class="form-group">
-                            <label>email</label>
-                            <input type="text" class="form-control"
-                                   ng-model="organization.email">
-                        </div>
-                        <div class="form-group">
-                            <label>logo</label>
-                            <input type="text" class="form-control"
-                                   ng-model="organization.logo">
-                        </div>
-                        <div class="form-group">
-                            <label>isNpo</label>
-                            <input type="checkbox" class="form-control"
-                                   ng-model="organization.isNpo">
-                        </div>
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                        </button>
-                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span> Save
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    
+    <h2 translate='global.menu.organization'>Organizations</h2>
+    
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>name</th>
+                    <th translate="global.id">ID</th>
+                    <th translate="global.name">name</th>
                     <th>description</th>
                     <th>email</th>
                     <th>logo</th>
@@ -89,7 +29,7 @@
                     <td>{{organization.isNpo}}</td>
                     <td>
                         <button type="submit"
-                                ng-click="update(organization.id)"
+                                ng-click="redirectToEdit(organization.name)"
                                 class="btn">
                             <span class="glyphicon glyphicon-pencil"></span> Edit
                         </button>

@@ -4,7 +4,7 @@
         "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
         "menu": {
             "home": "Startseite",
-            "business": "Organisation",
+            "organization": "Organisation",
             "projects": "Projekte",
             "proposals": "Angebote",
             "entities": {
@@ -42,7 +42,8 @@
             "description": "Beschreibung",
             "send": "Absenden",
             "cancel": "Abbrechen",
-            "confirm": "Bestätigen"
+            "confirm": "Bestätigen",
+            "save": "Speichern"
         },
         "messages": {
             "info": {
@@ -376,6 +377,16 @@
                 "remoteAddress": "Remote-Adresse:"
             }
         }
+    },
+    "organization": {
+        "new": "Neue Organisation erstellen {{id}}",
+        "name": "Name",
+        "name.placeholder": "Name der Organisation",
+        "description": "Beschreibung",
+        "description.placeholder": "Beschreibung der Organisation",
+        "edit": "Organisation {{organization.name}} bearbeiten",
+        "title": "Titel der Organisation",
+        "isNPO": "Unternehmen ist eine Non-Profit-Organisation"
     },
     "errors": {
         "title": "Fehlerseite!",
