@@ -23,8 +23,8 @@ import javax.validation.constraints.NotNull;
 public abstract class AbstractAuditingEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
     @CreatedBy
@@ -81,5 +81,10 @@ public abstract class AbstractAuditingEntity {
 
     public void setLastModifiedDate(DateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }
