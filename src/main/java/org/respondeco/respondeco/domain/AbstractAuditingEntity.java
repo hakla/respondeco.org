@@ -9,9 +9,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,6 +21,11 @@ import javax.validation.constraints.NotNull;
 @Audited
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditingEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @NotNull
+    protected Long id;
 
     @CreatedBy
     @NotNull
@@ -42,6 +46,10 @@ public abstract class AbstractAuditingEntity {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "last_modified_date")
     private DateTime lastModifiedDate = DateTime.now();
+
+    public Long getId() { return this.id; }
+
+    public void setId(Long id){ this.id = id; }
 
     public String getCreatedBy() {
         return createdBy;
