@@ -17,6 +17,7 @@
             </column>
             <column name="org_id" type="bigint"/>
             <column name="user_login" type="varchar(255)"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
         
     </changeSet>

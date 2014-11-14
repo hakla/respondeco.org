@@ -10,8 +10,8 @@ import java.util.List;
  */
 public interface TextMessageRepository extends JpaRepository<TextMessage, Long> {
 
-    List<TextMessage> findByReceiver(String receiver);
+    List<TextMessage> findByReceiver(Long receiver);
 
-    List<TextMessage> findByReceiverAndActiveIsTrue(String receiver);
+    List<TextMessage> findByReceiverAndActiveIsTrue(Long receiver);
 
 }

@@ -92,13 +92,13 @@ public class TextMessageControllerTest {
         MockitoAnnotations.initMocks(this);
         textMessageService = new TextMessageService(textMessageRepository, userServiceMock, userRepositoryMock);
         TextMessageController textMessageController =
-                new TextMessageController(textMessageRepository, textMessageService);
+                new TextMessageController(textMessageRepository, textMessageService, userRepositoryMock);
         this.restTextMessageMockMvc = MockMvcBuilders.standaloneSetup(textMessageController).build();
 
         textMessageServiceAllMocked = new TextMessageService(textMessageRepositoryMock, userServiceMock,
                 userRepositoryMock);
         TextMessageController textMessageControllerAllMocked =
-                new TextMessageController(textMessageRepositoryMock, textMessageServiceAllMocked);
+                new TextMessageController(textMessageRepositoryMock, textMessageServiceAllMocked, userRepositoryMock);
         this.restTextMessageMockMvcAllMocked = MockMvcBuilders.standaloneSetup(textMessageControllerAllMocked).build();
 
         User admin = new User();
@@ -127,7 +127,7 @@ public class TextMessageControllerTest {
         textMessageDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists("testReceiver")).thenReturn(true);
+        when(userRepositoryMock.exists(1L)).thenReturn(true);//"testReceiver")).thenReturn(true);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -171,7 +171,7 @@ public class TextMessageControllerTest {
         textMessageDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists("nonexistingReceiver")).thenReturn(false);
+        when(userRepositoryMock.exists(1L)).thenReturn(false);//"nonexistingReceiver")).thenReturn(false);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -193,7 +193,7 @@ public class TextMessageControllerTest {
         textMessageDTO.setContent("");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists("testReceiver")).thenReturn(true);
+        when(userRepositoryMock.exists(1L)).thenReturn(true);//"testReceiver")).thenReturn(true);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -222,7 +222,7 @@ public class TextMessageControllerTest {
         textMessageDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists("testReceiver")).thenReturn(true);
+        when(userRepositoryMock.exists(1L)).thenReturn(true);//"testReceiver")).thenReturn(true);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -252,8 +252,8 @@ public class TextMessageControllerTest {
 
         TextMessage textMessage = new TextMessage();
         textMessage.setId(1L);
-        textMessage.setSender("testSender");
-        textMessage.setReceiver("testReceiver");
+        textMessage.setSender(1L);//"testSender");
+        textMessage.setReceiver(2L);//"testReceiver");
         textMessage.setContent(DEFAULT_CONTENT);
         textMessage.setActive(true);
 
@@ -277,8 +277,8 @@ public class TextMessageControllerTest {
 
         TextMessage textMessage = new TextMessage();
         textMessage.setId(1L);
-        textMessage.setSender("testSender");
-        textMessage.setReceiver("testReceiver");
+        textMessage.setSender(1L);//"testSender");
+        textMessage.setReceiver(2L);//"testReceiver");
         textMessage.setContent(DEFAULT_CONTENT);
         textMessage.setActive(true);
 

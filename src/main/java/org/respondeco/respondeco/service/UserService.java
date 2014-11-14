@@ -96,7 +96,7 @@ public class UserService {
 
     public void updateUserInformation(String title, String gender, String firstName, String lastName, String email,
                                       String description) {
-        User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User currentUser = getUserWithAuthorities();
         currentUser.setTitle(title);
         Gender newGender = Gender.valueOf(gender);
         if(newGender == null) {
@@ -113,7 +113,7 @@ public class UserService {
     }
 
     public void changePassword(String password) {
-        User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User currentUser = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
         String encryptedPassword = passwordEncoder.encode(password);
         currentUser.setPassword(encryptedPassword);
         userRepository.save(currentUser);
@@ -126,7 +126,7 @@ public class UserService {
         String currentLogin = SecurityUtils.getCurrentLogin();
         User currentUser = null;
         if(currentLogin != null) {
-            currentUser = userRepository.findOne(currentLogin);
+            currentUser = userRepository.findByLogin(currentLogin);
             currentUser.getAuthorities().size(); // eagerly load the association
         }
         return currentUser;
@@ -171,7 +171,7 @@ public class UserService {
 
     public void deleteMember(String userlogin) {
         User user = getUserWithAuthorities();
-        User member = userRepository.findOne(userlogin);
+        User member = userRepository.findByLogin(userlogin);
         if(member != null) {
             Organization organization = organizationRepository.findOne(member.getOrgId());
             if(organization != null) {

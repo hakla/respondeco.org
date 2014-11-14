@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProfilePictureService;
 import org.respondeco.respondeco.service.UserService;
@@ -64,6 +65,9 @@ public class ProfilePictureControllerTest {
     @Inject
     private ProfilePictureRepository profilePictureRepository;
 
+    @Inject
+    private UserRepository userRepository;
+
     @Mock
     private UserService userService;
 
@@ -72,9 +76,9 @@ public class ProfilePictureControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProfilePictureService profilePictureService = new ProfilePictureService(profilePictureRepository, userService);
+        ProfilePictureService profilePictureService = new ProfilePictureService(profilePictureRepository, userService, userRepository);
         ProfilePictureController profilepictureController =
-                new ProfilePictureController(profilePictureRepository, profilePictureService);
+                new ProfilePictureController(profilePictureRepository, profilePictureService, userRepository);
 
         this.restProfilePictureMockMvc = MockMvcBuilders.standaloneSetup(profilepictureController).build();
     }

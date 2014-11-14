@@ -38,7 +38,7 @@ public class OrgJoinRequestService {
         this.organizationRepository=organizationRepository;
     }
     public OrgJoinRequest createOrgJoinRequest(Long orgId, String userlogin) {
-        User user = userRepository.findOne(userlogin);
+        User user = userRepository.findByLogin(userlogin);
         if(organizationRepository.findOne(orgId) != null && user != null) {
             OrgJoinRequest orgJoinRequest = new OrgJoinRequest();
             orgJoinRequest.setOrgId(orgId);
@@ -88,7 +88,7 @@ public class OrgJoinRequestService {
             Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
             if(organization.getOwner().equals(user.getLogin())) {
                 if(organization != null) {
-                    User member = userRepository.findOne(orgJoinRequest.getUserLogin());
+                    User member = userRepository.findByLogin(orgJoinRequest.getUserLogin());
                     if(member != null) {
                         member.setOrgId(organization.getId());
                         orgJoinRequestRepository.delete(requestId);

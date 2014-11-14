@@ -4,7 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.ProfilePicture;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.ProfilePictureRepository;
+import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProfilePictureService;
 import org.respondeco.respondeco.web.rest.dto.ProfilePictureDTO;
@@ -33,12 +35,15 @@ public class ProfilePictureController {
 
     private ProfilePictureRepository profilePictureRepository;
     private ProfilePictureService profilePictureService;
+    private UserRepository userRepository;
 
     @Inject
     public ProfilePictureController(ProfilePictureRepository profilePictureRepository,
-                                    ProfilePictureService profilePictureService) {
+                                    ProfilePictureService profilePictureService,
+                                    UserRepository userRepository) {
         this.profilePictureRepository = profilePictureRepository;
         this.profilePictureService = profilePictureService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -68,7 +73,8 @@ public class ProfilePictureController {
     @Timed
     public ResponseEntity<ProfilePicture> get(@PathVariable String userlogin) {
         log.debug("REST request to get ProfilePicture : {}", userlogin);
-        return Optional.ofNullable(profilePictureRepository.findOne(userlogin))
+        User user = userRepository.findByLogin(userlogin);
+        return Optional.ofNullable(profilePictureRepository.findOne(user.getId()))
             .map(profilepicture -> new ResponseEntity<>(
                 profilepicture,
                 HttpStatus.OK))
@@ -101,6 +107,7 @@ public class ProfilePictureController {
     @Timed
     public void deleteOtherProfilePicture(@PathVariable String userlogin) {
         log.debug("REST request to delete ProfilePicture : {}", userlogin);
-        profilePictureRepository.delete(userlogin);
+        User user = userRepository.findByLogin(userlogin);
+        profilePictureRepository.delete(user.getId());
     }
 }

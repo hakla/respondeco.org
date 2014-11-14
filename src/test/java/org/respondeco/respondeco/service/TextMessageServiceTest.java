@@ -64,10 +64,11 @@ public class TextMessageServiceTest {
         String receiver = "testReceiver";
         String content = "testContent";
         User currentUser = new User();
+        currentUser.setId(1L);
         currentUser.setLogin("testSender");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-        when(userRepositoryMock.exists("testReceiver")).thenReturn(true);
+        when(userRepositoryMock.exists(1L)).thenReturn(true);
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -85,7 +86,7 @@ public class TextMessageServiceTest {
 
         verify(textMessageRepositoryMock, times(1)).save(isA(TextMessage.class));
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(userRepositoryMock, times(1)).exists("testReceiver");
+        verify(userRepositoryMock, times(1)).exists(1L);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -120,24 +121,24 @@ public class TextMessageServiceTest {
 
         TextMessage message1 = new TextMessage();
         message1.setTimestamp(DateTime.now());
-        message1.setSender("testSender1");
-        message1.setReceiver("testReceiver");
+        message1.setSender(1L);
+        message1.setReceiver(2L);
         message1.setContent("testContent1");
 
         TextMessage message2 = new TextMessage();
         message2.setTimestamp(DateTime.now());
-        message2.setSender("testSender2");
-        message2.setReceiver("testReceiver");
+        message2.setSender(3L);
+        message2.setReceiver(2L);
         message2.setContent("testContent2");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-        when(textMessageRepositoryMock.findByReceiverAndActiveIsTrue("testReceiver"))
+        when(textMessageRepositoryMock.findByReceiverAndActiveIsTrue(2L))
                 .thenReturn(Arrays.asList(message1, message2));
 
         List<TextMessage> messages = textMessageService.getTextMessagesForCurrentUser();
 
         assertTrue(messages.size() == 2);
-        verify(textMessageRepositoryMock, times(1)).findByReceiverAndActiveIsTrue("testReceiver");
+        verify(textMessageRepositoryMock, times(1)).findByReceiverAndActiveIsTrue(2L);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }
 
@@ -146,7 +147,7 @@ public class TextMessageServiceTest {
         TextMessage testMessage = new TextMessage();
         testMessage.setId(1L);
         testMessage.setActive(true);
-        testMessage.setReceiver("testReceiver");
+        testMessage.setReceiver(1L);
         User currentUser = new User();
         currentUser.setLogin("testReceiver");
 
@@ -178,8 +179,9 @@ public class TextMessageServiceTest {
         TextMessage testMessage = new TextMessage();
         testMessage.setId(1L);
         testMessage.setActive(true);
-        testMessage.setReceiver("testReceiver");
+        testMessage.setReceiver(1L);
         User currentUser = new User();
+        currentUser.setId(1L);
         currentUser.setLogin("someUser");
 
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(testMessage);

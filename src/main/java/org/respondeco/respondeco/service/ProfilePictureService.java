@@ -5,6 +5,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.ProfilePictureRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.SecurityUtils;
+import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,14 @@ public class ProfilePictureService {
 
     private ProfilePictureRepository profilePictureRepository;
     private UserService userService;
+    private UserRepository userRepository;
 
     @Inject
-    public ProfilePictureService(ProfilePictureRepository profilePictureRepository, UserService userService) {
+    public ProfilePictureService(ProfilePictureRepository profilePictureRepository,
+                                 UserService userService, UserRepository userRepository) {
         this.profilePictureRepository = profilePictureRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public ProfilePicture createProfilePicture(String label, byte[] data) throws UnsupportedEncodingException {
@@ -33,11 +37,11 @@ public class ProfilePictureService {
         log.debug("current user is {}", currentUser);
         ProfilePicture newProfilePicture = null;
         if(currentUser != null) {
-            if(profilePictureRepository.exists(currentUser.getLogin())) {
-                profilePictureRepository.delete(currentUser.getLogin());
+            if(profilePictureRepository.exists(currentUser.getId())) {
+                profilePictureRepository.delete(currentUser.getId());
             }
             newProfilePicture = new ProfilePicture();
-            newProfilePicture.setUserlogin(currentUser.getLogin());
+            newProfilePicture.setUserId(currentUser.getId());
             newProfilePicture.setLabel(label);
             newProfilePicture.setData(data);
             log.debug("Creating profile picture : {}", newProfilePicture);
@@ -49,12 +53,16 @@ public class ProfilePictureService {
 
     public void deleteProfilePictureCurrentUser() {
         User currentUser = userService.getUserWithAuthorities();
-        profilePictureRepository.delete(currentUser.getLogin());
+        profilePictureRepository.delete(currentUser.getId());
         log.debug("Deleted profile picture for {}", currentUser);
     }
 
-    public void deleteProfilePicture(String userlogin) {
-        profilePictureRepository.delete(userlogin);
+    public void deleteProfilePicture(String userlogin) throws NoSuchUserException {
+        User user = userRepository.findByLogin(userlogin);
+        if(user == null) {
+            throw new NoSuchUserException("user " + userlogin + " does not exist.");
+        }
+        profilePictureRepository.delete(user.getId());
         log.debug("Deleted profile picture for {}", userlogin);
     }
 

@@ -6,6 +6,6 @@ import org.respondeco.respondeco.domain.ProfilePicture;
 /**
  * Spring Data JPA repository for the ProfilePicture entity.
  */
-public interface ProfilePictureRepository extends JpaRepository<ProfilePicture, String> {
+public interface ProfilePictureRepository extends JpaRepository<ProfilePicture, Long> {
 
 }

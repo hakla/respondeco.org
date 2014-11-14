@@ -37,6 +37,8 @@ public class OrganizationService {
 
     public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, String owner) {
         if(organizationRepository.findByName(name)==null) {
+            User currentUser = userService.getUserWithAuthorities();
+
             Organization newOrganization = new Organization();
 
             newOrganization.setName(name);
@@ -45,7 +47,7 @@ public class OrganizationService {
             newOrganization.setIsNpo(isNpo);
 
             if(organizationRepository.findByOwner(owner)==null) {
-                newOrganization.setOwner(owner);
+                newOrganization.setOwner(currentUser.getId());
             }
             else {
                 log.debug("Couldn't Create Information for Organization: {}", newOrganization);
@@ -105,7 +107,7 @@ public class OrganizationService {
             currentOrganization.setDescription(description);
             currentOrganization.setEmail(email);
             currentOrganization.setIsNpo(isNpo);
-            currentOrganization.setOwner(owner);
+            currentOrganization.setOwner(currentUser.getId());
             organizationRepository.save(currentOrganization);
             log.debug("Changed Information for Organization: {}", currentOrganization);
         }

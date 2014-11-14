@@ -12,11 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_ORGJOINREQUEST")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class OrgJoinRequest implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long id;
+public class OrgJoinRequest extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "org_id")
     private Long orgId;
