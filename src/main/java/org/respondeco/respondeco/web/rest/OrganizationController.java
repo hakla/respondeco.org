@@ -52,7 +52,11 @@ public class OrganizationController {
 
     public void create(@RequestBody OrganizationDTO newOrganization) {
         log.debug("REST request to save Organization : {}", newOrganization);
-        organizationService.createOrganizationInformation(newOrganization.getName(),newOrganization.getDescription(),newOrganization.getEmail(),newOrganization.isNpo(),newOrganization.getOwner());
+        organizationService.createOrganizationInformation(
+                newOrganization.getName(),
+                newOrganization.getDescription(),
+                newOrganization.getEmail(),
+                newOrganization.isNpo());
     }
 
     /**
@@ -115,7 +119,11 @@ public class OrganizationController {
 
     public void update(@RequestBody OrganizationDTO organization) {
         log.debug("REST request to save Organization : {}", organization);
-        organizationService.updaterOrganizationInformation(organization.getName(),organization.getDescription(),organization.getEmail(),organization.isNpo(),organization.getOwner());
+        organizationService.updaterOrganizationInformation(
+                organization.getName(),
+                organization.getDescription(),
+                organization.getEmail(),
+                organization.isNpo());
     }
 
     /**

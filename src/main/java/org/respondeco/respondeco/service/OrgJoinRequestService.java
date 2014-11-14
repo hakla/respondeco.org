@@ -69,7 +69,7 @@ public class OrgJoinRequestService {
 
     public List<OrgJoinRequest> getRequestsByOwner() {
         User user = userService.getUserWithAuthorities();
-        Organization organization = organizationRepository.findByOwner(user.getLogin());
+        Organization organization = organizationRepository.findByOwner(user.getId());
         if(organization != null) {
             log.debug("Found List of OrgJoinRequest by Owner");
             return orgJoinRequestRepository.findByOrgId(organization.getId());

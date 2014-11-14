@@ -35,7 +35,7 @@ public class OrganizationService {
         this.userService = userService;
     }
 
-    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, String owner) {
+    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo) {
         if(organizationRepository.findByName(name)==null) {
             User currentUser = userService.getUserWithAuthorities();
 
@@ -46,7 +46,7 @@ public class OrganizationService {
             newOrganization.setEmail(email);
             newOrganization.setIsNpo(isNpo);
 
-            if(organizationRepository.findByOwner(owner)==null) {
+            if(organizationRepository.findByOwner(currentUser.getId())==null) {
                 newOrganization.setOwner(currentUser.getId());
             }
             else {
@@ -87,7 +87,7 @@ public class OrganizationService {
 
         User currentUser = userService.getUserWithAuthorities();
 
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getLogin());
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
         if(currentOrganization != null) {
             log.debug("Found Information for Organization: {}", currentOrganization);
             return currentOrganization;
@@ -99,9 +99,9 @@ public class OrganizationService {
 
     }
 
-    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, String owner) {
+    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo) {
         User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getLogin());
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
         if(currentOrganization!=null) {
             currentOrganization.setName(name);
             currentOrganization.setDescription(description);
@@ -119,7 +119,7 @@ public class OrganizationService {
 
     public void deleteOrganizationInformation() {
         User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getLogin());
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
         if(currentOrganization!=null) {
             organizationRepository.delete(currentOrganization);
             log.debug("Deleted Information for Organization: {}", currentOrganization);

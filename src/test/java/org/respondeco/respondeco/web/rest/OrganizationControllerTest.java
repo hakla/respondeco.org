@@ -94,6 +94,7 @@ public class OrganizationControllerTest {
         userAuthorities.add(authority);
 
         this.defaultUser = new User();
+        this.defaultUser.setId(1L);
         this.defaultUser.setCreatedDate(null);
         this.defaultUser.setLastModifiedDate(null);
         this.defaultUser.setLogin("testuser");
@@ -113,7 +114,6 @@ public class OrganizationControllerTest {
         organizationDTO.setName(DEFAULT_ORGNAME);
         organizationDTO.setDescription(DEFAULT_DESCRIPTION);
         organizationDTO.setEmail(DEFAULT_EMAIL);
-        organizationDTO.setOwner(defaultUser.getLogin());
         organizationDTO.setNpo(DEFAULT_NPO);
     }
 

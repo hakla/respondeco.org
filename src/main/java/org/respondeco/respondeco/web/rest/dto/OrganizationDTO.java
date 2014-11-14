@@ -15,6 +15,4 @@ public class OrganizationDTO {
 
     private boolean isNpo;
 
-    private String owner;
-
 }

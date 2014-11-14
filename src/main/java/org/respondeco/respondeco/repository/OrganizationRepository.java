@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
-    Organization findByOwner(String owner);
+    Organization findByOwner(Long owner);
     Organization findByName(String orgName);
 }

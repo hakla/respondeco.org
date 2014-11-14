@@ -23,9 +23,10 @@
             <column name="description" type="varchar(255)"/>
             <column name="email" type="varchar(255)"/>
             <column name="is_npo" type="bit"/>
-            <column name="owner" type="varchar(255)">
+            <column name="owner" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="spokesperson" type="bigint"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>
