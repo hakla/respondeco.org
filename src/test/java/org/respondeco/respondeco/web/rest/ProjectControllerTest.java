@@ -74,7 +74,7 @@ public class ProjectControllerTest {
         projectidea = new Project();
         projectidea.setId(DEFAULT_ID);
 
-        projectidea.setOrganizationId(DEFAULT_ORGANIZATION_ID);
+        //projectidea.setOrganizationId(DEFAULT_ORGANIZATION_ID);
         projectidea.setName(DEFAULT_NAME);
         projectidea.setPurpose(DEFAULT_PURPOSE);
     }
@@ -99,7 +99,7 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.projectLogo").value(DEFAULT_PROJECT_LOGO.toString()));
 
         // Update ProjectIdea
-        projectidea.setOrganizationId(UPDATED_ORGANIZATION_ID);
+        //projectidea.setOrganizationId(UPDATED_ORGANIZATION_ID);
         projectidea.setName(UPDATED_NAME);
         projectidea.setPurpose(UPDATED_PURPOSE);
 
