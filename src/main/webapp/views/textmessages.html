@@ -62,46 +62,53 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="panel panel-default" ng-show="viewedTextMessage != null">
-                <div class="panel-heading clearfix">
-                    <div class="panel-title pull-left">
-                        <table>
-                            <tr>
-                                <td>
-                                    <strong translate="global.textmessages.from">From </strong>:
-                                </td>
-                                <td>
-                                    <span>{{ viewedTextMessage.sender }}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong translate="global.textmessages.atdate">on </strong>:
-                                </td>
-                                <td>
-                                    <span>{{ viewedTextMessage.timestamp | date }}</span>
-                                </td>
-                            </tr>
-                        </table>
+            <div ng-show="viewedTextMessage != null">
+                <div class="panel panel-default" >
+                    <div class="panel-heading clearfix">
+                        <div class="panel-title pull-left">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <strong translate="global.textmessages.from">From </strong>:
+                                    </td>
+                                    <td>
+                                        <span>{{ viewedTextMessage.sender }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong translate="global.textmessages.atdate">on </strong>:
+                                    </td>
+                                    <td>
+                                        <span>{{ viewedTextMessage.timestamp | date }}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="pull-right">
+                            <button type="submit"
+                                    ng-click="reply(viewedTextMessage.sender)"
+                                    class="btn btn-success">
+                                <span class="glyphicon glyphicon-retweet"></span>
+                                <span translate="global.textmessages.reply">Reply</span>
+                            </button>
+                            <button type="submit"
+                                    ng-click="prepareDelete(viewedTextMessage)"
+                                    class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <span translate="global.textmessages.delete">Delete</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="pull-right">
-                        <button type="submit"
-                                ng-click="reply(viewedTextMessage.sender)"
-                                class="btn btn-success">
-                            <span class="glyphicon glyphicon-retweet"></span>
-                            <span translate="global.textmessages.reply">Reply</span>
-                        </button>
-                        <button type="submit"
-                                ng-click="prepareDelete(viewedTextMessage)"
-                                class="btn btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span>
-                            <span translate="global.textmessages.delete">Delete</span>
-                        </button>
+                    <div class="panel-body">
+                        <div>
+                            {{ viewedTextMessage.content }}
+                        </div>
                     </div>
                 </div>
-                <div class="panel-body">
-                    {{ viewedTextMessage.content }}
-                </div>
+                <textarea>
+                    
+                </textarea>
             </div>
         </div>
     </div>

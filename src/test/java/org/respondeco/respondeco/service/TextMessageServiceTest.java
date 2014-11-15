@@ -15,6 +15,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -118,38 +119,43 @@ public class TextMessageServiceTest {
     public void testGetTextMessagesForCurrentUser_shouldReturnAllActiveMessages() throws Exception {
         User currentUser = new User();
         currentUser.setLogin("testReceiver");
+        currentUser.setId(1L);
+        User sender1 = new User();
+        sender1.setId(2L);
+        User sender2 = new User();
+        sender2.setId(3L);
 
         TextMessage message1 = new TextMessage();
         message1.setTimestamp(DateTime.now());
-        message1.setSender(1L);
-        message1.setReceiver(2L);
+        message1.setSender(sender1);
+        message1.setReceiver(currentUser);
         message1.setContent("testContent1");
 
         TextMessage message2 = new TextMessage();
         message2.setTimestamp(DateTime.now());
-        message2.setSender(3L);
-        message2.setReceiver(2L);
+        message2.setSender(sender2);
+        message2.setReceiver(currentUser);
         message2.setContent("testContent2");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-        when(textMessageRepositoryMock.findByReceiverAndActiveIsTrue(2L))
+        when(textMessageRepositoryMock.findByReceiverAndActiveIsTrue(currentUser))
                 .thenReturn(Arrays.asList(message1, message2));
 
-        List<TextMessage> messages = textMessageService.getTextMessagesForCurrentUser();
+        List<TextMessageResponseDTO> messages = textMessageService.getTextMessagesForCurrentUser();
 
         assertTrue(messages.size() == 2);
-        verify(textMessageRepositoryMock, times(1)).findByReceiverAndActiveIsTrue(2L);
+        verify(textMessageRepositoryMock, times(1)).findByReceiverAndActiveIsTrue(currentUser);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }
 
     @Test
     public void testDeleteTextMessage_shouldSetActiveToFalse() throws Exception {
+        User currentUser = new User();
+        currentUser.setLogin("testReceiver");
         TextMessage testMessage = new TextMessage();
         testMessage.setId(1L);
         testMessage.setActive(true);
-        testMessage.setReceiver(1L);
-        User currentUser = new User();
-        currentUser.setLogin("testReceiver");
+        testMessage.setReceiver(currentUser);
 
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(testMessage);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
@@ -176,13 +182,15 @@ public class TextMessageServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testDeleteTextMessage_currentUserHasToBeReceiver() throws Exception {
-        TextMessage testMessage = new TextMessage();
-        testMessage.setId(1L);
-        testMessage.setActive(true);
-        testMessage.setReceiver(1L);
         User currentUser = new User();
         currentUser.setId(1L);
         currentUser.setLogin("someUser");
+        User receiver = new User();
+        receiver.setId(1L);
+        TextMessage testMessage = new TextMessage();
+        testMessage.setId(1L);
+        testMessage.setActive(true);
+        testMessage.setReceiver(receiver);
 
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(testMessage);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);

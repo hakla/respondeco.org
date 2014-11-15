@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
@@ -24,11 +25,12 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class TextMessage extends AbstractAuditingEntity implements Serializable {
 
-    @Column(name = "sender")
-    private Long sender;
+    @ManyToOne
+    private User sender;
 
-    @Column(name = "receiver")
-    private Long receiver;
+    @JsonIgnore
+    @ManyToOne
+    private User receiver;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "timestamp", nullable = false)
@@ -37,14 +39,4 @@ public class TextMessage extends AbstractAuditingEntity implements Serializable 
     @Column(name = "content")
     private String content;
 
-    @Override
-    public String toString() {
-        return "TextMessage{" +
-                "id=" + id +
-                ", sender='" + sender + "'" +
-                ", receiver='" + receiver + "'" +
-                ", timestamp='" + timestamp + "'" +
-                ", content='" + content + "'" +
-                '}';
-    }
 }
