@@ -6,6 +6,11 @@ respondecoApp
                 .when('/resource', {
                     templateUrl: 'views/resources.html',
                     controller: 'ResourceController',
+                    resolve: {
+                        resolvedResources: ['Resource', function(Resource) {
+                            return Resource.query();
+                        }]
+                    },
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }

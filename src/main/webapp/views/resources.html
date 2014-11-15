@@ -1,11 +1,15 @@
 <div>
  
-    <h2> Resourcen 
+    <h2> Resourcen
         <button class="btn btn-success btn-lg pull-right" data-toggle="modal" data-target="#newResourceModal" ng-click="clear()">
             <span class="glyphicon glyphicon-tree-conifer"></span> Create a new Resource
         </button>
     </h2>
+
     
+    <input type="text" class="col-md-2" placeholder="Suchkriterien eingeben" ng-model="filter">
+    <button type="button" class="btn-default" ng-click="search()"> Suchen </button>
+
     <div class="modal fade" id="newResourceModal" tabindex="-1" role="dialog" aria-labelledby="newResourceLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -55,6 +59,10 @@
                             <label>Verfügbar bis</label>
                             <input type="date" class="form-control" ng-model="resource.endDate">
                         </div>
+                        <div class="alert alert-danger" ng-show="form.saveError">
+                            <strong>Resource konnte nicht angelegt werden</strong>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -87,10 +95,22 @@
                     <td>{{ resource.name }}</td>
                     <td>{{ resource.company }}</td>
                     <td>{{ resource.amount }}</td>
-                    <td>{{ resource.dateStart }}</td>
-                    <td>{{ resource.dateEnd }}</td>
-                    <td>{{ resource.isCommerical }}</td>
-                    <td>{{ resource.isRecurrent }}</td>
+                    <td>{{ resource.dateStart | date }}</td>
+                    <td>{{ resource.dateEnd | date }}</td>
+                    <td ng-show="resource.isCommercial"><span class="glyphicon glyphicon-ok"/></td>
+                    <td ng-hide="resource.isCommercial"><span class="glyphicon glyphicon-remove"/></td>
+                    <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
+                    <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
+                    <td> 
+                        <button type="button" class="btn btn-default" ng-click="delete(resource.id)">
+                            Delete
+                        </button>
+                    </td>
+                    <td> 
+                        <button type="button" class="btn btn-default">
+                            Resource anfordern
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>
