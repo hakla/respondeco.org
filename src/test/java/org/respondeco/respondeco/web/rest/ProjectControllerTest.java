@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.service.ProjectService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -32,7 +33,7 @@ import org.respondeco.respondeco.repository.ProjectRepository;
 /**
  * Test class for the ProjectIdeaResource REST controller.
  *
- * @see ProjectContoller
+ * @see ProjectController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -57,39 +58,41 @@ public class ProjectControllerTest {
     private static final String UPDATED_PROJECT_LOGO = "UPDATED_TEXT";
         
     @Inject
-    private ProjectRepository projectideaRepository;
+    private ProjectRepository projectRepository;
 
-    private MockMvc restProjectIdeaMockMvc;
+    @Inject
+    private ProjectService projectService;
 
-    private Project projectidea;
+    private MockMvc restProjectMockMvc;
+
+    private Project project;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProjectContoller projectideaResource = new ProjectContoller();
-        ReflectionTestUtils.setField(projectideaResource, "projectideaRepository", projectideaRepository);
+        ProjectController projectController = new ProjectController(projectService, projectRepository);
 
-        this.restProjectIdeaMockMvc = MockMvcBuilders.standaloneSetup(projectideaResource).build();
+        this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
-        projectidea = new Project();
-        projectidea.setId(DEFAULT_ID);
+        project = new Project();
+        project.setId(DEFAULT_ID);
 
-        projectidea.setOrganizationId(DEFAULT_ORGANIZATION_ID);
-        projectidea.setName(DEFAULT_NAME);
-        projectidea.setPurpose(DEFAULT_PURPOSE);
+        project.setOrganizationId(DEFAULT_ORGANIZATION_ID);
+        project.setName(DEFAULT_NAME);
+        project.setPurpose(DEFAULT_PURPOSE);
     }
 
     @Test
     public void testCRUDProjectIdea() throws Exception {
 
         // Create ProjectIdea
-        restProjectIdeaMockMvc.perform(post("/app/rest/projectideas")
+        restProjectMockMvc.perform(post("/app/rest/projectideas")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectidea)))
+                .content(TestUtil.convertObjectToJsonBytes(project)))
                 .andExpect(status().isOk());
 
         // Read ProjectIdea
-        restProjectIdeaMockMvc.perform(get("/app/rest/projectideas/{id}", DEFAULT_ID))
+        restProjectMockMvc.perform(get("/app/rest/projectideas/{id}", DEFAULT_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
@@ -99,17 +102,17 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.projectLogo").value(DEFAULT_PROJECT_LOGO.toString()));
 
         // Update ProjectIdea
-        projectidea.setOrganizationId(UPDATED_ORGANIZATION_ID);
-        projectidea.setName(UPDATED_NAME);
-        projectidea.setPurpose(UPDATED_PURPOSE);
+        project.setOrganizationId(UPDATED_ORGANIZATION_ID);
+        project.setName(UPDATED_NAME);
+        project.setPurpose(UPDATED_PURPOSE);
 
-        restProjectIdeaMockMvc.perform(post("/app/rest/projectideas")
+        restProjectMockMvc.perform(post("/app/rest/projectideas")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectidea)))
+                .content(TestUtil.convertObjectToJsonBytes(project)))
                 .andExpect(status().isOk());
 
         // Read updated ProjectIdea
-        restProjectIdeaMockMvc.perform(get("/app/rest/projectideas/{id}", DEFAULT_ID))
+        restProjectMockMvc.perform(get("/app/rest/projectideas/{id}", DEFAULT_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
@@ -119,12 +122,12 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.projectLogo").value(UPDATED_PROJECT_LOGO.toString()));
 
         // Delete ProjectIdea
-        restProjectIdeaMockMvc.perform(delete("/app/rest/projectideas/{id}", DEFAULT_ID)
+        restProjectMockMvc.perform(delete("/app/rest/projectideas/{id}", DEFAULT_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         // Read nonexisting ProjectIdea
-        restProjectIdeaMockMvc.perform(get("/app/rest/projectideas/{id}", DEFAULT_ID)
+        restProjectMockMvc.perform(get("/app/rest/projectideas/{id}", DEFAULT_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 
