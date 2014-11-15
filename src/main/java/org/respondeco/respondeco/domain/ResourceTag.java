@@ -18,8 +18,8 @@ import java.util.Set;
  * Defined a Tag for each resource
  */
 @Data
-@Table
 @Entity
+@Table(name = "T_RESOURCETAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceTag extends AbstractAuditingEntity implements Serializable {
 

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -13,14 +14,16 @@ import javax.validation.constraints.NotNull;
  * Describe the resource requirements for the project
  */
 @Data
-@Table
 @Entity
+@Table(name = "T_RESOURCEREQUIREMENT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceRequirement extends ResourceBase {
 
     @NotNull
+    @Column(name = "project_id")
     private Long projectId;
 
     @NotNull
+    @Column(name = "is_essential")
     private boolean isEssential;
 }
