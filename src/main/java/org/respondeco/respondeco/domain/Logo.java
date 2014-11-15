@@ -17,7 +17,6 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Logo extends AbstractAuditingEntity implements Serializable {
 
-    @Id
     @NotNull
     @Column(name = "org_ID")
     private Long orgId;

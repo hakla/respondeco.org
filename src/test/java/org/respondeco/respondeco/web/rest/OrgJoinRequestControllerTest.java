@@ -92,6 +92,7 @@ public class OrgJoinRequestControllerTest {
         userAuthorities.add(authority);
 
         this.defaultUser = new User();
+        this.defaultUser.setId(1L);
         this.defaultUser.setCreatedDate(null);
         this.defaultUser.setLastModifiedDate(null);
         this.defaultUser.setLogin("testuser");
@@ -110,7 +111,7 @@ public class OrgJoinRequestControllerTest {
         organization.setName("testorg");
         organization.setDescription("testdescription");
         organization.setEmail("test@email.com");
-        organization.setOwner(defaultUser.getLogin());
+        organization.setOwner(defaultUser.getId());
         organization.setIsNpo(false);
         organizationRepository.save(organization);
 

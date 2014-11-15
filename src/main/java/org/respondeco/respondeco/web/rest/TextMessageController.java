@@ -4,7 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.TextMessage;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
+import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
@@ -33,11 +35,14 @@ public class TextMessageController {
 
     private TextMessageRepository textMessageRepository;
     private TextMessageService textMessageService;
+    private UserRepository userRepository;
 
     @Inject
-    public TextMessageController(TextMessageRepository textMessageRepository, TextMessageService textMessageService) {
+    public TextMessageController(TextMessageRepository textMessageRepository,
+                                 TextMessageService textMessageService, UserRepository userRepository) {
         this.textMessageRepository = textMessageRepository;
         this.textMessageService =  textMessageService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -89,7 +94,8 @@ public class TextMessageController {
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     public List<TextMessage> getAllForReceiver(@PathVariable String receiver) {
         log.debug("REST request to get TextMessages for : {}", receiver);
-        return textMessageRepository.findByReceiver(receiver);
+        User user = userRepository.findByLogin(receiver);
+        return textMessageRepository.findByReceiver(user.getId());
     }
 
     /**

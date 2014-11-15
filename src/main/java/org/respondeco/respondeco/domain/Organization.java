@@ -41,7 +41,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @NotNull
     private Long owner;
 
-    @NotNull
-    private Long spokenPerson;
+    @Column(name = "spokesperson")
+    private Long spokesPerson;
 
 }

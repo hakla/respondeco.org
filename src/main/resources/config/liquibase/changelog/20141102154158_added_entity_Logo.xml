@@ -12,8 +12,11 @@
     -->
     <changeSet id="20141102154158" author="jhipster">
         <createTable tableName="T_LOGO">
-            <column name="org_ID" type="bigint">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="org_ID" type="bigint">
+                <constraints nullable="false"/>
             </column>
             <column name="label" type="varchar(255)"/>
             <column name="data" type="blob"/>

@@ -25,6 +25,7 @@ to run the following commands!
 npm install -g grunt-cli      # installs grunt globally so you can use it in the terminal (task runner)
 npm install -g bower          # the same for bower (dependency management)
 npm install                   # in the applications root directory!
+bower install                 # in the applications root directory!
 ```
 
 After those three steps you should be able to run the backend and the frontend.

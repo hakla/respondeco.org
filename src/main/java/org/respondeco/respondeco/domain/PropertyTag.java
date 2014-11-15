@@ -8,18 +8,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * A OrgJoinRequest.
+ * A PropertyTag.
  */
 @Data
 @Entity
-@Table(name = "T_ORGJOINREQUEST")
+@Table(name = "T_PROPERTYTAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class OrgJoinRequest extends AbstractAuditingEntity implements Serializable {
+public class PropertyTag extends AbstractAuditingEntity implements Serializable {
 
-    @Column(name = "org_id")
-    private Long orgId;
-
-    @Column(name = "user_login")
-    private String userLogin;
+    @Column(name = "name")
+    private String name;
 
 }
