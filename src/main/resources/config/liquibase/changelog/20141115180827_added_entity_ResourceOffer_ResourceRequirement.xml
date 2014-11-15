@@ -9,19 +9,9 @@
 
     <!--
         Added the entity OrgJoinRequest.
-    -->
-    <changeSet id="20141115180827" author="Roman Kern">
 
-        <createTable tableName="T_PROJECT">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="purpose" type="varchar(2048)">
-                <constraints nullable="false"/>
-            </column>
+
+        <addColumn tableName="T_PROJECT">
             <column name="picture" type="blob"/>
             <column name="start" type="timestamp"/>
             <column name="end" type="timestamp"/>
@@ -33,7 +23,16 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
-        </createTable>
+        </addColumn>
+
+
+        <addForeignKeyConstraint baseColumnNames="organization_id"
+                                 baseTableName="T_PROJECT"
+                                 constraintName="fk_proj_org_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="T_ORGANIZATION"/>
+    -->
+    <changeSet id="20141115180827" author="Roman Kern">
 
         <createTable tableName="T_RESOURCETAG">
             <column name="id" type="bigint">
