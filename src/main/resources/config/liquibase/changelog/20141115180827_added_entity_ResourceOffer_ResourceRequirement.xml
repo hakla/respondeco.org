@@ -65,7 +65,6 @@
             <column name="organisation_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="resource_tag" type="bigint"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>
@@ -76,11 +75,16 @@
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="resource_tag"
-                                 baseTableName="T_RESOURCEOFFER"
-                                 constraintName="fk_res_offer_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="T_RESOURCETAG"/>
+        <createTable tableName="T_RESOURCEOFFER_JOIN_RESOURCETAG">
+            <column name="resource_tag_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_offer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="resource_tag_id, resource_offer_id" tableName="T_RESOURCEOFFER_JOIN_RESOURCETAG"/>
 
         <createTable tableName="T_RESOURCEREQUIREMENT">
             <column name="id" type="bigint">
@@ -111,18 +115,59 @@
             <column name="last_modified_date" type="timestamp"/>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="resource_tag"
-                                 baseTableName="T_RESOURCEREQUIREMENT"
-                                 constraintName="fk_res_req_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="T_RESOURCETAG"/>
-
-
         <addForeignKeyConstraint baseColumnNames="project_id"
                                  baseTableName="T_RESOURCEREQUIREMENT"
                                  constraintName="fk_res_req_id"
                                  referencedColumnNames="id"
                                  referencedTableName="T_PROJECT"/>
+
+        <createTable tableName="T_RESOURCEREQUIREMENT_JOIN_RESOURCETAG">
+            <column name="resource_tag_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_offer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="resource_tag_id, resource_offer_id" tableName="T_RESOURCEREQUIREMENT_JOIN_RESOURCETAG"/>
+
+
+        <createTable tableName="T_RESOURCEOFFER_TAKENBYPROJECT">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(18,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_offer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_requirement_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="resource_offer_id"
+                                 baseTableName="T_RESOURCEOFFER_TAKENBYPROJECT"
+                                 constraintName="fk_res_offer_tb_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="T_RESOURCEOFFER"/>
+
+
+        <addForeignKeyConstraint baseColumnNames="resource_requirement_id"
+                                 baseTableName="T_RESOURCEOFFER_TAKENBYPROJECT"
+                                 constraintName="fk_res_req_tb_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="T_RESOURCEREQUIREMENT"/>
 
     </changeSet>
 </databaseChangeLog>

@@ -27,8 +27,4 @@ public abstract class ResourceBase extends AbstractAuditingEntity implements Ser
     @Column(length = 255)
     @NotNull
     private String description;
-
-    @NotNull
-    @Column(name = "resource_tag")
-    private Long resourceTag;
 }
