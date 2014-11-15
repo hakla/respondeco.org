@@ -1,0 +1,98 @@
+<div>
+ 
+    <h2> Resourcen 
+        <button class="btn btn-success btn-lg pull-right" data-toggle="modal" data-target="#newResourceModal" ng-click="clear()">
+            <span class="glyphicon glyphicon-tree-conifer"></span> Create a new Resource
+        </button>
+    </h2>
+    
+    <div class="modal fade" id="newResourceModal" tabindex="-1" role="dialog" aria-labelledby="newResourceLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="create()">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="newResourceLabel">Neue Resource anlegen</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="Name" class="form-control" placeholder="Name der Resource"
+                                ng-model="resource.name">
+                        </div>
+                        <div class="form-group">
+                            <label>Beschreibung</label>
+                            <textarea type="text" class="form-control"
+                                ng-model="resource.description"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Anzahl</label>
+                            <input type="number" class="form-control"
+                                   ng-model="resource.amount">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Kommerzielle Resource</label>
+                                <input type="checkbox" class="form-control"
+                                    ng-model="resource.isCommercial">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Wiederkehrende Resource</label>
+                                <input type="checkbox" class="form-control"
+                                    ng-model="resource.isRecurrent">
+                        </div>
+                        <div class="form-group">
+                            <label>Verfügbar ab</label>
+                            <input type="date" class="form-control" ng-model="resource.startDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Verfügbar bis</label>
+                            <input type="date" class="form-control" ng-model="resource.endDate">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </button>
+                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-success">
+                            <span class="glyphicon glyphicon-save"></span> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Unternehmen</td>
+                    <td>Anzahl</td>
+                    <td>Verfügbar ab</td>
+                    <td>Verfügbar bis</td>
+                    <td>Kommerziell</td>
+                    <td>Wiederkehrend</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="resource in resources">
+                    <td>{{ resource.name }}</td>
+                    <td>{{ resource.company }}</td>
+                    <td>{{ resource.amount }}</td>
+                    <td>{{ resource.dateStart }}</td>
+                    <td>{{ resource.dateEnd }}</td>
+                    <td>{{ resource.isCommerical }}</td>
+                    <td>{{ resource.isRecurrent }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
