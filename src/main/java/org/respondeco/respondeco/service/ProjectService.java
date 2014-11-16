@@ -84,19 +84,17 @@ public class ProjectService {
     public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException {
         User newManager = userRepository.findByLogin(newManagerLogin);
         if(newManager == null) {
-            throw new NoSuchUserException("no such project: " + id);
+            throw new NoSuchUserException("no such user: " + id);
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
             throw new IllegalArgumentException("no such project: " + id);
         }
         User currentUser = userService.getUserWithAuthorities();
-        User projectManager = userRepository.findOne(project.getManagerId());
-        if(currentUser.equals(projectManager) == false) {
+        if(currentUser.getId() != project.getManagerId()) {
             throw new IllegalArgumentException("current user has no authority to " +
                     "change the project manager of project " + id);
         }
-        Organization newManagerOrganization = organizationRepository.findOne(newManager.getOrgId());
         if(project.getOrganizationId() != newManager.getOrgId()) {
             throw new IllegalArgumentException("new manager does not belong to organization: " +
                     project.getOrganizationId());

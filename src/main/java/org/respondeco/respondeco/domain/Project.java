@@ -55,6 +55,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     private Double rating;
 
+    @Column(name = "rating_count")
     private Integer ratingCount;
 
     @OneToOne(cascade = CascadeType.ALL)

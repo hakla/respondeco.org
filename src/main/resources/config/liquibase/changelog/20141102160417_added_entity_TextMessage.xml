@@ -15,8 +15,8 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="sender" type="varchar(255)"/>
-            <column name="receiver" type="varchar(255)"/>
+            <column name="sender" type="bigint"/>
+            <column name="receiver" type="bigint"/>
             <column name="timestamp" type="timestamp"/>
             <column name="content" type="varchar(255)"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
@@ -29,6 +29,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>
