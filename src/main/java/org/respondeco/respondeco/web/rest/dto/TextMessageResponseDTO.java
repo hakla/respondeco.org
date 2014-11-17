@@ -13,6 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TextMessageResponseDTO {
 
+    private Long id;
+
     private String sender;
 
     private String content;

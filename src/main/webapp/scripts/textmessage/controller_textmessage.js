@@ -32,8 +32,8 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                 });
         };
 
-        $scope.delete = function (id) {
-            TextMessage.delete({id: id},
+        $scope.delete = function (message) {
+            TextMessage.delete({id: message.id},
                 function () {
                     $scope.clear();
                     $scope.textMessages = TextMessage.query();
@@ -41,16 +41,17 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                     $scope.deleteerror = null;
                     $scope.deletesuccess = "SUCCESS";
                 },
-                function () {
+                function (error) {
                     $scope.clear();
                     $scope.deleteerror = "ERROR";
+                    $scope.deleteerrorMsg = error.data.error;
                     $scope.deletesuccess = null;
                 });
         };
 
         $scope.reply = function (sender) {
             $scope.textMessageToSend.receiver = sender;
-            $scope.showNewMessageModal();
+            $scope.create();
         }
 
         $scope.clear = function () {
@@ -66,18 +67,6 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
             $scope.viewedTextMessage = message;
         }
 
-        $scope.prepareDelete = function(message) {
-            $scope.toDelete = message;
-            $scope.showDeleteMessageModal();
-        }
-
-        $scope.confirmDelete = function() {
-            if($scope.toDelete != null) {
-                $scope.delete($scope.toDelete.id);
-            }
-            $scope.hideDeleteMessageModal();
-        }
-
         $scope.showNewMessageModal = function() {
             $('#saveTextMessageModal').modal('show');
         }
@@ -86,11 +75,4 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
             $('#saveTextMessageModal').modal('hide');
         }
 
-        $scope.showDeleteMessageModal = function() {
-            $('#deleteTextMessageModal').modal('show');
-        }
-
-        $scope.hideDeleteMessageModal = function() {
-            $('#deleteTextMessageModal').modal('hide');
-        }
     });

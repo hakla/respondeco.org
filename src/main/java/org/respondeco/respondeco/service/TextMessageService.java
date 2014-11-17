@@ -93,6 +93,7 @@ public class TextMessageService {
 
     private TextMessageResponseDTO textMessageToDTO(TextMessage message) {
         return new TextMessageResponseDTO(
+                message.getId(),
                 message.getSender().getLogin(),
                 message.getContent(),
                 message.getTimestamp());

@@ -1,5 +1,4 @@
 <div>
-
     <div class="row">
         <div class="col-md-6">
             <h2 translate="global.textmessages.title">Messages</h2>
@@ -17,8 +16,8 @@
             <div class="alert alert-success" ng-show="deletesuccess" translate="global.textmessages.success.delete">
                 <strong>Message deleted successfully.</strong>
             </div>
-            <div class="alert alert-danger" ng-show="deleteerror" translate="global.textmessages.error.delete">
-                <strong>Message could not be deleted.</strong>
+            <div class="alert alert-danger" ng-show="deleteerror">
+                <strong translate="global.textmessages.error.delete">Message could not be deleted:</strong>{{ deleteerrorMsg }}
             </div>
             <div class="alert alert-success" ng-show="sendsuccess" translate="global.textmessages.success.send">
                 <strong>Message sent successfully.</strong>
@@ -44,16 +43,11 @@
 
                         <td ng-click="$event.stopPropagation()">
                             <div class="pull-right">
-                            <button type="submit"
-                                    ng-click="reply(message.sender)"
-                                    class="btn btn-success">
-                                <span class="glyphicon glyphicon-retweet"></span>
-                            </button>
-                            <button type="submit"
-                                    ng-click="prepareDelete(message)"
-                                    class="btn btn-danger">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
+                                <button type="submit"
+                                        ng-click="reply(message.sender)"
+                                        class="btn btn-success">
+                                    <span class="glyphicon glyphicon-retweet"></span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -62,29 +56,48 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div ng-show="viewedTextMessage != null">
-                <div class="panel panel-default" >
-                    <div class="panel-heading clearfix">
-                        <div class="panel-title pull-left">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <strong translate="global.textmessages.from">From </strong>:
-                                    </td>
-                                    <td>
-                                        <span>{{ viewedTextMessage.sender }}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong translate="global.textmessages.atdate">on </strong>:
-                                    </td>
-                                    <td>
-                                        <span>{{ viewedTextMessage.timestamp | date }}</span>
-                                    </td>
-                                </tr>
-                            </table>
+            <div class="row" ng-show="viewedTextMessage != null">
+                <div>
+                    <div class="panel panel-default" >
+                        <div class="panel-heading clearfix">
+                            <div class="panel-title pull-left">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <strong translate="global.textmessages.from">From </strong>:
+                                        </td>
+                                        <td>
+                                            <span>{{ viewedTextMessage.sender }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong translate="global.textmessages.atdate">on </strong>:
+                                        </td>
+                                        <td>
+                                            <span>{{ viewedTextMessage.timestamp | date }}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="pull-right">
+                                <rsp-confirm-delete on-confirm="delete(viewedTextMessage)"></rsp-confirm-delete>
+                            </div>
                         </div>
+                        <div class="panel-body">
+                            <div>
+                                {{ viewedTextMessage.content }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-show="viewedTextMessage != null">
+                    <div class="col-md-12">
+                        <textarea class="fullwidth" ng-model="textMessageToSend.content"></textarea>
+                    </div>
+                </div>
+                <div class="row" ng-show="viewedTextMessage != null">
+                    <div class="col-md-12">
                         <div class="pull-right">
                             <button type="submit"
                                     ng-click="reply(viewedTextMessage.sender)"
@@ -92,23 +105,9 @@
                                 <span class="glyphicon glyphicon-retweet"></span>
                                 <span translate="global.textmessages.reply">Reply</span>
                             </button>
-                            <button type="submit"
-                                    ng-click="prepareDelete(viewedTextMessage)"
-                                    class="btn btn-danger">
-                                <span class="glyphicon glyphicon-trash"></span>
-                                <span translate="global.textmessages.delete">Delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div>
-                            {{ viewedTextMessage.content }}
                         </div>
                     </div>
                 </div>
-                <textarea>
-                    
-                </textarea>
             </div>
         </div>
     </div>
@@ -117,7 +116,7 @@
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="form" role="form" novalidate
+                <form name="form" role="form" novalidate show-validation
                       class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
                       ng-submit="create()">
 
@@ -129,8 +128,9 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label translate="global.textmessages.receiver">Receiver</label>
-                            <input type="text" class="form-control" ng-minlength="1"
-                                   ng-model="textMessageToSend.receiver" typeahead="uname for uname in usernames| filter:$viewValue | limitTo:8">
+                            <input type="text" class="form-control" ng-minlength="1" name="receiver"
+                                   ng-model="textMessageToSend.receiver"
+                                   typeahead="uname for uname in usernames | filter:$viewValue">
                             <div ng-show="form.receiver.$dirty && form.receiver.$invalid">
                                 <p class="help-block" ng-show="form.receiver.$error.minlength" translate="global.textmessages.validate.receiver.minlength">
                                     The content of the message is required to be at least 1 character
@@ -139,7 +139,7 @@
                         </div>
                         <div class="form-group">
                             <label translate="global.textmessages.content">Content</label>
-                            <textarea type="text" class="form-control" ng-minlength="1"
+                            <textarea type="text" class="form-control" ng-minlength="1" name="content"
                                       ng-model="textMessageToSend.content"></textarea>
                             <div ng-show="form.content.$dirty && form.content.$invalid">
                                 <p class="help-block" ng-show="form.content.$error.minlength" translate="global.textmessages.validate.content.minlength">

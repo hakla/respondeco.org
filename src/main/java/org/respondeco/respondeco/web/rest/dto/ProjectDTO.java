@@ -22,7 +22,7 @@ public class ProjectDTO {
 
     @ApiModelProperty(value = "The name of the project", required = true)
     @NotNull
-    @Size(min = 1, max = 0)
+    @Size(min = 1, max = 50)
     private String name;
 
     @ApiModelProperty(value = "The purpose of the project", required = true)
