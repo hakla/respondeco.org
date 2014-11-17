@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import javax.inject.Inject;
@@ -55,9 +56,7 @@ import java.util.Set;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 public class TextMessageControllerTest {
-    
-    private static final Long DEFAULT_ID = new Long(1L);
-        
+
     private static final String DEFAULT_CONTENT = "SAMPLE_TEXT";
 
     @Inject
@@ -92,33 +91,27 @@ public class TextMessageControllerTest {
                 new TextMessageController(textMessageServiceAllMocked);
         this.restTextMessageMockMvcAllMocked = MockMvcBuilders.standaloneSetup(textMessageControllerAllMocked).build();
 
-        User admin = new User();
-        admin.setLogin("admin");
-        admin.setTitle("Dr.");
-        admin.setFirstName("ad");
-        admin.setLastName("min");
-        admin.setGender(Gender.MALE);
-        admin.setEmail("ad@min.at");
-        admin.setActivated(true);
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(admin);
-
     }
 
     @Test
-    public void testPOST_SenderCanSaveMessage() throws Exception {
+    public void testPOST_expectOK_senderCanSaveMessage() throws Exception {
 
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User sender = new User();
+        sender.setId(100L);
         sender.setLogin("testSender");
         sender.setAuthorities(senderAuthorities);
+        User receiver = new User();
+        receiver.setId(200L);
+        receiver.setLogin("testReceiver");
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
         textMessageRequestDTO.setReceiver("testReceiver");
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists(1L)).thenReturn(true);//"testReceiver")).thenReturn(true);
+        when(userRepositoryMock.findByLogin(receiver.getLogin())).thenReturn(receiver);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -129,7 +122,7 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testPOST_ReceiverCanNotBeEqualToSender() throws Exception {
+    public void testPOST_expectBAD_REQUEST_receiverCanNotBeEqualToSender() throws Exception {
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User sender = new User();
@@ -150,7 +143,7 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testPOST_ReceiverMustExist() throws Exception {
+    public void testPOST_expectBAD_REQUEST_receiverHasToExist() throws Exception {
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User sender = new User();
@@ -162,7 +155,7 @@ public class TextMessageControllerTest {
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists(1L)).thenReturn(false);//"nonexistingReceiver")).thenReturn(false);
+        when(userRepositoryMock.findByLogin("nonexistingReceiver")).thenReturn(null);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -172,19 +165,21 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testPOST_ContentMustNotBeEmpty() throws Exception {
+    public void testPOST_expectBAD_REQUEST_contentMustNotBeEmpty() throws Exception {
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User sender = new User();
         sender.setLogin("testSender");
         sender.setAuthorities(senderAuthorities);
+        User receiver = new User();
+        receiver.setLogin("testReceiver");
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
-        textMessageRequestDTO.setReceiver("testReceiver");
+        textMessageRequestDTO.setReceiver(receiver.getLogin());
         textMessageRequestDTO.setContent("");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists(1L)).thenReturn(true);//"testReceiver")).thenReturn(true);
+        when(userRepositoryMock.findByLogin(receiver.getLogin())).thenReturn(receiver);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -194,17 +189,19 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testGET_ReceiverCanReadMessage() throws Exception {
+    public void testGET_expectOK_receiverCanReadMessage() throws Exception {
 
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User sender = new User();
+        sender.setId(100L);
         sender.setLogin("testSender");
         sender.setAuthorities(senderAuthorities);
 
         Set<Authority> receiverAuthorities = new HashSet<>();
         receiverAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User receiver = new User();
+        receiver.setId(200L);
         receiver.setLogin("testReceiver");
         receiver.setAuthorities(receiverAuthorities);
 
@@ -213,7 +210,7 @@ public class TextMessageControllerTest {
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
-        when(userRepositoryMock.exists(1L)).thenReturn(true);//"testReceiver")).thenReturn(true);
+        when(userRepositoryMock.findByLogin(receiver.getLogin())).thenReturn(receiver);
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -225,35 +222,36 @@ public class TextMessageControllerTest {
 
         restTextMessageMockMvc.perform(get("/app/rest/textmessages"))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].sender").value("testSender"))
-                .andExpect(jsonPath("$[0].receiver").value("testReceiver"))
-                .andExpect(jsonPath("$[0].content").value(DEFAULT_CONTENT));
+                .andExpect(jsonPath("$[0].content").value(DEFAULT_CONTENT))
+                .andExpect(jsonPath("$[0].timestamp").exists());
 
     }
 
     @Test
-    public void testDELETE_ReceiverCanDeleteMessage() throws Exception {
+    public void testDELETE_expectOK_receiverCanDeleteMessage() throws Exception {
         Set<Authority> receiverAuthorities = new HashSet<>();
         receiverAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User receiver = new User();
         receiver.setLogin("testReceiver");
         receiver.setAuthorities(receiverAuthorities);
         User sender = new User();
-        sender.setId(1L);
+        sender.setId(100L);
 
         TextMessage textMessage = new TextMessage();
-        textMessage.setId(1L);
-        textMessage.setSender(sender);//"testSender");
-        textMessage.setReceiver(receiver);//"testReceiver");
+        textMessage.setId(100L);
+        textMessage.setSender(sender);
+        textMessage.setReceiver(receiver);
         textMessage.setContent(DEFAULT_CONTENT);
         textMessage.setActive(true);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(receiver);
-        when(textMessageRepositoryMock.findOne(1L)).thenReturn(textMessage);
+        when(textMessageRepositoryMock.findOne(100L)).thenReturn(textMessage);
 
-        restTextMessageMockMvcAllMocked.perform(delete("/app/rest/textmessages/{id}", 1L))
+        restTextMessageMockMvcAllMocked.perform(delete("/app/rest/textmessages/{id}", 100L))
                 .andExpect(status().isOk());
 
         assertFalse(textMessage.isActive());
@@ -261,30 +259,32 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testDELETE_CannotDeleteForeignMessages() throws Exception {
+    public void testDELETE_expectBAD_REQUEST_cannotDeleteForeignMessages() throws Exception {
         Set<Authority> unauthorizedUserAuthorities = new HashSet<>();
         unauthorizedUserAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User unauthorizedUser = new User();
         unauthorizedUser.setLogin("unauthorizedUser");
         unauthorizedUser.setAuthorities(unauthorizedUserAuthorities);
         User sender = new User();
-        sender.setId(1L);
+        sender.setId(100L);
+        User receiver = new User();
+        receiver.setId(200L);
 
         TextMessage textMessage = new TextMessage();
-        textMessage.setId(1L);
-        textMessage.setSender(sender);//"testSender");
-        textMessage.setReceiver(unauthorizedUser);//"testReceiver");
+        textMessage.setId(100L);
+        textMessage.setSender(sender);
+        textMessage.setReceiver(receiver);
         textMessage.setContent(DEFAULT_CONTENT);
         textMessage.setActive(true);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(unauthorizedUser);
-        when(textMessageRepositoryMock.findOne(1L)).thenReturn(textMessage);
+        when(textMessageRepositoryMock.findOne(100L)).thenReturn(textMessage);
 
-        restTextMessageMockMvcAllMocked.perform(delete("/app/rest/textmessages/{id}", 1L))
+        restTextMessageMockMvcAllMocked.perform(delete("/app/rest/textmessages/{id}", 100L))
                 .andExpect(status().isBadRequest());
 
         assertTrue(textMessage.isActive());
-        verify(textMessageRepositoryMock, times(1)).findOne(1L);
+        verify(textMessageRepositoryMock, times(1)).findOne(100L);
         verify(textMessageRepositoryMock, times(0)).save(textMessage);
     }
 

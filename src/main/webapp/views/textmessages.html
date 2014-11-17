@@ -130,7 +130,7 @@
                         <div class="form-group">
                             <label translate="global.textmessages.receiver">Receiver</label>
                             <input type="text" class="form-control" ng-minlength="1"
-                                   ng-model="textMessageToSend.receiver">
+                                   ng-model="textMessageToSend.receiver" typeahead="uname for uname in usernames| filter:$viewValue | limitTo:8">
                             <div ng-show="form.receiver.$dirty && form.receiver.$invalid">
                                 <p class="help-block" ng-show="form.receiver.$error.minlength" translate="global.textmessages.validate.receiver.minlength">
                                     The content of the message is required to be at least 1 character

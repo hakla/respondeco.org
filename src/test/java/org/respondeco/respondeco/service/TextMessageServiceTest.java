@@ -67,9 +67,12 @@ public class TextMessageServiceTest {
         User currentUser = new User();
         currentUser.setId(1L);
         currentUser.setLogin("testSender");
+        User receivingUser = new User();
+        receivingUser.setId(2L);
+        receivingUser.setLogin("testReceiver");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-        when(userRepositoryMock.exists(1L)).thenReturn(true);
+        when(userRepositoryMock.findByLogin("testReceiver")).thenReturn(receivingUser);
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -80,31 +83,30 @@ public class TextMessageServiceTest {
 
         textMessageService.createTextMessage(receiver, content);
 
-        assertEquals(savedMessage.getSender(), currentUser.getLogin());
-        assertEquals(savedMessage.getReceiver(), receiver);
+        assertEquals(savedMessage.getSender(), currentUser);
+        assertEquals(savedMessage.getReceiver(), receivingUser);
         assertEquals(savedMessage.getContent(), content);
         assertNotNull(savedMessage.getTimestamp());
 
         verify(textMessageRepositoryMock, times(1)).save(isA(TextMessage.class));
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(userRepositoryMock, times(1)).exists(1L);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateTextMessage_contentMustNotBeNull() throws Exception {
+    public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsNull() throws Exception {
         String receiver = "testReceiver";
         textMessageService.createTextMessage(receiver, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateTextMessage_contentMustNotBeEmpty() throws Exception {
+    public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsEmpty() throws Exception {
         String receiver = "testReceiver";
         String content = "";
         textMessageService.createTextMessage(receiver, content);
     }
 
     @Test(expected = NoSuchUserException.class)
-    public void testCreateTextMessage_receiverHasToExist() throws Exception {
+    public void testCreateTextMessage_shouldThrowExceptionBecauseReceiverDoesNotExist() throws Exception {
         String receiver = "testReceiver";
         String content = "testContent";
         User currentUser = new User();
@@ -151,6 +153,7 @@ public class TextMessageServiceTest {
     @Test
     public void testDeleteTextMessage_shouldSetActiveToFalse() throws Exception {
         User currentUser = new User();
+        currentUser.setId(1L);
         currentUser.setLogin("testReceiver");
         TextMessage testMessage = new TextMessage();
         testMessage.setId(1L);
@@ -175,18 +178,19 @@ public class TextMessageServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testDeleteTextMessage_messageHasToExist() throws Exception {
+    public void testDeleteTextMessage_shouldThrowExceptionBecauseMessageDoesNotExist() throws Exception {
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(null);
         textMessageService.deleteTextMessage(1L);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testDeleteTextMessage_currentUserHasToBeReceiver() throws Exception {
+    public void testDeleteTextMessage_shouldThrowExceptionBecauseCurrentUserIsNotReceiver() throws Exception {
         User currentUser = new User();
         currentUser.setId(1L);
         currentUser.setLogin("someUser");
         User receiver = new User();
-        receiver.setId(1L);
+        receiver.setLogin("receiver");
+        receiver.setId(2L);
         TextMessage testMessage = new TextMessage();
         testMessage.setId(1L);
         testMessage.setActive(true);

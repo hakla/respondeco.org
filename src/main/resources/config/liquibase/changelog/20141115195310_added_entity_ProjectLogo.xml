@@ -8,14 +8,15 @@
     <property name="now" value="current_timestamp" dbms="postgresql"/>
 
     <!--
-        Added the entity PropertyTag.
+        Added the entity ProjectLogo.
     -->
-    <changeSet id="20141114155202" author="jhipster">
-        <createTable tableName="T_PROPERTYTAG">
+    <changeSet id="20141115195310" author="jhipster">
+        <createTable tableName="T_PROJECTLOGO">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)"/>
+            <column name="data" type="blob"/>
+
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>

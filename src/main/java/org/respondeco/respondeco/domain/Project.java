@@ -12,8 +12,10 @@ import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,10 +25,7 @@ import java.util.Set;
 @Entity
 @Table(name = "T_PROJECT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Project extends AbstractAuditingEntity implements Serializable {
-
-    @Column(name = "name")
-    private String name;
+public class Project extends AbstractAuditingNamedEntity implements Serializable {
 
     @Column(name = "purpose")
     private String purpose;
@@ -46,9 +45,29 @@ public class Project extends AbstractAuditingEntity implements Serializable {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @NotNull
+    @Column(name = "organization_id", nullable = false)
+    private Long organizationId;
+
+    @NotNull
+    @Column(name = "manager_id", nullable = false)
+    private Long managerId;
+
+    private Double rating;
+
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Organization organization;
+    private ProjectLogo projectLogo;
+
+    @ManyToMany
+    @JsonIgnore
+    private List<PropertyTag> propertyTags;
+
+    @OneToMany
+    @JsonIgnore
+    private List<ResourceRequirement> resourceRequirements;
 
 }

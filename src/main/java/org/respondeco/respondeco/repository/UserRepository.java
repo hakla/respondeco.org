@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByLogin(String userlogin);
 
+    @Query("select u.login from User u where u.login like ?1")
+    List<String> findUsernamesByRegex(String regex);
+
 }

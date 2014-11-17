@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('TextMessageController', function ($scope, TextMessage) {
+respondecoApp.controller('TextMessageController', function ($scope, TextMessage, UserNames) {
 
         $scope.textMessageToSend = {
             receiver: null,
@@ -16,6 +16,7 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage)
         $scope.deletesuccess = null;
         $scope.deleteerror = null;
 
+        $scope.usernames = ["aaaaaa", "baaaa", "aabbbbb"];
 
         $scope.create = function () {
             TextMessage.save($scope.textMessageToSend,

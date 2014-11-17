@@ -29,6 +29,6 @@
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

@@ -57,18 +57,23 @@ public class TextMessageService {
         newTextMessage.setTimestamp(DateTime.now());
         newTextMessage.setReceiver(receivingUser);
         newTextMessage.setContent(content);
+        log.debug("saving text message {}", newTextMessage);
         textMessageRepository.save(newTextMessage);
         return newTextMessage;
     }
 
     public List<TextMessageResponseDTO> getTextMessagesForCurrentUser() {
         User currentUser = userService.getUserWithAuthorities();
-        return textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(currentUser));
+        log.debug("getting text messages for user {}", currentUser);
+        List<TextMessageResponseDTO> response =
+                textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(currentUser));
+        log.debug("got messages for user {}: {}", currentUser, response);
+        return response;
     }
 
     public List<TextMessageResponseDTO> getTextMessagesForUser(String login) {
-        User currentUser = userRepository.findByLogin(login);
-        return textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(currentUser));
+        User user = userRepository.findByLogin(login);
+        return textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(user));
     }
 
     public TextMessage deleteTextMessage(Long id) {
@@ -77,7 +82,7 @@ public class TextMessageService {
             throw new IllegalArgumentException(String.format("A text message with id %d does not exist", id));
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getLogin().equals(textMessage.getReceiver()) == false) {
+        if(currentUser.equals(textMessage.getReceiver()) == false) {
             throw new IllegalArgumentException(
                     String.format("User %s is not the receiver of the text message %d", currentUser.getLogin(), id));
         }

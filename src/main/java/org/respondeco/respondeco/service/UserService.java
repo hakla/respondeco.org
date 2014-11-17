@@ -200,4 +200,11 @@ public class UserService {
         log.debug("Couldn't Find members of organization");
         return null;
     }
+
+    public List<String> findUsernamesByRegex(String usernamePart) {
+        List<String> result = userRepository.findUsernamesByRegex("%" + usernamePart + "%");
+        result.remove("system");
+        result.remove("anonymousUser");
+        return result;
+    }
 }
