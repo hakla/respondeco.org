@@ -177,7 +177,7 @@ public class OrganizationServiceTest {
     }
 
     @Test
-    public void testGetOrganizationByName() throws Exception {
+    public void testGetOrganizationByOwner() throws Exception {
         String name = "testOrg";
         String description = "testDescription";
         String email = "test@email.com";
@@ -201,7 +201,7 @@ public class OrganizationServiceTest {
     }
 
     @Test(expected = NoSuchOrganizationException.class)
-    public void testGetOrganizationByName_NotExisting() throws Exception {
+    public void testGetOrganizationByOwner_NotExisting() throws Exception {
         String name = "testOrg";
         String description = "testDescription";
         String email = "test@email.com";

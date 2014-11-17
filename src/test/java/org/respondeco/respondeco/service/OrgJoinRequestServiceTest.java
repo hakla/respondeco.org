@@ -20,6 +20,9 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -74,7 +77,7 @@ public class OrgJoinRequestServiceTest {
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
 
-        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getId(),currentUser.getId());
+        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getName(),currentUser.getLogin());
         assertNotNull(orgJoinRequest);
         assertEquals(orgJoinRequest.getOrgId(),organization.getId());
         assertEquals(orgJoinRequest.getUserId(),currentUser.getId());
@@ -103,7 +106,7 @@ public class OrgJoinRequestServiceTest {
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
 
-        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getId(),2L);
+        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getName(),currentUser.getLogin());
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -121,7 +124,7 @@ public class OrgJoinRequestServiceTest {
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
 
-        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(2L,user1.getId());
+        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest("testOrg1",user1.getLogin());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -136,13 +139,13 @@ public class OrgJoinRequestServiceTest {
 
         User user2 = new User();
         user2.setId(2L);
-        user2.setLogin("testUser");
+        user2.setLogin("testUser2");
         when(userServiceMock.getUserWithAuthorities()).thenReturn(user2);
 
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
 
-        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getId(),user2.getId());
+        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getName(),user1.getLogin());
     }
 
     @Test
@@ -161,10 +164,11 @@ public class OrgJoinRequestServiceTest {
             Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
             assertNotNull(organization);
 
-            OrgJoinRequest orgJoinRequest1 = orgJoinRequestService.createOrgJoinRequest(organization.getId(),user1.getId());
+            OrgJoinRequest orgJoinRequest1 = orgJoinRequestService.createOrgJoinRequest(organization.getName(),user1.getLogin());
             assertNotNull(orgJoinRequest1);
 
-            OrgJoinRequest orgJoinRequest2 = orgJoinRequestService.getOrgJoinRequestByOrgName(organization.getName());
+            List<OrgJoinRequest> orgJoinRequestList = orgJoinRequestService.getOrgJoinRequestByOrgName(organization.getName());
+            OrgJoinRequest orgJoinRequest2 = orgJoinRequestList.get(0);
             assertNotNull(orgJoinRequest2);
 
             assertEquals(orgJoinRequest1.getOrgId(),orgJoinRequest2.getOrgId());
@@ -192,10 +196,11 @@ public class OrgJoinRequestServiceTest {
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
 
-        OrgJoinRequest orgJoinRequest1 = orgJoinRequestService.createOrgJoinRequest(organization.getId(),user1.getId());
+        OrgJoinRequest orgJoinRequest1 = orgJoinRequestService.createOrgJoinRequest(organization.getName(),user1.getLogin());
         assertNotNull(orgJoinRequest1);
 
-        OrgJoinRequest orgJoinRequest2 = orgJoinRequestService.getOrgJoinRequestByOwner();
+        List<OrgJoinRequest> orgJoinRequestList = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
+        OrgJoinRequest orgJoinRequest2 = orgJoinRequestList.get(0);
         assertNotNull(orgJoinRequest2);
 
         assertEquals(orgJoinRequest1.getOrgId(),orgJoinRequest2.getOrgId());
@@ -218,7 +223,7 @@ public class OrgJoinRequestServiceTest {
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
 
-        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getId(),user1.getId());
+        OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(organization.getName(),user1.getLogin());
         assertNotNull(orgJoinRequest);
         Long id = orgJoinRequest.getId();
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
