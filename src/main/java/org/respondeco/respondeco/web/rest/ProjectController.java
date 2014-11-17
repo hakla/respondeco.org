@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * REST controller for managing ProjectIdea.
+ * REST controller for managing Project.
  */
 @RestController
 @RequestMapping("/app")
@@ -40,12 +42,13 @@ public class ProjectController {
     /**
      * POST  /rest/project -> Create a new project.
      */
+    @ApiOperation(value = "Create/Update a project", notes = "Create or update a project")
     @RequestMapping(value = "/rest/project",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody ProjectDTO project) {
+    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
         log.debug("REST request to save Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -68,6 +71,7 @@ public class ProjectController {
     /**
      * POST  /rest/project/manager -> Change project manager of a project
      */
+    @ApiOperation(value = "Change manager", notes = "Change the manager of a project")
     @RequestMapping(value = "/rest/project/manager/{id}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,6 +93,7 @@ public class ProjectController {
     /**
      * GET  /rest/project -> get all the projects.
      */
+    @ApiOperation(value = "Get projects", notes = "Get all projects")
     @RequestMapping(value = "/rest/project/all",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,6 +106,7 @@ public class ProjectController {
     /**
      * GET  /rest/project/:id -> get the "id" project.
      */
+    @ApiOperation(value = "Get project", notes = "Get a project by its id")
     @RequestMapping(value = "/rest/project/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -108,8 +114,8 @@ public class ProjectController {
     public ResponseEntity<Project> get(@PathVariable Long id) {
         log.debug("REST request to get ProjectIdea : {}", id);
         return Optional.ofNullable(projectRepository.findByIdAndActiveIsTrue(id))
-            .map(projectidea -> new ResponseEntity<>(
-                projectidea,
+            .map(project -> new ResponseEntity<>(
+                project,
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -117,6 +123,7 @@ public class ProjectController {
     /**
      * DELETE  /rest/project/:id -> delete the "id" project.
      */
+    @ApiOperation(value = "Delete project", notes = "Delete a project by its id")
     @RequestMapping(value = "/rest/project/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)

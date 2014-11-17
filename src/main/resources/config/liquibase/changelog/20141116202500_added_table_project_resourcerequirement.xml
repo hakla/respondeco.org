@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity ProjectIdea.
+    -->
+    <changeSet id="20141116201700" author="Clemens Puehringer">
+        <createTable tableName="T_PROJECT_T_RESOURCEREQUIREMENT">
+            <column name="T_PROJECT_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resourceRequirements_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="T_PROJECT_id, resourceRequirements_id" tableName="T_PROJECT_T_RESOURCEREQUIREMENT"/>
+    </changeSet>
+</databaseChangeLog>

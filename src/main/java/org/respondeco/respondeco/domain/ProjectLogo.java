@@ -20,6 +20,7 @@ import java.util.Set;
 public class ProjectLogo extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "data")
+    @Lob
     private byte[] data;
 
 }

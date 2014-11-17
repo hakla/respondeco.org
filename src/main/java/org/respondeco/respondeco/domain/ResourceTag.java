@@ -6,6 +6,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -18,8 +19,8 @@ import java.util.Set;
  * Defined a Tag for each resource
  */
 @Data
-@Table
 @Entity
+@Table(name = "T_RESOURCETAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceTag extends AbstractAuditingEntity implements Serializable {
 
@@ -27,10 +28,10 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable 
     private String name;
 
     @JsonIgnore
-    @OneToMany(targetEntity = ResourceOffer.class, mappedBy = "resourceTag")
-    private Set<ResourceOffer> resourceOfferSet;
+    @ManyToMany(targetEntity = ResourceOffer.class)
+    private Set<ResourceOffer> resourceOffers;
 
     @JsonIgnore
-    @OneToMany(targetEntity = ResourceRequirement.class, mappedBy = "resourceTag")
+    @ManyToMany(targetEntity = ResourceRequirement.class)
     private Set<ResourceRequirement> resourceRequirements;
 }
