@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class OrgJoinRequestDTO {
-    private Long orgId;
+    private String orgName;
 
-    private String userlogin;
+    private String userLogin;
 }

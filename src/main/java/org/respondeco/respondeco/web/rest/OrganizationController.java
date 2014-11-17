@@ -9,6 +9,9 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,8 +53,7 @@ public class OrganizationController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-
-    public void create(@RequestBody OrganizationDTO newOrganization) {
+    public void create(@RequestBody @Valid OrganizationDTO newOrganization) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
         log.debug("REST request to save Organization : {}", newOrganization);
         organizationService.createOrganizationInformation(
                 newOrganization.getName(),
@@ -81,7 +84,7 @@ public class OrganizationController {
 
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Organization> get(@PathVariable String orgName) {
+    public ResponseEntity<Organization> get(@PathVariable String orgName) throws NoSuchOrganizationException {
         log.debug("REST request to get Organization : {}", orgName);
         return Optional.ofNullable(organizationService.getOrganizationByName(orgName))
                 .map(organization -> new ResponseEntity<>(
@@ -98,7 +101,7 @@ public class OrganizationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Organization> get() {
+    public ResponseEntity<Organization> get() throws NoSuchOrganizationException {
         log.debug("REST request to get Organization : {}" ,userService.getUserWithAuthorities().getLogin());
         return Optional.ofNullable(organizationService.getOrganizationByOwner())
                 .map(organization -> new ResponseEntity<>(
@@ -117,8 +120,8 @@ public class OrganizationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
 
-    public void update(@RequestBody OrganizationDTO organization) {
-        log.debug("REST request to save Organization : {}", organization);
+    public void update(@RequestBody @Valid OrganizationDTO organization) throws NoSuchOrganizationException{
+        log.debug("REST request to update Organization : {}", organization);
         organizationService.updaterOrganizationInformation(
                 organization.getName(),
                 organization.getDescription(),
@@ -134,7 +137,7 @@ public class OrganizationController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void delete() {
+    public void delete() throws NoSuchOrganizationException {
         log.debug("REST request to delete Organization : {}");
         organizationService.deleteOrganizationInformation();
     }

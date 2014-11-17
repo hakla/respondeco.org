@@ -9,6 +9,9 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.SecurityUtils;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
 import org.respondeco.respondeco.service.util.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,99 +38,82 @@ public class OrganizationService {
         this.userService = userService;
     }
 
-    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo) {
-        if(organizationRepository.findByName(name)==null) {
-            User currentUser = userService.getUserWithAuthorities();
-
-            Organization newOrganization = new Organization();
-
-            newOrganization.setName(name);
-            newOrganization.setDescription(description);
-            newOrganization.setEmail(email);
-            newOrganization.setIsNpo(isNpo);
-
-            if(organizationRepository.findByOwner(currentUser.getId())==null) {
-                newOrganization.setOwner(currentUser.getId());
-            }
-            else {
-                log.debug("Couldn't Create Information for Organization: {}", newOrganization);
-                //TODO ADD Exception
-                return null;
-            }
-            organizationRepository.save(newOrganization);
-            log.debug("Created Information for Organization: {}", newOrganization);
-            return newOrganization;
+    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+        if(organizationRepository.findByName(name)!=null) {
+            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
-        else {
-            log.debug("Couldn't Create Information for Organization because it already exists");
-            //TODO ADD Exception
-            return null;
+        User currentUser = userService.getUserWithAuthorities();
+
+        Organization newOrganization = new Organization();
+
+        newOrganization.setName(name);
+        newOrganization.setDescription(description);
+        newOrganization.setEmail(email);
+        newOrganization.setIsNpo(isNpo);
+
+        if (organizationRepository.findByOwner(currentUser.getId()) != null) {
+            throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
+        newOrganization.setOwner(currentUser.getId());
+
+        organizationRepository.save(newOrganization);
+        log.debug("Created Information for Organization: {}", newOrganization);
+        return newOrganization;
     }
 
     @Transactional(readOnly = true)
-    public Organization getOrganizationByName(String orgName) {
+    public Organization getOrganizationByName(String orgName) throws NoSuchOrganizationException {
         log.debug("getOrganizationByName(orgName) called");
 
         Organization currentOrganization = organizationRepository.findByName(orgName);
-        if(currentOrganization != null) {
-            log.debug("Found Information for Organization: {}", currentOrganization);
-            return currentOrganization;
-        }
-        else {
-            log.debug("Couldn't find Organization by Name");
-            return null;
+        if(currentOrganization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization does not exist", orgName));
         }
 
+        log.debug("Found Information for Organization: {}", currentOrganization);
+        return currentOrganization;
     }
 
     @Transactional(readOnly = true)
-    public Organization getOrganizationByOwner() {
+    public Organization getOrganizationByOwner() throws NoSuchOrganizationException {
         log.debug("getOrganizationByOwner() called");
 
         User currentUser = userService.getUserWithAuthorities();
 
         Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
-        if(currentOrganization != null) {
-            log.debug("Found Information for Organization: {}", currentOrganization);
-            return currentOrganization;
+        if(currentOrganization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
         }
-        else {
-            log.debug("Couldn't find Organization by Owner");
-            return null;
-        }
-
+        log.debug("Found Information for Organization: {}", currentOrganization);
+        return currentOrganization;
     }
 
-    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo) {
+    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo) throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
-        if(currentOrganization!=null) {
-            currentOrganization.setName(name);
-            currentOrganization.setDescription(description);
-            currentOrganization.setEmail(email);
-            currentOrganization.setIsNpo(isNpo);
-            currentOrganization.setOwner(currentUser.getId());
-            organizationRepository.save(currentOrganization);
-            log.debug("Changed Information for Organization: {}", currentOrganization);
+        if(currentOrganization==null) {
+            throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
         }
-        else {
-            log.debug("Couldn't Change Information for Organization: {}", name);
-            //TODO ADD Exception
+        if(name=="") {
+            throw new IllegalArgumentException(String.format("Name must not be an empty string"));
         }
+        currentOrganization.setName(name);
+        currentOrganization.setDescription(description);
+        currentOrganization.setEmail(email);
+        currentOrganization.setIsNpo(isNpo);
+        currentOrganization.setOwner(currentUser.getId());
+        organizationRepository.save(currentOrganization);
+        log.debug("Changed Information for Organization: {}", currentOrganization);
     }
 
-    public void deleteOrganizationInformation() {
+    public void deleteOrganizationInformation() throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
-        if(currentOrganization!=null) {
-            organizationRepository.delete(currentOrganization);
-            log.debug("Deleted Information for Organization: {}", currentOrganization);
+        if(currentOrganization==null) {
+            throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
         }
-        else {
-            log.debug("Couldn't Delete Information for Organization: {}");
-            //TODO ADD Exception
-        }
+        organizationRepository.delete(currentOrganization);
+        log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
 
 

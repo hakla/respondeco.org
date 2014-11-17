@@ -118,8 +118,8 @@ public class OrgJoinRequestControllerTest {
 
         orgjoinrequestDTO = new OrgJoinRequestDTO();
 
-        orgjoinrequestDTO.setOrgId(organization.getId());
-        orgjoinrequestDTO.setUserlogin(defaultUser.getLogin());
+        orgjoinrequestDTO.setOrgName(organization.getName());
+        orgjoinrequestDTO.setUserLogin(defaultUser.getLogin());
     }
 
     @Test

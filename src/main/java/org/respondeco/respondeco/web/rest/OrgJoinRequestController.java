@@ -6,6 +6,10 @@ import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrgJoinRequestException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +49,9 @@ public class OrgJoinRequestController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<OrgJoinRequest> create(@RequestBody OrgJoinRequestDTO orgjoinrequest1) {
+    public ResponseEntity<OrgJoinRequest> create(@RequestBody OrgJoinRequestDTO orgjoinrequest1) throws NoSuchOrganizationException, NoSuchUserException {
         log.debug("REST request to save OrgJoinRequest : {}", orgjoinrequest1);
-        return Optional.ofNullable(orgJoinRequestService.createOrgJoinRequest(orgjoinrequest1.getOrgId(),orgjoinrequest1.getUserlogin()))
+        return Optional.ofNullable(orgJoinRequestService.createOrgJoinRequest(orgjoinrequest1.getOrgName(),orgjoinrequest1.getUserLogin()))
                 .map(orgjoinrequest -> new ResponseEntity<>(
                         orgjoinrequest,
                         HttpStatus.OK))
@@ -75,7 +79,7 @@ public class OrgJoinRequestController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequest>> getByOrgName(@PathVariable String orgName) {
+    public ResponseEntity<List<OrgJoinRequest>> getByOrgName(@PathVariable String orgName) throws NoSuchOrganizationException {
         log.debug("REST request to get OrgJoinRequest : {}", orgName);
         return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByOrgName(orgName))
             .map(orgjoinrequest -> new ResponseEntity<>(
@@ -85,16 +89,16 @@ public class OrgJoinRequestController {
     }
 
     /**
-     * GET  /rest/orgjoinrequests/myOrgJoinRequests -> get the orgjoinrequest of own organization.
+     * GET  /rest/orgjoinrequests/:orgName -> get the "orgName" orgjoinrequest.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinrequests",
+    @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinRequests",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequest>> getRequestsByOwner() {
+    public ResponseEntity<List<OrgJoinRequest>> getByCurrentUser() {
         log.debug("REST request to get OrgJoinRequest : {}");
-        return Optional.ofNullable(orgJoinRequestService.getRequestsByOwner())
+        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByCurrentUser())
                 .map(orgjoinrequest -> new ResponseEntity<>(
                         orgjoinrequest,
                         HttpStatus.OK))
@@ -109,7 +113,7 @@ public class OrgJoinRequestController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void acceptRequest(@PathVariable Long id) {
+    public void acceptRequest(@PathVariable Long id) throws NoSuchOrganizationException, NoSuchUserException, NoSuchOrgJoinRequestException, AlreadyInOrganizationException {
         log.debug("REST request to accept user and delete OrgJoinRequest : {}", id);
         orgJoinRequestService.acceptRequest(id);
     }
@@ -122,7 +126,7 @@ public class OrgJoinRequestController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void declineRequest(@PathVariable Long id) {
+    public void declineRequest(@PathVariable Long id) throws NoSuchOrganizationException, NoSuchOrgJoinRequestException {
         log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
         orgJoinRequestService.declineRequest(id);
     }
