@@ -20,10 +20,12 @@
             <column name="name" type="varchar(255)"/>
             <column name="purpose" type="varchar(255)"/>
             <column name="is_concrete" type="boolean" defaultValue="false"/>
-            <column name="start_date" type="timestamp" />
-            <column name="end_date" type="timestamp" />
-            <column name="rating" type="real" />
+            <column name="start_date" type="date" />
+            <column name="end_date" type="date" />
+            <column name="rating" type="double" />
             <column name="rating_count" type="int" />
+
+            <column name="projectLogo_id" type="bigint"/>
 
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>

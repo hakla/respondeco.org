@@ -6,10 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,14 +19,12 @@ import java.math.BigDecimal;
 @Audited
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class ResourceBase extends AbstractAuditingNamedEntity implements Serializable {
+public abstract class ResourceBase extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     private BigDecimal amount;
 
+    @Column(length = 255)
     @NotNull
     private String description;
-
-    @NotNull
-    private Long resourceTag;
 }
