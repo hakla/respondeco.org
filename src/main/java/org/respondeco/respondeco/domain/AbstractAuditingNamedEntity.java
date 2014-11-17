@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
  * Created by Roman Kern on 13.11.14.
  * This class e
  */
+@Data
 @MappedSuperclass
 public abstract class AbstractAuditingNamedEntity extends AbstractAuditingEntity {
 

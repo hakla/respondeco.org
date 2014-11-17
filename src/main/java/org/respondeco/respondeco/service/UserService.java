@@ -6,6 +6,9 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.SecurityUtils;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
 import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -169,35 +172,41 @@ public class UserService {
         }
     }
 
-    public void deleteMember(String userlogin) {
+    public void deleteMember(String userlogin) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
         User user = getUserWithAuthorities();
         User member = userRepository.findByLogin(userlogin);
-        if(member != null) {
-            Organization organization = organizationRepository.findOne(member.getOrgId());
-            if(organization != null) {
-                if(organization.getOwner().equals(user.getLogin())) {
-                    log.debug("Deleting member from organization", user.getLogin(), organization.getName());
-                    member.setOrgId(null);
-                }
-            }
-        }
-        else {
-            log.debug("Couldn't Delete member from organization");
-            return;
-        }
+        Organization organization = organizationRepository.findOne(member.getOrgId());
 
+        if(member == null) {
+            throw new NoSuchUserException(String.format("User %s does not exist", userlogin));
+        }
+        if(organization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrgId()));
+        }
+        if(organization.getOwner().equals(user.getLogin())==false) {
+            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ", organization.getOwner()));
+        }
+        log.debug("Deleting member from organization", user.getLogin(), organization.getName());
+        member.setOrgId(null);
     }
 
-    public List<User> getUserByOrgId(Long orgId) {
+    public void leaveOrganization() {
+        User user = getUserWithAuthorities();
+
+        log.debug("Leaving organization");
+        user.setOrgId(null);
+    }
+
+    public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException, NotOwnerOfOrganizationException {
         Organization organization = organizationRepository.findOne(orgId);
         User user = getUserWithAuthorities();
-        if(organization != null) {
-            if(organization.getOwner().equals(user.getLogin())) {
-                log.debug("Finding members of organization", organization.getName());
-                return userRepository.findUserByOrgId(orgId);
-            }
+        if(organization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", orgId));
         }
-        log.debug("Couldn't Find members of organization");
-        return null;
+        if(organization.getOwner().equals(user.getId())==false) {
+            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s", orgId));
+        }
+        log.debug("Finding members of organization", organization.getName());
+        return userRepository.findUserByOrgId(orgId);
     }
 }

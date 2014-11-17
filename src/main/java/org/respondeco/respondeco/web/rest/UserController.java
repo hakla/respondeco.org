@@ -7,6 +7,9 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -63,7 +66,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    ResponseEntity<List<User>> getUserByOrgId(@PathVariable Long orgId) {
+    ResponseEntity<List<User>> getUserByOrgId(@PathVariable Long orgId) throws NoSuchOrganizationException, NotOwnerOfOrganizationException {
         log.debug("REST request to get Users by OrgId : {}", orgId);
         return Optional.ofNullable(userService.getUserByOrgId(orgId))
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
@@ -71,15 +74,28 @@ public class UserController {
     }
 
     /**
-     * POST  /rest/change_password -> changes the current user's password
+     * POST  /rest/deleteMember-> changes the current user's password
      */
     @RequestMapping(value = "/rest/user/deleteMember/{userlogin}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public void deleteMember(@PathVariable String userlogin) {
-        log.debug("REST request to get Users by OrgId : {}", userlogin);
+    public void deleteMember(@PathVariable String userlogin) throws NoSuchOrganizationException, NoSuchUserException, NotOwnerOfOrganizationException {
+        log.debug("REST request to delete Member : {}", userlogin);
         userService.deleteMember(userlogin);
+    }
+
+    /**
+     * POST  /rest/leaveOrg
+     */
+    @RequestMapping(value = "/rest/user/deleteMember/leaveOrganization",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public void leaveOrganization() {
+        log.debug("REST request to leave Organization : {}");
+        userService.leaveOrganization();
     }
 }

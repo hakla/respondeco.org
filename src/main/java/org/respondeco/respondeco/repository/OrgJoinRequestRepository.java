@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface OrgJoinRequestRepository extends JpaRepository<OrgJoinRequest, Long> {
     List<OrgJoinRequest> findByOrgId(Long orgId);
+    List<OrgJoinRequest> findByUserId(Long userId);
 }
