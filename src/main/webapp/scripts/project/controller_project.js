@@ -5,7 +5,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
         $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null};
         $scope.projects = Project.query();
         var searchText=null;
-        $scope.viewedProject = null;
+        $scope.viewedProject = Project.currentProject;
 
         $scope.create = function () {
             Project.save($scope.project,
@@ -23,6 +23,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
             Project.delete({id: id},
                 function () {
                     $scope.projects = Project.query();
+                    $location.path('/project');
                 });
         };
 
@@ -33,8 +34,6 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
         $scope.viewProjectDetails = function (viewedProject) {
             Project.setProject(viewedProject);
             $location.path('/project/viewDetails');
-            $scope.viewedProject = Project.currentProject;
-            alert(viewedProject.name);
         };
 
         $scope.createProject = function () {

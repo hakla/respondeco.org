@@ -45,6 +45,9 @@ public class OrganizationService {
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
+        if(name=="" || name==null){
+            throw new IllegalArgumentException(String.format("Organization name must not be empty"));
+        }
         User currentUser = userService.getUserWithAuthorities();
 
         Organization newOrganization = new Organization();

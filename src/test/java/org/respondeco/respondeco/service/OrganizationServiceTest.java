@@ -21,6 +21,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,8 +38,8 @@ import static org.mockito.Mockito.*;
 @WebAppConfiguration
 public class OrganizationServiceTest {
 
-    @Mock
-    private OrganizationRepository organizationRepositoryMock;
+    @Inject
+    private OrganizationRepository organizationRepository;
 
     @Mock
     private UserService userServiceMock;
@@ -48,10 +49,20 @@ public class OrganizationServiceTest {
 
     private OrganizationService organizationService;
 
+    private User defaultUser;
+    private User orgOwner;
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        organizationService = new OrganizationService(organizationRepositoryMock, userServiceMock, userRepositoryMock);
+        organizationService = new OrganizationService(organizationRepository, userServiceMock, userRepositoryMock);
+        defaultUser = new User();
+        defaultUser.setId(1L);
+        defaultUser.setLogin("testUser");
+        orgOwner = new User();
+        orgOwner.setId(2L);
+        orgOwner.setLogin("testOwner");
+        organizationRepository.deleteAll();
     }
 
     @Test
@@ -60,24 +71,16 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
-        /*
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+
         Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
         assertNotNull(organization);
         assertEquals(organization.getName(), name);
         assertEquals(organization.getDescription(), description);
         assertEquals(organization.getEmail(), email);
         assertEquals(organization.getIsNpo(),isNpo);
-        assertEquals(organization.getOwner(),currentUser.getId());
-        */
-
-        verify(organizationRepositoryMock, times(1)).save(isA(Organization.class));
-        verify(userServiceMock, times(1)).getUserWithAuthorities();
+        assertEquals(organization.getOwner(),orgOwner.getId());
     }
 
     @Test(expected = OrganizationAlreadyExistsException.class)
@@ -86,14 +89,12 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         organizationService.createOrganizationInformation(name,description,email,isNpo);
     }
 
@@ -103,11 +104,8 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
@@ -118,11 +116,8 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
@@ -141,22 +136,19 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        Organization organization1 = organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo);
 
-        Organization organization2 = organizationService.getOrganizationByName(name);
+        Organization organization = organizationService.getOrganizationByName(name);
 
-        assertEquals(organization1.getName(),organization2.getName());
-        assertEquals(organization1.getDescription(),organization2.getDescription());
-        assertEquals(organization1.getEmail(),organization2.getEmail());
-        assertEquals(organization1.getIsNpo(),organization2.getIsNpo());
-        assertEquals(organization1.getOwner(), organization2.getOwner());
+        assertEquals(organization.getName(), name);
+        assertEquals(organization.getDescription(),description);
+        assertEquals(organization.getEmail(),email);
+        assertEquals(organization.getIsNpo(),isNpo);
+        assertEquals(organization.getOwner(), orgOwner.getId());
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -165,11 +157,8 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
@@ -182,22 +171,19 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        Organization organization1 = organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo);
 
-        Organization organization2 = organizationService.getOrganizationByOwner();
+        Organization organization = organizationService.getOrganizationByOwner();
 
-        assertEquals(organization1.getName(),organization2.getName());
-        assertEquals(organization1.getDescription(),organization2.getDescription());
-        assertEquals(organization1.getEmail(),organization2.getEmail());
-        assertEquals(organization1.getIsNpo(),organization2.getIsNpo());
-        assertEquals(organization1.getOwner(), organization2.getOwner());
+        assertEquals(organization.getName(),name);
+        assertEquals(organization.getDescription(),description);
+        assertEquals(organization.getEmail(),email);
+        assertEquals(organization.getIsNpo(),isNpo);
+        assertEquals(organization.getOwner(), orgOwner.getId());
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -206,17 +192,11 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setLogin("testUser");
 
-        User currentUser = new User();
-        currentUser.setId(2L);
-        currentUser.setLogin("currentUser");
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         organizationService.getOrganizationByOwner();
     }
 
@@ -226,11 +206,8 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
 
@@ -252,11 +229,8 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
         organizationService.createOrganizationInformation(name,description,email,isNpo);
 
@@ -269,23 +243,13 @@ public class OrganizationServiceTest {
 
     @Test(expected = NoSuchOrganizationException.class)
     public void testUpdateOrganization_NotExisting() throws Exception {
-        String name = "testOrg";
-        String description = "testDescription";
-        String email = "test@email.com";
+
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+
+        String name = "testOrg2";
+        String description = "testDescription2";
+        String email = "test2@email.com";
         Boolean isNpo = false;
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setLogin("testUser");
-
-        User currentUser = new User();
-        currentUser.setId(2L);
-        currentUser.setLogin("currentUser");
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-
-        name = "testOrg2";
-        description = "testDescription2";
-        email = "test2@email.com";
 
         organizationService.updaterOrganizationInformation(name, description, email, isNpo);
     }
@@ -296,34 +260,20 @@ public class OrganizationServiceTest {
         String description = "testDescription";
         String email = "test@email.com";
         Boolean isNpo = false;
-        User currentUser = new User();
-        currentUser.setId(1L);
-        currentUser.setLogin("testUser");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
         Organization organization = organizationService.createOrganizationInformation(name, description, email, isNpo);
 
         organizationService.deleteOrganizationInformation();
 
-        assertNull(organization);
+        assertNull(organizationRepository.findOne(organization.getId()));
     }
 
     @Test(expected = NoSuchOrganizationException.class)
     public void testDeleteOrganization_NotExisting() throws Exception {
-        String name = "testOrg";
-        String description = "testDescription";
-        String email = "test@email.com";
-        Boolean isNpo = false;
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setLogin("testUser");
 
-        User currentUser = new User();
-        currentUser.setId(2L);
-        currentUser.setLogin("currentUser");
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
 
         organizationService.deleteOrganizationInformation();
     }

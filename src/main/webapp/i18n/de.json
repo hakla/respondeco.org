@@ -108,10 +108,12 @@
         "projects": {
             "title": "Projekte",
             "createProject": {
-                "title": "Neues Projekt erstellen"
+                "title": "Neues Projekt erstellen",
+                "tag":"Tag hinzufügen"
             },
             "details": {
-                "title": "Projektdetails"
+                "title": "Projektdetails",
+                "delete": "Löschen"
             },
             "categories": {
                 "title": "Kategorien",
