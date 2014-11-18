@@ -6,9 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * Created by Roman Kern on 15.11.14.
+ * Spring Data JPA repository for the ResourceTag entity.
  */
 public interface ResourceTagRepository extends JpaRepository<ResourceTag, Long> {
-
     List<ResourceTag> findByName(String name);
 }

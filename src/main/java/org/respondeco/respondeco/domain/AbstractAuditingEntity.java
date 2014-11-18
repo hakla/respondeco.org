@@ -54,8 +54,32 @@ public abstract class AbstractAuditingEntity {
     @Column(name = "is_active")
     protected boolean active= true;
 
+    public Long getId(){
+        return this.id;
+    }
+
+    private void setId(Long id){
+        this.id = id;
+    }
+
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AbstractAuditingEntity other = (AbstractAuditingEntity) o;
+
+        if (id != null ? !id.equals(other.id) : other.id != null) return false;
+
+        return true;
     }
 }

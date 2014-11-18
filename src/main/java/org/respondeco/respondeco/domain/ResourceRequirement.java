@@ -3,8 +3,6 @@ package org.respondeco.respondeco.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.respondeco.respondeco.domain.util.CustomDateTimeDeserializer;
-import org.respondeco.respondeco.domain.util.CustomDateTimeSerializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -36,38 +34,17 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     @Column(name = "is_essential")
     private Boolean isEssential;
 
-    /*
-    @ManyToMany(mappedBy = "resourceRequirements")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ResourceTag> resourceTags = new HashSet<>();
+
 
     @OneToMany(mappedBy = "resourceRequirement")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Project> projects = new HashSet<>();
+    private Project project;
 
     @ManyToMany(mappedBy = "resourceRequirements")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements = new HashSet<>();
-
-        public BigDecimal getAmount() {
-        return amount;
-    }
-    */
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public Long getProjectId() {
         return projectId;
@@ -85,21 +62,12 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
         this.isEssential = isEssential;
     }
 
-    /*
-    public Set<ResourceTag> getResourceTags() {
-        return resourceTags;
+    public Project getProjects() {
+        return project;
     }
 
-    public void setResourceTags(Set<ResourceTag> resourceTags) {
-        this.resourceTags = resourceTags;
-    }
-
-    public Set<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
+    public void setProject(Project project) {
+        this.project = project;
     }
     public Set<ResourceOfferJoinResourceRequirement> getResourceOfferJoinResourceRequirements() {
         return resourceOfferJoinResourceRequirements;
@@ -107,22 +75,6 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
 
     public void setResourceOfferJoinResourceRequirements(Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements) {
         this.resourceOfferJoinResourceRequirements = resourceOfferJoinResourceRequirements;
-    }
-    */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        ResourceRequirement resourceRequirement = (ResourceRequirement) o;
-
-        if (id != null ? !id.equals(resourceRequirement.id) : resourceRequirement.id != null) return false;
-
-        return true;
     }
 
     @Override

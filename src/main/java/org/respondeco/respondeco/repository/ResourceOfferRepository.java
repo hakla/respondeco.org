@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * Created by Roman Kern on 15.11.14.
+ * Spring Data JPA repository for the ResourceOffer entity.
  */
 public interface ResourceOfferRepository extends JpaRepository<ResourceOffer, Long> {
 
-    List<ResourceOffer> findByDescriptionAndOrganisationId(String name, Long organisationId);
+    List<ResourceOffer> findByDescriptionAndOrganisationId(String description, Long organisationId);
 }
