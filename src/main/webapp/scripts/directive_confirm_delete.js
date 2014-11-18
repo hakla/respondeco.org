@@ -7,7 +7,7 @@ respondecoApp
         return {
             restrict: 'AE',
             replace: true,
-            templateUrl: 'templates/confirm_delete.html',
+            templateUrl: 'template/confirm_delete.html',
             scope: {
                 onConfirm: '&'
             },
