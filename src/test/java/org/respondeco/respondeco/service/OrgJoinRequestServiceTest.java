@@ -58,7 +58,7 @@ public class OrgJoinRequestServiceTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         orgJoinRequestService = new OrgJoinRequestService(orgJoinRequestRepositoryMock, userServiceMock, userRepositoryMock, organizationRepositoryMock);
-        organizationService = new OrganizationService(organizationRepositoryMock,userServiceMock);
+        organizationService = new OrganizationService(organizationRepositoryMock,userServiceMock,userRepositoryMock);
     }
 
     @Test

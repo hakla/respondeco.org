@@ -1,32 +1,43 @@
 'use strict';
 
-respondecoApp.controller('ProjectIdeaController', function ($scope, resolvedProjectIdea, ProjectIdea, resolvedOrganization) {
+respondecoApp.controller('ProjectController', function ($scope, Project, $location) {
 
-        $scope.projectideas = resolvedProjectIdea;
-        $scope.Organizations = resolvedOrganization;
+        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null};
+        $scope.projects = Project.query();
+        var searchText=null;
+        $scope.viewedProject = null;
 
         $scope.create = function () {
-            ProjectIdea.save($scope.projectidea,
+            Project.save($scope.project,
                 function () {
-                    $scope.projectideas = ProjectIdea.query();
-                    $('#saveProjectIdeaModal').modal('hide');
+                    $scope.projects = Project.query();
                     $scope.clear();
                 });
         };
 
         $scope.update = function (id) {
-            $scope.projectidea = ProjectIdea.get({id: id});
-            $('#saveProjectIdeaModal').modal('show');
+            $scope.project = Project.get({id: id});
         };
 
         $scope.delete = function (id) {
-            ProjectIdea.delete({id: id},
+            Project.delete({id: id},
                 function () {
-                    $scope.projectideas = ProjectIdea.query();
+                    $scope.projects = Project.query();
                 });
         };
 
         $scope.clear = function () {
-            $scope.projectidea = {organizationId: null, name: null, purpose: null, projectLogo: null, id: null};
+            $scope.project = {id: null, name: null, purpose: null, concrete:false,startDate:null,endDate:null};
+        };
+
+        $scope.viewProjectDetails = function (viewedProject) {
+            Project.setProject(viewedProject);
+            $location.path('/project/viewDetails');
+            $scope.viewedProject = Project.currentProject;
+            alert(viewedProject.name);
+        };
+
+        $scope.createProject = function () {
+            $location.path('/project/create');
         };
     });

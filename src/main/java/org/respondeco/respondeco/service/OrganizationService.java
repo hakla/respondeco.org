@@ -32,10 +32,13 @@ public class OrganizationService {
 
     private UserService userService;
 
+    private UserRepository userRepository;
+
     @Inject
-    public OrganizationService(OrganizationRepository organizationRepository, UserService userService) {
+    public OrganizationService(OrganizationRepository organizationRepository, UserService userService, UserRepository userRepository) {
         this.organizationRepository = organizationRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
@@ -56,7 +59,8 @@ public class OrganizationService {
         }
         newOrganization.setOwner(currentUser.getId());
 
-        organizationRepository.save(newOrganization);
+        currentUser.setOrgId(organizationRepository.save(newOrganization).getId());
+        userRepository.save(currentUser);
         log.debug("Created Information for Organization: {}", newOrganization);
         return newOrganization;
     }
@@ -92,7 +96,7 @@ public class OrganizationService {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
         if(currentOrganization==null) {
-            throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
+            throw new NoSuchOrganizationException(String.format("Organization does not exist for %s", currentUser.getLogin()));
         }
         if(name=="") {
             throw new IllegalArgumentException(String.format("Name must not be an empty string"));
@@ -102,6 +106,7 @@ public class OrganizationService {
         currentOrganization.setEmail(email);
         currentOrganization.setIsNpo(isNpo);
         currentOrganization.setOwner(currentUser.getId());
+
         organizationRepository.save(currentOrganization);
         log.debug("Changed Information for Organization: {}", currentOrganization);
     }

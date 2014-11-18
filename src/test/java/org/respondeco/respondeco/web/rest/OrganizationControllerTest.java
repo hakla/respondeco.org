@@ -62,6 +62,9 @@ public class OrganizationControllerTest {
     private UserService userService;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private OrganizationService organizationService;
 
     private MockMvc restOrganizationMockMvc;
@@ -85,7 +88,7 @@ public class OrganizationControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganizationService organizationService = new OrganizationService(organizationRepository, userService);
+        OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository);
         OrganizationController organizationController = new OrganizationController(organizationRepository, organizationService, userService);
 
         userAuthorities = new HashSet<>();

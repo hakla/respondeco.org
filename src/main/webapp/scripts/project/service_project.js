@@ -1,8 +1,10 @@
 'use strict';
 
-respondecoApp.factory('ProjectIdea', function ($resource) {
-        return $resource('app/rest/projectideas/:id', {}, {
-            'query': { method: 'GET', isArray: true},
-            'get': { method: 'GET'}
-        });
+respondecoApp.factory('Project', function ($resource) {
+    var project = $resource('app/rest/project/:id', {}, {});
+    project.currentProject = null;
+    project.setProject = function (project) {
+        this.currentProject = project;
+    }
+    return project;
     });

@@ -1,0 +1,28 @@
+<div>
+
+    <h2 translate="global.projects.createProject.title">Creating a project</h2>
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectName" translate="global.projects.name">Name of project</label>
+                <input class="col-md-3" type="text" id="projectName" ng-model="project.name"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectPurpose" translate="global.projects.purpose">Purpose of project</label>
+                <input class="col-md-3" type="text" id="projectPurpose" ng-model="project.purpose"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectConcrete" translate="global.projects.concrete">Concrete flag of project</label>
+                <input class="col-md-3" type="checkbox" id="projectConcrete" ng-model="project.concrete"/>
+            </div>
+        </div>
+        <button class="btn-success" ng-click="create()">
+            <span class="glyphicon glyphicon-plus"></span>
+            <span translate="global.projects.createProject.title">Create a new TextMessage</span>
+        </button>
+    </div>
+</div>
