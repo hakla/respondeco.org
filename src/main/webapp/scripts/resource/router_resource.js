@@ -25,5 +25,16 @@ respondecoApp
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
+                }).when('/ownresource', {
+                    templateUrl: '/views/resources-own.html',
+                    controller: 'ResourceController',
+                    resolve: {
+                        resolvedResources: ['Resource', function(Resource) {
+                            return Resource.query();
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
                 }).otherwise({redirectTo:'/'});
     });

@@ -22,7 +22,7 @@
         <!--[if lt IE 10]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div class="development"></div>
+        <div class="ribbon-development"></div>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
@@ -45,9 +45,9 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#/business">
+                            <a href="#/organization">
                                 <span class="glyphicon glyphicon-briefcase"></span>
-                                <span translate="global.menu.business">Organization</span>
+                                <span translate="global.menu.organization">Organization</span>
                             </a>
                         </li>
                         <li>
@@ -78,9 +78,6 @@
                                 <li ng-switch-when="true"><a href="#/organization"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;organization</a></li>
                                 <li ng-switch-when="true"><a href="#/logo"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;logo</a></li>
                                 <li ng-switch-when="true"><a href="#/orgjoinrequest"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;orgjoinrequest</a></li>
-                                <li ng-switch-when="true"><a href="#/projectidea"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;projectidea</a></li>
-                                <li ng-switch-when="true"><a href="#/propertytag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;propertytag</a></li>
-                                <li ng-switch-when="true"><a href="#/concreteproject"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;concreteproject</a></li>
                                 <!-- JHipster will add entities to the menu here -->
                             </ul>
                         </li>
@@ -244,7 +241,6 @@
         <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
         <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
         <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
-        <script src="bower_components/angular-animate/angular-animate.js"></script>
         <script src="scripts/http-auth-interceptor.js"></script>
         <script src="scripts/truncate.js"></script>
         <script src="scripts/utils.js"></script>
@@ -280,16 +276,9 @@
         <script src="scripts/orgjoinrequest/router_orgjoinrequest.js"></script>
         <script src="scripts/orgjoinrequest/controller_orgjoinrequest.js"></script>
         <script src="scripts/orgjoinrequest/service_orgjoinrequest.js"></script>
-        <script src="scripts/projectidea/router_projectidea.js"></script>
-        <script src="scripts/projectidea/controller_projectidea.js"></script>
-        <script src="scripts/projectidea/service_projectidea.js"></script>
-        <script src="scripts/propertytag/router_propertytag.js"></script>
-        <script src="scripts/propertytag/controller_propertytag.js"></script>
-        <script src="scripts/propertytag/service_propertytag.js"></script>
-        <script src="scripts/concreteproject/router_concreteproject.js"></script>
-        <script src="scripts/concreteproject/controller_concreteproject.js"></script>
-        <script src="scripts/concreteproject/service_concreteproject.js"></script>
-		<script src="scripts/resource/router_resource.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="scripts/resource/router_resource.js"></script>
         <script src="scripts/resource/controller_resource.js"></script>
         <script src="scripts/resource/service_resource.js"></script>
         <!-- endbuild -->
