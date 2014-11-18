@@ -35,8 +35,8 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     private Boolean isEssential;
 
 
-
-    @OneToMany(mappedBy = "resourceRequirement")
+/*
+    @OneToOne(mappedBy = "resourceRequirement")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Project project;
@@ -45,7 +45,7 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements = new HashSet<>();
-
+*/
     public Long getProjectId() {
         return projectId;
     }
@@ -61,7 +61,7 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     public void setIsEssential(Boolean isEssential) {
         this.isEssential = isEssential;
     }
-
+/*
     public Project getProjects() {
         return project;
     }
@@ -76,7 +76,7 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     public void setResourceOfferJoinResourceRequirements(Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements) {
         this.resourceOfferJoinResourceRequirements = resourceOfferJoinResourceRequirements;
     }
-
+*/
     @Override
     public String toString() {
         return "ResourceRequirement{" +

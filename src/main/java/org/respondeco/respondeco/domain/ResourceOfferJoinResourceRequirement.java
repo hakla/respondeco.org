@@ -2,8 +2,6 @@ package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.respondeco.respondeco.domain.util.CustomDateTimeDeserializer;
-import org.respondeco.respondeco.domain.util.CustomDateTimeSerializer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;

@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/app")
 public class ResourceController {
-    private final Logger log = LoggerFactory.getLogger(ResourceOfferJoinResourceRequirementResource.class);
+    private final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
     private ResourcesService resourcesService;
 

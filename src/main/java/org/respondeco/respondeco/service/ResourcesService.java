@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,7 +112,7 @@ public class ResourcesService {
     }
 
     public List<ResourceRequirementDTO> getAllRequirements(){
-        List<ResourceRequirementDTO> result = new List<>();
+        List<ResourceRequirementDTO> result = new ArrayList<ResourceRequirementDTO>();
         for(ResourceRequirement requirement: this.resourceRequirementRepository.findAll()){
             result.add(new ResourceRequirementDTO(requirement));
         }
@@ -119,7 +120,7 @@ public class ResourcesService {
     }
 
     public List<ResourceRequirementDTO> getAllRequirements(Long projectId){
-        List<ResourceRequirementDTO> result = new List<>();
+        List<ResourceRequirementDTO> result = new ArrayList<ResourceRequirementDTO>();
         for(ResourceRequirement requirement: this.resourceRequirementRepository.findByProjectId(projectId)){
             result.add(new ResourceRequirementDTO(requirement));
         }
@@ -164,7 +165,7 @@ public class ResourcesService {
     }
 
     public List<ResourceOfferDTO> getAllOffers(){
-        List<ResourceOfferDTO> result = new List<>();
+        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         for(ResourceOffer offer: this.resourceOfferRepository.findAll()){
             result.add(new ResourceOfferDTO(offer));
         }
@@ -172,7 +173,7 @@ public class ResourcesService {
     }
 
     public List<ResourceOfferDTO> getAllOffers(Long organisationId){
-        List<ResourceOfferDTO> result = new List<>();
+        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         for(ResourceOffer offer: this.resourceOfferRepository.findByOrganisationId(organisationId)){
             result.add(new ResourceOfferDTO(offer));
         }
