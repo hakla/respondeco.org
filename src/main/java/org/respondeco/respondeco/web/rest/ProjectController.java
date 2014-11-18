@@ -7,6 +7,7 @@ import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,9 @@ public class ProjectController {
         } catch(IllegalArgumentException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch(OperationForbiddenException e) {
+            log.error("Could not save Project : {}", project, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }
@@ -84,8 +88,11 @@ public class ProjectController {
             projectService.setManager(id, newManager);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch(IllegalArgumentException | NoSuchUserException e) {
-            log.error("Could not manager of project {} to {}", id, newManager, e);
+            log.error("Could not set manager of project {} to {}", id, newManager, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch(OperationForbiddenException e) {
+            log.error("Could not set manager of project {} to {}", id, newManager, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }
@@ -128,8 +135,18 @@ public class ProjectController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         log.debug("REST request to delete ProjectIdea : {}", id);
-        projectService.delete(id);
+        ResponseEntity<?> responseEntity = null;
+        try {
+            projectService.delete(id);
+        } catch(IllegalArgumentException e) {
+            log.error("Could not delete project {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch(OperationForbiddenException e) {
+            log.error("Could not delete project {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return responseEntity;
     }
 }
