@@ -79,7 +79,7 @@ public class OrgJoinRequestService {
         return orgJoinRequestRepository.findByUserId(user.getId());
     }
 
-    public void acceptRequest(Long requestId) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException, NoSuchUserException, AlreadyInOrganizationException {
+    public void acceptRequest(Long requestId) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException, AlreadyInOrganizationException {
         User user = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(requestId);
         if(orgJoinRequest==null) {

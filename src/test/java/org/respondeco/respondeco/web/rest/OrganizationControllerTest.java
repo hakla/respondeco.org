@@ -85,6 +85,8 @@ public class OrganizationControllerTest {
     private static final Boolean DEFAULT_NPO = true;
     private static final Boolean UPDATED_NPO = false;
 
+    private static final Long ID = new Long(1L);
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -97,7 +99,7 @@ public class OrganizationControllerTest {
         userAuthorities.add(authority);
 
         this.defaultUser = new User();
-        this.defaultUser.setId(1L);
+        this.defaultUser.setId(ID);
         this.defaultUser.setCreatedDate(null);
         this.defaultUser.setLastModifiedDate(null);
         this.defaultUser.setLogin("testuser");
@@ -118,6 +120,8 @@ public class OrganizationControllerTest {
         organizationDTO.setDescription(DEFAULT_DESCRIPTION);
         organizationDTO.setEmail(DEFAULT_EMAIL);
         organizationDTO.setNpo(DEFAULT_NPO);
+
+        organizationRepository.deleteAll();
     }
 
     @Test
@@ -136,12 +140,11 @@ public class OrganizationControllerTest {
 
         // Read Organization
         restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_ORGNAME))
-        .andExpect(status().isOk())
+                 .andExpect(status().isOk())
                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                  .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
                  .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
                  .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-                 .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
                  .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
 
         // Read my Organization
@@ -151,7 +154,6 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
                 .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-                .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
                 .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
 
         // Update Organization
@@ -172,7 +174,6 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.name").value(UPDATED_ORGNAME))
                 .andExpect(jsonPath("$.description").value(UPDATED_DESCRIPTION))
                 .andExpect(jsonPath("$.email").value(UPDATED_EMAIL))
-                .andExpect(jsonPath("$.owner").value(this.defaultUser.getLogin()))
                 .andExpect(jsonPath("$.isNpo").value(UPDATED_NPO));
 
         // Delete Organization
