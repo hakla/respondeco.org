@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,31 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
 
     @Column(name = "organisation_id")
     private Long organisationId;
+
+    @Column(name = "is_commercial", nullable = false)
+    private Boolean isCommercial = false;
+
+    @Column(name = "is_recurrent")
+    private Boolean isRecurrent = false;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Column(name = "start_date")
+    private DateTime startDate;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Column(name = "end_date")
+    private DateTime endDate;
+
+
+    public void setIsCommercial(Boolean isCommercial){ this.isCommercial = isCommercial; }
+    public void setIsRecurrent(Boolean isRecurrent){ this.isRecurrent = isRecurrent; }
+    public void setStartDate(DateTime startDate){ this.startDate = startDate; }
+    public void setEndDate(DateTime endDate){ this.endDate = endDate; }
+
+    public Boolean getIsCommercial() { return this.isCommercial; }
+    public Boolean getIsRecurrent() { return this.isRecurrent; }
+    public DateTime getStartDate() { return this.startDate; }
+    public DateTime getEndDate() { return this.endDate; }
 
     @ManyToMany(mappedBy = "resourceOffers")
     @JsonIgnore
@@ -58,6 +84,10 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
                 ", amount='" + amount + "'" +
                 ", description='" + description + "'" +
                 ", organisationId='" + organisationId + "'" +
+                ", isCommercial='" + isCommercial + "'" +
+                ", isRecurrent='" + isRecurrent + "'" +
+                ", startDate='" + startDate + "'" +
+                ", endDate='" + endDate + "'" +
                 ", createBy='" + createdBy + "'" +
                 ", createdDate='" + createdDate + "'" +
                 ", lastModifiedBy='" + lastModifiedBy + "'" +

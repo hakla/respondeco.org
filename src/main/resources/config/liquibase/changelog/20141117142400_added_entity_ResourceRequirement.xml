@@ -30,5 +30,12 @@
             <column name="is_active" type="bit"/>
         </createTable>
 
+        <createIndex indexName="idx_resource_requirement"
+                     tableName="T_RESOURCEREQUIREMENT"
+                     unique="true">
+            <column name="description" type="varchar(255)"/>
+            <column name="project_id" type="bigint"/>
+        </createIndex>
+
     </changeSet>
 </databaseChangeLog>

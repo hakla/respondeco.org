@@ -18,6 +18,10 @@
             <column name="amount" type="decimal(10,2)"/>
             <column name="description" type="varchar(255)"/>
             <column name="organisation_id" type="bigint"/>
+            <column name="is_commercial" type="bit" defaultValue="false"/>
+            <column name="is_recurrent" type="bit" defaultValue="false"/>
+            <column name="start_date" type="timestamp"/>
+            <column name="end_date" type="timestamp"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>
@@ -28,6 +32,13 @@
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="bit"/>
         </createTable>
+
+        <createIndex indexName="idx_resource_offer"
+                     tableName="T_RESOURCEOFFER"
+                     unique="true">
+            <column name="description" type="varchar(255)"/>
+            <column name="organisation_id" type="bigint"/>
+        </createIndex>
 
     </changeSet>
 </databaseChangeLog>

@@ -3,6 +3,8 @@ package org.respondeco.respondeco.service;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
+import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -83,12 +85,11 @@ public class ResourcesService {
         return newRequirement;
     }
 
-    public ResourceRequirement updateRequirement(Long id, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags){
+    public ResourceRequirement updateRequirement(Long id, BigDecimal amount, String description, Boolean isEssential, String[] resourceTags){
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if(requirement != null){
             requirement.setAmount(amount);
             requirement.setDescription(description);
-            requirement.setProjectId(projectId);
             requirement.setIsEssential(isEssential);
 
             this.resourceRequirementJoinResourceTagRepository.deleteByRequirementId(id);
@@ -107,6 +108,22 @@ public class ResourcesService {
             this.resourceRequirementJoinResourceTagRepository.deleteByRequirementId(id);
             this.resourceRequirementRepository.delete(id);
         }
+    }
+
+    public List<ResourceRequirementDTO> getAllRequirements(){
+        List<ResourceRequirementDTO> result = new List<>();
+        for(ResourceRequirement requirement: this.resourceRequirementRepository.findAll()){
+            result.add(new ResourceRequirementDTO(requirement));
+        }
+        return result;
+    }
+
+    public List<ResourceRequirementDTO> getAllRequirements(Long projectId){
+        List<ResourceRequirementDTO> result = new List<>();
+        for(ResourceRequirement requirement: this.resourceRequirementRepository.findByProjectId(projectId)){
+            result.add(new ResourceRequirementDTO(requirement));
+        }
+        return result;
     }
 
     public ResourceOffer createOffer(BigDecimal amount, String description, Long organisationId, String[] resourceTags){
@@ -144,6 +161,22 @@ public class ResourcesService {
             this.resourceOfferJoinResourceTagRepository.deleteByOfferId(offerId);
             this.resourceOfferRepository.delete(offerId);
         }
+    }
+
+    public List<ResourceOfferDTO> getAllOffers(){
+        List<ResourceOfferDTO> result = new List<>();
+        for(ResourceOffer offer: this.resourceOfferRepository.findAll()){
+            result.add(new ResourceOfferDTO(offer));
+        }
+        return result;
+    }
+
+    public List<ResourceOfferDTO> getAllOffers(Long organisationId){
+        List<ResourceOfferDTO> result = new List<>();
+        for(ResourceOffer offer: this.resourceOfferRepository.findByOrganisationId(organisationId)){
+            result.add(new ResourceOfferDTO(offer));
+        }
+        return result;
     }
 
     private void saveOffersJoinTags(ResourceOffer offer, String[] resourceTags){

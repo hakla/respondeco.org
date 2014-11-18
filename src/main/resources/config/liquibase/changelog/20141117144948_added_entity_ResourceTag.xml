@@ -27,5 +27,11 @@
             <column name="is_active" type="bit"/>
         </createTable>
 
+        <createIndex indexName="idx_resource_tag"
+                     tableName="T_RESOURCETAG"
+                     unique="true">
+            <column name="name" type="varchar(255)"/>
+        </createIndex>
+
     </changeSet>
 </databaseChangeLog>
