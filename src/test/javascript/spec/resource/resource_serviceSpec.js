@@ -21,25 +21,21 @@ describe('Resource Service Tests ', function () {
             httpBackend.verifyNoOutstandingRequest();
         });
 
-        it('should call backend when saving a text message', function(){
-            //GIVEN
-            //set up some data for the http call to return and test later.
+        it('should call the backend when resource gets saved', function(){
             var returnData = { result: 'ok' };
             var resource = { name: 'Resource', amount: '1', dateStart: 'Dec 6, 2014 20:35:02',
                 dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
                 company: 'Company' };
-            //expectGET to make sure this is called once.
-            httpBackend.expectPOST('app/rest/resources').respond(returnData);
 
-            //WHEN
+            httpBackend.expectPOST('app/rest/resources').respond(returnData);
             serviceTested.save(resource);
-            //flush the backend to "execute" the request to do the expected POST assertion.
+
             httpBackend.flush();
         });
 
         it('should get resources from the backend', function() {
 
-            var resourcesBackend = [{
+            httpBackend.expectGET('app/rest/resources').respond([{
                 id: 0, name: 'TestResource', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
                 dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
                 company: 'Company'
@@ -51,13 +47,17 @@ describe('Resource Service Tests ', function () {
                 id: 2, name: 'TestResource3', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
                 dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
                 company: 'Company'
-            }];
+            }]);
 
-            httpBackend.expectGET('app/rest/resources').respond(resourcesBackend);
+            var resources;
 
-            serviceTested.query();
+            serviceTested.query(function (test) {
+                resources = test;
+            });
 
+            expect(resources).toBeUndefined();
             httpBackend.flush();
-        })
+            expect(resources).toBeDefined();
+        });
     });
 });

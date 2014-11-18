@@ -44,6 +44,34 @@
             "cancel": "Abbrechen",
             "confirm": "Bestätigen"
         },
+        "resource": {
+            "title":"Ressourcen",
+            "name": "Name",
+            "company": "Unternehmen",
+            "amount": "Anzahl",
+            "datefrom": "Verfügbar ab",
+            "dateto": "Verfügbar bis",
+            "commercial":"Kommerziell",
+            "recurrent":"Wiederkehrend",
+            "newbutton":"Neue Ressource anlegen",
+            "new": {
+                "title": "Neue Ressource anlegen",
+                "name": "Name",
+                "description": "Beschreibung",
+                "amount":"Anzahl",
+                "commercial":"Kommerzielle Ressource",
+                "recurrent":"Wiederkehrende Ressource",
+                "datefrom": "Verfügbar ab",
+                "dateto":"Verfügbar bis",
+                "savebutton":"Speichern",
+                "cancelbutton":"Abbrechen"
+            },
+            "placeholder": {
+                "name": "Name der Ressource",
+                "description" : "Beschreibung der Ressource",
+                "amount" : "Anzahl der Ressourcen"
+            }
+        },
         "messages": {
             "info": {
                 "authenticated": "Wenn Sie sich <a href=\"#/login\">anmelden</a> möchten, versuchen Sie es mit <br/>- Administrator (Name=\"admin\" und Passwort=\"admin\")<br/>- Benutzer (Name=\"user\" und Passwort=\"user\").",
