@@ -4,7 +4,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 
 	$scope.resource = {id: null, name: null, amount: null, dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
 	$scope.resources = Resource.query();
-
+	$scope.singleModel = 0;
 
 	$scope.redirectToResource = function(name) {
 		$location.path('resource/' + name);
@@ -21,7 +21,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 		Resource.save($scope.resource, 
 			function() {
 				$scope.resources = Resource.query();
-				$('#newResourceModal').modal('hide');
 				$scope.clear();
 			}, 
 			function() {

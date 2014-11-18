@@ -64,7 +64,8 @@
                 "datefrom": "Verfügbar ab",
                 "dateto":"Verfügbar bis",
                 "savebutton":"Speichern",
-                "cancelbutton":"Abbrechen"
+                "cancelbutton":"Abbrechen",
+                "error": "Ressource konnte nicht erstellt werden!"
             },
             "placeholder": {
                 "name": "Name der Ressource",

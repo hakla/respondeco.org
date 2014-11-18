@@ -23,16 +23,23 @@
             </div>
 
             <div class="form-group">
-                <label translate="global.resource.new.commercial">commercial resource</label>
-                    <input type="checkbox" class="form-control"
-                        ng-model="resource.isCommercial">
+                <button type="button" class="btn {{ resource.isCommercial ? 'btn-success' : 'btn-primary'}}" 
+                        ng-model="resource.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                <span class="glyphicon {{ resource.isCommercial ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
+                {{'global.resource.new.commercial' | translate}}
+            </button>
+            </div>
+        
+                        
+            <div class="form-group">
+
+                <button type="button" class="btn {{ resource.isRecurrent ? 'btn-success' : 'btn-primary'}}" 
+                        ng-model="resource.isRecurrent" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                <span class="glyphicon {{ test ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
+                {{'global.resource.new.recurrent' | translate}}
+            </button>
             </div>
 
-            <div class="form-group">
-                <label translate="global.resource.new.recurrent">recurrent resource</label>
-                    <input type="checkbox" class="form-control"
-                        ng-model="resource.isRecurrent">
-            </div>
             <div class="form-group">
                 <label translate="global.resource.new.datefrom">available from</label>
                 <input type="date" class="form-control" ng-model="resource.startDate">
@@ -41,19 +48,18 @@
                 <label translate="global.resource.new.dateto">available until</label>
                 <input type="date" class="form-control" ng-model="resource.endDate">
             </div>
-            <div class="alert alert-danger" ng-show="form.saveError">
-                <strong>Resource konnte nicht angelegt werden</strong>
+            <div class="alert alert-danger" ng-show="form.saveError" translate="global.resource.new.error">
+                <strong>resource could not be created</strong>
             </div>
 
         <div class="modal-footer">
             <button type="button" class="btn btn-default" ng-click="redirectToResource('')">
-                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                <span class="glyphicon glyphicon-ban-circle"></span> {{ 'global.resource.new.cancelbutton' | translate }}
             </button>
-            <button type="submit" ng-disabled="form.$invalid" class="btn btn-success">
-                <span class="glyphicon glyphicon-save"></span> Save
+            <button type="submit" ng-disabled="form.$invalid" class="btn btn-success" ng-click="create()">
+                <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
             </button>
         </div>
     </form>
-            </div>
-        </div>
-    </div>
+</div>
+

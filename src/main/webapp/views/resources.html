@@ -1,11 +1,11 @@
 <div>
  
-    <h2> {{ 'global.resource.title' | translate }}
+    <h1> {{ 'global.resource.title' | translate }}
         <button class="btn btn-success btn-lg pull-right"
                 ng-click="redirectToResource('new')">
             <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'global.resource.newbutton' | translate }}
         </button>
-    </h2>
+    </h1>
 
     
     <input type="text" class="col-md-2" placeholder="Suchkriterien eingeben" ng-model="filter">
@@ -13,7 +13,7 @@
 
     
     <div class="table-responsive">
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <td translate="global.resource.name">Name</td>
@@ -37,12 +37,7 @@
                     <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
                     <td> 
-                        <button type="button" class="btn btn-default" ng-click="delete(resource.id)">
-                            Delete
-                        </button>
-                    </td>
-                    <td> 
-                        <button type="button" class="btn btn-default">
+                        <button type="button" class="btn btn-default" ng-click="">
                             Resource anfordern
                         </button>
                     </td>
