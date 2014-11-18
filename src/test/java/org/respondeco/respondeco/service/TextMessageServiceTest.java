@@ -15,6 +15,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -154,14 +155,11 @@ public class TextMessageServiceTest {
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(testMessage);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
 
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            savedMessage = (TextMessage) args[0];
-            return (null);
-        })
-        .when(textMessageRepositoryMock).save(isA(TextMessage.class));
+        ArgumentCaptor<TextMessage> textMessageArgumentCaptor = ArgumentCaptor.forType(TextMessage.class, 0);
+        doAnswer(textMessageArgumentCaptor).when(textMessageRepositoryMock).save(isA(TextMessage.class));
 
         textMessageService.deleteTextMessage(1L);
+        savedMessage = textMessageArgumentCaptor.getValue();
 
         verify(textMessageRepositoryMock, times(1)).save(isA(TextMessage.class));
         verify(userServiceMock, times(1)).getUserWithAuthorities();

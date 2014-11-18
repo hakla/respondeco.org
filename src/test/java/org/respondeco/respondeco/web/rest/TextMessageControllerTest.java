@@ -12,14 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.inject.Inject;
 
-import javafx.scene.effect.Reflection;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.Authority;
@@ -29,26 +24,23 @@ import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.TextMessageDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 

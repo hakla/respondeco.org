@@ -17,12 +17,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.Authority;
-import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProfilePictureService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProfilePictureDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -32,12 +32,10 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.ProfilePicture;
 import org.respondeco.respondeco.repository.ProfilePictureRepository;
 
 import java.util.HashSet;

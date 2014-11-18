@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest;
+package org.respondeco.respondeco.testutil;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
