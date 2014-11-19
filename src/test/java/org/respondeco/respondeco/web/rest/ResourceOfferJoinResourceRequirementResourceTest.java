@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -91,7 +92,7 @@ public class ResourceOfferJoinResourceRequirementResourceTest {
         resourceOfferJoinResourceRequirement.setCreatedDate(DEFAULT_CREATED_DATE);
         resourceOfferJoinResourceRequirement.setLastModifiedBy(DEFAULT_LAST_MODIFIED_BY);
         resourceOfferJoinResourceRequirement.setLastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
-        resourceOfferJoinResourceRequirement.setIsActive(DEFAULT_IS_ACTIVE);
+        resourceOfferJoinResourceRequirement.setActive(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -117,7 +118,7 @@ public class ResourceOfferJoinResourceRequirementResourceTest {
         assertThat(testResourceOfferJoinResourceRequirement.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testResourceOfferJoinResourceRequirement.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testResourceOfferJoinResourceRequirement.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
-        assertThat(testResourceOfferJoinResourceRequirement.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
+        assertThat(testResourceOfferJoinResourceRequirement.isActive()).isEqualTo(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -185,7 +186,7 @@ public class ResourceOfferJoinResourceRequirementResourceTest {
         resourceOfferJoinResourceRequirement.setCreatedDate(UPDATED_CREATED_DATE);
         resourceOfferJoinResourceRequirement.setLastModifiedBy(UPDATED_LAST_MODIFIED_BY);
         resourceOfferJoinResourceRequirement.setLastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
-        resourceOfferJoinResourceRequirement.setIsActive(UPDATED_IS_ACTIVE);
+        resourceOfferJoinResourceRequirement.setActive(UPDATED_IS_ACTIVE);
         restResourceOfferJoinResourceRequirementMockMvc.perform(post("/app/rest/resourceOfferJoinResourceRequirements")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(resourceOfferJoinResourceRequirement)))
@@ -202,7 +203,7 @@ public class ResourceOfferJoinResourceRequirementResourceTest {
         assertThat(testResourceOfferJoinResourceRequirement.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testResourceOfferJoinResourceRequirement.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testResourceOfferJoinResourceRequirement.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
-        assertThat(testResourceOfferJoinResourceRequirement.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);;
+        assertThat(testResourceOfferJoinResourceRequirement.isActive()).isEqualTo(UPDATED_IS_ACTIVE);;
     }
 
     @Test

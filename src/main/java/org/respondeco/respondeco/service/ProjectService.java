@@ -9,6 +9,7 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,11 +43,11 @@ public class ProjectService {
     }
 
     public Project save(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        LocalDate endDate, byte[] logo) {
+                        LocalDate endDate, byte[] logo) throws OperationForbiddenException {
         sanityCheck(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
-            throw new IllegalArgumentException("Current user does not belong to an Organization");
+            throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
         Organization organization = organizationRepository.findOne(currentUser.getOrgId());
         if(organization == null) {
@@ -58,9 +59,9 @@ public class ProjectService {
             if(newProject == null) {
                 throw new IllegalArgumentException("no such project: " + id);
             }
-            if(currentUser.getId() != newProject.getManagerId()) {
-                throw new IllegalArgumentException("current user has no authority to " +
-                        "change the project manager of project " + id);
+            if(currentUser.getId().equals(newProject.getManagerId()) == false) {
+                throw new OperationForbiddenException("current user " + currentUser.getId() + " has no authority to " +
+                        "modify project " + id + " with manager id: " + newProject.getManagerId());
             }
         } else {
             newProject = new Project();
@@ -81,7 +82,7 @@ public class ProjectService {
         return newProject;
     }
 
-    public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException {
+    public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException, OperationForbiddenException {
         User newManager = userRepository.findByLogin(newManagerLogin);
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);
@@ -91,34 +92,37 @@ public class ProjectService {
             throw new IllegalArgumentException("no such project: " + id);
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getId() != project.getManagerId()) {
-            throw new IllegalArgumentException("current user has no authority to " +
-                    "change the project manager of project " + id);
+        if(currentUser.getId().equals(project.getManagerId()) == false) {
+            Organization organization = organizationRepository.findOne(project.getOrganizationId());
+            if(currentUser.getId().equals(organization.getOwner()) == false) {
+                throw new OperationForbiddenException("current user has no authority to " +
+                        "change the project manager of project " + id);
+            }
         }
-        if(project.getOrganizationId() != newManager.getOrgId()) {
+        if(project.getOrganizationId().equals(newManager.getOrgId()) == false) {
             throw new IllegalArgumentException("new manager does not belong to organization: " +
                     project.getOrganizationId());
         }
         project.setManagerId(newManager.getId());
-        projectRepository.save(project);
-        return project;
+        return projectRepository.save(project);
     }
 
-    public void delete(Long id) {
+    public Project delete(Long id) throws OperationForbiddenException {
         Project project = projectRepository.findOne(id);
         if(project == null) {
             throw new IllegalArgumentException("no such project: " + id);
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getId() != project.getManagerId()) {
+        if(currentUser.getId().equals(project.getManagerId()) == false) {
             Organization projectOrganization = organizationRepository.findOne(project.getOrganizationId());
-            if(currentUser.getId() != projectOrganization.getOwner()) {
-                throw new IllegalArgumentException("current user has no authority to " +
+            if(currentUser.getId().equals(projectOrganization.getOwner()) == false) {
+                throw new OperationForbiddenException("current user has no authority to " +
                         "delete project " + id);
             }
         }
         project.setActive(false);
         projectRepository.save(project);
+        return project;
     }
 
     private void sanityCheck(boolean isConcrete, LocalDate startDate, LocalDate endDate) {

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -87,11 +88,11 @@ public class ResourceOfferResourceTest {
         resourceOffer.setAmount(DEFAULT_AMOUNT);
         resourceOffer.setDescription(DEFAULT_DESCRIPTION);
         resourceOffer.setOrganisationId(DEFAULT_ORGANISATION_ID);
-        resourceOffer.setCreateBy(DEFAULT_CREATE_BY);
+        resourceOffer.setCreatedBy("");
         resourceOffer.setCreatedDate(DEFAULT_CREATED_DATE);
-        resourceOffer.setLastModifiedBy(DEFAULT_LAST_MODIFIED_BY);
+        resourceOffer.setLastModifiedBy("");
         resourceOffer.setLastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
-        resourceOffer.setIsActive(DEFAULT_IS_ACTIVE);
+        resourceOffer.setActive(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -113,11 +114,11 @@ public class ResourceOfferResourceTest {
         assertThat(testResourceOffer.getAmount()).isEqualTo(DEFAULT_AMOUNT);
         assertThat(testResourceOffer.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testResourceOffer.getOrganisationId()).isEqualTo(DEFAULT_ORGANISATION_ID);
-        assertThat(testResourceOffer.getCreateBy()).isEqualTo(DEFAULT_CREATE_BY);
+        assertThat(testResourceOffer.getCreatedBy()).isEqualTo(DEFAULT_CREATE_BY);
         assertThat(testResourceOffer.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testResourceOffer.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testResourceOffer.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
-        assertThat(testResourceOffer.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
+        assertThat(testResourceOffer.isActive()).isEqualTo(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -181,11 +182,11 @@ public class ResourceOfferResourceTest {
         resourceOffer.setAmount(UPDATED_AMOUNT);
         resourceOffer.setDescription(UPDATED_DESCRIPTION);
         resourceOffer.setOrganisationId(UPDATED_ORGANISATION_ID);
-        resourceOffer.setCreateBy(UPDATED_CREATE_BY);
+        resourceOffer.setCreatedBy("");
         resourceOffer.setCreatedDate(UPDATED_CREATED_DATE);
-        resourceOffer.setLastModifiedBy(UPDATED_LAST_MODIFIED_BY);
+        resourceOffer.setLastModifiedBy("");
         resourceOffer.setLastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
-        resourceOffer.setIsActive(UPDATED_IS_ACTIVE);
+        resourceOffer.setActive(UPDATED_IS_ACTIVE);
         restResourceOfferMockMvc.perform(post("/app/rest/resourceOffers")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(resourceOffer)))
@@ -198,11 +199,11 @@ public class ResourceOfferResourceTest {
         assertThat(testResourceOffer.getAmount()).isEqualTo(UPDATED_AMOUNT);
         assertThat(testResourceOffer.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testResourceOffer.getOrganisationId()).isEqualTo(UPDATED_ORGANISATION_ID);
-        assertThat(testResourceOffer.getCreateBy()).isEqualTo(UPDATED_CREATE_BY);
+        assertThat(testResourceOffer.getCreatedBy()).isEqualTo(UPDATED_CREATE_BY);
         assertThat(testResourceOffer.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testResourceOffer.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testResourceOffer.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
-        assertThat(testResourceOffer.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);;
+        assertThat(testResourceOffer.isActive()).isEqualTo(UPDATED_IS_ACTIVE);;
     }
 
     @Test

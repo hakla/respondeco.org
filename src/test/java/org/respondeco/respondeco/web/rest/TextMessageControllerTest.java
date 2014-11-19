@@ -26,6 +26,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;

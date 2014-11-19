@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -90,11 +91,11 @@ public class ResourceRequirementResourceTest {
         resourceRequirement.setDescription(DEFAULT_DESCRIPTION);
         resourceRequirement.setProjectId(DEFAULT_PROJECT_ID);
         resourceRequirement.setIsEssential(DEFAULT_IS_ESSENTIAL);
-        resourceRequirement.setCreatedBy(DEFAULT_CREATED_BY);
+        resourceRequirement.setCreatedBy("");
         resourceRequirement.setCreatedDate(DEFAULT_CREATED_DATE);
-        resourceRequirement.setLastModifiedBy(DEFAULT_LAST_MODIFIED_BY);
+        resourceRequirement.setLastModifiedBy("");
         resourceRequirement.setLastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
-        resourceRequirement.setIsActive(DEFAULT_IS_ACTIVE);
+        resourceRequirement.setActive(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -121,7 +122,7 @@ public class ResourceRequirementResourceTest {
         assertThat(testResourceRequirement.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testResourceRequirement.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testResourceRequirement.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
-        assertThat(testResourceRequirement.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
+        assertThat(testResourceRequirement.isActive()).isEqualTo(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -188,11 +189,11 @@ public class ResourceRequirementResourceTest {
         resourceRequirement.setDescription(UPDATED_DESCRIPTION);
         resourceRequirement.setProjectId(UPDATED_PROJECT_ID);
         resourceRequirement.setIsEssential(UPDATED_IS_ESSENTIAL);
-        resourceRequirement.setCreatedBy(UPDATED_CREATED_BY);
+        resourceRequirement.setCreatedBy("");
         resourceRequirement.setCreatedDate(UPDATED_CREATED_DATE);
-        resourceRequirement.setLastModifiedBy(UPDATED_LAST_MODIFIED_BY);
+        resourceRequirement.setLastModifiedBy("");
         resourceRequirement.setLastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
-        resourceRequirement.setIsActive(UPDATED_IS_ACTIVE);
+        resourceRequirement.setActive(UPDATED_IS_ACTIVE);
         restResourceRequirementMockMvc.perform(post("/app/rest/resourceRequirements")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(resourceRequirement)))
@@ -210,7 +211,7 @@ public class ResourceRequirementResourceTest {
         assertThat(testResourceRequirement.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testResourceRequirement.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testResourceRequirement.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
-        assertThat(testResourceRequirement.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);;
+        assertThat(testResourceRequirement.isActive()).isEqualTo(UPDATED_IS_ACTIVE);;
     }
 
     @Test

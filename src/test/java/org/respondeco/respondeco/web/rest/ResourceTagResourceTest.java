@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -82,7 +83,7 @@ public class ResourceTagResourceTest {
         resourceTag.setCreatedDate(DEFAULT_CREATED_DATE);
         resourceTag.setLastModifiedBy(DEFAULT_LAST_MODIFIED_BY);
         resourceTag.setLastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
-        resourceTag.setIsActive(DEFAULT_IS_ACTIVE);
+        resourceTag.setActive(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -106,7 +107,7 @@ public class ResourceTagResourceTest {
         assertThat(testResourceTag.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
         assertThat(testResourceTag.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
         assertThat(testResourceTag.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
-        assertThat(testResourceTag.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
+        assertThat(testResourceTag.isActive()).isEqualTo(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -168,7 +169,7 @@ public class ResourceTagResourceTest {
         resourceTag.setCreatedDate(UPDATED_CREATED_DATE);
         resourceTag.setLastModifiedBy(UPDATED_LAST_MODIFIED_BY);
         resourceTag.setLastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
-        resourceTag.setIsActive(UPDATED_IS_ACTIVE);
+        resourceTag.setActive(UPDATED_IS_ACTIVE);
         restResourceTagMockMvc.perform(post("/app/rest/resourceTags")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(resourceTag)))
@@ -183,7 +184,7 @@ public class ResourceTagResourceTest {
         assertThat(testResourceTag.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
         assertThat(testResourceTag.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testResourceTag.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
-        assertThat(testResourceTag.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);;
+        assertThat(testResourceTag.isActive()).isEqualTo(UPDATED_IS_ACTIVE);;
     }
 
     @Test

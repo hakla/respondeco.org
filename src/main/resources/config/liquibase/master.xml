@@ -13,9 +13,6 @@
     <include file="classpath:config/liquibase/changelog/20141110180827_added_entity_OrgJoinRequest.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141114155134_added_entity_Project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141114155202_added_entity_PropertyTag.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141117142400_added_entity_ResourceRequirement.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141117144032_added_entity_ResourceOffer.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141117144948_added_entity_ResourceTag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141117145453_added_entity_ResourceOfferJoinResourceRequirement.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141117151712_added_entity_ResourceOfferJoinResourceTag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141117154107_added_entity_ResourceRequirementJoinResourceTag.xml" relativeToChangelogFile="false"/>

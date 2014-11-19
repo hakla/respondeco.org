@@ -38,7 +38,7 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
 
 
 
-    @OneToMany(mappedBy = "resourceRequirement")
+    @ManyToOne
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Project project;

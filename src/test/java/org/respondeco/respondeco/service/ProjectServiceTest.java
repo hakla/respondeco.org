@@ -88,7 +88,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testSaveProject_shouldCreateBasicProject() {
+    public void testSaveProject_shouldCreateBasicProject() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -102,7 +102,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testSaveProject_shouldCreateConcreteProject() {
+    public void testSaveProject_shouldCreateConcreteProject() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -122,7 +122,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testSaveProject_shouldModifyExistingProject() {
+    public void testSaveProject_shouldModifyExistingProject() throws Exception {
         basicProject.setId(1L);
         basicProject.setManagerId(defaultUser.getId());
 
@@ -152,7 +152,7 @@ public class ProjectServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionIfProjectDoesNotExist() {
+    public void testSaveProject_shouldThrowExceptionIfProjectDoesNotExist() throws Exception {
         basicProject.setId(1L);
         basicProject.setManagerId(defaultUser.getId());
 
@@ -176,7 +176,7 @@ public class ProjectServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionIfCurrentUserIsNotManager() {
+    public void testSaveProject_shouldThrowExceptionIfCurrentUserIsNotManager() throws Exception {
         basicProject.setId(1L);
         basicProject.setManagerId(100L);
 
@@ -200,7 +200,7 @@ public class ProjectServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseIsConcreteAndStartDateIsNull() {
+    public void testSaveProject_shouldThrowExceptionBecauseIsConcreteAndStartDateIsNull() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -216,7 +216,7 @@ public class ProjectServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseIsConcreteAndEndDateIsNull() {
+    public void testSaveProject_shouldThrowExceptionBecauseIsConcreteAndEndDateIsNull() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -232,7 +232,7 @@ public class ProjectServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseEndDateIsBeforeNow() {
+    public void testSaveProject_shouldThrowExceptionBecauseEndDateIsBeforeNow() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -248,7 +248,7 @@ public class ProjectServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseEndDateIsBeforeStartDate() {
+    public void testSaveProject_shouldThrowExceptionBecauseEndDateIsBeforeStartDate() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
