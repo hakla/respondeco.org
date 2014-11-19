@@ -348,6 +348,13 @@ module.exports = function (grunt) {
                 singleRun: true
             }
         },
+        protractor: {
+            options: {
+                keepAlive: true,
+                configFile: "src/test/e2e/protractor.conf.js"
+            },
+            run: {}
+        },
         cdnify: {
             dist: {
                 html: ['<%= yeoman.dist %>/*.html']
@@ -426,7 +433,8 @@ module.exports = function (grunt) {
         'concurrent:test',
         'autoprefixer',
         'connect:test',
-        'karma'
+        'karma',
+        'protractor:run'
     ]);
 
     grunt.registerTask('build', [
