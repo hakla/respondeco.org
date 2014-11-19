@@ -2,11 +2,12 @@
 
 respondecoApp.controller('ResourceController', function($scope, $location, Resource) {
 
-	$scope.resource = {id: null, name: null, desciption: null, tags: null, amount: null, dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
+	$scope.resource = {id: null, name: null, description: null, tags: null, amount: null, 
+		dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
 	$scope.resources = Resource.query();
 
-	$scope.redirectToResource = function(name) {
-		$location.path('resource/' + name);
+	$scope.redirectToResource = function(id) {
+		$location.path('resource/' + id);
 	}
 
 	$scope.search = function(filter) {
@@ -19,8 +20,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 	$scope.create = function() {
 		Resource.save($scope.resource, 
 			function() {
-				$scope.resources = Resource.query();
-				$scope.clear();
+				$scope.redirectToResource('');
 			}, 
 			function() {
 				$scope.form.saveError = true;
@@ -35,7 +35,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 	}
 
 	$scope.clear = function() {
-		$scope.resource = {id: null, name: null, amount: null, dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
+		$scope.resource = {id: null, name: null, description: null, tags: null, 
+			amount: null, dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
 	}
 
 });
