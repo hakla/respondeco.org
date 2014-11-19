@@ -1,0 +1,67 @@
+<div>
+
+    <h2 translate="global.resource.new.title"> Create new Resource </h2>
+    <br>
+    <form name="form" role="form" novalidate
+          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+          ng-submit="create()">
+
+            <div class="form-group">
+                <label translate="global.resource.new.name">name</label>
+                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.name' | translate}}"
+                    ng-model="resource.name">
+            </div>
+            <div class="form-group">
+                <label translate="global.resource.new.description">description</label>
+                <textarea type="text" class="form-control" placeholder="{{'global.resource.placeholder.description' | translate}}"
+                    ng-model="resource.description"/>
+            </div>
+            <div class="form-group">
+                <label translate="global.resource.new.tags">tags</label>
+                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.tags' | translate}}">
+            </div>
+            <div class="form-group">
+                <label translate="global.resource.new.amount">amount</label>
+                <input type="number" class="form-control" placeholder="{{'global.resource.placeholder.amount' | translate}}"
+                       ng-model="resource.amount">
+            </div>
+
+            <div class="form-group">
+                <button type="button" class="btn {{ resource.isCommercial ? 'btn-success' : 'btn-primary'}}" 
+                        ng-model="resource.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                <span class="glyphicon {{ resource.isCommercial ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
+                {{'global.resource.new.commercial' | translate}}
+            </button>
+            </div>
+            
+            <div class="form-group">
+                <button type="button" class="btn {{ resource.isRecurrent ? 'btn-success' : 'btn-primary'}}" 
+                        ng-model="resource.isRecurrent" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                <span class="glyphicon {{ test ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
+                {{'global.resource.new.recurrent' | translate}}
+            </button>
+            </div>
+
+            <div class="form-group">
+                <label translate="global.resource.new.datefrom">available from</label>
+                <input type="date" class="form-control" ng-model="resource.startDate">
+            </div>
+            <div class="form-group">
+                <label translate="global.resource.new.dateto">available until</label>
+                <input type="date" class="form-control" ng-model="resource.endDate">
+            </div>
+            <div class="alert alert-danger" ng-show="form.saveError" translate="global.resource.new.error">
+                <strong>resource could not be created</strong>
+            </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="redirectToResource('')">
+                <span class="glyphicon glyphicon-ban-circle"></span> {{ 'global.resource.new.cancelbutton' | translate }}
+            </button>
+            <button type="submit" ng-disabled="form.$invalid" class="btn btn-success" ng-click="create()">
+                <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
+            </button>
+        </div>
+    </form>
+</div>
+
