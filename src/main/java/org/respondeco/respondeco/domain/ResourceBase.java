@@ -31,7 +31,7 @@ public abstract class ResourceBase extends AbstractAuditingEntity implements Ser
     @NotNull
     protected String description;
 
-    @Ignore
+    @Transient
     private Set<ResourceTag> resourceTags = new HashSet<>();
 
 

@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
@@ -223,7 +222,7 @@ public class ResourcesService {
     }
 
     private void saveRequirementJoinTag(ResourceRequirement requirement, ResourceTag tag){
-        if(this.resourceRequirementJoinResourceTagRepository.findByResourceRequirementIdAndResourceTagId(requirement.getId(), tag.getId()) == null){
+        if(this.resourceRequirementJoinResourceTagRepository.countByResourceRequirementIdAndResourceTagIdCount(requirement.getId(), tag.getId()) == 0){
             ResourceRequirementJoinResourceTag result = new ResourceRequirementJoinResourceTag();
             result.setResourceRequirementId(requirement.getId());
             result.setResourceTagId(tag.getId());
@@ -231,12 +230,8 @@ public class ResourcesService {
         }
     }
 
-    public List<ResourceOfferJoinResourceTag> GetDing(){
-        return this.resourceOfferJoinResourceTagRepository.findByResourceOfferIdAndResourceTagId(0L, 0L);
-    }
-
     private void saveOfferJoinTag(ResourceOffer offer, ResourceTag tag){
-        if(this.resourceOfferJoinResourceTagRepository.findByResourceOfferIdAndResourceTagId(offer.getId(), tag.getId()) == null){
+        if(this.resourceOfferJoinResourceTagRepository.countByResourceOfferIdAndResourceTagIdCount(offer.getId(), tag.getId()) == 0){
             ResourceOfferJoinResourceTag resOfferToTag = new ResourceOfferJoinResourceTag();
             resOfferToTag.setResourceOfferId(offer.getId());
             resOfferToTag.setResourceTagId(tag.getId());
@@ -247,7 +242,7 @@ public class ResourcesService {
     private ResourceTag saveResourceTag(String tagName){
         ResourceTag tag = null;
         List<ResourceTag> list = this.resourceTagRepository.findByName(tagName);
-        if(list == null){
+        if(list.size() == 0){
             tag = new ResourceTag();
             tag.setName(tagName);
             this.resourceTagRepository.save(tag);

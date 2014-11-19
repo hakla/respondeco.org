@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.ResourceOfferJoinResourceTag;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.domain.ResourceRequirementJoinResourceTag;
 import org.respondeco.respondeco.domain.ResourceTag;
@@ -84,7 +83,7 @@ public class ResourcesServiceTest {
 
         when(resourceRequirementRepositoryMock.findByDescriptionAndProjectId(description, projectId)).thenReturn(null);
         when(resourceTagRepositoryMock.findByName(tags[0])).thenReturn(resourceTags);
-        when(resourceRequirementJoinResourceTagRepositoryMock.findByResourceRequirementIdAndResourceTagId(requirementId, testResourceTag.getId())).thenReturn(null);
+        when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagIdCount(requirementId, testResourceTag.getId())).thenReturn(null);
         //redirect output to the variable of the test class
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -106,15 +105,16 @@ public class ResourcesServiceTest {
         verify(resourceTagRepositoryMock, times(1)).findByName(isA(stringCl));
         verify(resourceTagRepositoryMock, times(1)).save(isA(tagCl));
         //No Tag joins added
-        verify(resourceRequirementJoinResourceTagRepositoryMock, times(1)).findByResourceRequirementIdAndResourceTagId(isA(longCl), isA(longCl));
+        verify(resourceRequirementJoinResourceTagRepositoryMock, times(1)).countByResourceRequirementIdAndResourceTagIdCount(isA(longCl), isA(longCl));
         verify(resourceRequirementJoinResourceTagRepositoryMock, times(1)).save(isA(reqJoinTagCl));
 
     }
 
     @Test
     public void testUpdateRequirement() throws Exception {
-        List<ResourceOfferJoinResourceTag> test = resourcesService.GetDing();
-        assertEquals(test, null);
+        Long result = resourcesService.GetDing();
+        Long expected = 0L;
+        assertEquals(expected, result);
     }
 
     public void testDeleteRequirement() throws Exception {

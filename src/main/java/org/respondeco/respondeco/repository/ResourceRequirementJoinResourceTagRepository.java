@@ -14,10 +14,11 @@ import java.util.List;
 public interface ResourceRequirementJoinResourceTagRepository extends JpaRepository<ResourceRequirementJoinResourceTag, Long> {
 
     List<ResourceRequirementJoinResourceTag> findByResourceRequirementId(Long requirementId);
-    List<ResourceRequirementJoinResourceTag> findByResourceRequirementIdAndResourceTagId(Long requirementId, Long resourceTagId);
+    @Query("SELECT COUNT(*) FROM #{#entityName} WHERE resource_requirement_id = ?1 AND resource_tag_id = ?2")
+    Long countByResourceRequirementIdAndResourceTagIdCount(Long requirementId, Long resourceTagId);
     @Modifying
     @Transactional
-    @Query("delete from T_RESOURCEREQUIREMENTJOINRESOURCETAG u where u.resource_requirement_id = ?1")
+    @Query("delete from #{#entityName} where resource_requirement_id = ?1")
     void deleteByRequirementId(Long requirementId);
 
 }

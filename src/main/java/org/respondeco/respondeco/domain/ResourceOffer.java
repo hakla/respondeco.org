@@ -3,6 +3,7 @@ package org.respondeco.respondeco.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -51,9 +52,12 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
     public DateTime getStartDate() { return this.startDate; }
     public DateTime getEndDate() { return this.endDate; }
 
+    /*
     @ManyToMany(mappedBy = "resourceOffers")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    */
+    @Transient
     private Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements = new HashSet<>();
 
     public Long getOrganisationId() {
@@ -63,11 +67,11 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
     public void setOrganisationId(Long organisationId) {
         this.organisationId = organisationId;
     }
-
+    @Transient
     public Set<ResourceOfferJoinResourceRequirement> getResourceOfferJoinResourceRequirements() {
         return resourceOfferJoinResourceRequirements;
     }
-
+    @Transient
     public void setResourceOfferJoinResourceRequirements(Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements) {
         this.resourceOfferJoinResourceRequirements = resourceOfferJoinResourceRequirements;
     }
