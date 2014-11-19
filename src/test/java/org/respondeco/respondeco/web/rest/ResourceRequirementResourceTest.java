@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -72,6 +73,9 @@ public class ResourceRequirementResourceTest {
     @Inject
     private ResourceRequirementRepository resourceRequirementRepository;
 
+    @Inject
+    private ResourcesService resourcesService;
+
     private MockMvc restResourceRequirementMockMvc;
 
     private ResourceRequirement resourceRequirement;
@@ -79,7 +83,7 @@ public class ResourceRequirementResourceTest {
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ResourceRequirementResource resourceRequirementResource = new ResourceRequirementResource();
+        ResourceController resourceRequirementResource = new ResourceController(resourcesService);
         ReflectionTestUtils.setField(resourceRequirementResource, "resourceRequirementRepository", resourceRequirementRepository);
         this.restResourceRequirementMockMvc = MockMvcBuilders.standaloneSetup(resourceRequirementResource).build();
     }

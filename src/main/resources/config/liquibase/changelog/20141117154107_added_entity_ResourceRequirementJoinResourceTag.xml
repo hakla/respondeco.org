@@ -28,5 +28,12 @@
             <column name="is_active" type="bit"/>
         </createTable>
 
+        <createIndex indexName="idx_resource_requirement_join_resource_tag"
+                     tableName="T_RESOURCEREQUIREMENTJOINRESOURCETAG"
+                     unique="true">
+            <column name="resource_requirement_id" type="bigint"/>
+            <column name="resource_tag_id" type="bigint"/>
+        </createIndex>
+
     </changeSet>
 </databaseChangeLog>

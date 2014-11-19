@@ -11,4 +11,5 @@ import java.util.List;
 public interface ResourceRequirementRepository extends JpaRepository<ResourceRequirement, Long> {
 
     List<ResourceRequirement> findByDescriptionAndProjectId(String description, Long projectId);
+    List<ResourceRequirement> findByProjectId(Long projectId);
 }

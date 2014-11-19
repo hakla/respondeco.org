@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import java.util.Set;
 
 /**
+ * Created by Roman Kern
  * A ResourceRequirement.
  */
 @Entity
@@ -24,29 +25,11 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceRequirement extends ResourceBase implements Serializable {
 
-    @Column(name = "amount", precision=10, scale=2)
-    private BigDecimal amount;
-
-    @Column(name = "description")
-    private String description;
-
     @Column(name = "project_id")
     private Long projectId;
 
     @Column(name = "is_essential")
     private Boolean isEssential;
-
-
-
-    @ManyToOne
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Project project;
-
-    @ManyToMany(mappedBy = "resourceRequirements")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements = new HashSet<>();
 
     public Long getProjectId() {
         return projectId;
@@ -62,21 +45,6 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
 
     public void setIsEssential(Boolean isEssential) {
         this.isEssential = isEssential;
-    }
-
-    public Project getProjects() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-    public Set<ResourceOfferJoinResourceRequirement> getResourceOfferJoinResourceRequirements() {
-        return resourceOfferJoinResourceRequirements;
-    }
-
-    public void setResourceOfferJoinResourceRequirements(Set<ResourceOfferJoinResourceRequirement> resourceOfferJoinResourceRequirements) {
-        this.resourceOfferJoinResourceRequirements = resourceOfferJoinResourceRequirements;
     }
 
     @Override

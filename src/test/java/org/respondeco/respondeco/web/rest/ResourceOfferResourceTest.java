@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the ResourceOfferResource REST controller.
  *
- * @see ResourceOfferResource
+ * @see ResourceController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -70,6 +71,9 @@ public class ResourceOfferResourceTest {
     @Inject
     private ResourceOfferRepository resourceOfferRepository;
 
+    @Inject
+    private ResourcesService resourcesService;
+
     private MockMvc restResourceOfferMockMvc;
 
     private ResourceOffer resourceOffer;
@@ -77,7 +81,7 @@ public class ResourceOfferResourceTest {
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ResourceOfferResource resourceOfferResource = new ResourceOfferResource();
+        ResourceController resourceOfferResource = new ResourceController(resourcesService);
         ReflectionTestUtils.setField(resourceOfferResource, "resourceOfferRepository", resourceOfferRepository);
         this.restResourceOfferMockMvc = MockMvcBuilders.standaloneSetup(resourceOfferResource).build();
     }

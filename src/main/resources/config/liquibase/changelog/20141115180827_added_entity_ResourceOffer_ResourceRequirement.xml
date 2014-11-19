@@ -16,6 +16,7 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="isNewEntry" type="boolean" defaultValue="true"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>
@@ -40,6 +41,10 @@
             <column name="organisation_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="is_commercial" type="bit" defaultValue="false"/>
+            <column name="is_recurrent" type="bit" defaultValue="false"/>
+            <column name="start_date" type="timestamp"/>
+            <column name="end_date" type="timestamp"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>

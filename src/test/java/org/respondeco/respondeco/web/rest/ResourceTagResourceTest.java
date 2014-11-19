@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -63,6 +64,9 @@ public class ResourceTagResourceTest {
     @Inject
     private ResourceTagRepository resourceTagRepository;
 
+    @Inject
+    private ResourcesService resourcesService;
+
     private MockMvc restResourceTagMockMvc;
 
     private ResourceTag resourceTag;
@@ -70,7 +74,7 @@ public class ResourceTagResourceTest {
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ResourceTagResource resourceTagResource = new ResourceTagResource();
+        ResourceController resourceTagResource = new ResourceController(resourcesService);
         ReflectionTestUtils.setField(resourceTagResource, "resourceTagRepository", resourceTagRepository);
         this.restResourceTagMockMvc = MockMvcBuilders.standaloneSetup(resourceTagResource).build();
     }

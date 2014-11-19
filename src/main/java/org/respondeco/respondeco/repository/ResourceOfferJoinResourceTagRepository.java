@@ -13,9 +13,10 @@ import java.util.List;
  */
 public interface ResourceOfferJoinResourceTagRepository extends JpaRepository<ResourceOfferJoinResourceTag, Long> {
     List<ResourceOfferJoinResourceTag> findByResourceOfferId(Long resourceOfferId);
-    List<ResourceOfferJoinResourceTag> findByResourceOfferIdAndResourceTagId(Long resourceOfferId, Long resourceTagId);
+    @Query("SELECT COUNT(*) FROM #{#entityName} WHERE resource_offer_id = ?1 AND resource_tag_id = ?2")
+    Long countByResourceOfferIdAndResourceTagIdCount(Long resourceOfferId, Long resourceTagId);
     @Modifying
     @Transactional
-    @Query("delete from T_RESOURCEOFFERJOINRESOURCETAG u where u.resource_offer_id = ?1")
+    @Query("delete from #{#entityName} where resource_offer_id = ?1")
     void deleteByOfferId(Long offerId);
 }
