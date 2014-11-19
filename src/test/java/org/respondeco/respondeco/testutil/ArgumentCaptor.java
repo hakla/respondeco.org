@@ -8,15 +8,17 @@ import org.mockito.stubbing.Answer;
  */
 public class ArgumentCaptor<T> implements Answer {
 
-    public static <C> ArgumentCaptor<C> forType(Class<C> clazz, int position) {
-        return new ArgumentCaptor<C>(position);
+    public static <C> ArgumentCaptor<C> forType(Class<C> clazz, int position, boolean callRealMethod) {
+        return new ArgumentCaptor<C>(position, callRealMethod);
     }
 
     private int position;
+    private boolean callRealMethod;
     private T value;
 
-    public ArgumentCaptor(int position) {
+    public ArgumentCaptor(int position, boolean callRealMethod) {
         this.position = position;
+        this.callRealMethod = callRealMethod;
     }
 
     public T getValue() {
@@ -26,6 +28,10 @@ public class ArgumentCaptor<T> implements Answer {
     @Override
     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
         value = (T) invocationOnMock.getArguments()[position];
-        return invocationOnMock.callRealMethod();
+        if(callRealMethod) {
+            return invocationOnMock.callRealMethod();
+        } else {
+            return null;
+        }
     }
 }

@@ -14,6 +14,7 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -175,7 +176,7 @@ public class ProjectServiceTest {
                 null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = OperationForbiddenException.class)
     public void testSaveProject_shouldThrowExceptionIfCurrentUserIsNotManager() throws Exception {
         basicProject.setId(1L);
         basicProject.setManagerId(100L);
@@ -395,7 +396,7 @@ public class ProjectServiceTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = OperationForbiddenException.class)
     public void testSetManager_shouldThrowExceptionIfUserIsNotAuthorized() throws Exception {
         User otherUser = new User();
         otherUser.setId(100L);

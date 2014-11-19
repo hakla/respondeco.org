@@ -164,7 +164,7 @@ public class TextMessageServiceTest {
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(testMessage);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
 
-        ArgumentCaptor<TextMessage> textMessageArgumentCaptor = ArgumentCaptor.forType(TextMessage.class, 0);
+        ArgumentCaptor<TextMessage> textMessageArgumentCaptor = ArgumentCaptor.forType(TextMessage.class, 0, false);
         doAnswer(textMessageArgumentCaptor).when(textMessageRepositoryMock).save(isA(TextMessage.class));
 
         textMessageService.deleteTextMessage(1L);
