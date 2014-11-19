@@ -19,12 +19,6 @@ public class ResourceRequirementJoinResourceTag extends AbstractResourceTagEntit
 
     @Column(name = "resource_requirement_id")
     private Long resourceRequirementId;
-/*
-    @ManyToMany(mappedBy = "resourceRequirementJoinResourceTags")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ResourceRequirement> resourceRequirements = new HashSet<>();
-    */
 
     public Long getResourceRequirementId() {
         return resourceRequirementId;
@@ -33,15 +27,6 @@ public class ResourceRequirementJoinResourceTag extends AbstractResourceTagEntit
     public void setResourceRequirementId(Long resourceRequirementId) {
         this.resourceRequirementId = resourceRequirementId;
     }
-/*
-    public Set<ResourceRequirement> getResourceRequirements() {
-        return resourceRequirements;
-    }
-
-    public void setResourceRequirements(Set<ResourceRequirement> resourceRequirements) {
-        this.resourceRequirements = resourceRequirements;
-    }
-    */
 
     @Override
     public String toString() {

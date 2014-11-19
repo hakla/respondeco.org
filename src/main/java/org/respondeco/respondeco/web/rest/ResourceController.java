@@ -22,15 +22,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/app")
 public class ResourceController {
+    //region Private variables
     private final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
     private ResourcesService resourcesService;
+    //endregion
+
+    //region Constructor
 
     @Inject
     public ResourceController(ResourcesService resourcesService){
         this.resourcesService = resourcesService;
     }
 
+    //endregion
+
+    //region Offer Controller
 
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers",
@@ -50,26 +57,6 @@ public class ResourceController {
     public List<ResourceOfferDTO> getAllResourceOffer(@PathVariable Long organisationId) {
         log.debug("REST request to get all resource offer belongs to Organization id: {}", organisationId);
         return this.resourcesService.getAllOffers(organisationId);
-    }
-
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceRequirements",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<ResourceRequirementDTO> getAllResourceRequirement() {
-        log.debug("REST request to get all resource requirements");
-        return this.resourcesService.getAllRequirements();
-    }
-
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceRequirements/{projectId}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<ResourceRequirementDTO> getAllResourceRequirement(@PathVariable Long projectId) {
-        log.debug("REST request to get all resource requirements belongs to project id:{}", projectId);
-        return this.resourcesService.getAllRequirements(projectId);
     }
 
     /*
@@ -93,6 +80,54 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceOffer/update",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public void updateResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO){
+        this.resourcesService.updateOffer(
+            resourceOfferDTO.getId(),
+            resourceOfferDTO.getAmount(),
+            resourceOfferDTO.getDescription(),
+            resourceOfferDTO.getResourceTags()
+        );
+    }
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceOffer/delete/{id}",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public void deleteResourceOffer(@PathVariable Long id) {
+        log.debug("REST request to delete resourceOffer : {}");
+        this.resourcesService.deleteOffer(id);
+    }
+
+    //endregion
+
+    //region Requirements
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceRequirements",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<ResourceRequirementDTO> getAllResourceRequirement() {
+        log.debug("REST request to get all resource requirements");
+        return this.resourcesService.getAllRequirements();
+    }
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceRequirements/{projectId}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<ResourceRequirementDTO> getAllResourceRequirement(@PathVariable Long projectId) {
+        log.debug("REST request to get all resource requirements belongs to project id:{}", projectId);
+        return this.resourcesService.getAllRequirements(projectId);
+    }
+
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceRequirement",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -107,20 +142,6 @@ public class ResourceController {
         );
         resourceRequirementDTO.setId(requirement.getId());
         return resourceRequirementDTO;
-    }
-
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffer/update",
-        method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void updateResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO){
-        this.resourcesService.updateOffer(
-            resourceOfferDTO.getId(),
-            resourceOfferDTO.getAmount(),
-            resourceOfferDTO.getDescription(),
-            resourceOfferDTO.getResourceTags()
-        );
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -139,16 +160,6 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffer/delete/{id}",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void deleteResourceOffer(@PathVariable Long id) {
-        log.debug("REST request to delete resourceOffer : {}");
-        this.resourcesService.deleteOffer(id);
-    }
-
-    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceRequirement/delete/{id}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -157,4 +168,5 @@ public class ResourceController {
         log.debug("REST request to delete resourceOffer : {}");
         this.resourcesService.deleteRequirement(id);
     }
+    //endregion
 }

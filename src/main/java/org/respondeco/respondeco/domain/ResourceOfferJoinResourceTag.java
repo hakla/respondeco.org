@@ -20,13 +20,6 @@ public class ResourceOfferJoinResourceTag extends AbstractResourceTagEntity impl
     @Column(name = "resource_offer_id")
     private Long resourceOfferId;
 
-    /*
-    @ManyToMany(mappedBy = "resourceOfferJoinResourceTags")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ResourceOffer> resourceOffers = new HashSet<>();
-    */
-
     public Long getResourceOfferId() {
         return resourceOfferId;
     }
@@ -34,16 +27,6 @@ public class ResourceOfferJoinResourceTag extends AbstractResourceTagEntity impl
     public void setResourceOfferId(Long resourceOfferId) {
         this.resourceOfferId = resourceOfferId;
     }
-
-    /*
-    public Set<ResourceOffer> getResourceOffers() {
-        return resourceOffers;
-    }
-
-    public void setResourceOffers(Set<ResourceOffer> resourceOffers) {
-        this.resourceOffers = resourceOffers;
-    }
-*/
 
     @Override
     public String toString() {

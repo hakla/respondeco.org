@@ -27,6 +27,7 @@ import java.util.List;
 @Transactional
 public class ResourcesService {
 
+    // region Private Variables
     private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
 
     private ResourceOfferRepository resourceOfferRepository;
@@ -41,8 +42,9 @@ public class ResourcesService {
 
     private ResourceRequirementJoinResourceTagRepository resourceRequirementJoinResourceTagRepository;
 
+    // endregion
 
-
+    // region Constructor
     @Inject
     public ResourcesService(ResourceOfferRepository resourceOfferRepository,
                             ResourceRequirementRepository resourceRequirementRepository,
@@ -58,6 +60,10 @@ public class ResourcesService {
         this.resourceOfferJoinResourceTagRepository = resourceOfferJoinResourceTagRepository;
     }
 
+    // endregion
+
+    // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
+
     public ResourceRequirement createRequirement(BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags){
         ResourceRequirement newRequirement = null;
         if(this.resourceRequirementRepository.findByDescriptionAndProjectId(description, projectId) == null){
@@ -65,6 +71,7 @@ public class ResourcesService {
             newRequirement.setDescription(description);
             newRequirement.setProjectId(projectId);
             newRequirement.setIsEssential(isEssential);
+            this.resourceRequirementRepository.save(newRequirement);
 
             for(String tagName: resourceTags){
                 //save tags and add it to list
@@ -92,6 +99,7 @@ public class ResourcesService {
             requirement.setAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
+            this.resourceRequirementRepository.save(requirement);
 
             this.resourceRequirementJoinResourceTagRepository.deleteByRequirementId(id);
 
@@ -127,6 +135,10 @@ public class ResourcesService {
         return result;
     }
 
+    // endregion
+
+    // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
+
     public ResourceOffer createOffer(BigDecimal amount, String description, Long organisationId, String[] resourceTags){
         ResourceOffer newOffer = null;
         if(this.resourceOfferRepository.findByDescriptionAndOrganisationId(description, organisationId) == null) {
@@ -134,6 +146,7 @@ public class ResourcesService {
             newOffer.setAmount(amount);
             newOffer.setDescription(description);
             newOffer.setOrganisationId(organisationId);
+            this.resourceOfferRepository.save(newOffer);
 
             this.saveOffersJoinTags(newOffer, resourceTags);
         }
@@ -149,6 +162,8 @@ public class ResourcesService {
         if(offer != null){
             offer.setAmount(amount);
             offer.setDescription(description);
+            this.resourceOfferRepository.save(offer);
+
             // delete all offer join tags entries, so we could have clean insert
             this.resourceOfferJoinResourceTagRepository.deleteByOfferId(offer.getId());
 
@@ -180,13 +195,16 @@ public class ResourcesService {
         return result;
     }
 
+    // endregion
+
+    // region Private methods
     private void saveOffersJoinTags(ResourceOffer offer, String[] resourceTags){
         for(String tagName: resourceTags){
             //save tags and add it to list
             ResourceTag tag = this.saveResourceTag(tagName);
-            offer.addResourceTag(tag);
             //save offer to tag
             if(tag != null){
+                offer.addResourceTag(tag);
                 this.saveOfferJoinTag(offer, tag);
             }
         }
@@ -196,9 +214,9 @@ public class ResourcesService {
         for(String tagName: resourceTags){
             //save tags and add it to list
             ResourceTag tag = this.saveResourceTag(tagName);
-            requirement.addResourceTag(tag);
             //save requirement to tag
             if(tag != null){
+                requirement.addResourceTag(tag);
                 this.saveRequirementJoinTag(requirement, tag);
             }
         }
@@ -211,6 +229,10 @@ public class ResourcesService {
             result.setResourceTagId(tag.getId());
             this.resourceRequirementJoinResourceTagRepository.save(result);
         }
+    }
+
+    public List<ResourceOfferJoinResourceTag> GetDing(){
+        return this.resourceOfferJoinResourceTagRepository.findByResourceOfferIdAndResourceTagId(0L, 0L);
     }
 
     private void saveOfferJoinTag(ResourceOffer offer, ResourceTag tag){
@@ -238,4 +260,5 @@ public class ResourcesService {
 
         return tag;
     }
+    //endregion
 }

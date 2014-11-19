@@ -37,6 +37,13 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable 
         this.name = name;
     }
 
+    public ResourceTag(){ }
+
+    public ResourceTag(Long id, String name){
+        this.setId(id);
+        this.setName(name);
+    }
+
     @Override
     public String toString() {
         return "ResourceTag{" +
