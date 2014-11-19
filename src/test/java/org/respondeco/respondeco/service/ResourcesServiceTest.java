@@ -110,13 +110,6 @@ public class ResourcesServiceTest {
 
     }
 
-    @Test
-    public void testUpdateRequirement() throws Exception {
-        Long result = resourcesService.GetDing();
-        Long expected = 0L;
-        assertEquals(expected, result);
-    }
-
     public void testDeleteRequirement() throws Exception {
 
     }
