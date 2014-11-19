@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
