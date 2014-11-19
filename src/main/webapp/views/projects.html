@@ -1,97 +1,50 @@
 <div>
 
-    <h2>ProjectIdeas</h2>
+    <h2 translate="global.projects.title">Projects</h2>
 
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveProjectIdeaModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-flash"></span> Create a new ProjectIdea
-    </button>
-    <div class="modal fade" id="saveProjectIdeaModal" tabindex="-1" role="dialog" aria-labelledby="myProjectIdeaLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="form" role="form" novalidate
-                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                      ng-submit="create()">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myProjectIdeaLabel">Create or edit a ProjectIdea</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="projectidea.id" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label>organizationId</label>
-                            <input type="number" class="form-control"
-                                   ng-model="projectidea.organizationId">
-                        </div>
-                        <div class="form-group">
-                            <label>name</label>
-                            <input type="text" class="form-control"
-                                   ng-model="projectidea.name">
-                        </div>
-                        <div class="form-group">
-                            <label>purpose</label>
-                            <input type="text" class="form-control"
-                                   ng-model="projectidea.purpose">
-                        </div>
-                        <div class="form-group">
-                            <label>projectLogo</label>
-                            <input type="text" class="form-control"
-                                   ng-model="projectidea.projectLogo">
-                        </div>
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                        </button>
-                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span> Save
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" ng-model="searchText"/>
+            <button value="Suchen" class="btn btn-default" ng-click="">
+                <span class="glyphicon glyphicon-search"></span>
+                <span translate="global.projects.search">Search Projects</span>
+            </button>
+        </div>
+        <div class="col-md-4 dropdown">
+            <button class="btn btn-default dropdown-toggle" translate="global.projects.categories.title"type="button" id="menu1" data-toggle="dropdown">Categories
+                <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" translate="global.projects.categories.cat1">Categorie1</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" translate="global.projects.categories.cat2">Categorie2</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-success pull-right" ng-click="createProject()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span translate="global.projects.createProject.title">Create a new Project</span>
+            </button>
         </div>
     </div>
-
-    <div class="table-responsive">
+    <div class="row table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>organizationId</th>
-                    <th>name</th>
-                    <th>purpose</th>
-                    <th>projectLogo</th>
-                    <th></th>
+                    <th translate="global.projects.id">ID</th>
+                    <th translate="global.projects.name">name</th>
+                    <th translate="global.projects.purpose">purpose</th>
+                    <th translate="global.projects.concrete">concrete</th>
+                    <th translate="global.projects.startDate">startDate</th>
+                    <th translate="global.projects.endDate">endDate</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="projectidea in projectideas">
-                    <td>{{projectidea.id}}</td>
-                    <td>{{projectidea.organizationId}}</td>
-                    <td>{{projectidea.name}}</td>
-                    <td>{{projectidea.purpose}}</td>
-                    <td>{{projectidea.projectLogo}}</td>
-                    <td>
-                        <button type="submit"
-                                ng-click="update(projectidea.id)"
-                                class="btn">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit
-                        </button>
-                        <button type="submit"
-                                ng-click="delete(projectidea.id)"
-                                class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
-                        </button>
-                    </td>
+                <tr ng-repeat="p in projects | filter: searchText" ng-click="viewProjectDetails(p)">
+                    <td>{{p.id}}</td>
+                    <td>{{p.name}}</td>
+                    <td>{{p.purpose}}</td>
+                    <td>{{p.concrete}}</td>
+                    <td>{{p.startDate}}</td>
+                    <td>{{p.endDate}}</td>
                 </tr>
             </tbody>
         </table>

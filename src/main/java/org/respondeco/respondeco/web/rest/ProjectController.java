@@ -101,7 +101,7 @@ public class ProjectController {
      * GET  /rest/project -> get all the projects.
      */
     @ApiOperation(value = "Get projects", notes = "Get all projects")
-    @RequestMapping(value = "/rest/project/all",
+    @RequestMapping(value = "/rest/project",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

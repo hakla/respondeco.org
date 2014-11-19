@@ -9,6 +9,9 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,14 +53,24 @@ public class OrganizationController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-
-    public void create(@RequestBody OrganizationDTO newOrganization) {
+    public ResponseEntity<?> create(@RequestBody @Valid OrganizationDTO newOrganization){
         log.debug("REST request to save Organization : {}", newOrganization);
-        organizationService.createOrganizationInformation(
-                newOrganization.getName(),
-                newOrganization.getDescription(),
-                newOrganization.getEmail(),
-                newOrganization.isNpo());
+        ResponseEntity<?> responseEntity;
+        try {
+            organizationService.createOrganizationInformation(
+                    newOrganization.getName(),
+                    newOrganization.getDescription(),
+                    newOrganization.getEmail(),
+                    newOrganization.isNpo());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (AlreadyInOrganizationException e) {
+            log.error("Could not save Organization : {}", newOrganization, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (OrganizationAlreadyExistsException e) {
+            log.error("Could not save Organization : {}", newOrganization, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return  responseEntity;
     }
 
     /**
@@ -83,11 +97,18 @@ public class OrganizationController {
     @Timed
     public ResponseEntity<Organization> get(@PathVariable String orgName) {
         log.debug("REST request to get Organization : {}", orgName);
-        return Optional.ofNullable(organizationService.getOrganizationByName(orgName))
-                .map(organization -> new ResponseEntity<>(
-                        organization,
-                        HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ResponseEntity<Organization> responseEntity;
+        try {
+            return Optional.ofNullable(organizationService.getOrganizationByName(orgName))
+                    .map(organization -> new ResponseEntity<>(
+                            organization,
+                            HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not get Organization : {}", orgName, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
     /**
@@ -100,11 +121,18 @@ public class OrganizationController {
     @Timed
     public ResponseEntity<Organization> get() {
         log.debug("REST request to get Organization : {}" ,userService.getUserWithAuthorities().getLogin());
-        return Optional.ofNullable(organizationService.getOrganizationByOwner())
-                .map(organization -> new ResponseEntity<>(
-                        organization,
-                        HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ResponseEntity<Organization> responseEntity;
+        try {
+            return Optional.ofNullable(organizationService.getOrganizationByOwner())
+                    .map(organization -> new ResponseEntity<>(
+                            organization,
+                            HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not get Organization : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
 
@@ -116,14 +144,21 @@ public class OrganizationController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-
-    public void update(@RequestBody OrganizationDTO organization) {
-        log.debug("REST request to save Organization : {}", organization);
-        organizationService.updaterOrganizationInformation(
-                organization.getName(),
-                organization.getDescription(),
-                organization.getEmail(),
-                organization.isNpo());
+    public ResponseEntity<?> update(@RequestBody @Valid OrganizationDTO organization){
+        log.debug("REST request to update Organization : {}", organization);
+        ResponseEntity<?> responseEntity;
+        try {
+            organizationService.updaterOrganizationInformation(
+                    organization.getName(),
+                    organization.getDescription(),
+                    organization.getEmail(),
+                    organization.isNpo());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not update Organization : {}", organization, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
     /**
@@ -134,9 +169,17 @@ public class OrganizationController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void delete() {
+    public ResponseEntity<?> delete(){
         log.debug("REST request to delete Organization : {}");
-        organizationService.deleteOrganizationInformation();
+        ResponseEntity<?> responseEntity;
+        try {
+            organizationService.deleteOrganizationInformation();
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not delete Organization : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
 }

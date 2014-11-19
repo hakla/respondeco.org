@@ -110,6 +110,29 @@
         },
         "textmessage": {
             "title": "Nachricht von "
+        },
+        "projects": {
+            "title": "Projekte",
+            "createProject": {
+                "title": "Neues Projekt erstellen",
+                "tag":"Tag hinzufügen"
+            },
+            "details": {
+                "title": "Projektdetails",
+                "delete": "Löschen"
+            },
+            "categories": {
+                "title": "Kategorien",
+                "cat1": "Kategorie1",
+                "cat2": "Kategorie2"
+            },
+            "search": "Suchen",
+            "id": "Projekt-ID",
+            "name": "Name",
+            "purpose": "Vorhaben",
+            "concrete": "Konkretes Projekt",
+            "startDate": "Start-Datum",
+            "endDate": "End-Datum"
         }
     },
     "main": {
