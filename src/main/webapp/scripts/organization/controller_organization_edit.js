@@ -47,11 +47,9 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         }, function(org) {
             User.getByOrgId({
                 id: org.id
+            }, null, null, function(error) {
+                console.log(error);
             });
-        });
-
-        $scope.orgJoinRequests = OrgJoinRequest.get({
-            id: name
         });
     };
 
@@ -71,8 +69,6 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
             $location.path('organization/' + $scope.organization.name);
         }
     };
-
-    $scope.orgJoinRequest
 
     if (isNew == false) {
         $scope.update(id);

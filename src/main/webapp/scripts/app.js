@@ -3,7 +3,7 @@
 /* App Module */
 
 var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngRoute', 'ngCookies', 'respondecoAppUtils', 'pascalprecht.translate', 'truncate', 'ui.bootstrap']);
+    'ngResource', 'ngRoute', 'ngCookies', 'respondecoAppUtils', 'pascalprecht.translate', 'truncate', 'ui.bootstrap', 'respondecoAppFilters']);
 
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {

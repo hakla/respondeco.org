@@ -396,7 +396,9 @@
         "back": "Zurück",
         "invite": "Mitglieder einladen",
         "invite.username": "Einzuladender Benutzer",
-        "action.invite": "Einladen"
+        "action.invite": "Einladen",
+        "action.acceptInvitation": "Einladung annehmen",
+        "action.declineInvitation": "Einladung ablehnen"
     },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen"

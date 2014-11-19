@@ -1,46 +1,20 @@
-<div>
+<div class="organization">
 
     <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#saveOrganizationModal" ng-click="redirectToNew()" ng-show="authenticated">
-        <span class="glyphicon glyphicon-flash"></span> <span translate="organization.new">Create a new Organization</span>
+        <span class="glyphicon glyphicon-flash"></span>
+        <span translate="organization.new">Create a new Organization</span>
     </button>
-    
+
     <h2 translate='global.menu.organization'>Organizations</h2>
-    
+
     <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th translate="global.id">ID</th>
-                    <th translate="global.name">name</th>
-                    <th>description</th>
-                    <th>email</th>
-                    <th>logo</th>
-                    <th>isNpo</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="organization in organizations">
-                    <td>{{organization.id}}</td>
-                    <td>{{organization.name}}</td>
-                    <td>{{organization.description}}</td>
-                    <td>{{organization.email}}</td>
-                    <td>{{organization.logo}}</td>
-                    <td>{{organization.isNpo}}</td>
-                    <td>
-                        <button type="submit"
-                                ng-click="redirectToOrganization(organization.name)"
-                                class="btn">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit
-                        </button>
-                        <button type="submit"
-                                ng-click="delete(organization.id)"
-                                class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <ul>
+            <li class="organization-item" ng-repeat="organization in organizations">
+                <a ng-click="redirectToOrganization(organization.name)">
+                    <img src="{{organization.logo | logo}}" alt="logo {{organization.name}}">
+                </a>
+                <h2><a ng-click="redirectToOrganization(organization.name)">{{organization.name}}</a></h2>
+            </li>
+        </ul>
     </div>
 </div>

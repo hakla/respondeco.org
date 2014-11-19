@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest) {
+respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest, TextMessage) {
     var redirectToOrganization = function(name) {
         $location.path('organization/' + name);
     };
@@ -28,14 +28,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                 id: $scope.organization.name
             });
 
-            $scope.organization.owner = Account.get({
-                login: $scope.organization.owner
-            }).$promise.then(function(data) {
-                $scope.organization.owner = data;
-                if (data.login === user.login) {
-                    isOwner = true;
-                }
-            });
+            isOwner = user.login === $scope.organization.owner;
         });
     };
 
@@ -70,8 +63,12 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         OrgJoinRequest.save({
             orgId: $scope.organization.id,
             userlogin: $scope.selectedUser.login
-        }, function() {
+        }, function(data) {
             $scope.orgJoinRequests = OrgJoinRequest.query();
+            TextMessage.create({
+                receiver: data.userlogin,
+                content: "You got invited to join the organization " + $scope.organization.name + "! <button class='btn btn-primary' ng-click='acceptInvitation(" + data.id + ")' translate='organization.accept' /><button class='btn btn-primary' ng-click='declineInvitation(" + data.id + ")' translate='organization.decline' />"
+            });
         });
     };
 

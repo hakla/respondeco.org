@@ -141,3 +141,27 @@ img {
         opacity: 0;
     }
 }
+
+.organization {
+    .organization-item {
+        list-style-type: none;
+        display: inline-block;
+        margin: 25px 75px 25px 0;
+        padding: 10px;
+        background-color: #FFF;
+        border: 1px solid #e3e3e3;
+        border-radius: 2px;
+
+        img {
+            height: 200px;
+            width: 200px;
+        }
+
+        h2 {
+            a {
+                color: #333;
+                font-size: 18px;
+            }
+        }
+    }
+}

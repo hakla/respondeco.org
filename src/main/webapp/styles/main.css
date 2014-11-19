@@ -8037,3 +8037,24 @@ img {
 .profile.ng-hide, .account.ng-hide, .member.ng-hide {
   opacity: 0;
 }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003146}}
+.organization .organization-item {
+  list-style-type: none;
+  display: inline-block;
+  margin: 25px 75px 25px 0;
+  padding: 10px;
+  background-color: #FFF;
+  border: 1px solid #e3e3e3;
+  border-radius: 2px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003155}}
+.organization .organization-item img {
+  height: 200px;
+  width: 200px;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003161}}
+.organization .organization-item h2 a {
+  color: #333;
+  font-size: 18px;
+}
