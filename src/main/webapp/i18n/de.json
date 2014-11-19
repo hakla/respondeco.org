@@ -379,14 +379,27 @@
         }
     },
     "organization": {
-        "new": "Neue Organisation erstellen {{id}}",
+        "new": "Neue Organisation erstellen",
         "name": "Name",
         "name.placeholder": "Name der Organisation",
         "description": "Beschreibung",
         "description.placeholder": "Beschreibung der Organisation",
-        "edit": "Organisation {{organization.name}} bearbeiten",
+        "edit": "Organisation {{ 'organization.name' }} bearbeiten",
         "title": "Titel der Organisation",
-        "isNPO": "Unternehmen ist eine Non-Profit-Organisation"
+        "email": "E-Mail",
+        "responsiblePerson": "Verantwortlicher",
+        "contact": "Ansprechperson",
+        "isNPO": "Non-Profit-Organisation",
+        "members": "Mitglieder",
+        "detail.heading": "{{ 'organization.name' }}",
+        "delete": "Löschen",
+        "back": "Zurück",
+        "invite": "Mitglieder einladen",
+        "invite.username": "Einzuladender Benutzer",
+        "action.invite": "Einladen"
+    },
+    "orgJoinRequest": {
+        "pending": "Ausstehende Einladungen"
     },
     "errors": {
         "title": "Fehlerseite!",

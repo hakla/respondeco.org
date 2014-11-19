@@ -40,7 +40,7 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest) {
     $scope.success = null;
     $scope.error = null;
 
@@ -67,6 +67,8 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         "FEMALE"
     ];
 
+    $scope.orgJoinRequest = OrgJoinRequest.get();
+
     $scope.save = function () {
         Account.save($scope.settingsAccount,
             function (value, responseHeaders) {
@@ -90,7 +92,17 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
                 $scope.accountdeleted = null;
                 $scope.error = "ERROR";
             });
-    }
+    };
+
+
+
+    $scope.acceptOrgJoinRequest = function() {
+        OrgJoinRequest.accept();
+    };
+
+    $scope.declineOrgJoinRequest = function() {
+        OrgJoinRequest.decline();
+    };
 
     $scope.edit = {
         image: false,

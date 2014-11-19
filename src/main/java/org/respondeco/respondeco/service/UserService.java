@@ -200,4 +200,30 @@ public class UserService {
         log.debug("Couldn't Find members of organization");
         return null;
     }
+
+    public List<User> findInvitableUsersByOrgId(Long orgId) {
+        Organization organization = organizationRepository.getOne(orgId);
+
+        // if there is no organization than all users should be returned
+        if(organization != null) {
+            List<User> users = userRepository.findInvitableUsers();
+            User owner = null;
+
+            // find the owner and remove him from the list
+            // @TODO set the orgId of the owner when set as owner
+            for (User user: users) {
+                if (organization.getOwner().equals(user.getLogin())) {
+                    owner = user;
+                    break;
+                }
+            }
+
+            if (owner != null) {
+                users.remove(owner);
+            }
+
+            return users;
+        }
+        return userRepository.findAll();
+    }
 }

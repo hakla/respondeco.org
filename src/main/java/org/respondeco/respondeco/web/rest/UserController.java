@@ -82,4 +82,18 @@ public class UserController {
         log.debug("REST request to get Users by OrgId : {}", userlogin);
         userService.deleteMember(userlogin);
     }
+
+    /**
+     * GET  /rest/users -> get all users
+     */
+    @RequestMapping(value = "/rest/users/getInvitableUsersByOrgId/{orgId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<List<User>> getInvitableUsers(@PathVariable Long orgId) {
+        return Optional.ofNullable(userService.findInvitableUsersByOrgId(orgId))
+            .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }

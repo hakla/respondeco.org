@@ -1,68 +1,91 @@
 'use strict';
 
-respondecoApp.controller('OrganizationController', function ($scope, $location, $routeParams, resolvedOrganization, Organization, Account) {
+respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest) {
+    var redirectToOrganization = function(name) {
+        $location.path('organization/' + name);
+    };
+    var isOwner = false;
+    var user;
 
-        var id = $routeParams.id;
-        var isNew = id === 'new';
-        var isEdit = id !== undefined && isNew === false
-        var redirectToEdit = function(name) {
-            $location.path('organization/' + name);
-        };
+    $scope.organizations = resolvedOrganization;
 
-        $scope.organization = {
-            npo: false,
-            owner: false
-        };
+    // get the current logged in user and set the organization owner to it
+    Account.get().$promise.then(function(account) {
+        user = account;
+    });
 
-        Account.get().$promise.then(function(account) {
-            $scope.organization.owner = account.login;
+    $scope.update = function(name) {
+        $scope.organization = Organization.get({
+            id: name
         });
 
-        $scope.organizations = resolvedOrganization;
+        $scope.organization.$promise.then(function() {
+            $scope.organization.logo = $scope.organization.logo || 'http://0.0.0.0:9000/images/profile_empty.png';
+            $scope.users = User.getInvitableUsers({
+                id: $scope.organization.id
+            });
+            $scope.orgJoinRequests = OrgJoinRequest.get({
+                id: $scope.organization.name
+            });
 
-        $scope.isNew = function() {
-            return isNew;
-        };
+            $scope.organization.owner = Account.get({
+                login: $scope.organization.owner
+            }).$promise.then(function(data) {
+                $scope.organization.owner = data;
+                if (data.login === user.login) {
+                    isOwner = true;
+                }
+            });
+        });
+    };
 
-        $scope.isEdit = function() {
-            return isEdit;
-        }
+    $scope.delete = function(id) {
+        id = id || $scope.organization.id;
 
-        $scope.create = function () {
-            Organization.save($scope.organization,
-                function () {
-                    $scope.organizations = Organization.query();
-                    $scope.clear();
-                }, 
-                function(resp) {
-                    console.log(resp.data.message);
-                });
-        };
+        if (confirm("Wirklich löschen?") === false) return;
 
-        $scope.update = function (name) {
-            $scope.organization = Organization.get({id: name});
-            redirectToEdit(name);
-        };
+        Organization.delete({
+                id: id
+            },
+            function() {
+                $scope.organizations = Organization.query();
+            });
+    };
 
-        $scope.delete = function (id) {
-            Organization.delete({id: id},
-                function () {
-                    $scope.organizations = Organization.query();
-                });
-        };
+    $scope.redirectToEdit = function() {
+        $location.path('organization/edit/' + $scope.organization.name);
+    }
 
-        $scope.clear = function () {
-            $scope.organization = {name: null, description: null, email: null, isNpo: null, id: null};
-            $location.path('organization');
-        };
+    $scope.redirectToNew = function() {
+        $location.path('organization/edit/new');
+    };
 
-        $scope.redirectToNew = function() {
-            redirectToEdit('new');
-        };
+    $scope.isOwner = function() {
+        return isOwner;
+    };
 
-        $scope.redirectToEdit = redirectToEdit;
+    $scope.invite = false;
 
-        if (isEdit) {
-            $scope.update(id);
-        } 
-    });
+    $scope.sendInvite = function() {
+        OrgJoinRequest.save({
+            orgId: $scope.organization.id,
+            userlogin: $scope.selectedUser.login
+        }, function() {
+            $scope.orgJoinRequests = OrgJoinRequest.query();
+        });
+    };
+
+    $scope.updateUser = function($item, $model, $label) {
+        $selectedUser = $item;
+    };
+
+    $scope.redirectToOverview = function() {
+        $location.path('organization');
+    };
+
+    $scope.redirectToOrganization = redirectToOrganization;
+
+    if ($routeParams.id !== undefined) {
+        $scope.update($routeParams.id);
+    }
+});
