@@ -25,7 +25,10 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js',
             'src/main/webapp/scripts/*.js',
             'src/main/webapp/scripts/**/*.js',
-            'src/test/javascript/**/!(karma.conf).js'
+            'src/test/javascript/**/!(karma.conf).js',
+            'src/main/webapp/bower_components/ui-bootstrap/src/bindHtml/bindHtml.js',
+            'src/main/webapp/bower_components/ui-bootstrap/src/position/position.js',
+            'src/main/webapp/bower_components/ui-bootstrap/src/typeahead/typeahead.js'
         ],
 
         // list of files / patterns to exclude

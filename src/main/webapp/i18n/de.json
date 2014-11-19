@@ -69,6 +69,9 @@
                     "invalid": "Ihre E-Mail Adresse ist ungültig.",
                     "minlength": "Ihre E-Mail Adresse muss mindestens 5 Zeichen lang sein",
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
+                },
+                "description": {
+                    "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
                 }
             }
         },
@@ -90,8 +93,11 @@
                 "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
             },
             "error": {
-                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden.",
-                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden."
+                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden: ",
+                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden.",
+                "usernotfound": "<strong>Es ist ein Fehler aufgetreten!</strong> Der angegebene Empfänger existiert nicht.",
+                "receiverlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
+                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen."
             },
             "validate": {
                 "receiver": {

@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @ApiModel(value = "Text Message", description = "A text message DTO")
-public class TextMessageDTO {
+public class TextMessageRequestDTO {
 
     @ApiModelProperty(value = "The receiver of the message", required = true)
     @NotNull

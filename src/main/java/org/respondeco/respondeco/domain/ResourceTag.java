@@ -9,6 +9,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -49,4 +50,5 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable 
                 ", isActive='" + active + "'" +
                 '}';
     }
+
 }

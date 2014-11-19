@@ -58,7 +58,7 @@
             <column name="series" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_login" type="varchar(50)"/>
+            <column name="user_id" type="bigint"/>
             <column name="token_value" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
@@ -91,10 +91,10 @@
                                  referencedColumnNames="login"
                                  referencedTableName="T_USER"/>
 
-        <addForeignKeyConstraint baseColumnNames="user_login"
+        <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="T_PERSISTENT_TOKEN"
                                  constraintName="fk_user_persistent_token"
-                                 referencedColumnNames="login"
+                                 referencedColumnNames="id"
                                  referencedTableName="T_USER"/>
 
         <loadData encoding="UTF-8"

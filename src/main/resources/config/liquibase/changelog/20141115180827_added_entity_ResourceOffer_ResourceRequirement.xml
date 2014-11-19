@@ -7,31 +7,6 @@
     <property name="now" value="now()" dbms="mysql,h2"/>
     <property name="now" value="current_timestamp" dbms="postgresql"/>
 
-    <!--
-        Added the entity OrgJoinRequest.
-
-
-        <addColumn tableName="T_PROJECT">
-            <column name="picture" type="blob"/>
-            <column name="start" type="timestamp"/>
-            <column name="end" type="timestamp"/>
-            <column name="created_by" type="varchar(50)" defaultValue="system">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
-        </addColumn>
-
-
-        <addForeignKeyConstraint baseColumnNames="organization_id"
-                                 baseTableName="T_PROJECT"
-                                 constraintName="fk_proj_org_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="T_ORGANIZATION"/>
-    -->
     <changeSet id="20141115180827" author="Roman Kern">
 
         <createTable tableName="T_RESOURCETAG">
@@ -49,6 +24,7 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
 
         <createTable tableName="T_RESOURCEOFFER">
@@ -72,18 +48,19 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
 
-        <createTable tableName="T_RESOURCEOFFER_JOIN_RESOURCETAG">
-            <column name="resource_tag_id" type="bigint">
+        <createTable tableName="T_RESOURCEOFFER_T_RESOURCETAG">
+            <column name="resourceTags_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="resource_offer_id" type="bigint">
+            <column name="T_RESOURCEOFFER_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="resource_tag_id, resource_offer_id" tableName="T_RESOURCEOFFER_JOIN_RESOURCETAG"/>
+        <addPrimaryKey columnNames="resourceTags_id, T_RESOURCEOFFER_id" tableName="T_RESOURCEOFFER_T_RESOURCETAG"/>
 
         <createTable tableName="T_RESOURCEREQUIREMENT">
             <column name="id" type="bigint">
@@ -112,6 +89,7 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="project_id"
@@ -153,6 +131,7 @@
             </column>
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="resource_offer_id"

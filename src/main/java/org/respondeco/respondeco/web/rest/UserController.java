@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -81,5 +78,18 @@ public class UserController {
     public void deleteMember(@PathVariable String userlogin) {
         log.debug("REST request to get Users by OrgId : {}", userlogin);
         userService.deleteMember(userlogin);
+    }
+
+    /**
+     * GET  /rest/users/find?query= -> get usernames matching the query parameter
+     */
+    @RequestMapping(value = "/rest/users/names",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public List<String> getMatchingUsernames(@RequestParam String query) {
+        log.debug("REST request to get usernames matching : {}", query);
+        return userService.findUsernamesByRegex(query);
     }
 }

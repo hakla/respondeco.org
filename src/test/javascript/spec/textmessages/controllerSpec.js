@@ -30,7 +30,11 @@ describe('TextMessage Controller Tests ', function () {
                 jasmine.any(Function));
 
             //Simulate call to error callback
-            TextMessageService.save.calls.mostRecent().args[2]();
+            TextMessageService.save.calls.mostRecent().args[2]({
+                data: {
+                    error: "Some error message"
+                }
+            });
             expect($scope.senderror).toBe("ERROR");
             expect($scope.sendsuccess).toBeNull();
         });
@@ -52,7 +56,7 @@ describe('TextMessage Controller Tests ', function () {
                 jasmine.any(Function),
                 jasmine.any(Function));
 
-            //Simulate call to error callback
+            //Simulate call to success callback
             TextMessageService.save.calls.mostRecent().args[1]();
             expect($scope.senderror).toBeNull();
             expect($scope.sendsuccess).toBe("SUCCESS");
@@ -62,7 +66,7 @@ describe('TextMessage Controller Tests ', function () {
 
             spyOn(TextMessageService, "delete");
 
-            $scope.delete(1);
+            $scope.delete({ id: 1 });
 
             expect(TextMessageService.delete).toHaveBeenCalled();
             expect(TextMessageService.delete).toHaveBeenCalledWith(
@@ -71,7 +75,11 @@ describe('TextMessage Controller Tests ', function () {
                 jasmine.any(Function));
 
             //Simulate call to error callback
-            TextMessageService.delete.calls.mostRecent().args[2]();
+            TextMessageService.delete.calls.mostRecent().args[2]({
+                data: {
+                    error: "Some error message"
+                }
+            });
             expect($scope.deleteerror).toBe("ERROR");
             expect($scope.deletesuccess).toBeNull();
         });
@@ -80,7 +88,7 @@ describe('TextMessage Controller Tests ', function () {
 
             spyOn(TextMessageService, "delete");
 
-            $scope.delete(1);
+            $scope.delete({ id: 1 });
 
             expect(TextMessageService.delete).toHaveBeenCalled();
             expect(TextMessageService.delete).toHaveBeenCalledWith(
