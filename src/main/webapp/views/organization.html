@@ -17,7 +17,7 @@
             <p ng-show='organization.isNpo'>NGO</p>
 
             <div ng-hide="edit.image">
-                <img src="{{ organization.logo }}" alt="Profilbild">
+                <img src="{{ organization.logo | logo }}" alt="Profilbild">
             </div>
         </div>
         <div class="col-md-5">
@@ -48,12 +48,13 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th translate="orgJoinRequest.pending">Pending invitations</th>
+                            <th translate="orgJoinRequest.pending" colspan="2">Pending invitations</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="orgJoinRequest in orgJoinRequests">
                             <td>{{orgJoinRequest.userLogin}}</td>
+                            <td class="text-right"><a ng-click='deleteInvitation(orgJoinRequest.id)'><i class="glyphicon glyphicon-remove"></i></a></td>
                         </tr>
                     </tbody>
                 </table>

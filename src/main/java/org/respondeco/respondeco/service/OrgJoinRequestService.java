@@ -118,4 +118,8 @@ public class OrgJoinRequestService {
     }
 
 
+    public List<OrgJoinRequest> getRequestForUser() {
+        User user = userService.getUserWithAuthorities();
+        return orgJoinRequestRepository.findByUserLogin(user.getLogin());
+    }
 }

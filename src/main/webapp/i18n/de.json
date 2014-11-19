@@ -397,11 +397,13 @@
         "invite": "Mitglieder einladen",
         "invite.username": "Einzuladender Benutzer",
         "action.invite": "Einladen",
-        "action.acceptInvitation": "Einladung annehmen",
-        "action.declineInvitation": "Einladung ablehnen"
+        "accept": "Einladung annehmen",
+        "decline": "Einladung ablehnen"
     },
     "orgJoinRequest": {
-        "pending": "Ausstehende Einladungen"
+        "pending": "Ausstehende Einladungen",
+        "accept": "Annehmen",
+        "openInvitations": "Offene Einladungen"
     },
     "errors": {
         "title": "Fehlerseite!",

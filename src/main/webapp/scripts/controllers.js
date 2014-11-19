@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope, Account) {
-    });
+respondecoApp.controller('MainController', function ($scope, Account, OrgJoinRequest, Organization) {
+});
 
 respondecoApp.controller('AdminController', function ($scope) {
 });
@@ -66,8 +66,18 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         "MALE",
         "FEMALE"
     ];
+    
+    OrgJoinRequest.getCurrent().$promise.then(function(data) {
+        $scope.orgJoinRequests = data;
 
-    $scope.orgJoinRequest = OrgJoinRequest.get();
+        data.forEach(function(el) {
+            Organization.getById({
+                id: el.orgId
+            }, function(data) {
+                el.organization = data;
+            });
+        });
+    });
 
     $scope.save = function () {
         Account.save($scope.settingsAccount,
@@ -94,14 +104,16 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
             });
     };
 
-
-
-    $scope.acceptOrgJoinRequest = function() {
-        OrgJoinRequest.accept();
+    $scope.acceptInvitation = function(id) {
+        OrgJoinRequest.accept({
+            id: id
+        });
     };
 
-    $scope.declineOrgJoinRequest = function() {
-        OrgJoinRequest.decline();
+    $scope.declineInvitation = function(id) {
+        OrgJoinRequest.decline({
+            id: id
+        });
     };
 
     $scope.edit = {

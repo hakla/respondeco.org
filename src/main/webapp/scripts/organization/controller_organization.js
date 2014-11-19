@@ -7,6 +7,12 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     var isOwner = false;
     var user;
 
+    var updateOrgJoinRequests = function() {
+        $scope.orgJoinRequests = OrgJoinRequest.query({
+            id: $scope.organization.name
+        });
+    }
+
     $scope.organizations = resolvedOrganization;
 
     // get the current logged in user and set the organization owner to it
@@ -20,7 +26,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         });
 
         $scope.organization.$promise.then(function() {
-            $scope.organization.logo = $scope.organization.logo || 'http://0.0.0.0:9000/images/profile_empty.png';
             $scope.users = User.getInvitableUsers({
                 id: $scope.organization.id
             });
@@ -64,10 +69,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
             orgId: $scope.organization.id,
             userlogin: $scope.selectedUser.login
         }, function(data) {
-            $scope.orgJoinRequests = OrgJoinRequest.query();
-            TextMessage.create({
-                receiver: data.userlogin,
-                content: "You got invited to join the organization " + $scope.organization.name + "! <button class='btn btn-primary' ng-click='acceptInvitation(" + data.id + ")' translate='organization.accept' /><button class='btn btn-primary' ng-click='declineInvitation(" + data.id + ")' translate='organization.decline' />"
+            updateOrgJoinRequests();
+            TextMessage.save({
+                receiver: data.userLogin,
+                content: "You got invited to join the organization " + $scope.organization.name + "!"
             });
         });
     };
@@ -78,6 +83,14 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.redirectToOverview = function() {
         $location.path('organization');
+    };
+
+    $scope.deleteInvitation = function(id) {
+        OrgJoinRequest.delete({
+            id: id
+        }, function() {
+            updateOrgJoinRequests();
+        });
     };
 
     $scope.redirectToOrganization = redirectToOrganization;

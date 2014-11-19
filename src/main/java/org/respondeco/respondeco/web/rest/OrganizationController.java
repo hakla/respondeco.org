@@ -60,12 +60,25 @@ public class OrganizationController {
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<Organization> getAll() {
         log.debug("REST request to get all Organizations");
         return organizationRepository.findAll();
+    }
+
+    /**
+     * GET  /rest/organizations -> get all the organizations.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organization/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public Organization getById(@PathVariable Long id) {
+        log.debug("REST request to get one Organization by id");
+        return organizationRepository.findOne(id);
     }
 
     /**

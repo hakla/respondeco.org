@@ -89,16 +89,33 @@ public class OrgJoinRequestController {
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinrequests",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<OrgJoinRequest>> getRequestsByOwner() {
         log.debug("REST request to get OrgJoinRequest : {}");
         return Optional.ofNullable(orgJoinRequestService.getRequestsByOwner())
-                .map(orgjoinrequest -> new ResponseEntity<>(
-                        orgjoinrequest,
-                        HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            .map(orgjoinrequest -> new ResponseEntity<>(
+                orgjoinrequest,
+                HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * GET  /rest/orgjoinrequest/current -> get the orgjoinrequest of active user.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/orgjoinrequest/current",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<OrgJoinRequest>> getRequestForUser() {
+        log.debug("REST request to get OrgJoinRequest : {}");
+        return Optional.ofNullable(orgJoinRequestService.getRequestForUser())
+            .map(orgjoinrequest -> new ResponseEntity<>(
+                orgjoinrequest,
+                HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -119,11 +136,24 @@ public class OrgJoinRequestController {
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/decline/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public void declineRequest(@PathVariable Long id) {
         log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
         orgJoinRequestService.declineRequest(id);
+    }
+
+    /**
+     * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/orgjoinrequests/{id}",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public void delete(@PathVariable Long id) {
+        log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
+        orgjoinrequestRepository.delete(id);
     }
 }

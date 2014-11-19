@@ -158,10 +158,18 @@ img {
         }
 
         h2 {
+            margin-top: 0;
+
             a {
                 color: #333;
                 font-size: 18px;
             }
         }
+    }
+}
+
+.orgjoinrequest {
+    .btn-group {
+        margin-top: 25px;
     }
 }
