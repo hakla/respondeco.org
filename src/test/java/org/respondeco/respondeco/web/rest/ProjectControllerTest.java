@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -132,8 +130,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -142,13 +139,12 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
 
-        verify(projectService, times(1)).save(
-                projectDTO.getId(),
+        verify(projectService, times(1)).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -159,7 +155,7 @@ public class ProjectControllerTest {
         Long id = projectCaptor.getValue().getId();
 
         // Read Project
-        restProjectMockMvc.perform(get("/app/rest/project/{id}", id))
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(id.intValue()))
@@ -173,12 +169,12 @@ public class ProjectControllerTest {
         projectDTO.setName(UPDATED_NAME);
         projectDTO.setPurpose(UPDATED_PURPOSE);
 
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(put("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
 
-        verify(projectService, times(1)).save(
+        verify(projectService, times(1)).update(
                 projectDTO.getId(),
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
@@ -188,7 +184,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Read updated Project
-        restProjectMockMvc.perform(get("/app/rest/project/{id}", id))
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(id.intValue()))
@@ -200,7 +196,7 @@ public class ProjectControllerTest {
         doAnswer(projectCaptor).when(projectService).delete(id);
 
         // Delete Project
-        restProjectMockMvc.perform(delete("/app/rest/project/{id}", id)
+        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -208,7 +204,7 @@ public class ProjectControllerTest {
         assertFalse(projectCaptor.getValue().isActive());
 
         // Read nonexisting Project
-        restProjectMockMvc.perform(get("/app/rest/project/{id}", 1000L)
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}", 1000L)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 
@@ -224,8 +220,7 @@ public class ProjectControllerTest {
         projectDTO.setEndDate(LocalDate.now().plusDays(5));
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -234,14 +229,14 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
 
         Long id = projectCaptor.getValue().getId();
 
-        restProjectMockMvc.perform(get("/app/rest/project/{id}", id))
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(id.intValue()))
@@ -265,7 +260,7 @@ public class ProjectControllerTest {
         projectDTO.setEndDate(LocalDate.now().minusDays(3));
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isBadRequest());
@@ -281,7 +276,7 @@ public class ProjectControllerTest {
         projectDTO.setEndDate(LocalDate.now().plusDays(3));
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isBadRequest());
@@ -299,8 +294,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -309,7 +303,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
@@ -317,9 +311,8 @@ public class ProjectControllerTest {
         Long projectId = projectCaptor.getValue().getId();
         doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
 
-        restProjectMockMvc.perform(post("/app/rest/project/manager/{id}", projectId)
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(otherUser.getLogin()))
+        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         assertEquals(projectCaptor.getValue().getManagerId(), otherUser.getId());
@@ -337,8 +330,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -347,7 +339,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
@@ -356,9 +348,8 @@ public class ProjectControllerTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgAdmin);
         doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
 
-        restProjectMockMvc.perform(post("/app/rest/project/manager/{id}", projectId)
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(otherUser.getLogin()))
+        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         assertEquals(projectCaptor.getValue().getManagerId(), otherUser.getId());
@@ -376,8 +367,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -386,7 +376,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
@@ -394,9 +384,8 @@ public class ProjectControllerTest {
         Long projectId = projectCaptor.getValue().getId();
         doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
 
-        restProjectMockMvc.perform(post("/app/rest/project/manager/{id}", projectId)
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(otherUser.getLogin()))
+        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
 
     }
@@ -418,8 +407,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -428,7 +416,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
@@ -437,9 +425,8 @@ public class ProjectControllerTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(unauthorizedUser);
         doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
 
-        restProjectMockMvc.perform(post("/app/rest/project/manager/{id}", projectId)
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(otherUser.getLogin()))
+        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
     }
 
@@ -449,8 +436,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -459,7 +445,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
@@ -468,7 +454,7 @@ public class ProjectControllerTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgAdmin);
 
         // Delete Project
-        restProjectMockMvc.perform(delete("/app/rest/project/{id}", id)
+        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
     }
@@ -484,8 +470,7 @@ public class ProjectControllerTest {
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).save(
-                projectDTO.getId(),
+        doAnswer(projectCaptor).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -494,7 +479,7 @@ public class ProjectControllerTest {
                 projectDTO.getProjectLogo());
 
         // Create Project
-        restProjectMockMvc.perform(post("/app/rest/project")
+        restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
@@ -503,7 +488,7 @@ public class ProjectControllerTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(otherUser);
 
         // Delete Project
-        restProjectMockMvc.perform(delete("/app/rest/project/{id}", id)
+        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
     }

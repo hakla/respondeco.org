@@ -42,8 +42,8 @@ public class ProjectService {
         this.organizationRepository = organizationRepository;
     }
 
-    public Project save(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        LocalDate endDate, byte[] logo) throws OperationForbiddenException {
+    public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
+                          LocalDate endDate, byte[] logo) throws OperationForbiddenException {
         sanityCheck(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
@@ -53,21 +53,10 @@ public class ProjectService {
         if(organization == null) {
             throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrgId());
         }
-        Project newProject;
-        if(id != null) {
-            newProject = projectRepository.findOne(id);
-            if(newProject == null) {
-                throw new IllegalArgumentException("no such project: " + id);
-            }
-            if(currentUser.getId().equals(newProject.getManagerId()) == false) {
-                throw new OperationForbiddenException("current user " + currentUser.getId() + " has no authority to " +
-                        "modify project " + id + " with manager id: " + newProject.getManagerId());
-            }
-        } else {
-            newProject = new Project();
-            newProject.setManagerId(currentUser.getId());
-            newProject.setOrganizationId(organization.getId());
-        }
+
+        Project newProject = new Project();
+        newProject.setManagerId(currentUser.getId());
+        newProject.setOrganizationId(organization.getId());
         newProject.setName(name);
         newProject.setPurpose(purpose);
         newProject.setConcrete(isConcrete);
@@ -80,6 +69,48 @@ public class ProjectService {
         }
         projectRepository.save(newProject);
         return newProject;
+    }
+
+    public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
+                        LocalDate endDate, byte[] logo) throws OperationForbiddenException {
+        sanityCheck(isConcrete, startDate, endDate);
+        if(id == null) {
+            throw new IllegalArgumentException("Project id must not be null");
+        }
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser.getOrgId() == null) {
+            throw new OperationForbiddenException("Current user does not belong to an Organization");
+        }
+        Organization organization = organizationRepository.findOne(currentUser.getOrgId());
+        if(organization == null) {
+            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrgId());
+        }
+        Project project = projectRepository.findOne(id);
+        if(project == null) {
+            throw new IllegalArgumentException("Project does not exist: " + id);
+        }
+        if(project.getOrganizationId().equals(organization.getId()) == false) {
+            throw new OperationForbiddenException("Project " + project +
+                    " is not a project from organization " + organization);
+        }
+        if(currentUser.getId().equals(project.getManagerId()) == false) {
+            if(currentUser.getId().equals(organization.getOwner()) == false) {
+                throw new OperationForbiddenException("Current user does have permission to alter project " + project);
+            }
+        }
+
+        project.setName(name);
+        project.setPurpose(purpose);
+        project.setConcrete(isConcrete);
+        project.setStartDate(startDate);
+        project.setEndDate(endDate);
+        if(logo != null) {
+            ProjectLogo projectLogo = new ProjectLogo();
+            projectLogo.setData(logo);
+            project.setProjectLogo(projectLogo);
+        }
+        projectRepository.save(project);
+        return project;
     }
 
     public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException, OperationForbiddenException {
