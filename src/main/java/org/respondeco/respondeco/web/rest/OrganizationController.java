@@ -116,6 +116,20 @@ public class OrganizationController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * GET  /rest/organizations/:owner -> get the organization of current owner.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organizations/{id}/members",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<User> getMembers(@PathVariable Long id) {
+        log.debug("REST request to get members for organization Organization : {}" ,userService.getUserWithAuthorities().getLogin());
+        return userService.getOrganizationMembers(id);
+    }
+
+
 
     /**
      * POST  /rest/organizations -> Update an organization.
@@ -125,7 +139,6 @@ public class OrganizationController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-
     public void update(@RequestBody OrganizationDTO organization) {
         log.debug("REST request to save Organization : {}", organization);
         organizationService.updaterOrganizationInformation(organization.getName(),organization.getDescription(),organization.getEmail(),organization.isNpo(),organization.getOwner());

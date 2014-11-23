@@ -5,7 +5,7 @@ respondecoApp
             $routeProvider
                 .when('/organization', {
                     templateUrl: 'views/organizations.html',
-                    controller: 'OrganizationController',
+                    controller: 'OrganizationsController',
                     resolve:{
                         resolvedOrganization: ['Organization', function (Organization) {
                             return Organization.query();

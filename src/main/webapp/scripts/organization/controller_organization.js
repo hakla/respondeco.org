@@ -1,17 +1,8 @@
 'use strict';
 
-respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest, TextMessage) {
-    var redirectToOrganization = function(name) {
-        $location.path('organization/' + name);
-    };
+respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User) {
     var isOwner = false;
     var user;
-
-    var updateOrgJoinRequests = function() {
-        $scope.orgJoinRequests = OrgJoinRequest.query({
-            id: $scope.organization.name
-        });
-    }
 
     $scope.organizations = resolvedOrganization;
 
@@ -26,11 +17,16 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         });
 
         $scope.organization.$promise.then(function() {
-            $scope.users = User.getInvitableUsers({
+            Organization.getMembers({
                 id: $scope.organization.id
+            }).$promise.then(function(data)  {
+                $scope.members = data;
             });
-            $scope.orgJoinRequests = OrgJoinRequest.get({
-                id: $scope.organization.name
+
+            User.get({
+                loginName: $scope.organization.owner
+            }).$promise.then(function(user) {
+                $scope.organization.owner = user;
             });
 
             isOwner = user.login === $scope.organization.owner;
@@ -52,29 +48,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.redirectToEdit = function() {
         $location.path('organization/edit/' + $scope.organization.name);
-    }
-
-    $scope.redirectToNew = function() {
-        $location.path('organization/edit/new');
     };
 
     $scope.isOwner = function() {
         return isOwner;
-    };
-
-    $scope.invite = false;
-
-    $scope.sendInvite = function() {
-        OrgJoinRequest.save({
-            orgId: $scope.organization.id,
-            userlogin: $scope.selectedUser.login
-        }, function(data) {
-            updateOrgJoinRequests();
-            TextMessage.save({
-                receiver: data.userLogin,
-                content: "You got invited to join the organization " + $scope.organization.name + "!"
-            });
-        });
     };
 
     $scope.updateUser = function($item, $model, $label) {
@@ -84,16 +61,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.redirectToOverview = function() {
         $location.path('organization');
     };
-
-    $scope.deleteInvitation = function(id) {
-        OrgJoinRequest.delete({
-            id: id
-        }, function() {
-            updateOrgJoinRequests();
-        });
-    };
-
-    $scope.redirectToOrganization = redirectToOrganization;
 
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);

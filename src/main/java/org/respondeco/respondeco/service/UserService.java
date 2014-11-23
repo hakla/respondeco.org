@@ -226,4 +226,8 @@ public class UserService {
         }
         return userRepository.findAll();
     }
+
+    public List<User> getOrganizationMembers(Long id) {
+        return userRepository.findUserByOrgId(id);
+    }
 }

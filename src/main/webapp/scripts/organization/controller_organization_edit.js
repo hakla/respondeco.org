@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('OrganizationControllerEdit', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User) {
+respondecoApp.controller('OrganizationControllerEdit', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest, TextMessage) {
 
     var id = $routeParams.id;
     var isNew = id === 'new';
@@ -10,6 +10,25 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     $scope.organization = {
         npo: false,
         owner: false
+    };
+
+    $scope.alerts = [];
+    $scope.isCollapsed = false;
+
+    $scope.addAlert = function() {
+        $scope.alerts.push({
+            msg: 'Another alert!'
+        });
+    };
+
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
+
+    var updateOrgJoinRequests = function() {
+        $scope.orgJoinRequests = OrgJoinRequest.query({
+            id: $scope.organization.name
+        });
     };
 
     if (isNew) {
@@ -45,15 +64,39 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         $scope.organization = Organization.get({
             id: name
         }, function(org) {
+            $scope.users = User.getInvitableUsers({
+                id: $scope.organization.id
+            });
+
             User.getByOrgId({
                 id: org.id
             }, null, null, function(error) {
                 console.log(error);
             });
+
+            $scope.orgJoinRequests = OrgJoinRequest.get({
+                id: $scope.organization.name
+            });
+
+            Organization.getMembers({
+                id: $scope.organization.id
+            }).$promise.then(function(data) {
+                $scope.members = data;
+            });
         });
     };
 
+    var deleteState = false;
+    $scope.deleteMessage = "organization.delete";
+
     $scope.delete = function(id) {
+        if (deleteState === false) {
+            $scope.deleteMessage = "organization.delete.sure";
+            deleteState = true;
+            return;
+        }
+
+        deleteState = true;
         Organization.delete({
                 id: id
             },
@@ -68,6 +111,35 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         } else {
             $location.path('organization/' + $scope.organization.name);
         }
+    };
+
+    $scope.sendInvite = function() {
+        OrgJoinRequest.save({
+            orgId: $scope.organization.id,
+            userlogin: $scope.selectedUser.login
+        }, function(data) {
+            updateOrgJoinRequests();
+            TextMessage.save({
+                receiver: data.userLogin,
+                content: "You got invited to join the organization " + $scope.organization.name + "!"
+            });
+        }, function(error) {
+            if (error.status === 400) {
+                $scope.alerts.push({
+                    msg: 'A user can only be invited once',
+                    type: 'warning'
+                });
+            }
+        });
+        $scope.selectedUser = null;
+    };
+
+    $scope.deleteInvitation = function(id) {
+        OrgJoinRequest.delete({
+            id: id
+        }, function() {
+            updateOrgJoinRequests();
+        });
     };
 
     if (isNew == false) {

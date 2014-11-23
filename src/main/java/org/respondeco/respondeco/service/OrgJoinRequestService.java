@@ -9,6 +9,8 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +40,16 @@ public class OrgJoinRequestService {
         this.organizationRepository=organizationRepository;
     }
     public OrgJoinRequest createOrgJoinRequest(Long orgId, String userlogin) {
+        OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByOrgIdAndUserLogin(orgId, userlogin);
+
+        if (orgJoinRequest != null) {
+            log.debug("There already exists a OrgJoinRequest for this user to this organization!");
+            return null;
+        }
+
         User user = userRepository.findOne(userlogin);
         if(organizationRepository.findOne(orgId) != null && user != null) {
-            OrgJoinRequest orgJoinRequest = new OrgJoinRequest();
+            orgJoinRequest = new OrgJoinRequest();
             orgJoinRequest.setOrgId(orgId);
             orgJoinRequest.setUserLogin(userlogin);
             orgJoinRequestRepository.save(orgJoinRequest);
@@ -86,14 +95,12 @@ public class OrgJoinRequestService {
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(requestId);
         if(orgJoinRequest != null) {
             Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
-            if(organization.getOwner().equals(user.getLogin())) {
-                if(organization != null) {
-                    User member = userRepository.findOne(orgJoinRequest.getUserLogin());
-                    if(member != null) {
-                        member.setOrgId(organization.getId());
-                        orgJoinRequestRepository.delete(requestId);
-                        log.debug("Accepted User and Deleted OrgJoinRequest: {}", requestId);
-                    }
+            if(organization != null) {
+                User member = userRepository.findOne(orgJoinRequest.getUserLogin());
+                if(member != null) {
+                    member.setOrgId(organization.getId());
+                    orgJoinRequestRepository.delete(requestId);
+                    log.debug("Accepted User and Deleted OrgJoinRequest: {}", requestId);
                 }
             }
         }
@@ -106,11 +113,8 @@ public class OrgJoinRequestService {
         User user = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(requestId);
         if(orgJoinRequest != null) {
-            Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
-            if(organization.getOwner().equals(user.getLogin())) {
-                orgJoinRequestRepository.delete(requestId);
-                log.debug("Declined User and Deleted OrgJoinRequest: {}", requestId);
-            }
+            orgJoinRequestRepository.delete(requestId);
+            log.debug("Declined User and Deleted OrgJoinRequest: {}", requestId);
         }
         else {
             log.debug("Couldn't Decline OrgJoinRequest: {}", requestId);

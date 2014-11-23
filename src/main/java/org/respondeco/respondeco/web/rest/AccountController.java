@@ -10,6 +10,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -130,7 +131,8 @@ public class AccountController {
                     user.getEmail(),
                     user.getDescription(),
                     user.getLangKey(),
-                    user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList())),
+                    user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList()),
+                    new OrganizationDTO()),
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }

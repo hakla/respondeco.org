@@ -8053,8 +8053,17 @@ img {
   height: 200px;
   width: 200px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003161}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003160}}
+.organization .organization-item h2 {
+  margin-top: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003163}}
 .organization .organization-item h2 a {
   color: #333;
   font-size: 18px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003172}}
+.orgjoinrequest .btn-group {
+  margin-top: 25px;
 }

@@ -40,14 +40,22 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
     $scope.success = null;
     $scope.error = null;
 
     $scope.settingsAccount = {};
     $scope.profilePicture = "images/profile_empty.png";
-    Account.get().$promise.then(function(x) {
-        $scope.settingsAccount = x;
+    Account.get().$promise.then(function(account) {
+        $scope.settingsAccount = account;
+
+        if ($scope.settingsAccount.orgId !== null) {
+            Organization.getById({
+                id: $scope.settingsAccount.orgId
+            }).$promise.then(function(organization) {
+                $scope.organization = organization;
+            });
+        }
 
         if($scope.settingsAccount.firstName == null) {
             $scope.fullName = $scope.settingsAccount.lastName;

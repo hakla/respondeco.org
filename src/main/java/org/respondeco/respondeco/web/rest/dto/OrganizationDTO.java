@@ -1,6 +1,8 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.respondeco.respondeco.domain.User;
 
 import java.util.List;

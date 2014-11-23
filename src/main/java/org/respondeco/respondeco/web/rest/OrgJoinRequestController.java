@@ -51,7 +51,7 @@ public class OrgJoinRequestController {
                 .map(orgjoinrequest -> new ResponseEntity<>(
                         orgjoinrequest,
                         HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     /**
