@@ -10,7 +10,7 @@
     <changeSet id="20141115180827" author="Roman Kern">
 
         <createTable tableName="T_RESOURCETAG">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
