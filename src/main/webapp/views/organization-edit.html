@@ -29,7 +29,7 @@
                     <h3>Profile picture</h3>
                 </div>
             </div>
-            <h3 translate="organization.members" ng-click="isCollapsed = !isCollapsed">Members</h3>
+            <h3 translate="organization.members" ng-click="isCollapsed = !isCollapsed" ng-hide='isNew()'>Members</h3>
             <div collapse="isCollapsed === true">
                 <div class="row" ng-hide='isNew()'>
                     <div class="col-md-6">
