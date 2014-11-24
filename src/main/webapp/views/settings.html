@@ -102,9 +102,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="general.button.save" ng-click="edit.account = !edit.account">Save
+                    <button id="saveButton" type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="general.button.save" ng-click="edit.account = !edit.account">Save
                     </button>
-                    <a class="btn btn-link" translate="general.button.cancel" ng-click="edit.account = !edit.account">Cancel
+                    <a id ="cancelButton" class="btn btn-link" translate="general.button.cancel" ng-click="edit.account = !edit.account">Cancel
                     </a>
                     <div class="pull-right">
                         <rsp-confirm-delete on-confirm=delete()></rsp-confirm-delete>
@@ -118,7 +118,7 @@
                         <img src="{{profilePicture}}" alt="Profilbild">
                     </div>
                     <div>
-                        <a ng-click="edit.image = !edit.image">
+                        <a id="newPicture" ng-click="edit.image = !edit.image">
                             <span translate="settings.account.profile_img_edit">New profile picture</span>
                         </a>
                     </div>
@@ -153,9 +153,9 @@
 
                     </div>
                     <div class="text-right" ng-hide="edit.account">
-                        <a ng-click="edit.account = !edit.account">
+                        <button id="editButton" type="button" ng-click="edit.account = !edit.account">
                             <span translate="general.edit">edit</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 <div class="col-md-5 member" ng-hide="edit.account">
