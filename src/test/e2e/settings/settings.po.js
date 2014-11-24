@@ -18,15 +18,13 @@ var SettingsPage = function() {
 
     this.newPicture = element(by.id('newPicture'));
 
-    this.setTitle = function(asdfasdf) {
-        this.title.clear().then(function(asdfasdf) {
-            this.title.sendKeys(asdfasdf);
-        });
-    }
+    this.setTitle = function("hi") {
+        this.title.sendKeys("hi");
+    };
 
     this.navigate = function() {
         browser.get("http://localhost:9000/#/settings");
-    }
+    };
 };
 
 module.exports = new SettingsPage();
