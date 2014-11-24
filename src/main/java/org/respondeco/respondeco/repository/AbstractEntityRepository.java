@@ -1,0 +1,23 @@
+package org.respondeco.respondeco.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
+
+import javax.transaction.Transactional;
+import java.io.Serializable;
+
+/**
+ * Created by Roman Kern on 23.11.14.
+ * Use this to override delete to UPDATE SET is_active = 0
+ */
+@NoRepositoryBean
+public interface AbstractEntityRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
+
+    @Override
+    @Modifying
+    @Transactional
+    @Query("UPDATE #{#entityName} SET is_active = 0 WHERE id = ?1")
+    void delete(ID var1);
+}

@@ -1,14 +1,15 @@
 package org.respondeco.respondeco.repository;
 
 import org.respondeco.respondeco.domain.ResourceOffer;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Spring Data JPA repository for the ResourceOffer entity.
  */
-public interface ResourceOfferRepository extends JpaRepository<ResourceOffer, Long> {
+@Transactional
+public interface ResourceOfferRepository extends AbstractEntityRepository<ResourceOffer, Long> {
 
     List<ResourceOffer> findByDescriptionAndOrganisationId(String description, Long organisationId);
     List<ResourceOffer> findByOrganisationId(Long organisationId);

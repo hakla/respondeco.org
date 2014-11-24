@@ -68,6 +68,7 @@ public class ResourcesServiceTest {
 
     @Test
     public void testCreateRequirement() throws Exception {
+        //region Test data
         ResourceRequirement req = new ResourceRequirement();
         BigDecimal amount = new BigDecimal(10);
         String description = "Here is my test Requirement... bla bla.";
@@ -80,10 +81,11 @@ public class ResourcesServiceTest {
         ResourceTag testResourceTag = new ResourceTag(1L, tags[0]);
         List<ResourceTag> resourceTags = new ArrayList<ResourceTag>();
         resourceTags.add(testResourceTag);
+        //endregion
 
         when(resourceRequirementRepositoryMock.findByDescriptionAndProjectId(description, projectId)).thenReturn(null);
         when(resourceTagRepositoryMock.findByName(tags[0])).thenReturn(resourceTags);
-        when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagIdCount(requirementId, testResourceTag.getId())).thenReturn(null);
+        when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagId(requirementId, testResourceTag.getId())).thenReturn(null);
         //redirect output to the variable of the test class
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -105,7 +107,7 @@ public class ResourcesServiceTest {
         verify(resourceTagRepositoryMock, times(1)).findByName(isA(stringCl));
         verify(resourceTagRepositoryMock, times(1)).save(isA(tagCl));
         //No Tag joins added
-        verify(resourceRequirementJoinResourceTagRepositoryMock, times(1)).countByResourceRequirementIdAndResourceTagIdCount(isA(longCl), isA(longCl));
+        verify(resourceRequirementJoinResourceTagRepositoryMock, times(1)).countByResourceRequirementIdAndResourceTagId(isA(longCl), isA(longCl));
         verify(resourceRequirementJoinResourceTagRepositoryMock, times(1)).save(isA(reqJoinTagCl));
 
     }
