@@ -18,13 +18,29 @@ var SettingsPage = function() {
 
     this.newPicture = element(by.id('newPicture'));
 
-    this.setTitle = function("hi") {
-        this.title.sendKeys("hi");
+    this.setTitle = function(title) {
+        this.title.clear().sendKeys(title);
+    };
+
+    this.setFirstName = function(firstName) {
+        this.firstName.clear().sendKeys(firstName);
+    };
+
+    this.setLastName = function(lastName) {
+        this.lastName.clear().sendKeys(lastName);
+    };
+
+    this.setEmail = function(email) {
+        this.email.clear().sendKeys(email);
+    };
+
+    this.setDescription = function(description) {
+        this.description.clear().sendKeys(description);
     };
 
     this.navigate = function() {
         browser.get("http://localhost:9000/#/settings");
-    };
+    }
 };
 
 module.exports = new SettingsPage();

@@ -1,11 +1,11 @@
 describe('e2e: settings', function() {
-    var settingsPage = require('./settings.po.js');
+    var page = require('./settings.po.js');
     var login = require('../login.js');
 
     login.login();
 
     beforeEach(function() {
-        settingsPage.navigate();
+        page.navigate();
         browser.waitForAngular();
     });
 
@@ -14,9 +14,14 @@ describe('e2e: settings', function() {
     });
 
     it('should edit the user settings', function() {
-        settingsPage.editButton.click();
+        page.editButton.click();
 
-        settingsPage.setTitle("Dr");
+        page.setTitle("Dr.");
+        page.setFirstName("User");
+        page.setLastName("User");
+        page.setEmail("test@test.at");
+        page.setDescription("Vorstand Greenpeace");
+
+        page.saveButton.click();
     });
-
 });
