@@ -1,28 +1,17 @@
 package org.respondeco.respondeco.web.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.inject.Inject;
-
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
+import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.UserService;
@@ -40,8 +29,17 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.repository.ProjectRepository;
+import javax.inject.Inject;
+
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ProjectIdeaResource REST controller.
@@ -70,8 +68,8 @@ public class ProjectControllerTest {
     private static final String UPDATED_PURPOSE = "UPDATED_TEXT";
 
         
-    @Inject
-    private ProjectRepository projectRepository;
+    @Mock
+    private ProjectRepository projectRepositoryMock;
 
     @Mock
     private OrganizationRepository organizationRepositoryMock;
@@ -85,6 +83,7 @@ public class ProjectControllerTest {
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
     private ProjectDTO projectDTO;
+    private Project project;
     private Organization defaultOrganization;
     private User orgAdmin;
     private User orgMember;
@@ -93,13 +92,12 @@ public class ProjectControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         projectService = spy(new ProjectService(
-                projectRepository,
+                projectRepositoryMock,
                 userServiceMock,
                 userRepositoryMock,
                 organizationRepositoryMock));
-        ProjectController projectController = new ProjectController(projectService, projectRepository);
+        ProjectController projectController = new ProjectController(projectService, projectRepositoryMock);
 
-        projectRepository.deleteAll();
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
         projectDTO = new ProjectDTO();
@@ -121,16 +119,23 @@ public class ProjectControllerTest {
         defaultOrganization.setId(100L);
         defaultOrganization.setName("testorg");
         defaultOrganization.setOwner(orgAdmin.getId());
+
+        project = new Project();
+        project.setId(100L);
+        project.setOrganizationId(defaultOrganization.getId());
+        project.setManagerId(orgMember.getId());
+        project.setName(DEFAULT_NAME);
+        project.setPurpose(DEFAULT_PURPOSE);
+        project.setConcrete(false);
+
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
+
     }
 
     @Test
     public void testCRUDProject() throws Exception {
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
+        doReturn(project).when(projectService).create(
                 projectDTO.getName(),
                 projectDTO.getPurpose(),
                 projectDTO.getConcrete(),
@@ -152,22 +157,33 @@ public class ProjectControllerTest {
                 projectDTO.getEndDate(),
                 projectDTO.getProjectLogo());
 
-        Long id = projectCaptor.getValue().getId();
-
+        when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
         // Read Project
-        restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
+
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}", project.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(id.intValue()))
+                .andExpect(jsonPath("$.id").value(project.getId().intValue()))
                 .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
                 .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
                 .andExpect(jsonPath("$.name").value(projectDTO.getName()))
                 .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()));
 
+        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(project.getId());
+
         // Update Project
-        projectDTO.setId(id);
+        projectDTO.setId(project.getId());
         projectDTO.setName(UPDATED_NAME);
         projectDTO.setPurpose(UPDATED_PURPOSE);
+
+        doReturn(project).when(projectService).update(
+                projectDTO.getId(),
+                projectDTO.getName(),
+                projectDTO.getPurpose(),
+                projectDTO.getConcrete(),
+                projectDTO.getStartDate(),
+                projectDTO.getEndDate(),
+                projectDTO.getProjectLogo());
 
         restProjectMockMvc.perform(put("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -183,313 +199,60 @@ public class ProjectControllerTest {
                 projectDTO.getEndDate(),
                 projectDTO.getProjectLogo());
 
+        project.setName(UPDATED_NAME);
+        project.setPurpose(UPDATED_PURPOSE);
+        when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
         // Read updated Project
-        restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}", project.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(id.intValue()))
+                .andExpect(jsonPath("$.id").value(project.getId().intValue()))
                 .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
                 .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
                 .andExpect(jsonPath("$.name").value(UPDATED_NAME.toString()))
                 .andExpect(jsonPath("$.purpose").value(UPDATED_PURPOSE.toString()));
 
-        doAnswer(projectCaptor).when(projectService).delete(id);
+        verify(projectRepositoryMock, times(2)).findByIdAndActiveIsTrue(project.getId());
 
+        doReturn(project).when(projectService).delete(project.getId());
         // Delete Project
-        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
+        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", project.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        verify(projectService, times(1)).delete(id);
-        assertFalse(projectCaptor.getValue().isActive());
+        verify(projectService, times(1)).delete(project.getId());
 
+        when(projectRepositoryMock.findByIdAndActiveIsTrue(1000L)).thenReturn(null);
         // Read nonexisting Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", 1000L)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 
+        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(1000L);
+
     }
 
     @Test
-    public void testPOST_shouldCreateConcreteProject() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
+    public void testGetAllProject_shouldReturnAllProjects() throws Exception {
+        Project project2 = new Project();
+        project2.setId(200L);
+        project2.setName("test2");
+        project2.setPurpose("testpurpose 2");
+        project2.setOrganizationId(defaultOrganization.getId());
+        project2.setManagerId(orgMember.getId());
+        project2.setConcrete(false);
 
-        projectDTO.setConcrete(true);
-        projectDTO.setStartDate(LocalDate.now());
-        projectDTO.setEndDate(LocalDate.now().plusDays(5));
+        when(projectRepositoryMock.findByActiveIsTrue()).thenReturn(Arrays.asList(project, project2));
 
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long id = projectCaptor.getValue().getId();
-
-        restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
+        restProjectMockMvc.perform(get("/app/rest/projects"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(id.intValue()))
-                .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
-                .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(projectDTO.getName()))
-                .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()))
-                .andExpect(jsonPath("$.concrete").value(true))
-                .andExpect(jsonPath("$.startDate").value(projectDTO.getStartDate().toString("yyyy-MM-dd")))
-                .andExpect(jsonPath("$.startDate").value(projectDTO.getStartDate().toString("yyyy-MM-dd")));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(project.getId().intValue()))
+                .andExpect(jsonPath("$[1].id").value(project2.getId().intValue()));
 
+        verify(projectRepositoryMock, times(1)).findByActiveIsTrue();
     }
 
-    @Test
-    public void testPOST_expectBAD_REQEST_endDateMustNotBeBeforeNow() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        projectDTO.setConcrete(true);
-        projectDTO.setStartDate(LocalDate.now().minusDays(5));
-        projectDTO.setEndDate(LocalDate.now().minusDays(3));
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testPOST_expectBAD_REQEST_endDateMustNotBeBeforeStartDate() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        projectDTO.setConcrete(true);
-        projectDTO.setStartDate(LocalDate.now().plusDays(5));
-        projectDTO.setEndDate(LocalDate.now().plusDays(3));
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testPOST_expectOK_shouldChangeManager() throws Exception {
-        User otherUser = new User();
-        otherUser.setId(1000L);
-        otherUser.setLogin("otherOrgMember");
-        otherUser.setOrgId(defaultOrganization.getId());
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long projectId = projectCaptor.getValue().getId();
-        doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
-
-        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-
-        assertEquals(projectCaptor.getValue().getManagerId(), otherUser.getId());
-    }
-
-    @Test
-    public void testPOST_expectOK_orgOwnerCanSetManager() throws Exception {
-        User otherUser = new User();
-        otherUser.setId(1000L);
-        otherUser.setLogin("otherOrgMember");
-        otherUser.setOrgId(defaultOrganization.getId());
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long projectId = projectCaptor.getValue().getId();
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgAdmin);
-        doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
-
-        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-
-        assertEquals(projectCaptor.getValue().getManagerId(), otherUser.getId());
-    }
-
-    @Test
-    public void testPOST_expectBAD_REQUEST_newManagerHasToBeInSameOrganization() throws Exception {
-        User otherUser = new User();
-        otherUser.setId(1000L);
-        otherUser.setLogin("otherOrgMember");
-        otherUser.setOrgId(1000L);
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long projectId = projectCaptor.getValue().getId();
-        doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
-
-        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
-
-    }
-
-    @Test
-    public void testPOST_expectFORBIDDEN_userHasToBeProjectManagerToChangeManager() throws Exception {
-        User otherUser = new User();
-        otherUser.setId(1000L);
-        otherUser.setLogin("otherOrgMember");
-        otherUser.setOrgId(defaultOrganization.getId());
-
-        User unauthorizedUser = new User();
-        unauthorizedUser.setId(2000L);
-        unauthorizedUser.setLogin("unauthorizedOrgMember");
-        unauthorizedUser.setOrgId(defaultOrganization.getId());
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long projectId = projectCaptor.getValue().getId();
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(unauthorizedUser);
-        doAnswer(projectCaptor).when(projectService).setManager(projectId, otherUser.getLogin());
-
-        restProjectMockMvc.perform(put("/app/rest/projects/{id}/manager/{newManager}", projectId, otherUser.getLogin())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void testDELETE_expectOK_orgOwnerCanDeleteProject() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long id = projectCaptor.getValue().getId();
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgAdmin);
-
-        // Delete Project
-        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testDELETE_expectFORBIDDEN_onlyManagerOrOrgAdminCanDeleteProject() throws Exception {
-        User otherUser = new User();
-        otherUser.setId(1000L);
-        otherUser.setLogin("otherOrgMember");
-        otherUser.setOrgId(defaultOrganization.getId());
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
-        doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
-
-        // Create Project
-        restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
-
-        Long id = projectCaptor.getValue().getId();
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(otherUser);
-
-        // Delete Project
-        restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isForbidden());
-    }
 }

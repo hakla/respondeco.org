@@ -107,12 +107,12 @@ public class ProjectController {
      * POST  /rest/project/manager -> Change project manager of a project
      */
     @ApiOperation(value = "Change manager", notes = "Change the manager of a project")
-    @RequestMapping(value = "/rest/projects/{id}/manager/{newManager}",
+    @RequestMapping(value = "/rest/projects/{id}/manager",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> changeManager(@PathVariable Long id, @PathVariable String newManager) {
+    public ResponseEntity<?> changeManager(@PathVariable Long id, @RequestBody String newManager) {
         log.debug("REST request to change project manager of project {} to {}", id, newManager);
         ResponseEntity<?> responseEntity;
         try {
