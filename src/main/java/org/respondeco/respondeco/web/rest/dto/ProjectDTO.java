@@ -12,6 +12,7 @@ import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Created by clemens on 15/11/14.
@@ -50,6 +51,12 @@ public class ProjectDTO {
 
     @ApiModelProperty(value = "A logo for the project")
     private byte[] projectLogo;
+
+    @ApiModelProperty(value = "A list of strings used as property tags")
+    private List<String> propertyTags;
+
+    @ApiModelProperty(value = "The resource requirements for the project")
+    private List<ResourceRequirementDTO> resourceRequirements;
 
 
 }
