@@ -48,11 +48,11 @@
     "time-grunt": "0.3.2",
     "zeparser": "0.0.7"
   },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "scripts": {
+    "scripts": {
     "test": "grunt test",
     "install": "node node_modules/protractor/bin/webdriver-manager update"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   }
 }
