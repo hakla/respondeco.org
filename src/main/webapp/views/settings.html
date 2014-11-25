@@ -101,8 +101,9 @@
                     </button>
                     <a class="btn btn-link" translate="general.button.cancel" ng-click="edit.account = !edit.account">Cancel
                     </a>
-                    <a class="pull-right" translate="settings.account.button.delete" ng-click="delete()">Delete Account
-                    </a>
+                    <div class="pull-right">
+                        <rsp-confirm-delete on-confirm=delete()></rsp-confirm-delete>
+                    </div>
 
                 </div>
 

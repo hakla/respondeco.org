@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,11 +20,10 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -52,18 +52,12 @@ import java.util.Set;
     TransactionalTestExecutionListener.class })
 public class OrgJoinRequestControllerTest {
 
-    private static final Long UPDATED_ID = 3L;
-        
-    @Inject
+    private static final Long DEFAULT_ORGJOINREQUEST_ID = 1L;
+    private static final Long DEFAULT_ORG_ID = 1L;
+    private static final Long DEFAULT_USER_ID = 1L;
+
+    @Mock
     private OrgJoinRequestRepository orgjoinrequestRepository;
-
-    private MockMvc restOrgJoinRequestMockMvc;
-
-    private OrgJoinRequestDTO orgjoinrequestDTO;
-
-    private Organization organization;
-    private User defaultUser;
-    private Set<Authority> userAuthorities;
 
     @Mock
     private OrgJoinRequestService orgJoinRequestService;
@@ -77,12 +71,21 @@ public class OrgJoinRequestControllerTest {
     @Mock
     private OrganizationRepository organizationRepository;
 
+    private MockMvc restOrgJoinRequestMockMvc;
+
+    private OrgJoinRequestDTO orgjoinrequestDTO;
+
+    private Organization organization;
+    private User defaultUser;
+    private User potMember;
+    private Set<Authority> userAuthorities;
+    private OrgJoinRequest orgJoinRequest;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrgJoinRequestService orgJoinRequestService = new OrgJoinRequestService(orgjoinrequestRepository,userService,userRepository,organizationRepository);
         OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgjoinrequestRepository, orgJoinRequestService);
-        ReflectionTestUtils.setField(orgjoinrequestController, "orgjoinrequestRepository", orgjoinrequestRepository);
 
         this.restOrgJoinRequestMockMvc = MockMvcBuilders.standaloneSetup(orgjoinrequestController).build();
 
@@ -92,6 +95,7 @@ public class OrgJoinRequestControllerTest {
         userAuthorities.add(authority);
 
         this.defaultUser = new User();
+        this.defaultUser.setId(1L);
         this.defaultUser.setCreatedDate(null);
         this.defaultUser.setLastModifiedDate(null);
         this.defaultUser.setLogin("testuser");
@@ -103,6 +107,23 @@ public class OrgJoinRequestControllerTest {
         this.defaultUser.setEmail("john.doe@jhipter.com");
         this.defaultUser.setDescription("just a regular everyday normal guy");
         this.defaultUser.setAuthorities(userAuthorities);
+        this.defaultUser.setOrgId(1L);
+
+        this.potMember = new User();
+        this.potMember.setId(2L);
+        this.potMember.setCreatedDate(null);
+        this.potMember.setLastModifiedDate(null);
+        this.potMember.setLogin("potMember");
+        this.potMember.setCreatedBy(this.defaultUser.getLogin());
+        this.potMember.setTitle("Dr.");
+        this.potMember.setGender(Gender.MALE);
+        this.potMember.setFirstName("john");
+        this.potMember.setLastName("doe");
+        this.potMember.setEmail("john.doe@jhipter.com");
+        this.potMember.setDescription("just a regular everyday normal guy");
+        this.potMember.setAuthorities(userAuthorities);
+
+        userRepository.save(defaultUser);
 
         organization = new Organization();
 
@@ -110,39 +131,54 @@ public class OrgJoinRequestControllerTest {
         organization.setName("testorg");
         organization.setDescription("testdescription");
         organization.setEmail("test@email.com");
-        organization.setOwner(defaultUser.getLogin());
+        organization.setOwner(defaultUser);
         organization.setIsNpo(false);
         organizationRepository.save(organization);
 
 
         orgjoinrequestDTO = new OrgJoinRequestDTO();
 
-        orgjoinrequestDTO.setOrgId(organization.getId());
-        orgjoinrequestDTO.setUserlogin(defaultUser.getLogin());
+        orgjoinrequestDTO.setOrgName(organization.getName());
+        orgjoinrequestDTO.setUserLogin(defaultUser.getLogin());
+
+        orgJoinRequest = new OrgJoinRequest();
+        orgJoinRequest.setId(1L);
+        orgJoinRequest.setOrganization(organization);
+        orgJoinRequest.setUser(this.potMember);
     }
 
     @Test
     public void testCRUDOrgJoinRequest() throws Exception {
+        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
+        when(userRepository.findByLogin(defaultUser.getLogin())).thenReturn(defaultUser);
+        when(organizationRepository.findByName(organization.getName())).thenReturn(organization);
+        when(organizationRepository.findOne(1L)).thenReturn(organization);
+        when(orgjoinrequestRepository.findOne(1L)).thenReturn(orgJoinRequest);
 
         // Create OrgJoinRequest
         restOrgJoinRequestMockMvc.perform(post("/app/rest/orgjoinrequests")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(orgjoinrequestDTO)))
                 .andExpect(status().isOk());
-/*
+
         // Read OrgJoinRequest
-        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{id}", UPDATED_ID))
+        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{orgName}", organization.getName()))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-                .andExpect(jsonPath("$.orgId").value(DEFAULT_ORG_ID.intValue()))
-                .andExpect(jsonPath("$.userLogin").value(DEFAULT_USER_LOGIN.toString()));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        when(userService.getUserWithAuthorities()).thenReturn(potMember);
+
+        // Accept OrgJoinRequest
+        restOrgJoinRequestMockMvc.perform(delete("/app/rest/orgjoinrequests/accept/{id}", 1L))
+                .andExpect(status().isOk());
+
+        // Decline OrgJoinRequest
+        restOrgJoinRequestMockMvc.perform(delete("/app/rest/orgjoinrequests/decline/{id}", 1L))
+                .andExpect(status().isOk());
+
 
         // Read nonexisting OrgJoinRequest
-        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{id}", DEFAULT_ID)
+        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{id}", 1L)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
-
-    */
     }
 }

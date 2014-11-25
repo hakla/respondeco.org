@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "description": "Description for respondeco",
   "repository": "https://github.com/hakla/respondeco.org",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "grunt": "0.4.5",
     "grunt-autoprefixer": "0.7.5",
@@ -40,11 +39,12 @@
     "karma-jasmine": "0.2.2",
     "karma-requirejs": "0.2.2",
     "karma-phantomjs-launcher": "0.1.4",
-    "karma": "0.12.16",
+    "karma": "^0.12.25",
     "bower": "1.3.5",
     "generator-jhipster": "1.4.0",
     "lodash": "2.4.1",
-    "zeparser": "0.0.7"
+    "zeparser": "0.0.7",
+    "karma-coverage": "^0.2.6"
   },
   "engines": {
     "node": ">=0.10.0"

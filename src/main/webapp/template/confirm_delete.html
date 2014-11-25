@@ -1,0 +1,16 @@
+<div>
+    <div ng-hide="isDeleting" >
+        <button type="button" class="btn btn-danger btn-xs" ng-click="startDelete()">
+            <span></span>
+            <span translate="global.textmessages.delete">Delete</span>
+        </button>
+    </div>
+    <div ng-show="isDeleting">
+        <button type="button" class="btn btn-default btn-xs" ng-click="cancelDelete()">
+            <span translate="global.form.cancel">Abort deletion</span>
+        </button>
+        <button type="button" class="btn btn-danger btn-xs"  ng-click="confirmDelete()">
+            <span translate="global.textmessages.delete">Confirm</span>
+        </button>
+    </div>
+</div>

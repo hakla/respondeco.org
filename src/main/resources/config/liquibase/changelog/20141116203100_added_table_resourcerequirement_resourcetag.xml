@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity ProjectIdea.
+    -->
+    <changeSet id="20141116203100" author="Clemens Puehringer">
+        <createTable tableName="T_RESOURCEREQUIREMENT_T_RESOURCETAG">
+            <column name="T_RESOURCEREQUIREMENT_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resourceTags_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="T_RESOURCEREQUIREMENT_id, resourceTags_id" tableName="T_RESOURCEREQUIREMENT_T_RESOURCETAG"/>
+
+        <createTable tableName="T_RESOURCETAG_T_RESOURCEREQUIREMENT">
+            <column name="T_RESOURCETAG_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resourceRequirements_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="T_RESOURCETAG_id, resourceRequirements_id" tableName="T_RESOURCETAG_T_RESOURCEREQUIREMENT"/>
+    </changeSet>
+</databaseChangeLog>

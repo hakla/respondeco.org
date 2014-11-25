@@ -4,11 +4,14 @@ import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.TextMessage;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
+import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.web.rest.dto.TextMessageDTO;
+import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,12 +34,10 @@ public class TextMessageController {
 
     private final Logger log = LoggerFactory.getLogger(TextMessageController.class);
 
-    private TextMessageRepository textMessageRepository;
     private TextMessageService textMessageService;
 
     @Inject
-    public TextMessageController(TextMessageRepository textMessageRepository, TextMessageService textMessageService) {
-        this.textMessageRepository = textMessageRepository;
+    public TextMessageController(TextMessageService textMessageService) {
         this.textMessageService =  textMessageService;
     }
 
@@ -49,11 +50,11 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid TextMessageDTO textMessageDTO) {
-        log.debug("REST request to save TextMessage : {}", textMessageDTO);
+    public ResponseEntity<?> create(@RequestBody @Valid TextMessageRequestDTO textMessageRequestDTO) {
+        log.debug("REST request to save TextMessage : {}", textMessageRequestDTO);
         ResponseEntity<?> responseEntity;
         try {
-            textMessageService.createTextMessage(textMessageDTO.getReceiver(), textMessageDTO.getContent());
+            textMessageService.createTextMessage(textMessageRequestDTO.getReceiver(), textMessageRequestDTO.getContent());
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NoSuchUserException | IllegalArgumentException e) {
             log.error("could not save text TextMessage", e);
@@ -72,7 +73,7 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public List<TextMessage> getAllForCurrentUser() {
+    public List<TextMessageResponseDTO> getAllForCurrentUser() {
         log.debug("REST request to get all TextMessages for current user");
         return textMessageService.getTextMessagesForCurrentUser();
     }
@@ -87,9 +88,9 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    public List<TextMessage> getAllForReceiver(@PathVariable String receiver) {
+    public List<TextMessageResponseDTO> getAllForReceiver(@PathVariable String receiver) {
         log.debug("REST request to get TextMessages for : {}", receiver);
-        return textMessageRepository.findByReceiver(receiver);
+        return textMessageService.getTextMessagesForUser(receiver);
     }
 
     /**

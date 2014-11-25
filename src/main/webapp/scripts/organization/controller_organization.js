@@ -9,6 +9,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     // get the current logged in user and set the organization owner to it
     Account.get().$promise.then(function(account) {
         user = account;
+
+        if ($scope.organization.owner !== undefined) {
+            return user.login === $scope.organization.owner.login;
+        }
     });
 
     $scope.update = function(name) {
@@ -23,13 +27,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                 $scope.members = data;
             });
 
-            User.get({
-                loginName: $scope.organization.owner
-            }).$promise.then(function(user) {
-                $scope.organization.owner = user;
-            });
-
-            isOwner = user.login === $scope.organization.owner;
+            isOwner = user !== undefined && user.login === $scope.organization.owner.login;
         });
     };
 

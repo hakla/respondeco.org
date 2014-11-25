@@ -8,12 +8,14 @@ import org.respondeco.respondeco.repository.ProfilePictureRepository;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,21 +48,32 @@ public class TextMessageService {
         if(currentUser.getLogin().equals(receiver)) {
             throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver));
         }
-        if(userRepository.exists(receiver) == false) {
+        User receivingUser = userRepository.findByLogin(receiver);
+        if(receivingUser == null) {
             throw new NoSuchUserException(String.format("Receiver %s does not exist", receiver));
         }
         TextMessage newTextMessage = new TextMessage();
-        newTextMessage.setSender(currentUser.getLogin());
+        newTextMessage.setSender(currentUser);
         newTextMessage.setTimestamp(DateTime.now());
-        newTextMessage.setReceiver(receiver);
+        newTextMessage.setReceiver(receivingUser);
         newTextMessage.setContent(content);
+        log.debug("saving text message {}", newTextMessage);
         textMessageRepository.save(newTextMessage);
         return newTextMessage;
     }
 
-    public List<TextMessage> getTextMessagesForCurrentUser() {
+    public List<TextMessageResponseDTO> getTextMessagesForCurrentUser() {
         User currentUser = userService.getUserWithAuthorities();
-        return textMessageRepository.findByReceiverAndActiveIsTrue(currentUser.getLogin());
+        log.debug("getting text messages for user {}", currentUser);
+        List<TextMessageResponseDTO> response =
+                textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(currentUser));
+        log.debug("got messages for user {}: {}", currentUser, response);
+        return response;
+    }
+
+    public List<TextMessageResponseDTO> getTextMessagesForUser(String login) {
+        User user = userRepository.findByLogin(login);
+        return textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(user));
     }
 
     public TextMessage deleteTextMessage(Long id) {
@@ -69,13 +82,29 @@ public class TextMessageService {
             throw new IllegalArgumentException(String.format("A text message with id %d does not exist", id));
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getLogin().equals(textMessage.getReceiver()) == false) {
+        if(currentUser.equals(textMessage.getReceiver()) == false) {
             throw new IllegalArgumentException(
                     String.format("User %s is not the receiver of the text message %d", currentUser.getLogin(), id));
         }
         textMessage.setActive(false);
         textMessageRepository.save(textMessage);
         return textMessage;
+    }
+
+    private TextMessageResponseDTO textMessageToDTO(TextMessage message) {
+        return new TextMessageResponseDTO(
+                message.getId(),
+                message.getSender().getLogin(),
+                message.getContent(),
+                message.getTimestamp());
+    }
+
+    private List<TextMessageResponseDTO> textMessagesToDTO(List<TextMessage> messages) {
+        List<TextMessageResponseDTO> result = new ArrayList<TextMessageResponseDTO>();
+        for(TextMessage message : messages) {
+            result.add(textMessageToDTO(message));
+        }
+        return result;
     }
 
 }

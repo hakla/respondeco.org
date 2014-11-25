@@ -15,6 +15,7 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="styles/textmessages.css">
         <!-- endbuild -->
     </head>
 
@@ -51,7 +52,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#/projects">
+                            <a href="#/project">
                                 <span class="glyphicon glyphicon-leaf"></span>
                                 <span translate="global.menu.projects">Projects</span>
                             </a>
@@ -78,6 +79,17 @@
                                 <li ng-switch-when="true"><a href="#/organization"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;organization</a></li>
                                 <li ng-switch-when="true"><a href="#/logo"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;logo</a></li>
                                 <li ng-switch-when="true"><a href="#/orgjoinrequest"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;orgjoinrequest</a></li>
+                                <li ng-switch-when="true"><a href="#/project"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;project</a></li>
+                                <li ng-switch-when="true"><a href="#/propertytag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;propertytag</a></li>
+                                <li ng-switch-when="true"><a href="#/concreteproject"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;concreteproject</a></li>
+                                <li ng-switch-when="true"><a href="#/resourceRequirement"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceRequirement</a></li>
+                                <li ng-switch-when="true"><a href="#/resourceOffer"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceOffer</a></li>
+                                <li ng-switch-when="true"><a href="#/resourceTag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceTag</a></li>
+                                <li ng-switch-when="true"><a href="#/resourceOfferJoinResourceRequirement"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceOfferJoinResourceRequirement</a></li>
+                                <li ng-switch-when="true"><a href="#/resourceOfferJoinResourceTag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceOfferJoinResourceTag</a></li>
+                                <li ng-switch-when="true"><a href="#/resourceRequirementJoinResourceTag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceRequirementJoinResourceTag</a></li>
+                                <li ng-switch-when="true"><a href="#/projectlogo"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;projectlogo</a></li>
+                                <li ng-switch-when="true"><a href="#/add"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;add</a></li>
                                 <!-- JHipster will add entities to the menu here -->
                             </ul>
                         </li>
@@ -279,8 +291,46 @@
         <script src="scripts/orgjoinrequest/router_orgjoinrequest.js"></script>
         <script src="scripts/orgjoinrequest/controller_orgjoinrequest.js"></script>
         <script src="scripts/orgjoinrequest/service_orgjoinrequest.js"></script>
+        <script src="scripts/project/router_project.js"></script>
+        <script src="scripts/project/controller_project.js"></script>
+        <script src="scripts/project/service_project.js"></script>
+        <script src="scripts/propertytag/router_propertytag.js"></script>
+        <script src="scripts/propertytag/controller_propertytag.js"></script>
+        <script src="scripts/propertytag/service_propertytag.js"></script>
+        <script src="scripts/resourceRequirement/router_resourceRequirement.js"></script>
+        <script src="scripts/resourceRequirement/controller_resourceRequirement.js"></script>
+        <script src="scripts/resourceRequirement/service_resourceRequirement.js"></script>
+        <script src="scripts/resourceOffer/router_resourceOffer.js"></script>
+        <script src="scripts/resourceOffer/controller_resourceOffer.js"></script>
+        <script src="scripts/resourceOffer/service_resourceOffer.js"></script>
+        <script src="scripts/resourceTag/router_resourceTag.js"></script>
+        <script src="scripts/resourceTag/controller_resourceTag.js"></script>
+        <script src="scripts/resourceTag/service_resourceTag.js"></script>
+        <script src="scripts/resourceOfferJoinResourceRequirement/router_resourceOfferJoinResourceRequirement.js"></script>
+        <script src="scripts/resourceOfferJoinResourceRequirement/controller_resourceOfferJoinResourceRequirement.js"></script>
+        <script src="scripts/resourceOfferJoinResourceRequirement/service_resourceOfferJoinResourceRequirement.js"></script>
+        <script src="scripts/resourceOfferJoinResourceTag/router_resourceOfferJoinResourceTag.js"></script>
+        <script src="scripts/resourceOfferJoinResourceTag/controller_resourceOfferJoinResourceTag.js"></script>
+        <script src="scripts/resourceOfferJoinResourceTag/service_resourceOfferJoinResourceTag.js"></script>
+        <script src="scripts/resourceRequirementJoinResourceTag/router_resourceRequirementJoinResourceTag.js"></script>
+        <script src="scripts/resourceRequirementJoinResourceTag/controller_resourceRequirementJoinResourceTag.js"></script>
+        <script src="scripts/resourceRequirementJoinResourceTag/service_resourceRequirementJoinResourceTag.js"></script>
+        <script src="scripts/projectlogo/router_projectlogo.js"></script>
+        <script src="scripts/projectlogo/controller_projectlogo.js"></script>
+        <script src="scripts/projectlogo/service_projectlogo.js"></script>
+        <script src="scripts/directive_confirm_delete.js"></script>
+        <script src="scripts/service_usernames.js"></script>
+        <script src="bower_components/ui-bootstrap/src/typeahead/typeahead.js"></script>
+        <script src="bower_components/ui-bootstrap/src/position/position.js"></script>
+        <script src="bower_components/ui-bootstrap/src/bindHtml/bindHtml.js"></script>
         <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
         <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="scripts/resource/router_resource.js"></script>
+        <script src="scripts/resource/controller_resource.js"></script>
+        <script src="scripts/resource/service_resource.js"></script>
+        <script src="scripts/add/router_add.js"></script>
+        <script src="scripts/add/controller_add.js"></script>
+        <script src="scripts/add/service_add.js"></script>
         <!-- endbuild -->
     </body>
 

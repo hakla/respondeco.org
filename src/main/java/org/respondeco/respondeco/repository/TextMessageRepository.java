@@ -1,7 +1,8 @@
 package org.respondeco.respondeco.repository;
 
 import org.respondeco.respondeco.domain.TextMessage;
-        import org.springframework.data.jpa.repository.JpaRepository;
+import org.respondeco.respondeco.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
@@ -10,8 +11,8 @@ import java.util.List;
  */
 public interface TextMessageRepository extends JpaRepository<TextMessage, Long> {
 
-    List<TextMessage> findByReceiver(String receiver);
+    List<TextMessage> findByReceiver(User receiver);
 
-    List<TextMessage> findByReceiverAndActiveIsTrue(String receiver);
+    List<TextMessage> findByReceiverAndActiveIsTrue(User receiver);
 
 }

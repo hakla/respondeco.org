@@ -13,8 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
+import javax.ws.rs.PathParam;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
@@ -40,13 +43,13 @@ public class LogoController {
     /**
      * POST  /rest/logos -> Create a new logo.
      */
-    @RequestMapping(value = "/rest/logos",
+    @RequestMapping(value = "/rest/organization/{id}/logos",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void create(@RequestBody LogoDTO logo) throws UnsupportedEncodingException {
-        log.debug("REST request to save Logo : {}", logo);
-        logoService.createLogo(logo.getLabel(),logo.getData(),logo.getOrgId());
+    public void create(@PathVariable Long id, @RequestParam("file")MultipartFile file) throws IOException {
+        log.debug("REST request to save Logo : {}", file);
+        logoService.createLogo("", file.getBytes(), id);
     }
 
     /**

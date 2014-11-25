@@ -21,10 +21,9 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProfilePicture extends AbstractAuditingEntity implements Serializable {
 
-    @Id
     @NotNull
-    @Column(name = "userlogin")
-    private String userlogin;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "label")
     private String label;
@@ -44,20 +43,20 @@ public class ProfilePicture extends AbstractAuditingEntity implements Serializab
 
         ProfilePicture profilepicture = (ProfilePicture) o;
 
-        if (userlogin != null ? !userlogin.equals(profilepicture.userlogin) : profilepicture.userlogin != null) return false;
+        if (userId != null ? !userId.equals(profilepicture.userId) : profilepicture.userId != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return userlogin.hashCode();
+        return userId.hashCode();
     }
 
     @Override
     public String toString() {
         return "ProfilePicture{" +
-                ", userlogin='" + userlogin + "'" +
+                ", userId='" + userId + "'" +
                 ", label='" + label + "'" +
                 ", data='" + data + "'" +
                 '}';

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity ResourceRequirement.
+    -->
+    <changeSet id="20141117142400" author="jhipster">
+        <createTable tableName="T_RESOURCEREQUIREMENT">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(10,2)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="project_id" type="bigint"/>
+            <column name="is_essential" type="bit"/>
+            <column name="created_by" type="varchar(50)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="bit"/>
+        </createTable>
+
+        <createIndex indexName="idx_resource_requirement"
+                     tableName="T_RESOURCEREQUIREMENT"
+                     unique="true">
+            <column name="description" type="varchar(255)"/>
+            <column name="project_id" type="bigint"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

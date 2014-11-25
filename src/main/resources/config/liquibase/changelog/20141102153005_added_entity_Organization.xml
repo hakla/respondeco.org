@@ -14,7 +14,7 @@
         <createTable tableName="T_ORGANIZATION">
 
 
-            <column name="org_id" type="bigint">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
@@ -23,9 +23,10 @@
             <column name="description" type="varchar(255)"/>
             <column name="email" type="varchar(255)"/>
             <column name="is_npo" type="bit"/>
-            <column name="owner" type="varchar(255)">
+            <column name="owner" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="spokesperson" type="bigint"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>

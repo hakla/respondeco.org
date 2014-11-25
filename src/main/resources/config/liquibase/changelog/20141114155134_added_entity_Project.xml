@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity ProjectIdea.
+    -->
+    <changeSet id="20141114155134" author="jhipster">
+        <createTable tableName="T_PROJECT">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="organization_id" type="bigint"/>
+            <column name="manager_id" type="bigint"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="purpose" type="varchar(255)"/>
+            <column name="is_concrete" type="boolean" defaultValue="false"/>
+            <column name="start_date" type="date" />
+            <column name="end_date" type="date" />
+            <column name="rating" type="double" />
+            <column name="rating_count" type="int" />
+
+            <column name="projectLogo_id" type="bigint"/>
+
+            <column name="created_by" type="varchar(50)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
+        </createTable>
+        
+    </changeSet>
+</databaseChangeLog>

@@ -73,7 +73,7 @@ public class AccountController {
     @Timed
     public ResponseEntity<?> registerAccount(@RequestBody UserDTO userDTO, HttpServletRequest request,
                                              HttpServletResponse response) {
-        return Optional.ofNullable(userRepository.findOne(userDTO.getLogin()))
+        return Optional.ofNullable(userRepository.findByLogin(userDTO.getLogin()))
             .map(user -> new ResponseEntity<>(HttpStatus.NOT_MODIFIED))
             .orElseGet(() -> {
                 User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
@@ -187,7 +187,7 @@ public class AccountController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<PersistentToken>> getCurrentSessions() {
-        return Optional.ofNullable(userRepository.findOne(SecurityUtils.getCurrentLogin()))
+        return Optional.ofNullable(userRepository.findByLogin(SecurityUtils.getCurrentLogin()))
             .map(user -> new ResponseEntity<>(
                 persistentTokenRepository.findByUser(user),
                 HttpStatus.OK))
@@ -212,7 +212,7 @@ public class AccountController {
     @Timed
     public void invalidateSession(@PathVariable String series) throws UnsupportedEncodingException {
         String decodedSeries = URLDecoder.decode(series, "UTF-8");
-        User user = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
         if (persistentTokenRepository.findByUser(user).stream()
                 .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
                 .count() > 0) {

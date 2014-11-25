@@ -22,11 +22,6 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "org_id")
-    private Long id;
-
     @NotNull
     @Size(min = 0, max = 50)
     @Column(length = 50)
@@ -44,8 +39,11 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     private Boolean isNpo;
 
     @NotNull
-    @Size(min = 0, max = 50)
-    @Column(length = 50)
-    private String owner;
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
+
+    @Column(name = "spokesperson")
+    private Long spokesPerson;
 
 }

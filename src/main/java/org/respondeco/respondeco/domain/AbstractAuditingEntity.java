@@ -1,9 +1,7 @@
 package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
-import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
+import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
@@ -13,78 +11,75 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
  * Base abstract class for entities which will hold definitions for created, last modified by and created,
  * last modified by date.
  */
+@Data
 @MappedSuperclass
 @Audited
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditingEntity {
 
-    @JsonIgnore
+    @Id
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    protected Long id;
+
     @CreatedBy
     @NotNull
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
-    private String createdBy;
+    protected String createdBy;
 
     @CreatedDate
     @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "created_date", nullable = false)
-    private DateTime createdDate = DateTime.now();
+    protected DateTime createdDate = DateTime.now();
 
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
-    private String lastModifiedBy;
+    protected String lastModifiedBy;
 
     @LastModifiedDate
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "last_modified_date")
-    private DateTime lastModifiedDate = DateTime.now();
+    protected DateTime lastModifiedDate = DateTime.now();
 
     @JsonIgnore
     @Column(name = "is_active")
-    private boolean active = true;
+    protected boolean active= true;
 
-    public String getCreatedBy() {
-        return createdBy;
+    public Long getId(){
+        return this.id;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setId(Long id){
+        this.id = id;
     }
 
-    public DateTime getCreatedDate() {
-        return createdDate;
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 
-    public void setCreatedDate(DateTime createdDate) {
-        this.createdDate = createdDate;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AbstractAuditingEntity other = (AbstractAuditingEntity) o;
+
+        if (id != null ? !id.equals(other.id) : other.id != null) return false;
+
+        return true;
     }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public DateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(DateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public boolean isActive() { return active; }
-
-    public void setActive(boolean isActive) { this.active = isActive; }
 }

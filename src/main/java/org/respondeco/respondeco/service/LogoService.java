@@ -57,7 +57,7 @@ public class LogoService {
 
     public void deleteLogoCurrentUser() {
         User currentUser = userService.getUserWithAuthorities();
-        Organization organization = organizationRepository.findByOwner(currentUser.getLogin());
+        Organization organization = organizationRepository.findByOwner(currentUser);
 
         logoRepository.delete(organization.getId());
         log.debug("Deleted organization logo for {}", organization.getName());

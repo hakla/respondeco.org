@@ -1,0 +1,54 @@
+<div>
+    <h2 translate="global.projects.createProject.title">Creating a project</h2>
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-primary pull-right" ng-click="create()">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    <span>Ok</span>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectName" translate="global.projects.name">Name of project</label>
+                <input class="col-md-3" type="text" id="projectName" ng-model="project.name"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectPurpose" translate="global.projects.purpose">Purpose of project</label>
+                <textarea class="col-md-3" rows="3" id="projectPurpose" ng-model="project.purpose"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectConcrete" translate="global.projects.concrete">Concrete flag of project</label>
+                <input class="col-md-3" type="checkbox" id="projectConcrete" ng-model="project.concrete"/>
+            </div>
+        </div>
+        <div class="row" ng-show="project.concrete == true">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectStartDate" translate="global.projects.startDate">StartDate of project</label>
+                <input class="col-md-3" type="text" id="projectStartDate" ng-model="project.startDate"/>
+            </div>
+        </div>
+        <div class="row" ng-show="project.concrete == true">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectEndDate" translate="global.projects.endDate">EndDate of project</label>
+                <input class="col-md-3" type="text" id="projectEndDate" ng-model="project.endDate"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label class="col-md-3" for="projectTag">Tag</label>
+                <input class="col-md-3" type="text" id="projectTag" ng-model=""/>
+                <button class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span translate="global.projects.create.tag">Add Tag</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

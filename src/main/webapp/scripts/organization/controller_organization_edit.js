@@ -15,12 +15,6 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     $scope.alerts = [];
     $scope.isCollapsed = false;
 
-    $scope.addAlert = function() {
-        $scope.alerts.push({
-            msg: 'Another alert!'
-        });
-    };
-
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);
     };
@@ -46,7 +40,6 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     $scope.create = function() {
         organization.npo = $scope.organization.isNpo || false;
-        organization.owner = $scope.organization.owner;
         organization.name = $scope.organization.name;
         organization.description = $scope.organization.description;
         organization.email = $scope.organization.email;
@@ -115,8 +108,8 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     $scope.sendInvite = function() {
         OrgJoinRequest.save({
-            orgId: $scope.organization.id,
-            userlogin: $scope.selectedUser.login
+            orgName: $scope.organization.name,
+            userLogin: $scope.selectedUser.login
         }, function(data) {
             updateOrgJoinRequests();
             TextMessage.save({

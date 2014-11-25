@@ -3,7 +3,8 @@
 /* App Module */
 
 var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngRoute', 'ngCookies', 'respondecoAppUtils', 'pascalprecht.translate', 'truncate', 'ui.bootstrap', 'respondecoAppFilters', 'ngSanitize']);
+    'ngResource', 'ngRoute', 'ngCookies', 'respondecoAppUtils', 'pascalprecht.translate', 'truncate',
+    'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'ui.bootstrap', 'respondecoAppFilters']);
 
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
@@ -127,7 +128,7 @@ respondecoApp
 
             tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js')
             tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
-            
+
         })
         .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES) {
                 $rootScope.$on('$routeChangeStart', function (event, next) {

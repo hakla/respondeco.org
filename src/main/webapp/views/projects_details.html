@@ -1,0 +1,53 @@
+<div>
+    <h2 translate="global.projects.details.title">Project_Details</h2>
+    <div class="row table-responsive">
+        <table class="table">
+            <tr>
+                <th>
+                    <strong translate="global.projects.name">Name of project</strong>:
+                </th>
+                <td>
+                    <span>{{ viewedProject.name }}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <strong translate="global.projects.purpose">Purpose of project</strong>:
+                </th>
+                <td>
+                    <span>{{ viewedProject.purpose }}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <strong translate="global.projects.concrete">Purpose of project</strong>:
+                </th>
+                <td>
+                    <span>{{ viewedProject.concrete }}</span>
+                </td>
+            </tr>
+            <tr ng-show="viewedProject.concrete = true">
+                <th>
+                    <strong translate="global.projects.startDate">StartDate of project</strong>:
+                </th>
+                <td>
+                    <span>{{ viewedProject.startDate }}</span>
+                </td>
+            </tr>
+            <tr ng-show="viewedProject.concrete = true">
+                <th>
+                    <strong translate="global.projects.endDate">EndDate of project</strong>:
+                </th>
+                <td>
+                    <span>{{ viewedProject.endDate }}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="row">
+        <button type="submit" class="btn btn-danger pull-right" ng-click="delete(viewedProject.id)">
+            <span class="glyphicon glyphicon-minus"></span>
+            <span translate="global.projects.details.delete">Delete this Project</span>
+        </button>
+    </div>
+</div>

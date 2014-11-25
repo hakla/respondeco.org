@@ -9,6 +9,16 @@ module.exports = function (config) {
         // testing framework to use (jasmine/mocha/qunit/...)
         frameworks: ['jasmine'],
 
+        // coverage reporter generates the coverage
+        reporters: ['progress', 'coverage'],
+
+        preprocessors: {
+          // source files, that you wanna generate coverage for
+          // do not include tests or libraries
+          // (these files will be instrumented by Istanbul)
+          'src/main/webapp/scripts/**/*.js': ['coverage']
+        },
+
         // list of files / patterns to load in the browser
         files: [
             'src/main/webapp/bower_components/modernizr/modernizr.js',
@@ -27,7 +37,10 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
             'src/main/webapp/scripts/*.js',
             'src/main/webapp/scripts/**/*.js',
-            'src/test/javascript/**/!(karma.conf).js'
+            'src/test/javascript/**/!(karma.conf).js',
+            'src/main/webapp/bower_components/ui-bootstrap/src/bindHtml/bindHtml.js',
+            'src/main/webapp/bower_components/ui-bootstrap/src/position/position.js',
+            'src/main/webapp/bower_components/ui-bootstrap/src/typeahead/typeahead.js'
         ],
 
         // list of files / patterns to exclude
@@ -41,7 +54,7 @@ module.exports = function (config) {
         logLevel: config.LOG_INFO,
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: false,
+        autoWatch: true,
 
         // Start these browsers, currently available:
         // - Chrome

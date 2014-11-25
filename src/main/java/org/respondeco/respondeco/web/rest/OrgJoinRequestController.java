@@ -6,6 +6,10 @@ import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrgJoinRequestException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,13 +50,21 @@ public class OrgJoinRequestController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<OrgJoinRequest> create(@RequestBody OrgJoinRequestDTO orgjoinrequest1) {
-        log.debug("REST request to save OrgJoinRequest : {}", orgjoinrequest1);
-        return Optional.ofNullable(orgJoinRequestService.createOrgJoinRequest(orgjoinrequest1.getOrgId(),orgjoinrequest1.getUserlogin()))
-                .map(orgjoinrequest -> new ResponseEntity<>(
-                        orgjoinrequest,
-                        HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    public ResponseEntity<?> create(@RequestBody @Valid OrgJoinRequestDTO orgjoinrequest) {
+        log.debug("REST request to save OrgJoinRequest : {}", orgjoinrequest);
+        ResponseEntity<?> responseEntity;
+        try {
+            orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrgName(),
+                    orgjoinrequest.getUserLogin());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchUserException e) {
+            log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return responseEntity;
     }
 
     /**
@@ -75,30 +88,41 @@ public class OrgJoinRequestController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequest>> getByOrgName(@PathVariable String orgName) {
+    public ResponseEntity<List<OrgJoinRequestDTO>> getByOrgName(@PathVariable String orgName){
         log.debug("REST request to get OrgJoinRequest : {}", orgName);
-        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByOrgName(orgName))
-            .map(orgjoinrequest -> new ResponseEntity<>(
-                orgjoinrequest,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<List<OrgJoinRequestDTO>>(new ArrayList<>(), HttpStatus.OK);
+        try {
+            List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByOrgName(orgName);
+
+            if (orgJoinRequests == null) {
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                for (OrgJoinRequest orgJoinRequest: orgJoinRequests) {
+                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest.getOrganization().getName(), orgJoinRequest.getUser().getLogin()));
+                }
+            }
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not save OrgJoinRequest : {}", orgName, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
     /**
-     * GET  /rest/orgjoinrequests/myOrgJoinRequests -> get the orgjoinrequest of own organization.
+     * GET  /rest/orgjoinrequests/:orgName -> get the "orgName" orgjoinrequest.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinrequests",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinRequests",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequest>> getRequestsByOwner() {
+    public ResponseEntity<List<OrgJoinRequest>> getByCurrentUser() {
         log.debug("REST request to get OrgJoinRequest : {}");
-        return Optional.ofNullable(orgJoinRequestService.getRequestsByOwner())
-            .map(orgjoinrequest -> new ResponseEntity<>(
-                orgjoinrequest,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByCurrentUser())
+                .map(orgjoinrequest -> new ResponseEntity<>(
+                        orgjoinrequest,
+                        HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -111,7 +135,7 @@ public class OrgJoinRequestController {
     @Timed
     public ResponseEntity<List<OrgJoinRequest>> getRequestForUser() {
         log.debug("REST request to get OrgJoinRequest : {}");
-        return Optional.ofNullable(orgJoinRequestService.getRequestForUser())
+        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByCurrentUser())
             .map(orgjoinrequest -> new ResponseEntity<>(
                 orgjoinrequest,
                 HttpStatus.OK))
@@ -126,9 +150,23 @@ public class OrgJoinRequestController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void acceptRequest(@PathVariable Long id) {
+    public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
         log.debug("REST request to accept user and delete OrgJoinRequest : {}", id);
-        orgJoinRequestService.acceptRequest(id);
+        ResponseEntity<?> responseEntity;
+        try {
+            orgJoinRequestService.acceptRequest(id);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrgJoinRequestException e) {
+            log.error("Could not accept OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not accept OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (AlreadyInOrganizationException e) {
+            log.error("Could not accept OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return responseEntity;
     }
 
     /**
@@ -136,24 +174,22 @@ public class OrgJoinRequestController {
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/decline/{id}",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void declineRequest(@PathVariable Long id) {
+    public ResponseEntity<?> declineRequest(@PathVariable Long id) {
         log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
-        orgJoinRequestService.declineRequest(id);
-    }
-
-    /**
-     * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/orgjoinrequests/{id}",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void delete(@PathVariable Long id) {
-        log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
-        orgjoinrequestRepository.delete(id);
+        ResponseEntity<?> responseEntity;
+        try {
+            orgJoinRequestService.declineRequest(id);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrgJoinRequestException e) {
+            log.error("Could not decline OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not decline OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 }

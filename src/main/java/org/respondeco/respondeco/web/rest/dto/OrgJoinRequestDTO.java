@@ -1,13 +1,21 @@
 package org.respondeco.respondeco.web.rest.dto;
 
-import lombok.Data;
+import lombok.*;
+import org.respondeco.respondeco.domain.OrgJoinRequest;
+
+import java.util.List;
 
 /**
  * Created by Chris on 10.11.2014.
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrgJoinRequestDTO {
-    private Long orgId;
+    private String orgName;
 
-    private String userlogin;
+    private String userLogin;
+
+
 }

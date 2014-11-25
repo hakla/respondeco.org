@@ -1,0 +1,127 @@
+<div>
+
+    <h2>ResourceOffers</h2>
+
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveResourceOfferModal" ng-click="clear()">
+        <span class="glyphicon glyphicon-flash"></span> Create a new ResourceOffer
+    </button>
+    <div class="modal fade" id="saveResourceOfferModal" tabindex="-1" role="dialog" aria-labelledby="myResourceOfferLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="create()">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="myResourceOfferLabel">Create or edit a ResourceOffer</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>ID</label>
+                            <input type="text" class="form-control" name="id"
+                                   ng-model="resourceOffer.id" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="text" class="form-control"
+                                   ng-model="resourceOffer.amount">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-control"
+                                   ng-model="resourceOffer.description">
+                        </div>
+                        <div class="form-group">
+                            <label>OrganisationId</label>
+                            <input type="number" class="form-control"
+                                   ng-model="resourceOffer.organisationId">
+                        </div>
+                        <div class="form-group">
+                            <label>CreateBy</label>
+                            <input type="number" class="form-control"
+                                   ng-model="resourceOffer.createBy">
+                        </div>
+                        <div class="form-group">
+                            <label>CreatedDate</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="resourceOffer.createdDate">
+                        </div>
+                        <div class="form-group">
+                            <label>LastModifiedBy</label>
+                            <input type="number" class="form-control"
+                                   ng-model="resourceOffer.lastModifiedBy">
+                        </div>
+                        <div class="form-group">
+                            <label>LastModifiedDate</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="resourceOffer.lastModifiedDate">
+                        </div>
+                        <div class="form-group">
+                            <label>IsActive</label>
+                            <input type="checkbox" class="form-control"
+                                   ng-model="resourceOffer.isActive">
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </button>
+                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-save"></span> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>OrganisationId</th>
+                    <th>CreateBy</th>
+                    <th>CreatedDate</th>
+                    <th>LastModifiedBy</th>
+                    <th>LastModifiedDate</th>
+                    <th>IsActive</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="resourceOffer in resourceOffers">
+                    <td>{{resourceOffer.id}}</td>
+                    <td>{{resourceOffer.amount}}</td>
+                    <td>{{resourceOffer.description}}</td>
+                    <td>{{resourceOffer.organisationId}}</td>
+                    <td>{{resourceOffer.createBy}}</td>
+                    <td>{{resourceOffer.createdDate}}</td>
+                    <td>{{resourceOffer.lastModifiedBy}}</td>
+                    <td>{{resourceOffer.lastModifiedDate}}</td>
+                    <td>{{resourceOffer.isActive}}</td>
+                    <td>
+                        <button type="submit"
+                                ng-click="update(resourceOffer.id)"
+                                class="btn btn-default">
+                            <span class="glyphicon glyphicon-pencil"></span> Edit
+                        </button>
+                        <button type="submit"
+                                ng-click="delete(resourceOffer.id)"
+                                class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

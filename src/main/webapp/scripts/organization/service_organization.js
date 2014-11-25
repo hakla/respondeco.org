@@ -11,6 +11,7 @@ respondecoApp.factory('Organization', function ($resource) {
     }).factory('User', function($resource) {
         return $resource('app/rest/users/:loginName', {}, {
             'get': { method: 'GET'},
+            'getById': { method: 'GET', url: 'app/rest/users/byId/:id' },
             'getByOrgId': { method: 'GET', url: 'app/rest/users/getByOrgId/:id', isArray: true },
             'getInvitableUsers': { method: 'GET', url: 'app/rest/users/getInvitableUsersByOrgId/:id', isArray: true }
         });
