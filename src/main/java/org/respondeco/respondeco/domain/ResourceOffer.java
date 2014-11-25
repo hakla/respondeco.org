@@ -8,12 +8,9 @@ import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A ResourceOffer.
@@ -50,6 +47,7 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
     public Boolean getIsRecurrent() { return this.isRecurrent; }
     public DateTime getStartDate() { return this.startDate; }
     public DateTime getEndDate() { return this.endDate; }
+
 
     /*
     @ManyToMany(mappedBy = "resourceOffers")

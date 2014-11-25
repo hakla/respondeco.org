@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.service;
 
+import org.joda.time.DateTime;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.ResourceJoinTagException;
@@ -132,7 +133,7 @@ public class ResourcesService {
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
 
-    public ResourceOffer createOffer(BigDecimal amount, String description, Long organisationId, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
+    public ResourceOffer createOffer(BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = null;
         List<ResourceOffer> existingOffer = this.resourceOfferRepository.findByDescriptionAndOrganisationId(description, organisationId);
         if (existingOffer == null) {
@@ -140,6 +141,10 @@ public class ResourcesService {
             newOffer.setAmount(amount);
             newOffer.setDescription(description);
             newOffer.setOrganisationId(organisationId);
+            newOffer.setIsCommercial(isCommercial);
+            newOffer.setIsRecurrent(isRecurrent);
+            newOffer.setStartDate(startDate);
+            newOffer.setEndDate(endDate);
             this.resourceOfferRepository.save(newOffer);
             this.saveOffersJoinTags(newOffer, resourceTags);
         } else {
@@ -149,11 +154,15 @@ public class ResourcesService {
         return newOffer;
     }
 
-    public void updateOffer(Long offerId, BigDecimal amount, String description, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
+    public void updateOffer(Long offerId, Long organisationId, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
             offer.setAmount(amount);
             offer.setDescription(description);
+            offer.setIsCommercial(isCommercial);
+            offer.setIsRecurrent(isRecurrent);
+            offer.setStartDate(startDate);
+            offer.setEndDate(endDate);
             this.resourceOfferRepository.save(offer);
 
             // delete all offer join tags entries, so we could have clean insert

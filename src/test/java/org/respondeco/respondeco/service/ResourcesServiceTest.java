@@ -85,12 +85,13 @@ public class ResourcesServiceTest {
 
         when(resourceRequirementRepositoryMock.findByDescriptionAndProjectId(description, projectId)).thenReturn(null);
         when(resourceTagRepositoryMock.findByName(tags[0])).thenReturn(resourceTags);
+        //when(resourceTagRepositoryMock.)
         when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagId(requirementId, testResourceTag.getId())).thenReturn(null);
         //redirect output to the variable of the test class
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             savedRequirement = (ResourceRequirement) args[0];
-            return null;
+            return savedRequirement;
         }).when(resourceRequirementRepositoryMock).save(isA(reqCl));
 
         //save without any tags

@@ -55,6 +55,19 @@ public class ResourceOfferDTO {
         this.setEndDate(offer.getEndDate());
     }
 
+    public ResourceOffer getOffer(){
+        ResourceOffer offer = new ResourceOffer();
+        offer.setId(this.getId());
+        offer.setAmount(this.getAmount());
+        offer.setDescription(this.getDescription());
+        offer.setOrganisationId(this.getOrganisationId());
+        offer.setIsCommercial(this.getIsCommercial());
+        offer.setIsRecurrent(this.getIsRecurrent());
+        offer.setStartDate(this.getStartDate());
+        offer.setEndDate(this.getEndDate());
+        return offer;
+    }
+
 
     public void setId(Long id){ this.id = id; }
     public void setAmount(BigDecimal amount){ this.amount = amount; }
