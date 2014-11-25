@@ -13,6 +13,7 @@ describe('e2e: login', function() {
         loginPage.username.sendKeys("user");
         loginPage.password.sendKeys("user");
         loginPage.loginButton.click();
+        browser.waitForAngular();
 
         expect(browser.getLocationAbsUrl()).not.toMatch("/login");
     });

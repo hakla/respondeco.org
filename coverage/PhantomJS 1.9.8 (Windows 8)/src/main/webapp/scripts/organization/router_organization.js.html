@@ -195,20 +195,20 @@
     </style>
 </head>
 <body>
-<div class="header medium">
+<div class="header low">
     <h1>Code coverage report for <span class="entity">./src/main/webapp/scripts/organization/router_organization.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">66.67% <small>(2 / 3)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">40% <small>(2 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
         Branches: <span class="metric">100% <small>(0 / 0)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Functions: <span class="metric">50% <small>(1 / 2)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">25% <small>(1 / 4)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">66.67% <small>(2 / 3)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">40% <small>(2 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
@@ -234,11 +234,55 @@
 16
 17
 18
-19</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -259,9 +303,31 @@ respondecoApp
             $routeProvider
                 .when('/organization', {
                     templateUrl: 'views/organizations.html',
-                    controller: 'OrganizationController',
+                    controller: 'OrganizationsController',
                     resolve:{
                         resolvedOrganization: ['Organization', <span class="fstat-no" title="function not covered" >function (Organization) {</span>
+<span class="cstat-no" title="statement not covered" >                            return Organization.query();</span>
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                }).when('/organization/:id', {
+                    templateUrl: 'views/organization.html',
+                    controller: 'OrganizationController',
+                    resolve: {
+                        resolvedOrganization: ['Organization', <span class="fstat-no" title="function not covered" >function(Organization) {</span>
+<span class="cstat-no" title="statement not covered" >                            return Organization.query();</span>
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                }).when('/organization/edit/:id', {
+                    templateUrl: 'views/organization-edit.html',
+                    controller: 'OrganizationControllerEdit',
+                    resolve: {
+                        resolvedOrganization: ['Organization', <span class="fstat-no" title="function not covered" >function(Organization) {</span>
 <span class="cstat-no" title="statement not covered" >                            return Organization.query();</span>
                         }]
                     },
@@ -275,7 +341,7 @@ respondecoApp
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Nov 24 2014 11:49:06 GMT+0100 (Mitteleuropäische Zeit)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Nov 26 2014 00:11:52 GMT+0100 (Mitteleuropäische Zeit)</div>
 </div>
 
 <script src="../prettify.js"></script>
