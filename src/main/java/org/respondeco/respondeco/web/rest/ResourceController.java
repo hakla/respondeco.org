@@ -56,7 +56,7 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers/",
+    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -109,11 +109,11 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/organisations{organisationId}/resourceOffers",
+    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> updateResourceOffer(@PathVariable Long organisationId, @RequestBody ResourceOfferDTO resourceOfferDTO) {
+    public ResponseEntity<?> updateResourceOffer(@PathVariable Long resourceOfferId, @PathVariable Long organisationId, @RequestBody ResourceOfferDTO resourceOfferDTO) {
         String message = null;
         ResponseEntity<?> result = null;
         try {
@@ -177,7 +177,7 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers/",
+    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -191,7 +191,7 @@ public class ResourceController {
     //region Requirements
 
     @RolesAllowed(AuthoritiesConstants.ANONYMOUS)
-    @RequestMapping(value = "/rest/resourceRequirements/",
+    @RequestMapping(value = "/rest/projects/resourceRequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -211,11 +211,11 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/projects/resourceRequirements",
+    @RequestMapping(value = "/rest/projects{projectId}/resourceRequirements",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createResourceRequirement(@RequestBody ResourceRequirementDTO resourceRequirementDTO) {
+    public ResponseEntity<?> createResourceRequirement(@PathVariable Long projectId, @RequestBody ResourceRequirementDTO resourceRequirementDTO) {
         ResourceRequirement requirement = null;
         ResponseEntity<ResourceRequirementDTO> result = null;
         String message = null;
@@ -249,7 +249,7 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/projects{projectId}/resourceRequirements/{resourceRequirementId}",
+    @RequestMapping(value = "/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -283,7 +283,7 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/projects{projectId}/resourceRequirements/{resourceRequirementId}",
+    @RequestMapping(value = "/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
