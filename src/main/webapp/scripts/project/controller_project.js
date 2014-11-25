@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function ($scope, Project, $location) {
 
-        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null};
+        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,projectLogo:null};
         $scope.projects = Project.query();
         var searchText=null;
         $scope.viewedProject = Project.currentProject;
@@ -12,6 +12,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
                 function () {
                     $scope.projects = Project.query();
                     $scope.clear();
+                    $location.path('/project');
                 });
         };
 
@@ -28,7 +29,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
         };
 
         $scope.clear = function () {
-            $scope.project = {id: null, name: null, purpose: null, concrete:false,startDate:null,endDate:null};
+            $scope.project = {id: null, name: null, purpose: null, concrete:false,startDate:null,endDate:null,projectLogo:null};
         };
 
         $scope.viewProjectDetails = function (viewedProject) {
@@ -38,5 +39,12 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
 
         $scope.createProject = function () {
             $location.path('/project/create');
+        };
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
         };
     });

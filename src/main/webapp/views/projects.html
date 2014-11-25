@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="row table-responsive">
-        <table class="table table-striped">
+        <table class="table table">
             <thead>
                 <tr>
                     <th translate="global.projects.id">ID</th>
@@ -38,7 +38,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="p in projects | filter: searchText" ng-click="viewProjectDetails(p)">
+                <style>
+                    tr.element:hover{
+                        background-color: dimgray;
+                    }
+                </style>
+                <tr class="element" ng-repeat="p in projects | filter: searchText" ng-click="viewProjectDetails(p)">
                     <td>{{p.id}}</td>
                     <td>{{p.name}}</td>
                     <td>{{p.purpose}}</td>
