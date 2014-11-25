@@ -7,6 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Roman Kern on 23.11.14.
@@ -20,4 +21,9 @@ public interface AbstractEntityRepository<T, ID extends Serializable> extends Jp
     @Transactional
     @Query("UPDATE #{#entityName} SET is_active = 0 WHERE id = ?1")
     void delete(ID var1);
+    /*
+    @Override
+    @Query("SELECT e.* FROM #{#entityName} e WHERE e.is_active = 1")
+    List<T> findAll();
+    */
 }

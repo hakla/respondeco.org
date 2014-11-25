@@ -49,7 +49,7 @@ public class ResourceController {
     //region Offer Controller
 
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organisations/resourceOffers",
+    @RequestMapping(value = "/rest/resourceOffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -202,8 +202,8 @@ public class ResourceController {
 
     //region Requirements
 
-    @RolesAllowed(AuthoritiesConstants.ANONYMOUS)
-    @RequestMapping(value = "/rest/projects/resourceRequirements",
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceRequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -212,7 +212,7 @@ public class ResourceController {
         return this.resourcesService.getAllRequirements();
     }
 
-    @RolesAllowed(AuthoritiesConstants.ANONYMOUS)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{projectId}/resourceRequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -227,7 +227,7 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createResourceRequirement(@PathVariable Long projectId, @RequestBody ResourceRequirementDTO resourceRequirementDTO) {
+    public ResponseEntity<?> createResourceRequirement(@PathVariable Long projectId, @RequestBody ResourceRequirementDTO resourceRequirementDTO) throws Exception {
         ResourceRequirement requirement = null;
         ResponseEntity<ResourceRequirementDTO> result = null;
         String message = null;
@@ -250,6 +250,7 @@ public class ResourceController {
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't save Resource Requirement with description '%s' and Project id: %d",
                 resourceRequirementDTO.getDescription(), resourceRequirementDTO.getProjectId());
+            throw e;
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();

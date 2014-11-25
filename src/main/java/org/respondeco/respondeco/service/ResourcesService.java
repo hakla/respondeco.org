@@ -72,7 +72,9 @@ public class ResourcesService {
 
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceRequirement newRequirement = null;
-        if (this.resourceRequirementRepository.findByDescriptionAndProjectId(description, projectId) == null) {
+        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByDescriptionAndProjectId(description, projectId);
+        if (entries == null || entries.isEmpty() == true) {
+            newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
             newRequirement.setAmount(amount);
             newRequirement.setDescription(description);
@@ -117,16 +119,22 @@ public class ResourcesService {
 
     public List<ResourceRequirementDTO> getAllRequirements() {
         List<ResourceRequirementDTO> result = new ArrayList<ResourceRequirementDTO>();
-        for (ResourceRequirement requirement : this.resourceRequirementRepository.findAll()) {
-            result.add(new ResourceRequirementDTO(requirement));
+        List<ResourceRequirement> entries = this.resourceRequirementRepository.findAll();
+        if(entries != null && entries.isEmpty() == false) {
+            for (ResourceRequirement requirement : entries) {
+                result.add(new ResourceRequirementDTO(requirement));
+            }
         }
         return result;
     }
 
     public List<ResourceRequirementDTO> getAllRequirements(Long projectId) {
         List<ResourceRequirementDTO> result = new ArrayList<ResourceRequirementDTO>();
-        for (ResourceRequirement requirement : this.resourceRequirementRepository.findByProjectId(projectId)) {
-            result.add(new ResourceRequirementDTO(requirement));
+        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectId(projectId);
+        if(entries != null && entries.isEmpty() == false) {
+            for (ResourceRequirement requirement : entries) {
+                result.add(new ResourceRequirementDTO(requirement));
+            }
         }
         return result;
     }
