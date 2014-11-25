@@ -76,7 +76,7 @@ public class OrgJoinRequestServiceTest {
         defaultOrganization = new Organization();
         defaultOrganization.setName("test org");
         defaultOrganization.setId(1L);
-        defaultOrganization.setOwner(orgOwner.getId());
+        defaultOrganization.setOwner(orgOwner);
 
         orgJoinRequestRepository.deleteAll();
     }
@@ -90,8 +90,8 @@ public class OrgJoinRequestServiceTest {
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(defaultOrganization.getName(),orgOwner.getLogin());
         assertNotNull(orgJoinRequest);
-        assertEquals(orgJoinRequest.getOrgId(),defaultOrganization.getId());
-        assertEquals(orgJoinRequest.getUserId(), orgOwner.getId());
+        assertEquals(orgJoinRequest.getOrganization(),defaultOrganization);
+        assertEquals(orgJoinRequest.getUser(), orgOwner);
     }
 
     @Test(expected = NoSuchUserException.class)
@@ -137,8 +137,8 @@ public class OrgJoinRequestServiceTest {
         OrgJoinRequest orgJoinRequest = orgJoinRequestList.get(0);
         assertNotNull(orgJoinRequest);
 
-        assertEquals(orgJoinRequest.getOrgId(),defaultOrganization.getId());
-        assertEquals(orgJoinRequest.getUserId(),orgOwner.getId());
+        assertEquals(orgJoinRequest.getOrganization(),defaultOrganization);
+        assertEquals(orgJoinRequest.getUser(),orgOwner);
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -159,8 +159,8 @@ public class OrgJoinRequestServiceTest {
         OrgJoinRequest orgJoinRequest = orgJoinRequestList.get(0);
         assertNotNull(orgJoinRequest);
 
-        assertEquals(orgJoinRequest.getOrgId(),defaultOrganization.getId());
-        assertEquals(orgJoinRequest.getUserId(),orgOwner.getId());
+        assertEquals(orgJoinRequest.getOrganization(),defaultOrganization);
+        assertEquals(orgJoinRequest.getUser(),orgOwner);
     }
 
     @Test

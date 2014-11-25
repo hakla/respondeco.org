@@ -74,7 +74,7 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/organizations -> get all the organizations.
+     * GET  /rest/organizations -> get all organizations.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations",
@@ -84,6 +84,19 @@ public class OrganizationController {
     public List<Organization> getAll() {
         log.debug("REST request to get all Organizations");
         return organizationRepository.findAll();
+    }
+
+    /**
+     * GET  /rest/organizations -> get all the organizations.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organization/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public Organization getById(@PathVariable Long id) {
+        log.debug("REST request to get one Organization by id");
+        return organizationRepository.findOne(id);
     }
 
     /**
@@ -134,6 +147,20 @@ public class OrganizationController {
         }
         return responseEntity;
     }
+
+    /**
+     * GET  /rest/organizations/:owner -> get the organization of current owner.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organizations/{id}/members",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<User> getMembers(@PathVariable Long id) {
+        log.debug("REST request to get members for organization Organization : {}" ,userService.getUserWithAuthorities().getLogin());
+        return userService.getOrganizationMembers(id);
+    }
+
 
 
     /**

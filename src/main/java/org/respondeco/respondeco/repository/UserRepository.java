@@ -11,12 +11,15 @@ import java.util.List;
  * Spring Data JPA repository for the User entity.
  */
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+
     @Query("select u from User u where u.activationKey = ?1")
     User getUserByActivationKey(String activationKey);
-    
+
     @Query("select u from User u where u.activated = false and u.createdDate > ?1")
     List<User> findNotActivatedUsersByCreationDateBefore(DateTime dateTime);
+
+    @Query("select u from User u where u.orgId is null")
+    List<User> findInvitableUsers();
 
     List<User> findUserByOrgId(Long orgId);
 

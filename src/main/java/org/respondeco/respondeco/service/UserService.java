@@ -203,7 +203,7 @@ public class UserService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization %s does not exist", orgId));
         }
-        if(organization.getOwner().equals(user.getId())==false) {
+        if(organization.getOwner().equals(user)==false) {
             throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s", orgId));
         }
         log.debug("Finding members of organization", organization.getName());
@@ -215,5 +215,35 @@ public class UserService {
         result.remove("system");
         result.remove("anonymousUser");
         return result;
+    }
+
+    public List<User> findInvitableUsersByOrgId(Long orgId) {
+        Organization organization = organizationRepository.getOne(orgId);
+
+        // if there is no organization than all users should be returned
+        if(organization != null) {
+            List<User> users = userRepository.findInvitableUsers();
+            User owner = null;
+
+            // find the owner and remove him from the list
+            // @TODO set the orgId of the owner when set as owner
+            for (User user: users) {
+                if (organization.getOwner().equals(user.getLogin())) {
+                    owner = user;
+                    break;
+                }
+            }
+
+            if (owner != null) {
+                users.remove(owner);
+            }
+
+            return users;
+        }
+        return userRepository.findAll();
+    }
+
+    public List<User> getOrganizationMembers(Long id) {
+        return userRepository.findUserByOrgId(id);
     }
 }

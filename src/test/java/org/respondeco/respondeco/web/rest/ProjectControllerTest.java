@@ -57,21 +57,21 @@ import org.respondeco.respondeco.repository.ProjectRepository;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 public class ProjectControllerTest {
-    
+
     private static final Long DEFAULT_ID = new Long(1L);
-    
+
     private static final Long DEFAULT_ORGANIZATION_ID = 0L;
 
     private static final Long DEFAULT_MANAGER_ID = 0L;
     private static final Long UPDATED_MANAGER_ID = 1L;
-        
+
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
-        
+
     private static final String DEFAULT_PURPOSE = "SAMPLE_TEXT";
     private static final String UPDATED_PURPOSE = "UPDATED_TEXT";
 
-        
+
     @Inject
     private ProjectRepository projectRepository;
 
@@ -122,7 +122,7 @@ public class ProjectControllerTest {
         defaultOrganization = new Organization();
         defaultOrganization.setId(100L);
         defaultOrganization.setName("testorg");
-        defaultOrganization.setOwner(orgAdmin.getId());
+        defaultOrganization.setOwner(orgAdmin);
     }
 
     @Test

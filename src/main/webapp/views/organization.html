@@ -1,0 +1,40 @@
+<div>
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-default pull-left" ng-click='redirectToOverview()' translate='organization.back'>Back</button>
+        </div>
+        <div class="text-right col-md-10" ng-show='isOwner()'>
+            <button class="btn btn-primary" ng-show='isOwner()' ng-click='redirectToEdit()' translate='general.edit'>Edit</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h2 translate='organization.detail.heading' translate-values="{organization: '{{organization.name}}'}">{{organization.name}}</h2>
+            <p ng-show='organization.isNpo'>NGO</p>
+
+            <div ng-hide="edit.image">
+                <img src="{{ organization.logo | logo }}" alt="Profilbild">
+            </div>
+        </div>
+        <div class="col-md-5">
+            <h2></h2>
+            <dl class="dl-horizontal">
+                <dt>
+                    <span translate='organization.responsiblePerson'>Responsible person</span>:</dt>
+                <dd>{{ organization.owner.lastName }}</dd>
+                <dt>
+                    <span translate='organization.contact'>Contact</span>:</dt>
+                <dd></dd>
+                <dt>
+                    <span translate='organization.email'>E-Mail</span>:</dt>
+                <dd>{{ organization.email }}</dd>
+                <dt>
+                    <span translate='organization.description'>Description</span>:</dt>
+                <dd>{{ organization.description }}</dd>
+            </dl>
+        </div>
+        <div class="col-md-4">
+            <organization-members />
+        </div>
+    </div>
+</div>

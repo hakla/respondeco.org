@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope, Account) {
-    });
+respondecoApp.controller('MainController', function ($scope, Account, OrgJoinRequest, Organization) {
+});
 
 respondecoApp.controller('AdminController', function ($scope) {
 });
@@ -40,14 +40,22 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
     $scope.success = null;
     $scope.error = null;
 
     $scope.settingsAccount = {};
     $scope.profilePicture = "images/profile_empty.png";
-    Account.get().$promise.then(function(x) {
-        $scope.settingsAccount = x;
+    Account.get().$promise.then(function(account) {
+        $scope.settingsAccount = account;
+
+        if ($scope.settingsAccount.orgId !== null) {
+            Organization.getById({
+                id: $scope.settingsAccount.orgId
+            }).$promise.then(function(organization) {
+                $scope.organization = organization;
+            });
+        }
 
         if($scope.settingsAccount.firstName == null) {
             $scope.fullName = $scope.settingsAccount.lastName;
@@ -66,6 +74,22 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         "MALE",
         "FEMALE"
     ];
+    
+    var getCurrentOrgJoinRequests = function() {
+        OrgJoinRequest.getCurrent().$promise.then(function(data) {
+            $scope.orgJoinRequests = data;
+
+            data.forEach(function(el) {
+                Organization.getById({
+                    id: el.orgId
+                }, function(data) {
+                    el.organization = data;
+                });
+            });
+        });
+    };
+
+    getCurrentOrgJoinRequests();
 
     $scope.save = function () {
         Account.save($scope.settingsAccount,
@@ -90,7 +114,19 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
                 $scope.accountdeleted = null;
                 $scope.error = "ERROR";
             });
-    }
+    };
+
+    $scope.acceptInvitation = function(id) {
+        OrgJoinRequest.accept({
+            id: id
+        }, getCurrentOrgJoinRequests);
+    };
+
+    $scope.declineInvitation = function(id) {
+        OrgJoinRequest.decline({
+            id: id
+        }, getCurrentOrgJoinRequests);
+    };
 
     $scope.edit = {
         image: false,

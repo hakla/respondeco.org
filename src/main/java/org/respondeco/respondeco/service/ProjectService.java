@@ -3,7 +3,6 @@ package org.respondeco.respondeco.service;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.ProjectLogo;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
@@ -73,11 +72,6 @@ public class ProjectService {
         newProject.setConcrete(isConcrete);
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            newProject.setProjectLogo(projectLogo);
-        }
         projectRepository.save(newProject);
         return newProject;
     }

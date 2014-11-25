@@ -55,7 +55,7 @@ public class OrgJoinRequestControllerTest {
     private static final Long DEFAULT_ORGJOINREQUEST_ID = 1L;
     private static final Long DEFAULT_ORG_ID = 1L;
     private static final Long DEFAULT_USER_ID = 1L;
-        
+
     @Mock
     private OrgJoinRequestRepository orgjoinrequestRepository;
 
@@ -131,7 +131,7 @@ public class OrgJoinRequestControllerTest {
         organization.setName("testorg");
         organization.setDescription("testdescription");
         organization.setEmail("test@email.com");
-        organization.setOwner(defaultUser.getId());
+        organization.setOwner(defaultUser);
         organization.setIsNpo(false);
         organizationRepository.save(organization);
 
@@ -143,8 +143,8 @@ public class OrgJoinRequestControllerTest {
 
         orgJoinRequest = new OrgJoinRequest();
         orgJoinRequest.setId(1L);
-        orgJoinRequest.setOrgId(1L);
-        orgJoinRequest.setUserId(2L);
+        orgJoinRequest.setOrganization(organization);
+        orgJoinRequest.setUser(this.potMember);
     }
 
     @Test

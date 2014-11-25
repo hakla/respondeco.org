@@ -2,6 +2,7 @@ package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Data
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@ToString(exclude = {"persistentTokens", "authorities"}) // otherwise there will be errors in the log because authorities is lazy loaded
 public class User extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -187,7 +189,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
-    
+
     public Set<PersistentToken> getPersistentTokens() {
         return persistentTokens;
     }
