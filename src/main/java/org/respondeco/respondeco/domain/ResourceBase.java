@@ -20,7 +20,7 @@ import java.util.Set;
  */
 @Audited
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(ResourceBase.class)
 public abstract class ResourceBase extends AbstractAuditingEntity implements Serializable {
 
     @NotNull

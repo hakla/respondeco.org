@@ -1,6 +1,9 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
@@ -65,6 +68,12 @@ public class ResourceController {
         return this.resourcesService.getAllOffers(organisationId);
     }
 
+    private DateTime stringToDateTime(String dateTime){
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+        DateTime result = dateTime == null || dateTime.isEmpty() ? null : formatter.parseDateTime(dateTime);
+        return result;
+    }
+
     /*
     Create new Resource offer!
      */
@@ -73,7 +82,7 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createResourceOffer(@PathVariable Long organisationId, @RequestBody ResourceOfferDTO resourceOfferDTO) {
+    public ResponseEntity<?> createResourceOffer(@PathVariable Long organisationId, @RequestBody ResourceOfferDTO resourceOfferDTO) throws Exception{
         ResponseEntity<ResourceOfferDTO> result = null;
         String message = null;
         try {
@@ -83,8 +92,8 @@ public class ResourceController {
                 organisationId,//resourceOfferDTO.getOrganisationId(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                resourceOfferDTO.getStartDate(),
-                resourceOfferDTO.getEndDate(),
+                this.stringToDateTime(resourceOfferDTO.getStartDate()),
+                this.stringToDateTime(resourceOfferDTO.getEndDate()),
                 resourceOfferDTO.getResourceTags()
             );
             resourceOfferDTO.setId(offer.getId());
@@ -95,8 +104,9 @@ public class ResourceController {
         } catch (ResourceJoinTagException e) {
             message = e.getMessage();
         } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d",
+            message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d.",
                 resourceOfferDTO.getDescription(), resourceOfferDTO.getOrganisationId());
+            throw e;
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();
@@ -124,8 +134,8 @@ public class ResourceController {
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                resourceOfferDTO.getStartDate(),
-                resourceOfferDTO.getEndDate(),
+                this.stringToDateTime(resourceOfferDTO.getStartDate()),
+                this.stringToDateTime(resourceOfferDTO.getEndDate()),
                 resourceOfferDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);

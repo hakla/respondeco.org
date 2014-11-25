@@ -3,6 +3,8 @@ package org.respondeco.respondeco.web.rest.dto;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.respondeco.respondeco.domain.ResourceOffer;
 
 import java.math.BigDecimal;
@@ -26,20 +28,20 @@ public class ResourceOfferDTO {
 
     private Boolean isRecurrent = false;
 
-    private DateTime startDate;
+    private String startDate;
 
-    private DateTime endDate;
+    private String endDate;
 
 
     public void setIsCommercial(Boolean isCommercial){ this.isCommercial = isCommercial; }
     public void setIsRecurrent(Boolean isRecurrent){ this.isRecurrent = isRecurrent; }
-    public void setStartDate(DateTime startDate){ this.startDate = startDate; }
-    public void setEndDate(DateTime endDate){ this.endDate = endDate; }
+    public void setStartDate(String startDate){ this.startDate = startDate; }
+    public void setEndDate(String endDate){ this.endDate = endDate; }
 
     public Boolean getIsCommercial() { return this.isCommercial; }
     public Boolean getIsRecurrent() { return this.isRecurrent; }
-    public DateTime getStartDate() { return this.startDate; }
-    public DateTime getEndDate() { return this.endDate; }
+    public String getStartDate() { return this.startDate; }
+    public String getEndDate() { return this.endDate; }
 
     private String[] resourceTags;
 
@@ -51,11 +53,13 @@ public class ResourceOfferDTO {
         this.setOrganisationId(offer.getOrganisationId());
         this.setIsCommercial(offer.getIsCommercial());
         this.setIsRecurrent(offer.getIsRecurrent());
-        this.setStartDate(offer.getStartDate());
-        this.setEndDate(offer.getEndDate());
+        this.setStartDate(dateTimeToString(offer.getStartDate()));
+        this.setEndDate(dateTimeToString(offer.getEndDate()));
     }
 
     public ResourceOffer getOffer(){
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+        DateTime dt = formatter.parseDateTime(this.getStartDate());
         ResourceOffer offer = new ResourceOffer();
         offer.setId(this.getId());
         offer.setAmount(this.getAmount());
@@ -63,9 +67,16 @@ public class ResourceOfferDTO {
         offer.setOrganisationId(this.getOrganisationId());
         offer.setIsCommercial(this.getIsCommercial());
         offer.setIsRecurrent(this.getIsRecurrent());
-        offer.setStartDate(this.getStartDate());
-        offer.setEndDate(this.getEndDate());
+        offer.setStartDate(formatter.parseDateTime(this.getStartDate()));
+        offer.setEndDate(formatter.parseDateTime(this.getEndDate()));
         return offer;
+    }
+
+    private String dateTimeToString(DateTime dateTime){
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+        String result = dateTime == null ? null : dateTime.toString(formatter);
+        //return null;
+        return result;
     }
 
 

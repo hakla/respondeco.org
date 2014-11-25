@@ -136,7 +136,7 @@ public class ResourcesService {
     public ResourceOffer createOffer(BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = null;
         List<ResourceOffer> existingOffer = this.resourceOfferRepository.findByDescriptionAndOrganisationId(description, organisationId);
-        if (existingOffer == null) {
+        if (existingOffer == null || existingOffer.isEmpty() == true) {
             newOffer = new ResourceOffer();
             newOffer.setAmount(amount);
             newOffer.setDescription(description);
@@ -188,16 +188,22 @@ public class ResourcesService {
 
     public List<ResourceOfferDTO> getAllOffers() {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        for (ResourceOffer offer : this.resourceOfferRepository.findAll()) {
-            result.add(new ResourceOfferDTO(offer));
+        List<ResourceOffer> entries = this.resourceOfferRepository.findAll();
+        if(entries != null && entries.isEmpty() == false) {
+            for (ResourceOffer offer :entries) {
+                result.add(new ResourceOfferDTO(offer));
+            }
         }
         return result;
     }
 
     public List<ResourceOfferDTO> getAllOffers(Long organisationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        for (ResourceOffer offer : this.resourceOfferRepository.findByOrganisationId(organisationId)) {
-            result.add(new ResourceOfferDTO(offer));
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organisationId);
+        if(entries != null && entries.isEmpty() == false) {
+            for (ResourceOffer offer : entries) {
+                result.add(new ResourceOfferDTO(offer));
+            }
         }
         return result;
     }
