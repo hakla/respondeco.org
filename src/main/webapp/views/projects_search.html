@@ -1,0 +1,12 @@
+<div>
+    <form name="searchform" role="form" novalidate
+          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" ng-submit="search()">
+
+        <input type="text" class="form-control" placeholder="{{'project.name.placeholder' | translate}}"
+               ng-model="project.name" typeahead=""/>
+        <input type="text" class="form-control" placeholder="{{'project.tags.placeholder' | translate}}"
+               ng-model="project.tags"/>
+
+        <button type="submit" class="btn btn-primary">Blub</button>
+    </form>
+</div>

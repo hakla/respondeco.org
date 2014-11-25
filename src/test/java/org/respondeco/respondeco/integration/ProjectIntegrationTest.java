@@ -2,10 +2,8 @@ package org.respondeco.respondeco.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,13 +18,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.OrganizationRepository;
+import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.ProjectController;
-import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -70,12 +69,15 @@ public class ProjectIntegrationTest {
     @Inject
     private UserRepository userRepository;
 
+    @Inject
+    private PropertyTagRepository propertyTagRepository;
+
     @Mock
     private UserService userServiceMock;
 
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
-    private ProjectDTO projectDTO;
+    private ProjectRequestDTO projectRequestDTO;
     private Organization defaultOrganization;
     private User orgAdmin;
     private User orgMember;
@@ -87,7 +89,8 @@ public class ProjectIntegrationTest {
                 projectRepository,
                 userServiceMock,
                 userRepository,
-                organizationRepository));
+                organizationRepository,
+                propertyTagRepository));
         ProjectController projectController = new ProjectController(projectService, projectRepository);
 
         projectRepository.deleteAll();
@@ -95,10 +98,10 @@ public class ProjectIntegrationTest {
         userRepository.deleteAll();
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
-        projectDTO = new ProjectDTO();
-        projectDTO.setName(DEFAULT_NAME);
-        projectDTO.setPurpose(DEFAULT_PURPOSE);
-        projectDTO.setConcrete(false);
+        projectRequestDTO = new ProjectRequestDTO();
+        projectRequestDTO.setName(DEFAULT_NAME);
+        projectRequestDTO.setPurpose(DEFAULT_PURPOSE);
+        projectRequestDTO.setConcrete(false);
 
         orgAdmin = new User();
         orgAdmin.setLogin("orgAdmin");
@@ -126,26 +129,30 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         verify(projectService, times(1)).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         Long id = projectCaptor.getValue().getId();
 
@@ -156,27 +163,27 @@ public class ProjectIntegrationTest {
                 .andExpect(jsonPath("$.id").value(id.intValue()))
                 .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
                 .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(projectDTO.getName()))
-                .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()));
+                .andExpect(jsonPath("$.name").value(projectRequestDTO.getName()))
+                .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()));
 
         // Update Project
-        projectDTO.setId(id);
-        projectDTO.setName(UPDATED_NAME);
-        projectDTO.setPurpose(UPDATED_PURPOSE);
+        projectRequestDTO.setId(id);
+        projectRequestDTO.setName(UPDATED_NAME);
+        projectRequestDTO.setPurpose(UPDATED_PURPOSE);
 
         restProjectMockMvc.perform(put("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         verify(projectService, times(1)).update(
-                projectDTO.getId(),
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getId(),
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo());
 
         // Read updated Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
@@ -209,23 +216,25 @@ public class ProjectIntegrationTest {
     public void testPOST_shouldCreateConcreteProject() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
 
-        projectDTO.setConcrete(true);
-        projectDTO.setStartDate(LocalDate.now());
-        projectDTO.setEndDate(LocalDate.now().plusDays(5));
+        projectRequestDTO.setConcrete(true);
+        projectRequestDTO.setStartDate(LocalDate.now());
+        projectRequestDTO.setEndDate(LocalDate.now().plusDays(5));
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long id = projectCaptor.getValue().getId();
@@ -236,11 +245,11 @@ public class ProjectIntegrationTest {
                 .andExpect(jsonPath("$.id").value(id.intValue()))
                 .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
                 .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(projectDTO.getName()))
-                .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()))
+                .andExpect(jsonPath("$.name").value(projectRequestDTO.getName()))
+                .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()))
                 .andExpect(jsonPath("$.concrete").value(true))
-                .andExpect(jsonPath("$.startDate").value(projectDTO.getStartDate().toString("yyyy-MM-dd")))
-                .andExpect(jsonPath("$.startDate").value(projectDTO.getStartDate().toString("yyyy-MM-dd")));
+                .andExpect(jsonPath("$.startDate").value(projectRequestDTO.getStartDate().toString("yyyy-MM-dd")))
+                .andExpect(jsonPath("$.startDate").value(projectRequestDTO.getStartDate().toString("yyyy-MM-dd")));
 
     }
 
@@ -248,14 +257,14 @@ public class ProjectIntegrationTest {
     public void testPOST_expectBAD_REQEST_endDateMustNotBeBeforeNow() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
 
-        projectDTO.setConcrete(true);
-        projectDTO.setStartDate(LocalDate.now().minusDays(5));
-        projectDTO.setEndDate(LocalDate.now().minusDays(3));
+        projectRequestDTO.setConcrete(true);
+        projectRequestDTO.setStartDate(LocalDate.now().minusDays(5));
+        projectRequestDTO.setEndDate(LocalDate.now().minusDays(3));
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -263,14 +272,14 @@ public class ProjectIntegrationTest {
     public void testPOST_expectBAD_REQEST_endDateMustNotBeBeforeStartDate() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
 
-        projectDTO.setConcrete(true);
-        projectDTO.setStartDate(LocalDate.now().plusDays(5));
-        projectDTO.setEndDate(LocalDate.now().plusDays(3));
+        projectRequestDTO.setConcrete(true);
+        projectRequestDTO.setStartDate(LocalDate.now().plusDays(5));
+        projectRequestDTO.setEndDate(LocalDate.now().plusDays(3));
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -286,17 +295,19 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long projectId = projectCaptor.getValue().getId();
@@ -307,7 +318,7 @@ public class ProjectIntegrationTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        assertEquals(projectCaptor.getValue().getManagerId(), otherUser.getId());
+        assertEquals(projectCaptor.getValue().getManager(), otherUser);
     }
 
     @Test
@@ -322,17 +333,19 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long projectId = projectCaptor.getValue().getId();
@@ -344,7 +357,7 @@ public class ProjectIntegrationTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        assertEquals(projectCaptor.getValue().getManagerId(), otherUser.getId());
+        assertEquals(projectCaptor.getValue().getManager(), otherUser);
     }
 
     @Test
@@ -359,17 +372,19 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long projectId = projectCaptor.getValue().getId();
@@ -401,17 +416,19 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long projectId = projectCaptor.getValue().getId();
@@ -430,17 +447,19 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long id = projectCaptor.getValue().getId();
@@ -464,17 +483,19 @@ public class ProjectIntegrationTest {
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         Long id = projectCaptor.getValue().getId();

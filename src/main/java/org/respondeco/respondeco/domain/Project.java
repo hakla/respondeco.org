@@ -46,28 +46,33 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     private LocalDate endDate;
 
     @NotNull
-    @Column(name = "organization_id", nullable = false)
-    private Long organizationId;
+    @ManyToOne
+    private Organization organization;
 
     @NotNull
-    @Column(name = "manager_id", nullable = false)
-    private Long managerId;
-
-    private Double rating;
-
-    @Column(name = "rating_count")
-    private Integer ratingCount;
+    @ManyToOne
+    private User manager;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private ProjectLogo projectLogo;
 
-    @ManyToMany
     @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name="T_PROJECT_JOIN_T_PROPERTYTAG",
+            joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
+            inverseJoinColumns = { @JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id" ) }
+    )
     private List<PropertyTag> propertyTags;
 
-    @OneToMany
     @JsonIgnore
+    @OneToMany
+    @JoinTable(
+            name="T_PROJECT_JOIN_T_RESOURCEREQUIREMENT",
+            joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
+            inverseJoinColumns = { @JoinColumn(name = "RESOURCEREQUIREMENT_ID", referencedColumnName = "id" ) }
+    )
     private List<ResourceRequirement> resourceRequirements;
 
     @Override

@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.web.rest;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +11,12 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
+import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.UserService;
-import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -28,8 +27,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import javax.inject.Inject;
 
 import java.util.Arrays;
 
@@ -80,9 +77,12 @@ public class ProjectControllerTest {
     @Mock
     private UserRepository userRepositoryMock;
 
+    @Mock
+    private PropertyTagRepository propertyTagRepositoryMock;
+
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
-    private ProjectDTO projectDTO;
+    private ProjectRequestDTO projectRequestDTO;
     private Project project;
     private Organization defaultOrganization;
     private User orgAdmin;
@@ -95,15 +95,16 @@ public class ProjectControllerTest {
                 projectRepositoryMock,
                 userServiceMock,
                 userRepositoryMock,
-                organizationRepositoryMock));
+                organizationRepositoryMock,
+                propertyTagRepositoryMock));
         ProjectController projectController = new ProjectController(projectService, projectRepositoryMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
-        projectDTO = new ProjectDTO();
-        projectDTO.setName(DEFAULT_NAME);
-        projectDTO.setPurpose(DEFAULT_PURPOSE);
-        projectDTO.setConcrete(false);
+        projectRequestDTO = new ProjectRequestDTO();
+        projectRequestDTO.setName(DEFAULT_NAME);
+        projectRequestDTO.setPurpose(DEFAULT_PURPOSE);
+        projectRequestDTO.setConcrete(false);
 
         orgAdmin = new User();
         orgAdmin.setId(100L);
@@ -122,8 +123,8 @@ public class ProjectControllerTest {
 
         project = new Project();
         project.setId(100L);
-        project.setOrganizationId(defaultOrganization.getId());
-        project.setManagerId(orgMember.getId());
+        project.setOrganization(defaultOrganization);
+        project.setManager(orgMember);
         project.setName(DEFAULT_NAME);
         project.setPurpose(DEFAULT_PURPOSE);
         project.setConcrete(false);
@@ -136,26 +137,30 @@ public class ProjectControllerTest {
     public void testCRUDProject() throws Exception {
 
         doReturn(project).when(projectService).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         verify(projectService, times(1)).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
         // Read Project
@@ -166,38 +171,38 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.id").value(project.getId().intValue()))
                 .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
                 .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(projectDTO.getName()))
-                .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()));
+                .andExpect(jsonPath("$.name").value(projectRequestDTO.getName()))
+                .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()));
 
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(project.getId());
 
         // Update Project
-        projectDTO.setId(project.getId());
-        projectDTO.setName(UPDATED_NAME);
-        projectDTO.setPurpose(UPDATED_PURPOSE);
+        projectRequestDTO.setId(project.getId());
+        projectRequestDTO.setName(UPDATED_NAME);
+        projectRequestDTO.setPurpose(UPDATED_PURPOSE);
 
         doReturn(project).when(projectService).update(
-                projectDTO.getId(),
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getId(),
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo());
 
         restProjectMockMvc.perform(put("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
                 .andExpect(status().isOk());
 
         verify(projectService, times(1)).update(
-                projectDTO.getId(),
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getEndDate(),
-                projectDTO.getProjectLogo());
+                projectRequestDTO.getId(),
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getEndDate(),
+                projectRequestDTO.getProjectLogo());
 
         project.setName(UPDATED_NAME);
         project.setPurpose(UPDATED_PURPOSE);
@@ -238,8 +243,8 @@ public class ProjectControllerTest {
         project2.setId(200L);
         project2.setName("test2");
         project2.setPurpose("testpurpose 2");
-        project2.setOrganizationId(defaultOrganization.getId());
-        project2.setManagerId(orgMember.getId());
+        project2.setOrganization(defaultOrganization);
+        project2.setManager(orgMember);
         project2.setConcrete(false);
 
         when(projectRepositoryMock.findByActiveIsTrue()).thenReturn(Arrays.asList(project, project2));

@@ -28,14 +28,16 @@ public class PropertyTagController {
     private PropertyTagRepository propertytagRepository;
 
     /**
-     * GET  /rest/propertytags -> get all the propertytags.
+     * GET  /rest/names/propertytags -> get all the propertytag names.
      */
-    @RequestMapping(value = "/rest/propertytags",
+    @RequestMapping(value = "/rest/names/propertytags",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<String> getTagsMatching(@RequestParam String filter, @RequestParam Integer limit) {
-        log.debug("REST request to get all PropertyTags");
+    public List<String> getTagsMatching(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) Integer limit) {
+        log.debug("REST request to get all PropertyTag names");
         if(filter == null) {
             filter = "";
         }
@@ -43,7 +45,8 @@ public class PropertyTagController {
             limit = 20;
         }
         PageRequest request = new PageRequest(0, limit);
-        return propertytagRepository.getNamesMatching(filter, request);
+        //TODO: fix pagination
+        return propertytagRepository.findNamesLike(filter, null);
     }
 
 }

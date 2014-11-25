@@ -12,6 +12,7 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
+import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
@@ -48,6 +49,9 @@ public class ProjectServiceTest {
     private OrganizationRepository organizationRepositoryMock;
 
     @Mock
+    private PropertyTagRepository propertyTagRepositoryMock;
+
+    @Mock
     private UserService userService;
 
     private ProjectService projectService;
@@ -63,7 +67,8 @@ public class ProjectServiceTest {
                 projectRepositoryMock,
                 userService,
                 userRepositoryMock,
-                organizationRepositoryMock);
+                organizationRepositoryMock,
+                propertyTagRepositoryMock);
 
         defaultUser = new User();
         defaultUser.setId(1L);
@@ -79,12 +84,14 @@ public class ProjectServiceTest {
         basicProject.setName("test project");
         basicProject.setPurpose("test purpose");
         basicProject.setConcrete(false);
-        basicProject.setOrganizationId(1L);
 
         defaultOrganization = new Organization();
         defaultOrganization.setName("test org");
         defaultOrganization.setId(1L);
         defaultOrganization.setOwner(orgOwner.getId());
+
+        basicProject.setOrganization(defaultOrganization);
+
 
     }
 
@@ -94,7 +101,7 @@ public class ProjectServiceTest {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
-        projectService.create("test project", "test purpose", false, null, null, null);
+        projectService.create("test project", "test purpose", false, null, null, null, null, null);
 
         verify(userService, times(1)).getUserWithAuthorities();
         verify(organizationRepositoryMock, times(1)).findOne(defaultOrganization.getId());
@@ -114,6 +121,8 @@ public class ProjectServiceTest {
                 true,
                 LocalDate.now(),
                 LocalDate.now().plusDays(10),
+                null,
+                null,
                 null);
 
         verify(userService, times(1)).getUserWithAuthorities();
@@ -134,6 +143,8 @@ public class ProjectServiceTest {
                 true,
                 null,
                 LocalDate.now(),
+                null,
+                null,
                 null);
 
     }
@@ -150,8 +161,9 @@ public class ProjectServiceTest {
                 true,
                 LocalDate.now(),
                 null,
+                null,
+                null,
                 null);
-
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -166,6 +178,8 @@ public class ProjectServiceTest {
                 true,
                 LocalDate.now(),
                 LocalDate.now().minusDays(10),
+                null,
+                null,
                 null);
 
     }
@@ -182,6 +196,8 @@ public class ProjectServiceTest {
                 true,
                 LocalDate.now().plusDays(15),
                 LocalDate.now().plusDays(10),
+                null,
+                null,
                 null);
 
     }
@@ -189,7 +205,7 @@ public class ProjectServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseIsConcreteAndStartDateIsNull() throws Exception {
         basicProject.setId(1L);
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -208,7 +224,7 @@ public class ProjectServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseIsConcreteAndEndDateIsNull() throws Exception {
         basicProject.setId(1L);
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -227,7 +243,7 @@ public class ProjectServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseEndDateIsBeforeNow() throws Exception {
         basicProject.setId(1L);
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -246,7 +262,7 @@ public class ProjectServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseEndDateIsBeforeStartDate() throws Exception {
         basicProject.setId(1L);
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -280,8 +296,13 @@ public class ProjectServiceTest {
 
     @Test(expected = OperationForbiddenException.class)
     public void testUpdateProject_shouldThrowExceptionIfCurrentUserIsNotManager() throws Exception {
+        User otherUser = new User();
+        otherUser.setId(100L);
+        otherUser.setLogin("other");
+        otherUser.setOrgId(defaultOrganization.getId());
+
         basicProject.setId(1L);
-        basicProject.setManagerId(100L);
+        basicProject.setManager(otherUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -305,7 +326,7 @@ public class ProjectServiceTest {
     @Test
     public void testUpdateProject_shouldUpdateExistingProject() throws Exception {
         basicProject.setId(1L);
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -334,7 +355,7 @@ public class ProjectServiceTest {
         otherUser.setOrgId(defaultOrganization.getId());
 
         basicProject.setId(1L);
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -348,7 +369,7 @@ public class ProjectServiceTest {
         verify(projectRepositoryMock, times(1)).findOne(basicProject.getId());
         verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
-        assertEquals(basicProject.getManagerId(), otherUser.getId());
+        assertEquals(basicProject.getManager(), otherUser);
     }
 
     @Test(expected = NoSuchUserException.class)
@@ -357,7 +378,7 @@ public class ProjectServiceTest {
         otherUser.setLogin("other");
         otherUser.setOrgId(defaultOrganization.getId());
 
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -374,7 +395,7 @@ public class ProjectServiceTest {
         otherUser.setLogin("other");
         otherUser.setOrgId(defaultOrganization.getId());
 
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -391,7 +412,12 @@ public class ProjectServiceTest {
         otherUser.setLogin("other");
         otherUser.setOrgId(defaultOrganization.getId());
 
-        basicProject.setManagerId(200L);
+        User thirdUser = new User();
+        thirdUser.setId(200L);
+        thirdUser.setLogin("third");
+        thirdUser.setOrgId(defaultOrganization.getId());
+
+        basicProject.setManager(thirdUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -408,7 +434,7 @@ public class ProjectServiceTest {
         otherUser.setLogin("other");
         otherUser.setOrgId(100L);
 
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -422,7 +448,7 @@ public class ProjectServiceTest {
     @Test
     public void testDelete_shouldDeleteIfCurrentUserIsManager() throws Exception {
 
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -440,8 +466,12 @@ public class ProjectServiceTest {
 
     @Test
     public void testDelete_shouldDeleteIfCurrentUserIsOrganizationOwner() throws Exception {
+        User otherUser = new User();
+        otherUser.setId(100L);
+        otherUser.setLogin("other");
+        otherUser.setOrgId(100L);
 
-        basicProject.setManagerId(100L);
+        basicProject.setManager(otherUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -465,7 +495,7 @@ public class ProjectServiceTest {
         otherUser.setLogin("other");
         otherUser.setOrgId(100L);
 
-        basicProject.setManagerId(defaultUser.getId());
+        basicProject.setManager(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(otherUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);

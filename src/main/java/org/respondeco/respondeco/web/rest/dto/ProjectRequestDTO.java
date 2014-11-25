@@ -20,7 +20,7 @@ import java.util.List;
 
 @Data
 @ApiModel(value = "Project", description = "A project DTO")
-public class ProjectDTO {
+public class ProjectRequestDTO {
 
     @ApiModelProperty(value = "The id of the project to modify")
     private Long id;

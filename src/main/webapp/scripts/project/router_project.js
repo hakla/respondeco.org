@@ -35,3 +35,15 @@ respondecoApp
                 }
             })
     });
+
+respondecoApp
+    .config(function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
+        $routeProvider
+            .when('/project/search', {
+                templateUrl: 'views/projects_search.html',
+                controller: 'ProjectSearchController',
+                access: {
+                    authorizedRoles: [USER_ROLES.all]
+                }
+            })
+    });

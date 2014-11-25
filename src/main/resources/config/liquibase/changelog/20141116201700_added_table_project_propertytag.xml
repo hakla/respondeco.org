@@ -11,15 +11,15 @@
         Added the entity ProjectIdea.
     -->
     <changeSet id="20141116201700" author="Clemens Puehringer">
-        <createTable tableName="T_PROJECT_T_PROPERTYTAG">
-            <column name="T_PROJECT_id" type="bigint">
+        <createTable tableName="T_PROJECT_JOIN_T_PROPERTYTAG">
+            <column name="PROJECT_ID" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="propertyTags_id" type="bigint">
+            <column name="PROPERTYTAG_ID" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="T_PROJECT_id, propertyTags_id" tableName="T_PROJECT_T_PROPERTYTAG"/>
+        <addPrimaryKey columnNames="PROJECT_ID, PROPERTYTAG_ID" tableName="T_PROJECT_JOIN_T_PROPERTYTAG"/>
     </changeSet>
 </databaseChangeLog>

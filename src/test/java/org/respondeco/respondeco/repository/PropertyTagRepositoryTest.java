@@ -38,7 +38,8 @@ public class PropertyTagRepositoryTest {
 
     @Before
     public void setUp() {
-
+        propertyTagRepository.deleteAll();
+        propertyTagRepository.flush();
     }
 
     @Test
@@ -49,7 +50,7 @@ public class PropertyTagRepositoryTest {
             propertyTag.setName("tag" + i);
             propertyTagRepository.save(propertyTag);
         }
-        List<String> tags = propertyTagRepository.getNamesMatching("", null);
+        List<String> tags = propertyTagRepository.findNamesLike("", null);
         for(int i=0;i<30;i++){
             assertTrue(tags.contains("tag" + i));
         }
@@ -64,7 +65,7 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 15);
-        List<String> tags = propertyTagRepository.getNamesMatching("", request);
+        List<String> tags = propertyTagRepository.findNamesLike("", request);
         assertEquals(tags.size(), 15);
 
     }
@@ -83,7 +84,7 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 10);
-        List<String> tags = propertyTagRepository.getNamesMatching("b", request);
+        List<String> tags = propertyTagRepository.findNamesLike("b", request);
         assertEquals(tags.size(), 10);
         for(String s : tags) {
             assertTrue(s.startsWith("blub"));

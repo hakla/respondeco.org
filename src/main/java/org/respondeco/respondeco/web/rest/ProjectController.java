@@ -8,9 +8,11 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,13 +45,13 @@ public class ProjectController {
     /**
      * POST  /rest/project -> Create a new project.
      */
-    @ApiOperation(value = "Create/Update a project", notes = "Create or update a project")
+    @ApiOperation(value = "Create a project", notes = "Create or update a project")
     @RequestMapping(value = "/rest/projects",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
+    public ResponseEntity<?> create(@RequestBody @Valid ProjectRequestDTO project) {
         log.debug("REST request to create Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -59,7 +61,9 @@ public class ProjectController {
                     project.getConcrete(),
                     project.getStartDate(),
                     project.getEndDate(),
-                    project.getProjectLogo());
+                    project.getProjectLogo(),
+                    project.getPropertyTags(),
+                    project.getResourceRequirements());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch(IllegalArgumentException e) {
             log.error("Could not save Project : {}", project, e);
@@ -74,13 +78,13 @@ public class ProjectController {
     /**
      * POST  /rest/project -> Create a new project.
      */
-    @ApiOperation(value = "Create/Update a project", notes = "Create or update a project")
+    @ApiOperation(value = "Update a project", notes = "Create or update a project")
     @RequestMapping(value = "/rest/projects",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid ProjectDTO project) {
+    public ResponseEntity<?> update(@RequestBody @Valid ProjectRequestDTO project) {
         log.debug("REST request to update Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -131,14 +135,19 @@ public class ProjectController {
     /**
      * GET  /rest/project -> get all the projects.
      */
-    @ApiOperation(value = "Get projects", notes = "Get all projects")
+    @ApiOperation(value = "Get projects", notes = "Get projects by name and tags")
     @RequestMapping(value = "/rest/projects",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Project> getAll() {
-        log.debug("REST request to get all Projects");
-        return projectRepository.findByActiveIsTrue();
+    public List<ProjectResponseDTO> getByNameAndTags(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String tags,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) String fields) {
+        log.debug("REST request to get projects");
+        return projectService.findProjects(name, tags, offset, limit, fields);
     }
 
     /**
@@ -149,9 +158,11 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Project> get(@PathVariable Long id) {
+    public ResponseEntity<ProjectResponseDTO> get(
+            @PathVariable Long id,
+            @RequestParam(required = false) String fields) {
         log.debug("REST request to get Project : {}", id);
-        return Optional.ofNullable(projectRepository.findByIdAndActiveIsTrue(id))
+        return Optional.ofNullable(projectService.findById(id, fields))
             .map(project -> new ResponseEntity<>(
                 project,
                 HttpStatus.OK))
@@ -165,6 +176,7 @@ public class ProjectController {
     @RequestMapping(value = "/rest/projects/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @Timed
     public ResponseEntity<?> delete(@PathVariable Long id) {
         log.debug("REST request to delete Project : {}", id);
@@ -180,4 +192,30 @@ public class ProjectController {
         }
         return responseEntity;
     }
+
+    /**
+     * GET  /rest/names/projects?filter=&limit= -> delete the "id" project.
+     */
+    /**
+    @ApiOperation(value = "Get Project names", notes = "Get all the Project names matching the filter")
+    @RequestMapping(value = "/rest/names/projects",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @Timed
+    public List<String> getProjectNames(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) Integer limit) {
+        log.debug("REST request to get Project names : {}", filter);
+        if(filter == null) {
+            filter = "";
+        }
+        if(limit == null) {
+            limit = 20;
+        }
+        PageRequest request = new PageRequest(0, limit);
+        //TODO: fix pagination
+        return projectRepository.findProjectNamesLike(filter, null);
+    }
+            */
 }
