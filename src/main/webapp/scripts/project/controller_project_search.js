@@ -3,22 +3,24 @@
  */
 'use strict';
 
-respondecoApp.controller('ProjectSearchController', function ($scope, Project, ProjectNames, PropertyTagNames) {
+respondecoApp.controller('ProjectSearchController', function ($scope, Project) {
 
     $scope.project = {
         name: null,
         tags: null
     };
 
-    $scope.projects = null;
-
     $scope.search = function() {
         Project.query({
             name: $scope.project.name,
             tags: $scope.project.tags
-        }).$promise.then(function(data) {
+        }, function(data) {
             $scope.projects = data;
-        })
+        });
+    }
+
+    $scope.getProjectNames = function(value) {
+        return Project.getProjectNames(value);
     }
 
 });

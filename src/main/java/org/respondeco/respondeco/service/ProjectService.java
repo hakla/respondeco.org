@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -245,7 +246,7 @@ public class ProjectService {
         return propertyTags;
     }
 
-    private List<ProjectResponseDTO> mapResponses(List<Project> projects, List<String> fieldNames) {
+    private List<ProjectResponseDTO> mapResponses(Collection<Project> projects, List<String> fieldNames) {
         List<ProjectResponseDTO> responseDTOs = new ArrayList<>();
         for(Project p : projects) {
             responseDTOs.add(mapFields(p, fieldNames));

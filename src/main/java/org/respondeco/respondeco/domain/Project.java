@@ -75,13 +75,4 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     )
     private List<ResourceRequirement> resourceRequirements;
 
-    @Override
-    public boolean equals(Object o) {
-        if((o instanceof Project) == false) {
-            return false;
-        }
-        Project p = (Project) o;
-        return p.getId().equals(getId());
-    }
-
 }
