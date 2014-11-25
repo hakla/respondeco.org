@@ -26,8 +26,7 @@ import javax.validation.constraints.NotNull;
 public abstract class AbstractAuditingEntity {
 
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     @CreatedBy
@@ -64,6 +63,9 @@ public abstract class AbstractAuditingEntity {
 
     @Override
     public int hashCode() {
+        if(id == null) {
+            return 0;
+        }
         return (int) (id ^ (id >>> 32));
     }
 

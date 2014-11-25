@@ -14,7 +14,7 @@
         <createTable tableName="T_ORGANIZATION">
 
 
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
