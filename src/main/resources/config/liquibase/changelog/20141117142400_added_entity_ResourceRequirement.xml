@@ -15,6 +15,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="name" type="varchar(50)" />
             <column name="amount" type="decimal(10,2)"/>
             <column name="description" type="varchar(255)"/>
             <column name="project_id" type="bigint"/>
@@ -33,7 +34,7 @@
         <createIndex indexName="idx_resource_requirement"
                      tableName="T_RESOURCEREQUIREMENT"
                      unique="true">
-            <column name="description" type="varchar(255)"/>
+            <column name="name" type="varchar(50)"/>
             <column name="project_id" type="bigint"/>
         </createIndex>
 

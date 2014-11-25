@@ -84,6 +84,7 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
     public String toString() {
         return "ResourceOffer{" +
                 "id=" + id +
+                ", name='" + name + "'" +
                 ", amount='" + amount + "'" +
                 ", description='" + description + "'" +
                 ", organisationId='" + organisationId + "'" +

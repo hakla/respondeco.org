@@ -70,9 +70,10 @@ public class ResourcesService {
 
     // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
 
-    public ResourceRequirement createRequirement(BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+    public ResourceRequirement createRequirement(String name, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceRequirement newRequirement = null;
         if (this.resourceRequirementRepository.findByDescriptionAndProjectId(description, projectId) == null) {
+            newRequirement.setName(name);
             newRequirement.setAmount(amount);
             newRequirement.setDescription(description);
             newRequirement.setProjectId(projectId);
@@ -86,9 +87,10 @@ public class ResourcesService {
         return newRequirement;
     }
 
-    public ResourceRequirement updateRequirement(Long id, BigDecimal amount, String description, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+    public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
+            requirement.setName(name);
             requirement.setAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
@@ -133,11 +135,12 @@ public class ResourcesService {
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
 
-    public ResourceOffer createOffer(BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
+    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = null;
         List<ResourceOffer> existingOffer = this.resourceOfferRepository.findByDescriptionAndOrganisationId(description, organisationId);
         if (existingOffer == null || existingOffer.isEmpty() == true) {
             newOffer = new ResourceOffer();
+            newOffer.setName(name);
             newOffer.setAmount(amount);
             newOffer.setDescription(description);
             newOffer.setOrganisationId(organisationId);
@@ -154,9 +157,10 @@ public class ResourcesService {
         return newOffer;
     }
 
-    public void updateOffer(Long offerId, Long organisationId, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
+    public void updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
+            offer.setName(name);
             offer.setAmount(amount);
             offer.setDescription(description);
             offer.setIsCommercial(isCommercial);

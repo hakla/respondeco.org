@@ -87,6 +87,7 @@ public class ResourceController {
         String message = null;
         try {
             ResourceOffer offer = this.resourcesService.createOffer(
+                resourceOfferDTO.getName(),
                 resourceOfferDTO.getAmount(),
                 resourceOfferDTO.getDescription(),
                 organisationId,//resourceOfferDTO.getOrganisationId(),
@@ -130,6 +131,7 @@ public class ResourceController {
             this.resourcesService.updateOffer(
                 resourceOfferDTO.getId(),
                 organisationId,
+                resourceOfferDTO.getName(),
                 resourceOfferDTO.getAmount(),
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
@@ -231,6 +233,7 @@ public class ResourceController {
         String message = null;
         try {
             requirement = this.resourcesService.createRequirement(
+                resourceRequirementDTO.getName(),
                 resourceRequirementDTO.getAmount(),
                 resourceRequirementDTO.getDescription(),
                 resourceRequirementDTO.getProjectId(),
@@ -269,6 +272,7 @@ public class ResourceController {
         try {
             this.resourcesService.updateRequirement(
                 resourceRequirementDTO.getId(),
+                resourceRequirementDTO.getName(),
                 resourceRequirementDTO.getAmount(),
                 resourceRequirementDTO.getDescription(),
                 resourceRequirementDTO.getIsEssential(),

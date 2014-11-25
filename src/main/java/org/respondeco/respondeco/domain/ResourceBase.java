@@ -24,6 +24,10 @@ import java.util.Set;
 public abstract class ResourceBase extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
+    @Column(length = 50)
+    protected String name;
+
+    @NotNull
     @Column(name = "amount", precision=10, scale=2)
     protected BigDecimal amount;
 
@@ -46,18 +50,17 @@ public abstract class ResourceBase extends AbstractAuditingEntity implements Ser
     public void setResourceTags(Set<ResourceTag> resourceTags) {
         this.resourceTags = resourceTags;
     }
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 
-    public BigDecimal getAmount(){
-        return this.amount;
-    }
-
+    public BigDecimal getAmount(){ return this.amount; }
     public String getDescription() {
         return this.description;
     }
+    public String getName(){ return this.name; }
 
+    public void setName(String name) { this.name = name; }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
     public void setDescription(String description) {
         this.description = description;
     }

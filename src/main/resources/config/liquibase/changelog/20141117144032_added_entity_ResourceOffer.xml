@@ -15,6 +15,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="name" type="varchar(50)" />
             <column name="amount" type="decimal(10,2)"/>
             <column name="description" type="varchar(255)"/>
             <column name="organisation_id" type="bigint"/>
@@ -32,6 +33,13 @@
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="bit"/>
         </createTable>
+
+        <createIndex indexName="idx_resource_offer"
+                     tableName="T_RESOURCEOFFER"
+                     unique="true">
+            <column name="name" type="varchar(50)"/>
+            <column name="organisation_id" type="bigint"/>
+        </createIndex>
 
     </changeSet>
 </databaseChangeLog>
