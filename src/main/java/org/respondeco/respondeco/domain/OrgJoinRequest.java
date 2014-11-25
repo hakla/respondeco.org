@@ -18,11 +18,13 @@ import java.io.Serializable;
 public class OrgJoinRequest extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
-    @Column(name = "org_id")
-    private Long orgId;
+    @ManyToOne
+    @JoinColumn(name="org_id")
+    private Organization organization;
 
     @NotNull
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

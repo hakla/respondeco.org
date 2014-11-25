@@ -4,3 +4,6 @@ system;ROLE_USER
 admin;ROLE_ADMIN
 admin;ROLE_USER
 user;ROLE_USER
+anne;ROLE_USER
+bob;ROLE_USER
+charles;ROLE_USER

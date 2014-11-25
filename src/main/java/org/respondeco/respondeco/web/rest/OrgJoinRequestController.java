@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,15 +109,20 @@ public class OrgJoinRequestController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> getOrgJoinRequestsByOrgName(@PathVariable String orgName) {
-        log.debug("REST request to get OrgJoinRequests by orgName");
-        ResponseEntity<?> responseEntity;
+
+    public ResponseEntity<List<OrgJoinRequestDTO>> getByOrgName(@PathVariable String orgName){
+        log.debug("REST request to get OrgJoinRequest : {}", orgName);
+        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<List<OrgJoinRequestDTO>>(new ArrayList<>(), HttpStatus.OK);
         try {
-            return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByOrgName(orgName))
-                    .map(orgjoinrequest -> new ResponseEntity<>(
-                            orgjoinrequest,
-                            HttpStatus.OK))
-                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByOrgName(orgName);
+
+            if (orgJoinRequests == null) {
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                for (OrgJoinRequest orgJoinRequest: orgJoinRequests) {
+                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest.getId(), orgJoinRequest.getOrganization().getName(), orgJoinRequest.getUser().getLogin()));
+                }
+            }
         } catch (NoSuchOrganizationException e) {
             log.error("Could not find OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -138,6 +144,23 @@ public class OrgJoinRequestController {
                         orgjoinrequest,
                         HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * GET  /rest/orgjoinrequest/current -> get the orgjoinrequest of active user.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/orgjoinrequest/current",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<OrgJoinRequest>> getRequestForUser() {
+        log.debug("REST request to get OrgJoinRequest : {}");
+        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByCurrentUser())
+            .map(orgjoinrequest -> new ResponseEntity<>(
+                orgjoinrequest,
+                HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -172,8 +195,9 @@ public class OrgJoinRequestController {
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/decline/{id}",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> declineRequest(@PathVariable Long id) {
         log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
@@ -187,6 +211,30 @@ public class OrgJoinRequestController {
         } catch (NoSuchOrganizationException e) {
             log.error("Could not decline OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/orgjoinrequests/{id}",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        log.debug("REST request to delete OrgJoinRequest : {}", id);
+        ResponseEntity<?> responseEntity;
+        try {
+            orgJoinRequestService.delete(id);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not delete OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            log.error("Could not delete OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }

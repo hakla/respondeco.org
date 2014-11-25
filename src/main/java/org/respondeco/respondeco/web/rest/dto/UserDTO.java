@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest.dto;
 
 import lombok.Data;
+import org.respondeco.respondeco.domain.Organization;
 
 import java.util.List;
 
@@ -26,11 +27,13 @@ public class UserDTO {
 
     private List<String> roles;
 
+    private OrganizationDTO organization;
+
     public UserDTO() {
     }
 
     public UserDTO(String login, String password, String title, String gender, String firstName, String lastName,
-                   String email, String description, String langKey, List<String> roles) {
+                   String email, String description, String langKey, List<String> roles, OrganizationDTO organization) {
         this.login = login;
         this.password = password;
         this.title = title;
@@ -42,6 +45,8 @@ public class UserDTO {
 
         this.langKey = langKey;
         this.roles = roles;
+
+        this.organization = organization;
     }
 
     public String getPassword() {

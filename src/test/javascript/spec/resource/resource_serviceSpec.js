@@ -12,7 +12,7 @@ describe('Resource Service Tests ', function () {
             serviceTested = Resource;
             httpBackend = $httpBackend;
             //Request on app init
-            httpBackend.expectGET('i18n/en.json').respond(200, '');
+            httpBackend.expectGET('i18n/de.json').respond(200, '');
         }));
         //make sure no expectations were missed in your tests.
         //(e.g. expectGET or expectPOST)

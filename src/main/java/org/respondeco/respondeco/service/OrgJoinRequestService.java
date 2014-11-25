@@ -52,12 +52,12 @@ public class OrgJoinRequestService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist", orgName));
         }
-        if(organization.getOwner().equals(currentUser.getId())==false) {
+        if(organization.getOwner().equals(currentUser)==false) {
             throw new IllegalArgumentException(String.format("Current user %s is not owner of organization", orgName));
         }
         OrgJoinRequest orgJoinRequest = new OrgJoinRequest();
-        orgJoinRequest.setOrgId(organization.getId());
-        orgJoinRequest.setUserId(user.getId());
+        orgJoinRequest.setOrganization(organization);
+        orgJoinRequest.setUser(user);
         orgJoinRequestRepository.save(orgJoinRequest);
         log.debug("Created OrgJoinRequest: {}", orgJoinRequest);
         return orgJoinRequest;
@@ -70,20 +70,22 @@ public class OrgJoinRequestService {
             throw new NoSuchOrganizationException(String.format("Organization does not exist", orgName));
         }
         log.debug("Found List of OrgJoinRequest by OrgName");
-        return orgJoinRequestRepository.findByOrgIdAndActiveIsTrue(organization.getId());
+
+        return orgJoinRequestRepository.findByOrganization(organization);
     }
 
     public List<OrgJoinRequest> getOrgJoinRequestByCurrentUser() {
         User user = userService.getUserWithAuthorities();
 
         log.debug("Get List of OrgJoinRequest by Current User");
+
         return orgJoinRequestRepository.findByUserIdAndActiveIsTrue(user.getId());
     }
 
     public List<OrgJoinRequestWithActiveFlagDTO> getOrgJoinRequestsByOwner() throws NoSuchOrganizationException {
         User user = userService.getUserWithAuthorities();
         log.debug("Get List of OrgJoinRequest by Owner");
-        Organization organization = organizationRepository.findByOwner(user.getId());
+        Organization organization = organizationRepository.findByOwner(user);
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }
@@ -92,10 +94,11 @@ public class OrgJoinRequestService {
         for (OrgJoinRequest orgJoinRequest:orgJoinRequestRepository.findByOrgId(organization.getId())) {
             orgJoinRequestWithActiveFlagDTO = new OrgJoinRequestWithActiveFlagDTO();
             orgJoinRequestWithActiveFlagDTO.setId(orgJoinRequest.getId());
-            orgJoinRequestWithActiveFlagDTO.setOrgName(organizationRepository.findOne(orgJoinRequest.getOrgId()).getName());
-            orgJoinRequestWithActiveFlagDTO.setUserLogin(userRepository.findOne(orgJoinRequest.getUserId()).getLogin());
+            orgJoinRequestWithActiveFlagDTO.setOrgName((orgJoinRequest.getOrganization()).getName());
+            orgJoinRequestWithActiveFlagDTO.setUserLogin((orgJoinRequest.getUser()).getLogin());
             orgJoinRequestWithActiveFlagDTOList.add(orgJoinRequestWithActiveFlagDTO);
         }
+
         return orgJoinRequestWithActiveFlagDTOList;
     }
 
@@ -105,10 +108,10 @@ public class OrgJoinRequestService {
         if(orgJoinRequest==null) {
             throw new NoSuchOrgJoinRequestException(String.format("OrgJoinRequest does not exist"));
         }
-        if(user.getId().equals(orgJoinRequest.getUserId())==false) {
-            throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUserId()));
+        if(user.equals(orgJoinRequest.getUser())==false) {
+            throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser()));
         }
-        Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
+        Organization organization = organizationRepository.findOne(orgJoinRequest.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }
@@ -127,15 +130,24 @@ public class OrgJoinRequestService {
         if(orgJoinRequest==null) {
             throw new NoSuchOrgJoinRequestException(String.format("OrgJoinRequest does not exist"));
         }
-        if(user.getId().equals(orgJoinRequest.getUserId())==false) {
-            throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUserId()));
-        }
-        Organization organization = organizationRepository.findOne(orgJoinRequest.getOrgId());
-        if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization does not exist"));
+        if(user.equals(orgJoinRequest.getUser())==false) {
+            throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser()));
         }
         orgJoinRequest.setActive(false);
         orgJoinRequestRepository.save(orgJoinRequest);
         log.debug("Declined Request and Deleted OrgJoinRequest: {}", requestId);
+    }
+
+    public void delete(Long id) throws NoSuchOrganizationException {
+        User currentUser = userService.getUserWithAuthorities();
+        Organization organization = organizationRepository.findOne(id);
+        if(organization == null) {
+            throw new NoSuchOrganizationException("Organization does not exist");
+        }
+        if(organization.getOwner().equals(currentUser)==false) {
+            throw new IllegalArgumentException("Current user is not owner of organization");
+        }
+        orgJoinRequestRepository.delete(id);
+        log.debug("Deleted OrgJoinRequest: {}", id);
     }
 }

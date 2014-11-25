@@ -57,10 +57,10 @@ public class OrganizationService {
         newOrganization.setEmail(email);
         newOrganization.setIsNpo(isNpo);
 
-        if (organizationRepository.findByOwner(currentUser.getId()) != null) {
+        if (organizationRepository.findByOwner(currentUser) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
-        newOrganization.setOwner(currentUser.getId());
+        newOrganization.setOwner(currentUser);
 
         currentUser.setOrgId(organizationRepository.save(newOrganization).getId());
         userRepository.save(currentUser);
@@ -87,7 +87,7 @@ public class OrganizationService {
 
         User currentUser = userService.getUserWithAuthorities();
 
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
         }
@@ -97,7 +97,7 @@ public class OrganizationService {
 
     public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo) throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist for %s", currentUser.getLogin()));
         }
@@ -108,7 +108,7 @@ public class OrganizationService {
         currentOrganization.setDescription(description);
         currentOrganization.setEmail(email);
         currentOrganization.setIsNpo(isNpo);
-        currentOrganization.setOwner(currentUser.getId());
+        currentOrganization.setOwner(currentUser);
 
         organizationRepository.save(currentOrganization);
         log.debug("Changed Information for Organization: {}", currentOrganization);
@@ -116,13 +116,11 @@ public class OrganizationService {
 
     public void deleteOrganizationInformation() throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser.getId());
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
         }
         organizationRepository.delete(currentOrganization);
         log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
-
-
 }

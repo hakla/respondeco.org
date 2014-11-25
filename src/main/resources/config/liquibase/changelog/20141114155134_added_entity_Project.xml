@@ -12,7 +12,7 @@
     -->
     <changeSet id="20141114155134" author="jhipster">
         <createTable tableName="T_PROJECT">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="organization_id" type="bigint"/>
@@ -37,6 +37,20 @@
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="boolean" defaultValue="true"/>
         </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_organization_id"
+                baseColumnNames="organization_id"
+                baseTableName="T_PROJECT"
+                referencedColumnNames="id"
+                referencedTableName="T_ORGANIZATION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_manager_id"
+                baseColumnNames="manager_id"
+                baseTableName="T_PROJECT"
+                referencedColumnNames="id"
+                referencedTableName="T_USER"/>
         
     </changeSet>
 </databaseChangeLog>

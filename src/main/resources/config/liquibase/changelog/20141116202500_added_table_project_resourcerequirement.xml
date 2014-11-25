@@ -11,15 +11,16 @@
         Added the entity ProjectIdea.
     -->
     <changeSet id="20141116201700" author="Clemens Puehringer">
-        <createTable tableName="T_PROJECT_T_RESOURCEREQUIREMENT">
-            <column name="T_PROJECT_id" type="bigint">
+        <createTable tableName="T_PROJECT_JOIN_T_RESOURCEREQUIREMENT">
+            <column name="PROJECT_ID" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="resourceRequirements_id" type="bigint">
+            <column name="RESOURCEREQUIREMENT_ID" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="T_PROJECT_id, resourceRequirements_id" tableName="T_PROJECT_T_RESOURCEREQUIREMENT"/>
+        <addPrimaryKey columnNames="PROJECT_ID, RESOURCEREQUIREMENT_ID"
+                       tableName="T_PROJECT_JOIN_T_RESOURCEREQUIREMENT"/>
     </changeSet>
 </databaseChangeLog>

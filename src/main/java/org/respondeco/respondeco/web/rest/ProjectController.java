@@ -8,9 +8,11 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,17 +45,50 @@ public class ProjectController {
     /**
      * POST  /rest/project -> Create a new project.
      */
-    @ApiOperation(value = "Create/Update a project", notes = "Create or update a project")
-    @RequestMapping(value = "/rest/project",
+    @ApiOperation(value = "Create a project", notes = "Create or update a project")
+    @RequestMapping(value = "/rest/projects",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
-        log.debug("REST request to save Project : {}", project);
+    public ResponseEntity<?> create(@RequestBody @Valid ProjectRequestDTO project) {
+        log.debug("REST request to create Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
-            projectService.save(
+            projectService.create(
+                    project.getName(),
+                    project.getPurpose(),
+                    project.getConcrete(),
+                    project.getStartDate(),
+                    project.getEndDate(),
+                    project.getProjectLogo(),
+                    project.getPropertyTags(),
+                    project.getResourceRequirements());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch(IllegalArgumentException e) {
+            log.error("Could not save Project : {}", project, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch(OperationForbiddenException e) {
+            log.error("Could not save Project : {}", project, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * POST  /rest/project -> Create a new project.
+     */
+    @ApiOperation(value = "Update a project", notes = "Create or update a project")
+    @RequestMapping(value = "/rest/projects",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> update(@RequestBody @Valid ProjectRequestDTO project) {
+        log.debug("REST request to update Project : {}", project);
+        ResponseEntity<?> responseEntity;
+        try {
+            projectService.update(
                     project.getId(),
                     project.getName(),
                     project.getPurpose(),
@@ -76,8 +111,8 @@ public class ProjectController {
      * POST  /rest/project/manager -> Change project manager of a project
      */
     @ApiOperation(value = "Change manager", notes = "Change the manager of a project")
-    @RequestMapping(value = "/rest/project/manager/{id}",
-            method = RequestMethod.POST,
+    @RequestMapping(value = "/rest/projects/{id}/manager",
+            method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -100,27 +135,34 @@ public class ProjectController {
     /**
      * GET  /rest/project -> get all the projects.
      */
-    @ApiOperation(value = "Get projects", notes = "Get all projects")
-    @RequestMapping(value = "/rest/project",
+    @ApiOperation(value = "Get projects", notes = "Get projects by name and tags")
+    @RequestMapping(value = "/rest/projects",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<Project> getAll() {
-        log.debug("REST request to get all ProjectIdeas");
-        return projectRepository.findByActiveIsTrue();
+    public List<ProjectResponseDTO> getByNameAndTags(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String tags,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) String fields) {
+        log.debug("REST request to get projects");
+        return projectService.findProjects(name, tags, offset, limit, fields);
     }
 
     /**
      * GET  /rest/project/:id -> get the "id" project.
      */
     @ApiOperation(value = "Get project", notes = "Get a project by its id")
-    @RequestMapping(value = "/rest/project/{id}",
+    @RequestMapping(value = "/rest/projects/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Project> get(@PathVariable Long id) {
-        log.debug("REST request to get ProjectIdea : {}", id);
-        return Optional.ofNullable(projectRepository.findByIdAndActiveIsTrue(id))
+    public ResponseEntity<ProjectResponseDTO> get(
+            @PathVariable Long id,
+            @RequestParam(required = false) String fields) {
+        log.debug("REST request to get Project : {}", id);
+        return Optional.ofNullable(projectService.findById(id, fields))
             .map(project -> new ResponseEntity<>(
                 project,
                 HttpStatus.OK))
@@ -131,12 +173,13 @@ public class ProjectController {
      * DELETE  /rest/project/:id -> delete the "id" project.
      */
     @ApiOperation(value = "Delete project", notes = "Delete a project by its id")
-    @RequestMapping(value = "/rest/project/{id}",
+    @RequestMapping(value = "/rest/projects/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @Timed
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectIdea : {}", id);
+        log.debug("REST request to delete Project : {}", id);
         ResponseEntity<?> responseEntity = null;
         try {
             projectService.delete(id);
@@ -149,4 +192,30 @@ public class ProjectController {
         }
         return responseEntity;
     }
+
+    /**
+     * GET  /rest/names/projects?filter=&limit= -> delete the "id" project.
+     */
+    /**
+    @ApiOperation(value = "Get Project names", notes = "Get all the Project names matching the filter")
+    @RequestMapping(value = "/rest/names/projects",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @Timed
+    public List<String> getProjectNames(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) Integer limit) {
+        log.debug("REST request to get Project names : {}", filter);
+        if(filter == null) {
+            filter = "";
+        }
+        if(limit == null) {
+            limit = 20;
+        }
+        PageRequest request = new PageRequest(0, limit);
+        //TODO: fix pagination
+        return projectRepository.findProjectNamesLike(filter, null);
+    }
+            */
 }
