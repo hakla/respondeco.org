@@ -52,10 +52,10 @@ public class ProjectDTO {
     @ApiModelProperty(value = "A logo for the project")
     private byte[] projectLogo;
 
-    @ApiModelProperty(value = "Tags for the project")
-    private List<String> tags;
+    @ApiModelProperty(value = "A list of strings used as property tags")
+    private List<String> propertyTags;
 
-    @ApiModelProperty(value = "Requirements for the project")
+    @ApiModelProperty(value = "The resource requirements for the project")
     private List<ResourceRequirementDTO> resourceRequirements;
 
 }
