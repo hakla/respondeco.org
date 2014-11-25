@@ -83,6 +83,44 @@
                 "deletebutton": "Löschen"
             }
         },
+        "resource": {
+            "title":"Ressourcen",
+            "name": "Name",
+            "company": "Unternehmen",
+            "amount": "Anzahl",
+            "datefrom": "Verfügbar ab",
+            "dateto": "Verfügbar bis",
+            "commercial":"Kommerziell",
+            "recurrent":"Wiederkehrend",
+            "newbutton":"Neue Ressource anlegen",
+            "searchbutton":"Suchen",
+            "new": {
+                "title": "Neue Ressource anlegen",
+                "name": "Name",
+                "tags": "Tags",
+                "description": "Beschreibung",
+                "amount":"Anzahl",
+                "commercial":"Kommerzielle Ressource",
+                "recurrent":"Wiederkehrende Ressource",
+                "datefrom": "Verfügbar ab",
+                "dateto":"Verfügbar bis",
+                "savebutton":"Speichern",
+                "cancelbutton":"Abbrechen",
+                "error": "Ressource konnte nicht erstellt werden!"
+            },
+            "placeholder": {
+                "name": "Name der Ressource",
+                "description" : "Beschreibung der Ressource",
+                "amount" : "Anzahl der Ressourcen",
+                "tags": "Tags für Ressource",
+                "search": "Suchkriterien eingeben"
+            },
+            "own": {
+                "title": "Erstellte Ressourcen von",
+                "editbutton": "Bearbeiten",
+                "deletebutton": "Löschen"
+            }
+        },
         "messages": {
             "info": {
                 "authenticated": "Wenn Sie sich <a href=\"#/login\">anmelden</a> möchten, versuchen Sie es mit <br/>- Administrator (Name=\"admin\" und Passwort=\"admin\")<br/>- Benutzer (Name=\"user\" und Passwort=\"user\").",

@@ -58,10 +58,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "rating_count")
     private Integer ratingCount;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private ProjectLogo projectLogo;
-
     @ManyToMany
     @JsonIgnore
     private List<PropertyTag> propertyTags;
