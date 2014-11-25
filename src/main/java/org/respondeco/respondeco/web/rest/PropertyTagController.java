@@ -5,6 +5,7 @@ import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,54 +28,22 @@ public class PropertyTagController {
     private PropertyTagRepository propertytagRepository;
 
     /**
-     * POST  /rest/propertytags -> Create a new propertytag.
-     */
-    @RequestMapping(value = "/rest/propertytags",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void create(@RequestBody PropertyTag propertytag) {
-        log.debug("REST request to save PropertyTag : {}", propertytag);
-        propertytagRepository.save(propertytag);
-    }
-
-    /**
      * GET  /rest/propertytags -> get all the propertytags.
      */
     @RequestMapping(value = "/rest/propertytags",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<PropertyTag> getAll() {
+    public List<String> getTagsMatching(@RequestParam String filter, @RequestParam Integer limit) {
         log.debug("REST request to get all PropertyTags");
-        return propertytagRepository.findAll();
+        if(filter == null) {
+            filter = "";
+        }
+        if(limit == null) {
+            limit = 20;
+        }
+        PageRequest request = new PageRequest(0, limit);
+        return propertytagRepository.getNamesMatching(filter, request);
     }
 
-    /**
-     * GET  /rest/propertytags/:id -> get the "id" propertytag.
-     */
-    @RequestMapping(value = "/rest/propertytags/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<PropertyTag> get(@PathVariable Long id) {
-        log.debug("REST request to get PropertyTag : {}", id);
-        return Optional.ofNullable(propertytagRepository.findOne(id))
-            .map(propertytag -> new ResponseEntity<>(
-                propertytag,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    /**
-     * DELETE  /rest/propertytags/:id -> delete the "id" propertytag.
-     */
-    @RequestMapping(value = "/rest/propertytags/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void delete(@PathVariable Long id) {
-        log.debug("REST request to delete PropertyTag : {}", id);
-        propertytagRepository.delete(id);
-    }
 }
