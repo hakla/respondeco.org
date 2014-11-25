@@ -80,12 +80,14 @@ public class ResourcesServiceTest {
 
         ResourceTag testResourceTag = new ResourceTag(1L, tags[0]);
         List<ResourceTag> resourceTags = new ArrayList<ResourceTag>();
-        resourceTags.add(testResourceTag);
+        //resourceTags.add(testResourceTag);
         //endregion
 
+        //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
         when(resourceRequirementRepositoryMock.findByDescriptionAndProjectId(description, projectId)).thenReturn(null);
+        //Assign all variables to new Resource Requirement Objekt and execute Save
         when(resourceTagRepositoryMock.findByName(tags[0])).thenReturn(resourceTags);
-        //when(resourceTagRepositoryMock.)
+        when(resourceTagRepositoryMock.save(new ResourceTag(null, tags[0]))).thenReturn(testResourceTag);
         when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagId(requirementId, testResourceTag.getId())).thenReturn(null);
         //redirect output to the variable of the test class
         doAnswer(invocation -> {
