@@ -98,7 +98,7 @@ public class OrgJoinRequestController {
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 for (OrgJoinRequest orgJoinRequest: orgJoinRequests) {
-                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest.getOrganization().getName(), orgJoinRequest.getUser().getLogin()));
+                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest.getId(), orgJoinRequest.getOrganization().getName(), orgJoinRequest.getUser().getLogin()));
                 }
             }
         } catch (NoSuchOrganizationException e) {
@@ -174,8 +174,8 @@ public class OrgJoinRequestController {
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/decline/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> declineRequest(@PathVariable Long id) {
         log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
@@ -189,6 +189,30 @@ public class OrgJoinRequestController {
         } catch (NoSuchOrganizationException e) {
             log.error("Could not decline OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/orgjoinrequests/{id}",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        log.debug("REST request to delete OrgJoinRequest : {}", id);
+        ResponseEntity<?> responseEntity;
+        try {
+            orgJoinRequestService.delete(id);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not delete OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            log.error("Could not delete OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }

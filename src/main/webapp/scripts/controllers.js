@@ -75,17 +75,21 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         "FEMALE"
     ];
     
-    OrgJoinRequest.getCurrent().$promise.then(function(data) {
-        $scope.orgJoinRequests = data;
+    var getCurrentOrgJoinRequests = function() {
+        OrgJoinRequest.getCurrent().$promise.then(function(data) {
+            $scope.orgJoinRequests = data;
 
-        data.forEach(function(el) {
-            Organization.getById({
-                id: el.orgId
-            }, function(data) {
-                el.organization = data;
+            data.forEach(function(el) {
+                Organization.getById({
+                    id: el.orgId
+                }, function(data) {
+                    el.organization = data;
+                });
             });
         });
-    });
+    };
+
+    getCurrentOrgJoinRequests();
 
     $scope.save = function () {
         Account.save($scope.settingsAccount,
@@ -115,13 +119,13 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     $scope.acceptInvitation = function(id) {
         OrgJoinRequest.accept({
             id: id
-        });
+        }, getCurrentOrgJoinRequests);
     };
 
     $scope.declineInvitation = function(id) {
         OrgJoinRequest.decline({
             id: id
-        });
+        }, getCurrentOrgJoinRequests);
     };
 
     $scope.edit = {

@@ -112,4 +112,17 @@ public class OrgJoinRequestService {
         orgJoinRequestRepository.delete(requestId);
         log.debug("Declined Request and Deleted OrgJoinRequest: {}", requestId);
     }
+
+    public void delete(Long id) throws NoSuchOrganizationException {
+        User currentUser = userService.getUserWithAuthorities();
+        Organization organization = organizationRepository.findOne(id);
+        if(organization == null) {
+            throw new NoSuchOrganizationException("Organization does not exist");
+        }
+        if(organization.getOwner().equals(currentUser)==false) {
+            throw new IllegalArgumentException("Current user is not owner of organization");
+        }
+        orgJoinRequestRepository.delete(id);
+        log.debug("Deleted OrgJoinRequest: {}", id);
+    }
 }

@@ -13,8 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrgJoinRequestDTO {
-    private String orgName;
 
+    private Long id;
+    private String orgName;
     private String userLogin;
 
 
