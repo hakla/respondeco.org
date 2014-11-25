@@ -92,8 +92,8 @@ public class ResourceController {
                 organisationId,//resourceOfferDTO.getOrganisationId(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                this.stringToDateTime(resourceOfferDTO.getStartDate()),
-                this.stringToDateTime(resourceOfferDTO.getEndDate()),
+                resourceOfferDTO.getStartDateAsDateTime(),
+                resourceOfferDTO.getEndDateAsDateTime(),
                 resourceOfferDTO.getResourceTags()
             );
             resourceOfferDTO.setId(offer.getId());
@@ -134,8 +134,8 @@ public class ResourceController {
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                this.stringToDateTime(resourceOfferDTO.getStartDate()),
-                this.stringToDateTime(resourceOfferDTO.getEndDate()),
+                resourceOfferDTO.getStartDateAsDateTime(),
+                resourceOfferDTO.getEndDateAsDateTime(),
                 resourceOfferDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);

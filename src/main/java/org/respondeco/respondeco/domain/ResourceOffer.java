@@ -1,10 +1,12 @@
 package org.respondeco.respondeco.domain;
 
 
+import net.sf.cglib.core.Local;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -257,7 +257,8 @@ public class ResourcesService {
                 ResourceOfferJoinResourceTag resOfferToTag = new ResourceOfferJoinResourceTag();
                 resOfferToTag.setResourceOfferId(offer.getId());
                 resOfferToTag.setResourceTagId(tag.getId());
-                this.resourceOfferJoinResourceTagRepository.save(resOfferToTag);
+                resOfferToTag = this.resourceOfferJoinResourceTagRepository.save(resOfferToTag);
+                log.debug(String.format("OFFER JOIN TAG Created. ID: %d", resOfferToTag.getId()));
             } catch (Exception e) {
                 message = String.format("Couldn't create connection entry between offer and tag with offer id:%d and tag id: %d", offer.getId(), tag.getId());
                 throw new ResourceJoinTagException(message, EnumResourceJoinTag.CREATE, e);
@@ -269,14 +270,16 @@ public class ResourcesService {
         ResourceTag tag = null;
         try {
             List<ResourceTag> list = this.resourceTagRepository.findByName(tagName);
-            if (list.size() == 0) {
+            if (list == null || list.isEmpty() == true) {
                 tag = new ResourceTag();
                 tag.setName(tagName);
                 this.resourceTagRepository.save(tag);
                 tag.setIsNewEntry(true);
+                log.debug(String.format("new TAG created. ID: %d", tag.getId()));
             } else {
                 tag = list.get(0);
                 tag.setIsNewEntry(false);
+                log.debug(String.format("TAG already exist take it. ID: %d", tag.getId()));
             }
         } catch (Exception e) {
             String message = String.format("Error at trying to Save resource tag named: %s", tagName);
