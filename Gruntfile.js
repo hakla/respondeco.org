@@ -93,7 +93,7 @@ module.exports = function (grunt) {
             options: {
                 port: 9000,
                 // Change this to 'localhost' to deny access to the server from outside.
-                hostname: '0.0.0.0',
+                hostname: '127.0.0.1',
                 livereload: 35729
             },
             livereload: {
@@ -348,6 +348,13 @@ module.exports = function (grunt) {
                 singleRun: true
             }
         },
+        protractor: {
+            options: {
+                keepAlive: true,
+                configFile: "src/test/e2e/protractor.conf.js"
+            },
+            run: {}
+        },
         cdnify: {
             dist: {
                 html: ['<%= yeoman.dist %>/*.html']
@@ -426,7 +433,8 @@ module.exports = function (grunt) {
         'concurrent:test',
         'autoprefixer',
         'connect:test',
-        'karma'
+        'karma',
+        'protractor:run'
     ]);
 
     grunt.registerTask('build', [

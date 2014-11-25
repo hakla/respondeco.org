@@ -1,0 +1,209 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'protractor',
+1 verbose cli   'grunt-protratctor-runner',
+1 verbose cli   '--save-dev' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose readDependencies using package.json deps
+6 verbose cache add [ 'protractor', null ]
+7 verbose cache add name=undefined spec="protractor" args=["protractor",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: 'protractor',
+8 verbose parsed url   path: 'protractor',
+8 verbose parsed url   href: 'protractor' }
+9 verbose cache add [ 'grunt-protratctor-runner', null ]
+10 verbose cache add name=undefined spec="grunt-protratctor-runner" args=["grunt-protratctor-runner",null]
+11 verbose parsed url { protocol: null,
+11 verbose parsed url   slashes: null,
+11 verbose parsed url   auth: null,
+11 verbose parsed url   host: null,
+11 verbose parsed url   port: null,
+11 verbose parsed url   hostname: null,
+11 verbose parsed url   hash: null,
+11 verbose parsed url   search: null,
+11 verbose parsed url   query: null,
+11 verbose parsed url   pathname: 'grunt-protratctor-runner',
+11 verbose parsed url   path: 'grunt-protratctor-runner',
+11 verbose parsed url   href: 'grunt-protratctor-runner' }
+12 silly lockFile 4f4f4858-protractor protractor
+13 verbose lock protractor C:\Users\Benjamin Fraller\AppData\Roaming\npm-cache\4f4f4858-protractor.lock
+14 silly lockFile 9635ea14-grunt-protratctor-runner grunt-protratctor-runner
+15 verbose lock grunt-protratctor-runner C:\Users\Benjamin Fraller\AppData\Roaming\npm-cache\9635ea14-grunt-protratctor-runner.lock
+16 silly lockFile 4f4f4858-protractor protractor
+17 silly lockFile 4f4f4858-protractor protractor
+18 silly lockFile 9635ea14-grunt-protratctor-runner grunt-protratctor-runner
+19 silly lockFile 9635ea14-grunt-protratctor-runner grunt-protratctor-runner
+20 verbose addNamed [ 'protractor', '' ]
+21 verbose addNamed [ null, '*' ]
+22 silly lockFile 80d5ca5a-protractor protractor@
+23 verbose lock protractor@ C:\Users\Benjamin Fraller\AppData\Roaming\npm-cache\80d5ca5a-protractor.lock
+24 verbose addNamed [ 'grunt-protratctor-runner', '' ]
+25 verbose addNamed [ null, '*' ]
+26 silly lockFile a99d53d3-grunt-protratctor-runner grunt-protratctor-runner@
+27 verbose lock grunt-protratctor-runner@ C:\Users\Benjamin Fraller\AppData\Roaming\npm-cache\a99d53d3-grunt-protratctor-runner.lock
+28 silly addNameRange { name: 'protractor', range: '*', hasData: false }
+29 silly addNameRange { name: 'grunt-protratctor-runner', range: '*', hasData: false }
+30 verbose request where is /protractor
+31 verbose request registry https://registry.npmjs.org/
+32 verbose request id 6d6e755aa19e476d
+33 verbose url raw /protractor
+34 verbose url resolving [ 'https://registry.npmjs.org/', './protractor' ]
+35 verbose url resolved https://registry.npmjs.org/protractor
+36 verbose request where is https://registry.npmjs.org/protractor
+37 info trying registry request attempt 1 at 22:35:06
+38 http GET https://registry.npmjs.org/protractor
+39 verbose request where is /grunt-protratctor-runner
+40 verbose request registry https://registry.npmjs.org/
+41 verbose url raw /grunt-protratctor-runner
+42 verbose url resolving [ 'https://registry.npmjs.org/', './grunt-protratctor-runner' ]
+43 verbose url resolved https://registry.npmjs.org/grunt-protratctor-runner
+44 verbose request where is https://registry.npmjs.org/grunt-protratctor-runner
+45 info trying registry request attempt 1 at 22:35:06
+46 http GET https://registry.npmjs.org/grunt-protratctor-runner
+47 http 200 https://registry.npmjs.org/protractor
+48 silly registry.get cb [ 200,
+48 silly registry.get   { date: 'Wed, 19 Nov 2014 21:35:00 GMT',
+48 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+48 silly registry.get     etag: '"AIN8UOLOR1540O20WQDZOU416"',
+48 silly registry.get     'content-type': 'application/json',
+48 silly registry.get     'cache-control': 'max-age=60',
+48 silly registry.get     'content-length': '75159',
+48 silly registry.get     'accept-ranges': 'bytes',
+48 silly registry.get     via: '1.1 varnish',
+48 silly registry.get     age: '47',
+48 silly registry.get     'x-served-by': 'cache-ams4145-AMS',
+48 silly registry.get     'x-cache': 'HIT',
+48 silly registry.get     'x-cache-hits': '2',
+48 silly registry.get     'x-timer': 'S1416432900.812510,VS0,VE0',
+48 silly registry.get     vary: 'Accept',
+48 silly registry.get     'keep-alive': 'timeout=10, max=50',
+48 silly registry.get     connection: 'Keep-Alive' } ]
+49 silly addNameRange number 2 { name: 'protractor', range: '*', hasData: true }
+50 silly addNameRange versions [ 'protractor',
+50 silly addNameRange   [ '0.1.0',
+50 silly addNameRange     '0.1.1',
+50 silly addNameRange     '0.1.2',
+50 silly addNameRange     '0.1.3',
+50 silly addNameRange     '0.2.0',
+50 silly addNameRange     '0.2.1',
+50 silly addNameRange     '0.3.0',
+50 silly addNameRange     '0.4.0',
+50 silly addNameRange     '0.4.1',
+50 silly addNameRange     '0.5.0',
+50 silly addNameRange     '0.6.1',
+50 silly addNameRange     '0.7.0',
+50 silly addNameRange     '0.8.0',
+50 silly addNameRange     '0.9.0',
+50 silly addNameRange     '0.10.0',
+50 silly addNameRange     '0.11.0',
+50 silly addNameRange     '0.12.0',
+50 silly addNameRange     '0.12.1',
+50 silly addNameRange     '0.13.0',
+50 silly addNameRange     '0.14.0',
+50 silly addNameRange     '0.15.0',
+50 silly addNameRange     '0.16.0',
+50 silly addNameRange     '0.16.1',
+50 silly addNameRange     '0.17.0',
+50 silly addNameRange     '0.18.0',
+50 silly addNameRange     '0.18.1',
+50 silly addNameRange     '0.19.0',
+50 silly addNameRange     '0.20.0',
+50 silly addNameRange     '0.20.1',
+50 silly addNameRange     '0.21.0',
+50 silly addNameRange     '0.22.0',
+50 silly addNameRange     '0.23.0',
+50 silly addNameRange     '0.23.1',
+50 silly addNameRange     '0.24.0',
+50 silly addNameRange     '0.24.1',
+50 silly addNameRange     '0.24.2',
+50 silly addNameRange     '1.0.0-rc1',
+50 silly addNameRange     '1.0.0-rc2',
+50 silly addNameRange     '1.0.0-rc3',
+50 silly addNameRange     '1.0.0-rc4',
+50 silly addNameRange     '1.0.0-rc5',
+50 silly addNameRange     '1.0.0-rc6',
+50 silly addNameRange     '1.0.0',
+50 silly addNameRange     '1.1.0',
+50 silly addNameRange     '1.1.1',
+50 silly addNameRange     '1.2.0-beta1',
+50 silly addNameRange     '1.2.0',
+50 silly addNameRange     '1.3.0',
+50 silly addNameRange     '1.3.1',
+50 silly addNameRange     '1.4.0' ] ]
+51 verbose addNamed [ 'protractor', '1.4.0' ]
+52 verbose addNamed [ '1.4.0', '1.4.0' ]
+53 silly lockFile b469314e-protractor-1-4-0 protractor@1.4.0
+54 verbose lock protractor@1.4.0 C:\Users\Benjamin Fraller\AppData\Roaming\npm-cache\b469314e-protractor-1-4-0.lock
+55 silly lockFile 8d5480d1--protractor-protractor-1-4-0-tgz https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz
+56 verbose lock https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz C:\Users\Benjamin Fraller\AppData\Roaming\npm-cache\8d5480d1--protractor-protractor-1-4-0-tgz.lock
+57 verbose addRemoteTarball [ 'https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz',
+57 verbose addRemoteTarball   '090b11d671a3a4f0a5945f3e3d048c18efbd3435' ]
+58 info retry fetch attempt 1 at 22:35:06
+59 verbose fetch to= C:\Users\BENJAM~1\AppData\Local\Temp\npm-5324-zEbCwO1Q\registry.npmjs.org\protractor\-\protractor-1.4.0.tgz
+60 http GET https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz
+61 http 200 https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz
+62 http 404 https://registry.npmjs.org/grunt-protratctor-runner
+63 verbose headers { date: 'Wed, 19 Nov 2014 21:35:01 GMT',
+63 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+63 verbose headers   'content-type': 'application/json',
+63 verbose headers   'cache-control': 'max-age=0',
+63 verbose headers   'content-length': '52',
+63 verbose headers   'accept-ranges': 'bytes',
+63 verbose headers   via: '1.1 varnish',
+63 verbose headers   age: '0',
+63 verbose headers   'x-served-by': 'cache-ams4136-AMS',
+63 verbose headers   'x-cache': 'MISS',
+63 verbose headers   'x-cache-hits': '0',
+63 verbose headers   'x-timer': 'S1416432900.798807,VS0,VE378',
+63 verbose headers   'keep-alive': 'timeout=10, max=50',
+63 verbose headers   connection: 'Keep-Alive' }
+64 silly registry.get cb [ 404,
+64 silly registry.get   { date: 'Wed, 19 Nov 2014 21:35:01 GMT',
+64 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+64 silly registry.get     'content-type': 'application/json',
+64 silly registry.get     'cache-control': 'max-age=0',
+64 silly registry.get     'content-length': '52',
+64 silly registry.get     'accept-ranges': 'bytes',
+64 silly registry.get     via: '1.1 varnish',
+64 silly registry.get     age: '0',
+64 silly registry.get     'x-served-by': 'cache-ams4136-AMS',
+64 silly registry.get     'x-cache': 'MISS',
+64 silly registry.get     'x-cache-hits': '0',
+64 silly registry.get     'x-timer': 'S1416432900.798807,VS0,VE378',
+64 silly registry.get     'keep-alive': 'timeout=10, max=50',
+64 silly registry.get     connection: 'Keep-Alive' } ]
+65 silly lockFile a99d53d3-grunt-protratctor-runner grunt-protratctor-runner@
+66 silly lockFile a99d53d3-grunt-protratctor-runner grunt-protratctor-runner@
+67 silly lockFile 8d5480d1--protractor-protractor-1-4-0-tgz https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz
+68 silly lockFile 8d5480d1--protractor-protractor-1-4-0-tgz https://registry.npmjs.org/protractor/-/protractor-1.4.0.tgz
+69 silly lockFile b469314e-protractor-1-4-0 protractor@1.4.0
+70 silly lockFile b469314e-protractor-1-4-0 protractor@1.4.0
+71 silly lockFile 80d5ca5a-protractor protractor@
+72 silly lockFile 80d5ca5a-protractor protractor@
+73 error 404 404 Not Found: grunt-protratctor-runner
+73 error 404
+73 error 404 'grunt-protratctor-runner' is not in the npm registry.
+73 error 404 You should bug the author to publish it
+73 error 404 It was specified as a dependency of 'respondeco'
+73 error 404
+73 error 404 Note that you can also install from a
+73 error 404 tarball, folder, or http url, or git url.
+74 error System Windows_NT 6.2.9200
+75 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "protractor" "grunt-protratctor-runner" "--save-dev"
+76 error cwd C:\Users\Benjamin Fraller\Desktop\respondeco\respondeco.org
+77 error node -v v0.10.33
+78 error npm -v 1.4.28
+79 error code E404
+80 verbose exit [ 1, true ]

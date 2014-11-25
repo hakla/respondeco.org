@@ -13,7 +13,7 @@
     -->
     <changeSet id="00000000000000" author="jhipster">
         <createTable tableName="T_USER">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="login" type="varchar(50)">

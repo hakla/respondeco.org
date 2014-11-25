@@ -12,7 +12,7 @@
     -->
     <changeSet id="20141110180827" author="jhipster">
         <createTable tableName="T_ORGJOINREQUEST">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="org_id" type="bigint">
