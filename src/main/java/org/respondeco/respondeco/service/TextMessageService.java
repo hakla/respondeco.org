@@ -1,10 +1,8 @@
 package org.respondeco.respondeco.service;
 
-import lombok.Setter;
 import org.joda.time.DateTime;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.ProfilePictureRepository;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;

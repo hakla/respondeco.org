@@ -50,21 +50,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 public class ProjectControllerTest {
-    
+
     private static final Long DEFAULT_ID = new Long(1L);
-    
+
     private static final Long DEFAULT_ORGANIZATION_ID = 0L;
 
     private static final Long DEFAULT_MANAGER_ID = 0L;
     private static final Long UPDATED_MANAGER_ID = 1L;
-        
+
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
-        
+
     private static final String DEFAULT_PURPOSE = "SAMPLE_TEXT";
     private static final String UPDATED_PURPOSE = "UPDATED_TEXT";
 
-        
     @Mock
     private ProjectRepository projectRepositoryMock;
 
@@ -119,7 +118,6 @@ public class ProjectControllerTest {
         defaultOrganization = new Organization();
         defaultOrganization.setId(100L);
         defaultOrganization.setName("testorg");
-        defaultOrganization.setOwner(orgAdmin.getId());
 
         project = new Project();
         project.setId(100L);
@@ -131,6 +129,7 @@ public class ProjectControllerTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
 
+        defaultOrganization.setOwner(orgAdmin);
     }
 
     @Test

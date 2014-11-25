@@ -88,7 +88,7 @@ public class ProjectServiceTest {
         defaultOrganization = new Organization();
         defaultOrganization.setName("test org");
         defaultOrganization.setId(1L);
-        defaultOrganization.setOwner(orgOwner.getId());
+        defaultOrganization.setOwner(orgOwner);
 
         basicProject.setOrganization(defaultOrganization);
 

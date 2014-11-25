@@ -8,7 +8,7 @@ body {
     color: #333;
 }
 
-.development {
+.ribbon-development, .ribbon-test {
     position: absolute;
     width: 149px;
     height: 149px;
@@ -16,9 +16,16 @@ body {
     left: 0;
     border: 0;
     z-index: 1000;
-    background-image: url("../images/development_ribbon.png");
     background-position: center center;
     background-repeat: no-repeat;
+}
+
+.ribbon-development {
+    background-image: url("../images/development_ribbon.png");
+}
+
+.ribbon-test {
+    background-image: url("../images/test_ribbon.png");
 }
 
 .hero-unit {
@@ -132,5 +139,37 @@ img {
 
     &.ng-hide {
         opacity: 0;
+    }
+}
+
+.organization {
+    .organization-item {
+        list-style-type: none;
+        display: inline-block;
+        margin: 25px 75px 25px 0;
+        padding: 10px;
+        background-color: #FFF;
+        border: 1px solid #e3e3e3;
+        border-radius: 2px;
+
+        img {
+            height: 200px;
+            width: 200px;
+        }
+
+        h2 {
+            margin-top: 0;
+
+            a {
+                color: #333;
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+.orgjoinrequest {
+    .btn-group {
+        margin-top: 25px;
     }
 }

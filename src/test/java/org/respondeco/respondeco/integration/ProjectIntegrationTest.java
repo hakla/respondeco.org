@@ -110,7 +110,7 @@ public class ProjectIntegrationTest {
 
         defaultOrganization = new Organization();
         defaultOrganization.setName("testorg");
-        defaultOrganization.setOwner(orgAdmin.getId());
+        defaultOrganization.setOwner(orgAdmin);
         defaultOrganization = organizationRepository.save(defaultOrganization);
         orgAdmin.setOrgId(defaultOrganization.getId());
         orgAdmin = userRepository.save(orgAdmin);

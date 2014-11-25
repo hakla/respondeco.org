@@ -70,7 +70,7 @@ public class ProjectRepositoryTest {
 
         organization = new Organization();
         organization.setName("testorg");
-        organization.setOwner(orgAdmin.getId());
+        organization.setOwner(orgAdmin);
         organizationRepository.save(organization);
 
         project = new Project();

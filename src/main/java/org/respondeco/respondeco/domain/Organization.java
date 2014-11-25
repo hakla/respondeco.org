@@ -39,7 +39,9 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     private Boolean isNpo;
 
     @NotNull
-    private Long owner;
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
 
     @Column(name = "spokesperson")
     private Long spokesPerson;
