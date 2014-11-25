@@ -23,8 +23,8 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable 
     @Column(name = "name")
     private String name;
 
-    @Ignore
-    private boolean isNewEntry;
+    @Transient
+    private Boolean isNewEntry;
 
     public boolean getIsNewEntry(){ return this.isNewEntry; }
 

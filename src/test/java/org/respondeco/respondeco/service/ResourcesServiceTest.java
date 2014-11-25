@@ -86,15 +86,15 @@ public class ResourcesServiceTest {
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
         when(resourceRequirementRepositoryMock.findByDescriptionAndProjectId(description, projectId)).thenReturn(null);
         //Assign all variables to new Resource Requirement Objekt and execute Save
-        when(resourceTagRepositoryMock.findByName(tags[0])).thenReturn(resourceTags);
-        when(resourceTagRepositoryMock.save(new ResourceTag(null, tags[0]))).thenReturn(testResourceTag);
-        when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagId(requirementId, testResourceTag.getId())).thenReturn(null);
-        //redirect output to the variable of the test class
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             savedRequirement = (ResourceRequirement) args[0];
             return savedRequirement;
         }).when(resourceRequirementRepositoryMock).save(isA(reqCl));
+
+        when(resourceTagRepositoryMock.findByName(tags[0])).thenReturn(resourceTags);
+        when(resourceTagRepositoryMock.save(new ResourceTag(null, tags[0]))).thenReturn(testResourceTag);
+        when(resourceRequirementJoinResourceTagRepositoryMock.countByResourceRequirementIdAndResourceTagId(requirementId, testResourceTag.getId())).thenReturn(null);
 
         //save without any tags
         this.resourcesService.createRequirement(amount, description, projectId, isEssential, null);
