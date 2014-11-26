@@ -113,7 +113,6 @@ describe('TextMessage Controller Tests ', function () {
             TextMessageService.delete.calls.mostRecent().args[1]();
             expect(TextMessageService.query).toHaveBeenCalled();
         });
-
     });
 
 });

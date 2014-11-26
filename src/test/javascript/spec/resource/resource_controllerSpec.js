@@ -5,11 +5,14 @@ describe('Resource Controller Tests ', function () {
 
     describe('ResourceController', function () {
         var scope, mockResourceService, location, createController;
+        var deferred;
+        var route;
 
-        beforeEach(inject(function ($rootScope, $controller, _$httpBackend_, $location) {
+        beforeEach(inject(function ($rootScope, $controller, $httpBackend, $location) {
             scope = $rootScope.$new();
-            mockResourceService = jasmine.createSpyObj('Resource', ['save', 'query']);
+            mockResourceService = jasmine.createSpyObj('Resource', ['save', 'query', 'delete']);
             location = $location;
+            httpBackend = $httpBackend;
 
             createController = $controller('ResourceController', {$scope: scope, $location: location, Resource: mockResourceService});
         }));
@@ -49,6 +52,20 @@ describe('Resource Controller Tests ', function () {
             expect(scope.resource).toEqual({'id': null, 'name': null, 'description': null, 'tags': null, 'amount': null,
                 'dateStart': null, 'dateEnd': null, 'isCommercial': null, 'isRecurrent': null});
         });
+
+        it('should delete the resource with given id', function() {
+
+            spyOn(mockResourceService, 'mockResourceService').andReturn(deferred.promise);
+
+            scope.delete(1);
+            expect(mockResourceService.delete).toHaveBeenCalled();
+        });
+
+        it('should search for resources', function() {
+            scope.search("filter");
+            expect(mockResourceService.query).toHaveBeenCalledWith();
+        });
+
 
 
     });
