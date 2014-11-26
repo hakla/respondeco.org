@@ -25,7 +25,17 @@ public class ResourceRequirementJoinResourceTag extends AbstractResourceTagEntit
     }
 
     public void setResourceRequirementId(Long resourceRequirementId) {
+        if(resourceRequirementId == null){
+            throw new NullPointerException("Requirement id cannot be null.");
+        }
         this.resourceRequirementId = resourceRequirementId;
+    }
+
+    public ResourceRequirementJoinResourceTag(){ }
+
+    public ResourceRequirementJoinResourceTag(Long resourceRequirementId, Long resourceTagId){
+        this.setResourceTagId(resourceTagId);
+        this.setResourceRequirementId(resourceRequirementId);
     }
 
     @Override

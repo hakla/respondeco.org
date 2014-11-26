@@ -28,6 +28,13 @@ public class ResourceOfferJoinResourceTag extends AbstractResourceTagEntity impl
         this.resourceOfferId = resourceOfferId;
     }
 
+    public ResourceOfferJoinResourceTag() { }
+
+    public ResourceOfferJoinResourceTag(Long resourceOfferId, Long resourceTagId){
+        this.setResourceOfferId(resourceOfferId);
+        this.setResourceTagId(resourceTagId);
+    }
+
     @Override
     public String toString() {
         return "ResourceOfferJoinResourceTag{" +

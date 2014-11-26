@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +32,9 @@ public abstract class AbstractResourceTagEntity extends AbstractAuditingEntity i
     }
 
     public void setResourceTagId(Long resourceTagId) {
+        if(resourceTagId == null){
+            throw new NullPointerException("resource tag must be defined.");
+        }
         this.resourceTagId = resourceTagId;
     }
 

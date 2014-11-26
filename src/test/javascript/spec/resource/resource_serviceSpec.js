@@ -26,8 +26,9 @@ describe('Resource Service Tests ', function () {
             var resource = { name: 'Resource', amount: '1', dateStart: 'Dec 6, 2014 20:35:02',
                 dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
                 company: 'Company' };
+            var organizationId = 1;
 
-            httpBackend.expectPOST('app/rest/resources').respond(returnData);
+            httpBackend.expectPOST('app/rest/resourceOffers').respond(returnData);
             serviceTested.save(resource);
 
             httpBackend.flush();
@@ -35,7 +36,7 @@ describe('Resource Service Tests ', function () {
 
         it('should get resources from the backend', function() {
 
-            httpBackend.expectGET('app/rest/resources').respond([{
+            httpBackend.expectGET('app/rest/resourceOffers').respond([{
                 id: 0, name: 'TestResource', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
                 dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
                 company: 'Company'
