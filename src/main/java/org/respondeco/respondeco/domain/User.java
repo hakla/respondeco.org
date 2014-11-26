@@ -72,6 +72,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "activation_key", length = 20)
     private String activationKey;
 
+    @ManyToOne
+    @JoinColumn(name = "imageId")
+    private Image profilePicture;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(

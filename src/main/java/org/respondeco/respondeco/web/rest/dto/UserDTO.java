@@ -1,7 +1,8 @@
 package org.respondeco.respondeco.web.rest.dto;
 
-import lombok.Data;
-import org.respondeco.respondeco.domain.Organization;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -29,6 +30,11 @@ public class UserDTO {
 
     private OrganizationDTO organization;
 
+    @Getter
+    @Setter
+    @JsonProperty("profilePicture")
+    private ImageDTO profilePicture;
+
     public UserDTO() {
     }
 
@@ -47,6 +53,12 @@ public class UserDTO {
         this.roles = roles;
 
         this.organization = organization;
+    }
+
+    public UserDTO(String login, String password, String title, String gender, String firstName, String lastName,
+                   String email, String description, String langKey, List<String> roles, OrganizationDTO organization, ImageDTO profilePicture) {
+        this(login, password, title, gender, firstName, lastName, email, description, langKey, roles, organization);
+        this.profilePicture = profilePicture;
     }
 
     public String getPassword() {

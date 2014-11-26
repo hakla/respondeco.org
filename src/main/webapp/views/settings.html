@@ -109,14 +109,22 @@
 
                 <div class="col-md-3 profile" ng-hide="edit.account">
                     <h4>{{fullName}}</h4>
-                    <div ng-hide="edit.image">
-                        <img src="{{profilePicture}}" alt="Profilbild">
+                    <div ng-show="uploader.isHTML5">
+                        <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                        <div nv-file-drop="" uploader="uploader">
+                            <div nv-file-over="" uploader="uploader" over-class="another-file-over-class" class="well my-drop-zone">
+                                <div uploaded-image ng-hide="_file != undefined" name="profilePicture" />
+                                <div ng-show="_file != undefined" file="_file" ng-thumb="{ width: 150 }"></div>
+                                <div class='file-upload-hover'>
+                                    <label for="file_upload"><i class="glyphicon glyphicon-upload"></i></label>
+                                    <progressbar ng-hide="file == undefined" class="progress-striped active" value="_progress" type="{{_type}}">{{_progress}}</progressbar>
+                                    <!-- <img src="images/upload.png" alt="Upload file"> -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <a id="newPicture" ng-click="edit.image = !edit.image">
-                            <span translate="settings.account.profile_img_edit">New profile picture</span>
-                        </a>
-                    </div>
+
+                    <input type="file" ng-hide="true" nv-file-select="" uploader="uploader" multiple id="file_upload" /><br/>
                 </div>
                 <div class="col-md-4 account" ng-hide="edit.account">
                     <h4 translate="settings.account.info_heading">Account information</h4>

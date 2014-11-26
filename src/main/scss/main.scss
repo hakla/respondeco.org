@@ -173,3 +173,57 @@ img {
         margin-top: 25px;
     }
 }
+
+.my-drop-zone {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+    font-size: 4em;
+    position: relative;
+
+    .file-upload-hover {
+        position: absolute;
+        top: 0px;
+        left: -1px;
+        height: calc(100% - 40px);
+        width: calc(100% - 38px);
+        margin: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #FFF;
+        padding: 80px;
+        border-radius: 2px;
+        opacity: 0;
+        transition: .25s ease opacity;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        i {
+            cursor: pointer;
+        }
+
+        .progress-striped {
+            position: absolute;
+            left: 10%;
+            width: 80%;
+        }
+    }
+}
+.nv-file-over {
+    border: dotted 3px red;
+}
+/* Default class applied to drop zones on over */
+
+.another-file-over-class {
+    border: dotted 3px green;
+}
+canvas {
+    background-color: #f3f3f3;
+    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    box-shadow: 3px 3px 3px 0 #e3e3e3;
+    border: 1px solid #c3c3c3;
+    width: 100%;
+}

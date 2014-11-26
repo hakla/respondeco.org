@@ -40,21 +40,46 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization, FileUploader) {
+    var uploader = $scope.uploader = new FileUploader({
+        url: '/app/rest/images',
+        autoUpload: true
+    });
+
+    uploader.filters.push({
+        name: 'imageFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+            var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+            return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        }
+    });
+
+    uploader.onAfterAddingFile = function(fileItem) {
+        $scope._file = fileItem._file;
+    };
+
+    uploader.onProgressItem = function(fileItem, progress) {
+        $scope._progress = progress;
+    };
+
+    uploader.onCompleteItem = function(fileItem, response, status, headers) {
+        $scope.settingsAccount.profilePicture = response;
+
+        $scope.save();
+    }
+
+    $scope._progress = 0;
+    $scope._type = "warning";
+
     $scope.success = null;
     $scope.error = null;
 
     $scope.settingsAccount = {};
-    $scope.profilePicture = "images/profile_empty.png";
     Account.get().$promise.then(function(account) {
         $scope.settingsAccount = account;
 
-        if ($scope.settingsAccount.orgId !== null) {
-            Organization.getById({
-                id: $scope.settingsAccount.orgId
-            }).$promise.then(function(organization) {
-                $scope.organization = organization;
-            });
+        if ($scope.settingsAccount.organization !== undefined) {
+            $scope.organization = organization;
         }
 
         if($scope.settingsAccount.firstName == null) {
@@ -64,7 +89,10 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         } else {
             $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
         }
-        $scope.profilePicture = "images/profile_empty.png";
+
+        if (account.profilePicture != null) {
+            $scope.profilePicture = account.profilePicture.id;
+        }
     });
 
     $scope.success = null;
@@ -129,7 +157,7 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     };
 
     $scope.edit = {
-        image: false,
+        image: true,
         account: false
     };
 });

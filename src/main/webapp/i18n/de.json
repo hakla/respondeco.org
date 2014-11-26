@@ -271,6 +271,7 @@
     },
     "general": {
         "edit": "Bearbeiten",
+        "upload": "Hochladen",
         "button": {
             "save": "Speichern",
             "cancel": "Abbrechen"
