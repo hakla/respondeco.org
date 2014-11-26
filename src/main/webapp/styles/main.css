@@ -8067,3 +8067,27 @@ img {
 .orgjoinrequest .btn-group {
   margin-top: 25px;
 }
+
+.project .project-item {
+    list-style-type: none;
+    display: inline-block;
+    margin: 25px 75px 25px 0;
+    padding: 10px;
+    background-color: #FFF;
+    border: 1px solid #e3e3e3;
+    border-radius: 2px;
+}
+
+.project .project-item img {
+    height: 200px;
+    width: 200px;
+}
+
+.project .project-item h2 {
+    margin-top: 0;
+}
+
+.project .project-item h2 a {
+    color: #333;
+    font-size: 18px;
+}

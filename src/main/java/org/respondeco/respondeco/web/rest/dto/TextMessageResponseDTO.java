@@ -2,6 +2,7 @@ package org.respondeco.respondeco.web.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class TextMessageResponseDTO {
 
     private Long id;

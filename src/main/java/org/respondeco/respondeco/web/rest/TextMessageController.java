@@ -56,7 +56,10 @@ public class TextMessageController {
         try {
             textMessageService.createTextMessage(textMessageRequestDTO.getReceiver(), textMessageRequestDTO.getContent());
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (NoSuchUserException | IllegalArgumentException e) {
+        } catch (NoSuchUserException e) {
+            log.error("could not save text TextMessage", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
             log.error("could not save text TextMessage", e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

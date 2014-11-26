@@ -99,16 +99,24 @@ public class UserController {
     }
 
     /**
-     * GET  /rest/users/find?query= -> get usernames matching the query parameter
+     * GET  /rest/users/find?filter= -> get usernames matching the filter parameter
      */
-    @RequestMapping(value = "/rest/users/names",
+    @RequestMapping(value = "/rest/names/users",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public List<String> getMatchingUsernames(@RequestParam String query) {
-        log.debug("REST request to get usernames matching : {}", query);
-        return userService.findUsernamesByRegex(query);
+    public List<String> getMatchingUsernames(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) Integer limit) {
+        log.debug("REST request to get usernames matching : {}", filter);
+        if(filter == null) {
+            filter = "";
+        }
+        if(limit == null) {
+            limit = 20;
+        }
+        return userService.findUsernamesLike(filter, limit);
     }
 
     /**

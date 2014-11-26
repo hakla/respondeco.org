@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.testutil.TestUtil;
+import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -42,6 +44,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,8 +63,8 @@ public class TextMessageControllerTest {
 
     private static final String DEFAULT_CONTENT = "SAMPLE_TEXT";
 
-    @Inject
-    private TextMessageRepository textMessageRepository;
+    @Mock
+    private TextMessageRepository Mock;
 
     @Mock
     private TextMessageRepository textMessageRepositoryMock;
@@ -81,7 +84,8 @@ public class TextMessageControllerTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        textMessageService = new TextMessageService(textMessageRepository, userServiceMock, userRepositoryMock);
+
+        textMessageService = spy(new TextMessageService(textMessageRepositoryMock, userServiceMock, userRepositoryMock));
         TextMessageController textMessageController =
                 new TextMessageController(textMessageService);
         this.restTextMessageMockMvc = MockMvcBuilders.standaloneSetup(textMessageController).build();
@@ -144,7 +148,7 @@ public class TextMessageControllerTest {
     }
 
     @Test
-    public void testPOST_expectBAD_REQUEST_receiverHasToExist() throws Exception {
+    public void testPOST_expectNOT_FOUND_receiverHasToExist() throws Exception {
         Set<Authority> senderAuthorities = new HashSet<>();
         senderAuthorities.add(new Authority(AuthoritiesConstants.USER));
         User sender = new User();
@@ -162,7 +166,7 @@ public class TextMessageControllerTest {
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(textMessageRequestDTO)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -210,6 +214,11 @@ public class TextMessageControllerTest {
         textMessageRequestDTO.setReceiver("testReceiver");
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
+        TextMessageResponseDTO responseDTO = new TextMessageResponseDTO();
+        responseDTO.setSender(sender.getLogin());
+        responseDTO.setContent(DEFAULT_CONTENT);
+        responseDTO.setTimestamp(DateTime.now());
+
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
         when(userRepositoryMock.findByLogin(receiver.getLogin())).thenReturn(receiver);
 
@@ -219,7 +228,11 @@ public class TextMessageControllerTest {
                 .content(TestUtil.convertObjectToJsonBytes(textMessageRequestDTO)))
                 .andExpect(status().isCreated());
 
+        verify(userServiceMock, times(1)).getUserWithAuthorities();
+        verify(userRepositoryMock, times(1)).findByLogin(receiver.getLogin());
+
         when(userServiceMock.getUserWithAuthorities()).thenReturn(receiver);
+        doReturn(Arrays.asList(responseDTO)).when(textMessageService).getTextMessagesForCurrentUser();
 
         restTextMessageMockMvc.perform(get("/app/rest/textmessages"))
                 .andExpect(status().isOk())
