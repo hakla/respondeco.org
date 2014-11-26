@@ -12,7 +12,7 @@ describe('e2e: settings', function() {
         expect(browser.getLocationAbsUrl()).toContain("/settings");
     });
 
-    it('should edit the user settings', function() {
+    /*it('should edit the user settings', function() {
         page.editButton.click();
 
         page.setTitle("Dr.");
@@ -22,5 +22,5 @@ describe('e2e: settings', function() {
         page.setDescription("Vorstand Greenpeace");
 
         page.saveButton.click();
-    });
+    });*/
 });
