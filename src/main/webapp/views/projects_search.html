@@ -1,4 +1,4 @@
-<div class="organization">
+<div class="project">
     <div class="row">
         <div class="col-sm-6">
             <form name="searchform" role="form" novalidate
@@ -22,13 +22,17 @@
         </div>
     </div>
 
-    <ul>
-        <li class="organization-item" ng-repeat="project in projects">
-            <a>
-                <img src="{{project.logo | logo}}" alt="logo {{project.name}}">
-            </a>
-            <h2><a ng-click="redirectToOrganization(organization.name)">{{project.name}}</a>
-            </h2>
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="project-item" ng-repeat="project in projects">
+                    <a>
+                        <img src="{{project.logo | logo}}" alt="logo {{project.name}}">
+                    </a>
+                    <h2><a ng-click="redirectToOrganization(organization.name)">{{project.name}}</a>
+                    </h2>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>

@@ -14,4 +14,3 @@ src/main/webapp/dist
 .gradle
 build
 deploy
-coverage
