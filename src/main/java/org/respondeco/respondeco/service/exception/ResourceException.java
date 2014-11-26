@@ -6,7 +6,7 @@ import org.respondeco.respondeco.service.exception.enumException.EnumResourceExc
  * Created by Roman Kern on 23.11.14.
  * Genereal exception for all Resource Operations
  */
-public class ResourceException extends Exception{
+public class ResourceException extends GeneralResourceException{
 
     private EnumResourceException errorType;
 

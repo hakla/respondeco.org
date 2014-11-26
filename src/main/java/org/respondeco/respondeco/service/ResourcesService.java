@@ -72,7 +72,7 @@ public class ResourcesService {
 
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceRequirement newRequirement = null;
-        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByDescriptionAndProjectId(description, projectId);
+        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByNameAndProjectId(name, projectId);
         if (entries == null || entries.isEmpty() == true) {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
@@ -145,8 +145,8 @@ public class ResourcesService {
 
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = null;
-        List<ResourceOffer> existingOffer = this.resourceOfferRepository.findByDescriptionAndOrganisationId(description, organisationId);
-        if (existingOffer == null || existingOffer.isEmpty() == true) {
+        List<ResourceOffer> existingOffer = this.resourceOfferRepository.findByNameAndOrganisationId(name, organisationId);
+        if (existingOffer.isEmpty() == true) {
             newOffer = new ResourceOffer();
             newOffer.setName(name);
             newOffer.setAmount(amount);
@@ -165,7 +165,7 @@ public class ResourcesService {
         return newOffer;
     }
 
-    public void updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
+    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
             offer.setName(name);
@@ -186,6 +186,8 @@ public class ResourcesService {
         else{
             throw new ResourceException(String.format("Offer with Id: %d do not exists", offerId), EnumResourceException.NOT_FOUND);
         }
+
+        return offer;
     }
 
     public void deleteOffer(Long offerId) throws ResourceException{
@@ -201,7 +203,7 @@ public class ResourcesService {
     public List<ResourceOfferDTO> getAllOffers() {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         List<ResourceOffer> entries = this.resourceOfferRepository.findAll();
-        if(entries != null && entries.isEmpty() == false) {
+        if(entries.isEmpty() == false) {
             for (ResourceOffer offer :entries) {
                 result.add(new ResourceOfferDTO(offer));
             }
@@ -212,7 +214,7 @@ public class ResourcesService {
     public List<ResourceOfferDTO> getAllOffers(Long organisationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organisationId);
-        if(entries != null && entries.isEmpty() == false) {
+        if(entries.isEmpty() == false) {
             for (ResourceOffer offer : entries) {
                 result.add(new ResourceOfferDTO(offer));
             }

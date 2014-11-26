@@ -22,8 +22,9 @@ public class ResourceOfferDTO {
 
     @ApiModelProperty(value = "ID of the given Resource offer")
     private Long id;
+    @ApiModelProperty(value = "name of the resource offer", required = true)
     private String name;
-    @ApiModelProperty(value = "amount of existing resource offers")
+    @ApiModelProperty(value = "amount of existing resource offers", required = true)
     private BigDecimal amount;
     @ApiModelProperty(value = "Description of the offer", required = true)
     private String description;
@@ -101,9 +102,9 @@ public class ResourceOfferDTO {
 
 
     public void setId(Long id){ this.id = id; }
-    public void setName(String name){ this.name = name; }
+    public void setName(String name){ this.name = name == null ? null : name.trim(); }
     public void setAmount(BigDecimal amount){ this.amount = amount; }
-    public void setDescription(String description){ this.description = description; }
+    public void setDescription(String description){ this.description = description == null ? null : description.trim(); }
     public void setOrganisationId(Long organisationId){ this.organisationId = organisationId; }
     public void setResourceTags(String[] tags){ this.resourceTags = tags; }
 

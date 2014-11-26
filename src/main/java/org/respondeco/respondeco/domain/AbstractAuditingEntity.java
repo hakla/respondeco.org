@@ -64,7 +64,7 @@ public abstract class AbstractAuditingEntity {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return (int) (id != null ? (id ^ (id >>> 32)) : 0);
     }
 
     @Override

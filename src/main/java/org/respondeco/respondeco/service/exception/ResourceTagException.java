@@ -5,7 +5,7 @@ import org.respondeco.respondeco.service.exception.enumException.EnumResourceTag
 /**
  * Created by Roman Kern on 23.11.14.
  */
-public class ResourceTagException extends Exception {
+public class ResourceTagException extends GeneralResourceException {
 
     private EnumResourceTagException errorType;
 

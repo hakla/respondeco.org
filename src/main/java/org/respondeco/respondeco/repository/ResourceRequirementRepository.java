@@ -11,6 +11,6 @@ import java.util.List;
 @Transactional
 public interface ResourceRequirementRepository extends AbstractEntityRepository<ResourceRequirement, Long> {
 
-    List<ResourceRequirement> findByDescriptionAndProjectId(String description, Long projectId);
+    List<ResourceRequirement> findByNameAndProjectId(String name, Long projectId);
     List<ResourceRequirement> findByProjectId(Long projectId);
 }

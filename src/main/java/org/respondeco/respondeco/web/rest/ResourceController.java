@@ -8,6 +8,7 @@ import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.ResourceJoinTagException;
 import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.ResourceTagException;
@@ -68,12 +69,6 @@ public class ResourceController {
         return this.resourcesService.getAllOffers(organisationId);
     }
 
-    private DateTime stringToDateTime(String dateTime){
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
-        DateTime result = dateTime == null || dateTime.isEmpty() ? null : formatter.parseDateTime(dateTime);
-        return result;
-    }
-
     /*
     Create new Resource offer!
      */
@@ -100,14 +95,11 @@ public class ResourceController {
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<ResourceOfferDTO>(resourceOfferDTO, HttpStatus.CREATED);
 
-        } catch (ResourceTagException e) {
-            message = e.getMessage();
-        } catch (ResourceJoinTagException e) {
+        } catch (GeneralResourceException e){
             message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d.",
                 resourceOfferDTO.getDescription(), resourceOfferDTO.getOrganisationId());
-            throw e;
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();
@@ -141,9 +133,7 @@ public class ResourceController {
                 resourceOfferDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (ResourceTagException e) {
-            message = e.getMessage();
-        } catch (ResourceJoinTagException e) {
+        } catch (GeneralResourceException e){
             message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't update Resource Offer with %d", resourceOfferDTO.getId());
@@ -159,7 +149,7 @@ public class ResourceController {
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/organisations{organisationId}/resourceOffers/{resourceOfferId}",
+    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -170,8 +160,7 @@ public class ResourceController {
         try{
             this.resourcesService.deleteOffer(resourceOfferId);
             result = new ResponseEntity<>(HttpStatus.OK);
-        }
-        catch (ResourceException e){
+        } catch (GeneralResourceException e){
             message = e.getMessage();
         }
         catch (Exception e){
@@ -186,16 +175,6 @@ public class ResourceController {
             }
         }
         return result;
-    }
-
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/organisations/{organisationId}/resourceOffers",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void deleteResourceOfferByOrganisationId(@PathVariable Long organisationId) {
-        log.debug("REST request to delete resourceOffer : {}", organisationId);
-        //this.resourcesService.deleteOffer(organisationId);
     }
 
     //endregion
@@ -243,14 +222,11 @@ public class ResourceController {
             resourceRequirementDTO.setId(requirement.getId());
             result = new ResponseEntity<ResourceRequirementDTO>(resourceRequirementDTO, HttpStatus.CREATED);
 
-        } catch (ResourceTagException e) {
-            message = e.getMessage();//String.format("Couldn't save Resource Tag for the resource requirement with description '%s' and Project id: %d", resourceRequirementDTO.getDescription(), resourceRequirementDTO.getProjectId());
-        } catch (ResourceJoinTagException e) {
-            message = e.getMessage();//String.format("Couldn't save link between Resource Tag and Requirement for the requirement with description '%s' and Project id: %d", resourceRequirementDTO.getDescription(), resourceRequirementDTO.getProjectId());
+        } catch (GeneralResourceException e){
+            message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't save Resource Requirement with description '%s' and Project id: %d",
                 resourceRequirementDTO.getDescription(), resourceRequirementDTO.getProjectId());
-            throw e;
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();
@@ -280,10 +256,8 @@ public class ResourceController {
                 resourceRequirementDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (ResourceTagException e) {
-            message = e.getMessage();//String.format("Couldn't save Resource Tag for the resource requirement: %d", resourceRequirementDTO.getId());
-        } catch (ResourceJoinTagException e) {
-            message = e.getMessage();//String.format("Couldn't save link between Resource Tag and Requirement for the requirement %d", resourceRequirementDTO.getId());
+        } catch (GeneralResourceException e){
+            message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't update Resource Requirement with %d", resourceRequirementDTO.getId());
         } finally {
@@ -310,7 +284,7 @@ public class ResourceController {
             this.resourcesService.deleteRequirement(resourceRequirementId);
             result = new ResponseEntity<>(HttpStatus.OK);
         }
-        catch (ResourceException e){
+        catch (GeneralResourceException e){
             message = e.getMessage();//String.format("Couldn't delete Resource Reqirement for ID: %d", resourceRequirementId);
         }
         catch (Exception e){
@@ -325,16 +299,6 @@ public class ResourceController {
             }
         }
         return result;
-    }
-
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/projects/{projectId}/resourceRequirements",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void deleteAllResourceRequirement(@PathVariable Long projectId) {
-        log.debug("REST request to delete resourceOffer : {}");
-        //this.resourcesService.deleteRequirement(projectId);
     }
     //endregion
 }
