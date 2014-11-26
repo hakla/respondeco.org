@@ -2,9 +2,8 @@ describe('e2e: settings', function() {
     var page = require('./settings.po.js');
     var login = require('../login.js');
 
-    login.login();
-
     beforeEach(function() {
+        login.login();
         page.navigate();
         browser.waitForAngular();
     });
