@@ -15,6 +15,7 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
         $scope.senderrorUserNotFound = null;
         $scope.senderrorReceiverLength = null;
         $scope.senderrorContentLength = null;
+        $scope.senderrorReceiverCurrentUser = null;
         $scope.senderrorMsg = null;
 
         $scope.deletesuccess = null;
@@ -29,6 +30,10 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
             );
         }
 
+        $scope.refreshTextMessages = function() {
+            $scope.textMessages = TextMessage.query();
+        }
+
         $scope.create = function () {
             TextMessage.save($scope.textMessageToSend,
                 function () {
@@ -39,8 +44,10 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                 },
                 function (error) {
                     if($scope.textMessageToSend.receiver.length > 0 && $scope.textMessageToSend.content.length > 0) {
-                        if(error.status == 400) {
+                        if(error.status == 404) {
                             $scope.senderrorUserNotFound = "ERROR";
+                        } else if(error.status == 400) {
+                            $scope.senderrorReceiverCurrentUser = "ERROR";
                         } else {
                             $scope.senderror = "ERROR";
                         }
@@ -86,11 +93,14 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
             $scope.senderrorUserNotFound = null;
             $scope.senderrorReceiverLength = null;
             $scope.senderrorContentLength = null;
+            $scope.senderrorReceiverCurrentUser = null;
             $scope.deletesuccess = null;
             $scope.deleteerror = null;
+            $scope.sendform.$setPristine();
         };
 
         $scope.viewMessage = function(message) {
+            $scope.replyform.$setPristine();
             $scope.viewedTextMessage = message;
         }
 
