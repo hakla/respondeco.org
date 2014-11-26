@@ -131,6 +131,24 @@ angular.module('respondecoApp')
             templateUrl: "templates/organization-members.html"
         }
     })
+    .directive('uploadedImage', function() {
+        var baseUrl = '/app/rest/images/file/';
+        var placeholder = '/images/profile_empty.png';
+
+        return {
+            restrict: "A",
+            scope: {
+                name: '=name'
+            },
+            template: "<img />",
+            link: function(scope, element, attributes) {
+                scope.$watch('name', function(value) {
+                    if (value == null) element.find('img').attr('src', placeholder);
+                    else element.find('img').attr('src', baseUrl + value);
+                });
+            }
+        }
+    })
     .directive('ngThumb', ['$window', function($window) {
         var helper = {
             support: !!($window.FileReader && $window.CanvasRenderingContext2D),

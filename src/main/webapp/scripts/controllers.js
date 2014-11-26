@@ -62,8 +62,10 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         $scope._progress = progress;
     };
 
-    uploader.onCompleteItem = function() {
-        // $scope._file = undefined;
+    uploader.onCompleteItem = function(fileItem, response, status, headers) {
+        $scope.settingsAccount.profilePicture = response;
+
+        $scope.save();
     }
 
     $scope._progress = 0;
@@ -73,16 +75,11 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     $scope.error = null;
 
     $scope.settingsAccount = {};
-    $scope.profilePicture = "images/profile_empty.png";
     Account.get().$promise.then(function(account) {
         $scope.settingsAccount = account;
 
-        if ($scope.settingsAccount.orgId !== null) {
-            Organization.getById({
-                id: $scope.settingsAccount.orgId
-            }).$promise.then(function(organization) {
-                $scope.organization = organization;
-            });
+        if ($scope.settingsAccount.organization !== undefined) {
+            $scope.organization = organization;
         }
 
         if($scope.settingsAccount.firstName == null) {
@@ -92,7 +89,10 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         } else {
             $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
         }
-        $scope.profilePicture = "images/profile_empty.png";
+
+        if (account.profilePicture != null) {
+            $scope.profilePicture = account.profilePicture.id;
+        }
     });
 
     $scope.success = null;

@@ -2,6 +2,7 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.Authority;
+import org.respondeco.respondeco.domain.Image;
 import org.respondeco.respondeco.domain.PersistentToken;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
@@ -10,6 +11,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
@@ -78,7 +80,7 @@ public class AccountController {
             .orElseGet(() -> {
                 User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
                         userDTO.getTitle(), userDTO.getFirstName(), userDTO.getLastName(),
-                        userDTO.getEmail().toLowerCase(), userDTO.getGender(),userDTO.getDescription(), userDTO.getLangKey());
+                        userDTO.getEmail().toLowerCase(), userDTO.getGender(),userDTO.getDescription(), userDTO.getLangKey(), userDTO.getProfilePicture());
                 final Locale locale = Locale.forLanguageTag(user.getLangKey());
                 String content = createHtmlContentFromTemplate(user, locale, request, response);
                 mailService.sendActivationEmail(user.getEmail(), content, locale);
@@ -132,9 +134,18 @@ public class AccountController {
                     user.getDescription(),
                     user.getLangKey(),
                     user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList()),
-                    new OrganizationDTO()),
+                    new OrganizationDTO(),
+                    transformImage(user.getProfilePicture())),
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    private ImageDTO transformImage(Image profilePicture) {
+        if (profilePicture != null) {
+            return new ImageDTO(profilePicture.getId(), profilePicture.getName());
+        }
+
+        return null;
     }
 
     /**
@@ -146,7 +157,7 @@ public class AccountController {
     @Timed
     public void saveAccount(@RequestBody UserDTO userDTO) {
         userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
-                userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription());
+                userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription(), userDTO.getProfilePicture());
     }
 
     /**

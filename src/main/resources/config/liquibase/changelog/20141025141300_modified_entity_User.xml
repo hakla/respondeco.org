@@ -17,6 +17,7 @@
             <column name="description" type="varchar(2048)" defaultValue="NULL"/>
             <column name="orgId" type="bigint" defaultValue="NULL"/>
             <column name="is_active" type="boolean" defaultValue="true"/>
+            <column name="imageId" type="bigint" defaultValue="NULL"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

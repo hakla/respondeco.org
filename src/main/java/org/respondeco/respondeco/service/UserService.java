@@ -1,10 +1,7 @@
 package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.AuthorityRepository;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.PersistentTokenRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
@@ -12,6 +9,7 @@ import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationExcepti
 import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,6 +47,9 @@ public class UserService {
     @Inject
     private OrganizationRepository organizationRepository;
 
+    @Inject
+    private ImageRepository imageRepository;
+
 
 
     public User activateRegistration(String key) {
@@ -66,7 +67,7 @@ public class UserService {
     }
 
     public User createUserInformation(String login, String password, String title, String firstName, String lastName,
-                                      String email, String gender, String description, String langKey) {
+                                      String email, String gender, String description, String langKey, ImageDTO profilePicture) {
         User newUser = new User();
         Authority authority = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
@@ -80,6 +81,11 @@ public class UserService {
             newUser.setGender(Gender.UNSPECIFIED);
         } else {
             newUser.setGender(Gender.valueOf(gender));
+        }
+
+        if (profilePicture != null && profilePicture.getId() != null) {
+            Image image = imageRepository.findOne(profilePicture.getId());
+            newUser.setProfilePicture(image);
         }
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
@@ -98,7 +104,7 @@ public class UserService {
     }
 
     public void updateUserInformation(String title, String gender, String firstName, String lastName, String email,
-                                      String description) {
+                                      String description, ImageDTO profilePicture) {
         User currentUser = getUserWithAuthorities();
         currentUser.setTitle(title);
         Gender newGender = Gender.valueOf(gender);
@@ -107,6 +113,12 @@ public class UserService {
         } else {
             currentUser.setGender(newGender);
         }
+
+        if (profilePicture != null && profilePicture.getId() != null) {
+            Image image = imageRepository.findOne(profilePicture.getId());
+            currentUser.setProfilePicture(image);
+        }
+
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
         currentUser.setEmail(email);

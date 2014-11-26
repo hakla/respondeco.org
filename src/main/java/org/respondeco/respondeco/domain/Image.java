@@ -6,6 +6,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -25,5 +26,8 @@ public class Image implements Serializable {
     @Column(name = "data")
     @Lob
     private byte[] data;
+
+    @NotNull
+    private String name;
 
 }
