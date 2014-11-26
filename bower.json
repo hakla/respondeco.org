@@ -17,7 +17,9 @@
     "angular-dynamic-locale": "0.1.1",
     "angular-i18n": "1.2.22",
     "swagger-ui": "2.0.18",
-    "ui-bootstrap" : ""
+    "ui-bootstrap": "",
+    "angular-file-upload": "~1.1.5",
+    "angular-bootstrap": "~0.12.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.22",
