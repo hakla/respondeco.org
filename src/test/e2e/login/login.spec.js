@@ -6,6 +6,7 @@ describe('e2e: login', function() {
 
     beforeEach(function() {
         loginPage.navigate();
+        browser.waitForAngular();
     });
 
     it('should login', function() {
