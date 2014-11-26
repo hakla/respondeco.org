@@ -8,11 +8,10 @@ describe('Resource Controller Tests ', function () {
         var deferred;
         var route;
 
-        beforeEach(inject(function ($rootScope, $controller, $httpBackend, $location) {
+        beforeEach(inject(function ($rootScope, $controller, $location) {
             scope = $rootScope.$new();
             mockResourceService = jasmine.createSpyObj('Resource', ['save', 'query', 'delete']);
             location = $location;
-            httpBackend = $httpBackend;
 
             createController = $controller('ResourceController', {$scope: scope, $location: location, Resource: mockResourceService});
         }));
@@ -54,9 +53,6 @@ describe('Resource Controller Tests ', function () {
         });
 
         it('should delete the resource with given id', function() {
-
-            spyOn(mockResourceService, 'mockResourceService').andReturn(deferred.promise);
-
             scope.delete(1);
             expect(mockResourceService.delete).toHaveBeenCalled();
         });
