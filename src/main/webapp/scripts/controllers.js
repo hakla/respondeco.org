@@ -40,7 +40,35 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization, FileUploader) {
+    var uploader = $scope.uploader = new FileUploader({
+        url: '/app/rest/images',
+        autoUpload: true
+    });
+
+    uploader.filters.push({
+        name: 'imageFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+            var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+            return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        }
+    });
+
+    uploader.onAfterAddingFile = function(fileItem) {
+        $scope._file = fileItem._file;
+    };
+
+    uploader.onProgressItem = function(fileItem, progress) {
+        $scope._progress = progress;
+    };
+
+    uploader.onCompleteItem = function() {
+        // $scope._file = undefined;
+    }
+
+    $scope._progress = 0;
+    $scope._type = "warning";
+
     $scope.success = null;
     $scope.error = null;
 
@@ -129,7 +157,7 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     };
 
     $scope.edit = {
-        image: false,
+        image: true,
         account: false
     };
 });

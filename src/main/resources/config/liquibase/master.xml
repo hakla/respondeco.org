@@ -23,6 +23,7 @@
     <include file="classpath:config/liquibase/changelog/20141116203100_added_table_resourcerequirement_resourcetag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141116203400_added_table_resourcetag_resourceoffer.xml" relativeToChangelogFile="false"/>
 
+    <include file="classpath:config/liquibase/changelog/20141126023848_added_entity_Image.xml" relativeToChangelogFile="false"/>
     <!-- JHipster will add liquibase changelogs here -->
 
 </databaseChangeLog>
