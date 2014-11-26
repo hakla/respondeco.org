@@ -1,19 +1,18 @@
 package org.respondeco.respondeco.domain;
 
 
+import net.sf.cglib.core.Local;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A ResourceOffer.
@@ -51,6 +50,7 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
     public DateTime getStartDate() { return this.startDate; }
     public DateTime getEndDate() { return this.endDate; }
 
+
     /*
     @ManyToMany(mappedBy = "resourceOffers")
     @JsonIgnore
@@ -84,6 +84,7 @@ public class ResourceOffer extends ResourceBase  implements Serializable {
     public String toString() {
         return "ResourceOffer{" +
                 "id=" + id +
+                ", name='" + name + "'" +
                 ", amount='" + amount + "'" +
                 ", description='" + description + "'" +
                 ", organisationId='" + organisationId + "'" +

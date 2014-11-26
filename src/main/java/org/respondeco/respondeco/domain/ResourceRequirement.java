@@ -51,6 +51,7 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     public String toString() {
         return "ResourceRequirement{" +
                 "id=" + id +
+                ", name='" + name + "'" +
                 ", amount='" + amount + "'" +
                 ", description='" + description + "'" +
                 ", projectId='" + projectId + "'" +

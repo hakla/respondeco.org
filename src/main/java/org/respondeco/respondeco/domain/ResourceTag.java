@@ -20,11 +20,11 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceTag extends AbstractAuditingEntity implements Serializable {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Ignore
-    private boolean isNewEntry;
+    @Transient
+    private Boolean isNewEntry;
 
     public boolean getIsNewEntry(){ return this.isNewEntry; }
 
@@ -35,7 +35,10 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable 
     }
 
     public void setName(String name) {
-        this.name = name;
+        if(name == null || name.trim().isEmpty() == true){
+            throw new NullPointerException("Kein Name für resource Tag definiert");
+        }
+        this.name = name.trim();
     }
 
     public ResourceTag(){ }
