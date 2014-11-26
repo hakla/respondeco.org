@@ -8068,6 +8068,66 @@ img {
   margin-top: 25px;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003177}}
+.my-drop-zone {
+  text-align: center;
+  border: none;
+  box-shadow: none;
+  font-size: 4em;
+  position: relative;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003184}}
+.my-drop-zone .file-upload-hover {
+  position: absolute;
+  top: 0px;
+  left: -1px;
+  height: calc(100% - 40px);
+  width: calc(100% - 38px);
+  margin: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFF;
+  padding: 80px;
+  border-radius: 2px;
+  opacity: 0;
+  transition: .25s ease opacity;
+  cursor: pointer;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003199}}
+.my-drop-zone .file-upload-hover:hover {
+  opacity: 1;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003203}}
+.my-drop-zone .file-upload-hover i {
+  cursor: pointer;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003207}}
+.my-drop-zone .file-upload-hover .progress-striped {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003214}}
+.nv-file-over {
+  border: dotted 3px red;
+}
+
+/* Default class applied to drop zones on over */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003219}}
+.another-file-over-class {
+  border: dotted 3px green;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003222}}
+canvas {
+  background-color: #f3f3f3;
+  -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+  -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+  box-shadow: 3px 3px 3px 0 #e3e3e3;
+  border: 1px solid #c3c3c3;
+  width: 100%;
+}
+
 .project .project-item {
     list-style-type: none;
     display: inline-block;

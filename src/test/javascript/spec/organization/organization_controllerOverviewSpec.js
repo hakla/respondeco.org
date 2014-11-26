@@ -20,5 +20,11 @@ describe('Controllers Tests ', function () {
 
             expect(location.path()).toEqual('/organization/Caritas');
         });
+
+        it('should redirect to the new screen for the organization', function() {
+            $scope.redirectToNew('Caritas');
+
+            expect(location.path()).toEqual('/organization/edit/new');
+        });
     });
 });

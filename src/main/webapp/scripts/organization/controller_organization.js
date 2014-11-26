@@ -7,7 +7,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.organizations = resolvedOrganization;
 
     // get the current logged in user and set the organization owner to it
-    Account.get().$promise.then(function(account) {
+    Account.get(null, function(account) {
         user = account;
 
         if ($scope.organization.owner !== undefined) {
@@ -18,12 +18,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.update = function(name) {
         $scope.organization = Organization.get({
             id: name
-        });
-
-        $scope.organization.$promise.then(function() {
+        }, function() {
             Organization.getMembers({
                 id: $scope.organization.id
-            }).$promise.then(function(data)  {
+            }, function(data)  {
                 $scope.members = data;
             });
 

@@ -28,11 +28,12 @@ public class UserDTO {
 
     private List<String> roles;
 
+    @Getter
+    @Setter
     private OrganizationDTO organization;
 
     @Getter
     @Setter
-    @JsonProperty("profilePicture")
     private ImageDTO profilePicture;
 
     public UserDTO() {
