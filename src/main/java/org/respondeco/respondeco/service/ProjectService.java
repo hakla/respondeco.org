@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -136,7 +137,7 @@ public class ProjectService {
         Project p = projectRepository.findByIdAndActiveIsTrue(id);
         ProjectResponseDTO responseDTO = null;
         if(p != null) {
-            responseDTO = mapFields(p, fieldNames);
+            responseDTO = ProjectResponseDTO.fromEntity(Arrays.asList(p), fieldNames).get(0);
         }
         return responseDTO;
     }
@@ -152,7 +153,7 @@ public class ProjectService {
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.getId().equals(project.getOrganization().getOwner()) == false) {
+            if(currentUser.equals(project.getOrganization().getOwner()) == false) {
                 throw new OperationForbiddenException("current user has no authority to " +
                         "change the project manager of project " + id);
             }
@@ -171,8 +172,10 @@ public class ProjectService {
             throw new IllegalArgumentException("no such project: " + id);
         }
         User currentUser = userService.getUserWithAuthorities();
+        User manager = project.getManager();
+        log.debug("current user: {}, manager: {}", currentUser, manager);
         if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.getId().equals(project.getOrganization().getOwner()) == false) {
+            if(currentUser.equals(project.getOrganization().getOwner()) == false) {
                 throw new OperationForbiddenException("current user has no authority to " +
                         "delete project " + id);
             }
@@ -183,9 +186,7 @@ public class ProjectService {
     }
 
     public List<ProjectResponseDTO> findProjects(String name, String tagsString, Integer offset, Integer limit, String fields) {
-        if(name == null) {
-            name = "";
-        }
+
         if(offset == null) {
             offset = 0;
         }
@@ -207,8 +208,16 @@ public class ProjectService {
         if(fieldNames.size() == 0) {
             fieldNames.addAll(ProjectResponseDTO.DEFAULT_FIELDS);
         }
+        List<Project> result;
+        if((name == null || name.length() == 0) && tags.size() == 0) {
+            result = projectRepository.findByActiveIsTrue();
+        } else if(name == null || name.length() == 0) {
+            result = projectRepository.findByTags(tags, null);
+        } else {
+            result = projectRepository.findByNameAndTags(name, tags, null);
+        }
 
-        return mapResponses(projectRepository.findByNameAndTags(name, tags, null), fieldNames);
+        return ProjectResponseDTO.fromEntity(result, fieldNames);
     }
 
     private void sanityCheck(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
@@ -246,53 +255,5 @@ public class ProjectService {
         return propertyTags;
     }
 
-    private List<ProjectResponseDTO> mapResponses(Collection<Project> projects, List<String> fieldNames) {
-        List<ProjectResponseDTO> responseDTOs = new ArrayList<>();
-        for(Project p : projects) {
-            responseDTOs.add(mapFields(p, fieldNames));
-        }
-        return responseDTOs;
-    }
-
-    private ProjectResponseDTO mapFields(Project project, List<String> fieldNames) {
-        ProjectResponseDTO responseDTO = new ProjectResponseDTO();
-        if(fieldNames.contains("id")) {
-            responseDTO.setId(project.getId());
-        }
-        if(fieldNames.contains("name")) {
-            responseDTO.setName(project.getName());
-        }
-        if(fieldNames.contains("purpose")) {
-            responseDTO.setPurpose(project.getPurpose());
-        }
-        if(fieldNames.contains("concrete")) {
-            responseDTO.setConcrete(project.isConcrete());
-        }
-        if(fieldNames.contains("start_date")) {
-            responseDTO.setStartDate(project.getStartDate());
-        }
-        if(fieldNames.contains("end_date")) {
-            responseDTO.setEndDate(project.getEndDate());
-        }
-        if(fieldNames.contains("organization")) {
-            responseDTO.setOrganization(project.getOrganization());
-        }
-        if(fieldNames.contains("organization_id")) {
-            responseDTO.setOrganizationId(project.getOrganization().getId());
-        }
-        if(fieldNames.contains("manager")) {
-            responseDTO.setManager(project.getManager());
-        }
-        if(fieldNames.contains("manager_id")) {
-            responseDTO.setManagerId(project.getManager().getId());
-        }
-        if(fieldNames.contains("property_tags")) {
-            responseDTO.setPropertyTags(project.getPropertyTags());
-        }
-        if(fieldNames.contains("resource_requirements")) {
-            responseDTO.setResourceRequirements(project.getResourceRequirements());
-        }
-        return responseDTO;
-    }
 
 }

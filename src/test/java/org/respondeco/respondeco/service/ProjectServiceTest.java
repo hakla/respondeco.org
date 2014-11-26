@@ -81,6 +81,7 @@ public class ProjectServiceTest {
         orgOwner.setOrgId(1L);
 
         basicProject = new Project();
+        basicProject.setId(1L);
         basicProject.setName("test project");
         basicProject.setPurpose("test purpose");
         basicProject.setConcrete(false);
@@ -481,7 +482,6 @@ public class ProjectServiceTest {
 
         verify(userService, times(1)).getUserWithAuthorities();
         verify(projectRepositoryMock, times(1)).findOne(basicProject.getId());
-        verify(organizationRepositoryMock, times(1)).findOne(defaultOrganization.getId());
         verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
         assertFalse(basicProject.isActive());

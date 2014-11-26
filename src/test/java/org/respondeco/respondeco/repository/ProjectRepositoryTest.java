@@ -102,6 +102,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void testFindByActiveIsTrue_shouldReturnOnlyActive() throws Exception {
         Project project2 = new Project();
         project2.setName("project2");
@@ -128,6 +129,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void testFindByIdAndActiveIsTrue_shouldReturnActiveProject() throws Exception {
         projectRepository.save(project);
 

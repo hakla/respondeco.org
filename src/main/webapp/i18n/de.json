@@ -209,7 +209,9 @@
             "purpose": "Vorhaben",
             "concrete": "Konkretes Projekt",
             "startDate": "Start-Datum",
-            "endDate": "End-Datum"
+            "endDate": "End-Datum",
+            "name.placeholder": "Ein Teil des Namens des Projektes",
+            "tags.placeholder": "Tags mit welchen das Projekt verknüpft ist"
         }
     },
     "main": {

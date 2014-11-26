@@ -1,4 +1,4 @@
-<div>
+<div class="organization">
     <div class="row">
         <div class="col-sm-6">
             <form name="searchform" role="form" novalidate
@@ -6,12 +6,12 @@
 
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" class="form-control" placeholder="{{'project.name.placeholder' | translate}}"
+                    <input type="text" class="form-control" placeholder="{{'global.projects.name.placeholder' | translate}}"
                            ng-model="project.name" typeahead="pname for pname in getProjectNames($viewValue)"/>
                 </div>
                 <div class="form-group">
                     <label>Tags</label>
-                    <input type="text" class="form-control" placeholder="{{'project.tags.placeholder' | translate}}"
+                    <input type="text" class="form-control" placeholder="{{'global.projects.tags.placeholder' | translate}}"
                            ng-model="project.tags"/>
                 </div>
                 <div class="form-group">
@@ -21,7 +21,14 @@
 
         </div>
     </div>
-    <div class="row" ng-repeat="p in projects">
-        {{ p.name }}
-    </div>
+
+    <ul>
+        <li class="organization-item" ng-repeat="project in projects">
+            <a>
+                <img src="{{project.logo | logo}}" alt="logo {{project.name}}">
+            </a>
+            <h2><a ng-click="redirectToOrganization(organization.name)">{{project.name}}</a>
+            </h2>
+        </li>
+    </ul>
 </div>
