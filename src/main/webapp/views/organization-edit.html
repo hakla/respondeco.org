@@ -2,8 +2,8 @@
     <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" ng-submit="create()">
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
         <div class="modal-header">
-            <button type="button" class="btn {{ organization.isNpo ? 'btn-success' : 'btn-primary'}} pull-right" ng-model="organization.isNpo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-                <span class="glyphicon {{ organization.isNpo ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'organization.isNPO' | translate}}
+            <button type="button" class="btn {{ organization.isNpo ? 'btn-success' : 'btn-primary'}} pull-right" ng-model="organization.npo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                <span class="glyphicon {{ organization.npo ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'organization.isNPO' | translate}}
             </button>
             <h4 translate='organization.new' ng-show='isNew()'>New organization</h4>
             <h4 translate='organization.edit' translate-values="{organization: '{{organization.name}}'}" ng-show='!isNew()'>Edit organization {{organization}}</h4>
