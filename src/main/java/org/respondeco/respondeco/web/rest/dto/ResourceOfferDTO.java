@@ -1,9 +1,18 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.respondeco.respondeco.domain.ResourceOffer;
+import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
 
 import java.math.BigDecimal;
 
@@ -11,11 +20,15 @@ import java.math.BigDecimal;
  * Created by Roman Kern on 18.11.14.
  */
 @ApiModel(value = "Resource Offer", description = "manage all resource offers")
+@Getter
+@Setter
 public class ResourceOfferDTO {
 
     @ApiModelProperty(value = "ID of the given Resource offer")
     private Long id;
-    @ApiModelProperty(value = "amount of existing resource offers")
+    @ApiModelProperty(value = "name of the resource offer", required = true)
+    private String name;
+    @ApiModelProperty(value = "amount of existing resource offers", required = true)
     private BigDecimal amount;
     @ApiModelProperty(value = "Description of the offer", required = true)
     private String description;
@@ -26,45 +39,61 @@ public class ResourceOfferDTO {
 
     private Boolean isRecurrent = false;
 
-    private DateTime startDate;
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate startDate;
 
-    private DateTime endDate;
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate endDate;
 
-
-    public void setIsCommercial(Boolean isCommercial){ this.isCommercial = isCommercial; }
-    public void setIsRecurrent(Boolean isRecurrent){ this.isRecurrent = isRecurrent; }
-    public void setStartDate(DateTime startDate){ this.startDate = startDate; }
-    public void setEndDate(DateTime endDate){ this.endDate = endDate; }
+    public DateTime getStartDateAsDateTime(){
+        return this.startDate == null ? null : this.startDate.toDateTimeAtStartOfDay();
+    }
+    public DateTime getEndDateAsDateTime(){
+        return this.endDate == null ? null : this.endDate.toDateTimeAtStartOfDay();
+    }
 
     public Boolean getIsCommercial() { return this.isCommercial; }
     public Boolean getIsRecurrent() { return this.isRecurrent; }
-    public DateTime getStartDate() { return this.startDate; }
-    public DateTime getEndDate() { return this.endDate; }
+    public LocalDate getStartDate() { return this.startDate; }
+    public LocalDate getEndDate() { return this.endDate; }
 
     private String[] resourceTags;
 
     public ResourceOfferDTO(){ }
     public ResourceOfferDTO(ResourceOffer offer){
+        DateTime start = offer.getStartDate();
+        DateTime end = offer.getEndDate();
+        this.setName(offer.getName());
         this.setId(offer.getId());
         this.setAmount(offer.getAmount());
         this.setDescription(offer.getDescription());
-        this.setOrganisationId(offer.getOrganisationId());
+        this.setOrganisationId(offer.getOrganisation().getId());
         this.setIsCommercial(offer.getIsCommercial());
         this.setIsRecurrent(offer.getIsRecurrent());
-        this.setStartDate(offer.getStartDate());
-        this.setEndDate(offer.getEndDate());
+        this.setStartDate(start == null ? null : start.toLocalDate());
+        this.setEndDate(end == null ? null : end.toLocalDate());
     }
+/*
+    public ResourceOffer getOffer(){
+        ResourceOffer offer = new ResourceOffer();
+        offer.setId(this.getId());
+        offer.setAmount(this.getAmount());
+        offer.setDescription(this.getDescription());
+        offer.setOrganisationId(this.getOrganisationId());
+        offer.setIsCommercial(this.getIsCommercial());
+        offer.setIsRecurrent(this.getIsRecurrent());
+        offer.setStartDate(formatter.parseDateTime(this.getStartDate()));
+        offer.setEndDate(formatter.parseDateTime(this.getEndDate()));
+        return offer;
+    }
+    */
 
-
-    public void setId(Long id){ this.id = id; }
-    public void setAmount(BigDecimal amount){ this.amount = amount; }
-    public void setDescription(String description){ this.description = description; }
-    public void setOrganisationId(Long organisationId){ this.organisationId = organisationId; }
-    public void setResourceTags(String[] tags){ this.resourceTags = tags; }
-
-    public Long getId(){ return this.id; }
-    public BigDecimal getAmount() { return this.amount; }
-    public String getDescription() { return this.description; }
-    public Long getOrganisationId(){ return this.organisationId; }
-    public String[] getResourceTags() { return this.resourceTags; }
+    private String dateTimeToString(DateTime dateTime){
+        //DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+        //String result = dateTime == null ? null : dateTime.toString(formatter);
+        return null;
+        //return result;
+    }
 }

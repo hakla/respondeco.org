@@ -37,7 +37,7 @@
             <div class="form-group">
                 <button type="button" class="btn {{ resource.isRecurrent ? 'btn-success' : 'btn-primary'}}" 
                         ng-model="resource.isRecurrent" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-                <span class="glyphicon {{ test ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
+                <span class="glyphicon {{ resource.isRecurrent ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
                 {{'global.resource.new.recurrent' | translate}}
             </button>
             </div>

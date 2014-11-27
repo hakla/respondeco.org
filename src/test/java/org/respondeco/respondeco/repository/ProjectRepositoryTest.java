@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -102,6 +103,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void testFindByActiveIsTrue_shouldReturnOnlyActive() throws Exception {
         Project project2 = new Project();
         project2.setName("project2");
@@ -113,7 +115,7 @@ public class ProjectRepositoryTest {
         projectRepository.save(project);
         projectRepository.save(project2);
 
-        List<Project> projects = projectRepository.findByActiveIsTrue();
+        List<Project> projects = projectRepository.findByActiveIsTrue(null);
         assertTrue(projects.size() == 2);
         assertTrue(projects.contains(project));
         assertTrue(projects.contains(project2));
@@ -121,13 +123,14 @@ public class ProjectRepositoryTest {
         project.setActive(false);
         projectRepository.save(project);
 
-        projects = projectRepository.findByActiveIsTrue();
+        projects = projectRepository.findByActiveIsTrue(null);
         assertTrue(projects.size() == 1);
         assertFalse(projects.contains(project));
         assertTrue(projects.contains(project2));
     }
 
     @Test
+    @Transactional
     public void testFindByIdAndActiveIsTrue_shouldReturnActiveProject() throws Exception {
         projectRepository.save(project);
 
@@ -270,29 +273,121 @@ public class ProjectRepositoryTest {
 
     }
 
-    /*
     @Test
+    @Transactional
     public void testFindByNameAndTags_shouldWorkWithOffsetAndLimit() throws Exception {
+        List<String> ascendingStrings = TestUtil.getAscendingStrings(20, "project");
+        List<String> randomStrings = TestUtil.getAscendingStrings(20);
         Project p;
         for(int i=0;i<20;i++) {
             p = new Project();
-            p.setName("project" + i);
+            p.setName(ascendingStrings.get(i));
             p.setPurpose("purpose");
             p.setConcrete(false);
-            p.setManagerId(orgAdmin.getId());
-            p.setOrganizationId(organization.getId());
+            p.setManager(orgAdmin);
+            p.setOrganization(organization);
+            projectRepository.save(p);
+        }
+        for(int i=0;i<20;i++) {
+            p = new Project();
+            p.setName(randomStrings.get(i));
+            p.setPurpose("purpose");
+            p.setConcrete(false);
+            p.setManager(orgAdmin);
+            p.setOrganization(organization);
             projectRepository.save(p);
         }
         projectRepository.flush();
 
-        PageRequest request = new PageRequest(5, 15, new Sort(
+        PageRequest request = new PageRequest(1, 5, new Sort(
                 new Sort.Order(Sort.Direction.ASC, "name")
         ));
         List<Project> projects = projectRepository.findByNameAndTags("project", null, request);
-        assertEquals(10, projects.size());
-        for(int i=5;i<15;i++) {
-            assertEquals("project" + i, projects.get(i).getName());
+        assertEquals(5, projects.size());
+        for(int i=0;i<5;i++) {
+            assertEquals(ascendingStrings.get(i+5), projects.get(i).getName());
         }
     }
-    */
+
+    @Test
+    @Transactional
+    public void testFindByNameAndTags_shouldWorkWithPurposeDescOrdering() throws Exception {
+        List<String> ascendingStrings = TestUtil.getAscendingStrings(30, "project");
+        List<String> randomStrings = TestUtil.getAscendingStrings(20);
+        Project p;
+        for(int i=0;i<30;i++) {
+            p = new Project();
+            p.setName("project" + i);
+            p.setPurpose(ascendingStrings.get(i));
+            p.setConcrete(false);
+            p.setManager(orgAdmin);
+            p.setOrganization(organization);
+            projectRepository.save(p);
+        }
+        for(int i=0;i<20;i++) {
+            p = new Project();
+            p.setName(randomStrings.get(i));
+            p.setPurpose("purpose");
+            p.setConcrete(false);
+            p.setManager(orgAdmin);
+            p.setOrganization(organization);
+            projectRepository.save(p);
+        }
+        projectRepository.flush();
+
+        PageRequest request = new PageRequest(2, 10, new Sort(
+                new Sort.Order(Sort.Direction.DESC, "purpose")
+        ));
+        List<Project> projects = projectRepository.findByNameAndTags("project", null, request);
+        assertEquals(10, projects.size());
+        for(int i=0;i<10;i++) {
+            assertEquals(ascendingStrings.get(9-i), projects.get(i).getPurpose());
+        }
+    }
+
+    @Test
+    @Transactional
+    public void testFindByOrganizationAndNameAndTags_shouldOnlyReturnProjectsFromOrganization() throws Exception {
+        List<String> ascendingStrings = TestUtil.getAscendingStrings(30, "project");
+        List<String> randomStrings = TestUtil.getAscendingStrings(20);
+        Project p;
+        for(int i=0;i<30;i++) {
+            p = new Project();
+            p.setName("project" + i);
+            p.setPurpose(ascendingStrings.get(i));
+            p.setConcrete(false);
+            p.setManager(orgAdmin);
+            p.setOrganization(organization);
+            projectRepository.save(p);
+        }
+
+        User otherUser = new User();
+        otherUser.setLogin("other");
+        otherUser.setGender(Gender.UNSPECIFIED);
+        userRepository.save(otherUser);
+        userRepository.flush();
+        Organization otherOrg = new Organization();
+        otherOrg.setName("otherorg");
+        otherOrg.setOwner(otherUser);
+        organizationRepository.save(otherOrg);
+        organizationRepository.flush();
+        for(int i=0;i<20;i++) {
+            p = new Project();
+            p.setName("project_" + i);
+            p.setPurpose("purpose");
+            p.setConcrete(false);
+            p.setManager(otherUser);
+            p.setOrganization(otherOrg);
+            projectRepository.save(p);
+        }
+        projectRepository.flush();
+
+        List<Project> projects = projectRepository
+                .findByOrganizationAndNameAndTags(organization.getId(), "project", null, null);
+        assertEquals(30, projects.size());
+        for(int i=0;i<30;i++) {
+            assertEquals(organization, projects.get(i).getOrganization());
+        }
+    }
+
 }

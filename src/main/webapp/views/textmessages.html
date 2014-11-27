@@ -1,9 +1,13 @@
 <div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
             <h2 translate="global.textmessages.title">Messages</h2>
+            <button type="button" class="btn btn-success btn-xs" ng-click="refreshTextMessages()">
+                <span class="glyphicon glyphicon-refresh"></span>
+                <span translate="global.textmessages.refresh">Refresh</span>
+            </button>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-9">
             <button class="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#saveTextMessageModal" ng-click="clear()">
                 <span class="glyphicon glyphicon-plus"></span>
                 <span translate="global.textmessages.createmessage">Create a new TextMessage</span>
@@ -17,26 +21,37 @@
                 <strong>Message deleted successfully.</strong>
             </div>
             <div class="alert alert-danger" ng-show="deleteerror">
-                <strong translate="global.textmessages.error.delete">Message could not be deleted:</strong>{{ deleteerrorMsg }}
+                <strong translate="global.textmessages.error.delete">Message could not be deleted:</strong>
+                {{ deleteerrorMsg }}
             </div>
-            <div class="alert alert-success" ng-show="sendsuccess" translate="global.textmessages.success.send">
+            <div class="alert alert-success" ng-show="sendsuccess"
+                 translate="global.textmessages.success.send">
                 <strong>Message sent successfully.</strong>
             </div>
-            <div class="alert alert-danger" ng-show="senderror" translate="global.textmessages.error.send">
+            <div class="alert alert-danger" ng-show="senderror"
+                 translate="global.textmessages.error.send">
                 <strong>An error has occured!</strong>
                 Message could not be sent.
             </div>
-            <div class="alert alert-danger" ng-show="senderrorUserNotFound" translate="global.textmessages.error.usernotfound">
+            <div class="alert alert-danger" ng-show="senderrorUserNotFound"
+                 translate="global.textmessages.error.usernotfound">
                 <strong>An error has occured!</strong>
                 Message could not be sent.
             </div>
-            <div class="alert alert-success" ng-show="senderrorReceiverLength" translate="global.textmessages.error.receiverlength">
+            <div class="alert alert-success" ng-show="senderrorReceiverLength"
+                 translate="global.textmessages.error.receiverlength">
                 <strong>An error has occured!</strong>
                 Message could not be sent.
             </div>
-            <div class="alert alert-success" ng-show="senderrorReceiverLength" translate="global.textmessages.error.contentlength">
+            <div class="alert alert-success" ng-show="senderrorReceiverLength"
+                 translate="global.textmessages.error.contentlength">
                 <strong>An error has occured!</strong>
                 Message could not be sent.
+            </div>
+            <div class="alert alert-danger" ng-show="senderrorReceiverCurrentUser"
+                 translate="global.textmessages.error.receivercurrentuser">
+                <strong>An error has occured!</strong>
+                You cannot send a message to yourself!
             </div>
             <div ng-show="reply-form.content.$dirty && reply-form.content.$invalid">
                 <p class="help-block" ng-show="reply-form.content.$error.minlength"
@@ -48,36 +63,25 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th translate="global.textmessages.sender">sender</th>
                             <th translate="global.textmessages.date">timestamp</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="message in textMessages" ng-click="viewMessage(message)">
-                        <td><strong>{{message.sender}}</strong></td>
-                        <td>{{message.timestamp | date}}</td>
-
-                        <td ng-click="$event.stopPropagation()">
-                            <div class="pull-right">
-                                <button type="submit"
-                                        ng-click="reply(message.sender)"
-                                        class="btn btn-success">
-                                    <span class="glyphicon glyphicon-retweet"></span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr ng-repeat="message in textMessages" ng-click="viewMessage(message)">
+                            <td><strong>{{message.sender}}</strong></td>
+                            <td>{{message.timestamp | date}}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="row" ng-show="viewedTextMessage != null">
                 <div>
                     <div class="panel panel-default" >
@@ -124,11 +128,13 @@
                                           required ng-minlength="1" maxlength="2048" ng-maxlength="2048"></textarea>
                                 <div ng-show="replyform.content.$dirty && replyform.content.$invalid">
                                     <p class="help-block"
-                                       ng-show="replyform.content.$error.minlength" translate="settings.textmessages.validate.content.minlength">
+                                       ng-show="replyform.content.$error.minlength"
+                                       translate="settings.textmessages.validate.content.minlength">
                                         Your message must be at least 1 character long.
                                     </p>
                                     <p class="help-block"
-                                       ng-show="replyform.content.$error.maxlength" translate="settings.textmessages.validate.content.maxlength">
+                                       ng-show="replyform.content.$error.maxlength"
+                                       translate="settings.textmessages.validate.content.maxlength">
                                         Your message cannot be longer than 2048 characters.
                                     </p>
                                 </div>
@@ -158,17 +164,19 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myTextMessageLabel" translate="global.textmessages.createmessage">Create a TextMessage</h4>
+                        <h4 class="modal-title" id="myTextMessageLabel"
+                            translate="global.textmessages.createmessage">Create a TextMessage</h4>
                     </div>
                     <div class="modal-body">
 
                         <div class="form-group">
                             <label translate="global.textmessages.receiver">Receiver</label>
-                            <input type="text" class="form-control" ng-minlength="1" name="sreceiver"
+                            <input type="text" class="form-control" ng-minlength="1" name="sreceiver" autocomplete="off"
                                    ng-model="textMessageToSend.receiver"
                                    typeahead="uname for uname in getUsernames($viewValue)" required>
                             <div ng-show="sendform.sreceiver.$dirty && sendform.sreceiver.$invalid">
-                                <p class="help-block" ng-show="sendform.sreceiver.$error.minlength" translate="global.textmessages.validate.receiver.minlength">
+                                <p class="help-block" ng-show="sendform.sreceiver.$error.minlength"
+                                   translate="global.textmessages.validate.receiver.minlength">
                                     The content of the message is required to be at least 1 character
                                 </p>
                             </div>
@@ -179,14 +187,21 @@
                                       ng-model="textMessageToSend.content"
                                       required ng-minlength="1" maxlength="2048" ng-maxlength="2048"></textarea>
                             <div ng-show="sendform.content.$dirty && sendform.content.$invalid">
-                                <p class="help-block" ng-show="sendform.content.$error.minlength" translate="global.textmessages.validate.content.minlength">
+                                <p class="help-block" ng-show="sendform.content.$error.minlength"
+                                   translate="global.textmessages.validate.content.minlength">
                                     The content of the message is required to be at least 1 character
                                 </p>
                             </div>
                         </div>
-                        <div class="alert alert-danger" ng-show="senderrorUserNotFound" translate="global.textmessages.error.usernotfound">
+                        <div class="alert alert-danger" ng-show="senderrorUserNotFound"
+                             translate="global.textmessages.error.usernotfound">
                             <strong>An error has occured!</strong>
                             Message could not be sent.
+                        </div>
+                        <div class="alert alert-danger" ng-show="senderrorReceiverCurrentUser"
+                             translate="global.textmessages.error.receivercurrentuser">
+                            <strong>An error has occured!</strong>
+                            You cannot send a message to yourself!
                         </div>
 
                     </div>

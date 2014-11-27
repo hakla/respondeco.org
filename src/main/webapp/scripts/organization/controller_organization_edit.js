@@ -27,7 +27,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     if (isNew) {
         // get the current logged in user and set the organization owner to it
-        Account.get().$promise.then(function(account) {
+        Account.get(null, function(account) {
             $scope.organization.owner = account.login;
         });
     }
@@ -39,7 +39,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     $scope.create = function() {
-        organization.npo = $scope.organization.isNpo || false;
+        organization.npo = $scope.organization.npo || false;
         organization.name = $scope.organization.name;
         organization.description = $scope.organization.description;
         organization.email = $scope.organization.email;
@@ -54,9 +54,11 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     $scope.update = function(name) {
-        $scope.organization = Organization.get({
+        Organization.get({
             id: name
         }, function(org) {
+            $scope.organization = org;
+            
             $scope.users = User.getInvitableUsers({
                 id: $scope.organization.id
             });
@@ -73,7 +75,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
             Organization.getMembers({
                 id: $scope.organization.id
-            }).$promise.then(function(data) {
+            }, function(data) {
                 $scope.members = data;
             });
         });

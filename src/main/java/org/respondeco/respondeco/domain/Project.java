@@ -55,15 +55,10 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
-    private ProjectLogo projectLogo;
+    private Image projectLogo;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name="T_PROJECT_JOIN_T_PROPERTYTAG",
-            joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
-            inverseJoinColumns = { @JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id" ) }
-    )
+    @ManyToMany(mappedBy = "projects")
     private List<PropertyTag> propertyTags;
 
     @JsonIgnore

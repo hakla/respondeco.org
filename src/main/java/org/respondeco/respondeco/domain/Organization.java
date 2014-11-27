@@ -46,4 +46,8 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Column(name = "spokesperson")
     private Long spokesPerson;
 
+    @ManyToOne
+    @JoinColumn(name = "imageId")
+    private Image logo;
+
 }

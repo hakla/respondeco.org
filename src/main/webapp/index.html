@@ -16,7 +16,17 @@
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
         <link rel="stylesheet" href="styles/textmessages.css">
+        <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
         <!-- endbuild -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="bower_components/angular-translate/angular-translate.js"></script>
+        <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
     </head>
 
     <body ng-app="respondecoApp" ng-controller="MainController">
@@ -33,9 +43,6 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
-                        <img src="images/respondeco-logo.png" alt="respondeco.org logo">
-                    </a>
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse" ng-switch="authenticated">
                     <ul class="nav navbar-nav nav-pills">
@@ -62,36 +69,6 @@
                                 <span class="glyphicon glyphicon-flag"></span>
                                 <span translate="global.menu.proposals">Proposals</span>
                             </a>
-                        </li>
-                        <li ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" class="dropdown pointer">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
-                                <span>
-                                    <span class="glyphicon glyphicon-th-list"></span>
-                                    <span class="hidden-tablet" translate="global.menu.entities.main">
-                                        Entities
-                                    </span>
-                                    <b class="caret"></b>
-                                </span>
-                            </a>
-                            <ul class="dropdown-menu" ng-controller="MenuController">
-                                <li ng-switch-when="true"><a href="#/profilepicture"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;profilepicture</a></li>
-                                <li ng-switch-when="true"><a href="#/textmessage"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;textmessage</a></li>
-                                <li ng-switch-when="true"><a href="#/organization"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;organization</a></li>
-                                <li ng-switch-when="true"><a href="#/logo"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;logo</a></li>
-                                <li ng-switch-when="true"><a href="#/orgjoinrequest"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;orgjoinrequest</a></li>
-                                <li ng-switch-when="true"><a href="#/project"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;project</a></li>
-                                <li ng-switch-when="true"><a href="#/propertytag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;propertytag</a></li>
-                                <li ng-switch-when="true"><a href="#/concreteproject"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;concreteproject</a></li>
-                                <li ng-switch-when="true"><a href="#/resourceRequirement"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceRequirement</a></li>
-                                <li ng-switch-when="true"><a href="#/resourceOffer"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceOffer</a></li>
-                                <li ng-switch-when="true"><a href="#/resourceTag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceTag</a></li>
-                                <li ng-switch-when="true"><a href="#/resourceOfferJoinResourceRequirement"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceOfferJoinResourceRequirement</a></li>
-                                <li ng-switch-when="true"><a href="#/resourceOfferJoinResourceTag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceOfferJoinResourceTag</a></li>
-                                <li ng-switch-when="true"><a href="#/resourceRequirementJoinResourceTag"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;resourceRequirementJoinResourceTag</a></li>
-                                <li ng-switch-when="true"><a href="#/projectlogo"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;projectlogo</a></li>
-                                <li ng-switch-when="true"><a href="#/add"><span class="glyphicon glyphicon-asterisk"></span>&nbsp;add</a></li>
-                                <!-- JHipster will add entities to the menu here -->
-                            </ul>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav nav-pills navbar-right">
@@ -222,8 +199,9 @@
                 </div>
             </div>
         </nav>
-        <div class="container">
-            <div class="well" ng-view=""></div>
+        <div ng-show="main()" ng-view></div>
+        <div class="container" ng-hide="main()">
+            <div class="well" ng-view></div>
 
             <div class="footer">
                 <p translate="footer">This is your footer</p>
@@ -242,15 +220,6 @@
 
 
         <!-- build:js scripts/scripts.js -->
-        <script src="bower_components/modernizr/modernizr.js"></script>
-        <script src="bower_components/jquery/dist/jquery.js"></script>
-        <script src="bower_components/angular/angular.js"></script>
-        <script src="bower_components/angular-route/angular-route.js"></script>
-        <script src="bower_components/angular-resource/angular-resource.js"></script>
-        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-        <script src="bower_components/angular-translate/angular-translate.js"></script>
-        <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
         <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
         <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
         <script src="scripts/http-auth-interceptor.js"></script>
@@ -274,9 +243,7 @@
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
-        <script src="scripts/profilepicture/router_profilepicture.js"></script>
-        <script src="scripts/profilepicture/controller_profilepicture.js"></script>
-        <script src="scripts/profilepicture/service_profilepicture.js"></script>
+        <script src="bower_components/angular-file-upload/angular-file-upload.min.js"></script>
         <script src="scripts/textmessage/router_textmessage.js"></script>
         <script src="scripts/textmessage/controller_textmessage.js"></script>
         <script src="scripts/textmessage/service_textmessage.js"></script>
@@ -285,34 +252,11 @@
         <script src="scripts/organization/controller_organizations.js"></script>
         <script src="scripts/organization/controller_organization_edit.js"></script>
         <script src="scripts/organization/service_organization.js"></script>
-        <script src="scripts/logo/router_logo.js"></script>
-        <script src="scripts/logo/controller_logo.js"></script>
-        <script src="scripts/logo/service_logo.js"></script>
-        <script src="scripts/orgjoinrequest/router_orgjoinrequest.js"></script>
-        <script src="scripts/orgjoinrequest/controller_orgjoinrequest.js"></script>
         <script src="scripts/orgjoinrequest/service_orgjoinrequest.js"></script>
         <script src="scripts/project/router_project.js"></script>
         <script src="scripts/project/controller_project.js"></script>
         <script src="scripts/project/service_project.js"></script>
         <script src="scripts/project/controller_project_search.js"></script>
-        <script src="scripts/resourceRequirement/router_resourceRequirement.js"></script>
-        <script src="scripts/resourceRequirement/controller_resourceRequirement.js"></script>
-        <script src="scripts/resourceRequirement/service_resourceRequirement.js"></script>
-        <script src="scripts/resourceOffer/router_resourceOffer.js"></script>
-        <script src="scripts/resourceOffer/controller_resourceOffer.js"></script>
-        <script src="scripts/resourceOffer/service_resourceOffer.js"></script>
-        <script src="scripts/resourceTag/router_resourceTag.js"></script>
-        <script src="scripts/resourceTag/controller_resourceTag.js"></script>
-        <script src="scripts/resourceTag/service_resourceTag.js"></script>
-        <script src="scripts/resourceOfferJoinResourceRequirement/router_resourceOfferJoinResourceRequirement.js"></script>
-        <script src="scripts/resourceOfferJoinResourceRequirement/controller_resourceOfferJoinResourceRequirement.js"></script>
-        <script src="scripts/resourceOfferJoinResourceRequirement/service_resourceOfferJoinResourceRequirement.js"></script>
-        <script src="scripts/resourceOfferJoinResourceTag/router_resourceOfferJoinResourceTag.js"></script>
-        <script src="scripts/resourceOfferJoinResourceTag/controller_resourceOfferJoinResourceTag.js"></script>
-        <script src="scripts/resourceOfferJoinResourceTag/service_resourceOfferJoinResourceTag.js"></script>
-        <script src="scripts/resourceRequirementJoinResourceTag/router_resourceRequirementJoinResourceTag.js"></script>
-        <script src="scripts/resourceRequirementJoinResourceTag/controller_resourceRequirementJoinResourceTag.js"></script>
-        <script src="scripts/resourceRequirementJoinResourceTag/service_resourceRequirementJoinResourceTag.js"></script>
         <script src="scripts/projectlogo/router_projectlogo.js"></script>
         <script src="scripts/projectlogo/controller_projectlogo.js"></script>
         <script src="scripts/projectlogo/service_projectlogo.js"></script>
@@ -329,10 +273,8 @@
         <script src="scripts/resource/router_resource.js"></script>
         <script src="scripts/resource/controller_resource.js"></script>
         <script src="scripts/resource/service_resource.js"></script>
-        <script src="bower_components/ng-tags-input/ng-tags-input.min.js"></script>
-        <script src="scripts/add/router_add.js"></script>
-        <script src="scripts/add/controller_add.js"></script>
-        <script src="scripts/add/service_add.js"></script>
+        <script src="scripts/image/service_image.js"></script>
+        <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
         <!-- endbuild -->
     </body>
 

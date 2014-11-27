@@ -10,32 +10,29 @@
     <!--
         Added the entity ResourceRequirement.
     -->
-    <changeSet id="20141117142400" author="jhipster">
+    <changeSet id="20141117142400" author="Klaus Harrer">
         <createTable tableName="T_RESOURCEREQUIREMENT">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="amount" type="decimal(10,2)"/>
-            <column name="description" type="varchar(255)"/>
+            <column name="resource_id" type="bigint"/>
             <column name="project_id" type="bigint"/>
             <column name="is_essential" type="bit"/>
-            <column name="created_by" type="varchar(50)" defaultValue="system">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
-            <column name="is_active" type="bit"/>
         </createTable>
 
         <createIndex indexName="idx_resource_requirement"
                      tableName="T_RESOURCEREQUIREMENT"
                      unique="true">
-            <column name="description" type="varchar(255)"/>
+            <column name="resource_id" type="bigint"/>
             <column name="project_id" type="bigint"/>
         </createIndex>
+
+        <addForeignKeyConstraint
+            constraintName="fk_resourcerequirement_id"
+            baseColumnNames="resource_id"
+            baseTableName="T_RESOURCEREQUIREMENT"
+            referencedColumnNames="id"
+            referencedTableName="T_RESOURCE"/>
 
     </changeSet>
 </databaseChangeLog>

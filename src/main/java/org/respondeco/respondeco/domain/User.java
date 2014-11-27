@@ -72,6 +72,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "activation_key", length = 20)
     private String activationKey;
 
+    @ManyToOne
+    @JoinColumn(name = "imageId")
+    private Image profilePicture;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -196,24 +200,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setPersistentTokens(Set<PersistentToken> persistentTokens) {
         this.persistentTokens = persistentTokens;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        User user = (User) o;
-
-        if (getId() != user.getId()) {
-            return false;
-        }
-
-        return true;
     }
 
 }

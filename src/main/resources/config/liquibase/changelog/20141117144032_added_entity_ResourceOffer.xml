@@ -10,35 +10,32 @@
     <!--
         Added the entity ResourceOffer.
     -->
-    <changeSet id="20141117144032" author="jhipster">
+    <changeSet id="20141117144032" author="Klaus Harrer">
         <createTable tableName="T_RESOURCEOFFER">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="amount" type="decimal(10,2)"/>
-            <column name="description" type="varchar(255)"/>
+            <column name="resource_id" type="bigint"/>
             <column name="organisation_id" type="bigint"/>
             <column name="is_commercial" type="bit" defaultValue="false"/>
             <column name="is_recurrent" type="bit" defaultValue="false"/>
             <column name="start_date" type="timestamp"/>
             <column name="end_date" type="timestamp"/>
-            <column name="created_by" type="varchar(50)" defaultValue="system">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
-            <column name="is_active" type="bit"/>
         </createTable>
 
         <createIndex indexName="idx_resource_offer"
                      tableName="T_RESOURCEOFFER"
                      unique="true">
-            <column name="description" type="varchar(255)"/>
+            <column name="resource_id" type="bigint"/>
             <column name="organisation_id" type="bigint"/>
         </createIndex>
+
+        <addForeignKeyConstraint
+            constraintName="fk_resourceoffer_id"
+            baseColumnNames="resource_id"
+            baseTableName="T_RESOURCEOFFER"
+            referencedColumnNames="id"
+            referencedTableName="T_RESOURCE"/>
 
     </changeSet>
 </databaseChangeLog>

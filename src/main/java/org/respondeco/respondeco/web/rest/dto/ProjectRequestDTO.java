@@ -49,13 +49,13 @@ public class ProjectRequestDTO {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
 
-    @ApiModelProperty(value = "A logo for the project")
-    private byte[] projectLogo;
-
     @ApiModelProperty(value = "A list of strings used as property tags")
     private List<String> propertyTags;
 
     @ApiModelProperty(value = "The resource requirements for the project")
     private List<ResourceRequirementDTO> resourceRequirements;
+
+    @ApiModelProperty(value = "The file which is used a the logo for the project")
+    private Long imageId;
 
 }

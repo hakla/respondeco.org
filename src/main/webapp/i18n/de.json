@@ -165,6 +165,7 @@
             "view": "Ansehen",
             "from": "Von",
             "atdate": "am",
+            "refresh": "Aktualisieren",
             "success": {
                 "delete": "<strong>Die Nachricht wurde erfolgreich gelöscht.</strong>",
                 "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
@@ -174,7 +175,8 @@
                 "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden.",
                 "usernotfound": "<strong>Es ist ein Fehler aufgetreten!</strong> Der angegebene Empfänger existiert nicht.",
                 "receiverlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
-                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen."
+                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
+                "receivercurrentuser": "<strong>Es ist ein Fehler aufgetreten!</strong> Sie können sich selbst keine Nachricht schicken."
             },
             "validate": {
                 "receiver": {
@@ -220,11 +222,16 @@
             "endDate": "End-Datum",
             "tag": "PropertyTags",
             "resource": "Ressoucen",
-            "logo": "ProjectLogo"
+            "logo": "ProjectLogo",
+            "endDate": "End-Datum",
+            "name.placeholder": "Ein Teil des Namens des Projektes",
+            "tags.placeholder": "Tags mit welchen das Projekt verknüpft ist"
         }
     },
     "main": {
         "title": "Willkommen bei respondeco!",
+        "find": "Projekte finden",
+        "collect": "Ressourcen sammeln",
         "subtitle": "Dies ist Ihre Hauptseite",
         "logged": {
             "message": "Sie sind als Benutzer \"{{username}}\" angemeldet."

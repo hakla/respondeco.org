@@ -11,6 +11,9 @@ describe('TextMessage Controller Tests ', function () {
 
         beforeEach(inject(function ($rootScope, $controller, TextMessage) {
             $scope = $rootScope.$new();
+            $scope.sendform = {
+                $setPristine: function() {}
+            };
             TextMessageService = TextMessage;
             $controller('TextMessageController', {$scope: $scope, TextMessage: TextMessageService});
         }));
@@ -113,7 +116,6 @@ describe('TextMessage Controller Tests ', function () {
             TextMessageService.delete.calls.mostRecent().args[1]();
             expect(TextMessageService.query).toHaveBeenCalled();
         });
-
     });
 
 });

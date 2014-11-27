@@ -2,6 +2,9 @@ package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.nashorn.internal.ir.annotations.Ignore;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
@@ -11,17 +14,26 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by Roman Kern on 13.11.14.
  * Enable create resources offer
  */
-@Audited
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public abstract class ResourceBase extends AbstractAuditingEntity implements Serializable {
+@Entity
+@Table(name = "T_RESOURCE")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@ToString
+public class ResourceBase extends AbstractAuditingEntity implements Serializable {
+
+    @NotNull
+    @Column(length = 50)
+    protected String name;
 
     @NotNull
     @Column(name = "amount", precision=10, scale=2)
@@ -31,34 +43,11 @@ public abstract class ResourceBase extends AbstractAuditingEntity implements Ser
     @NotNull
     protected String description;
 
-    @Transient
-    private Set<ResourceTag> resourceTags = new HashSet<>();
-
+    @ManyToMany(mappedBy = "resources")
+    private List<ResourceTag> resourceTags;
 
     public void addResourceTag(ResourceTag tag){
         this.resourceTags.add(tag);
     }
 
-    public Set<ResourceTag> getResourceTags() {
-        return resourceTags;
-    }
-
-    public void setResourceTags(Set<ResourceTag> resourceTags) {
-        this.resourceTags = resourceTags;
-    }
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public BigDecimal getAmount(){
-        return this.amount;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

@@ -9,7 +9,7 @@ describe('e2e: registration', function() {
     it('should register a new user', function() {
         expect(registerPage.successMessage.isDisplayed()).toBe(false);
 
-        registerPage.username.sendKeys(registerpage.newUsername);
+        registerPage.username.sendKeys(registerPage.newUsername);
         registerPage.email.sendKeys("test@test.at");
         registerPage.password.sendKeys("password");
         registerPage.confirmedPassword.sendKeys("password");
@@ -21,7 +21,7 @@ describe('e2e: registration', function() {
     });
 
     it('should decline a user which is already registered', function() {
-        registerPage.username.sendKeys(registerpage.newUsername);
+        registerPage.username.sendKeys(registerPage.newUsername);
         registerPage.email.sendKeys("test@test.at");
         registerPage.password.sendKeys("password");
         registerPage.confirmedPassword.sendKeys("password");
@@ -50,10 +50,10 @@ describe('e2e: registration', function() {
         registerPage.password.sendKeys(" ");
         registerPage.confirmedPassword.sendKeys(" ");
 
-        expect(registerPage.usernameRequired().isDisplayed()).toBe(true);
-        expect(registerPage.emailRequired().isDisplayed()).toBe(true);
-        expect(registerPage.passwordRequired().isDisplayed()).toBe(true);
-        expect(registerPage.confirmedPasswordRequired().isDisplayed()).toBe(true);
+        expect(registerPage.usernameRequired.isDisplayed()).toBe(true);
+        expect(registerPage.emailRequired.isDisplayed()).toBe(true);
+        expect(registerPage.passwordRequired.isDisplayed()).toBe(true);
+        expect(registerPage.confirmedPasswordRequired.isDisplayed()).toBe(true);
     })
 
 

@@ -17,9 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
@@ -38,7 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.repository.ProjectRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test class for the ProjectIdeaResource REST controller.
@@ -55,11 +53,11 @@ public class ProjectIntegrationTest {
 
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
-        
+
     private static final String DEFAULT_PURPOSE = "SAMPLE_TEXT";
     private static final String UPDATED_PURPOSE = "UPDATED_TEXT";
 
-        
+
     @Inject
     private ProjectRepository projectRepository;
 
@@ -71,6 +69,9 @@ public class ProjectIntegrationTest {
 
     @Inject
     private PropertyTagRepository propertyTagRepository;
+
+    @Inject
+    private ImageRepository imageRepository;
 
     @Mock
     private UserService userServiceMock;
@@ -90,12 +91,16 @@ public class ProjectIntegrationTest {
                 userServiceMock,
                 userRepository,
                 organizationRepository,
-                propertyTagRepository));
+                propertyTagRepository,
+                imageRepository));
         ProjectController projectController = new ProjectController(projectService, projectRepository);
 
         projectRepository.deleteAll();
+        projectRepository.flush();
         organizationRepository.deleteAll();
+        organizationRepository.flush();
         userRepository.deleteAll();
+        userRepository.flush();
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
         projectRequestDTO = new ProjectRequestDTO();
@@ -123,6 +128,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testCRUDProject() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
@@ -134,9 +140,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -150,9 +156,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         Long id = projectCaptor.getValue().getId();
 
@@ -183,7 +189,7 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo());
+                projectRequestDTO.getImageId());
 
         // Read updated Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))
@@ -213,6 +219,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testPOST_shouldCreateConcreteProject() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
 
@@ -227,9 +234,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -249,7 +256,7 @@ public class ProjectIntegrationTest {
                 .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()))
                 .andExpect(jsonPath("$.concrete").value(true))
                 .andExpect(jsonPath("$.startDate").value(projectRequestDTO.getStartDate().toString("yyyy-MM-dd")))
-                .andExpect(jsonPath("$.startDate").value(projectRequestDTO.getStartDate().toString("yyyy-MM-dd")));
+                .andExpect(jsonPath("$.endDate").value(projectRequestDTO.getEndDate().toString("yyyy-MM-dd")));
 
     }
 
@@ -284,6 +291,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testPOST_expectOK_shouldChangeManager() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
@@ -300,9 +308,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -322,6 +330,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testPOST_expectOK_orgOwnerCanSetManager() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
@@ -338,9 +347,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -361,6 +370,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testPOST_expectBAD_REQUEST_newManagerHasToBeInSameOrganization() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
@@ -377,9 +387,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -398,6 +408,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testPOST_expectFORBIDDEN_userHasToBeProjectManagerToChangeManager() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
@@ -421,9 +432,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -442,6 +453,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testDELETE_expectOK_orgOwnerCanDeleteProject() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
 
@@ -452,9 +464,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -472,6 +484,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testDELETE_expectFORBIDDEN_onlyManagerOrOrgAdminCanDeleteProject() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
@@ -488,9 +501,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")

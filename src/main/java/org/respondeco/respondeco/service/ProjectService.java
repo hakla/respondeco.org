@@ -2,21 +2,23 @@ package org.respondeco.respondeco.service;
 
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,23 +37,28 @@ public class ProjectService {
     private UserRepository userRepository;
     private OrganizationRepository organizationRepository;
     private PropertyTagRepository propertyTagRepository;
+    private ImageRepository imageRepository;
+
+    private RestUtil restUtil;
 
     @Inject
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
                           OrganizationRepository organizationRepository,
-                          PropertyTagRepository propertyTagRepository) {
+                          PropertyTagRepository propertyTagRepository, ImageRepository imageRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.propertyTagRepository = propertyTagRepository;
+        this.imageRepository = imageRepository;
+        this.restUtil = new RestUtil();
     }
 
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
-                          LocalDate endDate, byte[] logo, List<String> propertyTags,
-                          List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
-        sanityCheck(isConcrete, startDate, endDate);
+                          LocalDate endDate, List<String> propertyTags,
+                          List<ResourceRequirementDTO> resourceRequirements, Long imageId) throws OperationForbiddenException {
+        sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
@@ -69,11 +76,7 @@ public class ProjectService {
         newProject.setConcrete(isConcrete);
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            newProject.setProjectLogo(projectLogo);
-        }
+        newProject.setProjectLogo(imageRepository.findOne(imageId));
         List<PropertyTag> tags = getPropertyTags(propertyTags);
         newProject.setPropertyTags(tags);
 
@@ -82,8 +85,8 @@ public class ProjectService {
     }
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        LocalDate endDate, byte[] logo) throws OperationForbiddenException {
-        sanityCheck(isConcrete, startDate, endDate);
+                        LocalDate endDate, Long imageId) throws OperationForbiddenException {
+        sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
             throw new IllegalArgumentException("Project id must not be null");
         }
@@ -99,12 +102,12 @@ public class ProjectService {
         if(project == null) {
             throw new IllegalArgumentException("Project does not exist: " + id);
         }
-        if(project.getOrganization().getId().equals(organization.getId()) == false) {
+        if(project.getOrganization().equals(organization) == false) {
             throw new OperationForbiddenException("Project " + project +
                     " is not a project from organization " + organization);
         }
         if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.getId().equals(organization.getOwner()) == false) {
+            if(currentUser.equals(organization.getOwner()) == false) {
                 throw new OperationForbiddenException("Current user does have permission to alter project " + project);
             }
         }
@@ -114,11 +117,7 @@ public class ProjectService {
         project.setConcrete(isConcrete);
         project.setStartDate(startDate);
         project.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            project.setProjectLogo(projectLogo);
-        }
+        project.setProjectLogo(imageRepository.findOne(imageId));
         projectRepository.save(project);
         return project;
     }
@@ -136,7 +135,7 @@ public class ProjectService {
         Project p = projectRepository.findByIdAndActiveIsTrue(id);
         ProjectResponseDTO responseDTO = null;
         if(p != null) {
-            responseDTO = mapFields(p, fieldNames);
+            responseDTO = ProjectResponseDTO.fromEntity(Arrays.asList(p), fieldNames).get(0);
         }
         return responseDTO;
     }
@@ -152,7 +151,7 @@ public class ProjectService {
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.getId().equals(project.getOrganization().getOwner()) == false) {
+            if(currentUser.equals(project.getOrganization().getOwner()) == false) {
                 throw new OperationForbiddenException("current user has no authority to " +
                         "change the project manager of project " + id);
             }
@@ -171,8 +170,10 @@ public class ProjectService {
             throw new IllegalArgumentException("no such project: " + id);
         }
         User currentUser = userService.getUserWithAuthorities();
+        User manager = project.getManager();
+        log.debug("current user: {}, manager: {}", currentUser, manager);
         if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.getId().equals(project.getOrganization().getOwner()) == false) {
+            if(currentUser.equals(project.getOrganization().getOwner()) == false) {
                 throw new OperationForbiddenException("current user has no authority to " +
                         "delete project " + id);
             }
@@ -182,36 +183,61 @@ public class ProjectService {
         return project;
     }
 
-    public List<ProjectResponseDTO> findProjects(String name, String tagsString, Integer offset, Integer limit, String fields) {
-        if(name == null) {
-            name = "";
-        }
-        if(offset == null) {
-            offset = 0;
-        }
-        if(limit == null) {
-            limit = 20;
-        }
-        List<String> tags = new ArrayList<>();
-        if(tagsString != null) {
-            for(String s : tagsString.split(",")) {
-                tags.add(s.trim());
-            }
-        }
-        List<String> fieldNames = new ArrayList<>();
-        if(fields != null) {
-            for(String s : fields.split(",")) {
-                fieldNames.add(s.trim());
-            }
-        }
-        if(fieldNames.size() == 0) {
-            fieldNames.addAll(ProjectResponseDTO.DEFAULT_FIELDS);
+    public List<ProjectResponseDTO> findProjects(String name, String tagsString, RestParameters restParams) {
+        List<String> tags = restUtil.splitCommaSeparated(tagsString);
+
+        PageRequest pageRequest = null;
+        if(restParams != null) {
+            pageRequest = restParams.buildPageRequest();
         }
 
-        return mapResponses(projectRepository.findByNameAndTags(name, tags, null), fieldNames);
+        List<Project> result;
+        if((name == null || name.length() == 0) && tags.size() == 0) {
+            result = projectRepository.findByActiveIsTrue(pageRequest);
+        } else if(name == null || name.length() == 0) {
+            result = projectRepository.findByTags(tags, pageRequest);
+        } else {
+            result = projectRepository.findByNameAndTags(name, tags, pageRequest);
+        }
+
+        List<String> fields;
+        if(restParams == null || restParams.getFields().size() == 0) {
+            fields = ProjectResponseDTO.DEFAULT_FIELDS;
+        } else {
+            fields = restParams.getFields();
+        }
+        return ProjectResponseDTO.fromEntity(result, fields);
     }
 
-    private void sanityCheck(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
+    public List<ProjectResponseDTO> findProjectsFromOrganization(Long orgId, String name, String tagsString,
+                                                                 RestParameters restParams) {
+        List<String> tags = restUtil.splitCommaSeparated(tagsString);
+
+        PageRequest pageRequest = null;
+        if(restParams != null) {
+            pageRequest = restParams.buildPageRequest();
+        }
+
+        List<Project> result;
+        if((name == null || name.length() == 0) && tags.size() == 0) {
+            result = projectRepository.findByActiveIsTrue(pageRequest);
+        } else if(name == null || name.length() == 0) {
+            result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
+        } else {
+            result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
+        }
+
+        List<String> fields;
+        if(restParams == null || restParams.getFields().size() == 0) {
+            fields = ProjectResponseDTO.DEFAULT_FIELDS;
+        } else {
+            fields = restParams.getFields();
+        }
+        return ProjectResponseDTO.fromEntity(result, fields);
+
+    }
+
+    private void sanityCheckDate(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
         if(isConcrete == true) {
             if(startDate == null) {
                 throw new IllegalArgumentException("start date cannot be null if project is concrete");
@@ -244,55 +270,6 @@ public class ProjectService {
             propertyTags.add(tag);
         }
         return propertyTags;
-    }
-
-    private List<ProjectResponseDTO> mapResponses(Collection<Project> projects, List<String> fieldNames) {
-        List<ProjectResponseDTO> responseDTOs = new ArrayList<>();
-        for(Project p : projects) {
-            responseDTOs.add(mapFields(p, fieldNames));
-        }
-        return responseDTOs;
-    }
-
-    private ProjectResponseDTO mapFields(Project project, List<String> fieldNames) {
-        ProjectResponseDTO responseDTO = new ProjectResponseDTO();
-        if(fieldNames.contains("id")) {
-            responseDTO.setId(project.getId());
-        }
-        if(fieldNames.contains("name")) {
-            responseDTO.setName(project.getName());
-        }
-        if(fieldNames.contains("purpose")) {
-            responseDTO.setPurpose(project.getPurpose());
-        }
-        if(fieldNames.contains("concrete")) {
-            responseDTO.setConcrete(project.isConcrete());
-        }
-        if(fieldNames.contains("start_date")) {
-            responseDTO.setStartDate(project.getStartDate());
-        }
-        if(fieldNames.contains("end_date")) {
-            responseDTO.setEndDate(project.getEndDate());
-        }
-        if(fieldNames.contains("organization")) {
-            responseDTO.setOrganization(project.getOrganization());
-        }
-        if(fieldNames.contains("organization_id")) {
-            responseDTO.setOrganizationId(project.getOrganization().getId());
-        }
-        if(fieldNames.contains("manager")) {
-            responseDTO.setManager(project.getManager());
-        }
-        if(fieldNames.contains("manager_id")) {
-            responseDTO.setManagerId(project.getManager().getId());
-        }
-        if(fieldNames.contains("property_tags")) {
-            responseDTO.setPropertyTags(project.getPropertyTags());
-        }
-        if(fieldNames.contains("resource_requirements")) {
-            responseDTO.setResourceRequirements(project.getResourceRequirements());
-        }
-        return responseDTO;
     }
 
 }

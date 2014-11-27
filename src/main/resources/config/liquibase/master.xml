@@ -13,17 +13,15 @@
     <include file="classpath:config/liquibase/changelog/20141110180827_added_entity_OrgJoinRequest.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141114155134_added_entity_Project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141114155202_added_entity_PropertyTag.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141117145453_added_entity_ResourceOfferJoinResourceRequirement.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141117151712_added_entity_ResourceOfferJoinResourceTag.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141117154107_added_entity_ResourceRequirementJoinResourceTag.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141115180827_added_entity_ResourceOffer_ResourceRequirement.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141115195310_added_entity_ProjectLogo.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141115180827_added_entity_ResourceTag.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141124145900_added_index_for_PropertyTag.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141117142300_added_entity_Resource.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141117144032_added_entity_ResourceOffer.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141117142400_added_entity_ResourceRequirement.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141116203100_added_table_resource_resourcetag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141116201700_added_table_project_propertytag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141116202500_added_table_project_resourcerequirement.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141116203100_added_table_resourcerequirement_resourcetag.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141116203400_added_table_resourcetag_resourceoffer.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141124145900_added_index_for_PropertyTag.xml" relativeToChangelogFile="false"/>
-
+    <include file="classpath:config/liquibase/changelog/20141126023848_added_entity_Image.xml" relativeToChangelogFile="false"/>
     <!-- JHipster will add liquibase changelogs here -->
 
 </databaseChangeLog>

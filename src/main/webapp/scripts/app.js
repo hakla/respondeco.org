@@ -4,7 +4,8 @@
 
 var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
     'ngResource', 'ngRoute', 'ngCookies', 'respondecoAppUtils', 'pascalprecht.translate', 'truncate',
-    'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'ui.select2', 'respondecoAppFilters']);
+    'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'respondecoAppFilters',
+    'angularFileUpload', 'ui.select']);
 
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
@@ -134,7 +135,9 @@ respondecoApp
                 $rootScope.$on('$routeChangeStart', function (event, next) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
-                    AuthenticationSharedService.valid(next.access.authorizedRoles);
+                    if (next.access != undefined) {
+                        AuthenticationSharedService.valid(next.access.authorizedRoles);
+                    }
                 });
 
                 // Call when the the client is confirmed

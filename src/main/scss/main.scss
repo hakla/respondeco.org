@@ -1,11 +1,17 @@
 $icon-font-path: "../bower_components/bootstrap-sass/vendor/assets/fonts/bootstrap/";
 
 @import './bootstrap-sass/vendor/assets/stylesheets/bootstrap.scss';
+// @import './bootstrap.css';
+@import './landing-page.css';
 
 body {
     background: #fafafa;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;
+}
+
+.btn, .form-control {
+    border-radius: 0;
 }
 
 .ribbon-development, .ribbon-test {
@@ -26,23 +32,6 @@ body {
 
 .ribbon-test {
     background-image: url("../images/test_ribbon.png");
-}
-
-.hero-unit {
-    margin: 50px auto 0 auto;
-    width: 300px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 30px;
-    background-color: #eee;
-    border-radius: 6px;
-    padding: 60px;
-}
-
-.hero-unit h1 {
-    font-size: 60px;
-    line-height: 1;
-    letter-spacing: -1px;
 }
 
 .error {
@@ -89,19 +78,8 @@ ul#strength {
 /************************
  * Nav
  ************************/
-
-.navbar-nav {
-    margin-top: 15px;
-}
-
-.navbar-header {
-    height: 80px;
-
-    .navbar-brand {
-        img {
-            height: 50px;
-        }
-    }
+.navbar {
+    margin-bottom: 0;
 }
 
 /************************
@@ -172,4 +150,58 @@ img {
     .btn-group {
         margin-top: 25px;
     }
+}
+
+.my-drop-zone {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+    font-size: 4em;
+    position: relative;
+
+    .file-upload-hover {
+        position: absolute;
+        top: 0px;
+        left: -1px;
+        height: calc(100% - 40px);
+        width: calc(100% - 38px);
+        margin: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #FFF;
+        padding: 80px;
+        border-radius: 2px;
+        opacity: 0;
+        transition: .25s ease opacity;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        i {
+            cursor: pointer;
+        }
+
+        .progress-striped {
+            position: absolute;
+            left: 10%;
+            width: 80%;
+        }
+    }
+}
+.nv-file-over {
+    border: dotted 3px red;
+}
+/* Default class applied to drop zones on over */
+
+.another-file-over-class {
+    border: dotted 3px green;
+}
+canvas {
+    background-color: #f3f3f3;
+    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    box-shadow: 3px 3px 3px 0 #e3e3e3;
+    border: 1px solid #c3c3c3;
+    width: 100%;
 }
