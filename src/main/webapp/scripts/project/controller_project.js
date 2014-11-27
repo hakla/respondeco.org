@@ -23,7 +23,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
             Project.delete({id: id},
                 function () {
                     $scope.projects = Project.query();
-                    $location.path('/project');
+                    $location.path('/projects');
                 });
         };
 
@@ -33,7 +33,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
 
         $scope.viewProjectDetails = function (viewedProject) {
             Project.setProject(viewedProject);
-            $location.path('/project/viewDetails');
+            $location.path('/projects/viewDetails');
         };
 
         $scope.createProject = function () {

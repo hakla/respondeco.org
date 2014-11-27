@@ -3,6 +3,9 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
+import org.respondeco.respondeco.service.PropertyTagService;
+import org.respondeco.respondeco.web.rest.dto.PropertyTagResponseDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -24,29 +27,28 @@ public class PropertyTagController {
 
     private final Logger log = LoggerFactory.getLogger(PropertyTagController.class);
 
+    private PropertyTagService propertyTagService;
+
     @Inject
-    private PropertyTagRepository propertytagRepository;
+    public PropertyTagController(PropertyTagService propertyTagService) {
+        this.propertyTagService = propertyTagService;
+    }
 
     /**
-     * GET  /rest/names/propertytags -> get all the propertytag names.
+     * GET  /rest/names/propertytags -> get propertytags.
      */
-    @RequestMapping(value = "/rest/names/propertytags",
+    @RequestMapping(value = "/rest/propertytags",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<String> getTagsMatching(
+    public List<PropertyTagResponseDTO> getTagsMatching(
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer limit) {
-        log.debug("REST request to get all PropertyTag names");
-        if(filter == null) {
-            filter = "";
-        }
-        if(limit == null) {
-            limit = 20;
-        }
-        PageRequest request = new PageRequest(0, limit);
-        //TODO: fix pagination
-        return propertytagRepository.findNamesLike(filter, null);
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) String fields) {
+        log.debug("REST request to get PropertyTags");
+        return propertyTagService.getPropertyTags(filter, new RestParameters(page, pageSize, order, fields));
     }
 
 }

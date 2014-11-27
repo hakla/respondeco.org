@@ -8,12 +8,14 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.PropertyTagService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
@@ -29,6 +31,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -80,7 +83,7 @@ public class ProjectControllerTest {
     private UserRepository userRepositoryMock;
 
     @Mock
-    private PropertyTagRepository propertyTagRepositoryMock;
+    private PropertyTagService propertyTagServiceMock;
 
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
@@ -98,7 +101,7 @@ public class ProjectControllerTest {
                 userServiceMock,
                 userRepositoryMock,
                 organizationRepositoryMock,
-                propertyTagRepositoryMock));
+                propertyTagServiceMock));
         ProjectController projectController = new ProjectController(projectServiceMock, projectRepositoryMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
@@ -131,6 +134,7 @@ public class ProjectControllerTest {
         project.setConcrete(false);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
+        doReturn(new ArrayList<PropertyTag>()).when(propertyTagServiceMock).getOrCreateTags(anyObject());
 
         defaultOrganization.setOwner(orgAdmin);
     }
@@ -190,7 +194,9 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo());
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         restProjectMockMvc.perform(put("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -204,7 +210,9 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo());
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         project.setName(UPDATED_NAME);
         project.setPurpose(UPDATED_PURPOSE);

@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
@@ -24,6 +25,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,9 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clemens Puehringer on 16/11/14.
@@ -54,7 +54,7 @@ public class ProjectServiceTest {
     private OrganizationRepository organizationRepositoryMock;
 
     @Mock
-    private PropertyTagRepository propertyTagRepositoryMock;
+    private PropertyTagService propertyTagServiceMock;
 
     @Mock
     private UserService userService;
@@ -73,7 +73,7 @@ public class ProjectServiceTest {
                 userService,
                 userRepositoryMock,
                 organizationRepositoryMock,
-                propertyTagRepositoryMock);
+                propertyTagServiceMock);
 
         defaultUser = new User();
         defaultUser.setId(1L);
@@ -98,6 +98,8 @@ public class ProjectServiceTest {
         defaultOrganization.setOwner(orgOwner);
 
         basicProject.setOrganization(defaultOrganization);
+
+        doReturn(new ArrayList<PropertyTag>()).when(propertyTagServiceMock).getOrCreateTags(anyObject());
 
 
     }
@@ -221,6 +223,8 @@ public class ProjectServiceTest {
                 true,
                 null,
                 LocalDate.now(),
+                null,
+                null,
                 null);
 
     }
@@ -236,6 +240,8 @@ public class ProjectServiceTest {
                 "modified name",
                 true,
                 LocalDate.now(),
+                null,
+                null,
                 null,
                 null);
 
@@ -254,6 +260,8 @@ public class ProjectServiceTest {
                 true,
                 LocalDate.now().minusDays(5),
                 LocalDate.now().minusDays(3),
+                null,
+                null,
                 null);
 
     }
@@ -271,6 +279,8 @@ public class ProjectServiceTest {
                 true,
                 LocalDate.now().plusDays(5),
                 LocalDate.now().plusDays(3),
+                null,
+                null,
                 null);
 
     }
@@ -285,6 +295,8 @@ public class ProjectServiceTest {
                 "modified name",
                 "modified name",
                 false,
+                null,
+                null,
                 null,
                 null,
                 null);
@@ -316,6 +328,8 @@ public class ProjectServiceTest {
                 false,
                 null,
                 null,
+                null,
+                null,
                 null);
     }
 
@@ -338,6 +352,8 @@ public class ProjectServiceTest {
                 "modified name",
                 "modified name",
                 false,
+                null,
+                null,
                 null,
                 null,
                 null);

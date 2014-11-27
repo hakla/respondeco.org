@@ -197,4 +197,43 @@ angular.module('respondecoApp')
                 });
             }
         };
-    }]);;
+    }])
+    .directive('respProject', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/project.html',
+            scope: {
+                project: '=',
+                onProjectClick: '&'
+            },
+            controller: function($scope) {
+                $scope.projectClicked = function() {
+                    $scope.onProjectClick();
+                }
+            }
+        };
+    })
+    .directive('respConfirmDelete', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/confirm_delete.html',
+            scope: {
+                onConfirm: '&'
+            },
+            controller: function($scope) {
+                $scope.isDeleting = false
+                $scope.startDelete = function() {
+                    $scope.isDeleting = true
+                }
+                $scope.cancelDelete = function() {
+                    $scope.isDeleting = false
+                }
+                $scope.confirmDelete = function() {
+                    $scope.onConfirm();
+                    $scope.isDeleting = false;
+                }
+            }
+        };
+    });

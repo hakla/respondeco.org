@@ -3,9 +3,9 @@
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
             $routeProvider
-                .when('/project', {
-                    templateUrl: 'views/projects.html',
-                    controller: 'ProjectController',
+                .when('/projects', {
+                    templateUrl: 'views/projects_search.html',
+                    controller: 'ProjectSearchController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
@@ -15,19 +15,7 @@ respondecoApp
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
         $routeProvider
-            .when('/project/create', {
-                templateUrl: 'views/projects_create.html',
-                controller: 'ProjectController',
-                access: {
-                    authorizedRoles: [USER_ROLES.all]
-                }
-            })
-    });
-
-respondecoApp
-    .config(function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
-        $routeProvider
-            .when('/project/viewDetails', {
+            .when('/projects/:id', {
                 templateUrl: 'views/projects_details.html',
                 controller: 'ProjectController',
                 access: {
@@ -39,11 +27,12 @@ respondecoApp
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
         $routeProvider
-            .when('/project/search', {
-                templateUrl: 'views/projects_search.html',
-                controller: 'ProjectSearchController',
+            .when('/projects/edit/:id', {
+                templateUrl: 'views/projects_create.html',
+                controller: 'ProjectController',
                 access: {
                     authorizedRoles: [USER_ROLES.all]
                 }
             })
     });
+

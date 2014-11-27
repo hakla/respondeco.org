@@ -61,7 +61,7 @@ public class ProjectResponseDTO {
                 responseDTO.setManagerId(project.getManager().getId());
             }
             if (fieldNames.contains("propertyTags")) {
-                responseDTO.setPropertyTags(PropertyTagDTO.fromEntity(project.getPropertyTags(), Arrays.asList("name")));
+                responseDTO.setPropertyTags(PropertyTagResponseDTO.fromEntity(project.getPropertyTags(), Arrays.asList("name")));
             }
             if (fieldNames.contains("resourceRequirements")) {
                 responseDTO.setResourceRequirements(project.getResourceRequirements());
@@ -83,7 +83,7 @@ public class ProjectResponseDTO {
     private Long organizationId;
     private User manager;
     private Long managerId;
-    private List<PropertyTagDTO> propertyTags;
+    private List<PropertyTagResponseDTO> propertyTags;
     private List<ResourceRequirement> resourceRequirements;
 
 }

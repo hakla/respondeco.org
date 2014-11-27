@@ -21,6 +21,7 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.PropertyTagService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -71,7 +72,7 @@ public class ProjectIntegrationTest {
     private UserRepository userRepository;
 
     @Inject
-    private PropertyTagRepository propertyTagRepository;
+    private PropertyTagService propertyTagService;
 
     @Mock
     private UserService userServiceMock;
@@ -91,7 +92,7 @@ public class ProjectIntegrationTest {
                 userServiceMock,
                 userRepository,
                 organizationRepository,
-                propertyTagRepository));
+                propertyTagService));
         ProjectController projectController = new ProjectController(projectService, projectRepository);
 
         projectRepository.deleteAll();
@@ -188,7 +189,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo());
+                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         // Read updated Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", id))

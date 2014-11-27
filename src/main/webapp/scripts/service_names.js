@@ -21,7 +21,7 @@ respondecoApp.factory('UserNames', function ($resource, $cacheFactory) {
 });
 
 respondecoApp.factory('PropertyTagNames', function ($resource, $cacheFactory) {
-    var PropertyTagNamesService = $resource('app/rest/names/propertytags', { filter: "" }, { });
+    var PropertyTagNamesService = $resource('app/rest/propertytags', { filter: "", fields: "name" }, { });
     var cache = $cacheFactory("PropertyTagNames");
 
     return {
@@ -37,11 +37,11 @@ respondecoApp.factory('PropertyTagNames', function ($resource, $cacheFactory) {
 });
 
 respondecoApp.factory('ProjectNames', function ($resource, $cacheFactory) {
-    var ProjectNamesService = $resource('app/rest/names/projects', { filter: "" }, { });
+    var ProjectNamesService = $resource('app/rest/projects', { filter: "", fields: "name" }, { });
     var cache = $cacheFactory("ProjectNames");
 
     return {
-        getProjectnames: function(partialName) {
+        getProjectNames: function(partialName) {
             var names = cache.get(partialName);
             if(!names) {
                 names = ProjectNamesService.query({ filter: partialName });

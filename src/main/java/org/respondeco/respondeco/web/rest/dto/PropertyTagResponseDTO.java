@@ -14,28 +14,28 @@ import java.util.List;
 
 @Data
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-public class PropertyTagDTO {
+public class PropertyTagResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList("name");
 
-    public static List<PropertyTagDTO> fromEntity(List<PropertyTag> propertyTags, List<String> fieldNames) {
+    public static List<PropertyTagResponseDTO> fromEntity(List<PropertyTag> propertyTags, List<String> fieldNames) {
         if(propertyTags == null) {
             return null;
         }
         if(fieldNames == null || fieldNames.size() == 0) {
             fieldNames = DEFAULT_FIELDS;
         }
-        List<PropertyTagDTO> response = new ArrayList<>();
-        PropertyTagDTO propertyTagDTO;
+        List<PropertyTagResponseDTO> response = new ArrayList<>();
+        PropertyTagResponseDTO propertyTagResponseDTO;
         for(PropertyTag pt : propertyTags) {
-            propertyTagDTO = new PropertyTagDTO();
+            propertyTagResponseDTO = new PropertyTagResponseDTO();
             if(fieldNames.contains("id")) {
-                propertyTagDTO.setId(pt.getId());
+                propertyTagResponseDTO.setId(pt.getId());
             }
             if(fieldNames.contains("name")) {
-                propertyTagDTO.setName(pt.getName());
+                propertyTagResponseDTO.setName(pt.getName());
             }
-            response.add(propertyTagDTO);
+            response.add(propertyTagResponseDTO);
         }
         return response;
     }

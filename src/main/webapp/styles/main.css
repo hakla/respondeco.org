@@ -8128,26 +8128,27 @@ canvas {
   width: 100%;
 }
 
-.project .project-item {
+.project-item {
     list-style-type: none;
     display: inline-block;
-    margin: 25px 75px 25px 0;
     padding: 10px;
     background-color: #FFF;
     border: 1px solid #e3e3e3;
     border-radius: 2px;
+    width: 25%;
+    height: 300px;
 }
 
-.project .project-item img {
+.project-item img {
     height: 200px;
-    width: 200px;
+    width: 100%;
 }
 
-.project .project-item h2 {
+.project-item h2 {
     margin-top: 0;
 }
 
-.project .project-item h2 a {
+.project-item h2 a {
     color: #333;
     font-size: 18px;
 }

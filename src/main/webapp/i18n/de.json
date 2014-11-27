@@ -212,8 +212,8 @@
             "concrete": "Konkretes Projekt",
             "startDate": "Start-Datum",
             "endDate": "End-Datum",
-            "name.placeholder": "Ein Teil des Namens des Projektes",
-            "tags.placeholder": "Tags mit welchen das Projekt verknüpft ist"
+            "name.placeholder": "Projektname",
+            "tags.placeholder": "Tags"
         }
     },
     "main": {

@@ -50,7 +50,7 @@ public class PropertyTagRepositoryTest {
             propertyTag.setName("tag" + i);
             propertyTagRepository.save(propertyTag);
         }
-        List<String> tags = propertyTagRepository.findNamesLike("", null);
+        List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("", null);
         for(int i=0;i<30;i++){
             assertTrue(tags.contains("tag" + i));
         }
@@ -65,7 +65,7 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 15);
-        List<String> tags = propertyTagRepository.findNamesLike("", request);
+        List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("", request);
         assertEquals(tags.size(), 15);
 
     }
@@ -84,10 +84,10 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 10);
-        List<String> tags = propertyTagRepository.findNamesLike("b", request);
+        List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("b", request);
         assertEquals(tags.size(), 10);
-        for(String s : tags) {
-            assertTrue(s.startsWith("blub"));
+        for(PropertyTag t : tags) {
+            assertTrue(t.getName().startsWith("blub"));
         }
     }
 
@@ -101,5 +101,6 @@ public class PropertyTagRepositoryTest {
         }
         PropertyTag pt = propertyTagRepository.findByName("tag10");
         assertNotNull(pt);
+        assertEquals("tag10", pt.getName());
     }
 }

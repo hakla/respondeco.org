@@ -96,7 +96,9 @@ public class ProjectController {
                     project.getConcrete(),
                     project.getStartDate(),
                     project.getEndDate(),
-                    project.getProjectLogo());
+                    project.getProjectLogo(),
+                    project.getPropertyTags(),
+                    project.getResourceRequirements());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch(IllegalArgumentException e) {
             log.error("Could not save Project : {}", project, e);
@@ -185,7 +187,7 @@ public class ProjectController {
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {
         log.debug("REST request to get Project : {}", id);
-        return Optional.ofNullable(projectService.findById(id, fields))
+        return Optional.ofNullable(projectService.findProjectById(id, fields))
             .map(project -> new ResponseEntity<>(
                 project,
                 HttpStatus.OK))

@@ -39,7 +39,7 @@ public class ProjectService {
     private UserService userService;
     private UserRepository userRepository;
     private OrganizationRepository organizationRepository;
-    private PropertyTagRepository propertyTagRepository;
+    private PropertyTagService propertyTagService;
 
     private RestUtil restUtil;
 
@@ -47,12 +47,12 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
                           OrganizationRepository organizationRepository,
-                          PropertyTagRepository propertyTagRepository) {
+                          PropertyTagService propertyTagService) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
-        this.propertyTagRepository = propertyTagRepository;
+        this.propertyTagService = propertyTagService;
         this.restUtil = new RestUtil();
     }
 
@@ -82,7 +82,7 @@ public class ProjectService {
             projectLogo.setData(logo);
             newProject.setProjectLogo(projectLogo);
         }
-        List<PropertyTag> tags = getPropertyTags(propertyTags);
+        List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
         newProject.setPropertyTags(tags);
 
         projectRepository.save(newProject);
@@ -90,7 +90,8 @@ public class ProjectService {
     }
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        LocalDate endDate, byte[] logo) throws OperationForbiddenException {
+                        LocalDate endDate, byte[] logo, List<String> propertyTags,
+                        List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
             throw new IllegalArgumentException("Project id must not be null");
@@ -127,26 +128,10 @@ public class ProjectService {
             projectLogo.setData(logo);
             project.setProjectLogo(projectLogo);
         }
+        List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
+        project.setPropertyTags(tags);
         projectRepository.save(project);
         return project;
-    }
-
-    public ProjectResponseDTO findById(Long id, String fields) {
-        List<String> fieldNames = new ArrayList<>();
-        if(fields != null) {
-            for(String s : fields.split(",")) {
-                fieldNames.add(s.trim());
-            }
-        }
-        if(fieldNames.size() == 0) {
-            fieldNames.addAll(ProjectResponseDTO.DEFAULT_FIELDS);
-        }
-        Project p = projectRepository.findByIdAndActiveIsTrue(id);
-        ProjectResponseDTO responseDTO = null;
-        if(p != null) {
-            responseDTO = ProjectResponseDTO.fromEntity(Arrays.asList(p), fieldNames).get(0);
-        }
-        return responseDTO;
     }
 
     public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException, OperationForbiddenException {
@@ -190,6 +175,24 @@ public class ProjectService {
         project.setActive(false);
         projectRepository.save(project);
         return project;
+    }
+
+    public ProjectResponseDTO findProjectById(Long id, String fields) {
+        List<String> fieldNames = new ArrayList<>();
+        if(fields != null) {
+            for(String s : fields.split(",")) {
+                fieldNames.add(s.trim());
+            }
+        }
+        if(fieldNames.size() == 0) {
+            fieldNames.addAll(ProjectResponseDTO.DEFAULT_FIELDS);
+        }
+        Project p = projectRepository.findByIdAndActiveIsTrue(id);
+        ProjectResponseDTO responseDTO = null;
+        if(p != null) {
+            responseDTO = ProjectResponseDTO.fromEntity(Arrays.asList(p), fieldNames).get(0);
+        }
+        return responseDTO;
     }
 
     public List<ProjectResponseDTO> findProjects(String name, String tagsString, RestParameters restParams) {
@@ -258,23 +261,5 @@ public class ProjectService {
             }
         }
      }
-
-    private List<PropertyTag> getPropertyTags(List<String> tags) {
-        List<PropertyTag> propertyTags = new ArrayList<>();
-        if(tags == null) {
-            return propertyTags;
-        }
-        PropertyTag tag;
-        for(String s : tags) {
-            tag = propertyTagRepository.findByName(s);
-            if(tag == null) {
-                tag = new PropertyTag();
-                tag.setName(s);
-                propertyTagRepository.save(tag);
-            }
-            propertyTags.add(tag);
-        }
-        return propertyTags;
-    }
 
 }

@@ -3,20 +3,9 @@
  */
 'use strict';
 
-respondecoApp.controller('ProjectSearchController', function ($scope, Project) {
+respondecoApp.controller('ProjectSearchController', function ($scope,$location, Project, ProjectNames, PropertyTagNames) {
 
-    $scope.select2Options = {
-        tags: $scope.test,
-        multiple: true,
-        minimumInputLength: 1,
-        formatResult: function (item) {
-            return item;
-        },
-        formatSelection: function (item) {
-            return item;
-        }
-    }
-
+    $scope.projects = null;
     $scope.project = {
         name: null,
         tags: null
@@ -32,7 +21,15 @@ respondecoApp.controller('ProjectSearchController', function ($scope, Project) {
     }
 
     $scope.getProjectNames = function(value) {
-        return Project.getProjectNames(value);
+        return ProjectNames.getProjectNames(value);
+    }
+
+    $scope.getPropertyTagNames = function(value) {
+        return PropertyTagNames.getPropertyTagNames(value);
+    }
+
+    $scope.redirectToProject = function(project) {
+        $location.path("/projects/" + project.id);
     }
 
 });
