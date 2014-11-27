@@ -10,6 +10,7 @@ import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -143,11 +144,33 @@ public class ProjectController {
     public List<ProjectResponseDTO> getByNameAndTags(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String tags,
-            @RequestParam(required = false) Integer offset,
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) String fields) {
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String fields,
+            @RequestParam(required = false) String order) {
         log.debug("REST request to get projects");
-        return projectService.findProjects(name, tags, offset, limit, fields);
+        return projectService.findProjects(name, tags, new RestParameters(page, pageSize, order, fields));
+    }
+
+    /**
+     * GET  /rest/organizations/{id}/projects -> get all the projects for an organization.
+     */
+    @ApiOperation(value = "Get projects", notes = "Get projects by organization, name and tags")
+    @RequestMapping(value = "/rest/organizations/{organizationId}/projects",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<ProjectResponseDTO> getByOrganizationAndNameAndTags(
+            @PathVariable Long organizationId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String tags,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String fields,
+            @RequestParam(required = false) String order) {
+        log.debug("REST request to get projects for organization {}", organizationId);
+        return projectService.findProjectsFromOrganization(organizationId, name, tags,
+                new RestParameters(page, pageSize, order, fields));
     }
 
     /**

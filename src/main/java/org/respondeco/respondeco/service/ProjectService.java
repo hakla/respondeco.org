@@ -10,8 +10,12 @@ import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,8 @@ public class ProjectService {
     private OrganizationRepository organizationRepository;
     private PropertyTagRepository propertyTagRepository;
 
+    private RestUtil restUtil;
+
     @Inject
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
@@ -47,12 +53,13 @@ public class ProjectService {
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.propertyTagRepository = propertyTagRepository;
+        this.restUtil = new RestUtil();
     }
 
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           LocalDate endDate, byte[] logo, List<String> propertyTags,
                           List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
-        sanityCheck(isConcrete, startDate, endDate);
+        sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
@@ -84,7 +91,7 @@ public class ProjectService {
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         LocalDate endDate, byte[] logo) throws OperationForbiddenException {
-        sanityCheck(isConcrete, startDate, endDate);
+        sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
             throw new IllegalArgumentException("Project id must not be null");
         }
@@ -100,12 +107,12 @@ public class ProjectService {
         if(project == null) {
             throw new IllegalArgumentException("Project does not exist: " + id);
         }
-        if(project.getOrganization().getId().equals(organization.getId()) == false) {
+        if(project.getOrganization().equals(organization) == false) {
             throw new OperationForbiddenException("Project " + project +
                     " is not a project from organization " + organization);
         }
         if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.getId().equals(organization.getOwner()) == false) {
+            if(currentUser.equals(organization.getOwner()) == false) {
                 throw new OperationForbiddenException("Current user does have permission to alter project " + project);
             }
         }
@@ -185,42 +192,61 @@ public class ProjectService {
         return project;
     }
 
-    public List<ProjectResponseDTO> findProjects(String name, String tagsString, Integer offset, Integer limit, String fields) {
+    public List<ProjectResponseDTO> findProjects(String name, String tagsString, RestParameters restParams) {
+        List<String> tags = restUtil.splitCommaSeparated(tagsString);
 
-        if(offset == null) {
-            offset = 0;
+        PageRequest pageRequest = null;
+        if(restParams != null) {
+            pageRequest = restParams.buildPageRequest();
         }
-        if(limit == null) {
-            limit = 20;
-        }
-        List<String> tags = new ArrayList<>();
-        if(tagsString != null) {
-            for(String s : tagsString.split(",")) {
-                tags.add(s.trim());
-            }
-        }
-        List<String> fieldNames = new ArrayList<>();
-        if(fields != null) {
-            for(String s : fields.split(",")) {
-                fieldNames.add(s.trim());
-            }
-        }
-        if(fieldNames.size() == 0) {
-            fieldNames.addAll(ProjectResponseDTO.DEFAULT_FIELDS);
-        }
+
         List<Project> result;
         if((name == null || name.length() == 0) && tags.size() == 0) {
-            result = projectRepository.findByActiveIsTrue();
+            result = projectRepository.findByActiveIsTrue(pageRequest);
         } else if(name == null || name.length() == 0) {
-            result = projectRepository.findByTags(tags, null);
+            result = projectRepository.findByTags(tags, pageRequest);
         } else {
-            result = projectRepository.findByNameAndTags(name, tags, null);
+            result = projectRepository.findByNameAndTags(name, tags, pageRequest);
         }
 
-        return ProjectResponseDTO.fromEntity(result, fieldNames);
+        List<String> fields;
+        if(restParams == null || restParams.getFields().size() == 0) {
+            fields = ProjectResponseDTO.DEFAULT_FIELDS;
+        } else {
+            fields = restParams.getFields();
+        }
+        return ProjectResponseDTO.fromEntity(result, fields);
     }
 
-    private void sanityCheck(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
+    public List<ProjectResponseDTO> findProjectsFromOrganization(Long orgId, String name, String tagsString,
+                                                                 RestParameters restParams) {
+        List<String> tags = restUtil.splitCommaSeparated(tagsString);
+
+        PageRequest pageRequest = null;
+        if(restParams != null) {
+            pageRequest = restParams.buildPageRequest();
+        }
+
+        List<Project> result;
+        if((name == null || name.length() == 0) && tags.size() == 0) {
+            result = projectRepository.findByActiveIsTrue(pageRequest);
+        } else if(name == null || name.length() == 0) {
+            result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
+        } else {
+            result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
+        }
+
+        List<String> fields;
+        if(restParams == null || restParams.getFields().size() == 0) {
+            fields = ProjectResponseDTO.DEFAULT_FIELDS;
+        } else {
+            fields = restParams.getFields();
+        }
+        return ProjectResponseDTO.fromEntity(result, fields);
+
+    }
+
+    private void sanityCheckDate(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
         if(isConcrete == true) {
             if(startDate == null) {
                 throw new IllegalArgumentException("start date cannot be null if project is concrete");
@@ -254,6 +280,5 @@ public class ProjectService {
         }
         return propertyTags;
     }
-
 
 }

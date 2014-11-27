@@ -16,24 +16,42 @@ import java.util.Set;
  */
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    public List<Project> findByActiveIsTrue();
+    public List<Project> findByActiveIsTrue(Pageable pageable);
 
     public Project findByIdAndActiveIsTrue(Long id);
 
-    @Query("select p.name from Project p where p.name like %:name%")
-    List<String> findProjectNamesLike(@Param("name") String name, Pageable pageable);
-
     @Query("SELECT DISTINCT p " +
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
-            "WHERE pt.name in :tags OR p.name LIKE %:name%")
+            "WHERE (pt.name in :tags OR p.name LIKE %:name%) " +
+            "AND p.active = 1")
     public List<Project> findByNameAndTags(
             @Param("name") String name,
             @Param("tags") Collection<String> tags, Pageable pageable);
 
     @Query("SELECT DISTINCT p " +
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
-            "WHERE pt.name in :tags")
+            "INNER JOIN p.organization o " +
+            "WHERE (o.id = :orgId AND (pt.name in :tags OR p.name LIKE %:name%)) " +
+            "AND p.active = 1")
+    public List<Project> findByOrganizationAndNameAndTags(
+            @Param("orgId") Long orgId,
+            @Param("name")  String name,
+            @Param("tags")  Collection<String> tags, Pageable pageable);
+
+    @Query("SELECT DISTINCT p " +
+            "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
+            "WHERE pt.name in :tags " +
+            "AND p.active = 1")
     public List<Project> findByTags(
             @Param("tags") Collection<String> tags, Pageable pageable);
+
+    @Query("SELECT DISTINCT p " +
+            "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
+            "INNER JOIN p.organization o " +
+            "WHERE (o.id = :orgId AND pt.name in :tags) " +
+            "AND p.active = 1")
+    public List<Project> findByOrganizationAndTags(
+            @Param("orgId") Long orgId,
+            @Param("tags")  Collection<String> tags, Pageable pageable);
 
 }
