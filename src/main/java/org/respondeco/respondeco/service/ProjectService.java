@@ -209,10 +209,8 @@ public class ProjectService {
             result = projectRepository.findByNameAndTags(name, tags, pageRequest);
         }
 
-        List<String> fields;
-        if(restParams == null || restParams.getFields().size() == 0) {
-            fields = ProjectResponseDTO.DEFAULT_FIELDS;
-        } else {
+        List<String> fields = null;
+        if(restParams != null) {
             fields = restParams.getFields();
         }
         return ProjectResponseDTO.fromEntity(result, fields);
@@ -236,10 +234,8 @@ public class ProjectService {
             result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
         }
 
-        List<String> fields;
-        if(restParams == null || restParams.getFields().size() == 0) {
-            fields = ProjectResponseDTO.DEFAULT_FIELDS;
-        } else {
+        List<String> fields = null;
+        if(restParams != null) {
             fields = restParams.getFields();
         }
         return ProjectResponseDTO.fromEntity(result, fields);
