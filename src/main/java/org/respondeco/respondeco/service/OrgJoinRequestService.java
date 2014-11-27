@@ -79,7 +79,7 @@ public class OrgJoinRequestService {
 
         log.debug("Get List of OrgJoinRequest by Current User");
 
-        return orgJoinRequestRepository.findByUserIdAndActiveIsTrue(user.getId());
+        return orgJoinRequestRepository.findByUserAndActiveIsTrue(user);
     }
 
     public List<OrgJoinRequestWithActiveFlagDTO> getOrgJoinRequestsByOwner() throws NoSuchOrganizationException {
@@ -91,7 +91,7 @@ public class OrgJoinRequestService {
         }
         List<OrgJoinRequestWithActiveFlagDTO> orgJoinRequestWithActiveFlagDTOList = new ArrayList<OrgJoinRequestWithActiveFlagDTO>();
         OrgJoinRequestWithActiveFlagDTO orgJoinRequestWithActiveFlagDTO;
-        for (OrgJoinRequest orgJoinRequest:orgJoinRequestRepository.findByOrgId(organization.getId())) {
+        for (OrgJoinRequest orgJoinRequest:orgJoinRequestRepository.findByOrganization(organization)) {
             orgJoinRequestWithActiveFlagDTO = new OrgJoinRequestWithActiveFlagDTO();
             orgJoinRequestWithActiveFlagDTO.setId(orgJoinRequest.getId());
             orgJoinRequestWithActiveFlagDTO.setOrgName((orgJoinRequest.getOrganization()).getName());

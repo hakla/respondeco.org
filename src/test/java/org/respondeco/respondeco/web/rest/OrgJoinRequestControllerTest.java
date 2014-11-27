@@ -155,7 +155,7 @@ public class OrgJoinRequestControllerTest {
         when(organizationRepository.findOne(organization.getId())).thenReturn(organization);
         when(orgjoinrequestRepository.findOne(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
         when(userRepository.findByLogin(potMember.getLogin())).thenReturn(potMember);
-        when(organizationRepository.findByOwner(defaultUser.getId())).thenReturn(organization);
+        when(organizationRepository.findByOwner(defaultUser)).thenReturn(organization);
         when(userRepository.findOne(defaultUser.getId())).thenReturn(defaultUser);
         when(userRepository.findOne(potMember.getId())).thenReturn(potMember);
         when(orgjoinrequestRepository.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);

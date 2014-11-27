@@ -170,7 +170,7 @@ public class OrgJoinRequestServiceTest {
         when(userRepositoryMock.findByLogin(orgOwner.getLogin())).thenReturn(orgOwner);
         when(userRepositoryMock.findByLogin(defaultUser.getLogin())).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByName(defaultOrganization.getName())).thenReturn(defaultOrganization);
-        when(organizationRepositoryMock.findByOwner(orgOwner.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(defaultOrganization);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
 
@@ -191,7 +191,7 @@ public class OrgJoinRequestServiceTest {
         when(userRepositoryMock.findByLogin(orgOwner.getLogin())).thenReturn(orgOwner);
         when(userRepositoryMock.findByLogin(defaultUser.getLogin())).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByName(defaultOrganization.getName())).thenReturn(null);
-        when(organizationRepositoryMock.findByOwner(orgOwner.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(defaultOrganization);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
 

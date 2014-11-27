@@ -14,11 +14,9 @@ import java.util.List;
  * Spring Data JPA repository for the OrgJoinRequest entity.
  */
 public interface OrgJoinRequestRepository extends JpaRepository<OrgJoinRequest, Long> {
-    List<OrgJoinRequest> findByOrgIdAndActiveIsTrue(Long orgId);
-    List<OrgJoinRequest> findByUserIdAndActiveIsTrue(Long userId);
+    List<OrgJoinRequest> findByOrganizationAndActiveIsTrue(Organization organization);
+    List<OrgJoinRequest> findByUserAndActiveIsTrue(User user);
     OrgJoinRequest findByIdAndActiveIsTrue(Long id);
-    List<OrgJoinRequest> findByOrgId(Long orgId);
     List<OrgJoinRequest> findByOrganization(Organization organization);
-
     List<OrgJoinRequest> findByUser(User user);
 }
