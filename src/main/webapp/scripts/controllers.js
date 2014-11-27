@@ -2,7 +2,10 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope, Account, OrgJoinRequest, Organization) {
+respondecoApp.controller('MainController', function ($scope, $location, Account, OrgJoinRequest, Organization) {
+    $scope.main = function() {
+        return $location.path() === '' || $location.path() === '/';
+    };
 });
 
 respondecoApp.controller('AdminController', function ($scope) {
@@ -79,7 +82,7 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         $scope.settingsAccount = account;
 
         if ($scope.settingsAccount.organization !== undefined) {
-            $scope.organization = organization;
+            $scope.organization = $scope.settingsAccount.organization;
         }
 
         if($scope.settingsAccount.firstName == null) {

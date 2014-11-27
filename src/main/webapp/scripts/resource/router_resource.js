@@ -21,5 +21,5 @@ respondecoApp
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
-                }).otherwise({redirectTo:'/'});
+                });
     });

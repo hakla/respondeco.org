@@ -136,7 +136,9 @@ respondecoApp
                 $rootScope.$on('$routeChangeStart', function (event, next) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
-                    AuthenticationSharedService.valid(next.access.authorizedRoles);
+                    if (next.access != undefined) {
+                        AuthenticationSharedService.valid(next.access.authorizedRoles);
+                    }
                 });
 
                 // Call when the the client is confirmed

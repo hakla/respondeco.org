@@ -1,4 +1,5 @@
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
+@import url(./landing-page.css);
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/webapp\/bower_components\/bootstrap-sass\/vendor\/assets\/stylesheets\/bootstrap\/_normalize\.scss}line{font-family:\000039}}
 html {
   font-family: sans-serif;
@@ -7888,14 +7889,19 @@ button.close {
     display: none !important;
   }
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\000035}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\000037}}
 body {
   background: #fafafa;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000311}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000313}}
+.btn, .form-control {
+  border-radius: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000317}}
 .ribbon-development, .ribbon-test {
   position: absolute;
   width: 149px;
@@ -7908,48 +7914,29 @@ body {
   background-repeat: no-repeat;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000323}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000329}}
 .ribbon-development {
   background-image: url("../images/development_ribbon.png");
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000327}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000333}}
 .ribbon-test {
   background-image: url("../images/test_ribbon.png");
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000331}}
-.hero-unit {
-  margin: 50px auto 0 auto;
-  width: 300px;
-  font-size: 18px;
-  font-weight: 200;
-  line-height: 30px;
-  background-color: #eee;
-  border-radius: 6px;
-  padding: 60px;
-}
-
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000342}}
-.hero-unit h1 {
-  font-size: 60px;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000348}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000337}}
 .error {
   color: white;
   background-color: red;
 }
 
 /* make sure browsers use the pointer cursor for anchors, even with no href */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000354}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000343}}
 a:hover {
   cursor: pointer;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000358}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000347}}
 [ng-click],
 [data-ng-click],
 [x-ng-click] {
@@ -7957,7 +7944,7 @@ a:hover {
 }
 
 /* start Password strength bar style */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000365}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000354}}
 ul#strength {
   display: inline;
   list-style: none;
@@ -7967,12 +7954,12 @@ ul#strength {
   vertical-align: 2px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000374}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000363}}
 .point:last {
   margin: 0 !important;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000378}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000367}}
 .point {
   background: #DDD;
   border-radius: 2px;
@@ -7986,59 +7973,50 @@ ul#strength {
 /************************
  * Nav
  ************************/
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000393}}
-.navbar-nav {
-  margin-top: 15px;
-}
-
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000397}}
-.navbar-header {
-  height: 80px;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003101}}
-.navbar-header .navbar-brand img {
-  height: 50px;
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000381}}
+.navbar {
+  margin-bottom: 0;
 }
 
 /************************
  * Settings
  ************************/
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003110}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000388}}
 img {
   border-radius: 2px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003115}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000393}}
 .profile img {
   width: 100%;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003121}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\0000399}}
 .member li {
   padding: 0 5px 7px 5px;
   border: 1px solid #e3e3e3;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003125}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003103}}
 .member li .pull-left {
   padding: 0 10px 10px 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003128}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003106}}
 .member li .pull-left img {
   border-radius: 2px;
   width: 100%;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003136}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003114}}
 .profile, .account, .member {
   transition: .3s ease opacity;
   opacity: 1;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003140}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003118}}
 .profile.ng-hide, .account.ng-hide, .member.ng-hide {
   opacity: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003146}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003124}}
 .organization .organization-item {
   list-style-type: none;
   display: inline-block;
@@ -8048,27 +8026,27 @@ img {
   border: 1px solid #e3e3e3;
   border-radius: 2px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003155}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003133}}
 .organization .organization-item img {
   height: 200px;
   width: 200px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003160}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003138}}
 .organization .organization-item h2 {
   margin-top: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003163}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003141}}
 .organization .organization-item h2 a {
   color: #333;
   font-size: 18px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003172}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003150}}
 .orgjoinrequest .btn-group {
   margin-top: 25px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003177}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003155}}
 .my-drop-zone {
   text-align: center;
   border: none;
@@ -8076,7 +8054,7 @@ img {
   font-size: 4em;
   position: relative;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003184}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003162}}
 .my-drop-zone .file-upload-hover {
   position: absolute;
   top: 0px;
@@ -8092,33 +8070,33 @@ img {
   transition: .25s ease opacity;
   cursor: pointer;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003199}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003177}}
 .my-drop-zone .file-upload-hover:hover {
   opacity: 1;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003203}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003181}}
 .my-drop-zone .file-upload-hover i {
   cursor: pointer;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003207}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003185}}
 .my-drop-zone .file-upload-hover .progress-striped {
   position: absolute;
   left: 10%;
   width: 80%;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003214}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003192}}
 .nv-file-over {
   border: dotted 3px red;
 }
 
 /* Default class applied to drop zones on over */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003219}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003197}}
 .another-file-over-class {
   border: dotted 3px green;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003222}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/klaus\.harrer\/projects\/prv\/respondeco\/src\/main\/scss\/main\.scss}line{font-family:\00003200}}
 canvas {
   background-color: #f3f3f3;
   -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
