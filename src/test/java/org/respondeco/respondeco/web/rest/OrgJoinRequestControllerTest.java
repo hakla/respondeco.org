@@ -152,8 +152,14 @@ public class OrgJoinRequestControllerTest {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepository.findByLogin(defaultUser.getLogin())).thenReturn(defaultUser);
         when(organizationRepository.findByName(organization.getName())).thenReturn(organization);
-        when(organizationRepository.findOne(1L)).thenReturn(organization);
-        when(orgjoinrequestRepository.findOne(1L)).thenReturn(orgJoinRequest);
+        when(organizationRepository.findOne(organization.getId())).thenReturn(organization);
+        when(orgjoinrequestRepository.findOne(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
+        when(userRepository.findByLogin(potMember.getLogin())).thenReturn(potMember);
+        when(organizationRepository.findByOwner(defaultUser)).thenReturn(organization);
+        when(userRepository.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(userRepository.findOne(potMember.getId())).thenReturn(potMember);
+        when(orgjoinrequestRepository.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
+
 
         // Create OrgJoinRequest
         restOrgJoinRequestMockMvc.perform(post("/app/rest/orgjoinrequests")
@@ -165,20 +171,26 @@ public class OrgJoinRequestControllerTest {
         restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{orgName}", organization.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
         when(userService.getUserWithAuthorities()).thenReturn(potMember);
 
         // Accept OrgJoinRequest
-        restOrgJoinRequestMockMvc.perform(delete("/app/rest/orgjoinrequests/accept/{id}", 1L))
+        restOrgJoinRequestMockMvc.perform(post("/app/rest/orgjoinrequests/accept/{id}", orgJoinRequest.getId()))
                 .andExpect(status().isOk());
 
         // Decline OrgJoinRequest
-        restOrgJoinRequestMockMvc.perform(delete("/app/rest/orgjoinrequests/decline/{id}", 1L))
+        restOrgJoinRequestMockMvc.perform(post("/app/rest/orgjoinrequests/decline/{id}", orgJoinRequest.getId()))
                 .andExpect(status().isOk());
 
-
         // Read nonexisting OrgJoinRequest
-        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{id}", 1L)
+        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{id}", orgJoinRequest.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
+        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
+        // Read OrgJoinRequest by Owner
+        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests")
+                .param("filter","ownerrequests")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
     }
 }

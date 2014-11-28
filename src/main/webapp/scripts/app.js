@@ -7,7 +7,6 @@ var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 't
     'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'respondecoAppFilters',
     'angularFileUpload', 'ui.select']);
 
-
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
             $routeProvider

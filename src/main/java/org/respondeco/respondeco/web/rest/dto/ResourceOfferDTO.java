@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
 
@@ -18,6 +18,8 @@ import java.math.BigDecimal;
  * Created by Roman Kern on 18.11.14.
  */
 @ApiModel(value = "Resource Offer", description = "manage all resource offers")
+@Getter
+@Setter
 public class ResourceOfferDTO {
 
     @ApiModelProperty(value = "ID of the given Resource offer")
@@ -28,8 +30,8 @@ public class ResourceOfferDTO {
     private BigDecimal amount;
     @ApiModelProperty(value = "Description of the offer", required = true)
     private String description;
-    @ApiModelProperty(value = "ID of the organisation that created this offer", required = true)
-    private Long organisationId;
+    @ApiModelProperty(value = "ID of the organization that created this offer", required = true)
+    private Long organizationId;
 
     private Boolean isCommercial = false;
 
@@ -42,13 +44,6 @@ public class ResourceOfferDTO {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
-
-
-    public void setIsCommercial(Boolean isCommercial){ this.isCommercial = isCommercial; }
-    public void setIsRecurrent(Boolean isRecurrent){ this.isRecurrent = isRecurrent; }
-    public void setStartDate(LocalDate startDate){ this.startDate = startDate; }
-    public void setEndDate(LocalDate endDate){ this.endDate = endDate; }
-
 
     public DateTime getStartDateAsDateTime(){
         return this.startDate == null ? null : this.startDate.toDateTimeAtStartOfDay();
@@ -72,26 +67,12 @@ public class ResourceOfferDTO {
         this.setId(offer.getId());
         this.setAmount(offer.getAmount());
         this.setDescription(offer.getDescription());
-        this.setOrganisationId(offer.getOrganisationId());
+        this.setOrganizationId(offer.getOrganisation().getId());
         this.setIsCommercial(offer.getIsCommercial());
         this.setIsRecurrent(offer.getIsRecurrent());
         this.setStartDate(start == null ? null : start.toLocalDate());
         this.setEndDate(end == null ? null : end.toLocalDate());
     }
-/*
-    public ResourceOffer getOffer(){
-        ResourceOffer offer = new ResourceOffer();
-        offer.setId(this.getId());
-        offer.setAmount(this.getAmount());
-        offer.setDescription(this.getDescription());
-        offer.setOrganisationId(this.getOrganisationId());
-        offer.setIsCommercial(this.getIsCommercial());
-        offer.setIsRecurrent(this.getIsRecurrent());
-        offer.setStartDate(formatter.parseDateTime(this.getStartDate()));
-        offer.setEndDate(formatter.parseDateTime(this.getEndDate()));
-        return offer;
-    }
-    */
 
     private String dateTimeToString(DateTime dateTime){
         //DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
@@ -99,19 +80,4 @@ public class ResourceOfferDTO {
         return null;
         //return result;
     }
-
-
-    public void setId(Long id){ this.id = id; }
-    public void setName(String name){ this.name = name == null ? null : name.trim(); }
-    public void setAmount(BigDecimal amount){ this.amount = amount; }
-    public void setDescription(String description){ this.description = description == null ? null : description.trim(); }
-    public void setOrganisationId(Long organisationId){ this.organisationId = organisationId; }
-    public void setResourceTags(String[] tags){ this.resourceTags = tags; }
-
-    public Long getId(){ return this.id; }
-    public String getName(){ return this.name; }
-    public BigDecimal getAmount() { return this.amount; }
-    public String getDescription() { return this.description; }
-    public Long getOrganisationId(){ return this.organisationId; }
-    public String[] getResourceTags() { return this.resourceTags; }
 }

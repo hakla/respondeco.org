@@ -10,10 +10,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
@@ -57,6 +54,9 @@ public class ProjectServiceTest {
     private PropertyTagRepository propertyTagRepositoryMock;
 
     @Mock
+    private ImageRepository imageRepositoryMock;
+
+    @Mock
     private UserService userService;
 
     private ProjectService projectService;
@@ -73,7 +73,8 @@ public class ProjectServiceTest {
                 userService,
                 userRepositoryMock,
                 organizationRepositoryMock,
-                propertyTagRepositoryMock);
+                propertyTagRepositoryMock,
+                imageRepositoryMock);
 
         defaultUser = new User();
         defaultUser.setId(1L);

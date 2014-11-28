@@ -2,10 +2,7 @@ package org.respondeco.respondeco.service;
 
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
@@ -40,6 +37,7 @@ public class ProjectService {
     private UserRepository userRepository;
     private OrganizationRepository organizationRepository;
     private PropertyTagRepository propertyTagRepository;
+    private ImageRepository imageRepository;
 
     private RestUtil restUtil;
 
@@ -47,18 +45,19 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
                           OrganizationRepository organizationRepository,
-                          PropertyTagRepository propertyTagRepository) {
+                          PropertyTagRepository propertyTagRepository, ImageRepository imageRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.propertyTagRepository = propertyTagRepository;
+        this.imageRepository = imageRepository;
         this.restUtil = new RestUtil();
     }
 
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
-                          LocalDate endDate, byte[] logo, List<String> propertyTags,
-                          List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
+                          LocalDate endDate, List<String> propertyTags,
+                          List<ResourceRequirementDTO> resourceRequirements, Long imageId) throws OperationForbiddenException {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
@@ -77,11 +76,7 @@ public class ProjectService {
         newProject.setConcrete(isConcrete);
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            newProject.setProjectLogo(projectLogo);
-        }
+        newProject.setProjectLogo(imageRepository.findOne(imageId));
         List<PropertyTag> tags = getPropertyTags(propertyTags);
         newProject.setPropertyTags(tags);
 
@@ -90,7 +85,7 @@ public class ProjectService {
     }
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        LocalDate endDate, byte[] logo) throws OperationForbiddenException {
+                        LocalDate endDate, Long imageId) throws OperationForbiddenException {
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
             throw new IllegalArgumentException("Project id must not be null");
@@ -122,11 +117,7 @@ public class ProjectService {
         project.setConcrete(isConcrete);
         project.setStartDate(startDate);
         project.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            project.setProjectLogo(projectLogo);
-        }
+        project.setProjectLogo(imageRepository.findOne(imageId));
         projectRepository.save(project);
         return project;
     }

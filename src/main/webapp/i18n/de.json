@@ -190,11 +190,19 @@
         "textmessage": {
             "title": "Nachricht von "
         },
-        "projects": {
+        "project": {
+            "info": "Projekt Information",
             "title": "Projekte",
             "createProject": {
                 "title": "Neues Projekt erstellen",
-                "tag":"Tag hinzufügen"
+                "tag":"Tags hinzufügen",
+                "resource": "Ressource anfordern",
+                "logo": "Logo hinzufügen",
+                "name.placeholder": "Name des Projekts",
+                "purpose.placeholder": "Ziel des Projekts",
+                "startDate.placeholder": "01.01.2015",
+                "endDate.placeholder": "31.12.2018",
+                "tag.placeholder": "Property Tags des Projekts"
             },
             "details": {
                 "title": "Projektdetails",
@@ -211,6 +219,10 @@
             "purpose": "Vorhaben",
             "concrete": "Konkretes Projekt",
             "startDate": "Start-Datum",
+            "endDate": "End-Datum",
+            "tag": "PropertyTags",
+            "resource": "Ressoucen",
+            "logo": "ProjectLogo",
             "endDate": "End-Datum",
             "name.placeholder": "Ein Teil des Namens des Projektes",
             "tags.placeholder": "Tags mit welchen das Projekt verknüpft ist"
@@ -277,7 +289,6 @@
     },
     "general": {
         "edit": "Bearbeiten",
-        "upload": "Hochladen",
         "button": {
             "save": "Speichern",
             "cancel": "Abbrechen"
