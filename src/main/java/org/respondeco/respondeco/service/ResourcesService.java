@@ -131,23 +131,17 @@ public class ResourcesService {
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
-        ResourceOffer newOffer = null;
-        List<ResourceOffer> existingOffer = this.resourceOfferRepository.findByNameAndOrganisationId(name, organisationId);
-        if (existingOffer.isEmpty() == true) {
-            newOffer = new ResourceOffer();
-            newOffer.setName(name);
-            newOffer.setAmount(amount);
-            newOffer.setDescription(description);
-            newOffer.setOrganisation(organizationRepository.findOne(organisationId));
-            newOffer.setIsCommercial(isCommercial);
-            newOffer.setIsRecurrent(isRecurrent);
-            newOffer.setStartDate(startDate);
-            newOffer.setEndDate(endDate);
-            this.mapTags(newOffer, resourceTags);
-            this.resourceOfferRepository.save(newOffer);
-        } else {
-            throw new ResourceException(String.format("Offer with same description already exists (Description: %s)", description), EnumResourceException.ALREADY_EXISTS);
-        }
+        ResourceOffer newOffer = new ResourceOffer();
+        newOffer.setName(name);
+        newOffer.setAmount(amount);
+        newOffer.setDescription(description);
+        newOffer.setOrganisation(organizationRepository.findOne(organisationId));
+        newOffer.setIsCommercial(isCommercial);
+        newOffer.setIsRecurrent(isRecurrent);
+        newOffer.setStartDate(startDate);
+        newOffer.setEndDate(endDate);
+        this.mapTags(newOffer, resourceTags);
+        this.resourceOfferRepository.save(newOffer);
 
         return newOffer;
     }
