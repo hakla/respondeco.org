@@ -11,8 +11,13 @@
                 </div>
                 <div class="form-group col-xs-6">
                     <label>Tags</label>
-                    <input type="text" class="form-control" placeholder="{{'global.projects.tags.placeholder' | translate}}"
-                           ng-model="project.tags" typeahead="t.name for t in getPropertyTagNames($viewValue)"/>
+                    <ui-select multiple tagging tagging-label="(custom 'new' label)" ng-model="project.tags"
+                               theme="bootstrap" ng-disabled="disabled">
+                        <ui-select-match placeholder="Select colors...">{{$item.text}}</ui-select-match>
+                        <ui-select-choices repeat="tag in getPropertyTagNames($select.search)">
+                            {{tag.text}}
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
                 <div class="form-group col-xs-12">
                     <button type="submit" class="btn btn-primary">Suchen</button>
@@ -26,9 +31,8 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <div class="project-item" ng-repeat="project in projects">
-                <resp-project project="project" on-project-click="redirectToProject(project)"></resp-project>
-            </div>
+            <resp-project project="project" on-project-click="redirectToProject(project)"
+                          ng-repeat="project in projects"></resp-project>
         </div>
     </div>
 </div>

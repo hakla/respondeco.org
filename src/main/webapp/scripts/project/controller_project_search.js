@@ -3,9 +3,16 @@
  */
 'use strict';
 
-respondecoApp.controller('ProjectSearchController', function ($scope,$location, Project, ProjectNames, PropertyTagNames) {
+respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project,
+                                                              resolvedProjects, ProjectNames, PropertyTagNames) {
 
-    $scope.projects = null;
+    $scope.availableTags = [
+        {text: 'Apple', id: 1},
+        {text: 'Apricot', id: 2},
+        {text: 'Avocado', id: 3},
+    ];
+
+    $scope.projects = resolvedProjects;
     $scope.project = {
         name: null,
         tags: null
@@ -13,19 +20,27 @@ respondecoApp.controller('ProjectSearchController', function ($scope,$location, 
 
     $scope.search = function() {
         Project.query({
-            name: $scope.project.name,
+            filter: $scope.project.name,
             tags: $scope.project.tags
         }, function(data) {
             $scope.projects = data;
         });
     }
 
-    $scope.getProjectNames = function(value) {
-        return ProjectNames.getProjectNames(value);
+    $scope.getProjectNames = function($viewValue) {
+        return ProjectNames.getProjectNames($viewValue).$promise.then(
+            function(response) {
+                return response;
+            }
+        );
     }
 
-    $scope.getPropertyTagNames = function(value) {
-        return PropertyTagNames.getPropertyTagNames(value);
+    $scope.getPropertyTagNames = function($viewValue) {
+        return PropertyTagNames.getPropertyTagNames($viewValue).$promise.then(
+            function(response) {
+                return response;
+            }
+        );
     }
 
     $scope.redirectToProject = function(project) {

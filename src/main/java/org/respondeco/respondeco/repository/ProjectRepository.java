@@ -20,6 +20,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     public Project findByIdAndActiveIsTrue(Long id);
 
+    //TODO: join entities auf is_active pruefen
+
     @Query("SELECT DISTINCT p " +
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
             "WHERE (pt.name in :tags OR p.name LIKE %:name%) " +

@@ -144,14 +144,14 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<ProjectResponseDTO> getByNameAndTags(
-            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String filter,
             @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) String order) {
         log.debug("REST request to get projects");
-        return projectService.findProjects(name, tags, new RestParameters(page, pageSize, order, fields));
+        return projectService.findProjects(filter, tags, new RestParameters(page, pageSize, order, fields));
     }
 
     /**
@@ -164,14 +164,14 @@ public class ProjectController {
     @Timed
     public List<ProjectResponseDTO> getByOrganizationAndNameAndTags(
             @PathVariable Long organizationId,
-            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String filter,
             @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) String order) {
         log.debug("REST request to get projects for organization {}", organizationId);
-        return projectService.findProjectsFromOrganization(organizationId, name, tags,
+        return projectService.findProjectsFromOrganization(organizationId, filter, tags,
                 new RestParameters(page, pageSize, order, fields));
     }
 
