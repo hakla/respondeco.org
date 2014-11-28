@@ -18,7 +18,8 @@
             </div>
             <div class="form-group">
                 <label translate="global.resource.new.tags">tags</label>
-                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.tags' | translate}}">
+                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.tags' | translate}}"
+                    ng-model="resource.tags">
             </div>
             <div class="form-group">
                 <label translate="global.resource.new.amount">amount</label>
@@ -43,12 +44,13 @@
             </div>
 
             <div class="form-group">
-                <label translate="global.resource.new.datefrom">available from</label>
-                <input type="date" class="form-control" ng-model="resource.startDate">
+                <label translate="global.resource.new.startDate">available from</label>
+                <input type="date" ng-model="resource.startDate" placeholder="resource.placeholder.startDate" class="form-control">
             </div>
+
             <div class="form-group">
-                <label translate="global.resource.new.dateto">available until</label>
-                <input type="date" class="form-control" ng-model="resource.endDate">
+                <label translate="global.resource.new.endDate">available until</label>
+                <input type="date" ng-model="resource.endDate"placeholder="global.resource.placeholder.endDate" class="form-control" >
             </div>
             <div class="alert alert-danger" ng-show="form.saveError" translate="global.resource.new.error">
                 <strong>resource could not be created</strong>

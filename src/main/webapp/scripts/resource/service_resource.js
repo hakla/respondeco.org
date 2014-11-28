@@ -1,9 +1,8 @@
 'use strict';
 
 respondecoApp.factory('Resource', function ($resource) {
-	return $resource('app/rest/resourceOffers/:id', {id: '@id'}, {
+	return $resource('app/rest/resourceOffers/:id', {}, {
 		'query': { method: 'GET', isArray: true},
-		'get' : { method: 'GET'},
-		'new': { method: 'POST', url: '/rest/organisations/:id/resourceOffer'}
+		'get' : { method: 'GET'}
 	});
 });

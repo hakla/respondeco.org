@@ -30,7 +30,7 @@ public class UserDTO {
 
     @Getter
     @Setter
-    private OrganizationDTO organization;
+    private Long organizationId;
 
     @Getter
     @Setter
@@ -40,7 +40,7 @@ public class UserDTO {
     }
 
     public UserDTO(String login, String password, String title, String gender, String firstName, String lastName,
-                   String email, String description, String langKey, List<String> roles, OrganizationDTO organization) {
+                   String email, String description, String langKey, List<String> roles, Long organizationId) {
         this.login = login;
         this.password = password;
         this.title = title;
@@ -53,12 +53,12 @@ public class UserDTO {
         this.langKey = langKey;
         this.roles = roles;
 
-        this.organization = organization;
+        this.organizationId = organizationId;
     }
 
     public UserDTO(String login, String password, String title, String gender, String firstName, String lastName,
-                   String email, String description, String langKey, List<String> roles, OrganizationDTO organization, ImageDTO profilePicture) {
-        this(login, password, title, gender, firstName, lastName, email, description, langKey, roles, organization);
+                   String email, String description, String langKey, List<String> roles, Long organizationId, ImageDTO profilePicture) {
+        this(login, password, title, gender, firstName, lastName, email, description, langKey, roles, organizationId);
         this.profilePicture = profilePicture;
     }
 

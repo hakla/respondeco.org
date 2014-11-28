@@ -1,10 +1,16 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, Resource) {
+respondecoApp.controller('ResourceController', function($scope, $location, Resource, Account) {
 
 	$scope.resource = {id: null, name: null, description: null, tags: null, amount: null, 
-		dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
+		startDate: null, endDate: null, isCommercial: false, isRecurrent: false, organizationId: null};
 	$scope.resources = Resource.query();
+
+
+	Account.get(null, function(account) {
+		$scope.resource.organizationId = account.organizationId;
+		console.log($scope.resource.organizationId);
+	});
 
 	$scope.redirectToResource = function(id) {
 		$location.path('resource/' + id);
@@ -18,13 +24,18 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 	}
 
 	$scope.create = function() {
-		Resource.save($scope.resource, 
+		if($scope.resource.organizationId == null) {
+			console.log("error");
+
+		} else {
+			Resource.save($scope.resource, 
 			function() {
 				$scope.redirectToResource('');
 			}, 
 			function() {
 				$scope.form.saveError = true;
-		});
+			});
+		}
 	}
 
 	$scope.delete = function(id) {
@@ -36,7 +47,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 
 	$scope.clear = function() {
 		$scope.resource = {id: null, name: null, description: null, tags: null, 
-			amount: null, dateStart: null, dateEnd: null, isCommercial: null, isRecurrent: null};
+			amount: null, startDate: null, endDate: null, isCommercial: null, isRecurrent: null};
 	}
+
+	
 
 });
