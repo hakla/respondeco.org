@@ -7,6 +7,7 @@ import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
@@ -41,6 +42,7 @@ public class ProjectService {
     private UserRepository userRepository;
     private OrganizationRepository organizationRepository;
     private PropertyTagService propertyTagService;
+    private ImageRepository imageRepository;
 
     private RestUtil restUtil;
 
@@ -48,18 +50,20 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
                           OrganizationRepository organizationRepository,
-                          PropertyTagService propertyTagService) {
+                          PropertyTagService propertyTagService,
+                          ImageRepository imageRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.propertyTagService = propertyTagService;
+        this.imageRepository = imageRepository;
         this.restUtil = new RestUtil();
     }
 
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
-                          LocalDate endDate, byte[] logo, List<String> propertyTags,
-                          List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
+                          LocalDate endDate, List<String> propertyTags,
+                          List<ResourceRequirementDTO> resourceRequirements, Long imageId) throws OperationForbiddenException {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
@@ -78,12 +82,8 @@ public class ProjectService {
         newProject.setConcrete(isConcrete);
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            newProject.setProjectLogo(projectLogo);
-        }
         List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
+        newProject.setProjectLogo(imageRepository.findOne(imageId));
         newProject.setPropertyTags(tags);
 
         projectRepository.save(newProject);
@@ -91,8 +91,9 @@ public class ProjectService {
     }
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        LocalDate endDate, byte[] logo, List<String> propertyTags,
+                        LocalDate endDate, Long imageId, List<String> propertyTags,
                         List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
+
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
             throw new IllegalArgumentException("Project id must not be null");
@@ -124,13 +125,9 @@ public class ProjectService {
         project.setConcrete(isConcrete);
         project.setStartDate(startDate);
         project.setEndDate(endDate);
-        if(logo != null) {
-            ProjectLogo projectLogo = new ProjectLogo();
-            projectLogo.setData(logo);
-            project.setProjectLogo(projectLogo);
-        }
         List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
         project.setPropertyTags(tags);
+        project.setProjectLogo(imageRepository.findOne(imageId));
         projectRepository.save(project);
         return project;
     }

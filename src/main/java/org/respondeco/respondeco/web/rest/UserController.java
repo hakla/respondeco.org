@@ -78,24 +78,48 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    ResponseEntity<List<User>> getUserByOrgId(@PathVariable Long orgId) throws NoSuchOrganizationException, NotOwnerOfOrganizationException {
+    ResponseEntity<List<User>> getUserByOrgId(@PathVariable Long orgId) {
         log.debug("REST request to get Users by OrgId : {}", orgId);
-        return Optional.ofNullable(userService.getUserByOrgId(orgId))
-                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ResponseEntity<List<User>> responseEntity;
+        try {
+            return Optional.ofNullable(userService.getUserByOrgId(orgId))
+                    .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not get User by Organization : {}", orgId, e);
+            responseEntity = new ResponseEntity<List<User>>(HttpStatus.NOT_FOUND);
+        } catch (NotOwnerOfOrganizationException e) {
+            log.error("Could not get User by Organization : {}", orgId, e);
+            responseEntity = new ResponseEntity<List<User>>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
     /**
-     * POST  /rest/deleteMember-> changes the current user's password
+     * POST  /rest/deleteMember-> delete Member by userlogin
      */
     @RequestMapping(value = "/rest/user/deleteMember/{userlogin}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public void deleteMember(@PathVariable String userlogin) throws NoSuchOrganizationException, NoSuchUserException, NotOwnerOfOrganizationException {
+    public ResponseEntity<?> deleteMember(@PathVariable String userlogin) {
         log.debug("REST request to delete Member : {}", userlogin);
-        userService.deleteMember(userlogin);
+        ResponseEntity<?> responseEntity;
+        try {
+            userService.deleteMember(userlogin);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchUserException e) {
+            log.error("Could not delete Member : {}", userlogin, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not delete Member : {}", userlogin, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NotOwnerOfOrganizationException e) {
+            log.error("Could not delete Member : {}", userlogin, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
     }
 
     /**
@@ -127,9 +151,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public void leaveOrganization() {
+    public ResponseEntity<?> leaveOrganization() {
         log.debug("REST request to leave Organization : {}");
         userService.leaveOrganization();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

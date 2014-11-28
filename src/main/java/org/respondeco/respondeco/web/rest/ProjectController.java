@@ -3,20 +3,25 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorConstants;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +43,12 @@ public class ProjectController {
     private final Logger log = LoggerFactory.getLogger(ProjectController.class);
 
     private ProjectService projectService;
-    private ProjectRepository projectRepository;
+    private ResourcesService resourcesService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ProjectRepository projectRepository) {
+    public ProjectController(ProjectService projectService, ResourcesService resourcesService) {
         this.projectService = projectService;
-        this.projectRepository = projectRepository;
+        this.resourcesService = resourcesService;
     }
 
     /**
@@ -65,9 +70,9 @@ public class ProjectController {
                     project.getConcrete(),
                     project.getStartDate(),
                     project.getEndDate(),
-                    project.getProjectLogo(),
                     project.getPropertyTags(),
-                    project.getResourceRequirements());
+                    project.getResourceRequirements(),
+                    project.getImageId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch(IllegalArgumentException e) {
             log.error("Could not save Project : {}", project, e);
@@ -99,7 +104,7 @@ public class ProjectController {
                     project.getConcrete(),
                     project.getStartDate(),
                     project.getEndDate(),
-                    project.getProjectLogo(),
+                    project.getImageId(),
                     project.getPropertyTags(),
                     project.getResourceRequirements());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
@@ -225,6 +230,17 @@ public class ProjectController {
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
+    }
+
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<ResourceRequirementDTO> getAllResourceRequirement(@PathVariable Long id) {
+        log.debug("REST request to get all resource requirements belongs to project id:{}", id);
+        return this.resourcesService.getAllRequirements(id);
     }
 
 }

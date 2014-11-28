@@ -10,12 +10,10 @@ import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.PropertyTagService;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
@@ -41,7 +39,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -85,6 +82,14 @@ public class ProjectControllerTest {
     @Mock
     private PropertyTagService propertyTagServiceMock;
 
+    private ImageRepository imageRepositoryMock;
+
+    @Mock
+    private ResourcesService resourcesServiceMock;
+
+    @Mock
+    private PropertyTagRepository propertyTagRepositoryMock;
+
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
     private ProjectRequestDTO projectRequestDTO;
@@ -101,8 +106,9 @@ public class ProjectControllerTest {
                 userServiceMock,
                 userRepositoryMock,
                 organizationRepositoryMock,
-                propertyTagServiceMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, projectRepositoryMock);
+                propertyTagServiceMock,
+                imageRepositoryMock));
+        ProjectController projectController = new ProjectController(projectServiceMock, resourcesServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -148,9 +154,9 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -164,9 +170,9 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
         // Read Project
@@ -194,7 +200,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getImageId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
 
@@ -210,7 +216,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getImageId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
 

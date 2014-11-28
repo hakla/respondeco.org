@@ -10,16 +10,14 @@
     <!--
         Added the entity ProjectIdea.
     -->
-    <changeSet id="20141116203400" author="Clemens Puehringer">
-        <createTable tableName="T_RESOURCETAG_T_RESOURCEOFFER">
+    <changeSet id="20141116203100" author="Clemens Puehringer">
+        <createTable tableName="T_RESOURCE_T_RESOURCETAG">
+            <column name="T_RESOURCE_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
             <column name="T_RESOURCETAG_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="resourceOffers_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
-
-        <addPrimaryKey columnNames="T_RESOURCETAG_id, resourceOffers_id" tableName="T_RESOURCETAG_T_RESOURCEOFFER"/>
     </changeSet>
 </databaseChangeLog>

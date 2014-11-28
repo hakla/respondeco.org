@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
@@ -50,9 +51,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @ManyToOne
     private User manager;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ProjectLogo projectLogo;
-
     @ManyToMany
     @JoinTable(
             name="T_PROJECT_JOIN_T_PROPERTYTAG",
@@ -60,6 +58,9 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
             inverseJoinColumns = { @JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id" ) }
     )
     private List<PropertyTag> propertyTags;
+
+    @JsonIgnore
+    private Image projectLogo;
 
     @OneToMany
     @JoinTable(

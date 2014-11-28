@@ -17,11 +17,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.PropertyTagService;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -39,7 +38,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.repository.ProjectRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -57,11 +55,11 @@ public class ProjectIntegrationTest {
 
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
-        
+
     private static final String DEFAULT_PURPOSE = "SAMPLE_TEXT";
     private static final String UPDATED_PURPOSE = "UPDATED_TEXT";
 
-        
+
     @Inject
     private ProjectRepository projectRepository;
 
@@ -74,8 +72,14 @@ public class ProjectIntegrationTest {
     @Inject
     private PropertyTagService propertyTagService;
 
+    @Inject
+    private ImageRepository imageRepository;
+
     @Mock
     private UserService userServiceMock;
+
+    @Inject
+    private ResourcesService resourcesService;
 
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
@@ -92,8 +96,9 @@ public class ProjectIntegrationTest {
                 userServiceMock,
                 userRepository,
                 organizationRepository,
-                propertyTagService));
-        ProjectController projectController = new ProjectController(projectService, projectRepository);
+                propertyTagService,
+                imageRepository));
+        ProjectController projectController = new ProjectController(projectService, resourcesService);
 
         projectRepository.deleteAll();
         projectRepository.flush();
@@ -140,9 +145,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -156,9 +161,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         Long id = projectCaptor.getValue().getId();
 
@@ -189,7 +194,7 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
+                projectRequestDTO.getImageId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
 
@@ -236,9 +241,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -310,9 +315,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -349,9 +354,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -389,9 +394,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -434,9 +439,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -466,9 +471,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -503,9 +508,9 @@ public class ProjectIntegrationTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getProjectLogo(),
                 projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getImageId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
