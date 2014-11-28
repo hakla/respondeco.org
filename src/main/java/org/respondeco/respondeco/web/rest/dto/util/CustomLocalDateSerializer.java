@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.domain.util;
+package org.respondeco.respondeco.web.rest.dto.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

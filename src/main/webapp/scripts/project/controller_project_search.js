@@ -27,16 +27,16 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
         });
     }
 
-    $scope.getProjectNames = function($viewValue) {
-        return ProjectNames.getProjectNames($viewValue).$promise.then(
+    $scope.getProjectNames = function(viewValue) {
+        return ProjectNames.getProjectNames(viewValue).$promise.then(
             function(response) {
                 return response;
             }
         );
     }
 
-    $scope.getPropertyTagNames = function($viewValue) {
-        return PropertyTagNames.getPropertyTagNames($viewValue).$promise.then(
+    $scope.getPropertyTagNames = function(viewValue) {
+        return PropertyTagNames.getPropertyTagNames(viewValue).$promise.then(
             function(response) {
                 return response;
             }

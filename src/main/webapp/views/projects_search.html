@@ -13,9 +13,9 @@
                     <label>Tags</label>
                     <ui-select multiple tagging tagging-label="(custom 'new' label)" ng-model="project.tags"
                                theme="bootstrap" ng-disabled="disabled">
-                        <ui-select-match placeholder="Select colors...">{{$item.text}}</ui-select-match>
-                        <ui-select-choices repeat="tag in getPropertyTagNames($select.search)">
-                            {{tag.text}}
+                        <ui-select-match placeholder="Select colors...">{{$item.name}}</ui-select-match>
+                        <ui-select-choices repeat="tag for tag in getPropertyTagNames($select.search)">
+                            {{tag.name}}
                         </ui-select-choices>
                     </ui-select>
                 </div>

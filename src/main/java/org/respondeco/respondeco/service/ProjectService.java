@@ -6,6 +6,7 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
@@ -134,14 +135,15 @@ public class ProjectService {
         return project;
     }
 
-    public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException, OperationForbiddenException {
+    public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException,
+            OperationForbiddenException, NoSuchProjectException {
         User newManager = userRepository.findByLogin(newManagerLogin);
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
-            throw new IllegalArgumentException("no such project: " + id);
+            throw new NoSuchProjectException("no such project: " + id);
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.equals(project.getManager()) == false) {

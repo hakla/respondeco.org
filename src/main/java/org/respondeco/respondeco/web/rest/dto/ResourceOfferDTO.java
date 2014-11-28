@@ -7,10 +7,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.respondeco.respondeco.domain.ResourceOffer;
-import org.respondeco.respondeco.domain.util.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 
 import java.math.BigDecimal;
 

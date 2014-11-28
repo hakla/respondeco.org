@@ -6,10 +6,13 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
+import org.respondeco.respondeco.web.rest.util.ErrorConstants;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,9 +128,15 @@ public class ProjectController {
         try {
             projectService.setManager(id, newManager);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(IllegalArgumentException | NoSuchUserException e) {
+        } catch(IllegalArgumentException e) {
             log.error("Could not set manager of project {} to {}", id, newManager, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NOT_A_VALID_MANAGER);
+        } catch(NoSuchUserException e) {
+            log.error("Could not set manager of project {} to {}", id, newManager, e);
+            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NO_SUCH_USER);
+        } catch (NoSuchProjectException e) {
+            log.error("Could not set manager of project {} to {}", id, newManager, e);
+            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NO_SUCH_PROJECT);
         } catch(OperationForbiddenException e) {
             log.error("Could not set manager of project {} to {}", id, newManager, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -210,7 +219,7 @@ public class ProjectController {
             projectService.delete(id);
         } catch(IllegalArgumentException e) {
             log.error("Could not delete project {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NO_SUCH_PROJECT);
         } catch(OperationForbiddenException e) {
             log.error("Could not delete project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -218,29 +227,4 @@ public class ProjectController {
         return responseEntity;
     }
 
-    /**
-     * GET  /rest/names/projects?filter=&limit= -> delete the "id" project.
-     */
-    /**
-    @ApiOperation(value = "Get Project names", notes = "Get all the Project names matching the filter")
-    @RequestMapping(value = "/rest/names/projects",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @Timed
-    public List<String> getProjectNames(
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer limit) {
-        log.debug("REST request to get Project names : {}", filter);
-        if(filter == null) {
-            filter = "";
-        }
-        if(limit == null) {
-            limit = 20;
-        }
-        PageRequest request = new PageRequest(0, limit);
-        //TODO: fix pagination
-        return projectRepository.findProjectNamesLike(filter, null);
-    }
-            */
 }
