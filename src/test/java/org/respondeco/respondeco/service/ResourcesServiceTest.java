@@ -475,7 +475,7 @@ public class ResourcesServiceTest {
         int listSize = 1;
         List<ResourceOfferDTO> expectedItem = this.resourcesService.getAllOffers(ogranisationID);
         assertEquals(expectedItem.size(), listSize);
-        assertEquals(expectedItem.get(0).getOrganisationId(), ogranisationID);
+        assertEquals(expectedItem.get(0).getOrganizationId(), ogranisationID);
         assertEquals(expectedItem.get(0).getId(), expectedOfferID);
         verify(this.resourceOfferRepositoryMock, times(1)).findByOrganisationId(isA(longCl));
 

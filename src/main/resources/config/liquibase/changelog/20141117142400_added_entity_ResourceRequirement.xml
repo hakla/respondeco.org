@@ -12,8 +12,8 @@
     -->
     <changeSet id="20141117142400" author="Klaus Harrer">
         <createTable tableName="T_RESOURCEREQUIREMENT">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="resource_id" type="bigint"/>
             <column name="project_id" type="bigint"/>

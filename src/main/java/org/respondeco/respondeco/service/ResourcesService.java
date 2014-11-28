@@ -143,8 +143,8 @@ public class ResourcesService {
             newOffer.setIsRecurrent(isRecurrent);
             newOffer.setStartDate(startDate);
             newOffer.setEndDate(endDate);
-            this.resourceOfferRepository.save(newOffer);
             this.mapTags(newOffer, resourceTags);
+            this.resourceOfferRepository.save(newOffer);
         } else {
             throw new ResourceException(String.format("Offer with same description already exists (Description: %s)", description), EnumResourceException.ALREADY_EXISTS);
         }
@@ -162,10 +162,8 @@ public class ResourcesService {
             offer.setIsRecurrent(isRecurrent);
             offer.setStartDate(startDate);
             offer.setEndDate(endDate);
-            this.resourceOfferRepository.save(offer);
-
-            // no entry exists, save all
             this.mapTags(offer, resourceTags);
+            this.resourceOfferRepository.save(offer);
         }
         else{
             throw new ResourceException(String.format("Offer with Id: %d do not exists", offerId), EnumResourceException.NOT_FOUND);

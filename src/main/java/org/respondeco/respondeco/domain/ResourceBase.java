@@ -44,9 +44,9 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
     protected String description;
 
     @ManyToMany(mappedBy = "resources")
-    private List<ResourceTag> resourceTags;
+    private List<ResourceTag> resourceTags = new ArrayList<>();
 
-    public void addResourceTag(ResourceTag tag){
+    public void addResourceTag(ResourceTag tag) {
         this.resourceTags.add(tag);
     }
 

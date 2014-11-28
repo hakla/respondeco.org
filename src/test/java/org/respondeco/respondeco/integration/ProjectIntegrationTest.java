@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -76,6 +77,9 @@ public class ProjectIntegrationTest {
     @Mock
     private UserService userServiceMock;
 
+    @Inject
+    private ResourcesService resourcesService;
+
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
     private ProjectRequestDTO projectRequestDTO;
@@ -93,7 +97,7 @@ public class ProjectIntegrationTest {
                 organizationRepository,
                 propertyTagRepository,
                 imageRepository));
-        ProjectController projectController = new ProjectController(projectService, projectRepository);
+        ProjectController projectController = new ProjectController(projectService, resourcesService);
 
         projectRepository.deleteAll();
         projectRepository.flush();

@@ -77,39 +77,39 @@ public class ResourceControllerTest {
         ResourceOfferDTO sentDTO = new ResourceOfferDTO();
         sentDTO.setName("test");
         sentDTO.setDescription("Hakkiod");
-        sentDTO.setOrganisationId(1L);
+        sentDTO.setOrganizationId(1L);
         sentDTO.setAmount(new BigDecimal(10));
         sentDTO.setIsCommercial(true);
         String[] tags = new String[1];
         tags[0] = "My Super Tag";
         sentDTO.setResourceTags(tags);
         // Create Project
-        restMockMvc.perform(post("/app/rest/organisations/{organisationId}/resourceOffer", 1L)
+        restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         //    .andExpect(jsonPath("$.id").value(sentOfferDTO.getId().intValue()))
         ;
-        restMockMvc.perform(post("/app/rest/organisations/{organisationId}/resourceOffer", 1L)
+        restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isBadRequest());
 
         sentDTO.setName(null);
-        restMockMvc.perform(post("/app/rest/organisations/{organisationId}/resourceOffer", 1L)
+        restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isBadRequest());
 
         sentDTO.setName("yuppi");
-        restMockMvc.perform(put("/app/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
+        restMockMvc.perform(put("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isBadRequest());
 
         sentDTO.setId(1L);
-        restMockMvc.perform(put("/app/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
+        restMockMvc.perform(put("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isOk());
@@ -119,22 +119,22 @@ public class ResourceControllerTest {
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isOk());
 
-        restMockMvc.perform(get("/app/rest/organisations/{organisationId}/resourceOffers", 1L)
+        restMockMvc.perform(get("/app/rest/organisations/{organizationId}/resourceOffers", 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isOk());
 
-        restMockMvc.perform(delete("/app/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
+        restMockMvc.perform(delete("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isOk());
 
-        restMockMvc.perform(delete("/app/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}", -1L, -1L)
+        restMockMvc.perform(delete("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", -1L, -1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isBadRequest());
 
-        restMockMvc.perform(delete("/app/rest/organisations/{organisationId}/resourceOffers/{resourceOfferId}", null, null)
+        restMockMvc.perform(delete("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", null, null)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
             .andExpect(status().isNotFound());

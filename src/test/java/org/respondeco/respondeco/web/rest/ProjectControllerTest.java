@@ -11,6 +11,7 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
@@ -35,7 +36,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -80,6 +80,9 @@ public class ProjectControllerTest {
     private ImageRepository imageRepositoryMock;
 
     @Mock
+    private ResourcesService resourcesServiceMock;
+
+    @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
 
     private ProjectService projectServiceMock;
@@ -100,7 +103,7 @@ public class ProjectControllerTest {
                 organizationRepositoryMock,
                 propertyTagRepositoryMock,
                 imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, projectRepositoryMock);
+        ProjectController projectController = new ProjectController(projectServiceMock, resourcesServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 

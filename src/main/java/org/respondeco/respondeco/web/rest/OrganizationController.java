@@ -4,17 +4,22 @@ import com.codahale.metrics.annotation.Timed;
 import org.apache.commons.lang.StringUtils;
 import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.ResourcesService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +41,8 @@ public class OrganizationController {
     private final Logger log = LoggerFactory.getLogger(OrganizationController.class);
 
     private OrganizationRepository organizationRepository;
+
+    private ResourcesService resourcesService;
     private OrganizationService organizationService;
     private UserService userService;
 
@@ -207,6 +214,20 @@ public class OrganizationController {
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return responseEntity;
+    }
+
+    /*
+        RESOURCEOFFERS
+     */
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organizations/{id}/resourceOffers",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<ResourceOfferDTO> getAllResourceOffer(@PathVariable Long id) {
+        log.debug("REST request to get all resource offer belongs to Organization id: {}", id);
+        return this.resourcesService.getAllOffers(id);
     }
 
 }
