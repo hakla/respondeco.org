@@ -1,6 +1,6 @@
 <div>
  
-    <h1> {{ 'global.resource.own.title' | translate }} Unternehmen
+    <h1> {{ 'global.resource.own.title' | translate }} {{organization.name}}
         <button class="btn btn-success btn-mid pull-right"
                 ng-click="redirectToResource('new')">
             <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'global.resource.newbutton' | translate }}
@@ -31,12 +31,12 @@
                     <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
                     <td> 
-                        <button type="button" class="btn btn-default" ng-click="redirectToResource(resource.id)">
+                        <button type="button" class="btn btn-default btn-xs" ng-click="redirectToResource(resource.id)">
                             {{ 'global.resource.own.editbutton' | translate }}
                         </button>
-                        <button type="button" class="btn btn-default btn-danger" ng-click="delete(resource.id)">
-                            {{ 'global.resource.own.deletebutton' | translate }}
-                        </button>
+                        <div>
+                            <resp-confirm-delete on-confirm="delete(resource.id)"></resp-confirm-delete>
+                        </div>
                     </td>
                 </tr>
             </tbody>

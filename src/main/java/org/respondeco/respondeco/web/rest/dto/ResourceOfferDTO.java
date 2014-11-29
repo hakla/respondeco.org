@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.ResourceOffer;
+import org.respondeco.respondeco.domain.ResourceTag;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateDeserializer;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 
@@ -64,6 +65,15 @@ public class ResourceOfferDTO {
         this.setIsRecurrent(offer.getIsRecurrent());
         this.setStartDate(offer.getStartDate());
         this.setEndDate(offer.getEndDate());
+
+        resourceTags = new String[offer.getResourceTags().size()];
+
+        int i=0;
+
+        for(ResourceTag tag : offer.getResourceTags()) {
+            resourceTags[i] = tag.getName();
+            i++;
+        }
     }
 
     private String dateTimeToString(DateTime dateTime){

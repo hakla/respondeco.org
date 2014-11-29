@@ -23,10 +23,7 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany
-    @JoinTable(name="T_RESOURCE_T_RESOURCETAG",
-        joinColumns={@JoinColumn(name="T_RESOURCETAG_id", referencedColumnName = "id")},
-        inverseJoinColumns={@JoinColumn(name="T_RESOURCE_id", referencedColumnName = "id")})
+    @ManyToMany(mappedBy="resourceTags")
     private List<ResourceBase> resources;
 
     public void setName(@NonNull String name) {

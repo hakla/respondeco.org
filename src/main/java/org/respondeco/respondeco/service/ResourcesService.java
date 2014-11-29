@@ -34,7 +34,7 @@ import java.util.List;
 public class ResourcesService {
 
     // region Private Variables
-    private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+    private final Logger log = LoggerFactory.getLogger(ResourcesService.class);
 
     private ResourceOfferRepository resourceOfferRepository;
 
@@ -75,7 +75,7 @@ public class ResourcesService {
             newRequirement.setDescription(description);
             newRequirement.setProject(projectRepository.findOne(projectId));
             newRequirement.setIsEssential(isEssential);
-            this.mapTags(newRequirement, resourceTags);
+           // this.mapTags(newRequirement, resourceTags); TODO FIX
             this.resourceRequirementRepository.save(newRequirement);
         } else {
             throw new ResourceException(String.format("Requirement with description '%s' for the Project %d already exists", description, projectId), EnumResourceException.ALREADY_EXISTS);
@@ -91,7 +91,7 @@ public class ResourcesService {
             requirement.setAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
-            this.mapTags(requirement, resourceTags);
+            //this.mapTags(requirement, resourceTags); TODO FIX
             this.resourceRequirementRepository.save(requirement);
 
         } else {
@@ -141,6 +141,8 @@ public class ResourcesService {
         newOffer.setIsRecurrent(isRecurrent);
         newOffer.setStartDate(startDate);
         newOffer.setEndDate(endDate);
+
+        log.debug("OFFER: " + newOffer.toString());
         this.mapTags(newOffer, resourceTags);
         this.resourceOfferRepository.save(newOffer);
 
@@ -158,6 +160,7 @@ public class ResourcesService {
             offer.setStartDate(startDate);
             offer.setEndDate(endDate);
             this.mapTags(offer, resourceTags);
+            log.debug("OFFER: " + offer.toString());
             this.resourceOfferRepository.save(offer);
         }
         else{
@@ -211,7 +214,8 @@ public class ResourcesService {
     // endregion
 
     // region Private methods
-    private void mapTags(ResourceBase resource, String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
+    private void mapTags(ResourceOffer resource, String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
+
         for (String tagName : resourceTags) {
             //save tags and add it to list
             ResourceTag tag;

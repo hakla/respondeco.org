@@ -1,8 +1,9 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization) {
 
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
+	$scope.organization = null;
 
 	var id = $routeParams.id;
 	var isNew = id === 'new';
@@ -11,7 +12,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	Account.get(null, function(account) {
 		$scope.resource.organizationId = account.organizationId;
+
+		$scope.organization = Organization.getById({id: account.organizationId}, function(organization) {
+			$scope.organization = organization;
+		});
 	});
+
+
 
 	$scope.redirectToResource = function(id) {
 		$location.path('resource/' + id);
@@ -33,7 +40,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.create = function() {
 		Resource[isNew ? 'save' : 'update']($scope.resource, 
-		function() {
+		function() {	
 			$scope.redirectToResource('');
 		}, 
 		function() {
