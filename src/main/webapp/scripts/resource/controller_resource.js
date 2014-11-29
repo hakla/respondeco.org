@@ -1,13 +1,16 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, Resource, Account) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account) {
 
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
+
+	var id = $routeParams.id;
+	var isNew = id === 'new';
+
 	$scope.resources = Resource.query();
 
 	Account.get(null, function(account) {
 		$scope.resource.organizationId = account.organizationId;
-		console.log($scope.resource.organizationId);
 	});
 
 	$scope.redirectToResource = function(id) {
@@ -18,12 +21,18 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 		Resource.query({filter: filter}, 
 			function(res) {
 				$scope.resources = res;
-			})
+			});
+	}
+
+	$scope.update = function(id) {
+		console.log("update" + id);
+		Resource.get({id: id}, function(resource) {
+			$scope.resource = resource;
+		});
 	}
 
 	$scope.create = function() {
-		console.log("SAVE");
-		Resource.save($scope.resource, 
+		Resource[isNew ? 'save' : 'update']($scope.resource, 
 		function() {
 			$scope.redirectToResource('');
 		}, 
@@ -44,6 +53,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 			amount: null, startDate: null, endDate: null, isCommercial: null, isRecurrent: null};
 	}
 
-	
+	if(isNew == false) {
+		$scope.update(id);
+	}
 
 });

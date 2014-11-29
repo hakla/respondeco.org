@@ -54,6 +54,16 @@ public class ResourceController {
         return this.resourcesService.getAllOffers();
     }
 
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceOffers/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResourceOfferDTO getResourceOffer(@PathVariable Long id) {
+        log.debug("REST request to get resource with id " + id);
+        return this.resourcesService.getOfferById(id);
+    }
+
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     @RequestMapping(value = "/rest/resourceOffers",
         method = RequestMethod.POST,
@@ -71,8 +81,8 @@ public class ResourceController {
                 resourceOfferDTO.getOrganizationId(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                resourceOfferDTO.getStartDateAsDateTime(),
-                resourceOfferDTO.getEndDateAsDateTime(),
+                resourceOfferDTO.getStartDate(),
+                resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags()
             );
             resourceOfferDTO.setId(offer.getId());
@@ -112,8 +122,8 @@ public class ResourceController {
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                resourceOfferDTO.getStartDateAsDateTime(),
-                resourceOfferDTO.getEndDateAsDateTime(),
+                resourceOfferDTO.getStartDate(),
+                resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);

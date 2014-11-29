@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.service;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.ResourceJoinTagException;
@@ -130,7 +131,7 @@ public class ResourcesService {
     // endregion
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
-    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
+    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
@@ -146,7 +147,7 @@ public class ResourcesService {
         return newOffer;
     }
 
-    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
+    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
             offer.setName(name);
@@ -196,6 +197,17 @@ public class ResourcesService {
         }
         return result;
     }
+
+    /**
+     * Get ResourceOffer by given id
+     * @param id resourceOffer id
+     * @return ResourceOfferDTO
+     */
+    public ResourceOfferDTO getOfferById(Long id) {
+        return new ResourceOfferDTO(this.resourceOfferRepository.getOne(id));
+    }
+
+
     // endregion
 
     // region Private methods
