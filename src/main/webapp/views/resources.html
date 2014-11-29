@@ -40,7 +40,7 @@
                     <td>{{ resource.name }}</td>
                     <td>{{ resource.company }}</td>
                     <td>{{ resource.amount }}</td>
-                    <td>{{ resource.startDate | date: 'dd-MM-yyyy' }}</td>
+                    <td>{{ resource.startDate | date}}</td>
                     <td>{{ resource.endDate | date }}</td>
                     <td ng-show="resource.isCommercial"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isCommercial"><span class="glyphicon glyphicon-remove"/></td>

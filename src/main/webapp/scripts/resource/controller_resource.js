@@ -2,10 +2,8 @@
 
 respondecoApp.controller('ResourceController', function($scope, $location, Resource, Account) {
 
-	$scope.resource = {id: null, name: null, description: null, tags: null, amount: null, 
-		startDate: null, endDate: null, isCommercial: false, isRecurrent: false, organizationId: null};
+	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.resources = Resource.query();
-
 
 	Account.get(null, function(account) {
 		$scope.resource.organizationId = account.organizationId;
@@ -24,18 +22,14 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 	}
 
 	$scope.create = function() {
-		if($scope.resource.organizationId == null) {
-			console.log("error");
-
-		} else {
-			Resource.save($scope.resource, 
-			function() {
-				$scope.redirectToResource('');
-			}, 
-			function() {
-				$scope.form.saveError = true;
-			});
-		}
+		console.log("SAVE");
+		Resource.save($scope.resource, 
+		function() {
+			$scope.redirectToResource('');
+		}, 
+		function() {
+			$scope.form.saveError = true;
+		});
 	}
 
 	$scope.delete = function(id) {
@@ -46,7 +40,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, Resou
 	}
 
 	$scope.clear = function() {
-		$scope.resource = {id: null, name: null, description: null, tags: null, 
+		$scope.resource = {id: null, name: null, description: null, resourceTags: null, 
 			amount: null, startDate: null, endDate: null, isCommercial: null, isRecurrent: null};
 	}
 
