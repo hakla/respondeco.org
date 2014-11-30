@@ -45,8 +45,8 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
 
     @ManyToMany
     @JoinTable(name="T_RESOURCE_T_RESOURCETAG",
-        joinColumns={@JoinColumn(name="T_RESOURCETAG_id", referencedColumnName = "id")},
-        inverseJoinColumns={@JoinColumn(name="T_RESOURCE_id", referencedColumnName = "id")})
+        joinColumns={@JoinColumn(name="T_RESOURCE_id", referencedColumnName = "id")},
+        inverseJoinColumns={@JoinColumn(name="T_RESOURCETAG_id", referencedColumnName = "id")})
     private List<ResourceTag> resourceTags = new ArrayList<>();
 
     public void addResourceTag(ResourceTag tag) {

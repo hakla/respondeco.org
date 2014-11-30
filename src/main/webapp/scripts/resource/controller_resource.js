@@ -6,7 +6,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.organization = null;
 
 	var id = $routeParams.id;
-	var isNew = id === 'new';
+	$scope.isNew = id === 'new';
 
 	$scope.resources = Resource.query();
 
@@ -17,8 +17,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			$scope.organization = organization;
 		});
 	});
-
-
 
 	$scope.redirectToResource = function(id) {
 		$location.path('resource/' + id);
@@ -32,14 +30,15 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.update = function(id) {
-		console.log("update" + id);
 		Resource.get({id: id}, function(resource) {
 			$scope.resource = resource;
+		}, function() {
+			$scope.redirectToResource('new');
 		});
 	}
 
 	$scope.create = function() {
-		Resource[isNew ? 'save' : 'update']($scope.resource, 
+		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
 			$scope.redirectToResource('');
 		}, 
@@ -60,8 +59,20 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			amount: null, startDate: null, endDate: null, isCommercial: null, isRecurrent: null};
 	}
 
-	if(isNew == false) {
+	if($scope.isNew == false) {
 		$scope.update(id);
 	}
+
+}).controller('OwnResourceController', function($scope, $location, $routeParams, Resource, Account, Organization) {
+	
+	var orgId;
+
+	Account.get(null, function(account) {
+		orgId = account.organizationId;
+
+		$scope.resources = Resource.getByOrgId({id:orgId});
+	});
+
+	
 
 });

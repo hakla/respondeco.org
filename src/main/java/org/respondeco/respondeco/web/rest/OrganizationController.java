@@ -97,7 +97,7 @@ public class OrganizationController {
      * GET  /rest/organizations -> get all the organizations.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organization/{id}",
+    @RequestMapping(value = "/rest/organizations/{id}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -226,8 +226,10 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<ResourceOfferDTO> getAllResourceOffer(@PathVariable Long id) {
+        Organization organization = organizationRepository.findOne(id);
         log.debug("REST request to get all resource offer belongs to Organization id: {}", id);
-        return this.resourcesService.getAllOffers(id);
+        log.debug("REST request for organization: " + organization);
+        return this.resourcesService.getAllOffers(organization);
     }
 
 }

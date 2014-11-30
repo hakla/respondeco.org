@@ -70,6 +70,9 @@
                 "cancelbutton":"Abbrechen",
                 "error": "Ressource konnte nicht erstellt werden!"
             },
+            "edit": {
+                "title": "Ressource bearbeiten"
+            },
             "placeholder": {
                 "name": "Name der Ressource",
                 "description" : "Beschreibung der Ressource",

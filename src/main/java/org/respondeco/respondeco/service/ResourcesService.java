@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
@@ -160,7 +159,6 @@ public class ResourcesService {
             offer.setStartDate(startDate);
             offer.setEndDate(endDate);
             this.mapTags(offer, resourceTags);
-            log.debug("OFFER: " + offer.toString());
             this.resourceOfferRepository.save(offer);
         }
         else{
@@ -190,13 +188,15 @@ public class ResourcesService {
         return result;
     }
 
-    public List<ResourceOfferDTO> getAllOffers(Long organisationId) {
+    public List<ResourceOfferDTO> getAllOffers(Organization organization) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organisationId);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisation(organization);
         if(entries.isEmpty() == false) {
             for (ResourceOffer offer : entries) {
                 result.add(new ResourceOfferDTO(offer));
             }
+        } else {
+            log.debug("entries are empty");
         }
         return result;
     }
@@ -215,6 +215,8 @@ public class ResourcesService {
 
     // region Private methods
     private void mapTags(ResourceOffer resource, String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
+
+        resource.setResourceTags(new ArrayList<ResourceTag>());
 
         for (String tagName : resourceTags) {
             //save tags and add it to list
