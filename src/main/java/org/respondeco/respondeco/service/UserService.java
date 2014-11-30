@@ -51,8 +51,6 @@ public class UserService {
     @Inject
     private ImageRepository imageRepository;
 
-
-
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return Optional.ofNullable(userRepository.getUserByActivationKey(key))
@@ -74,7 +72,7 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(login);
-        newUser.setOrgId(null);
+        newUser.setOrganization(null);
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setTitle(title);
@@ -188,26 +186,26 @@ public class UserService {
     public void deleteMember(String userlogin) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
         User user = getUserWithAuthorities();
         User member = userRepository.findByLogin(userlogin);
-        Organization organization = organizationRepository.findOne(member.getOrgId());
+        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
 
         if(member == null) {
             throw new NoSuchUserException(String.format("User %s does not exist", userlogin));
         }
         if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrgId()));
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
         }
         if(organization.getOwner().equals(user.getLogin())==false) {
             throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ", organization.getOwner()));
         }
         log.debug("Deleting member from organization", user.getLogin(), organization.getName());
-        member.setOrgId(null);
+        member.setOrganization(null);
     }
 
     public void leaveOrganization() {
         User user = getUserWithAuthorities();
 
         log.debug("Leaving organization");
-        user.setOrgId(null);
+        user.setOrganization(null);
     }
 
     public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException, NotOwnerOfOrganizationException {
@@ -220,7 +218,7 @@ public class UserService {
             throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s", orgId));
         }
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUserByOrgId(orgId);
+        return userRepository.findUserByOrganizationId(orgId);
     }
 
     public List<String> findUsernamesLike(String usernamePart, Integer limit) {
@@ -259,6 +257,6 @@ public class UserService {
     }
 
     public List<User> getOrganizationMembers(Long id) {
-        return userRepository.findUserByOrgId(id);
+        return userRepository.findUserByOrganizationId(id);
     }
 }

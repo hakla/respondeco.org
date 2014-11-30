@@ -63,7 +63,7 @@ public class OrganizationService {
         }
         newOrganization.setOwner(currentUser);
 
-        currentUser.setOrgId(organizationRepository.save(newOrganization).getId());
+        currentUser.setOrganization(organizationRepository.save(newOrganization));
         userRepository.save(currentUser);
         log.debug("Created Information for Organization: {}", newOrganization);
         return newOrganization;

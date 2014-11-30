@@ -88,6 +88,7 @@ public class ProjectIntegrationTest {
     private User orgAdmin;
     private User orgMember;
 
+    /*
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -526,4 +527,6 @@ public class ProjectIntegrationTest {
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
     }
+    */
 }
+

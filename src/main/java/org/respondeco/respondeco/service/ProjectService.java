@@ -66,12 +66,12 @@ public class ProjectService {
                           List<ResourceRequirementDTO> resourceRequirements, Long imageId) throws OperationForbiddenException {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getOrgId() == null) {
+        if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
-        Organization organization = organizationRepository.findOne(currentUser.getOrgId());
+        Organization organization = organizationRepository.findOne(currentUser.getOrganization().getId());
         if(organization == null) {
-            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrgId());
+            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrganization().getId());
         }
 
         Project newProject = new Project();
@@ -99,12 +99,12 @@ public class ProjectService {
             throw new IllegalArgumentException("Project id must not be null");
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getOrgId() == null) {
+        if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
-        Organization organization = organizationRepository.findOne(currentUser.getOrgId());
+        Organization organization = organizationRepository.findOne(currentUser.getOrganization().getId());
         if(organization == null) {
-            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrgId());
+            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrganization().getId());
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
@@ -149,7 +149,7 @@ public class ProjectService {
                         "change the project manager of project " + id);
             }
         }
-        if(project.getOrganization().getId().equals(newManager.getOrgId()) == false) {
+        if(project.getOrganization().getId().equals(newManager.getOrganization().getId()) == false) {
             throw new IllegalArgumentException("new manager does not belong to organization: " +
                     project.getOrganization());
         }
@@ -260,5 +260,4 @@ public class ProjectService {
             }
         }
      }
-
 }

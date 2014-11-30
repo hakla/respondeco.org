@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.repository;
 
+import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +21,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.activated = false and u.createdDate > ?1")
     List<User> findNotActivatedUsersByCreationDateBefore(DateTime dateTime);
 
-    @Query("select u from User u where u.orgId is null")
+    @Query("select u from User u where u.organization is null")
     List<User> findInvitableUsers();
 
-    List<User> findUserByOrgId(Long orgId);
+    List<User> findUserByOrganizationId(Long orgId);
 
     User findByLogin(String userlogin);
 
