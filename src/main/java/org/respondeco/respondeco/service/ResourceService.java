@@ -30,10 +30,10 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ResourcesService {
+public class ResourceService {
 
     // region Private Variables
-    private final Logger log = LoggerFactory.getLogger(ResourcesService.class);
+    private final Logger log = LoggerFactory.getLogger(ResourceService.class);
 
     private ResourceOfferRepository resourceOfferRepository;
 
@@ -49,11 +49,11 @@ public class ResourcesService {
 
     // region Constructor
     @Inject
-    public ResourcesService(ResourceOfferRepository resourceOfferRepository,
-                            ResourceRequirementRepository resourceRequirementRepository,
-                            ResourceTagRepository resourceTagRepository,
-                            OrganizationRepository organizationRepository,
-                            ProjectRepository projectRepository) {
+    public ResourceService(ResourceOfferRepository resourceOfferRepository,
+                           ResourceRequirementRepository resourceRequirementRepository,
+                           ResourceTagRepository resourceTagRepository,
+                           OrganizationRepository organizationRepository,
+                           ProjectRepository projectRepository) {
         this.resourceOfferRepository = resourceOfferRepository;
         this.resourceRequirementRepository = resourceRequirementRepository;
         this.resourceTagRepository = resourceTagRepository;

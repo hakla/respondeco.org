@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ResourceControllerTest {
 
 
-    private ResourcesService resourcesService;
+    private ResourceService resourceService;
 
 
     @Inject
@@ -60,13 +60,13 @@ public class ResourceControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        resourcesService = spy(new ResourcesService(
+        resourceService = spy(new ResourceService(
             resourceOfferRepository,
             resourceRequirementRepository,
             resourceTagRepository,
             organizationRepository,
             projectRepository));
-        ResourceController controller = new ResourceController(resourcesService);
+        ResourceController controller = new ResourceController(resourceService);
 
         restMockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }

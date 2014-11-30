@@ -13,7 +13,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.PropertyTagService;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
@@ -85,7 +85,7 @@ public class ProjectControllerTest {
     private ImageRepository imageRepositoryMock;
 
     @Mock
-    private ResourcesService resourcesServiceMock;
+    private ResourceService resourceServiceMock;
 
     @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
@@ -108,7 +108,7 @@ public class ProjectControllerTest {
                 organizationRepositoryMock,
                 propertyTagServiceMock,
                 imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourcesServiceMock);
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 

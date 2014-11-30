@@ -20,7 +20,7 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.PropertyTagService;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -79,7 +79,7 @@ public class ProjectIntegrationTest {
     private UserService userServiceMock;
 
     @Inject
-    private ResourcesService resourcesService;
+    private ResourceService resourceService;
 
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
@@ -98,7 +98,7 @@ public class ProjectIntegrationTest {
                 organizationRepository,
                 propertyTagService,
                 imageRepository));
-        ProjectController projectController = new ProjectController(projectService, resourcesService);
+        ProjectController projectController = new ProjectController(projectService, resourceService);
 
         projectRepository.deleteAll();
         projectRepository.flush();

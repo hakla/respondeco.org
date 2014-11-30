@@ -90,7 +90,7 @@ public class OrganizationControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository);
-        OrganizationController organizationController = new OrganizationController(organizationRepository, organizationService, userService);
+        OrganizationController organizationController = new OrganizationController(organizationService, userService);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();
