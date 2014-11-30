@@ -60,5 +60,8 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @JoinColumn(name = "imageId")
     private Image logo;
 
+    public void addMember(User user) {
+        members.add(user);
+    }
 
 }

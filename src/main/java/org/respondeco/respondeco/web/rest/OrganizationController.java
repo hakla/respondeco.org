@@ -135,7 +135,7 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/organizations/:owner -> get the organization of current owner.
+     * GET  /rest/organizations/{id}/members get all members of organization with id
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations/{id}/members",
