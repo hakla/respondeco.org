@@ -11,9 +11,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.resources = Resource.query();
 
 	Account.get(null, function(account) {
+		console.log(account);
 		$scope.resource.organizationId = account.organizationId;
 
-		$scope.organization = Organization.getById({id: account.organizationId}, function(organization) {
+		$scope.organization = Organization.get({id: account.organizationId}, function(organization) {
 			$scope.organization = organization;
 		});
 	});

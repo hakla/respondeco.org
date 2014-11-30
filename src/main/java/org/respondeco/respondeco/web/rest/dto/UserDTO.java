@@ -56,7 +56,7 @@ public class UserDTO {
         this.roles = roles;
 
         if(organization != null) {
-            this.organizationId = organizationId;
+            this.organizationId = organization.getId();
         }
     }
 
