@@ -60,6 +60,8 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     private List<PropertyTag> propertyTags;
 
     @JsonIgnore
+    @OneToOne
+    @PrimaryKeyJoinColumn
     private Image projectLogo;
 
     @OneToMany

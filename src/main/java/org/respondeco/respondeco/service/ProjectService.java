@@ -6,10 +6,8 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
-import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -71,7 +69,7 @@ public class ProjectService {
         }
         Organization organization = organizationRepository.findOne(currentUser.getOrgId());
         if(organization == null) {
-            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrgId());
+            throw new NoSuchOrganizationException(currentUser.getOrgId());
         }
 
         Project newProject = new Project();
@@ -83,7 +81,9 @@ public class ProjectService {
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);
         List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
-        newProject.setProjectLogo(imageRepository.findOne(imageId));
+        if(imageId != null) {
+            newProject.setProjectLogo(imageRepository.findOne(imageId));
+        }
         newProject.setPropertyTags(tags);
 
         projectRepository.save(newProject);
@@ -96,7 +96,7 @@ public class ProjectService {
 
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
-            throw new IllegalArgumentException("Project id must not be null");
+            throw new IllegalValueException("error.project.idnull", "Project id must not be null");
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {
@@ -104,11 +104,11 @@ public class ProjectService {
         }
         Organization organization = organizationRepository.findOne(currentUser.getOrgId());
         if(organization == null) {
-            throw new IllegalArgumentException("Organization does not exist: " + currentUser.getOrgId());
+            throw new NoSuchOrganizationException(currentUser.getOrgId());
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
-            throw new IllegalArgumentException("Project does not exist: " + id);
+            throw new NoSuchProjectException(id);
         }
         if(project.getOrganization().equals(organization) == false) {
             throw new OperationForbiddenException("Project " + project +
@@ -140,7 +140,7 @@ public class ProjectService {
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
-            throw new NoSuchProjectException("no such project: " + id);
+            throw new NoSuchProjectException(id);
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.equals(project.getManager()) == false) {
@@ -150,8 +150,8 @@ public class ProjectService {
             }
         }
         if(project.getOrganization().getId().equals(newManager.getOrgId()) == false) {
-            throw new IllegalArgumentException("new manager does not belong to organization: " +
-                    project.getOrganization());
+            throw new IllegalValueException("project.error.notvalidmanager",
+                    "new manager does not belong to organization: " + project.getOrganization());
         }
         project.setManager(newManager);
         return projectRepository.save(project);
@@ -160,7 +160,7 @@ public class ProjectService {
     public Project delete(Long id) throws OperationForbiddenException {
         Project project = projectRepository.findOne(id);
         if(project == null) {
-            throw new IllegalArgumentException("no such project: " + id);
+            throw new NoSuchProjectException(id);
         }
         User currentUser = userService.getUserWithAuthorities();
         User manager = project.getManager();
@@ -176,25 +176,11 @@ public class ProjectService {
         return project;
     }
 
-    public ProjectResponseDTO findProjectById(Long id, String fields) {
-        List<String> fieldNames = new ArrayList<>();
-        if(fields != null) {
-            for(String s : fields.split(",")) {
-                fieldNames.add(s.trim());
-            }
-        }
-        if(fieldNames.size() == 0) {
-            fieldNames.addAll(ProjectResponseDTO.DEFAULT_FIELDS);
-        }
-        Project p = projectRepository.findByIdAndActiveIsTrue(id);
-        ProjectResponseDTO responseDTO = null;
-        if(p != null) {
-            responseDTO = ProjectResponseDTO.fromEntity(Arrays.asList(p), fieldNames).get(0);
-        }
-        return responseDTO;
+    public Project findProjectById(Long id) {
+        return projectRepository.findByIdAndActiveIsTrue(id);
     }
 
-    public List<ProjectResponseDTO> findProjects(String name, String tagsString, RestParameters restParams) {
+    public List<Project> findProjects(String name, String tagsString, RestParameters restParams) {
         List<String> tags = restUtil.splitCommaSeparated(tagsString);
 
         PageRequest pageRequest = null;
@@ -211,14 +197,10 @@ public class ProjectService {
             result = projectRepository.findByNameAndTags(name, tags, pageRequest);
         }
 
-        List<String> fields = null;
-        if(restParams != null) {
-            fields = restParams.getFields();
-        }
-        return ProjectResponseDTO.fromEntity(result, fields);
+        return result;
     }
 
-    public List<ProjectResponseDTO> findProjectsFromOrganization(Long orgId, String name, String tagsString,
+    public List<Project> findProjectsFromOrganization(Long orgId, String name, String tagsString,
                                                                  RestParameters restParams) {
         List<String> tags = restUtil.splitCommaSeparated(tagsString);
 
@@ -236,27 +218,27 @@ public class ProjectService {
             result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
         }
 
-        List<String> fields = null;
-        if(restParams != null) {
-            fields = restParams.getFields();
-        }
-        return ProjectResponseDTO.fromEntity(result, fields);
+        return result;
 
     }
 
     private void sanityCheckDate(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
         if(isConcrete == true) {
             if(startDate == null) {
-                throw new IllegalArgumentException("start date cannot be null if project is concrete");
+                throw new IllegalValueException("project.error.startdate.null",
+                        "start date cannot be null if project is concrete");
             }
             if(endDate == null) {
-                throw new IllegalArgumentException("end date cannot be null if project is concrete");
+                throw new IllegalValueException("project.error.enddate.null",
+                        "end date cannot be null if project is concrete");
             }
             if(endDate.isBefore(LocalDate.now())) {
-                throw new IllegalArgumentException("end date cannot be before before now");
+                throw new IllegalValueException("project.error.enddate.beforenow",
+                        "end date cannot be before before now");
             }
             if(endDate.isBefore(startDate)) {
-                throw new IllegalArgumentException("end date cannot be before start date");
+                throw new IllegalValueException("project.error.enddate.beforestart",
+                        "end date cannot be before start date");
             }
         }
      }

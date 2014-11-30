@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope, $location, Account, OrgJoinRequest, Organization) {
+respondecoApp.controller('MainController', function ($scope, $location) {
     $scope.main = function() {
         return $location.path() === '' || $location.path() === '/';
     };

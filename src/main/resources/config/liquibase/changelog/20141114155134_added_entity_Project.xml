@@ -25,7 +25,7 @@
             <column name="rating" type="double" />
             <column name="rating_count" type="int" />
 
-            <column name="image_id" type="bigint"/>
+            <column name="projectLogo_id" type="bigint"/>
 
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>

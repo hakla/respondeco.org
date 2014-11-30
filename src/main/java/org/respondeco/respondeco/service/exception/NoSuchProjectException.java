@@ -3,13 +3,16 @@ package org.respondeco.respondeco.service.exception;
 /**
  * Created by clemens on 28/11/14.
  */
-public class NoSuchProjectException extends Exception {
+public class NoSuchProjectException extends IllegalValueException {
 
-    public NoSuchProjectException(String message) {
-        super(message);
+    private static final String KEY = "error.project.nosuchproject";
+    private static final String BASE_MESSAGE = "no such project: ";
+
+    public NoSuchProjectException(Long id) {
+        super(KEY, BASE_MESSAGE + id);
     }
 
-    public NoSuchProjectException(String message, Throwable t) {
-        super(message, t);
+    public NoSuchProjectException(Long id, Throwable t) {
+        super(KEY, BASE_MESSAGE + id, t);
     }
 }

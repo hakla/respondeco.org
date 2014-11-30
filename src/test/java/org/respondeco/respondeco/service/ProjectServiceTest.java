@@ -519,7 +519,7 @@ public class ProjectServiceTest {
         when(projectRepositoryMock.findByNameAndTags(name, tagsList, null))
                 .thenReturn(Arrays.asList(basicProject, secondProject));
 
-        List<ProjectResponseDTO> projects = projectService.findProjects(name, tagsString, null);
+        List<Project> projects = projectService.findProjects(name, tagsString, null);
 
         verify(projectRepositoryMock, times(1)).findByNameAndTags(name, tagsList, null);
     }
@@ -541,7 +541,7 @@ public class ProjectServiceTest {
         when(projectRepositoryMock.findByOrganizationAndNameAndTags(defaultOrganization.getId(), name, tagsList, null))
                 .thenReturn(Arrays.asList(basicProject, secondProject));
 
-        List<ProjectResponseDTO> projects = projectService
+        List<Project> projects = projectService
                 .findProjectsFromOrganization(defaultOrganization.getId(), name, tagsString, null);
 
         verify(projectRepositoryMock, times(1))

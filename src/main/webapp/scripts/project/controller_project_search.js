@@ -6,19 +6,15 @@
 respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project,
                                                               resolvedProjects, ProjectNames, PropertyTagNames) {
 
-    $scope.availableTags = [
-        {text: 'Apple', id: 1},
-        {text: 'Apricot', id: 2},
-        {text: 'Avocado', id: 3},
-    ];
-
     $scope.projects = resolvedProjects;
     $scope.project = {
         name: null,
         tags: null
     };
+    $scope.selectedTags = [];
 
     $scope.search = function() {
+        $scope.project.tags = $.map($scope.selectedTags, function(tag) {return tag.name}).join(","); //create comma separated list
         Project.query({
             filter: $scope.project.name,
             tags: $scope.project.tags
@@ -36,11 +32,7 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
     }
 
     $scope.getPropertyTagNames = function(viewValue) {
-        return PropertyTagNames.getPropertyTagNames(viewValue).$promise.then(
-            function(response) {
-                return response;
-            }
-        );
+        return PropertyTagNames.getPropertyTagNames(viewValue).$promise;
     }
 
     $scope.redirectToProject = function(project) {

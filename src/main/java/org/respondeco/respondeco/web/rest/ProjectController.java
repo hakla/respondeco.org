@@ -7,14 +7,11 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
-import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourcesService;
-import org.respondeco.respondeco.service.exception.GeneralResourceException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
-import org.respondeco.respondeco.web.rest.util.ErrorConstants;
+import org.respondeco.respondeco.web.rest.dto.PropertyTagResponseDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -30,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,9 +72,9 @@ public class ProjectController {
                     project.getResourceRequirements(),
                     project.getImageId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         } catch(OperationForbiddenException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -108,9 +106,9 @@ public class ProjectController {
                     project.getPropertyTags(),
                     project.getResourceRequirements());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         } catch(OperationForbiddenException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -133,15 +131,9 @@ public class ProjectController {
         try {
             projectService.setManager(id, newManager);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalValueException e) {
             log.error("Could not set manager of project {} to {}", id, newManager, e);
-            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NOT_A_VALID_MANAGER);
-        } catch(NoSuchUserException e) {
-            log.error("Could not set manager of project {} to {}", id, newManager, e);
-            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NO_SUCH_USER);
-        } catch (NoSuchProjectException e) {
-            log.error("Could not set manager of project {} to {}", id, newManager, e);
-            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NO_SUCH_PROJECT);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         } catch(OperationForbiddenException e) {
             log.error("Could not set manager of project {} to {}", id, newManager, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -165,7 +157,9 @@ public class ProjectController {
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) String order) {
         log.debug("REST request to get projects");
-        return projectService.findProjects(filter, tags, new RestParameters(page, pageSize, order, fields));
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<Project> projects = projectService.findProjects(filter, tags, restParameters);
+        return ProjectResponseDTO.fromEntity(projects, restParameters.getFields());
     }
 
     /**
@@ -185,8 +179,10 @@ public class ProjectController {
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) String order) {
         log.debug("REST request to get projects for organization {}", organizationId);
-        return projectService.findProjectsFromOrganization(organizationId, filter, tags,
-                new RestParameters(page, pageSize, order, fields));
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<Project> projects =  projectService
+                .findProjectsFromOrganization(organizationId, filter, tags, restParameters);
+        return ProjectResponseDTO.fromEntity(projects, restParameters.getFields());
     }
 
     /**
@@ -201,11 +197,17 @@ public class ProjectController {
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {
         log.debug("REST request to get Project : {}", id);
-        return Optional.ofNullable(projectService.findProjectById(id, fields))
-            .map(project -> new ResponseEntity<>(
-                project,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Project project = projectService.findProjectById(id);
+        ResponseEntity<ProjectResponseDTO> response;
+        RestParameters restParameters = new RestParameters(null, null, null, fields);
+        if(project != null) {
+            ProjectResponseDTO responseDTO = ProjectResponseDTO
+                    .fromEntity(Arrays.asList(project), restParameters.getFields()).get(0);
+            response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
     }
 
     /**
@@ -222,9 +224,9 @@ public class ProjectController {
         ResponseEntity<?> responseEntity = null;
         try {
             projectService.delete(id);
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalValueException e) {
             log.error("Could not delete project {}", id, e);
-            responseEntity = ErrorHelper.buildErrorResponse(ErrorConstants.PROJECTS_NO_SUCH_PROJECT);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         } catch(OperationForbiddenException e) {
             log.error("Could not delete project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);

@@ -3,14 +3,21 @@ package org.respondeco.respondeco.service.exception;
 /**
  * Created by clemens on 02/11/14.
  */
-public class NoSuchOrganizationException extends Exception {
+public class NoSuchOrganizationException extends IllegalValueException {
 
-    public NoSuchOrganizationException(String message) {
-        super(message);
+    private static final String KEY = "error.organization.nosuchorganization";
+    private static final String BASE_MESSAGE = "no such organization: ";
+
+    public NoSuchOrganizationException(Long id) {
+        super(KEY, BASE_MESSAGE + id);
     }
 
-    public NoSuchOrganizationException(String message, Throwable t) {
-        super(message, t);
+    public NoSuchOrganizationException(Long id, Throwable t) {
+        super(KEY, BASE_MESSAGE + id, t);
+    }
+
+    public NoSuchOrganizationException(String message) {
+        super(KEY, message);
     }
 
 }
