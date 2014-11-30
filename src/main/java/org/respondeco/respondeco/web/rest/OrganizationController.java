@@ -201,7 +201,7 @@ public class OrganizationController {
         RESOURCEOFFERS
      */
 
-    /*@RolesAllowed(AuthoritiesConstants.USER)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations/{id}/resourceOffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -210,17 +210,10 @@ public class OrganizationController {
         ResponseEntity<Organization> responseEntity;
         OrganizationDTO organizationDTO;
 
-        try {
-            organizationDTO = organizationService.getOrganizationById(id);
-        } catch (NoSuchOrganizationException e) {
-            responseEntity = new ResponseEntity<Organization>(HttpStatus.NOT_FOUND);
-        }
         log.debug("REST request to get all resource offer belongs to Organization id: {}", id);
-        log.debug("REST request for organization: " + organization);
 
+        List<ResourceOfferDTO> resourceOfferDTOs = this.resourceService.getAllOffers(id);
 
-
-        return this.resourceService.getAllOffers(organization);
-    }*/
-
+        return  resourceOfferDTOs;
+    }
 }

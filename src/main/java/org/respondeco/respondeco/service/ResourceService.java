@@ -188,9 +188,9 @@ public class ResourceService {
         return result;
     }
 
-    public List<ResourceOfferDTO> getAllOffers(Organization organization) {
+    public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisation(organization);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organizationId);
         if(entries.isEmpty() == false) {
             for (ResourceOffer offer : entries) {
                 result.add(new ResourceOfferDTO(offer));
