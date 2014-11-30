@@ -62,7 +62,6 @@ public class OrganizationService {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
         newOrganization.setOwner(currentUser);
-        newOrganization.addMember(currentUser);
 
         currentUser.setOrganization(organizationRepository.save(newOrganization));
         userRepository.save(currentUser);

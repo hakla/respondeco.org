@@ -10,6 +10,7 @@ import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Service class for managing users.
@@ -218,7 +216,7 @@ public class UserService {
             throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s", orgId));
         }
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUserByOrganizationId(orgId);
+        return userRepository.findUsersByOrganizationId(orgId);
     }
 
     public List<String> findUsernamesLike(String usernamePart, Integer limit) {
@@ -256,7 +254,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public List<User> getOrganizationMembers(Long id) {
-        return userRepository.findUserByOrganizationId(id);
+    public List<UserDTO> getOrganizationMembers(Long id) {
+        List<User> users = userRepository.findUsersByOrganizationId(id);
+        List<UserDTO> userDTOs = new ArrayList<>();
+
+        for(User user : users) {
+            userDTOs.add(new UserDTO(user));
+        }
+
+        return userDTOs;
     }
 }

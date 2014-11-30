@@ -13,6 +13,7 @@ import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Optional;
 
@@ -142,7 +144,7 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<User> getMembers(@PathVariable Long id) {
+    public List<UserDTO> getMembers(@PathVariable Long id) {
         log.debug("REST request to get members for organization Organization : {}" ,userService.getUserWithAuthorities().getLogin());
         return userService.getOrganizationMembers(id);
     }

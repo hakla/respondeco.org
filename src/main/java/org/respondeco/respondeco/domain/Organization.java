@@ -26,7 +26,6 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Setter
 @Getter
-@ToString(exclude = { "members" })
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -63,5 +62,4 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     public void addMember(User user) {
         members.add(user);
     }
-
 }
