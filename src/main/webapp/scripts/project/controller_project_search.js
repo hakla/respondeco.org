@@ -13,6 +13,9 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
     };
     $scope.selectedTags = [];
 
+    $scope.searchError = null;
+    $scope.noProjects = null;
+
     $scope.search = function() {
         $scope.project.tags = $.map($scope.selectedTags, function(tag) {return tag.name}).join(","); //create comma separated list
         Project.query({
@@ -20,6 +23,15 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
             tags: $scope.project.tags
         }, function(data) {
             $scope.projects = data;
+            if($scope.projects.length == 0) {
+                $scope.noProjects = "NOPROJECTS";
+            } else {
+                $scope.noProjects = null;
+            }
+            $scope.searchError = null;
+        }, function(error) {
+            $scope.searchError = "ERROR";
+            $scope.noProjects = null;
         });
     }
 

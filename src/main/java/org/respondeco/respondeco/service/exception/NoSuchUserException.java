@@ -5,7 +5,7 @@ package org.respondeco.respondeco.service.exception;
  */
 public class NoSuchUserException extends IllegalValueException {
 
-    private static final String KEY = "error.user.nosuchuser";
+    private static final String KEY = "user.error.nosuchuser";
 
     public NoSuchUserException(String message) {
         super(KEY, message);

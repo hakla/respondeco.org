@@ -24,7 +24,18 @@
         </div>
     </div>
 
-
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger" ng-show="searchError" translate="project.error.searcherror">
+                <strong>Server could not be reached, something went wrong</strong>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="alert alert-warning" ng-show="noProjects" translate="project.search.empty">
+                <strong>There are no projects matching your criteria</strong>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-sm-12">

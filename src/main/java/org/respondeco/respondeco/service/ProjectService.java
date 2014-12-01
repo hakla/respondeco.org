@@ -96,7 +96,7 @@ public class ProjectService {
 
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
-            throw new IllegalValueException("error.project.idnull", "Project id must not be null");
+            throw new IllegalValueException("project.error.idnull", "Project id must not be null");
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrgId() == null) {

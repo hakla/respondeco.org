@@ -42,7 +42,7 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/ui-bootstrap/src/bindHtml/bindHtml.js',
             'src/main/webapp/bower_components/ui-bootstrap/src/position/position.js',
             'src/main/webapp/bower_components/ui-bootstrap/src/typeahead/typeahead.js',
-            'src/main/webapp/bower_components/angular-ui-select/dist/select.js'
+            'src/main/webapp/bower_components/ng-tags-input/ng-tags-input.js'
         ],
 
         // list of files / patterns to exclude

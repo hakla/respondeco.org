@@ -5,7 +5,7 @@ package org.respondeco.respondeco.service.exception;
  */
 public class NoSuchProjectException extends IllegalValueException {
 
-    private static final String KEY = "error.project.nosuchproject";
+    private static final String KEY = "project.error.nosuchproject";
     private static final String BASE_MESSAGE = "no such project: ";
 
     public NoSuchProjectException(Long id) {

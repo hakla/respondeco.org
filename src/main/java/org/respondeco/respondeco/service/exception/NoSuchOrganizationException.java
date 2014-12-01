@@ -5,7 +5,7 @@ package org.respondeco.respondeco.service.exception;
  */
 public class NoSuchOrganizationException extends IllegalValueException {
 
-    private static final String KEY = "error.organization.nosuchorganization";
+    private static final String KEY = "organization.error.nosuchorganization";
     private static final String BASE_MESSAGE = "no such organization: ";
 
     public NoSuchOrganizationException(Long id) {
