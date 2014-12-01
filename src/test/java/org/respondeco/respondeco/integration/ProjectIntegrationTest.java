@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.*;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -20,7 +22,7 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.PropertyTagService;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -32,13 +34,19 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import org.respondeco.respondeco.Application;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * Test class for the ProjectIdeaResource REST controller.
@@ -51,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
+@TransactionConfiguration(defaultRollback=true)
 public class ProjectIntegrationTest {
 
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
@@ -79,7 +88,10 @@ public class ProjectIntegrationTest {
     private UserService userServiceMock;
 
     @Inject
-    private ResourcesService resourcesService;
+    private ResourceService resourceService;
+
+    @Inject
+    private PlatformTransactionManager txManager;
 
     private ProjectService projectService;
     private MockMvc restProjectMockMvc;
@@ -87,7 +99,7 @@ public class ProjectIntegrationTest {
     private Organization defaultOrganization;
     private User orgAdmin;
     private User orgMember;
-
+/*
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -95,17 +107,10 @@ public class ProjectIntegrationTest {
                 projectRepository,
                 userServiceMock,
                 userRepository,
-                organizationRepository,
                 propertyTagService,
                 imageRepository));
-        ProjectController projectController = new ProjectController(projectService, resourcesService);
+        ProjectController projectController = new ProjectController(projectService, resourceService);
 
-        projectRepository.deleteAll();
-        projectRepository.flush();
-        organizationRepository.deleteAll();
-        organizationRepository.flush();
-        userRepository.deleteAll();
-        userRepository.flush();
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
         projectRequestDTO = new ProjectRequestDTO();
@@ -122,14 +127,14 @@ public class ProjectIntegrationTest {
         defaultOrganization.setName("testorg");
         defaultOrganization.setOwner(orgAdmin);
         defaultOrganization = organizationRepository.save(defaultOrganization);
-        orgAdmin.setOrgId(defaultOrganization.getId());
+        orgAdmin.setOrganization(defaultOrganization);
         orgAdmin = userRepository.save(orgAdmin);
 
         orgMember = new User();
         orgMember.setLogin("orgMember");
         orgMember.setGender(Gender.UNSPECIFIED);
-        orgMember.setOrgId(defaultOrganization.getId());
-        userRepository.save(orgMember);
+        orgMember.setOrganization(defaultOrganization);
+        orgMember = userRepository.save(orgMember);
     }
 
     @Test
@@ -303,7 +308,7 @@ public class ProjectIntegrationTest {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
         otherUser.setGender(Gender.UNSPECIFIED);
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
         userRepository.save(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
@@ -342,7 +347,7 @@ public class ProjectIntegrationTest {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
         otherUser.setGender(Gender.UNSPECIFIED);
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
         userRepository.save(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
@@ -382,7 +387,7 @@ public class ProjectIntegrationTest {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
         otherUser.setGender(Gender.UNSPECIFIED);
-        otherUser.setOrgId(null);
+        otherUser.setOrganization(null);
         userRepository.save(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
@@ -420,12 +425,12 @@ public class ProjectIntegrationTest {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
         otherUser.setGender(Gender.UNSPECIFIED);
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
 
         User unauthorizedUser = new User();
         unauthorizedUser.setLogin("unauthorizedOrgMember");
         unauthorizedUser.setGender(Gender.UNSPECIFIED);
-        unauthorizedUser.setOrgId(defaultOrganization.getId());
+        unauthorizedUser.setOrganization(defaultOrganization);
 
         userRepository.save(otherUser);
         userRepository.save(unauthorizedUser);
@@ -496,7 +501,7 @@ public class ProjectIntegrationTest {
         User otherUser = new User();
         otherUser.setLogin("otherOrgMember");
         otherUser.setGender(Gender.UNSPECIFIED);
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
         userRepository.save(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
@@ -525,5 +530,7 @@ public class ProjectIntegrationTest {
         restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
-    }
+    }*/
+
 }
+

@@ -13,7 +13,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.PropertyTagService;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
@@ -85,7 +85,7 @@ public class ProjectControllerTest {
     private ImageRepository imageRepositoryMock;
 
     @Mock
-    private ResourcesService resourcesServiceMock;
+    private ResourceService resourceServiceMock;
 
     @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
@@ -105,10 +105,9 @@ public class ProjectControllerTest {
                 projectRepositoryMock,
                 userServiceMock,
                 userRepositoryMock,
-                organizationRepositoryMock,
                 propertyTagServiceMock,
                 imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourcesServiceMock);
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -117,19 +116,20 @@ public class ProjectControllerTest {
         projectRequestDTO.setPurpose(DEFAULT_PURPOSE);
         projectRequestDTO.setConcrete(false);
 
-        orgAdmin = new User();
-        orgAdmin.setId(100L);
-        orgAdmin.setLogin("orgAdmin");
-        orgAdmin.setOrgId(100L);
-
-        orgMember = new User();
-        orgMember.setId(200L);
-        orgMember.setLogin("orgMember");
-        orgMember.setOrgId(100L);
 
         defaultOrganization = new Organization();
         defaultOrganization.setId(100L);
         defaultOrganization.setName("testorg");
+
+        orgAdmin = new User();
+        orgAdmin.setId(100L);
+        orgAdmin.setLogin("orgAdmin");
+        orgAdmin.setOrganization(defaultOrganization);
+
+        orgMember = new User();
+        orgMember.setId(200L);
+        orgMember.setLogin("orgMember");
+        orgMember.setOrganization(defaultOrganization);
 
         project = new Project();
         project.setId(100L);

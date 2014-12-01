@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -39,11 +40,15 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
     @Column(name = "amount", precision=10, scale=2)
     protected BigDecimal amount;
 
-    @Column(length = 255)
+    @Column
+    @Type(type = "clob")
     @NotNull
     protected String description;
 
-    @ManyToMany(mappedBy = "resources")
+    @ManyToMany
+    @JoinTable(name="T_RESOURCE_T_RESOURCETAG",
+        joinColumns={@JoinColumn(name="T_RESOURCE_id", referencedColumnName = "id")},
+        inverseJoinColumns={@JoinColumn(name="T_RESOURCETAG_id", referencedColumnName = "id")})
     private List<ResourceTag> resourceTags = new ArrayList<>();
 
     public void addResourceTag(ResourceTag tag) {

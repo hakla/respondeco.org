@@ -10,6 +10,7 @@ import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Service class for managing users.
@@ -51,8 +49,6 @@ public class UserService {
     @Inject
     private ImageRepository imageRepository;
 
-
-
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return Optional.ofNullable(userRepository.getUserByActivationKey(key))
@@ -74,7 +70,7 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(login);
-        newUser.setOrgId(null);
+        newUser.setOrganization(null);
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setTitle(title);
@@ -188,26 +184,26 @@ public class UserService {
     public void deleteMember(String userlogin) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
         User user = getUserWithAuthorities();
         User member = userRepository.findByLogin(userlogin);
-        Organization organization = organizationRepository.findOne(member.getOrgId());
+        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
 
         if(member == null) {
             throw new NoSuchUserException(String.format("User %s does not exist", userlogin));
         }
         if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrgId()));
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
         }
         if(organization.getOwner().equals(user.getLogin())==false) {
             throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ", organization.getOwner()));
         }
         log.debug("Deleting member from organization", user.getLogin(), organization.getName());
-        member.setOrgId(null);
+        member.setOrganization(null);
     }
 
     public void leaveOrganization() {
         User user = getUserWithAuthorities();
 
         log.debug("Leaving organization");
-        user.setOrgId(null);
+        user.setOrganization(null);
     }
 
     public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException, NotOwnerOfOrganizationException {
@@ -220,7 +216,7 @@ public class UserService {
             throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s", orgId));
         }
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUserByOrgId(orgId);
+        return userRepository.findUsersByOrganizationId(orgId);
     }
 
     public List<String> findUsernamesLike(String usernamePart, Integer limit) {
@@ -258,7 +254,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public List<User> getOrganizationMembers(Long id) {
-        return userRepository.findUserByOrgId(id);
+    public List<UserDTO> getOrganizationMembers(Long id) {
+        List<User> users = userRepository.findUsersByOrganizationId(id);
+        List<UserDTO> userDTOs = new ArrayList<>();
+
+        for(User user : users) {
+            userDTOs.add(new UserDTO(user));
+        }
+
+        return userDTOs;
     }
 }

@@ -1,5 +1,8 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +12,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateDeserializer;
+import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -38,12 +43,15 @@ public class ResourceOffer extends ResourceBase implements Serializable {
     @Column(name = "is_recurrent")
     private Boolean isRecurrent = false;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Column(name = "start_date")
-    private DateTime startDate;
+    private LocalDate startDate;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Column(name = "end_date")
-    private DateTime endDate;
-
+    private LocalDate endDate;
 }

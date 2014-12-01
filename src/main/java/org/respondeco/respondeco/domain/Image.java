@@ -17,17 +17,10 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Data
 @ToString(exclude = { "data" })
-public class Image implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long id;
+public class Image extends AbstractAuditingNamedEntity implements Serializable {
 
     @Column(name = "data")
     @Lob
     private byte[] data;
-
-    @NotNull
-    private String name;
 
 }

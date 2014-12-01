@@ -61,7 +61,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @JsonIgnore
     @OneToOne
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "projectLogo_id")
     private Image projectLogo;
 
     @OneToMany

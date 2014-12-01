@@ -72,7 +72,7 @@ public class OrgJoinRequestServiceTest {
         orgOwner = new User();
         orgOwner.setId(1L);
         orgOwner.setLogin("org Owner");
-        orgOwner.setOrgId(1L);
+        //orgOwner.setOrgId(1L);
 
         defaultOrganization = new Organization();
         defaultOrganization.setName("test org");
@@ -261,7 +261,7 @@ public class OrgJoinRequestServiceTest {
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(defaultOrganization.getName(),defaultUser.getLogin());
         assertNotNull(orgJoinRequest);
 
-        defaultUser.setOrgId(1L);
+      //  defaultUser.setOrgId(1L);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());

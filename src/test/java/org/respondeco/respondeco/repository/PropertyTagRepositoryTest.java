@@ -15,7 +15,9 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,8 +53,13 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("", null);
-        for(int i=0;i<30;i++){
-            assertTrue(tags.contains("tag" + i));
+        System.err.println(tags);
+        Set<String> namesSet = new HashSet<>();
+        tags.forEach(t ->
+            namesSet.add(t.getName())
+        );
+        for(int i=0;i<30;i++) {
+            assertTrue(namesSet.contains("tag" + i));
         }
     }
 

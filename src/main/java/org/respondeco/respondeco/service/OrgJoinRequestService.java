@@ -115,10 +115,10 @@ public class OrgJoinRequestService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }
-        if(user.getOrgId()!=null) {
+        if(user.getOrganization()!=null) {
             throw new AlreadyInOrganizationException(String.format("User %s is already in an Organization", user.getLogin()));
         }
-        user.setOrgId(organization.getId());
+        user.setOrganization(organization);
         orgJoinRequest.setActive(false);
         orgJoinRequestRepository.save(orgJoinRequest);
         log.debug("Accepted Request and Deleted OrgJoinRequest: {}", requestId);

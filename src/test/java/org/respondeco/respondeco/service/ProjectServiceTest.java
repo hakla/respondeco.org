@@ -65,6 +65,7 @@ public class ProjectServiceTest {
     private User orgOwner;
     private Organization defaultOrganization;
 
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -72,19 +73,25 @@ public class ProjectServiceTest {
                 projectRepositoryMock,
                 userService,
                 userRepositoryMock,
-                organizationRepositoryMock,
                 propertyTagServiceMock,
                 imageRepositoryMock);
+
+
+        defaultOrganization = new Organization();
+        defaultOrganization.setName("test org");
+        defaultOrganization.setId(1L);
 
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testuser");
-        defaultUser.setOrgId(1L);
+        defaultUser.setOrganization(defaultOrganization);
 
         orgOwner = new User();
         orgOwner.setId(2L);
         orgOwner.setLogin("org owner");
-        orgOwner.setOrgId(1L);
+        orgOwner.setOrganization(defaultOrganization);
+        defaultOrganization.setOwner(orgOwner);
+
 
         basicProject = new Project();
         basicProject.setId(1L);
@@ -92,11 +99,6 @@ public class ProjectServiceTest {
         basicProject.setPurpose("test purpose");
         basicProject.setConcrete(false);
         basicProject.setManager(defaultUser);
-
-        defaultOrganization = new Organization();
-        defaultOrganization.setName("test org");
-        defaultOrganization.setId(1L);
-        defaultOrganization.setOwner(orgOwner);
 
         basicProject.setOrganization(defaultOrganization);
 
@@ -114,7 +116,6 @@ public class ProjectServiceTest {
         projectService.create("test project", "test purpose", false, null, null, null, null, null);
 
         verify(userService, times(1)).getUserWithAuthorities();
-        verify(organizationRepositoryMock, times(1)).findOne(defaultOrganization.getId());
         verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
     }
@@ -136,7 +137,6 @@ public class ProjectServiceTest {
                 null);
 
         verify(userService, times(1)).getUserWithAuthorities();
-        verify(organizationRepositoryMock, times(1)).findOne(defaultOrganization.getId());
         verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
     }
@@ -308,7 +308,7 @@ public class ProjectServiceTest {
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
 
         basicProject.setId(1L);
         basicProject.setManager(otherUser);
@@ -365,7 +365,7 @@ public class ProjectServiceTest {
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -386,7 +386,7 @@ public class ProjectServiceTest {
     public void testSetManager_shouldThrowExceptionIfNewManagerDoesNotExist() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("other");
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -401,7 +401,7 @@ public class ProjectServiceTest {
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -416,12 +416,12 @@ public class ProjectServiceTest {
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(defaultOrganization.getId());
+        otherUser.setOrganization(defaultOrganization);
 
         User thirdUser = new User();
         thirdUser.setId(200L);
         thirdUser.setLogin("third");
-        thirdUser.setOrgId(defaultOrganization.getId());
+        thirdUser.setOrganization(defaultOrganization);
 
         basicProject.setManager(thirdUser);
 
@@ -435,10 +435,15 @@ public class ProjectServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetManager_shouldThrowExceptionIfNewManagerDoesNotBelongToCorrectOrganization() throws Exception {
+        Organization otherOrg = new Organization();
+        otherOrg.setId(100L);
+        otherOrg.setName("otherOrg");
+
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(100L);
+        otherUser.setOrganization(otherOrg);
+        otherOrg.setOwner(otherUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepositoryMock.findByLogin(otherUser.getLogin())).thenReturn(otherUser);
@@ -470,7 +475,7 @@ public class ProjectServiceTest {
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(100L);
+        otherUser.setOrganization(defaultOrganization);
 
         basicProject.setManager(otherUser);
 
@@ -490,10 +495,15 @@ public class ProjectServiceTest {
 
     @Test(expected = OperationForbiddenException.class)
     public void testSetManager_shouldThrowExceptionIfUserIsNotAuthorized() throws Exception {
+        Organization otherOrg = new Organization();
+        otherOrg.setId(100L);
+        otherOrg.setName("otherOrg");
+
         User otherUser = new User();
         otherUser.setId(100L);
         otherUser.setLogin("other");
-        otherUser.setOrgId(100L);
+        otherUser.setOrganization(otherOrg);
+        otherOrg.setOwner(otherUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(otherUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);

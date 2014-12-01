@@ -3,6 +3,8 @@ package org.respondeco.respondeco.web.rest.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.User;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class UserDTO {
 
     @Getter
     @Setter
-    private OrganizationDTO organization;
+    private Long organizationId;
 
     @Getter
     @Setter
@@ -40,7 +42,7 @@ public class UserDTO {
     }
 
     public UserDTO(String login, String password, String title, String gender, String firstName, String lastName,
-                   String email, String description, String langKey, List<String> roles, OrganizationDTO organization) {
+                   String email, String description, String langKey, List<String> roles, Organization organization) {
         this.login = login;
         this.password = password;
         this.title = title;
@@ -53,13 +55,31 @@ public class UserDTO {
         this.langKey = langKey;
         this.roles = roles;
 
-        this.organization = organization;
+        if(organization != null) {
+            this.organizationId = organization.getId();
+        }
     }
 
     public UserDTO(String login, String password, String title, String gender, String firstName, String lastName,
-                   String email, String description, String langKey, List<String> roles, OrganizationDTO organization, ImageDTO profilePicture) {
+                   String email, String description, String langKey, List<String> roles, Organization organization, ImageDTO profilePicture) {
         this(login, password, title, gender, firstName, lastName, email, description, langKey, roles, organization);
         this.profilePicture = profilePicture;
+    }
+
+    public UserDTO(User user) {
+        this.login = user.getLogin();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+
+        this.title = title;
+        this.gender = gender;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.description = description;
+
+        this.langKey = langKey;
+        this.roles = roles;
     }
 
     public String getPassword() {

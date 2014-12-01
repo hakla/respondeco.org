@@ -38,7 +38,6 @@ public class ProjectService {
     private ProjectRepository projectRepository;
     private UserService userService;
     private UserRepository userRepository;
-    private OrganizationRepository organizationRepository;
     private PropertyTagService propertyTagService;
     private ImageRepository imageRepository;
 
@@ -47,13 +46,11 @@ public class ProjectService {
     @Inject
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
-                          OrganizationRepository organizationRepository,
                           PropertyTagService propertyTagService,
                           ImageRepository imageRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
-        this.organizationRepository = organizationRepository;
         this.propertyTagService = propertyTagService;
         this.imageRepository = imageRepository;
         this.restUtil = new RestUtil();
@@ -64,12 +61,12 @@ public class ProjectService {
                           List<ResourceRequirementDTO> resourceRequirements, Long imageId) throws OperationForbiddenException {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getOrgId() == null) {
+        if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
-        Organization organization = organizationRepository.findOne(currentUser.getOrgId());
+        Organization organization = currentUser.getOrganization();
         if(organization == null) {
-            throw new NoSuchOrganizationException(currentUser.getOrgId());
+            throw new NoSuchOrganizationException("current user does not belong to a organization");
         }
 
         Project newProject = new Project();
@@ -99,12 +96,12 @@ public class ProjectService {
             throw new IllegalValueException("project.error.idnull", "Project id must not be null");
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getOrgId() == null) {
+        if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
-        Organization organization = organizationRepository.findOne(currentUser.getOrgId());
+        Organization organization = currentUser.getOrganization();
         if(organization == null) {
-            throw new NoSuchOrganizationException(currentUser.getOrgId());
+            throw new NoSuchOrganizationException("current user does not belong to a organization");
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
@@ -149,9 +146,10 @@ public class ProjectService {
                         "change the project manager of project " + id);
             }
         }
-        if(project.getOrganization().getId().equals(newManager.getOrgId()) == false) {
-            throw new IllegalValueException("project.error.notvalidmanager",
-                    "new manager does not belong to organization: " + project.getOrganization());
+
+        if(project.getOrganization().equals(newManager.getOrganization()) == false) {
+            throw new IllegalArgumentException("new manager does not belong to organization: " +
+                    project.getOrganization());
         }
         project.setManager(newManager);
         return projectRepository.save(project);
@@ -242,5 +240,4 @@ public class ProjectService {
             }
         }
      }
-
 }

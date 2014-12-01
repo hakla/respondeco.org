@@ -3,22 +3,18 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.ResourceRequirement;
-import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
-import org.respondeco.respondeco.web.rest.dto.PropertyTagResponseDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,12 +37,12 @@ public class ProjectController {
     private final Logger log = LoggerFactory.getLogger(ProjectController.class);
 
     private ProjectService projectService;
-    private ResourcesService resourcesService;
+    private ResourceService resourceService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourcesService resourcesService) {
+    public ProjectController(ProjectService projectService, ResourceService resourceService) {
         this.projectService = projectService;
-        this.resourcesService = resourcesService;
+        this.resourceService = resourceService;
     }
 
     /**
@@ -242,7 +238,7 @@ public class ProjectController {
     @Timed
     public List<ResourceRequirementDTO> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
-        return this.resourcesService.getAllRequirements(id);
+        return this.resourceService.getAllRequirements(id);
     }
 
 }
