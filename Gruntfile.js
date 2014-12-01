@@ -191,7 +191,7 @@ module.exports = function (grunt) {
             dist: {},
             server: {
                 options: {
-                    debugInfo: true
+                    debugInfo: false
                 }
             }
         },
@@ -410,7 +410,7 @@ module.exports = function (grunt) {
                     branch: 'master'
                 }
             }
-        },
+        }
     });
 
     grunt.registerTask('server', function (target) {

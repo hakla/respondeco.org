@@ -47,7 +47,7 @@ a:hover {
 [ng-click],
 [data-ng-click],
 [x-ng-click] {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 /* start Password strength bar style */
@@ -189,14 +189,17 @@ img {
         }
     }
 }
+
 .nv-file-over {
     border: dotted 3px red;
 }
+
 /* Default class applied to drop zones on over */
 
 .another-file-over-class {
     border: dotted 3px green;
 }
+
 canvas {
     background-color: #f3f3f3;
     -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
@@ -204,4 +207,50 @@ canvas {
     box-shadow: 3px 3px 3px 0 #e3e3e3;
     border: 1px solid #c3c3c3;
     width: 100%;
+}
+
+.project-item {
+    list-style-type: none;
+    display: inline-block;
+    padding: 10px;
+    background-color: #FFF;
+    border: 1px solid #e3e3e3;
+    border-radius: 2px;
+    width: 25%;
+    min-width: 200px;
+    height: 300px;
+
+    img {
+        height: 200px;
+        width: 100%;
+    }
+
+    h2 {
+        margin-top: 0;
+
+        a {
+            color: #333;
+            font-size: 18px;
+        }
+    }
+}
+
+tags-input {
+    .tags {
+        .tag-item {
+            background: #EFEFEF;
+            border-radius: 1px;
+            color: #333;
+            padding: 0 8px;
+
+
+            &.selected {
+                background: #ACACAC;
+            }
+        }
+    }
+
+    .host {
+        margin: 0;
+    }
 }
