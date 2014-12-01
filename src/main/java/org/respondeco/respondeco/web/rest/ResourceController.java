@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
-import org.respondeco.respondeco.service.ResourcesService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
@@ -30,14 +30,14 @@ public class ResourceController {
     //region Private variables
     private final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
-    private ResourcesService resourcesService;
+    private ResourceService resourceService;
     //endregion
 
     //region Constructor
 
     @Inject
-    public ResourceController(ResourcesService resourcesService){
-        this.resourcesService = resourcesService;
+    public ResourceController(ResourceService resourceService){
+        this.resourceService = resourceService;
     }
 
     //endregion
@@ -51,7 +51,17 @@ public class ResourceController {
     @Timed
     public List<ResourceOfferDTO> getAllResourceOffer() {
         log.debug("REST request to get all resource offer");
-        return this.resourcesService.getAllOffers();
+        return this.resourceService.getAllOffers();
+    }
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceOffers/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResourceOfferDTO getResourceOffer(@PathVariable Long id) {
+        log.debug("REST request to get resource with id " + id);
+        return this.resourceService.getOfferById(id);
     }
 
     @RolesAllowed(AuthoritiesConstants.ADMIN)
@@ -64,15 +74,15 @@ public class ResourceController {
         ResponseEntity<ResourceOfferDTO> result = null;
         String message = null;
         try {
-            ResourceOffer offer = this.resourcesService.createOffer(
+            ResourceOffer offer = this.resourceService.createOffer(
                 resourceOfferDTO.getName(),
                 resourceOfferDTO.getAmount(),
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getOrganizationId(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                resourceOfferDTO.getStartDateAsDateTime(),
-                resourceOfferDTO.getEndDateAsDateTime(),
+                resourceOfferDTO.getStartDate(),
+                resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags()
             );
             resourceOfferDTO.setId(offer.getId());
@@ -104,7 +114,7 @@ public class ResourceController {
         String message = null;
         ResponseEntity<?> result = null;
         try {
-            this.resourcesService.updateOffer(
+            this.resourceService.updateOffer(
                 resourceOfferDTO.getId(),
                 resourceOfferDTO.getOrganizationId(),
                 resourceOfferDTO.getName(),
@@ -112,8 +122,8 @@ public class ResourceController {
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
                 resourceOfferDTO.getIsRecurrent(),
-                resourceOfferDTO.getStartDateAsDateTime(),
-                resourceOfferDTO.getEndDateAsDateTime(),
+                resourceOfferDTO.getStartDate(),
+                resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
@@ -142,7 +152,7 @@ public class ResourceController {
         String message = null;
         ResponseEntity<?> result = null;
         try{
-            this.resourcesService.deleteOffer(id);
+            this.resourceService.deleteOffer(id);
             result = new ResponseEntity<>(HttpStatus.OK);
         } catch (GeneralResourceException e){
             message = e.getMessage();
@@ -172,7 +182,7 @@ public class ResourceController {
     @Timed
     public List<ResourceRequirementDTO> getAllResourceRequirement() {
         log.debug("REST request to get all resource requirements");
-        return this.resourcesService.getAllRequirements();
+        return this.resourceService.getAllRequirements();
     }
 
 
@@ -186,7 +196,7 @@ public class ResourceController {
         ResponseEntity<ResourceRequirementDTO> result = null;
         String message = null;
         try {
-            requirement = this.resourcesService.createRequirement(
+            requirement = this.resourceService.createRequirement(
                 resourceRequirementDTO.getName(),
                 resourceRequirementDTO.getAmount(),
                 resourceRequirementDTO.getDescription(),
@@ -222,7 +232,7 @@ public class ResourceController {
         String message = null;
         ResponseEntity<?> result = null;
         try {
-            this.resourcesService.updateRequirement(
+            this.resourceService.updateRequirement(
                 resourceRequirementDTO.getId(),
                 resourceRequirementDTO.getName(),
                 resourceRequirementDTO.getAmount(),
@@ -256,7 +266,7 @@ public class ResourceController {
         String message = null;
         ResponseEntity<?> result = null;
         try{
-            this.resourcesService.deleteRequirement(resourceRequirementId);
+            this.resourceService.deleteRequirement(resourceRequirementId);
             result = new ResponseEntity<>(HttpStatus.OK);
         }
         catch (GeneralResourceException e){

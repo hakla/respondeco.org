@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.ResourceOffer;
+import org.respondeco.respondeco.domain.ResourceTag;
+import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateDeserializer;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 
 import java.math.BigDecimal;
@@ -38,19 +40,12 @@ public class ResourceOfferDTO {
     private Boolean isRecurrent = false;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     private LocalDate startDate;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     private LocalDate endDate;
-
-    public DateTime getStartDateAsDateTime(){
-        return this.startDate == null ? null : this.startDate.toDateTimeAtStartOfDay();
-    }
-    public DateTime getEndDateAsDateTime(){
-        return this.endDate == null ? null : this.endDate.toDateTimeAtStartOfDay();
-    }
 
     public Boolean getIsCommercial() { return this.isCommercial; }
     public Boolean getIsRecurrent() { return this.isRecurrent; }
@@ -61,8 +56,6 @@ public class ResourceOfferDTO {
 
     public ResourceOfferDTO(){ }
     public ResourceOfferDTO(ResourceOffer offer){
-        DateTime start = offer.getStartDate();
-        DateTime end = offer.getEndDate();
         this.setName(offer.getName());
         this.setId(offer.getId());
         this.setAmount(offer.getAmount());
@@ -70,8 +63,17 @@ public class ResourceOfferDTO {
         this.setOrganizationId(offer.getOrganisation().getId());
         this.setIsCommercial(offer.getIsCommercial());
         this.setIsRecurrent(offer.getIsRecurrent());
-        this.setStartDate(start == null ? null : start.toLocalDate());
-        this.setEndDate(end == null ? null : end.toLocalDate());
+        this.setStartDate(offer.getStartDate());
+        this.setEndDate(offer.getEndDate());
+
+        resourceTags = new String[offer.getResourceTags().size()];
+
+        int i=0;
+
+        for(ResourceTag tag : offer.getResourceTags()) {
+            resourceTags[i] = tag.getName();
+            i++;
+        }
     }
 
     private String dateTimeToString(DateTime dateTime){

@@ -107,7 +107,7 @@ public class OrgJoinRequestControllerTest {
         this.defaultUser.setEmail("john.doe@jhipter.com");
         this.defaultUser.setDescription("just a regular everyday normal guy");
         this.defaultUser.setAuthorities(userAuthorities);
-        this.defaultUser.setOrgId(1L);
+       // this.defaultUser.setOrgId(1L);
 
         this.potMember = new User();
         this.potMember.setId(2L);

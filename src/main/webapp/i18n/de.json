@@ -50,8 +50,8 @@
             "name": "Name",
             "company": "Unternehmen",
             "amount": "Anzahl",
-            "datefrom": "Verfügbar ab",
-            "dateto": "Verfügbar bis",
+            "startDate": "Verfügbar ab",
+            "endDate": "Verfügbar bis",
             "commercial":"Kommerziell",
             "recurrent":"Wiederkehrend",
             "newbutton":"Neue Ressource anlegen",
@@ -64,11 +64,14 @@
                 "amount":"Anzahl",
                 "commercial":"Kommerzielle Ressource",
                 "recurrent":"Wiederkehrende Ressource",
-                "datefrom": "Verfügbar ab",
-                "dateto":"Verfügbar bis",
+                "startDate": "Verfügbar ab",
+                "endDate":"Verfügbar bis",
                 "savebutton":"Speichern",
                 "cancelbutton":"Abbrechen",
                 "error": "Ressource konnte nicht erstellt werden!"
+            },
+            "edit": {
+                "title": "Ressource bearbeiten"
             },
             "placeholder": {
                 "name": "Name der Ressource",
@@ -78,7 +81,7 @@
                 "search": "Suchkriterien eingeben"
             },
             "own": {
-                "title": "Erstellte Ressourcen von",
+                "title": "Ressourcen von",
                 "editbutton": "Bearbeiten",
                 "deletebutton": "Löschen"
             }

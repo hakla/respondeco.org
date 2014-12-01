@@ -4,6 +4,7 @@ respondecoApp.factory('Resource', function ($resource) {
 	return $resource('app/rest/resourceOffers/:id', {id: '@id'}, {
 		'query': { method: 'GET', isArray: true},
 		'get' : { method: 'GET'},
-		'new': { method: 'POST', url: '/rest/organisations/:id/resourceOffer'}
+		'update' : {method: 'PUT'},
+		'getByOrgId' : {method: 'GET', isArray:true, url: 'app/rest/organizations/:id/resourceOffers'}
 	});
 });

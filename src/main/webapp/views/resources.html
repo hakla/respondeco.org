@@ -29,28 +29,23 @@
                     <td translate="global.resource.name">name</td>
                     <td translate="global.resource.company">company</td>
                     <td translate="global.resource.amount">amount</td>
-                    <td translate="global.resource.datefrom">available from</td>
-                    <td translate="global.resource.dateto">available until</td>
+                    <td translate="global.resource.startDate">available from</td>
+                    <td translate="global.resource.endDate">available until</td>
                     <td translate="global.resource.commercial">commercial</td>
                     <td translate="global.resource.recurrent">recurrent</td>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="resource in resources">
+                <tr ng-click=redirectToResource(resource.id) ng-repeat="resource in resources">
                     <td>{{ resource.name }}</td>
-                    <td>{{ resource.company }}</td>
+                    <td>{{ organization.name }}</td>
                     <td>{{ resource.amount }}</td>
-                    <td>{{ resource.dateStart | date }}</td>
-                    <td>{{ resource.dateEnd | date }}</td>
+                    <td>{{ resource.startDate | date}}</td>
+                    <td>{{ resource.endDate | date }}</td>
                     <td ng-show="resource.isCommercial"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isCommercial"><span class="glyphicon glyphicon-remove"/></td>
                     <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
-                    <td> 
-                        <button type="button" class="btn btn-default" ng-click="">
-                            Resource anfordern
-                        </button>
-                    </td>
                 </tr>
             </tbody>
         </table>

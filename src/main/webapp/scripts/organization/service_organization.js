@@ -5,7 +5,6 @@ respondecoApp.factory('Organization', function ($resource) {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
             'update': { method: 'POST', url: 'app/rest/organizations/updateOrganization' },
-            'getById': { method: 'GET', url: 'app/rest/organization/:id' },
             'getMembers': { method: 'GET', url: 'app/rest/organizations/:id/members', isArray: true }
         });
     }).factory('User', function($resource) {

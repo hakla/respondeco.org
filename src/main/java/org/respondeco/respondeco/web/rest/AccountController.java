@@ -134,7 +134,7 @@ public class AccountController {
                     user.getDescription(),
                     user.getLangKey(),
                     user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList()),
-                    new OrganizationDTO(),
+                    user.getOrganization(),
                     transformImage(user.getProfilePicture())),
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));

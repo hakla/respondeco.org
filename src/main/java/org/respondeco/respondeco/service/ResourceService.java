@@ -1,6 +1,6 @@
 package org.respondeco.respondeco.service;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.ResourceJoinTagException;
@@ -30,10 +30,10 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ResourcesService {
+public class ResourceService {
 
     // region Private Variables
-    private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+    private final Logger log = LoggerFactory.getLogger(ResourceService.class);
 
     private ResourceOfferRepository resourceOfferRepository;
 
@@ -49,11 +49,11 @@ public class ResourcesService {
 
     // region Constructor
     @Inject
-    public ResourcesService(ResourceOfferRepository resourceOfferRepository,
-                            ResourceRequirementRepository resourceRequirementRepository,
-                            ResourceTagRepository resourceTagRepository,
-                            OrganizationRepository organizationRepository,
-                            ProjectRepository projectRepository) {
+    public ResourceService(ResourceOfferRepository resourceOfferRepository,
+                           ResourceRequirementRepository resourceRequirementRepository,
+                           ResourceTagRepository resourceTagRepository,
+                           OrganizationRepository organizationRepository,
+                           ProjectRepository projectRepository) {
         this.resourceOfferRepository = resourceOfferRepository;
         this.resourceRequirementRepository = resourceRequirementRepository;
         this.resourceTagRepository = resourceTagRepository;
@@ -74,7 +74,7 @@ public class ResourcesService {
             newRequirement.setDescription(description);
             newRequirement.setProject(projectRepository.findOne(projectId));
             newRequirement.setIsEssential(isEssential);
-            this.mapTags(newRequirement, resourceTags);
+           // this.mapTags(newRequirement, resourceTags); TODO FIX
             this.resourceRequirementRepository.save(newRequirement);
         } else {
             throw new ResourceException(String.format("Requirement with description '%s' for the Project %d already exists", description, projectId), EnumResourceException.ALREADY_EXISTS);
@@ -90,7 +90,7 @@ public class ResourcesService {
             requirement.setAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
-            this.mapTags(requirement, resourceTags);
+            //this.mapTags(requirement, resourceTags); TODO FIX
             this.resourceRequirementRepository.save(requirement);
 
         } else {
@@ -130,7 +130,7 @@ public class ResourcesService {
     // endregion
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
-    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
+    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
@@ -140,13 +140,15 @@ public class ResourcesService {
         newOffer.setIsRecurrent(isRecurrent);
         newOffer.setStartDate(startDate);
         newOffer.setEndDate(endDate);
+
+        log.debug("OFFER: " + newOffer.toString());
         this.mapTags(newOffer, resourceTags);
         this.resourceOfferRepository.save(newOffer);
 
         return newOffer;
     }
 
-    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, DateTime startDate, DateTime endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
+    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
             offer.setName(name);
@@ -186,20 +188,36 @@ public class ResourcesService {
         return result;
     }
 
-    public List<ResourceOfferDTO> getAllOffers(Long organisationId) {
+    public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organisationId);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organizationId);
         if(entries.isEmpty() == false) {
             for (ResourceOffer offer : entries) {
                 result.add(new ResourceOfferDTO(offer));
             }
+        } else {
+            log.debug("entries are empty");
         }
         return result;
     }
+
+    /**
+     * Get ResourceOffer by given id
+     * @param id resourceOffer id
+     * @return ResourceOfferDTO
+     */
+    public ResourceOfferDTO getOfferById(Long id) {
+        return new ResourceOfferDTO(this.resourceOfferRepository.getOne(id));
+    }
+
+
     // endregion
 
     // region Private methods
-    private void mapTags(ResourceBase resource, String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
+    private void mapTags(ResourceOffer resource, String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
+
+        resource.setResourceTags(new ArrayList<ResourceTag>());
+
         for (String tagName : resourceTags) {
             //save tags and add it to list
             ResourceTag tag;
