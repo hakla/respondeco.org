@@ -41,7 +41,6 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
     protected BigDecimal amount;
 
     @Column
-    @Type(type = "clob")
     @NotNull
     protected String description;
 

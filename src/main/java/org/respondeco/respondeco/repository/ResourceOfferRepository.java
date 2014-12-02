@@ -16,5 +16,7 @@ import java.util.List;
 public interface ResourceOfferRepository extends JpaRepository<ResourceOffer, Long> {
 
     List<ResourceOffer> findByNameAndOrganisationId(String name, Long organisationId);
-    List<ResourceOffer> findByOrganisationId(Long organizationId);
+
+    //@Query("SELECT r FROM ResourceOffer r WHERE r.organisation = :orgId ")
+    List<ResourceOffer> findByOrganisationId(Long id);
 }

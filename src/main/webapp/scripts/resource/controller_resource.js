@@ -8,7 +8,18 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
-	$scope.resources = Resource.query();
+
+
+	if($location.path() === 'ownresource') {
+		Account.get(null, function(account) {
+			orgId = account.organizationId;
+
+			$scope.resources = Resource.getByOrgId({id:orgId});
+		});
+	} else {
+		$scope.resources = Resource.query();
+	}
+
 
 	Account.get(null, function(account) {
 		console.log(account);
@@ -63,17 +74,5 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	if($scope.isNew == false) {
 		$scope.update(id);
 	}
-
-}).controller('OwnResourceController', function($scope, $location, $routeParams, Resource, Account, Organization) {
-	
-	var orgId;
-
-	Account.get(null, function(account) {
-		orgId = account.organizationId;
-
-		$scope.resources = Resource.getByOrgId({id:orgId});
-	});
-
-	
 
 });

@@ -42,9 +42,10 @@ public class OrganizationController {
     private UserService userService;
 
     @Inject
-    public OrganizationController (OrganizationService organizationService, UserService userService) {
+    public OrganizationController (OrganizationService organizationService, UserService userService, ResourceService resourceService) {
         this.organizationService = organizationService;
         this.userService = userService;
+        this.resourceService = resourceService;
     }
 
     /**
