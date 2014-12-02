@@ -45,6 +45,10 @@ public class ResourceService {
 
     private ProjectRepository projectRepository;
 
+    private ImageRepository imageRepository;
+
+    private UserService userService;
+
     // endregion
 
     // region Constructor
@@ -53,12 +57,61 @@ public class ResourceService {
                            ResourceRequirementRepository resourceRequirementRepository,
                            ResourceTagRepository resourceTagRepository,
                            OrganizationRepository organizationRepository,
-                           ProjectRepository projectRepository) {
+                           ProjectRepository projectRepository,
+                           ImageRepository imageRepository,
+                           UserService userService) {
         this.resourceOfferRepository = resourceOfferRepository;
         this.resourceRequirementRepository = resourceRequirementRepository;
         this.resourceTagRepository = resourceTagRepository;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
+        this.imageRepository = imageRepository;
+        this.userService = userService;
+    }
+
+    private User getAdminUser() throws ResourceException {
+        User result = null;
+        Boolean isAdmin = false;
+        try{
+            result = this.userService.getUserWithAuthorities();
+
+            for(Authority authority: result.getAuthorities()){
+                if(authority.getName() == "ROLE_ADMIN"){
+                    isAdmin = true;
+                    break;
+                }
+            }
+            if(isAdmin == false){
+                throw new IllegalAccessException(String.format("The Current User %s is not authorized for this execution", result.getLogin()));
+            }
+        }
+        catch (IllegalAccessException e){
+            throw new ResourceException(e.getMessage(), EnumResourceException.USER_NOT_AUTHORIZED, e);
+        }
+        catch (Exception e){
+            throw new ResourceException("Unexpected Exception during the user rights check", EnumResourceException.USER_NOT_AUTHORIZED, e);
+        }
+        return result;
+    }
+
+    private AbstractAuditingEntity userIsPartOfOrganisation(Boolean isProjectBased, Long id) throws ResourceException {
+        User user = this.getAdminUser();
+        Boolean result = true;
+        AbstractAuditingEntity currentResult = null;
+        if(isProjectBased == true){
+            Project project = this.projectRepository.findOne(id);
+            currentResult = project;
+            result = project.getOrganization() == user.getOrganization();
+        }
+        else{
+            Organization organization = this.organizationRepository.findOne(id);
+            currentResult = organization;
+            result = organization == user.getOrganization();
+        }
+        if (result == false){
+            throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);
+        }
+        return currentResult;
     }
 
     // endregion
@@ -66,15 +119,16 @@ public class ResourceService {
     // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceRequirement newRequirement = null;
+        Project currentProject = (Project)this.userIsPartOfOrganisation(true, projectId);
         List<ResourceRequirement> entries = this.resourceRequirementRepository.findByNameAndProjectId(name, projectId);
         if (entries == null || entries.isEmpty() == true) {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
             newRequirement.setAmount(amount);
             newRequirement.setDescription(description);
-            newRequirement.setProject(projectRepository.findOne(projectId));
+            newRequirement.setProject(currentProject);
             newRequirement.setIsEssential(isEssential);
-           // this.mapTags(newRequirement, resourceTags); TODO FIX
+            newRequirement.setResourceTags(this.mapTags(resourceTags));
             this.resourceRequirementRepository.save(newRequirement);
         } else {
             throw new ResourceException(String.format("Requirement with description '%s' for the Project %d already exists", description, projectId), EnumResourceException.ALREADY_EXISTS);
@@ -86,11 +140,13 @@ public class ResourceService {
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
+            Project actual = requirement.getProject();
+            this.userIsPartOfOrganisation(true, actual.getId());
             requirement.setName(name);
             requirement.setAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
-            //this.mapTags(requirement, resourceTags); TODO FIX
+            requirement.setResourceTags(this.mapTags(resourceTags));
             this.resourceRequirementRepository.save(requirement);
 
         } else {
@@ -101,7 +157,10 @@ public class ResourceService {
     }
 
     public void deleteRequirement(Long id) throws ResourceException {
-        if (this.resourceRequirementRepository.findOne(id) != null) {
+        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
+        if (requirement != null) {
+            Project actual = requirement.getProject();
+            this.userIsPartOfOrganisation(true, actual.getId());
             this.resourceRequirementRepository.delete(id);
         } else {
             throw new ResourceException(String.format("No resource requirement found for the id: %d", id), EnumResourceException.NOT_FOUND);
@@ -131,26 +190,34 @@ public class ResourceService {
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
-        ResourceOffer newOffer = new ResourceOffer();
-        newOffer.setName(name);
-        newOffer.setAmount(amount);
-        newOffer.setDescription(description);
-        newOffer.setOrganisation(organizationRepository.findOne(organisationId));
-        newOffer.setIsCommercial(isCommercial);
-        newOffer.setIsRecurrent(isRecurrent);
-        newOffer.setStartDate(startDate);
-        newOffer.setEndDate(endDate);
+        ResourceOffer newOffer = null;
+        Organization currentOrg = (Organization)this.userIsPartOfOrganisation(false, organisationId);
+        List<ResourceOffer> list = this.resourceOfferRepository.findByNameAndOrganisationId(name, organisationId);
+        if(list.size() == 0){
+            newOffer = new ResourceOffer();
+            newOffer.setName(name);
+            newOffer.setAmount(amount);
+            newOffer.setDescription(description);
+            newOffer.setOrganisation(currentOrg);
+            newOffer.setIsCommercial(isCommercial);
+            newOffer.setIsRecurrent(isRecurrent);
+            newOffer.setStartDate(startDate);
+            newOffer.setEndDate(endDate);
 
-        log.debug("OFFER: " + newOffer.toString());
-        this.mapTags(newOffer, resourceTags);
-        this.resourceOfferRepository.save(newOffer);
-
+            log.debug("OFFER: " + newOffer.toString());
+            newOffer.setResourceTags(this.mapTags(resourceTags));
+            this.resourceOfferRepository.save(newOffer);
+        }
+        else{
+            throw new ResourceException(String.format("Offer with description '%s' for the Organisation %d already exists", description, organisationId), EnumResourceException.ALREADY_EXISTS);
+        }
         return newOffer;
     }
 
     public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
+            this.userIsPartOfOrganisation(false, organisationId);
             offer.setName(name);
             offer.setAmount(amount);
             offer.setDescription(description);
@@ -158,7 +225,7 @@ public class ResourceService {
             offer.setIsRecurrent(isRecurrent);
             offer.setStartDate(startDate);
             offer.setEndDate(endDate);
-            this.mapTags(offer, resourceTags);
+            this.mapTags(resourceTags);
             this.resourceOfferRepository.save(offer);
         }
         else{
@@ -216,10 +283,8 @@ public class ResourceService {
     // endregion
 
     // region Private methods
-    private void mapTags(ResourceOffer resource, String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
-
-        resource.setResourceTags(new ArrayList<ResourceTag>());
-
+    private List<ResourceTag> mapTags(String[] resourceTags) throws ResourceTagException, ResourceJoinTagException {
+        List<ResourceTag> result = new ArrayList<>(resourceTags.length);
         for (String tagName : resourceTags) {
             //save tags and add it to list
             ResourceTag tag;
@@ -235,14 +300,13 @@ public class ResourceService {
                     tag = list.get(0);
                     log.debug(String.format("TAG already exists take it. ID: %d", tag.getId()));
                 }
+                result.add(tag);
             } catch (Exception e) {
                 String message = String.format("Error at trying to Save resource tag named: %s", tagName);
                 throw new ResourceTagException(message, EnumResourceTagException.CREATE, e);
             }
-
-            //save resource to tag
-            resource.addResourceTag(tag);
         }
+        return result;
     }
     //endregion
 }

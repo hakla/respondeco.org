@@ -7,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
@@ -54,6 +55,10 @@ public class ResourceControllerTest {
     private OrganizationRepository organizationRepository;
     @Inject
     private ProjectRepository projectRepository;
+    @Inject
+    private ImageRepository imageRepository;
+    @Inject
+    private UserService userService;
 
     private MockMvc restMockMvc;
 
@@ -65,7 +70,9 @@ public class ResourceControllerTest {
             resourceRequirementRepository,
             resourceTagRepository,
             organizationRepository,
-            projectRepository));
+            projectRepository,
+            imageRepository,
+            userService));
         ResourceController controller = new ResourceController(resourceService);
 
         restMockMvc = MockMvcBuilders.standaloneSetup(controller).build();
