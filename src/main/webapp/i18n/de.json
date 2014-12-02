@@ -84,6 +84,13 @@
                 "title": "Ressourcen von",
                 "editbutton": "Bearbeiten",
                 "deletebutton": "Löschen"
+            },
+            "requirement": {
+                "title": "Ressourcenanforderung hinzufügen",
+                "isEssential": "Notwendig",
+                "tableheader": "Benötigte Ressourcen",
+                "name": "Name",
+                "amount": "Menge"
             }
         },
         "messages": {
@@ -172,7 +179,7 @@
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
-            "resource": "Ressource anfordern",
+            "resource": "Ressource hinzufügen",
             "logo": "Logo hinzufügen",
             "name.placeholder": "Name des Projekts",
             "purpose.placeholder": "Ziel des Projekts",

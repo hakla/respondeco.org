@@ -16,8 +16,8 @@ describe('Resource Router Test', function () {
         	expect($route.routes['/ownresource'].controller).toBe('ResourceController');
         	expect($route.routes['/ownresource'].templateUrl).toEqual('/views/resources-own.html');        
 
-        	expect($route.routes[null].redirectTo).toEqual('/');        
-    	}); 
+        	expect($route.routes[null].redirectTo).toEqual('/');
+    	});
 
     });
 });
