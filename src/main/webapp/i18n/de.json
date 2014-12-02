@@ -203,7 +203,7 @@
         "concrete": "Konkretes Projekt",
         "startDate": "Start-Datum",
         "endDate": "End-Datum",
-        "tag": "Tags",
+        "tags": "Tags",
         "resource": "Ressoucen",
         "logo": "ProjectLogo",
         "name.placeholder": "Projektname",
