@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrganizationService;
@@ -64,6 +65,9 @@ public class OrganizationControllerTest {
     private UserRepository userRepository;
 
     @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
     private OrganizationService organizationService;
 
     private MockMvc restOrganizationMockMvc;
@@ -89,7 +93,7 @@ public class OrganizationControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository);
+        OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository, imageRepository);
         OrganizationController organizationController = new OrganizationController(organizationService, userService);
 
         userAuthorities = new HashSet<>();
@@ -138,7 +142,7 @@ public class OrganizationControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         // Read Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", DEFAULT_ORGNAME))
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{organization}", DEFAULT_ORGNAME))
                  .andExpect(status().isOk())
                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                  .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
@@ -167,7 +171,7 @@ public class OrganizationControllerTest {
                 .andExpect(status().isOk());
 
         // Read updated Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", UPDATED_ORGNAME))
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{organization}", UPDATED_ORGNAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(UPDATED_ORGNAME))
@@ -181,7 +185,7 @@ public class OrganizationControllerTest {
                 .andExpect(status().isOk());
 
         // Read nonexisting Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{orgName}", UPDATED_ORGNAME)
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/{organization}", UPDATED_ORGNAME)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
     }

@@ -13,7 +13,11 @@ import org.respondeco.respondeco.domain.OrgJoinRequest;
 public class OrgJoinRequestDTO {
 
     private Long id;
-    private String orgName;
-    private String userLogin;
+    private OrganizationDTO organization;
+    private UserDTO user;
+
+    public OrgJoinRequestDTO(OrgJoinRequest orgJoinRequest) {
+
+    }
 
 }

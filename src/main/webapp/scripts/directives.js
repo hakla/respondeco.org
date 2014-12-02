@@ -136,7 +136,7 @@ angular.module('respondecoApp')
         var placeholder = '/images/profile_empty.png';
 
         return {
-            restrict: "A",
+            restrict: "EA",
             scope: {
                 name: '=name'
             },
@@ -149,6 +149,47 @@ angular.module('respondecoApp')
             }
         }
     })
+    .directive('fileUpload', ['FileUploader', function(FileUploader) {
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/file-upload.html',
+            scope: {
+                complete: "=complete",
+                value: "=value"
+            },
+            controller: function($scope) {
+                var uploader = $scope.uploader = new FileUploader({
+                    url: '/app/rest/images',
+                    autoUpload: true
+                });
+
+                uploader.filters.push({
+                    name: 'imageFilter',
+                    fn: function(item /*{File|FileLikeObject}*/, options) {
+                        var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+                        return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+                    }
+                });
+
+                uploader.onAfterAddingFile = function(fileItem) {
+                    $scope._file = fileItem._file;
+                };
+
+                uploader.onProgressItem = function(fileItem, progress) {
+                    $scope._progress = progress;
+                };
+
+                uploader.onCompleteItem = function(fileItem, response, status, headers) {
+                    if (typeof $scope.complete === 'function') {
+                        $scope.complete(fileItem, response, status, headers);
+                    }
+                };
+
+                $scope._progress = 0;
+                $scope._type = "warning";
+            }
+        };
+    }])
     .directive('ngThumb', ['$window', function($window) {
         var helper = {
             support: !!($window.FileReader && $window.CanvasRenderingContext2D),

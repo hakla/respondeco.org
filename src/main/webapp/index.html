@@ -66,12 +66,6 @@
                                 <span translate="global.menu.projects">Projects</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#/proposals">
-                                <span class="glyphicon glyphicon-flag"></span>
-                                <span translate="global.menu.proposals">Proposals</span>
-                            </a>
-                        </li>
                     </ul>
                     <ul class="nav navbar-nav nav-pills navbar-right">
                         <li class="dropdown pointer">
@@ -201,11 +195,10 @@
                 </div>
             </div>
         </nav>
-        <div ng-show="main()" ng-view></div>
-        <div class="container" ng-hide="main()">
-            <div class="well" ng-view></div>
+        <div ng-class="main() ? '' : 'container'">
+            <div ng-class="main() ? '' : 'well'" ng-view></div>
 
-            <div class="footer">
+            <div ng-hide="main()" class="footer">
                 <p translate="footer">This is your footer</p>
             </div>
         </div>

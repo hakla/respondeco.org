@@ -26,9 +26,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label>orgName</label>
+                            <label>organization</label>
                             <input type="text" class="form-control"
-                                   ng-model="logo.orgName">
+                                   ng-model="logo.organization">
                         </div>
                         <div class="form-group">
                             <label>label</label>
@@ -61,7 +61,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>orgName</th>
+                    <th>organization</th>
                     <th>label</th>
                     <th>data</th>
                     <th></th>
@@ -70,7 +70,7 @@
             <tbody>
                 <tr ng-repeat="logo in logos">
                     <td>{{logo.id}}</td>
-                    <td>{{logo.orgName}}</td>
+                    <td>{{logo.organization}}</td>
                     <td>{{logo.label}}</td>
                     <td>{{logo.data}}</td>
                     <td>

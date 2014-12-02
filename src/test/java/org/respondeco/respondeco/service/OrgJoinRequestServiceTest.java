@@ -9,6 +9,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.UserRepository;
@@ -53,6 +54,9 @@ public class OrgJoinRequestServiceTest {
     @Mock
     private OrganizationService organizationService;
 
+    @Mock
+    private ImageRepository imageRepositoryMock;
+
     private OrgJoinRequestService orgJoinRequestService;
 
     private User orgOwner;
@@ -63,7 +67,7 @@ public class OrgJoinRequestServiceTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         orgJoinRequestService = new OrgJoinRequestService(orgJoinRequestRepository, userServiceMock, userRepositoryMock, organizationRepositoryMock);
-        organizationService = new OrganizationService(organizationRepositoryMock,userServiceMock, userRepositoryMock);
+        organizationService = new OrganizationService(organizationRepositoryMock,userServiceMock, userRepositoryMock, imageRepositoryMock);
 
         defaultUser = new User();
         defaultUser.setId(2L);

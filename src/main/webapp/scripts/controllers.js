@@ -6,6 +6,14 @@ respondecoApp.controller('MainController', function ($scope, $location) {
     $scope.main = function() {
         return $location.path() === '' || $location.path() === '/';
     };
+
+    $scope.redirectToProjectSearch = function() {
+        $location.path("projects");
+    };
+
+    $scope.redirectToNewProject = function() {
+        $location.path("projects/edit/new");
+    };
 });
 
 respondecoApp.controller('AdminController', function ($scope) {
@@ -43,36 +51,12 @@ respondecoApp.controller('LogoutController', function ($location, Authentication
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization, FileUploader) {
-    var uploader = $scope.uploader = new FileUploader({
-        url: '/app/rest/images',
-        autoUpload: true
-    });
-
-    uploader.filters.push({
-        name: 'imageFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
-            var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-            return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-        }
-    });
-
-    uploader.onAfterAddingFile = function(fileItem) {
-        $scope._file = fileItem._file;
-    };
-
-    uploader.onProgressItem = function(fileItem, progress) {
-        $scope._progress = progress;
-    };
-
-    uploader.onCompleteItem = function(fileItem, response, status, headers) {
+respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
+    $scope.onComplete = function(fileItem, response) {
         $scope.settingsAccount.profilePicture = response;
 
         $scope.save();
-    }
-
-    $scope._progress = 0;
-    $scope._type = "warning";
+    };
 
     $scope.success = null;
     $scope.error = null;

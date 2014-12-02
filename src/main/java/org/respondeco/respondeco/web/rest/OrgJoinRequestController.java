@@ -5,13 +5,11 @@ import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
-import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchOrgJoinRequestException;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestWithActiveFlagDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -55,8 +53,8 @@ public class OrgJoinRequestController {
         log.debug("REST request to save OrgJoinRequest : {}", orgjoinrequest);
         ResponseEntity<?> responseEntity;
         try {
-            orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrgName(),
-                    orgjoinrequest.getUserLogin());
+            orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization().getName(),
+                    orgjoinrequest.getUser().getLogin());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
@@ -120,7 +118,7 @@ public class OrgJoinRequestController {
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 for (OrgJoinRequest orgJoinRequest: orgJoinRequests) {
-                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest.getId(), orgJoinRequest.getOrganization().getName(), orgJoinRequest.getUser().getLogin()));
+                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest));
                 }
             }
         } catch (NoSuchOrganizationException e) {
@@ -130,20 +128,24 @@ public class OrgJoinRequestController {
         return responseEntity;
     }
     /**
-     * GET  /rest/orgjoinrequests/:orgName -> get the "orgName" orgjoinrequest.
+     * GET  /rest/orgjoinrequests/:organization -> get the "organization" orgjoinrequest.
      */
             @RolesAllowed(AuthoritiesConstants.USER)
             @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinRequests",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequest>> getByCurrentUser() {
+    public ResponseEntity<List<OrgJoinRequestDTO>> getByCurrentUser() {
         log.debug("REST request to get OrgJoinRequest : {}");
-        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByCurrentUser())
-                .map(orgjoinrequest -> new ResponseEntity<>(
-                        orgjoinrequest,
-                        HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
+        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (orgJoinRequests.isEmpty() == false) {
+            List<OrgJoinRequestDTO> dtos = new ArrayList<>();
+            orgJoinRequests.forEach(p -> dtos.add(new OrgJoinRequestDTO(p)));
+            entity = new ResponseEntity<>(dtos, HttpStatus.OK);
+        }
+
+        return entity;
     }
 
     /**

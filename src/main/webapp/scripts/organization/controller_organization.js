@@ -7,13 +7,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.organizations = resolvedOrganization;
 
     // get the current logged in user and set the organization owner to it
-    Account.get(null, function(account) {
-        user = account;
-
-        if ($scope.organization.owner !== undefined) {
-            return user.login === $scope.organization.owner.login;
-        }
-    });
 
     $scope.update = function(name) {
         $scope.organization = Organization.get({
@@ -25,7 +18,11 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                 $scope.members = data;
             });
 
-            isOwner = user !== undefined && user.login === $scope.organization.owner.login;
+            Account.get(null, function(account) {
+                user = account;
+                isOwner = user !== undefined && user.login === $scope.organization.owner.login;
+            });
+
         });
     };
 
@@ -43,7 +40,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     };
 
     $scope.redirectToEdit = function() {
-        $location.path('organization/edit/' + $scope.organization.name);
+        $location.path('organization/edit/' + $scope.organization.id);
     };
 
     $scope.isOwner = function() {

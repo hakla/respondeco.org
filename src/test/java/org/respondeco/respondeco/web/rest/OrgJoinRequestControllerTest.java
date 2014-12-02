@@ -8,8 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.inject.Inject;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +20,8 @@ import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -30,7 +30,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -138,8 +137,8 @@ public class OrgJoinRequestControllerTest {
 
         orgjoinrequestDTO = new OrgJoinRequestDTO();
 
-        orgjoinrequestDTO.setOrgName(organization.getName());
-        orgjoinrequestDTO.setUserLogin(defaultUser.getLogin());
+        orgjoinrequestDTO.setOrganization(new OrganizationDTO(organization));
+        orgjoinrequestDTO.setUser(new UserDTO(defaultUser));
 
         orgJoinRequest = new OrgJoinRequest();
         orgJoinRequest.setId(1L);
@@ -168,7 +167,7 @@ public class OrgJoinRequestControllerTest {
                 .andExpect(status().isOk());
 
         // Read OrgJoinRequest
-        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{orgName}", organization.getName()))
+        restOrgJoinRequestMockMvc.perform(get("/app/rest/orgjoinrequests/{organization}", organization.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 

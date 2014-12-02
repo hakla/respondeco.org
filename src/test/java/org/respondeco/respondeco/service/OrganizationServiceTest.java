@@ -10,6 +10,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
@@ -47,6 +48,9 @@ public class OrganizationServiceTest {
     @Mock
     private UserRepository userRepositoryMock;
 
+    @Mock
+    private ImageRepository imageRepositoryMock;
+
     private OrganizationService organizationService;
 
     private User defaultUser;
@@ -55,7 +59,7 @@ public class OrganizationServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        organizationService = new OrganizationService(organizationRepository, userServiceMock, userRepositoryMock);
+        organizationService = new OrganizationService(organizationRepository, userServiceMock, userRepositoryMock, imageRepositoryMock);
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testUser");
@@ -74,7 +78,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo);
+        Organization organization = organizationService.createOrganizationInformation(name,description,email,isNpo,null);
         assertNotNull(organization);
         assertEquals(organization.getName(), name);
         assertEquals(organization.getDescription(), description);
@@ -93,9 +97,9 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -108,7 +112,7 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
     }
     @Test(expected = AlreadyInOrganizationException.class)
     public void testCreateOrganization_AlreadyOwnerOfAnotherOrganization() throws Exception {
@@ -120,14 +124,14 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
 
         name = "testOrg2";
         description = "testDescription";
         email = "test@email.com";
         isNpo = false;
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
     }
 
     @Test
@@ -140,7 +144,7 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
 
         Organization organization = organizationService.getOrganizationByName(name);
 
@@ -161,7 +165,7 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
         organizationService.getOrganizationByName("test");
     }
 
@@ -175,7 +179,7 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(1L)).thenReturn(true);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
 
         Organization organization = organizationService.getOrganizationByOwner();
 
@@ -195,7 +199,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         organizationService.getOrganizationByOwner();
     }
@@ -209,13 +213,13 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
 
         name = "testOrg2";
         description = "testDescription2";
         email = "test2@email.com";
 
-        organizationService.updaterOrganizationInformation(name,description,email,isNpo);
+        organizationService.updaterOrganizationInformation(name,description,email,isNpo,null);
         Organization organization = organizationService.getOrganizationByName(name);
 
         assertEquals(organization.getName(),name);
@@ -232,13 +236,13 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        organizationService.createOrganizationInformation(name,description,email,isNpo);
+        organizationService.createOrganizationInformation(name,description,email,isNpo,null);
 
         name = "";
         description = "testDescription2";
         email = "test2@email.com";
 
-        organizationService.updaterOrganizationInformation(name,description,email,isNpo);
+        organizationService.updaterOrganizationInformation(name,description,email,isNpo,null);
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -251,7 +255,7 @@ public class OrganizationServiceTest {
         String email = "test2@email.com";
         Boolean isNpo = false;
 
-        organizationService.updaterOrganizationInformation(name, description, email, isNpo);
+        organizationService.updaterOrganizationInformation(name, description, email, isNpo,null);
     }
 
     @Test
@@ -263,7 +267,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        Organization organization = organizationService.createOrganizationInformation(name, description, email, isNpo);
+        Organization organization = organizationService.createOrganizationInformation(name, description, email, isNpo,null);
 
         organizationService.deleteOrganizationInformation();
 

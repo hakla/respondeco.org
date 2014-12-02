@@ -7,9 +7,14 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     var organization = {};
 
+    $scope.logo = null;
     $scope.organization = {
         npo: false,
         owner: false
+    };
+
+    $scope.onUploadComplete = function(fileItem, response) {
+        $scope.organization.logo = response;
     };
 
     $scope.alerts = [];
@@ -43,6 +48,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         organization.name = $scope.organization.name;
         organization.description = $scope.organization.description;
         organization.email = $scope.organization.email;
+        organization.logo = $scope.organization.logo;
 
         Organization[isNew ? 'save' : 'update'](organization,
             function() {
@@ -53,9 +59,9 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
             });
     };
 
-    $scope.update = function(name) {
+    $scope.update = function(id) {
         Organization.get({
-            id: name
+            id: id
         }, function(org) {
             $scope.organization = org;
             
@@ -82,11 +88,13 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     var deleteState = false;
+    $scope.deleteType = "default";
     $scope.deleteMessage = "organization.delete";
 
     $scope.delete = function(id) {
         if (deleteState === false) {
             $scope.deleteMessage = "organization.delete.sure";
+            $scope.deleteType = "danger";
             deleteState = true;
             return;
         }
@@ -96,7 +104,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
                 id: id
             },
             function() {
-                $scope.organizations = Organization.query();
+                redirectToOverview();
             });
     };
 
@@ -104,7 +112,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         if (isNew) {
             $location.path('organization');
         } else {
-            $location.path('organization/' + $scope.organization.name);
+            $location.path('organization/' + $scope.organization.id);
         }
     };
 

@@ -59,11 +59,13 @@ public class OrganizationController {
         log.debug("REST request to save Organization : {}", newOrganization);
         ResponseEntity<?> responseEntity;
         try {
-            organizationService.createOrganizationInformation(
-                    newOrganization.getName(),
-                    newOrganization.getDescription(),
-                    newOrganization.getEmail(),
-                    newOrganization.isNpo());
+            Organization organization = organizationService.createOrganizationInformation(
+                newOrganization.getName(),
+                newOrganization.getDescription(),
+                newOrganization.getEmail(),
+                newOrganization.isNpo(),
+                newOrganization.getLogo() != null ? newOrganization.getLogo().getId() : null);
+
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (AlreadyInOrganizationException e) {
             log.error("Could not save Organization : {}", newOrganization, e);
@@ -167,7 +169,8 @@ public class OrganizationController {
                     organization.getName(),
                     organization.getDescription(),
                     organization.getEmail(),
-                    organization.isNpo());
+                    organization.isNpo(),
+                    organization.getLogo().getId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not update Organization : {}", organization, e);
@@ -177,7 +180,7 @@ public class OrganizationController {
     }
 
     /**
-     * DELETE  /rest/organizations/:orgName -> delete the "orgName" organization.
+     * DELETE  /rest/organizations/:organization -> delete the "organization" organization.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations",

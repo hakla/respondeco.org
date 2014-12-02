@@ -10,11 +10,8 @@
     <div class="row">
         <div class="col-md-3">
             <h2 translate='organization.detail.heading' translate-values="{organization: '{{organization.name}}'}">{{organization.name}}</h2>
-            <p ng-show='organization.isNpo'>NGO</p>
-
-            <div ng-hide="edit.image">
-                <img src="{{ organization.logo | logo }}" alt="Profilbild">
-            </div>
+            <p ng-show='organization.npo'>NGO</p>
+            <uploaded-image name="organization.logo.id" class="organization-logo" />
         </div>
         <div class="col-md-5">
             <h2></h2>

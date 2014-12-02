@@ -2,16 +2,16 @@
     <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" ng-submit="create()">
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
         <div class="modal-header">
-            <button type="button" class="btn {{ organization.isNpo ? 'btn-success' : 'btn-primary'}} pull-right" ng-model="organization.npo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+            <button type="button" class="btn {{ organization.npo ? 'btn-success' : 'btn-primary'}} pull-right" ng-model="organization.npo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
                 <span class="glyphicon {{ organization.npo ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'organization.isNPO' | translate}}
             </button>
             <h4 translate='organization.new' ng-show='isNew()'>New organization</h4>
-            <h4 translate='organization.edit' translate-values="{organization: '{{organization.name}}'}" ng-show='!isNew()'>Edit organization {{organization}}</h4>
+            <h4 translate='organization.edit' translate-values="{organization: '{{organization.name}}'}" ng-show='!isNew()'>Edit organization {{organization.name}}</h4>
         </div>
         <div class="modal-body clearfix">
             <div class="row">
                 <div class="col-md-8">
-                    <h3>Organizational information</h3>
+                    <h3 translate="organization.header.info">Organizational information</h3>
                     <div class="form-group">
                         <label translate="organization.name">name</label>
                         <input type="text" class="form-control" placeholder="{{'organization.name.placeholder' | translate}}" ng-model="organization.name" required>
@@ -26,7 +26,8 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <h3>Profile picture</h3>
+                    <h3 translate="organization.header.logo">Profile picture</h3>
+                    <file-upload complete="onUploadComplete" value="organization.logo.id" class="organization-logo" />
                 </div>
             </div>
             <h3 translate="organization.members" ng-click="isCollapsed = !isCollapsed" ng-hide='isNew()'>Members</h3>
@@ -61,7 +62,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger pull-left" ng-click='delete()' ng-hide='isNew()'>{{ deleteMessage | translate }}</button>
+            <button type="button" class="btn btn-{{deleteType}} pull-left" ng-click='delete()' ng-hide='isNew()'>{{ deleteMessage | translate }}</button>
             <button type="button" class="btn btn-link" data-dismiss="modal" translate="global.form.cancel" ng-click="clear()" />
             <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
                 <span class="glyphicon glyphicon-save"></span> {{'global.form.save' | translate}}

@@ -12,7 +12,7 @@
     -->
     <changeSet id="20141126023848" author="jhipster">
         <createTable tableName="T_IMAGE">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="data" type="blob"/>

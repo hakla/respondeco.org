@@ -503,14 +503,16 @@
         "members": "Mitglieder",
         "detail.heading": "{{ organization }}",
         "delete": "Löschen",
-        "delete.sure": "Wirklich löschen?",
+        "delete.sure": "Unwiderruflich löschen",
         "back": "Zurück",
         "members": "Mitglieder",
         "invite": "Mitglieder einladen",
         "invite.username": "Einzuladender Benutzer",
         "action.invite": "Einladen",
         "accept": "Einladung annehmen",
-        "decline": "Einladung ablehnen"
+        "decline": "Einladung ablehnen",
+        "header.info": "Informationen über das Unternehmen",
+        "header.logo": "Logo"
     },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",

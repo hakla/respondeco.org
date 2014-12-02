@@ -1,13 +1,7 @@
 package org.respondeco.respondeco.service;
 
-import org.respondeco.respondeco.domain.Authority;
-import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.Organization;
-import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.AuthorityRepository;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.PersistentTokenRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
@@ -35,14 +29,17 @@ public class OrganizationService {
 
     private UserRepository userRepository;
 
+    private ImageRepository imageRepository;
+
     @Inject
-    public OrganizationService(OrganizationRepository organizationRepository, UserService userService, UserRepository userRepository) {
+    public OrganizationService(OrganizationRepository organizationRepository, UserService userService, UserRepository userRepository, ImageRepository imageRepository) {
         this.organizationRepository = organizationRepository;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.imageRepository = imageRepository;
     }
 
-    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
@@ -50,13 +47,13 @@ public class OrganizationService {
             throw new IllegalArgumentException(String.format("Organization name must not be empty"));
         }
         User currentUser = userService.getUserWithAuthorities();
-
         Organization newOrganization = new Organization();
 
         newOrganization.setName(name);
         newOrganization.setDescription(description);
         newOrganization.setEmail(email);
         newOrganization.setIsNpo(isNpo);
+        newOrganization.setLogo(imageRepository.findOne(logoId));
 
         if (organizationRepository.findByOwner(currentUser) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
@@ -71,7 +68,7 @@ public class OrganizationService {
 
     @Transactional(readOnly = true)
     public Organization getOrganizationByName(String orgName) throws NoSuchOrganizationException {
-        log.debug("getOrganizationByName(orgName) called");
+        log.debug("getOrganizationByName(organization) called");
 
         Organization currentOrganization = organizationRepository.findByName(orgName);
         if(currentOrganization == null) {
@@ -131,7 +128,7 @@ public class OrganizationService {
         return organizationDTOs;
     }
 
-    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo) throws NoSuchOrganizationException {
+    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
@@ -140,11 +137,13 @@ public class OrganizationService {
         if(name=="") {
             throw new IllegalArgumentException(String.format("Name must not be an empty string"));
         }
+
         currentOrganization.setName(name);
         currentOrganization.setDescription(description);
         currentOrganization.setEmail(email);
         currentOrganization.setIsNpo(isNpo);
         currentOrganization.setOwner(currentUser);
+        currentOrganization.setLogo(imageRepository.findOne(logoId));
 
         organizationRepository.save(currentOrganization);
         log.debug("Changed Information for Organization: {}", currentOrganization);
@@ -156,6 +155,8 @@ public class OrganizationService {
         if(currentOrganization==null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
         }
+        currentUser.setOrganization(null);
+        userRepository.save(currentUser);
         organizationRepository.delete(currentOrganization);
         log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
