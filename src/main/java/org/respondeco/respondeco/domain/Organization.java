@@ -24,8 +24,9 @@ import java.util.List;
 @Entity
 @Table(name = "T_ORGANIZATION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Setter
 @Getter
+@Setter
+@ToString(exclude = {"owner", "members", "logo"})
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull

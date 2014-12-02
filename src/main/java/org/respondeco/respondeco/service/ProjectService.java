@@ -124,7 +124,9 @@ public class ProjectService {
         project.setEndDate(endDate);
         List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
         project.setPropertyTags(tags);
-        project.setProjectLogo(imageRepository.findOne(imageId));
+        if(imageId != null) {
+            project.setProjectLogo(imageRepository.findOne(imageId));
+        }
         projectRepository.save(project);
         return project;
     }
@@ -148,8 +150,8 @@ public class ProjectService {
         }
 
         if(project.getOrganization().equals(newManager.getOrganization()) == false) {
-            throw new IllegalArgumentException("new manager does not belong to organization: " +
-                    project.getOrganization());
+            throw new IllegalValueException("project.error.notvalidmanager",
+                "new manager does not belong to organization: " + project.getOrganization());
         }
         project.setManager(newManager);
         return projectRepository.save(project);

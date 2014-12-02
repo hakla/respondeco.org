@@ -204,7 +204,7 @@
         "search.empty": "Es gibt keine Projekte die Ihren Suchkriterien entsprechen!",
         "error": {
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
-            "notvalidmanager": "Der Manager konnte nicht verändert werden, neuer Manager gehört nicht Ihrer Organisation an",
+            "notvalidmanager": "Der Manager konnte nicht gesetzt werden, neuer Manager gehört nicht Ihrer Organisation an",
             "nosuchproject": "Ein Projekt mit dieser Id existiert nicht",
             "nosuchuser": "Der angegebene Manager existiert nicht",
             "startdate.null": "Das Startdatum muss angegeben werden wenn das Projekt als konkret markiert ist",

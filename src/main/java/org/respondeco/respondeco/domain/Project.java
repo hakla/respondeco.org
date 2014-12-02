@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -19,10 +22,12 @@ import java.util.List;
 /**
  * A ProjectIdea.
  */
-@Data
 @Entity
 @Table(name = "T_PROJECT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Getter
+@Setter
+@ToString(exclude = {"organization", "manager", "propertyTags", "projectLogo"})
 public class Project extends AbstractAuditingNamedEntity implements Serializable {
 
     @Column(name = "purpose")

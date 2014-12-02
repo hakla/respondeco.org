@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,7 +31,9 @@ import org.respondeco.respondeco.web.rest.ProjectController;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -59,8 +62,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
-@TransactionConfiguration(defaultRollback=true)
-public class ProjectIntegrationTest {
+public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
@@ -99,7 +101,7 @@ public class ProjectIntegrationTest {
     private Organization defaultOrganization;
     private User orgAdmin;
     private User orgMember;
-/*
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -530,7 +532,7 @@ public class ProjectIntegrationTest {
         restProjectMockMvc.perform(delete("/app/rest/projects/{id}", id)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isForbidden());
-    }*/
+    }
 
 }
 
