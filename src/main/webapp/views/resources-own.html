@@ -31,12 +31,12 @@
                     <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
                     <td> 
-                        <button type="button" class="btn btn-default btn-xs" ng-click="redirectToResource(resource.id)">
+                        <button type="button" class="btn btn-default" ng-click="redirectToResource(resource.id)">
                             {{ 'global.resource.own.editbutton' | translate }}
                         </button>
-                        <div>
-                            <resp-confirm-delete on-confirm="delete(resource.id)"></resp-confirm-delete>
-                        </div>
+                        <button type="button" class="btn btn-default btn-danger" ng-click="delete(resource.id)">
+                            {{ 'global.resource.own.deletebutton' | translate }}
+                        </button>
                     </td>
                 </tr>
             </tbody>

@@ -17,7 +17,7 @@ respondecoApp
                     }
                 }).when('/ownresource', {
                     templateUrl: '/views/resources-own.html',
-                    controller: 'OwnResourceController',
+                    controller: 'ResourceController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
