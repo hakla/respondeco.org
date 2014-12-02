@@ -87,7 +87,10 @@
             },
             "requirement": {
                 "title": "Ressourcenanforderung hinzufügen",
-                "isEssential": "Wichtige Ressource"
+                "isEssential": "Notwendig",
+                "tableheader": "Benötigte Ressourcen",
+                "name": "Name",
+                "amount": "Menge"
             }
         },
         "messages": {
@@ -200,7 +203,7 @@
         "concrete": "Konkretes Projekt",
         "startDate": "Start-Datum",
         "endDate": "End-Datum",
-        "tags": "Tags",
+        "tag": "Tags",
         "resource": "Ressoucen",
         "logo": "ProjectLogo",
         "name.placeholder": "Projektname",

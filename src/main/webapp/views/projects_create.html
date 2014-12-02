@@ -9,7 +9,7 @@
         </div>
         <div class="modal-body clearfix">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <h3 trasnlate="project.info">Project Information</h3>
                     <div class="form-group">
                         <label translate="project.name">Name of Project</label>
@@ -32,7 +32,7 @@
                         <input class="form-control" placeholder="{{'project.createProject.tag.placeholder' | translate}}" type="text"/>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="form-group">
                         <label translate="project.logo">ProjectLogo</label>
                         <button type="button" class="btn btn-success pull-right" >
@@ -49,14 +49,19 @@
                         <div class="row table-responsive">
                             <table class="table table">
                                 <thead>
-                                    
-                                        <th translate="resource.requirement.">ResourceName</th>
-                                    
+                                    <th translate="global.resource.requirement.tableheader">ResourceName</th>
+                                    <tr>
+                                        <td translate = "global.resource.requirement.name">name</td>
+                                        <td translate = "global.resource.requirement.amount">amount</td>
+                                        <td translate = "global.resource.requirement.isEssential">is essential</td>
+                                    </td>
                                 </thead>
                                 <tbody>
                                     <tr data-toggle="modal" ng-repeat="r in project.resourceRequirements">
                                         <td>{{r.name}}</td>
                                         <td>{{r.amount}}</td>
+                                        <td ng-show="r.isEssential"><span class="glyphicon glyphicon-ok"/></td>
+                                        <td ng-hide="r.isEssential"><span class="glyphicon glyphicon-remove"/></td>
                                         <td><a ng-click="rrEdit($index)">edit</a></td>
                                         <td><a ng-click="remove($index)"><span class="glyphicon glyphicon-remove-circle"></a></td>
                                     </tr>
