@@ -1,8 +1,8 @@
 'use strict';
 
-respondecoApp.controller('ProjectController', function ($scope, Project, $location) {
+respondecoApp.controller('ProjectController', function ($scope, Project, ResourceRequirement, $location) {
 
-        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,projectLogo:null,propertyTags:null,resourceRequirements:null};
+        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,projectLogo:null,propertyTags:[],resourceRequirements:[]};
         $scope.projects = Project.query();
         var searchText=null;
         $scope.viewedProject = Project.currentProject;
@@ -54,4 +54,31 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
 
             $scope.opened = true;
         };
+
+        //Resource Requirement Modal
+        var edit = false;
+        $scope.resource = {resourceTags: [], isEssential: false}
+
+        $scope.createRequirement = function() {
+            var resource = $scope.resource;
+
+            if(edit == false) {
+                $scope.project.resourceRequirements.push(resource);
+            }
+        }
+
+        $scope.clearRequirement = function() {
+            $scope.resource = {resourceTags: [], isEssential: false};
+            edit = false;
+        };
+
+        $scope.removeRequirement = function(index) {
+            $scope.project.resourceRequirements.splice(index,1);
+        }
+
+        $scope.editRequirement = function(index) {
+            edit = true;
+            $('#addResource').modal('toggle');
+            $scope.resource = $scope.project.resourceRequirements[index];
+        }
     });
