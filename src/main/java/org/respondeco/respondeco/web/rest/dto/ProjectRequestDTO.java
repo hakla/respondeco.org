@@ -41,10 +41,12 @@ public class ProjectRequestDTO {
 
     @ApiModelProperty(value = "The start date of the project (only needed if concrete is set to true")
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate startDate;
 
     @ApiModelProperty(value = "The end date of the project (only needed if concrete is set to true")
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate endDate;
 
     @ApiModelProperty(value = "A list of strings used as property tags")
