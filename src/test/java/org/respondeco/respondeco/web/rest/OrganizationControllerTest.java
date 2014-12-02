@@ -22,6 +22,7 @@ import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
@@ -68,6 +69,9 @@ public class OrganizationControllerTest {
     private ImageRepository imageRepository;
 
     @Mock
+    private ResourceService resourceService;
+
+    @Mock
     private OrganizationService organizationService;
 
     private MockMvc restOrganizationMockMvc;
@@ -94,7 +98,7 @@ public class OrganizationControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository, imageRepository);
-        OrganizationController organizationController = new OrganizationController(organizationService, userService);
+        OrganizationController organizationController = new OrganizationController(organizationService, userService, resourceService);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();
