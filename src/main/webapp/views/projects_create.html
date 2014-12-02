@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group">
                         <label translate="project.resource">Resource</label>
-                        <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#addResource" ng-click="resourceRequirementClear()">
+                        <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#addResource" ng-click="clearRequirement()">
                             <span class="glyphicon glyphicon-plus"></span>
                             <span translate="project.createProject.resource">Add a new Ressource</span>
                         </button>
@@ -62,8 +62,8 @@
                                         <td>{{r.amount}}</td>
                                         <td ng-show="r.isEssential"><span class="glyphicon glyphicon-ok"/></td>
                                         <td ng-hide="r.isEssential"><span class="glyphicon glyphicon-remove"/></td>
-                                        <td><a ng-click="rrEdit($index)">edit</a></td>
-                                        <td><a ng-click="remove($index)"><span class="glyphicon glyphicon-remove-circle"></a></td>
+                                        <td><a ng-click="editRequirement($index)">edit</a></td>
+                                        <td><a ng-click="removeRequirement($index)"><span class="glyphicon glyphicon-remove-circle"></a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -88,7 +88,7 @@
                       class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
+                                ng-click="clearRequirement()">&times;</button>
                         <h4 class="modal-title" id="newResourceLabel"
                             translate="global.resource.requirement.title">Add Resource-Requirement</h4>
                     </div>
@@ -128,7 +128,7 @@
                         <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="redirectToResource('')">
                             {{ 'global.resource.new.cancelbutton' | translate }}
                         </button>
-                        <button type="button" ng-click="createResourceRequirement()" data-dismiss="modal" class="btn btn-success">
+                        <button type="button" ng-click="createRequirement()" data-dismiss="modal" class="btn btn-success" ng-disabled="newresourceform.$invalid">
                             <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
                         </button>
                     </div>
@@ -136,9 +136,5 @@
             </div>
         </div>
     </div>
-
-
-
-
 </div>
 

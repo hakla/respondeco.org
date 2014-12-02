@@ -4,16 +4,26 @@ describe('Resource Controller Tests ', function () {
     beforeEach(module('respondecoApp'));
 
     describe('ResourceController', function () {
-        var $scope, ResourceService, location, createController;
+        var $scope, ResourceService, location, AccountService;
 
-        beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Resource) {
+        beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Resource, Account) {
             $scope = $rootScope.$new();
             location = $location;
             ResourceService = Resource;
+            AccountService = Account;
             $routeParams.id = 'new';
 
-            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, Resource: ResourceService});
+            location.path('ownresource');
+            spyOn(AccountService,"get");
+
+            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, Resource: ResourceService, Account: AccountService});
+            
+            AccountService.get.calls.mostRecent().args[1]();
         }));
+
+        it('should get an Account', function() {
+            expect(AccountService.get).toHaveBeenCalled();
+        });
 
         it('should create a new resource',function() {
             $scope.resource = {
@@ -72,6 +82,16 @@ describe('Resource Controller Tests ', function () {
             expect($scope.formSaveError).toBe(true);
         });
 
+        it('should update a resource', function() {
+            spyOn(ResourceService, "update");
+            
+            $scope.isNew = false;
+            $scope.update('1');
+
+            expect(ResourceService.update).toHaveBeenCalledWith({id:'1'}, jasmine.any(Function));
+            ResourceService.update.calls.mostRecent().args[1]();
+
+        });
 
 
         it('should redirect to given id', function() {
@@ -91,23 +111,40 @@ describe('Resource Controller Tests ', function () {
 
             $scope.clear();
 
-            expect($scope.resource).toEqual({'id': null, 'name': null, 'description': null, 'tags': null, 'amount': null,
-                'dateStart': null, 'dateEnd': null, 'isCommercial': null, 'isRecurrent': null});
-        });
-
-        it('should delete the resource with given id', function() {
-            spyOn(ResourceService,"delete");
-            $scope.delete(1);
-            expect(ResourceService.delete).toHaveBeenCalled();
+            expect($scope.resource).toEqual({'id': null, 'name': null, 'description': null,
+                'resourceTags': [], 'amount': null, 'startDate': null, 'endDate': null,
+                'isCommercial': false, 'isRecurrent': false});
         });
 
         it('should search for resources', function() {
             spyOn(ResourceService,"query");
             $scope.search("filter");
             expect(ResourceService.query).toHaveBeenCalledWith({filter:'filter'},
-                jasmine.any(Function), jasmine.any(Function));
+                jasmine.any(Function));
+
+            ResourceService.query.calls.mostRecent().args[1]({
+                res: 'resources'
+            });
         });
 
+        it('should call update if isNew is false', function() {
+            spyOn($scope,"update");
 
+            $scope.isNew = false;
+
+            expect($scope.update).toHaveBeenCalled();
+        });
+
+        it('should delete a resource', function() {
+            spyOn(ResourceService, "delete");
+            spyOn(ResourceService, "query");
+
+            $scope.delete('1');
+
+            expect(ResourceService.delete).toHaveBeenCalledWith({id:'1'}, jasmine.any(Function));
+
+            ResourceService.delete.calls.mostRecent().args[1]();
+            expect(ResourceService.query).toHaveBeenCalled();
+        });
     });
 });

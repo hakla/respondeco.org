@@ -59,7 +59,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
         var edit = false;
         $scope.resource = {resourceTags: [], isEssential: false}
 
-        $scope.createResourceRequirement = function() {
+        $scope.createRequirement = function() {
             var resource = $scope.resource;
 
             if(edit == false) {
@@ -67,16 +67,16 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
             }
         }
 
-        $scope.resourceRequirementClear = function() {
+        $scope.clearRequirement = function() {
             $scope.resource = {resourceTags: [], isEssential: false};
             edit = false;
         };
 
-        $scope.remove = function(index) {
+        $scope.removeRequirement = function(index) {
             $scope.project.resourceRequirements.splice(index,1);
         }
 
-        $scope.rrEdit = function(index) {
+        $scope.editRequirement = function(index) {
             edit = true;
             $('#addResource').modal('toggle');
             $scope.resource = $scope.project.resourceRequirements[index];

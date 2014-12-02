@@ -5,7 +5,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.organization = null;
 	$scope.formSaveError = null;
-	
+
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
@@ -40,14 +40,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			});
 	}
 
-	$scope.update = function(id) {
-		Resource.get({id: id}, function(resource) {
-			$scope.resource = resource;
-		}, function() {
-			$scope.redirectToResource('new');
-		});
-	}
-
 	$scope.create = function() {
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
@@ -70,8 +62,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			amount: null, startDate: null, endDate: null, isCommercial: false, isRecurrent: false};
 	}
 
-	if($scope.isNew == false) {
-		$scope.update(id);
-	}
+	//if($scope.isNew == false) {
+	//	$scope.update(id);
+	//}
 
 });

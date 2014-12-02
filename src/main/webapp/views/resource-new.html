@@ -58,10 +58,10 @@
             </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-link" ng-click="redirectToResource('')">
+            <button id="cancelButton" type="button" class="btn btn-link" ng-click="redirectToResource('')">
                 {{ 'global.resource.new.cancelbutton' | translate }}
             </button>
-            <button type="submit" ng-disabled="form.$invalid" class="btn btn-success">
+            <button id="saveButton" type="submit" ng-disabled="form.$invalid" class="btn btn-success">
                 <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
             </button>
         </div>
