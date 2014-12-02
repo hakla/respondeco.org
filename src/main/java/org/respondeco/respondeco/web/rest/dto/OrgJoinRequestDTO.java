@@ -17,7 +17,9 @@ public class OrgJoinRequestDTO {
     private UserDTO user;
 
     public OrgJoinRequestDTO(OrgJoinRequest orgJoinRequest) {
-
+        id = orgJoinRequest.getId();
+        organization = new OrganizationDTO(orgJoinRequest.getOrganization());
+        user = new UserDTO(orgJoinRequest.getUser());
     }
 
 }

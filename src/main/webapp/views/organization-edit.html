@@ -45,7 +45,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="orgJoinRequest in orgJoinRequests">
-                                    <td>{{orgJoinRequest.userLogin}}</td>
+                                    <td>{{orgJoinRequest.user.login}} ({{orgJoinRequest.user.lastName}})</td>
                                     <td class="text-right"><a ng-click='deleteInvitation(orgJoinRequest.id)'><i class="glyphicon glyphicon-remove"></i></a>
                                     </td>
                                 </tr>

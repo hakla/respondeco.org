@@ -25,8 +25,8 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     var updateOrgJoinRequests = function() {
-        $scope.orgJoinRequests = OrgJoinRequest.query({
-            id: $scope.organization.name
+        $scope.orgJoinRequests = Organization.getOrgJoinRequests({
+            id: $scope.organization.id
         });
     };
 
@@ -69,15 +69,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
                 id: $scope.organization.id
             });
 
-            User.getByOrgId({
-                id: org.id
-            }, null, null, function(error) {
-                console.log(error);
-            });
-
-            $scope.orgJoinRequests = OrgJoinRequest.get({
-                id: $scope.organization.name
-            });
+            updateOrgJoinRequests();
 
             Organization.getMembers({
                 id: $scope.organization.id
@@ -118,8 +110,12 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     $scope.sendInvite = function() {
         OrgJoinRequest.save({
-            orgName: $scope.organization.name,
-            userLogin: $scope.selectedUser.login
+            organization: {
+                name: $scope.organization.name
+            },
+            user: {
+                login: $scope.selectedUser.login
+            }
         }, function(data) {
             updateOrgJoinRequests();
             TextMessage.save({

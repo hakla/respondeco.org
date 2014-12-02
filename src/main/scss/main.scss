@@ -14,6 +14,10 @@ body {
     border-radius: 0;
 }
 
+.well {
+    margin-top: 50px;
+}
+
 .ribbon-development, .ribbon-test {
     position: absolute;
     width: 149px;
@@ -124,7 +128,7 @@ img {
     .organization-item {
         list-style-type: none;
         display: inline-block;
-        height: 200px;
+        height: 255px;
         margin: 25px 75px 25px 0;
         padding: 10px;
         background-color: #FFF;

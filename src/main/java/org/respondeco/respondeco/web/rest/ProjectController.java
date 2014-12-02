@@ -61,14 +61,14 @@ public class ProjectController {
         ResponseEntity<?> responseEntity;
         try {
             projectService.create(
-                    project.getName(),
-                    project.getPurpose(),
-                    project.getConcrete(),
-                    project.getStartDate(),
-                    project.getEndDate(),
-                    project.getPropertyTags(),
-                    project.getResourceRequirements(),
-                    project.getImageId());
+                project.getName(),
+                project.getPurpose(),
+                project.getConcrete(),
+                project.getStartDate(),
+                project.getEndDate(),
+                project.getPropertyTags(),
+                project.getResourceRequirements(),
+                project.getLogo() != null ? project.getLogo().getId() : null);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
@@ -100,7 +100,7 @@ public class ProjectController {
                     project.getConcrete(),
                     project.getStartDate(),
                     project.getEndDate(),
-                    project.getImageId(),
+                    project.getLogo() != null ? project.getLogo().getId() : null,
                     project.getPropertyTags(),
                     project.getResourceRequirements());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);

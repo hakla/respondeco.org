@@ -13,6 +13,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -62,6 +63,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
             joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
             inverseJoinColumns = { @JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id" ) }
     )
+    @Lazy(false)
     private List<PropertyTag> propertyTags;
 
     @JsonIgnore

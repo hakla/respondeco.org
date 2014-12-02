@@ -71,31 +71,6 @@ public class UserController {
     }
 
     /**
-     * GET  /rest/users/:login -> get the "login" user.
-     */
-    @RequestMapping(value = "/rest/users/getByOrgId/{orgId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    ResponseEntity<List<User>> getUserByOrgId(@PathVariable Long orgId) {
-        log.debug("REST request to get Users by OrgId : {}", orgId);
-        ResponseEntity<List<User>> responseEntity;
-        try {
-            return Optional.ofNullable(userService.getUserByOrgId(orgId))
-                    .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (NoSuchOrganizationException e) {
-            log.error("Could not get User by Organization : {}", orgId, e);
-            responseEntity = new ResponseEntity<List<User>>(HttpStatus.NOT_FOUND);
-        } catch (NotOwnerOfOrganizationException e) {
-            log.error("Could not get User by Organization : {}", orgId, e);
-            responseEntity = new ResponseEntity<List<User>>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
-    }
-
-    /**
      * POST  /rest/deleteMember-> delete Member by userlogin
      */
     @RequestMapping(value = "/rest/user/deleteMember/{userlogin}",
@@ -146,7 +121,7 @@ public class UserController {
     /**
      * POST  /rest/leaveOrg
      */
-    @RequestMapping(value = "/rest/user/deleteMember/leaveOrganization",
+    @RequestMapping(value = "/rest/user/leaveOrganization",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

@@ -56,6 +56,6 @@ public class ProjectRequestDTO {
     private List<ResourceRequirementDTO> resourceRequirements;
 
     @ApiModelProperty(value = "The file which is used a the logo for the project")
-    private Long imageId;
+    private ImageDTO logo;
 
 }

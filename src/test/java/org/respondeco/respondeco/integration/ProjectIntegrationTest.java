@@ -154,7 +154,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -170,7 +170,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         Long id = projectCaptor.getValue().getId();
 
@@ -201,7 +201,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getImageId(),
+                projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
 
@@ -250,7 +250,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -324,7 +324,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -363,7 +363,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -403,7 +403,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -448,7 +448,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -480,7 +480,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -517,7 +517,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")

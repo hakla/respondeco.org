@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function ($scope, Project, $location) {
 
-        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,projectLogo:null,propertyTags:null,resourceRequirements:null};
+        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,propertyTags:null,resourceRequirements:null};
         $scope.projects = Project.query();
         var searchText=null;
         $scope.viewedProject = Project.currentProject;
@@ -11,6 +11,10 @@ respondecoApp.controller('ProjectController', function ($scope, Project, $locati
 
         $scope.select2Options = {
             'tags': []
+        };
+
+        $scope.onUploadComplete = function(fileItem, response) {
+            $scope.project.logo = response;
         };
 
         $scope.create = function () {

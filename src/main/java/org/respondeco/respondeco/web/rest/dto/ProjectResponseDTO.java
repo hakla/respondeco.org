@@ -66,6 +66,7 @@ public class ProjectResponseDTO {
             if (fieldNames.contains("resourceRequirements")) {
                 responseDTO.setResourceRequirements(project.getResourceRequirements());
             }
+            
             responseDTOs.add(responseDTO);
         }
         return responseDTOs;

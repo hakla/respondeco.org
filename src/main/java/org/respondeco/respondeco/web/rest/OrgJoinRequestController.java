@@ -55,7 +55,7 @@ public class OrgJoinRequestController {
         try {
             orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization().getName(),
                     orgjoinrequest.getUser().getLogin());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -99,34 +99,7 @@ public class OrgJoinRequestController {
         }
         return responseEntity;
     }
-    /**
-     * GET  /rest/orgjoinrequests -> get all the orgjoinrequests.
-     */
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/orgjoinrequests/{orgName}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
 
-    public ResponseEntity<List<OrgJoinRequestDTO>> getByOrgName(@PathVariable String orgName){
-        log.debug("REST request to get OrgJoinRequest : {}", orgName);
-        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<List<OrgJoinRequestDTO>>(new ArrayList<>(), HttpStatus.OK);
-        try {
-            List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByOrgName(orgName);
-
-            if (orgJoinRequests == null) {
-                responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {
-                for (OrgJoinRequest orgJoinRequest: orgJoinRequests) {
-                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest));
-                }
-            }
-        } catch (NoSuchOrganizationException e) {
-            log.error("Could not find OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
-    }
     /**
      * GET  /rest/orgjoinrequests/:organization -> get the "organization" orgjoinrequest.
      */
@@ -156,13 +129,20 @@ public class OrgJoinRequestController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequest>> getRequestForUser() {
+    public ResponseEntity<List<OrgJoinRequestDTO>> getRequestForUser() {
         log.debug("REST request to get OrgJoinRequest : {}");
-        return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestByCurrentUser())
-            .map(orgjoinrequest -> new ResponseEntity<>(
-                orgjoinrequest,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity;
+        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
+
+        if (orgJoinRequests.isEmpty()) {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            List<OrgJoinRequestDTO> orgJoinRequestDTOs = new ArrayList<>();
+            orgJoinRequests.forEach(p -> orgJoinRequestDTOs.add(new OrgJoinRequestDTO(p)));
+            responseEntity = new ResponseEntity<>(orgJoinRequestDTOs, HttpStatus.OK);
+        }
+
+        return responseEntity;
     }
 
     /**
@@ -198,7 +178,7 @@ public class OrgJoinRequestController {
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/decline/{id}",
 
-        method = RequestMethod.DELETE,
+        method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> declineRequest(@PathVariable Long id) {

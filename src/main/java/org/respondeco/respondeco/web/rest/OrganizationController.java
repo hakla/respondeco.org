@@ -1,16 +1,20 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
 import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
+import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
@@ -25,6 +29,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.xml.ws.Response;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,12 +45,14 @@ public class OrganizationController {
     private ResourceService resourceService;
     private OrganizationService organizationService;
     private UserService userService;
+    private OrgJoinRequestService orgJoinRequestService;
 
     @Inject
-    public OrganizationController (OrganizationService organizationService, UserService userService, ResourceService resourceService) {
+    public OrganizationController (OrganizationService organizationService, UserService userService, ResourceService resourceService, OrgJoinRequestService orgJoinRequestService) {
         this.organizationService = organizationService;
         this.userService = userService;
         this.resourceService = resourceService;
+        this.orgJoinRequestService = orgJoinRequestService;
     }
 
     /**
@@ -140,21 +147,6 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/organizations/{id}/members get all members of organization with id
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations/{id}/members",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<UserDTO> getMembers(@PathVariable Long id) {
-        log.debug("REST request to get members for organization Organization : {}" ,userService.getUserWithAuthorities().getLogin());
-        return userService.getOrganizationMembers(id);
-    }
-
-
-
-    /**
      * POST  /rest/organizations -> Update an organization.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -181,7 +173,7 @@ public class OrganizationController {
     }
 
     /**
-     * DELETE  /rest/organizations/:organization -> delete the "organization" organization.
+     * DELETE  /rest/organizations/:organization -> delete the "organization" of which the currently logged in user is the owner
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations",
@@ -202,7 +194,7 @@ public class OrganizationController {
     }
 
     /*
-        RESOURCEOFFERS
+     * GET /rest/organizations/:id/resourceOffers -> get the resourceOffers for the organization :id
      */
 
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -219,5 +211,68 @@ public class OrganizationController {
         List<ResourceOfferDTO> resourceOfferDTOs = this.resourceService.getAllOffers(id);
 
         return  resourceOfferDTOs;
+    }
+
+    /**
+     * GET  /rest/organizations/:id/orgJoinRequests -> get the orgjoinrequests for organization :id
+     */
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RequestMapping(value = "/rest/organizations/{id}/orgJoinRequests",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+
+    public ResponseEntity<List<OrgJoinRequestDTO>> getByOrgName(@PathVariable Long id){
+        log.debug("REST request to get OrgJoinRequest : {}", id);
+        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        try {
+            List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByOrganization(id);
+
+            if (orgJoinRequests == null) {
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                for (OrgJoinRequest orgJoinRequest: orgJoinRequests) {
+                    responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest));
+                }
+            }
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not find OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * GET  /rest/organizations/:id/members -> get the members for the organization :id
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/members",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    ResponseEntity<List<UserDTO>> getUserByOrgId(@PathVariable Long id) {
+        log.debug("REST request to get Users by OrgId : {}", id);
+        ResponseEntity<List<UserDTO>> responseEntity;
+
+        try {
+            // get all users for organization with id :id
+            List<User> users = userService.getUserByOrgId(id);
+            List<UserDTO> userDTOs = new ArrayList<>();
+
+            if (users.isEmpty()) {
+                // if there are no members then return 404
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                // map found users and http status 200
+                users.forEach(p -> userDTOs.add(new UserDTO(p)));
+                responseEntity = new ResponseEntity<>(userDTOs, HttpStatus.OK);
+            }
+        } catch (NoSuchOrganizationException e) {
+            // if the organization with :id couldn't be found
+            log.error("Could not get User by Organization : {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
     }
 }
