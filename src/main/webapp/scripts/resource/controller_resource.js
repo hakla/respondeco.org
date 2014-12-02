@@ -50,6 +50,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.create = function() {
+		console.log("create" + $scope.resource);
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
 			$scope.redirectToResource('');
