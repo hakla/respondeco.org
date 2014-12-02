@@ -27,7 +27,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@ToString(exclude = {"organization", "manager", "propertyTags", "projectLogo"})
+@ToString(exclude = {"organization", "manager", "propertyTags", "projectLogo", "ratings"})
 public class Project extends AbstractAuditingNamedEntity implements Serializable {
 
     @Column(name = "purpose")
@@ -76,5 +76,8 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
             inverseJoinColumns = { @JoinColumn(name = "RESOURCEREQUIREMENT_ID", referencedColumnName = "id" ) }
     )
     private List<ResourceRequirement> resourceRequirements;
+
+    @OneToMany(mappedBy = "project")
+    private List<ProjectRating> ratings;
 
 }
