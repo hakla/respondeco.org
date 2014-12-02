@@ -493,53 +493,39 @@ public class ResourceServiceTest {
         }).when(resourceOfferRepositoryMock).findAll();
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceOfferDTO> items = this.resourceService.getAllOffers();
-        assertEquals(items.size(), listSize);
-        for(int i = 0; i < items.size(); i++){
-            ResourceOfferDTO current = items.get(i);
+        List<ResourceOfferDTO> list = this.resourceService.getAllOffers();
+        assertEquals(list.size(), listSize);
+        for(int i = 0; i < list.size(); i++){
+            ResourceOfferDTO current = list.get(i);
             assertEquals(current.getId(), expected);
             assertEquals(current.getOrganizationId(), expOrg.getId());
             expected += 9L;
         }
 
+
+
+        Organization alternative = new Organization();
+        alternative.setId(99L);
+        expected = 3L;
+        doAnswer(inv -> {
+            List<ResourceOffer> items = new ArrayList<ResourceOffer>(2);
+            ResourceOffer item1 = new ResourceOffer();
+            item1.setId(3L);
+            item1.setOrganisation(alternative);
+            items.add(item1);
+            return items;
+        }).when(resourceOfferRepositoryMock).findByOrganisationId(isA(longCl));
+        listSize = 1;
+        list = this.resourceService.getAllOffers(99L);
+
+        assertEquals(list.size(), listSize);
+        for(int i = 0; i < list.size(); i++){
+            ResourceOfferDTO current = list.get(i);
+            assertEquals(current.getId(), expected);
+            assertEquals(current.getOrganizationId(), alternative.getId());
+        }
+
+        verify(this.resourceOfferRepositoryMock, times(1)).findByOrganisationId(isA(longCl));
         verify(this.resourceOfferRepositoryMock, times(1)).findAll();
     }
-
-    /*
-    @Test
-    public void testGetAllOffers_1EntryForOrganisation2() throws Exception {
-        final Long organisationID = 2L;
-        final Long expectedOfferID = 10L;
-        final Organization organisation1 = new Organization();
-        organisation1.setId(1L);
-        final Organization organisation2 = new Organization();
-        organisation1.setId(2L);
-
-        final List<ResourceOffer> items = new ArrayList<ResourceOffer>();
-        ResourceOffer item1 = new ResourceOffer();
-        item1.setId(1L);
-        item1.setOrganisation(organisation1);
-        items.add(item1);
-        ResourceOffer item2 = new ResourceOffer();
-        item2.setOrganisation(organisation2);
-        item2.setId(expectedOfferID);
-        items.add(item2);
-
-        doAnswer(invo ->{
-            List<ResourceOffer> internalItems = new ArrayList<ResourceOffer>();
-            for(ResourceOffer item: items){
-                if(item.getOrganisation() == organisation2){
-                    internalItems.add(item);
-                }
-            }
-            return internalItems;
-        }).when(resourceOfferRepositoryMock).findByOrganisationId(isA(longCl));
-        int listSize = 1;
-        List<ResourceOfferDTO> expectedItem = this.resourceService.getAllOffers(organisationID);
-        assertEquals(expectedItem.size(), listSize);
-        assertEquals(expectedItem.get(0).getOrganizationId(), ogranisationID);
-        assertEquals(expectedItem.get(0).getId(), expectedOfferID);
-        verify(this.resourceOfferRepositoryMock, times(1)).findByOrganisationId(isA(longCl));
-
-    }*/
 }
