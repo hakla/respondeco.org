@@ -4,11 +4,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.organization = null;
+	$scope.formSaveError = null;
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
-
-
 
 	if($location.path() === 'ownresource') {
 		Account.get(null, function(account) {
@@ -41,21 +40,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			});
 	}
 
-	$scope.update = function(id) {
-		Resource.get({id: id}, function(resource) {
-			$scope.resource = resource;
-		}, function() {
-			$scope.redirectToResource('new');
-		});
-	}
-
 	$scope.create = function() {
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
 			$scope.redirectToResource('');
 		}, 
 		function() {
-			$scope.form.saveError = true;
+			$scope.formSaveError = true;
 		});
 	}
 
@@ -67,12 +58,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.clear = function() {
-		$scope.resource = {id: null, name: null, description: null, resourceTags: null, 
-			amount: null, startDate: null, endDate: null, isCommercial: null, isRecurrent: null};
+		$scope.resource = {id: null, name: null, description: null, resourceTags: [], 
+			amount: null, startDate: null, endDate: null, isCommercial: false, isRecurrent: false};
 	}
 
-	if($scope.isNew == false) {
-		$scope.update(id);
-	}
+	//if($scope.isNew == false) {
+	//	$scope.update(id);
+	//}
 
 });
