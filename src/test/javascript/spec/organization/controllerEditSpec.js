@@ -45,7 +45,7 @@ describe('Controllers Tests ', function () {
         it('should call Organization.save if new', function() {
             spyOn(OrganizationService, 'save');
             $scope.organization = {
-                isNpo: false,
+                npo: false,
                 name: 'test',
                 description: 'desc',
                 email: 'email@email.at'
@@ -55,7 +55,8 @@ describe('Controllers Tests ', function () {
                 npo: false,
                 name: 'test',
                 description: 'desc',
-                email: 'email@email.at'
+                email: 'email@email.at',
+                logo: undefined
             }, jasmine.any(Function), jasmine.any(Function));
 
             // success callback
@@ -110,8 +111,7 @@ describe('Controllers Tests ', function () {
         it('should call update', function() {
             spyOn(OrganizationService, 'get');
             spyOn(UserService, 'getInvitableUsers');
-            spyOn(UserService, 'getByOrgId');
-            spyOn(OrgJoinRequestService, 'get');
+            spyOn(OrganizationService, 'getOrgJoinRequests');
             spyOn(OrganizationService, 'getMembers');
 
             $scope.update('test');
@@ -125,8 +125,7 @@ describe('Controllers Tests ', function () {
             });
 
             expect(UserService.getInvitableUsers).toHaveBeenCalled();
-            expect(UserService.getByOrgId).toHaveBeenCalled();
-            expect(OrgJoinRequestService.get).toHaveBeenCalled();
+            expect(OrganizationService.getOrgJoinRequests).toHaveBeenCalled();
             expect(OrganizationService.getMembers).toHaveBeenCalled();
         });
     });

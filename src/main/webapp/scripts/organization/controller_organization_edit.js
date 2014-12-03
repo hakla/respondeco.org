@@ -96,7 +96,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
                 id: id
             },
             function() {
-                redirectToOverview();
+                $scope.clear();
             });
     };
 

@@ -77,12 +77,11 @@ describe('Resource Controller Tests ', function () {
         it('should update a resource', function() {
             $scope.resource.resourceTags = ['Technik', 'Computer'];
             spyOn(ResourceService, "get");
-            
+
             $scope.isNew = false;
             $scope.update('1');
 
             expect(ResourceService.get).toHaveBeenCalledWith({id:'1'}, jasmine.any(Function), jasmine.any(Function));
-            ResourceService.get.calls.mostRecent().args[1]();
         });
 
 
