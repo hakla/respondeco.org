@@ -8155,17 +8155,17 @@ tags-input .host {
   margin: 0;
 }
 
-/* line 265, ../../scss/main.scss */
+/* line 264, ../../scss/main.scss */
 .organization-logo uploaded-image div {
   background-position-x: 0;
 }
 
-/* line 270, ../../scss/main.scss */
+/* line 269, ../../scss/main.scss */
 uploaded-image, [uploaded-image] {
   height: 200px;
-  width: 200px;
+  display: block;
 }
-/* line 274, ../../scss/main.scss */
+/* line 273, ../../scss/main.scss */
 uploaded-image div, [uploaded-image] div {
   height: 100%;
   width: 100%;
@@ -8174,10 +8174,58 @@ uploaded-image div, [uploaded-image] div {
   background-size: contain;
 }
 
-/* line 283, ../../scss/main.scss */
+/* line 282, ../../scss/main.scss */
 .project-logo {
   width: 100px;
   height: 100px;
   margin-right: 20px;
   min-height: 100px;
+}
+
+/* line 289, ../../scss/main.scss */
+.tags-container .tags {
+  cursor: default;
+  user-select: none;
+}
+/* line 293, ../../scss/main.scss */
+.tags-container .tags .remove-button {
+  display: none;
+}
+/* line 297, ../../scss/main.scss */
+.tags-container .tags input {
+  display: none;
+}
+
+/* line 302, ../../scss/main.scss */
+.rating-container {
+  text-align: center;
+  margin: 50px 0;
+}
+
+/* line 307, ../../scss/main.scss */
+.panel-body ul {
+  padding: 0;
+}
+/* line 310, ../../scss/main.scss */
+.panel-body ul li {
+  height: 100px;
+  list-style-type: none;
+}
+/* line 314, ../../scss/main.scss */
+.panel-body ul li div {
+  box-sizing: border-box;
+  padding-top: 27.5px;
+}
+/* line 319, ../../scss/main.scss */
+.panel-body ul li img {
+  height: 75px;
+}
+
+/* line 326, ../../scss/main.scss */
+.newsfeed ul {
+  padding: 0;
+}
+/* line 329, ../../scss/main.scss */
+.newsfeed ul li {
+  list-style-type: none;
 }

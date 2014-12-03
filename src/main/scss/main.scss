@@ -261,7 +261,6 @@ tags-input {
 }
 
 .organization-logo {
-
     uploaded-image div {
         background-position-x: 0;
     }
@@ -269,7 +268,7 @@ tags-input {
 
 uploaded-image, [uploaded-image] {
     height: 200px;
-    width: 200px;
+    display: block;
 
     div {
         height: 100%;
@@ -285,4 +284,50 @@ uploaded-image, [uploaded-image] {
     height: 100px;
     margin-right: 20px;
     min-height: 100px;
+}
+
+.tags-container .tags {
+    cursor: default;
+    user-select: none;
+
+    .remove-button {
+        display: none;
+    }
+
+    input {
+        display: none;
+    }
+}
+
+.rating-container {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.panel-body ul {
+    padding: 0;
+
+    li {
+        height: 100px;
+        list-style-type: none;
+
+        div {
+            box-sizing: border-box;
+            padding-top: 27.5px;
+        }
+
+        img {
+            height: 75px;
+        }
+    }
+}
+
+.newsfeed {
+    ul {
+        padding: 0;
+
+        li {
+            list-style-type: none;
+        }
+    }
 }
