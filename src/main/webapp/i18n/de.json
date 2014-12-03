@@ -188,7 +188,8 @@
             "tag.placeholder": "Property Tags des Projekts"
         },
         "details": {
-            "title": "Projektdetails",
+            "title": "Projektübersicht für \"{{project}}\"",
+            "purpose": "Projektziel",
             "delete": "Löschen"
         },
         "categories": {
@@ -283,6 +284,7 @@
     },
     "general": {
         "edit": "Bearbeiten",
+        "back": "Zurück",
         "button": {
             "save": "Speichern",
             "cancel": "Abbrechen"

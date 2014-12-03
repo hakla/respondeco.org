@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('ProjectController', function ($scope, Project, ResourceRequirement, $location, $routeParams) {
+respondecoApp.controller('ProjectController', function ($scope, Project, ResourceRequirement, $location, $routeParams, $sce) {
         $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,logo:null,propertyTags:[],resourceRequirements:[]};
         $scope.projects = Project.query();
         $scope.viewedProject = Project.currentProject;
@@ -72,6 +72,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
         $scope.update = function (id) {
             $scope.project = Project.get({id: id}, function() {
                 $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
+                $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
             });
         };
 

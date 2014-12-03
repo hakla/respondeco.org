@@ -7902,7 +7902,7 @@ body {
 }
 
 /* line 17, ../../scss/main.scss */
-.well {
+[ng-view].well {
   margin-top: 50px;
 }
 
@@ -8033,8 +8033,8 @@ img {
   border-radius: 2px;
 }
 /* line 138, ../../scss/main.scss */
-.organization .organization-item img {
-  max-height: 200px;
+.organization .organization-item uploaded-image {
+  display: block;
   width: 200px;
 }
 /* line 143, ../../scss/main.scss */
@@ -8155,7 +8155,29 @@ tags-input .host {
   margin: 0;
 }
 
-/* line 263, ../../scss/main.scss */
-.organization-logo img {
+/* line 265, ../../scss/main.scss */
+.organization-logo uploaded-image div {
+  background-position-x: 0;
+}
+
+/* line 270, ../../scss/main.scss */
+uploaded-image, [uploaded-image] {
+  height: 200px;
+  width: 200px;
+}
+/* line 274, ../../scss/main.scss */
+uploaded-image div, [uploaded-image] div {
+  height: 100%;
   width: 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* line 283, ../../scss/main.scss */
+.project-logo {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  min-height: 100px;
 }
