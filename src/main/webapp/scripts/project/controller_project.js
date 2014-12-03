@@ -122,11 +122,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $location.path('/projects');
     };
 
-    $scope.viewProjectDetails = function(viewedProject) {
-        Project.setProject(viewedProject);
-        $location.path('/projects/viewDetails');
-    };
-
     $scope.createProject = function() {
         $location.path('/project/create');
     };

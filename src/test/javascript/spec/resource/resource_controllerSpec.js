@@ -137,5 +137,20 @@ describe('Resource Controller Tests ', function () {
             ResourceService.delete.calls.mostRecent().args[1]();
             expect(ResourceService.query).toHaveBeenCalled();
         });
+
+        it('should update the model', function() {
+            spyOn(ResourceService, "get");
+            $scope.update(1);
+            expect(ResourceService.get).toHaveBeenCalledWith({
+              id: 1
+            }, jasmine.any(Function), jasmine.any(Function));
+
+            ResourceService.get.calls.mostRecent().args[1]({
+              resourceTags: []
+            });
+
+            ResourceService.get.calls.mostRecent().args[2]();
+            expect(location.path()).toEqual("/resource/new");
+        });
     });
 });
