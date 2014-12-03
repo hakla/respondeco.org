@@ -73,7 +73,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             startDate: startDate,
             endDate: endDate,
             logo: $scope.project.logo,
-            propertyTags: $.map($scope.project.propertyTags, function(tag) {return tag.name}),
+            propertyTags: $.map($scope.project.propertyTags, function(tag) {
+                return tag.name
+            }),
             resourceRequirements: $scope.project.resourceRequirements
         };
 
@@ -120,11 +122,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $location.path('/projects');
     };
 
-    $scope.viewProjectDetails = function(viewedProject) {
-        Project.setProject(viewedProject);
-        $location.path('/projects/viewDetails');
-    };
-
     $scope.createProject = function() {
         $location.path('/project/create');
     };
@@ -135,8 +132,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         resourceTags: [],
         isEssential: false
     }
+    $scope.selectedResourceTags = [];
 
     $scope.createRequirement = function() {
+        $scope.resource.resourceTags = $.map($scope.selectedResourceTags, function(tag) {
+            return tag.name
+        });
         var resource = $scope.resource;
 
         if (edit == false) {
@@ -149,6 +150,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             resourceTags: [],
             isEssential: false
         };
+        $scope.selectedResourceTags = [];
         edit = false;
     };
 
@@ -161,10 +163,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $('#addResource').modal('toggle');
         $scope.resource = $scope.project.resourceRequirements[index];
     };
-
-    $scope.getPropertyTagNames = function(viewValue) {
-        return PropertyTagNames.getPropertyTagNames(viewValue).$promise;
-    }
 
     if (isNew === false) {
         $scope.update($routeParams.id);

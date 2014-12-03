@@ -39,6 +39,10 @@ module.exports = function (grunt) {
                     '{.tmp/,}src/main/webapp/scripts/**/*.js',
                     'src/main/webapp/images/**/*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
+            },
+            karma: {
+                files: ['src/test/javascript/spec/**/*.js'],
+                tasks: ['karma:unit']
             }
         },
         autoprefixer: {

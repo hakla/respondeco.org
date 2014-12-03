@@ -4,6 +4,7 @@
             <button class="btn btn-default pull-left" ng-click='redirectToOverview()' translate='organization.back'>Back</button>
         </div>
         <div class="text-right col-md-10" ng-show='isOwner()'>
+            <button class="btn btn-primary btn-success" ng-click='redirectToOwnResources()' translate='organization.ownresources'>Own Resources</button>
             <button class="btn btn-primary" ng-show='isOwner()' ng-click='redirectToEdit()' translate='general.edit'>Edit</button>
         </div>
     </div>
