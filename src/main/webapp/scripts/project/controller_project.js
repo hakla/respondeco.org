@@ -24,7 +24,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
     };
 
     var searchText = null;
-    var isNew = $routeParams.id === 'new';
+    var isNew = $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
     $scope.list_of_string = []
 
