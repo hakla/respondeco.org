@@ -1,11 +1,11 @@
 'use strict';
 
-respondecoApp.controller('ProjectController', function ($scope, Project, ResourceRequirement, $location) {
-
-        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,projectLogo:null,propertyTags:[],resourceRequirements:[]};
+respondecoApp.controller('ProjectController', function ($scope, Project, ResourceRequirement, $location, $routeParams) {
+        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,logo:null,propertyTags:[],resourceRequirements:[]};
         $scope.projects = Project.query();
-        var searchText=null;
         $scope.viewedProject = Project.currentProject;
+        var searchText=null;
+        var isNew = $routeParams.id === 'new';
 
         $scope.list_of_string = []
 
@@ -13,21 +13,66 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
             'tags': []
         };
 
+        $scope.openedStartDate = false;
+        $scope.openedEndDate = false;
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+
+        $scope.openStart = function($event) {
+            $event.stopPropagation();
+            $scope.openedStartDate = true;
+        };
+
+        $scope.openEnd = function($event) {
+            $event.stopPropagation();
+            $scope.openedEndDate = true;
+        };
+
         $scope.onUploadComplete = function(fileItem, response) {
             $scope.project.logo = response;
         };
 
         $scope.create = function () {
-            Project.save($scope.project,
+            var startDate = $scope.project.startDate || null;
+            var endDate = $scope.project.endDate || null;
+
+            if (startDate != null) {
+                startDate = new XDate(startDate).toString("yyyy-MM-dd");
+            }
+
+            if (endDate != null) {
+                endDate = new XDate(endDate).toString("yyyy-MM-dd");
+            }
+
+            var project = {
+                id: $scope.project.id,
+                name: $scope.project.name,
+                purpose: $scope.project.purpose,
+                concrete: $scope.project.concrete,
+                startDate: startDate,
+                endDate: endDate,
+                logo: $scope.project.logo,
+                propertyTags: $scope.project.propertyTags,
+                resourceRequirements: $scope.project.resourceRequirements
+            };
+
+            Project[isNew ? 'save' : 'update'](project,
                 function () {
                     $scope.projects = Project.query();
                     $scope.clear();
-                    $location.path('/project');
                 });
         };
 
+        $scope.edit = function() {
+            $location.path("/projects/edit/" + $scope.project.id)
+        }
+
         $scope.update = function (id) {
-            $scope.project = Project.get({id: id});
+            $scope.project = Project.get({id: id}, function() {
+                $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
+            });
         };
 
         $scope.delete = function (id) {
@@ -40,7 +85,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
 
         $scope.clear = function () {
             $scope.project = {id: null, name: null, purpose: null, concrete:false,startDate:null,endDate:null,projectLogo:null};
-            $location.path('/project');
+            $location.path('/projects');
         };
 
         $scope.viewProjectDetails = function (viewedProject) {
@@ -50,13 +95,6 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
 
         $scope.createProject = function () {
             $location.path('/project/create');
-        };
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
         };
 
         //Resource Requirement Modal
@@ -84,5 +122,9 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
             edit = true;
             $('#addResource').modal('toggle');
             $scope.resource = $scope.project.resourceRequirements[index];
+        };
+
+        if (isNew === false) {
+            $scope.update($routeParams.id);
         }
     });
