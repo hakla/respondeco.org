@@ -20,7 +20,7 @@ public class ProjectResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
             "id", "name", "purpose", "concrete", "startDate", "endDate",
-            "organizationId", "managerId", "propertyTags");
+            "organizationId", "managerId", "propertyTags", "logo");
 
     public static List<ProjectResponseDTO> fromEntity(List<Project> projects, List<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -66,7 +66,12 @@ public class ProjectResponseDTO {
             if (fieldNames.contains("resourceRequirements")) {
                 responseDTO.setResourceRequirements(project.getResourceRequirements());
             }
-            
+            if (fieldNames.contains("logo")) {
+                if (project.getProjectLogo() != null) {
+                    responseDTO.setLogo(new ImageDTO(project.getProjectLogo()));
+                }
+            }
+
             responseDTOs.add(responseDTO);
         }
         return responseDTOs;
@@ -86,5 +91,6 @@ public class ProjectResponseDTO {
     private Long managerId;
     private List<PropertyTagResponseDTO> propertyTags;
     private List<ResourceRequirement> resourceRequirements;
+    private ImageDTO logo;
 
 }

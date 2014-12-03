@@ -14,7 +14,7 @@ body {
     border-radius: 0;
 }
 
-.well {
+[ng-view].well {
     margin-top: 50px;
 }
 
@@ -135,8 +135,8 @@ img {
         border: 1px solid #e3e3e3;
         border-radius: 2px;
 
-        img {
-            max-height: 200px;
+        uploaded-image {
+            display: block;
             width: 200px;
         }
 
@@ -260,6 +260,29 @@ tags-input {
     }
 }
 
-.organization-logo img {
-    width: 100%;
+.organization-logo {
+
+    uploaded-image div {
+        background-position-x: 0;
+    }
+}
+
+uploaded-image, [uploaded-image] {
+    height: 200px;
+    width: 200px;
+
+    div {
+        height: 100%;
+        width: 100%;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+}
+
+.project-logo {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+    min-height: 100px;
 }

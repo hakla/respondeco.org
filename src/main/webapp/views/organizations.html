@@ -11,7 +11,7 @@
         <ul>
             <li class="organization-item" ng-repeat="organization in organizations">
                 <a ng-click="redirectToOrganization(organization.id)">
-                    <uploaded-image name="organization.logo.id" />
+                    <uploaded-image name="organization.logo.id"></uploaded-image>
                 </a>
                 <h2><a ng-click="redirectToOrganization(organization.id)">{{organization.name}}</a>
                 </h2>

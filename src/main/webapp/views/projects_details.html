@@ -1,5 +1,20 @@
 <div class="row">
-    <div class="text-right col-md-4 pull-right">
-        <button class="btn btn-primary" ng-click='edit()' translate='general.edit'>Edit</button>
+    <div class="modal-header">
+        <button class="btn btn-primary pull-right" ng-click='edit()' translate='general.edit'>Edit</button>
+        <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
+        <h2 translate="project.details.title" translate-values="{project: '{{project.name}}'}">Project overview for {{project.name}}</h2>
+    </div>
+    <div class="modal-body">
+        <div class="col-md-4">
+            <div>
+                <uploaded-image name="project.logo.id" class="project-logo pull-left"></uploaded-image>
+                <h3 translate="project.details.purpose">Project purpose</h3>
+                <div ng-bind-html="purpose"></div>
+            </div>
+            <div class="tags-container">
+                <div ng-repeat="for tag in project.tags"></div>
+            </div>
+        </div>
+        
     </div>
 </div>
