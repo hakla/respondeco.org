@@ -56,6 +56,11 @@ describe('Controllers Tests ', function () {
             expect(location.path()).toEqual('/organization/edit/test');
         });
 
+        it('should redirect to own resources', function() {
+            $scope.redirectToOwnResources();
+            expect(location.path()).toEqual('/ownresource');
+        });
+
         it('should call delete on Organization', function() {
             spyOn(OrganizationService, 'delete');
             $scope.organization = {

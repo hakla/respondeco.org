@@ -519,7 +519,8 @@
         "accept": "Einladung annehmen",
         "decline": "Einladung ablehnen",
         "header.info": "Informationen über das Unternehmen",
-        "header.logo": "Logo"
+        "header.logo": "Logo",
+        "ownresources": "Ressourcen anzeigen"
     },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",
