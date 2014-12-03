@@ -55,6 +55,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $location.path('organization');
     };
 
+    $scope.redirectToOwnResources = function() {
+        $location.path('ownresource');
+    };
+
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);
     }

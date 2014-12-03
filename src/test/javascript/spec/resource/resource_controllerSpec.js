@@ -4,26 +4,18 @@ describe('Resource Controller Tests ', function () {
     beforeEach(module('respondecoApp'));
 
     describe('ResourceController', function () {
-        var $scope, ResourceService, location, AccountService;
+        var $scope, ResourceService, location;
 
-        beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Resource, Account) {
+        beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Resource) {
             $scope = $rootScope.$new();
             location = $location;
             ResourceService = Resource;
-            AccountService = Account;
             $routeParams.id = 'new';
 
             location.path('ownresource');
-            spyOn(AccountService,"get");
 
-            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, Resource: ResourceService, Account: AccountService});
-            
-            AccountService.get.calls.mostRecent().args[1]();
+            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, Resource: ResourceService});
         }));
-
-        it('should get an Account', function() {
-            expect(AccountService.get).toHaveBeenCalled();
-        });
 
         it('should create a new resource',function() {
             $scope.resource = {
@@ -83,14 +75,14 @@ describe('Resource Controller Tests ', function () {
         });
 
         it('should update a resource', function() {
-            spyOn(ResourceService, "update");
+            $scope.resource.resourceTags = ['Technik', 'Computer'];
+            spyOn(ResourceService, "get");
             
             $scope.isNew = false;
             $scope.update('1');
 
-            expect(ResourceService.update).toHaveBeenCalledWith({id:'1'}, jasmine.any(Function));
-            ResourceService.update.calls.mostRecent().args[1]();
-
+            expect(ResourceService.get).toHaveBeenCalledWith({id:'1'}, jasmine.any(Function), jasmine.any(Function));
+            ResourceService.get.calls.mostRecent().args[1]();
         });
 
 
@@ -127,13 +119,13 @@ describe('Resource Controller Tests ', function () {
             });
         });
 
-        it('should call update if isNew is false', function() {
+        /*it('should call update if isNew is false', function() {
             spyOn($scope,"update");
 
             $scope.isNew = false;
 
             expect($scope.update).toHaveBeenCalled();
-        });
+        });*/
 
         it('should delete a resource', function() {
             spyOn(ResourceService, "delete");

@@ -75,6 +75,54 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             logo: $scope.project.logo,
             propertyTags: $.map($scope.project.propertyTags, function(tag) {return tag.name}),
             resourceRequirements: $scope.project.resourceRequirements
+
+        $scope.update = function (id) {
+            $scope.project = Project.get({id: id}, function() {
+                $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
+                $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
+            });
+        };
+
+        $scope.delete = function (id) {
+            Project.delete({id: id},
+                function () {
+                    $scope.projects = Project.query();
+                    $location.path('/projects');
+                });
+        };
+
+        $scope.clear = function () {
+            $scope.project = {id: null, name: null, purpose: null, concrete:false,startDate:null,endDate:null,projectLogo:null};
+            $location.path('/projects');
+        };
+
+        $scope.viewProjectDetails = function (viewedProject) {
+            Project.setProject(viewedProject);
+            $location.path('/projects/viewDetails');
+        };
+
+        $scope.createProject = function () {
+            $location.path('/project/create');
+        };
+
+        //Resource Requirement Modal
+        var edit = false;
+        $scope.resource = {resourceTags: [], isEssential: false}
+        $scope.selectedResourceTags = [];
+
+        $scope.createRequirement = function() {
+            $scope.resource.resourceTags = $.map($scope.selectedResourceTags, function(tag) {return tag.name});
+            var resource = $scope.resource;
+
+            if(edit == false) {
+                $scope.project.resourceRequirements.push(resource);
+            }
+        }
+
+        $scope.clearRequirement = function() {
+            $scope.resource = {resourceTags: [], isEssential: false};
+            $scope.selectedResourceTags = [];
+            edit = false;
         };
 
         Project[isNew ? 'save' : 'update'](project,
