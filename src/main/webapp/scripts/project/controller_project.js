@@ -101,8 +101,10 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
         //Resource Requirement Modal
         var edit = false;
         $scope.resource = {resourceTags: [], isEssential: false}
+        $scope.selectedResourceTags = [];
 
         $scope.createRequirement = function() {
+            $scope.resource.resourceTags = $.map($scope.selectedResourceTags, function(tag) {return tag.name});
             var resource = $scope.resource;
 
             if(edit == false) {
@@ -112,6 +114,7 @@ respondecoApp.controller('ProjectController', function ($scope, Project, Resourc
 
         $scope.clearRequirement = function() {
             $scope.resource = {resourceTags: [], isEssential: false};
+            $scope.selectedResourceTags = [];
             edit = false;
         };
 
