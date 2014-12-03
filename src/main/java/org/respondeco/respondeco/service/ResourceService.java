@@ -117,7 +117,7 @@ public class ResourceService {
     // endregion
 
     // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
-    public ResourceRequirement createRequirement(String name, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+    public ResourceRequirement createRequirement(String name, BigDecimal amount, String description, Long projectId, Boolean isEssential, String[] resourceTags) throws Exception, ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceRequirement newRequirement = null;
         Project currentProject = (Project)this.userIsPartOfOrganisation(true, projectId);
         List<ResourceRequirement> entries = this.resourceRequirementRepository.findByNameAndProjectId(name, projectId);
@@ -137,7 +137,7 @@ public class ResourceService {
         return newRequirement;
     }
 
-    public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description, Boolean isEssential, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+    public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description, Boolean isEssential, String[] resourceTags) throws Exception, ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
             Project actual = requirement.getProject();
@@ -156,7 +156,7 @@ public class ResourceService {
         return requirement;
     }
 
-    public void deleteRequirement(Long id) throws ResourceException {
+    public ResourceRequirement deleteRequirement(Long id) throws Exception, ResourceException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
             Project actual = requirement.getProject();
@@ -165,6 +165,7 @@ public class ResourceService {
         } else {
             throw new ResourceException(String.format("No resource requirement found for the id: %d", id), EnumResourceException.NOT_FOUND);
         }
+        return requirement;
     }
 
     public List<ResourceRequirementDTO> getAllRequirements() {
@@ -189,7 +190,7 @@ public class ResourceService {
     // endregion
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
-    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
+    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception{
         ResourceOffer newOffer = null;
         Organization currentOrg = (Organization)this.userIsPartOfOrganisation(false, organisationId);
         List<ResourceOffer> list = this.resourceOfferRepository.findByNameAndOrganisationId(name, organisationId);
@@ -214,7 +215,7 @@ public class ResourceService {
         return newOffer;
     }
 
-    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
+    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
         if (offer != null) {
             this.userIsPartOfOrganisation(false, organisationId);
@@ -235,13 +236,15 @@ public class ResourceService {
         return offer;
     }
 
-    public void deleteOffer(Long offerId) throws ResourceException{
-        if (this.resourceOfferRepository.findOne(offerId) != null) {
+    public ResourceOffer deleteOffer(Long offerId) throws ResourceException, Exception{
+        ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
+        if (offer != null) {
             this.resourceOfferRepository.delete(offerId);
         }
         else{
             throw new ResourceException(String.format("Offer with Id: %d not found", offerId), EnumResourceException.NOT_FOUND);
         }
+        return offer;
     }
 
     public List<ResourceOfferDTO> getAllOffers() {
