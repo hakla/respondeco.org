@@ -1,11 +1,33 @@
 <div>
     <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" ng-submit="create()">
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-        <div class="modal-header">
-            <button type="button" class="btn {{ project.concrete ? 'btn-success' : 'btn-primary'}} pull-right" ng-model="project.concrete" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-                <span class="glyphicon {{ project.concrete ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'project.concrete' | translate}}
-            </button>
-            <h4 translate="project.createProject.title">Creating a project</h4>
+        <div class="modal-header clearfix">
+            <div class="col-md-3">
+                <h4 translate="project.createProject.title">Creating a project</h4>
+            </div>
+            <div class="col-md-9">
+                <div class="col-md-4 col-md-offset-1">
+                    <div class="input-group" ng-show="project.concrete == true">
+                        <input class="form-control" placeholder="{{'project.createProject.startDate.placeholder' | translate}}" ng-model="project.startDate" name="startDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedStartDate" close-text="close">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group" ng-show="project.concrete == true">
+                        <input class="form-control" placeholder="{{'project.createProject.endDate.placeholder' | translate}}" ng-model="project.endDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedEndDate" close-text="close">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn {{ project.concrete ? 'btn-success' : 'btn-primary'}} pull-right" ng-model="project.concrete" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                        <span class="glyphicon {{ project.concrete ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'project.concrete' | translate}}
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="modal-body clearfix">
             <div class="row">
@@ -17,19 +39,11 @@
                     </div>
                     <div class="form-group">
                         <label translate="project.purpose">Purpose of project</label>
-                        <textarea class="form-control" placeholder="{{'project.createProject.purpose.placeholder' | translate}}" rows="3" ng-model="project.purpose"></textarea>
-                    </div>
-                    <div class="form-group" ng-show="project.concrete == true">
-                        <label translate="project.startDate">StartDate of project</label>
-                        <input class="form-control" placeholder="{{'project.createProject.startDate.placeholder' | translate}}" type="date" ng-model="project.startDate">
-                    </div>
-                    <div class="form-group" ng-show="project.concrete == true">
-                        <label translate="project.endDate">EndDate of project</label>
-                        <input class="form-control" placeholder="{{'project.createProject.endDate.placeholder' | translate}}" type="date" ng-model="project.endDate">
+                        <textarea class="form-control" placeholder="{{'project.createProject.purpose.placeholder' | translate}}" rows="3" ng-model="project.purpose" REQUIRED></textarea>
                     </div>
                     <div class="form-group">
                         <label translate="project.tag">Tag</label>
-                        <input class="form-control" placeholder="{{'project.createProject.tag.placeholder' | translate}}" type="text"/>
+                        <input class="form-control" placeholder="{{'project.createProject.tag.placeholder' | translate}}" type="text" />
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -48,19 +62,23 @@
                                 <thead>
                                     <th translate="global.resource.requirement.tableheader">ResourceName</th>
                                     <tr>
-                                        <td translate = "global.resource.requirement.name">name</td>
-                                        <td translate = "global.resource.requirement.amount">amount</td>
-                                        <td translate = "global.resource.requirement.isEssential">is essential</td>
-                                    </td>
+                                        <td translate="global.resource.requirement.name">name</td>
+                                        <td translate="global.resource.requirement.amount">amount</td>
+                                        <td translate="global.resource.requirement.isEssential">is essential</td>
+                                        </td>
                                 </thead>
                                 <tbody>
                                     <tr data-toggle="modal" ng-repeat="r in project.resourceRequirements">
                                         <td>{{r.name}}</td>
                                         <td>{{r.amount}}</td>
-                                        <td ng-show="r.isEssential"><span class="glyphicon glyphicon-ok"/></td>
-                                        <td ng-hide="r.isEssential"><span class="glyphicon glyphicon-remove"/></td>
-                                        <td><a ng-click="editRequirement($index)">edit</a></td>
-                                        <td><a ng-click="removeRequirement($index)"><span class="glyphicon glyphicon-remove-circle"></a></td>
+                                        <td ng-show="r.isEssential"><span class="glyphicon glyphicon-ok" />
+                                        </td>
+                                        <td ng-hide="r.isEssential"><span class="glyphicon glyphicon-remove" />
+                                        </td>
+                                        <td><a ng-click="editRequirement($index)">edit</a>
+                                        </td>
+                                        <td><a ng-click="removeRequirement($index)"><span class="glyphicon glyphicon-remove-circle"></a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -77,61 +95,53 @@
         </div>
     </form>
 
-    <div class="modal fade" id="addResource" tabindex="-1" role="dialog" aria-labelledby="newResourceLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="addResource" tabindex="-1" role="dialog" aria-labelledby="newResourceLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="newresourceform" role="form" novalidate show-validation
-                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
+                <form name="newresourceform" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clearRequirement()">&times;</button>
-                        <h4 class="modal-title" id="newResourceLabel"
-                            translate="global.resource.requirement.title">Add Resource-Requirement</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="clearRequirement()">&times;</button>
+                        <h4 class="modal-title" id="newResourceLabel" translate="global.resource.requirement.title">Add Resource-Requirement</h4>
                     </div>
                     <div class="modal-body">
 
-                            <div class="form-group">
-                                <label translate="global.resource.new.name">name</label>
-                                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.name' | translate}}" ng-model="resource.name" required>
-                            </div>
-                            <div class="form-group">
-                                <label translate="global.resource.new.description">description</label>
-                                <textarea type="text" class="form-control" placeholder="{{'global.resource.placeholder.description' | translate}}" ng-model="resource.description" required/>
-                            </div>
+                        <div class="form-group">
+                            <label translate="global.resource.new.name">name</label>
+                            <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.name' | translate}}" ng-model="resource.name" required>
+                        </div>
+                        <div class="form-group">
+                            <label translate="global.resource.new.description">description</label>
+                            <textarea type="text" class="form-control" placeholder="{{'global.resource.placeholder.description' | translate}}" ng-model="resource.description" required/>
+                        </div>
 
-                            <div class="form-group">
-                                <label translate="global.resource.new.amount">amount</label>
-                                <input type="number" class="form-control" placeholder="{{'global.resource.placeholder.amount' | translate}}" ng-model="resource.amount" required>
-                            </div>
+                        <div class="form-group">
+                            <label translate="global.resource.new.amount">amount</label>
+                            <input type="number" class="form-control" placeholder="{{'global.resource.placeholder.amount' | translate}}" ng-model="resource.amount" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label translate="global.resource.new.tags">tags</label>
-                                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.tags' | translate}}"
-                                       ng-model="resource.resourceTags" ng-list="">
-                            </div>
-                            
-                            <div class="form-group">
-                                <button type="button" class="btn {{ resource.isEssential ? 'btn-success' : 'btn-primary'}}" 
-                                        ng-model="resource.isEssential" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-                                <span class="glyphicon {{ resource.isEssential ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
-                                {{'global.resource.requirement.isEssential' | translate}}
+                        <div class="form-group">
+                            <label translate="global.resource.new.tags">tags</label>
+                            <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.tags' | translate}}" ng-model="resource.resourceTags" ng-list="">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="btn {{ resource.isEssential ? 'btn-success' : 'btn-primary'}}" ng-model="resource.isEssential" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                                <span class="glyphicon {{ resource.isEssential ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'global.resource.requirement.isEssential' | translate}}
                             </button>
-                            </div>
-                        </form>
+                        </div>
+                </form>
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="redirectToResource('')">
-                            {{ 'global.resource.new.cancelbutton' | translate }}
-                        </button>
-                        <button type="button" ng-click="createRequirement()" data-dismiss="modal" class="btn btn-success" ng-disabled="newresourceform.$invalid">
-                            <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
-                        </button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="redirectToResource('')">
+                        {{ 'global.resource.new.cancelbutton' | translate }}
+                    </button>
+                    <button type="button" ng-click="createRequirement()" data-dismiss="modal" class="btn btn-success" ng-disabled="newresourceform.$invalid">
+                        <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
+                    </button>
+                </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-

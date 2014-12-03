@@ -149,11 +149,11 @@ public class OrgJoinRequestController {
      * DELETE  /rest/orgjoinrequests/:id -> accept user and delete the "id" orgjoinrequest.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/orgjoinrequests/accept/{id}",
+    @RequestMapping(value = "/rest/orgjoinrequests/accept",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
+    public ResponseEntity<?> acceptRequest(@RequestBody Long id) {
         log.debug("REST request to accept user and delete OrgJoinRequest : {}", id);
         ResponseEntity<?> responseEntity;
         try {
@@ -176,12 +176,12 @@ public class OrgJoinRequestController {
      * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/orgjoinrequests/decline/{id}",
+    @RequestMapping(value = "/rest/orgjoinrequests/decline",
 
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> declineRequest(@PathVariable Long id) {
+    public ResponseEntity<?> declineRequest(@RequestBody Long id) {
         log.debug("REST request to decline user and delete OrgJoinRequest : {}", id);
         ResponseEntity<?> responseEntity;
         try {

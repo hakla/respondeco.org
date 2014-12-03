@@ -95,8 +95,8 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
             $scope.orgJoinRequests = data;
 
             data.forEach(function(el) {
-                Organization.getById({
-                    id: el.orgId
+                Organization.get({
+                    id: el.organization.id
                 }, function(data) {
                     el.organization = data;
                 });
