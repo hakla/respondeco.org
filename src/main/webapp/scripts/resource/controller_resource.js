@@ -7,6 +7,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.formSaveError = null;
 	$scope.selectedTags = [];
 
+	$scope.resourceSearch = {name: null};
+
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
@@ -34,10 +36,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('resource/' + id);
 	}
 
-	$scope.search = function(filter) {
-		Resource.query({filter: filter}, 
+	$scope.search = function() {
+		Resource.query({name: $scope.resourceSearch.name}, 
 			function(res) {
 				$scope.resources = res;
+			}, function(error) {
+				$scope.searchError = true;
 			});
 	}
 

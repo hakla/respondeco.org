@@ -8,6 +8,7 @@ import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -49,9 +50,18 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferDTO> getAllResourceOffer() {
+    public List<ResourceOfferDTO> getAllResourceOffer(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
+
         log.debug("REST request to get all resource offer");
-        return this.resourceService.getAllOffers();
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name,restParameters);
+
+        return resourceOfferDTOs;
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)

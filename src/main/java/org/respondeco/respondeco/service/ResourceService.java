@@ -10,12 +10,18 @@ import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.ResourceTagException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,14 +183,31 @@ public class ResourceService {
         }
     }
 
-    public List<ResourceOfferDTO> getAllOffers() {
+    public List<ResourceOfferDTO> getAllOffers(String name, RestParameters restParameters) {
+
+        PageRequest pageRequest = null;
+        if(restParameters != null) {
+            pageRequest = restParameters.buildPageRequest();
+        }
+
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findAll();
+        List<ResourceOffer> entries;
+
+        if(name != null || name.isEmpty() == false) {
+            entries = resourceOfferRepository.findByName(name, pageRequest);
+        } else {
+            entries = resourceOfferRepository.findAll();
+        }
         if(entries.isEmpty() == false) {
             for (ResourceOffer offer :entries) {
                 result.add(new ResourceOfferDTO(offer));
             }
         }
+
+
+
+
+
         return result;
     }
 
