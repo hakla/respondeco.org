@@ -11,7 +11,7 @@ import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Project.
@@ -76,6 +75,9 @@ public class ProjectController {
         } catch(OperationForbiddenException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch(Exception e) {
+            log.error("Could not save Project : {}", project, e);
+            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
     }
@@ -90,7 +92,7 @@ public class ProjectController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> update(@RequestBody @Valid ProjectRequestDTO project) {
-        log.debug("REST request to update Project : {}", project);
+        log.error("REST request to update Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
             projectService.update(
@@ -110,6 +112,9 @@ public class ProjectController {
         } catch(OperationForbiddenException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch(Exception e) {
+            log.error("Could not save Project : {}", project, e);
+            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
     }
@@ -157,7 +162,7 @@ public class ProjectController {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         List<Project> projects = projectService.findProjects(filter, tags, restParameters);
-        return ProjectResponseDTO.fromEntity(projects, restParameters.getFields());
+        return ProjectResponseDTO.fromEntities(projects, restParameters.getFields());
     }
 
     /**
@@ -180,7 +185,7 @@ public class ProjectController {
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         List<Project> projects =  projectService
                 .findProjectsFromOrganization(organizationId, filter, tags, restParameters);
-        return ProjectResponseDTO.fromEntity(projects, restParameters.getFields());
+        return ProjectResponseDTO.fromEntities(projects, restParameters.getFields());
     }
 
     /**
@@ -200,7 +205,7 @@ public class ProjectController {
         RestParameters restParameters = new RestParameters(null, null, null, fields);
         if(project != null) {
             ProjectResponseDTO responseDTO = ProjectResponseDTO
-                    .fromEntity(Arrays.asList(project), restParameters.getFields()).get(0);
+                    .fromEntity(project, restParameters.getFields());
             response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -238,7 +243,7 @@ public class ProjectController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceRequirementDTO> getAllResourceRequirement(@PathVariable Long id) {
+    public List<ResourceRequirementRequestDTO> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
         return this.resourceService.getAllRequirements(id);
     }
