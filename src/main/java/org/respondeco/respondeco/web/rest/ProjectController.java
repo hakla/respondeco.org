@@ -4,10 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.ProjectRatingService;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.web.rest.dto.ProjectRatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
@@ -39,11 +41,13 @@ public class ProjectController {
 
     private ProjectService projectService;
     private ResourceService resourceService;
+    private ProjectRatingService projectRatingService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourceService resourceService) {
+    public ProjectController(ProjectService projectService, ResourceService resourceService, ProjectRatingService projectRatingService) {
         this.projectService = projectService;
         this.resourceService = resourceService;
+        this.projectRatingService = projectRatingService;
     }
 
     /**
@@ -248,4 +252,40 @@ public class ProjectController {
         return this.resourceService.getAllRequirements(id);
     }
 
+    /**
+     * POST  /rest/project/{id}/ratings -> Create a new projectrating.
+     */
+    @ApiOperation(value = "Create a projectrating", notes = "Create or update a projectrating")
+    @RequestMapping(value = "/rest/projects/{id}/projectratings",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> create(@RequestBody @Valid ProjectRatingRequestDTO projectRatingRequest) {
+        log.debug("REST request to create Project : {}", projectRatingRequest);
+        ResponseEntity<?> responseEntity;
+        try {
+            projectRatingService.createProjectRating(
+                    projectRatingRequest.getRating(),
+                    projectRatingRequest.getComment(),
+                    projectRatingRequest.getProjectId());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch(IllegalValueException e) {
+            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch(MultipleRatingException e) {
+            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = ErrorHelper.buildErrorResponse("rating.error.multiplerating",e.getMessage());
+        } catch(NotOwnerOfOrganizationException e) {
+            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = ErrorHelper.buildErrorResponse("rating.error.notowneroforg",e.getMessage());
+        } catch(RatingOwnProjectException e) {
+            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = ErrorHelper.buildErrorResponse("rating.error.ratingownproject",e.getMessage());
+        } catch(Exception e) {
+            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+    }
 }

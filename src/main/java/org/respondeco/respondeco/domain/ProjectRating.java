@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 public class ProjectRating extends AbstractAuditingEntity {
 
     @NotNull
-    private Double rating;
+    private Integer rating;
 
     private String comment;
 

@@ -5,10 +5,7 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ProjectRating;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.ProjectRatingRepository;
-import org.respondeco.respondeco.service.exception.MultipleRatingException;
-import org.respondeco.respondeco.service.exception.NoSuchProjectRatingException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.service.exception.RatingOwnProjectException;
+import org.respondeco.respondeco.service.exception.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,21 +23,31 @@ public class ProjectRatingService {
 
     private UserService userService;
 
+    private ProjectService projectService;
+
     @Inject
-    public ProjectRatingService(ProjectRatingRepository projectRatingRepository, UserService userService) {
+    public ProjectRatingService(ProjectRatingRepository projectRatingRepository, UserService userService, ProjectService projectService) {
         this.projectRatingRepository = projectRatingRepository;
         this.userService = userService;
+        this.projectService = projectService;
     }
 
     public AggregatedRating getAggregatedRating(Long projectId) {
         return projectRatingRepository.getAggregatedRatingForProject(projectId);
     }
 
-    public ProjectRating createProjectRating(Double rating, String comment, Project project) throws RatingOwnProjectException, MultipleRatingException {
+    public ProjectRating createProjectRating(Integer rating, String comment, Long projectId) throws RatingOwnProjectException, MultipleRatingException, NotOwnerOfOrganizationException {
         User user = userService.getUserWithAuthorities();
+        Project project = projectService.findProjectById(projectId);
+        if(project == null) {
+            throw new NoSuchProjectException(projectId);
+        }
         ProjectRating projectRating1 = projectRatingRepository.findByUserAndProject(user,project);
         if(projectRating1!=null) {
             throw new MultipleRatingException(String.format("Can't rate project %s a second time", project.getId()));
+        }
+        if(user.getOrganization().getOwner().equals(user) == false) {
+            throw new NotOwnerOfOrganizationException(String.format("User is not owner of organization"));
         }
         if(user.getOrganization().equals(project.getOrganization())) {
             throw new RatingOwnProjectException(String.format("Can't rate own project"));
@@ -54,7 +61,17 @@ public class ProjectRatingService {
         return projectRating;
     }
 
-    public void updateProjectRating(Double rating, String comment, Long ratingId) throws NoSuchProjectRatingException {
+    public ProjectRating getProjectRating(Long projectId) {
+        User user = userService.getUserWithAuthorities();
+        Project project = projectService.findProjectById(projectId);
+        if(project == null) {
+            throw new NoSuchProjectException(projectId);
+        }
+        ProjectRating projectRating = projectRatingRepository.findByUserAndProject(user,project);
+        return projectRating;
+    }
+
+    public void updateProjectRating(Integer rating, String comment, Long ratingId) throws NoSuchProjectRatingException {
         User user = userService.getUserWithAuthorities();
         ProjectRating projectRating = projectRatingRepository.findOne(ratingId);
         if(projectRating == null) {
