@@ -84,6 +84,13 @@
                 "title": "Ressourcen von",
                 "editbutton": "Bearbeiten",
                 "deletebutton": "Löschen"
+            },
+            "requirement": {
+                "title": "Ressourcenanforderung hinzufügen",
+                "isEssential": "Notwendig",
+                "tableheader": "Benötigte Ressourcen",
+                "name": "Name",
+                "amount": "Menge"
             }
         },
         "messages": {
@@ -172,16 +179,17 @@
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
-            "resource": "Ressource anfordern",
+            "resource": "Ressource hinzufügen",
             "logo": "Logo hinzufügen",
             "name.placeholder": "Name des Projekts",
             "purpose.placeholder": "Ziel des Projekts",
-            "startDate.placeholder": "01.01.2015",
-            "endDate.placeholder": "31.12.2018",
+            "startDate.placeholder": "Start des Projekts",
+            "endDate.placeholder": "Ende des Projekts",
             "tag.placeholder": "Property Tags des Projekts"
         },
         "details": {
-            "title": "Projektdetails",
+            "title": "Projektübersicht für \"{{project}}\"",
+            "purpose": "Projektziel",
             "delete": "Löschen"
         },
         "categories": {
@@ -276,10 +284,12 @@
     },
     "general": {
         "edit": "Bearbeiten",
+        "back": "Zurück",
         "button": {
             "save": "Speichern",
             "cancel": "Abbrechen"
-        }
+        },
+        "dateFormat": "dd.MM.yyyy"
     },
     "settings": {
         "title": "Einstellungen für Benutzer [<b>{{username}}</b>]",
@@ -512,7 +522,8 @@
         "accept": "Einladung annehmen",
         "decline": "Einladung ablehnen",
         "header.info": "Informationen über das Unternehmen",
-        "header.logo": "Logo"
+        "header.logo": "Logo",
+        "ownresources": "Ressourcen anzeigen"
     },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",

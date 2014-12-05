@@ -1,41 +1,104 @@
-<div>
-    <div class="row">
-        <div class="text-right col-md-10">
-            <button class="btn btn-primary" ng-click='edit()' translate='general.edit'>Edit</button>
-        </div>
+<div class="row">
+    <div class="modal-header">
+        <button class="btn btn-primary pull-right" ng-click='edit()' translate='general.edit'>Edit</button>
+        <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
+        <h2 translate="project.details.title" translate-values="{project: '{{project.name}}'}">Project overview for {{project.name}}</h2>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <h2>{{ viewedProject.name}}</h2>
+    <div class="modal-body">
+        <div class="col-md-6">
+            <div class="clearfix">
+                <uploaded-image name="project.logo.id" class="project-logo pull-left"></uploaded-image>
+                <h3 translate="project.details.purpose">Project purpose</h3>
+                <div ng-bind-html="purpose"></div>
+            </div>
+            <div class="tags-container clear-left">
+                <h3 translate="project.tags">Tags</h3>
+                <tags-input ng-model="project.propertyTags" add-on-space="true" display-property="name" min-length="1" placeholder="{{'project.tags.placeholder' | translate}}">
+                    <auto-complete source="getPropertyTagNames($query)" min-length="1"></auto-complete>
+                </tags-input>
+            </div>
+            <div class="rating-container">
+                <span>Aktuelle Bewertung: </span>
+                <rating ng-model="rate" max="5" readonly="true" on-leave="overStar = null"></rating>
+            </div>
+            <div class="newsfeed">
+                <h2>Newsfeed</h2>
+                <div class="well">
+                    <ul>
+                        <li>
+                            <h4>Boote wurden nach Tokio transportiert <sup><small>12.12.2014</small></sup></h4>
+                        </li>
+                        <li>
+                            <h4>Erste Demonstranten eingetroffen <sup><small>13.12.2014</small></sup></h4>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="col-md-5">
-            <h2></h2>
-            <dl class="dl-horizontal">
-                <dt>
-                    <span translate='project.purpose'>Project purpose</span>:</dt>
-                <dd>{{ viewedProject.purpose }}</dd>
-                <dt>
-                    <span translate='project.concrete'>Concrete Project</span>:</dt>
-                <dd>{{ viewedProject.concrete }}</dd>
-                <dt>
-                    <span translate='project.startDate'>StartDate Project</span>:</dt>
-                <dd>{{ viewedProject.startDate }}</dd>
-                <dt>
-                    <span translate='project.endDate'>EndDate Project</span>:</dt>
-                <dd>{{ viewedProject.endDate }}</dd>
-                <dt>
-                    <span translate='project.tag'>PorpertyTags Project</span>:</dt>
-                <dd>{{ viewedProject.propertyTags }}</dd>
-                <dt>
-                    <span translate='project.resource'>Resources Project</span>:</dt>
-                <dd>{{ viewedProject.resourceRequirements }}</dd>
-            </dl>
+        <div class="col-md-6">
+            <div class="remaining">
+                <h2>7 Tage verbleiben</h2>
+                <progressbar class="progress-striped" value="50"></progressbar>
+                <div class="row">
+                    <div class="col-md-2">10.12.2014</div>
+                    <div class="col-md-2 pull-right">31.12.2014</div>
+                </div>
+            </div>
+            <div class="resources">
+                <h2>53% Ressourcen gesammelt</h2>
+                <progressbar class="progress-striped" value="53"></progressbar>
+            </div>
+            <div class="resource-requirements">
+                <h2>Details</h2>
+                <accordion close-others="true">
+                    <accordion-group is-open="status.open1">
+                        <accordion-heading>
+                            <div class="row">
+                                <div class="col-md-4">Boot</div>
+                                <div class="col-md-2 col-md-offset-6">
+                                    2/4
+                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
+                                </div>
+                            </div>
+                        </accordion-heading>
+                        <ul>
+                            <li>
+                                <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
+                                <div class="col-md-6 strong">Unternehmen 1</div>
+                                <div class="col-md-4 pull-right">1/4</div>
+                            </li>
+                            <li>
+                                <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
+                                <div class="col-md-6 strong">Unternehmen 2</div>
+                                <div class="col-md-4 pull-right">1/4</div>
+                            </li>
+                        </ul>
+                    </accordion-group>
+                    <accordion-group is-open="status.open2">
+                        <accordion-heading>
+                            <div class="row">
+                                <div class="col-md-4">Demonstrationsmaterial</div>
+                                <div class="col-md-2 col-md-offset-6">
+                                    5/20
+                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open2, 'glyphicon-chevron-right': !status.open2}"></i>
+                                </div>
+                            </div>
+                        </accordion-heading>
+                    </accordion-group>
+                    <accordion-group is-open="status.open3">
+                        <accordion-heading>
+                            <div class="row">
+                                <div class="col-md-4">...</div>
+                                <div class="col-md-2 col-md-offset-6">
+                                    2/6
+                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open3, 'glyphicon-chevron-right': !status.open3}"></i>
+                                </div>
+                            </div>
+                        </accordion-heading>
+                        This is just some content to illustrate fancy headings.
+                    </accordion-group>
+                </accordion>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <button type="submit" class="btn btn-danger pull-right" ng-click="delete(viewedProject.id)">
-            <span class="glyphicon glyphicon-minus"></span>
-            <span translate="project.details.delete">Delete this Project</span>
-        </button>
     </div>
 </div>

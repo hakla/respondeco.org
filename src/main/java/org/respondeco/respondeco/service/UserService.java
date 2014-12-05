@@ -206,15 +206,14 @@ public class UserService {
         user.setOrganization(null);
     }
 
-    public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException, NotOwnerOfOrganizationException {
+    public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException {
         Organization organization = organizationRepository.findOne(orgId);
         User user = getUserWithAuthorities();
+
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization %s does not exist", orgId));
         }
-        if(organization.getOwner().equals(user)==false) {
-            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s", orgId));
-        }
+
         log.debug("Finding members of organization", organization.getName());
         return userRepository.findUsersByOrganizationId(orgId);
     }

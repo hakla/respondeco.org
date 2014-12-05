@@ -24,8 +24,9 @@
 
             <div class="form-group">
                 <label translate="global.resource.new.tags">tags</label>
-                <input type="text" class="form-control" placeholder="{{'global.resource.placeholder.tags' | translate}}"
-                       ng-model="resource.resourceTags" ng-list="">
+                <tags-input ng-model="selectedTags" add-on-space="true" display-property="name" min-length="1"
+                            placeholder="{{'global.resource.placeholder.tags' | translate}}">
+                    </tags-input>
             </div>
 
             <div class="form-group">
@@ -53,15 +54,15 @@
                 <label translate="global.resource.new.endDate">available until</label>
                 <input type="date" ng-model="resource.endDate"placeholder="global.resource.placeholder.endDate" class="form-control" required>
             </div>
-            <div class="alert alert-danger" ng-show="form.saveError" translate="global.resource.new.error">
+            <div class="alert alert-danger" ng-show="formSaveError" translate="global.resource.new.error">
                 <strong>resource could not be created</strong>
             </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-link" ng-click="redirectToResource('')">
+            <button id="cancelButton" type="button" class="btn btn-link" ng-click="redirectToResource('')">
                 {{ 'global.resource.new.cancelbutton' | translate }}
             </button>
-            <button type="submit" ng-disabled="form.$invalid" class="btn btn-success">
+            <button id="saveButton" type="submit" ng-disabled="form.$invalid" class="btn btn-success">
                 <span class="glyphicon glyphicon-save"></span> {{ 'global.resource.new.savebutton' | translate }}
             </button>
         </div>

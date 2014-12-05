@@ -106,6 +106,7 @@ public class ProjectControllerTest {
                 userServiceMock,
                 userRepositoryMock,
                 propertyTagServiceMock,
+                resourceServiceMock,
                 imageRepositoryMock));
         ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock);
 
@@ -156,7 +157,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -172,7 +173,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getImageId());
+                projectRequestDTO.getLogo().getId());
 
         when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
         // Read Project
@@ -200,7 +201,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getImageId(),
+                projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
 
@@ -216,7 +217,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
                 projectRequestDTO.getEndDate(),
-                projectRequestDTO.getImageId(),
+                projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
 

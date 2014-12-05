@@ -63,11 +63,11 @@ public class OrgJoinRequestService {
         return orgJoinRequest;
     }
 
-    public List<OrgJoinRequest> getOrgJoinRequestByOrgName(String orgName) throws NoSuchOrganizationException{
-        Organization organization = organizationRepository.findByName(orgName);
+    public List<OrgJoinRequest> getOrgJoinRequestByOrganization(Long id) throws NoSuchOrganizationException{
+        Organization organization = organizationRepository.findOne(id);
 
         if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization does not exist", orgName));
+            throw new NoSuchOrganizationException(String.format("Organization does not exist", id));
         }
         log.debug("Found List of OrgJoinRequest by OrgName");
 

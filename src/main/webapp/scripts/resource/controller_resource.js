@@ -4,10 +4,11 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.organization = null;
+	$scope.formSaveError = null;
+	$scope.selectedTags = [];
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
-
 
 
 	if($location.path() === 'ownresource') {
@@ -22,7 +23,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 
 	Account.get(null, function(account) {
-		console.log(account);
 		$scope.resource.organizationId = account.organizationId;
 
 		$scope.organization = Organization.get({id: account.organizationId}, function(organization) {
@@ -41,21 +41,16 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			});
 	}
 
-	$scope.update = function(id) {
-		Resource.get({id: id}, function(resource) {
-			$scope.resource = resource;
-		}, function() {
-			$scope.redirectToResource('new');
-		});
-	}
-
 	$scope.create = function() {
+		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name});
+		console.log($.map($scope.resource.resourceTags, function(tag) {return {name: tag}}));
+
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
 			$scope.redirectToResource('');
 		}, 
 		function() {
-			$scope.form.saveError = true;
+			$scope.formSaveError = true;
 		});
 	}
 
@@ -66,9 +61,19 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			});
 	}
 
+	$scope.update = function(id) {
+		Resource.get({id: id}, function(resource) {
+			$scope.resource = resource;
+			$scope.selectedTags = $.map($scope.resource.resourceTags, function(tag) {return {name: tag}}); //string-array to object-array
+
+		}, function() {
+			$scope.redirectToResource('new');
+		});
+	}
+
 	$scope.clear = function() {
-		$scope.resource = {id: null, name: null, description: null, resourceTags: null, 
-			amount: null, startDate: null, endDate: null, isCommercial: null, isRecurrent: null};
+		$scope.resource = {id: null, name: null, description: null, resourceTags: [], 
+			amount: null, startDate: null, endDate: null, isCommercial: false, isRecurrent: false};
 	}
 
 	if($scope.isNew == false) {

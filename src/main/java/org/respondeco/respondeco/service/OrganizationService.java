@@ -53,7 +53,9 @@ public class OrganizationService {
         newOrganization.setDescription(description);
         newOrganization.setEmail(email);
         newOrganization.setIsNpo(isNpo);
-        newOrganization.setLogo(imageRepository.findOne(logoId));
+        if(logoId != null) {
+            newOrganization.setLogo(imageRepository.findOne(logoId));
+        }
 
         if (organizationRepository.findByOwner(currentUser) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
@@ -143,7 +145,9 @@ public class OrganizationService {
         currentOrganization.setEmail(email);
         currentOrganization.setIsNpo(isNpo);
         currentOrganization.setOwner(currentUser);
-        currentOrganization.setLogo(imageRepository.findOne(logoId));
+        if(logoId != null) {
+            currentOrganization.setLogo(imageRepository.findOne(logoId));
+        }
 
         organizationRepository.save(currentOrganization);
         log.debug("Changed Information for Organization: {}", currentOrganization);

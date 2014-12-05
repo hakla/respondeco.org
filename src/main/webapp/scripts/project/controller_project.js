@@ -1,57 +1,177 @@
 'use strict';
 
-respondecoApp.controller('ProjectController', function ($scope, Project, $location) {
+respondecoApp.controller('ProjectController', function($scope, Project, ResourceRequirement, PropertyTagNames, $location, $routeParams, $sce) {
+    $scope.project = {
+        id: null,
+        name: null,
+        purpose: null,
+        concrete: false,
+        startDate: null,
+        endDate: null,
+        logo: null,
+        propertyTags: [],
+        resourceRequirements: []
+    };
+    $scope.projects = Project.query();
+    $scope.viewedProject = Project.currentProject;
 
-        $scope.project = {id:null,name:null,purpose:null,concrete:false,startDate:null,endDate:null,projectLogo:null,propertyTags:null,resourceRequirements:null};
-        $scope.projects = Project.query();
-        var searchText=null;
-        $scope.viewedProject = Project.currentProject;
+    // rating mock
+    $scope.rate = 4;
 
-        $scope.list_of_string = []
+    // details mock
+    $scope.status = {
+        open1: true
+    };
 
-        $scope.select2Options = {
-            'tags': []
+    var searchText = null;
+    var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+
+    $scope.list_of_string = [];
+
+    $scope.select2Options = {
+        'tags': []
+    };
+
+    $scope.openedStartDate = false;
+    $scope.openedEndDate = false;
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+    };
+
+    $scope.openStart = function($event) {
+        $event.stopPropagation();
+        $scope.openedStartDate = true;
+    };
+
+    $scope.openEnd = function($event) {
+        $event.stopPropagation();
+        $scope.openedEndDate = true;
+    };
+
+    $scope.onUploadComplete = function(fileItem, response) {
+        $scope.project.logo = response;
+    };
+
+    $scope.create = function() {
+        var startDate = $scope.project.startDate || null;
+        var endDate = $scope.project.endDate || null;
+
+        if (startDate != null) {
+            startDate = new XDate(startDate).toString("yyyy-MM-dd");
+        }
+
+        if (endDate != null) {
+            endDate = new XDate(endDate).toString("yyyy-MM-dd");
+        }
+
+        var actualTags;
+        for(var i=0;i<$scope.project.resourceRequirements.length;i++) {
+            var req = $scope.project.resourceRequirements[i];
+            actualTags = $.map(req.resourceTags, function(tag) {
+                return tag.name
+            });
+            req.resourceTags = actualTags;
+        }
+        var project = {
+            id: $scope.project.id,
+            name: $scope.project.name,
+            purpose: $scope.project.purpose,
+            concrete: $scope.project.concrete,
+            startDate: startDate,
+            endDate: endDate,
+            logo: $scope.project.logo,
+            propertyTags: $.map($scope.project.propertyTags, function(tag) {
+                return tag.name
+            }),
+            resourceRequirements: $scope.project.resourceRequirements
         };
 
-        $scope.create = function () {
-            Project.save($scope.project,
-                function () {
-                    $scope.projects = Project.query();
-                    $scope.clear();
-                    $location.path('/project');
-                });
-        };
+        Project[isNew ? 'save' : 'update'](project,
+            function() {
+                $scope.projects = Project.query();
+                $scope.clear();
+            });
+    };
 
-        $scope.update = function (id) {
-            $scope.project = Project.get({id: id});
-        };
+    $scope.edit = function() {
+        $location.path("/projects/edit/" + $scope.project.id)
+    }
 
-        $scope.delete = function (id) {
-            Project.delete({id: id},
-                function () {
-                    $scope.projects = Project.query();
-                    $location.path('/projects');
-                });
-        };
+    $scope.update = function(id) {
+        $scope.project = Project.get({
+            id: id
+        }, function() {
+            $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
+            $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
+        });
+    };
 
-        $scope.clear = function () {
-            $scope.project = {id: null, name: null, purpose: null, concrete:false,startDate:null,endDate:null,projectLogo:null};
-            $location.path('/project');
-        };
+    $scope.delete = function(id) {
+        Project.delete({
+                id: id
+            },
+            function() {
+                $scope.projects = Project.query();
+                $location.path('/projects');
+            });
+    };
 
-        $scope.viewProjectDetails = function (viewedProject) {
-            Project.setProject(viewedProject);
-            $location.path('/projects/viewDetails');
+    $scope.clear = function() {
+        $scope.project = {
+            id: null,
+            name: null,
+            purpose: null,
+            concrete: false,
+            startDate: null,
+            endDate: null,
+            projectLogo: null
         };
+        $location.path('/projects');
+    };
 
-        $scope.createProject = function () {
-            $location.path('/project/create');
+    $scope.createProject = function() {
+        $location.path('/project/create');
+    };
+
+    //Resource Requirement Modal
+    var edit = false;
+    $scope.resource = {
+        resourceTags: [],
+        isEssential: false
+    }
+    $scope.selectedResourceTags = [];
+
+    $scope.createRequirement = function() {
+        $scope.resource.resourceTags = $scope.selectedResourceTags;
+        var resource = $scope.resource;
+
+        if (edit == false) {
+            $scope.project.resourceRequirements.push(resource);
+        }
+    }
+
+    $scope.clearRequirement = function() {
+        $scope.resource = {
+            resourceTags: [],
+            isEssential: false
         };
+        $scope.selectedResourceTags = [];
+        edit = false;
+    };
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
+    $scope.removeRequirement = function(index) {
+        $scope.project.resourceRequirements.splice(index, 1);
+    }
 
-            $scope.opened = true;
-        };
-    });
+    $scope.editRequirement = function(index) {
+        edit = true;
+        $('#addResource').modal('toggle');
+        $scope.resource = $scope.project.resourceRequirements[index];
+        $scope.selectedResourceTags = $scope.resource.resourceTags;
+    };
+
+    if (isNew === false) {
+        $scope.update($routeParams.id);
+    }
+});
