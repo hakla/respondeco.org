@@ -24,9 +24,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
     };
 
     var searchText = null;
-    var isNew = $routeParams.id === 'null' || $routeParams.id === 'undefined';
+    var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
-    $scope.list_of_string = []
+    $scope.list_of_string = [];
 
     $scope.select2Options = {
         'tags': []
@@ -65,6 +65,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             endDate = new XDate(endDate).toString("yyyy-MM-dd");
         }
 
+        var actualTags;
+        for(var i=0;i<$scope.project.resourceRequirements.length;i++) {
+            var req = $scope.project.resourceRequirements[i];
+            actualTags = $.map(req.resourceTags, function(tag) {
+                return tag.name
+            });
+            req.resourceTags = actualTags;
+        }
         var project = {
             id: $scope.project.id,
             name: $scope.project.name,
@@ -135,9 +143,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
     $scope.selectedResourceTags = [];
 
     $scope.createRequirement = function() {
-        $scope.resource.resourceTags = $.map($scope.selectedResourceTags, function(tag) {
-            return tag.name
-        });
+        $scope.resource.resourceTags = $scope.selectedResourceTags;
         var resource = $scope.resource;
 
         if (edit == false) {
@@ -162,6 +168,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         edit = true;
         $('#addResource').modal('toggle');
         $scope.resource = $scope.project.resourceRequirements[index];
+        $scope.selectedResourceTags = $scope.resource.resourceTags;
     };
 
     if (isNew === false) {

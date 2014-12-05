@@ -106,6 +106,7 @@ public class ProjectControllerTest {
                 userServiceMock,
                 userRepositoryMock,
                 propertyTagServiceMock,
+                resourceServiceMock,
                 imageRepositoryMock));
         ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock);
 

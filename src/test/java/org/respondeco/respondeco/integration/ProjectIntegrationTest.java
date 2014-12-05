@@ -110,6 +110,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 userServiceMock,
                 userRepository,
                 propertyTagService,
+                resourceService,
                 imageRepository));
         ProjectController projectController = new ProjectController(projectService, resourceService);
 
