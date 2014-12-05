@@ -21,18 +21,25 @@
 
 
         <form name="searchForm" role="form" novalidate ng-submit="search()">
-            <div class="form-group col-xs-6">
-                <label translate="project.name">Name</label>
+            <div class="form-group col-xs-2">
+                <label translate="resource.name">name</label>
                 <input type="text" class="form-control" placeholder=" {{'global.resource.placeholder.search' | translate}}"
                     ng-model="resourceSearch.name"/>
             </div>
-            <div class="form-group col-xs-6">
-                <label translate="project.tags">Tags</label>
+            <div class="form-group col-xs-2">
+                <label translate="resource.tags">tags</label>
                 <tags-input ng-model="selectedTags" add-on-space="true" display-property="name" min-length="1"
-                        placeholder="{{'project.tags.placeholder' | translate}}">
+                       placeholder=" {{'global.resource.placeholder.search' | translate}}">
                     <auto-complete source="getPropertyTagNames($query)" min-length="1"></auto-complete>
                 </tags-input>
             </div>
+            <div class="form-group col-xs-2">
+                <label translate="resource.company">company</label>
+                <input ng-model="resourceSearch.company" placeholder=" {{'global.resource.placeholder.search' | translate}}">
+                </input>
+            </div>
+
+
         </form>
 
     </div>

@@ -52,14 +52,23 @@ public class ResourceController {
     @Timed
     public List<ResourceOfferDTO> getAllResourceOffer(
         @RequestParam(required = false) String name,
+        @RequestParam(required = false) String company,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) String fields,
         @RequestParam(required = false) String order) {
 
         log.debug("REST request to get all resource offer");
+        if(name == null) {
+            name = "";
+        }
+
+        if(company == null) {
+            company = "";
+        }
+
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name,restParameters);
+        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name,company,restParameters);
 
         return resourceOfferDTOs;
     }

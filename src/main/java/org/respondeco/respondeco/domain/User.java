@@ -25,7 +25,7 @@ import java.util.Set;
 @Setter
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@ToString(exclude = {"persistentTokens", "authorities, organization"}) // otherwise there will be errors in the log because authorities is lazy loaded
+@ToString(exclude = {"persistentTokens", "authorities", "organization"}) // otherwise there will be errors in the log because authorities is lazy loaded
 public class User extends AbstractAuditingEntity implements Serializable {
 
     @NotNull

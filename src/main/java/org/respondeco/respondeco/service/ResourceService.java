@@ -1,5 +1,9 @@
 package org.respondeco.respondeco.service;
 
+import com.mysema.query.types.ExpressionUtils;
+import com.mysema.query.types.Predicate;
+import com.mysema.query.types.expr.BooleanExpression;
+import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
@@ -13,15 +17,12 @@ import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,6 +157,7 @@ public class ResourceService {
 
     public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount, String description, Boolean isCommercial, Boolean isRecurrent, LocalDate startDate, LocalDate endDate, String[] resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
+
         if (offer != null) {
             offer.setName(name);
             offer.setAmount(amount);
@@ -166,6 +168,9 @@ public class ResourceService {
             offer.setEndDate(endDate);
             this.mapTags(offer, resourceTags);
             this.resourceOfferRepository.save(offer);
+
+
+
         }
         else{
             throw new ResourceException(String.format("Offer with Id: %d do not exists", offerId), EnumResourceException.NOT_FOUND);
@@ -183,7 +188,7 @@ public class ResourceService {
         }
     }
 
-    public List<ResourceOfferDTO> getAllOffers(String name, RestParameters restParameters) {
+    public List<ResourceOfferDTO> getAllOffers(String name, String organization, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         if(restParameters != null) {
@@ -193,20 +198,34 @@ public class ResourceService {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         List<ResourceOffer> entries;
 
-        if(name != null || name.isEmpty() == false) {
-            entries = resourceOfferRepository.findByName(name, pageRequest);
-        } else {
+        if(name.isEmpty() && organization.isEmpty()) {
             entries = resourceOfferRepository.findAll();
+        } else {
+            //create dynamic query with help of querydsl
+            BooleanExpression resourceOfferNameLike = null;
+            BooleanExpression resourceOfferOrganizationLike = null;
+
+            QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
+
+
+            if(name.isEmpty() == false) {
+                resourceOfferNameLike = resourceOffer.name.toLowerCase().contains(name.toLowerCase());
+            }
+
+            if(organization.isEmpty() == false) {
+                resourceOfferOrganizationLike = resourceOffer.organisation.name.toLowerCase().contains(organization.toLowerCase());
+            }
+
+            Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike);
+            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
         }
+
+
         if(entries.isEmpty() == false) {
             for (ResourceOffer offer :entries) {
                 result.add(new ResourceOfferDTO(offer));
             }
         }
-
-
-
-
 
         return result;
     }
