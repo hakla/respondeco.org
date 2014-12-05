@@ -31,4 +31,9 @@ public class ProjectRating extends AbstractAuditingEntity {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

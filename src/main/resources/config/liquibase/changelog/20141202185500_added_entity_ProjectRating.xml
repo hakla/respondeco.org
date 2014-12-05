@@ -16,6 +16,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="project_id" type="bigint"/>
+            <column name="user_id" type="bigint"/>
             <column name="rating" type="double"/>
             <column name="comment" type="varchar(2048)"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
@@ -35,6 +36,13 @@
             baseTableName="T_PROJECT_RATING"
             referencedColumnNames="id"
             referencedTableName="T_PROJECT"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_rating_user_id"
+                baseColumnNames="user_id"
+                baseTableName="T_PROJECT_RATING"
+                referencedColumnNames="id"
+                referencedTableName="T_USER"/>
 
     </changeSet>
 </databaseChangeLog>
