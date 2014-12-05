@@ -17,6 +17,7 @@
             </column>
             <column name="resource_id" type="bigint"/>
             <column name="organisation_id" type="bigint"/>
+            <column name="requirement_id" type="bigint"/>
             <column name="is_commercial" type="bit" defaultValue="false"/>
             <column name="is_recurrent" type="bit" defaultValue="false"/>
             <column name="start_date" type="date"/>

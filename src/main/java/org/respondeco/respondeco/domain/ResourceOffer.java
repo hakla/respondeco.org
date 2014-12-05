@@ -54,4 +54,9 @@ public class ResourceOffer extends ResourceBase implements Serializable {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @ManyToOne
+    @JoinColumn(name = "requirement_id")
+    private ResourceRequirement resourceRequirement;
+
 }

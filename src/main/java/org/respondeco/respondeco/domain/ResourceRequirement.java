@@ -9,6 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A ResourceRequirement.
@@ -28,5 +29,8 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
 
     @Column(name = "is_essential")
     private Boolean isEssential;
+
+    @OneToMany(mappedBy = "resourceRequirement")
+    private List<ResourceOffer> resourceOffers;
 
 }
