@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by Roman Kern on 18.11.14.
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 @ApiModel(value = "Resource Requirement", description = "manage all resource requirements")
 @Getter
 @Setter
-public class ResourceRequirementDTO {
+public class ResourceRequirementRequestDTO {
 
     @ApiModelProperty(value = "ID of the given Resource requirement")
     private Long id;
@@ -30,10 +31,10 @@ public class ResourceRequirementDTO {
     private Boolean isEssential;
 
     @ApiModelProperty(value = "definition of current Resource Tags", required = true)
-    private String[] resourceTags;
+    private List<String> resourceTags;
 
-    public ResourceRequirementDTO(){ }
-    public ResourceRequirementDTO(ResourceRequirement requirement){
+    public ResourceRequirementRequestDTO(){ }
+    public ResourceRequirementRequestDTO(ResourceRequirement requirement){
         this.setId(requirement.getId());
         this.setName(requirement.getName());
         this.setAmount(requirement.getAmount());

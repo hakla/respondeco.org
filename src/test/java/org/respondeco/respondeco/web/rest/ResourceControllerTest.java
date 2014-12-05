@@ -7,9 +7,10 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.ResourceTagService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import static org.mockito.Mockito.spy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -49,7 +51,7 @@ public class ResourceControllerTest {
     @Inject
     private ResourceRequirementRepository resourceRequirementRepository;
     @Inject
-    private ResourceTagRepository resourceTagRepository;
+    private ResourceTagService resourceTagService;
     @Inject
     private OrganizationRepository organizationRepository;
     @Inject
@@ -63,7 +65,7 @@ public class ResourceControllerTest {
         resourceService = spy(new ResourceService(
             resourceOfferRepository,
             resourceRequirementRepository,
-            resourceTagRepository,
+            resourceTagService,
             organizationRepository,
             projectRepository));
         ResourceController controller = new ResourceController(resourceService);
@@ -80,9 +82,8 @@ public class ResourceControllerTest {
         sentDTO.setOrganizationId(1L);
         sentDTO.setAmount(new BigDecimal(10));
         sentDTO.setIsCommercial(true);
-        String[] tags = new String[1];
-        tags[0] = "My Super Tag";
-        sentDTO.setResourceTags(tags);
+
+        sentDTO.setResourceTags(Arrays.asList("My Super Tag"));
         // Create Project
         restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -143,15 +144,14 @@ public class ResourceControllerTest {
     @Test
     public void testRequirement() throws Exception{
 
-        ResourceRequirementDTO sentDTO = new ResourceRequirementDTO();
+        ResourceRequirementRequestDTO sentDTO = new ResourceRequirementRequestDTO();
         sentDTO.setName("test");
         sentDTO.setDescription("Hakkiod");
         sentDTO.setProjectId(1L);
         sentDTO.setAmount(new BigDecimal(10));
         sentDTO.setIsEssential(true);
-        String[] tags = new String[1];
-        tags[0] = "My Super Tag";
-        sentDTO.setResourceTags(tags);
+
+        sentDTO.setResourceTags(Arrays.asList("My Super Tag"));
         // Create Project
         restMockMvc.perform(post("/app/rest/projects{projectId}/resourceRequirements", 1L)
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

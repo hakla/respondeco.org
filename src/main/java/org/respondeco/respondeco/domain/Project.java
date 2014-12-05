@@ -13,6 +13,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,14 +21,14 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * A ProjectIdea.
+ * A Project
  */
 @Entity
 @Table(name = "T_PROJECT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@ToString(exclude = {"organization", "manager", "propertyTags", "projectLogo", "ratings"})
+@ToString(exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo"})
 public class Project extends AbstractAuditingNamedEntity implements Serializable {
 
     @Column(name = "purpose")
@@ -62,6 +63,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
             joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
             inverseJoinColumns = { @JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id" ) }
     )
+    @Lazy(false)
     private List<PropertyTag> propertyTags;
 
     @JsonIgnore
@@ -69,12 +71,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @JoinColumn(name = "projectLogo_id")
     private Image projectLogo;
 
-    @OneToMany
-    @JoinTable(
-            name="T_PROJECT_JOIN_T_RESOURCEREQUIREMENT",
-            joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
-            inverseJoinColumns = { @JoinColumn(name = "RESOURCEREQUIREMENT_ID", referencedColumnName = "id" ) }
-    )
+    @OneToMany(mappedBy = "project")
     private List<ResourceRequirement> resourceRequirements;
 
     @OneToMany(mappedBy = "project")

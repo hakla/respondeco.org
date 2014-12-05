@@ -27,11 +27,6 @@ describe('Controllers Tests ', function () {
             expect($scope.organizations[0]).toEqual(1);
         });
 
-        it('should query the current users account', function() {
-            expect(AccountService.get).toHaveBeenCalled();
-            AccountService.get.calls.mostRecent().args[1]();
-        });
-
         it('should call Organization.get', function() {
             spyOn(OrganizationService, 'get').and.callThrough();
             $scope.update("test");
@@ -50,10 +45,15 @@ describe('Controllers Tests ', function () {
 
         it('should redirect to edit', function() {
             $scope.organization = {
-                name: 'test'
+                id: '1'
             };
             $scope.redirectToEdit();
-            expect(location.path()).toEqual('/organization/edit/test');
+            expect(location.path()).toEqual('/organization/edit/1');
+        });
+
+        it('should redirect to own resources', function() {
+            $scope.redirectToOwnResources();
+            expect(location.path()).toEqual('/ownresource');
         });
 
         it('should call delete on Organization', function() {
