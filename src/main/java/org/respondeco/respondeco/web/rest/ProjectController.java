@@ -2,18 +2,17 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.ProjectRating;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectRatingService;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.respondeco.respondeco.web.rest.dto.ProjectRatingRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -280,5 +279,74 @@ public class ProjectController {
             responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return responseEntity;
+    }
+
+    /**
+     * POST  /rest/project -> Create a new project.
+     */
+    @ApiOperation(value = "Update a projectRating", notes = "Update a projectRating")
+    @RequestMapping(value = "/rest/projects/{id}/projectratings",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> update(@RequestBody @Valid ProjectRatingRequestDTO projectRatingRequest) {
+        log.error("REST request to update ProjectRating : {}", projectRatingRequest);
+        ResponseEntity<?> responseEntity;
+        try {
+            projectRatingService.updateProjectRating(
+                    projectRatingRequest.getRating(),
+                    projectRatingRequest.getComment(),
+                    projectRatingRequest.getId());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch(NoSuchProjectRatingException e) {
+            log.error("Could not update ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch(NoSuchProjectException e) {
+            log.error("Could not update Project : {}", projectRatingRequest, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * GET  /rest/project/:id -> get the "id" project.
+     */
+    @ApiOperation(value = "Get projectRating", notes = "Get a projectRating by its id")
+    @RequestMapping(value = "/rest/projects/{id}/projectratings/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> get(
+            @PathVariable Long id,
+            @RequestParam(required = false) String fields,
+            @RequestParam(required = false) Boolean aggregated) {
+        log.debug("REST request to get ProjectRating : {}", id);
+        if (aggregated == false) {
+            ProjectRating projectRating = projectRatingService.getProjectRating(id);
+            ResponseEntity<ProjectRatingResponseDTO> response;
+            RestParameters restParameters = new RestParameters(null, null, null, fields);
+            if(projectRating != null) {
+                ProjectRatingResponseDTO responseDTO = ProjectRatingResponseDTO
+                        .fromEntity(projectRating, restParameters.getFields());
+                response = new ResponseEntity<ProjectRatingResponseDTO>(responseDTO, HttpStatus.OK);
+            } else {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return response;
+        }
+        else {
+            AggregatedRating aggregatedRating = projectRatingService.getAggregatedRating(id);
+            ResponseEntity<AggregatedRatingResponseDTO> response;
+            RestParameters restParameters = new RestParameters(null, null, null, fields);
+            if(aggregatedRating != null) {
+                AggregatedRatingResponseDTO responseDTO = AggregatedRatingResponseDTO
+                        .fromEntity(aggregatedRating, restParameters.getFields());
+                response = new ResponseEntity<AggregatedRatingResponseDTO>(responseDTO, HttpStatus.OK);
+            } else {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return response;
+        }
     }
 }

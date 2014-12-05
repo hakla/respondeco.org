@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 public class SupporterRating extends AbstractAuditingEntity {
 
     @NotNull
-    private Double rating;
+    private Integer rating;
 
     private String comment;
 
@@ -36,5 +36,10 @@ public class SupporterRating extends AbstractAuditingEntity {
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

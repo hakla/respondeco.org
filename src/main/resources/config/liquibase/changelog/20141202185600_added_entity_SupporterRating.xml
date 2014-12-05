@@ -17,6 +17,7 @@
             </column>
             <column name="project_id" type="bigint"/>
             <column name="organization_id" type="bigint"/>
+            <column name="user_id" type="bigint"/>
             <column name="rating" type="double"/>
             <column name="comment" type="varchar(2048)"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
@@ -43,6 +44,13 @@
             baseTableName="T_SUPPORTER_RATING"
             referencedColumnNames="id"
             referencedTableName="T_ORGANIZATION"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_supporter_rating_user_id"
+                baseColumnNames="user_id"
+                baseTableName="T_SUPPORTER_RATING"
+                referencedColumnNames="id"
+                referencedTableName="T_USER"/>
 
     </changeSet>
 </databaseChangeLog>
