@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -270,18 +269,12 @@ public class ProjectController {
                     projectRatingRequest.getComment(),
                     projectRatingRequest.getProjectId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(IllegalValueException e) {
+        } catch(ProjectRatingException e) {
             log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch(MultipleRatingException e) {
-            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
-            responseEntity = ErrorHelper.buildErrorResponse("rating.error.multiplerating",e.getMessage());
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(),e.getMessage());
         } catch(NotOwnerOfOrganizationException e) {
             log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
             responseEntity = ErrorHelper.buildErrorResponse("rating.error.notowneroforg",e.getMessage());
-        } catch(RatingOwnProjectException e) {
-            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
-            responseEntity = ErrorHelper.buildErrorResponse("rating.error.ratingownproject",e.getMessage());
         } catch(Exception e) {
             log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
             responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

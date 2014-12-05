@@ -5,10 +5,8 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
-import org.respondeco.respondeco.service.exception.enumException.EnumResourceTagException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -152,14 +150,14 @@ public class ResourceService {
     // endregion
 
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
-    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organisationId,
+    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, Boolean isRecurrent, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
         newOffer.setDescription(description);
-        newOffer.setOrganisation(organizationRepository.findOne(organisationId));
+        newOffer.setOrganization(organizationRepository.findOne(organizationId));
         newOffer.setIsCommercial(isCommercial);
         newOffer.setIsRecurrent(isRecurrent);
         newOffer.setStartDate(startDate);
@@ -218,7 +216,7 @@ public class ResourceService {
 
     public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganisationId(organizationId);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganization(organizationId);
 
         log.debug(entries.toString());
         if(entries.isEmpty() == false) {

@@ -21,10 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.service.ProjectService;
-import org.respondeco.respondeco.service.PropertyTagService;
-import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.ProjectController;
@@ -93,6 +90,9 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
     private ResourceService resourceService;
 
     @Inject
+    private ProjectRatingService projectRatingService;
+
+    @Inject
     private PlatformTransactionManager txManager;
 
     private ProjectService projectService;
@@ -112,7 +112,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 propertyTagService,
                 resourceService,
                 imageRepository));
-        ProjectController projectController = new ProjectController(projectService, resourceService);
+        ProjectController projectController = new ProjectController(projectService, resourceService, projectRatingService);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 

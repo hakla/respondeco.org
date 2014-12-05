@@ -11,10 +11,7 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.service.ProjectService;
-import org.respondeco.respondeco.service.PropertyTagService;
-import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -88,6 +85,9 @@ public class ProjectControllerTest {
     private ResourceService resourceServiceMock;
 
     @Mock
+    private ProjectRatingService projectRatingServiceMock;
+
+    @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
 
     private ProjectService projectServiceMock;
@@ -108,7 +108,7 @@ public class ProjectControllerTest {
                 propertyTagServiceMock,
                 resourceServiceMock,
                 imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock);
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, projectRatingServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 

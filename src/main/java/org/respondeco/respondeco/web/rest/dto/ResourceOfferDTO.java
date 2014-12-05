@@ -62,7 +62,7 @@ public class ResourceOfferDTO {
         this.setId(offer.getId());
         this.setAmount(offer.getAmount());
         this.setDescription(offer.getDescription());
-        this.setOrganizationId(offer.getOrganisation().getId());
+        this.setOrganizationId(offer.getOrganization().getId());
         this.setIsCommercial(offer.getIsCommercial());
         this.setIsRecurrent(offer.getIsRecurrent());
         this.setStartDate(offer.getStartDate());
