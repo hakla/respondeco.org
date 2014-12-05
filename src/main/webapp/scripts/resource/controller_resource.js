@@ -5,9 +5,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.organization = null;
 	$scope.formSaveError = null;
-	$scope.selectedTags = [];
+ 	$scope.selectedTags = [];
+ 	$scope.searchTags = [];
 
-	$scope.resourceSearch = {name: null, company: null};
+	$scope.resourceSearch = {name: null, organization: null, tags: null, available: false};
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
@@ -37,9 +38,14 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
+		$scope.resourceSearch.tags = $.map($scope.searchTags, function(tag) {return tag.name}).join(","); //create comma separated list
+		console.log($scope.resourceSearch.tags);
 		Resource.query({
 				name: $scope.resourceSearch.name, 
-				company: $scope.resourceSearch.company
+				organization: $scope.resourceSearch.organization,
+				tags: $scope.resourceSearch.tags,
+				available: $scope.resourceSearch.available,
+				commercial: $scope.resourceSearch.isCommercial
 			}, function(res) {
 				$scope.resources = res;
 			}, function(error) {

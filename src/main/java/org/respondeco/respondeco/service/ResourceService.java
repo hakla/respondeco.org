@@ -1,7 +1,7 @@
 package org.respondeco.respondeco.service;
 
-import com.mysema.query.types.ExpressionUtils;
-import com.mysema.query.types.Predicate;
+import com.mysema.query.BooleanBuilder;
+import com.mysema.query.types.*;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
@@ -15,6 +15,7 @@ import org.respondeco.respondeco.service.exception.ResourceTagException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.beans.Expression;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +44,13 @@ public class ResourceService {
 
     // region Private Variables
     private final Logger log = LoggerFactory.getLogger(ResourceService.class);
-
     private ResourceOfferRepository resourceOfferRepository;
-
     private ResourceRequirementRepository resourceRequirementRepository;
-
     private ResourceTagRepository resourceTagRepository;
-
     private OrganizationRepository organizationRepository;
-
     private ProjectRepository projectRepository;
+
+    private RestUtil restUtil;
 
     // endregion
 
@@ -66,6 +66,7 @@ public class ResourceService {
         this.resourceTagRepository = resourceTagRepository;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
+        this.restUtil = new RestUtil();
     }
 
     // endregion
@@ -188,7 +189,7 @@ public class ResourceService {
         }
     }
 
-    public List<ResourceOfferDTO> getAllOffers(String name, String organization, RestParameters restParameters) {
+    public List<ResourceOfferDTO> getAllOffers(String name, String organization, String tags, Boolean available, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         if(restParameters != null) {
@@ -198,12 +199,15 @@ public class ResourceService {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         List<ResourceOffer> entries;
 
-        if(name.isEmpty() && organization.isEmpty()) {
+        if(name.isEmpty() && organization.isEmpty() && tags.isEmpty() && available == false && isCommercial == null) {
             entries = resourceOfferRepository.findAll();
         } else {
             //create dynamic query with help of querydsl
             BooleanExpression resourceOfferNameLike = null;
             BooleanExpression resourceOfferOrganizationLike = null;
+            BooleanExpression resourceOfferTagLike = null;
+            BooleanExpression resourceOfferAvailable = null;
+            BooleanExpression resourceCommercial = null;
 
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
 
@@ -216,8 +220,42 @@ public class ResourceService {
                 resourceOfferOrganizationLike = resourceOffer.organisation.name.toLowerCase().contains(organization.toLowerCase());
             }
 
-            Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike);
-            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
+            if(tags.isEmpty() == false) {
+                List<String> tagList = restUtil.splitCommaSeparated(tags);
+
+                /*
+                for(String t : tagList) {
+                    if(resourceOfferTagLike == null) {
+                        resourceOfferTagLike = resourceOffer.resourceTags.any().name.toLowerCase().like(t);
+
+                    } else {
+                        //tags connected with or -> show all resources which contain one of the searched tags
+                        resourceOfferTagLike = resourceOfferTagLike.or(resourceOffer.resourceTags.any().name.toLowerCase().like(t));
+                    }
+                }*/
+                log.debug("TAGS: " + tagList.toString());
+                log.debug("resourceOfferTagLike: " + resourceOffer.resourceTags.any().name.toLowerCase().in(tagList).toString() );
+
+                resourceOfferTagLike = resourceOffer.resourceTags.any().name.eq("Computer");
+            }
+
+            if(available == true) {
+                resourceOfferAvailable = resourceOffer.startDate.before(LocalDate.now()).
+                    and(resourceOffer.endDate.after(LocalDate.now()));
+
+            }
+
+            if(isCommercial!=null && isCommercial == true) {
+                resourceCommercial = resourceOffer.isCommercial.eq(true);
+            } else if(isCommercial!=null && isCommercial == false) {
+                resourceCommercial = resourceOffer.isCommercial.eq(false);
+            }
+
+            Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
+                resourceOfferAvailable, resourceCommercial);
+
+            entries = resourceOfferRepository.findAll(resourceOfferTagLike, pageRequest).getContent();
+            log.debug("TEST:" + entries.toString());
         }
 
 
