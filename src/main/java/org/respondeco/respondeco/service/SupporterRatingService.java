@@ -34,8 +34,8 @@ public class SupporterRatingService {
         this.organizationService = organizationService;
     }
 
-    public AggregatedRating getAggregatedRating(Long projectId) {
-        return supporterRatingRepository.getAggregatedRatingForProject(projectId);
+    public AggregatedRating getAggregatedRating(Long organizationId) {
+        return supporterRatingRepository.getAggregatedRatingForOrganization(organizationId);
     }
 
     public SupporterRating createSupporterRating(Integer rating, String comment, Long projectId, Long organizationId) throws SupporterRatingException {
@@ -48,7 +48,7 @@ public class SupporterRatingService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }
-        SupporterRating supporterRating1 = supporterRatingRepository.findByUserAndProjectAndOrganization(user,project,organization);
+        SupporterRating supporterRating1 = supporterRatingRepository.findByProjectAndOrganization(project,organization);
         if(supporterRating1!=null) {
             throw new SupporterRatingException(".multiplerating", String.format("Can't rate organization %s twice", organizationId));
         }
@@ -72,12 +72,24 @@ public class SupporterRatingService {
         return supporterRating;
     }
 
-    public SupporterRating getSupporterRating(Long organizationId) {
+    public SupporterRating getSupporterRating(Long organizationId, Long projectId) {
         User user = userService.getUserWithAuthorities();
-        return null;
+        Organization organization = organizationService.getOrganization(organizationId);
+        Project project = projectService.findProjectById(projectId);
+        if(organization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", organizationId));
+        }
+        if(project == null) {
+            throw new NoSuchProjectException(projectId);
+        }
+        if(project.getManager().equals(user) == false) {
+            throw new SupporterRatingException(".notmanager", String.format("Can't get rate when not manager of project %s", projectId));
+        }
+        SupporterRating supporterRating = supporterRatingRepository.findByProjectAndOrganization(project, organization);
+        return supporterRating;
     }
 
-    public void updateProjectRating(Integer rating, String comment, Long ratingId) throws NoSuchSupporterRatingException {
+    public void updateSupporterRating(Integer rating, String comment, Long ratingId) throws NoSuchSupporterRatingException {
         User user = userService.getUserWithAuthorities();
         SupporterRating supporterRating = supporterRatingRepository.findOne(ratingId);
         if(supporterRating == null) {

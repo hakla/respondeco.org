@@ -260,7 +260,7 @@ public class ProjectController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> create(@RequestBody @Valid ProjectRatingRequestDTO projectRatingRequest) {
-        log.debug("REST request to create Project : {}", projectRatingRequest);
+        log.debug("REST request to create ProjectRating : {}", projectRatingRequest);
         ResponseEntity<?> responseEntity;
         try {
             projectRatingService.createProjectRating(
@@ -268,7 +268,10 @@ public class ProjectController {
                     projectRatingRequest.getComment(),
                     projectRatingRequest.getProjectId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(ProjectRatingException e) {
+        } catch(NoSuchProjectException e) {
+            log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(),e.getMessage());
+        }catch(ProjectRatingException e) {
             log.error("Could not save ProjectRating : {}", projectRatingRequest, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(),e.getMessage());
         } catch(NotOwnerOfOrganizationException e) {
@@ -282,7 +285,7 @@ public class ProjectController {
     }
 
     /**
-     * POST  /rest/project -> Create a new project.
+     * POST  /rest/project/{id}/projectratings -> Update a projectRating.
      */
     @ApiOperation(value = "Update a projectRating", notes = "Update a projectRating")
     @RequestMapping(value = "/rest/projects/{id}/projectratings",
@@ -302,9 +305,6 @@ public class ProjectController {
         } catch(NoSuchProjectRatingException e) {
             log.error("Could not update ProjectRating : {}", projectRatingRequest, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch(NoSuchProjectException e) {
-            log.error("Could not update Project : {}", projectRatingRequest, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return responseEntity;
     }
@@ -322,31 +322,28 @@ public class ProjectController {
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) Boolean aggregated) {
         log.debug("REST request to get ProjectRating : {}", id);
-        if (aggregated == false) {
+        ResponseEntity<?> response;
+        RestParameters restParameters = new RestParameters(null, null, null, fields);
+        if (aggregated == false || aggregated == null) {
             ProjectRating projectRating = projectRatingService.getProjectRating(id);
-            ResponseEntity<ProjectRatingResponseDTO> response;
-            RestParameters restParameters = new RestParameters(null, null, null, fields);
             if(projectRating != null) {
                 ProjectRatingResponseDTO responseDTO = ProjectRatingResponseDTO
                         .fromEntity(projectRating, restParameters.getFields());
-                response = new ResponseEntity<ProjectRatingResponseDTO>(responseDTO, HttpStatus.OK);
+                response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
             } else {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            return response;
         }
         else {
             AggregatedRating aggregatedRating = projectRatingService.getAggregatedRating(id);
-            ResponseEntity<AggregatedRatingResponseDTO> response;
-            RestParameters restParameters = new RestParameters(null, null, null, fields);
             if(aggregatedRating != null) {
                 AggregatedRatingResponseDTO responseDTO = AggregatedRatingResponseDTO
                         .fromEntity(aggregatedRating, restParameters.getFields());
-                response = new ResponseEntity<AggregatedRatingResponseDTO>(responseDTO, HttpStatus.OK);
+                response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
             } else {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            return response;
         }
+        return response;
     }
 }
