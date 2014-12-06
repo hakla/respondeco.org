@@ -18,8 +18,36 @@
                 </tags-input>
             </div>
             <div class="rating-container">
-                <span>Aktuelle Bewertung: </span>
-                <rating ng-model="rate" max="5" readonly="true" on-leave="overStar = null"></rating>
+                <div class="row">
+                    <div id="rating" class="col-md-12" popover="Bewerten Sie das Projekt!" popover-trigger="show">
+                        <span>Aktuelle Bewertung: </span>
+                        <rating ng-model="rating.value" max="5" readonly="!canRate" on-leave="overStar = null"
+                            ng-click="enableRating()"></rating>
+                    </div>
+                </div>
+                <div ng-show="isRating">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <textarea ng-model="rating.comment" cols="30" rows="5"
+                                      placeholder="{{'rating.placeholder' | translate}}"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-success" ng-click="rateProject()"
+                                    translate="rating.ratenow">Rate now</button>
+                            <button class="btn btn-default" ng-click="disableRating()"
+                                    translate="rating.notnow">Not now</button>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             <div class="newsfeed">
                 <h2>Newsfeed</h2>
