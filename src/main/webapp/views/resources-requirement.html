@@ -71,9 +71,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-click=redirectToResource(resource.id) ng-repeat="resource in resources">
+                <tr ng-click=redirectToProject(resource.project) ng-repeat="resource in resources">
                     <td>{{ resource.name }}</td>
-                    <td>{{ organization.name }}</td>
+                    <td>{{ resource.project }}</td>
                     <td>{{ resource.amount }}</td>
                     <td>{{ resource.startDate | date}}</td>
                     <td>{{ resource.endDate | date }}</td>

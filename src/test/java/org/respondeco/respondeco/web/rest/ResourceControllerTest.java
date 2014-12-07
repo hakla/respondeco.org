@@ -10,6 +10,7 @@ import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.ResourceTagService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -56,6 +57,8 @@ public class ResourceControllerTest {
     private OrganizationRepository organizationRepository;
     @Inject
     private ProjectRepository projectRepository;
+    @Inject
+    private RestUtil restUtil;
 
     private MockMvc restMockMvc;
 

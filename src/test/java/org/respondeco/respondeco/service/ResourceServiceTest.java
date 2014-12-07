@@ -62,6 +62,7 @@ public class ResourceServiceTest {
     private static Class<ResourceOffer> offerCl = ResourceOffer.class;
     private static Class<ResourceTag> tagCl = ResourceTag.class;
 
+    /*
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);

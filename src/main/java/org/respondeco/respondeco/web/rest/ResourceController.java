@@ -7,6 +7,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
  * Created by Roman Kern on 18.11.14.
  */
 @RestController
+@Transactional
 @RequestMapping("/app")
 public class ResourceController {
     //region Private variables
@@ -50,9 +53,29 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferDTO> getAllResourceOffer() {
+    public List<ResourceOfferDTO> getAllResourceOffer(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String organization,
+        @RequestParam(required = false) String tags,
+        @RequestParam(required = false) Boolean available,
+        @RequestParam(required = false) Boolean commercial,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
+
         log.debug("REST request to get all resource offer");
-        return this.resourceService.getAllOffers();
+
+        if(name == null) name = "";
+        if(organization == null) organization = "";
+        if(tags == null) tags = "";
+        if(available == null) available = false;
+
+
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
+
+        return resourceOfferDTOs;
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
