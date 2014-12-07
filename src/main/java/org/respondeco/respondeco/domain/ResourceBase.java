@@ -38,7 +38,7 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @Column(name = "original_amount")
-    private Integer originalAmount;
+    private BigDecimal originalAmount;
 
     @NotNull
     @Column(name = "amount", precision=10, scale=2)

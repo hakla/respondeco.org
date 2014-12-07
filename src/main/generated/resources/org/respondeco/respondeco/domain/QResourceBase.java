@@ -46,7 +46,7 @@ public class QResourceBase extends EntityPathBase<ResourceBase> {
 
     public final StringPath name = createString("name");
 
-    public final NumberPath<Integer> originalAmount = createNumber("originalAmount", Integer.class);
+    public final NumberPath<java.math.BigDecimal> originalAmount = createNumber("originalAmount", java.math.BigDecimal.class);
 
     public final ListPath<ResourceTag, QResourceTag> resourceTags = this.<ResourceTag, QResourceTag>createList("resourceTags", ResourceTag.class, QResourceTag.class, PathInits.DIRECT2);
 

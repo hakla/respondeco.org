@@ -6,6 +6,7 @@ import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.QResourceOffer;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
@@ -165,6 +166,7 @@ public class ResourceService {
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
+        newOffer.setOriginalAmount(amount);
         newOffer.setDescription(description);
         newOffer.setOrganization(organizationRepository.findOne(organizationId));
         newOffer.setIsCommercial(isCommercial);
@@ -263,7 +265,7 @@ public class ResourceService {
                 log.debug("TAGS: " + tagList.toString());
                 log.debug("resourceOfferTagLike: " + resourceOffer.resourceTags.any().name.toLowerCase().in(tagList).toString() );
 
-                resourceOfferTagLike = resourceOffer.resourceTags.any().name.eq("Computer");
+                resourceOfferTagLike = resourceOffer.resourceTags.any().name.in(tagList);
             }
 
             if(available == true) {
@@ -281,7 +283,7 @@ public class ResourceService {
             Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
                 resourceOfferAvailable, resourceCommercial);
 
-            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
+            entries = resourceOfferRepository.findAll(resourceOfferTagLike, pageRequest).getContent();
             log.debug("TEST:" + entries.toString());
         }
 

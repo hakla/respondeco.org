@@ -60,7 +60,7 @@ public class QResourceOffer extends EntityPathBase<ResourceOffer> {
     public final QOrganization organization;
 
     //inherited
-    public final NumberPath<Integer> originalAmount = _super.originalAmount;
+    public final NumberPath<java.math.BigDecimal> originalAmount = _super.originalAmount;
 
     public final ListPath<ResourceMatch, QResourceMatch> resourceMatches = this.<ResourceMatch, QResourceMatch>createList("resourceMatches", ResourceMatch.class, QResourceMatch.class, PathInits.DIRECT2);
 

@@ -54,7 +54,7 @@ public class QResourceRequirement extends EntityPathBase<ResourceRequirement> {
     public final StringPath name = _super.name;
 
     //inherited
-    public final NumberPath<Integer> originalAmount = _super.originalAmount;
+    public final NumberPath<java.math.BigDecimal> originalAmount = _super.originalAmount;
 
     public final QProject project;
 

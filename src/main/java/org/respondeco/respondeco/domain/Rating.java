@@ -6,9 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by clemens on 07/12/14.
@@ -26,6 +24,7 @@ public class Rating extends AbstractAuditingEntity {
     private String comment;
 
     @OneToOne
+    @JoinColumn(name = "match_id")
     private ResourceMatch resourceMatch;
 
 }

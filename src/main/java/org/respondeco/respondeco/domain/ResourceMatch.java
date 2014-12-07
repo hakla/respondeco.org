@@ -25,6 +25,7 @@ public class ResourceMatch extends AbstractAuditingEntity {
     private Integer amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "match_direction")
     private MatchDirection matchDirection;
 
     private Boolean accepted = false;

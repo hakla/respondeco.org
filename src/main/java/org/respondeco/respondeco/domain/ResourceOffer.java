@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 @PrimaryKeyJoinColumn(name = "resource_id", referencedColumnName = "id")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"resourceMatches", "organization"})
 public class ResourceOffer extends ResourceBase implements Serializable {
 
     @ManyToOne
