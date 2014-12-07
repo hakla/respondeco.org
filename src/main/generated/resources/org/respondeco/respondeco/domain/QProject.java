@@ -59,6 +59,8 @@ public class QProject extends EntityPathBase<Project> {
 
     public final StringPath purpose = createString("purpose");
 
+    public final ListPath<ProjectRating, QProjectRating> ratings = this.<ProjectRating, QProjectRating>createList("ratings", ProjectRating.class, QProjectRating.class, PathInits.DIRECT2);
+
     public final ListPath<ResourceRequirement, QResourceRequirement> resourceRequirements = this.<ResourceRequirement, QResourceRequirement>createList("resourceRequirements", ResourceRequirement.class, QResourceRequirement.class, PathInits.DIRECT2);
 
     public final DatePath<org.joda.time.LocalDate> startDate = createDate("startDate", org.joda.time.LocalDate.class);

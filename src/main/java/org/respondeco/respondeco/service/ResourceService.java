@@ -244,7 +244,7 @@ public class ResourceService {
             }
 
             if(organization.isEmpty() == false) {
-                resourceOfferOrganizationLike = resourceOffer.organisation.name.toLowerCase().contains(organization.toLowerCase());
+                resourceOfferOrganizationLike = resourceOffer.organization.name.toLowerCase().contains(organization.toLowerCase());
             }
 
             if(tags.isEmpty() == false) {
@@ -281,7 +281,7 @@ public class ResourceService {
             Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
                 resourceOfferAvailable, resourceCommercial);
 
-            entries = resourceOfferRepository.findAll(resourceOfferTagLike, pageRequest).getContent();
+            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
             log.debug("TEST:" + entries.toString());
         }
 

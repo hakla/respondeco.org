@@ -57,7 +57,9 @@ public class QResourceOffer extends EntityPathBase<ResourceOffer> {
     //inherited
     public final StringPath name = _super.name;
 
-    public final QOrganization organisation;
+    public final QOrganization organization;
+
+    public final QResourceRequirement resourceRequirement;
 
     //inherited
     public final ListPath<ResourceTag, QResourceTag> resourceTags = _super.resourceTags;
@@ -82,7 +84,8 @@ public class QResourceOffer extends EntityPathBase<ResourceOffer> {
 
     public QResourceOffer(Class<? extends ResourceOffer> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.organisation = inits.isInitialized("organisation") ? new QOrganization(forProperty("organisation"), inits.get("organisation")) : null;
+        this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization"), inits.get("organization")) : null;
+        this.resourceRequirement = inits.isInitialized("resourceRequirement") ? new QResourceRequirement(forProperty("resourceRequirement"), inits.get("resourceRequirement")) : null;
     }
 
 }

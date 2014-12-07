@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
  * Created by Roman Kern on 18.11.14.
  */
 @RestController
+@Transactional
 @RequestMapping("/app")
 public class ResourceController {
     //region Private variables
