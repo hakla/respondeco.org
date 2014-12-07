@@ -11,16 +11,16 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QSupporterRating is a Querydsl query type for SupporterRating
+ * QRating is a Querydsl query type for Rating
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QSupporterRating extends EntityPathBase<SupporterRating> {
+public class QRating extends EntityPathBase<Rating> {
 
-    private static final long serialVersionUID = 412161977L;
+    private static final long serialVersionUID = 660211549L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QSupporterRating supporterRating = new QSupporterRating("supporterRating");
+    public static final QRating rating1 = new QRating("rating1");
 
     public final QAbstractAuditingEntity _super = new QAbstractAuditingEntity(this);
 
@@ -44,35 +44,29 @@ public class QSupporterRating extends EntityPathBase<SupporterRating> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
 
-    public final QOrganization organization;
-
-    public final QProject project;
-
     public final NumberPath<Integer> rating = createNumber("rating", Integer.class);
 
-    public final QUser user;
+    public final QResourceMatch resourceMatch;
 
-    public QSupporterRating(String variable) {
-        this(SupporterRating.class, forVariable(variable), INITS);
+    public QRating(String variable) {
+        this(Rating.class, forVariable(variable), INITS);
     }
 
-    public QSupporterRating(Path<? extends SupporterRating> path) {
+    public QRating(Path<? extends Rating> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSupporterRating(PathMetadata<?> metadata) {
+    public QRating(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSupporterRating(PathMetadata<?> metadata, PathInits inits) {
-        this(SupporterRating.class, metadata, inits);
+    public QRating(PathMetadata<?> metadata, PathInits inits) {
+        this(Rating.class, metadata, inits);
     }
 
-    public QSupporterRating(Class<? extends SupporterRating> type, PathMetadata<?> metadata, PathInits inits) {
+    public QRating(Class<? extends Rating> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization"), inits.get("organization")) : null;
-        this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
+        this.resourceMatch = inits.isInitialized("resourceMatch") ? new QResourceMatch(forProperty("resourceMatch"), inits.get("resourceMatch")) : null;
     }
 
 }

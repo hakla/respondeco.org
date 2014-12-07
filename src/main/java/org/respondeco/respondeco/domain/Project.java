@@ -75,6 +75,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     private List<ResourceRequirement> resourceRequirements;
 
     @OneToMany(mappedBy = "project")
-    private List<ProjectRating> ratings;
+    private List<ResourceMatch> resourceMatches;
 
 }

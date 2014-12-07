@@ -31,6 +31,6 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     private Boolean isEssential;
 
     @OneToMany(mappedBy = "resourceRequirement")
-    private List<ResourceOffer> resourceOffers;
+    private List<ResourceMatch> resourceMatches;
 
 }

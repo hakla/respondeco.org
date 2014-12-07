@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.ProjectRating;
+import org.respondeco.respondeco.domain.Rating;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ProjectRatingService;
 import org.respondeco.respondeco.service.ProjectService;
@@ -253,6 +253,7 @@ public class ProjectController {
     /**
      * POST  /rest/project/{id}/ratings -> Create a new projectrating.
      */
+    /**
     @ApiOperation(value = "Create a projectrating", notes = "Create or update a projectrating")
     @RequestMapping(value = "/rest/projects/{id}/projectratings",
             method = RequestMethod.POST,
@@ -287,6 +288,7 @@ public class ProjectController {
     /**
      * POST  /rest/project/{id}/projectratings -> Update a projectRating.
      */
+    /**
     @ApiOperation(value = "Update a projectRating", notes = "Update a projectRating")
     @RequestMapping(value = "/rest/projects/{id}/projectratings",
             method = RequestMethod.PUT,
@@ -312,6 +314,7 @@ public class ProjectController {
     /**
      * GET  /rest/project/:id -> get the "id" project.
      */
+    /**
     @ApiOperation(value = "Get projectRating", notes = "Get a projectRating by its id")
     @RequestMapping(value = "/rest/projects/{id}/projectratings/{id}",
             method = RequestMethod.GET,
@@ -325,9 +328,9 @@ public class ProjectController {
         ResponseEntity<?> response;
         RestParameters restParameters = new RestParameters(null, null, null, fields);
         if (aggregated == false || aggregated == null) {
-            ProjectRating projectRating = projectRatingService.getProjectRating(id);
+            Rating projectRating = projectRatingService.getProjectRating(id);
             if(projectRating != null) {
-                ProjectRatingResponseDTO responseDTO = ProjectRatingResponseDTO
+                RatingResponseDTO responseDTO = RatingResponseDTO
                         .fromEntity(projectRating, restParameters.getFields());
                 response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
             } else {
@@ -345,5 +348,5 @@ public class ProjectController {
             }
         }
         return response;
-    }
+    }**/
 }
