@@ -16,10 +16,6 @@ import java.util.List;
  */
 @Transactional
 public interface ResourceOfferRepository extends JpaRepository<ResourceOffer, Long>, QueryDslPredicateExecutor  {
-
-    List<ResourceOffer> findByNameAndOrganisationId(String name, Long organisationId);
-
-    List<ResourceOffer> findByOrganisationId(Long id);
-
     List<ResourceOffer> findByName(String name, Pageable pageable);
+    List<ResourceOffer> findByOrganization(Long id);
 }

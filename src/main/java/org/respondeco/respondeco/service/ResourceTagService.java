@@ -1,7 +1,9 @@
 package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.PropertyTag;
+import org.respondeco.respondeco.domain.ResourceTag;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
+import org.respondeco.respondeco.repository.ResourceTagRepository;
 import org.respondeco.respondeco.web.rest.dto.PropertyTagResponseDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.data.domain.Pageable;
@@ -13,21 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Clemens Puehringer on 27/11/14.
+ * Created by clemens on 04/12/14.
  */
-
 @Service
 @Transactional
-public class PropertyTagService {
+public class ResourceTagService {
 
-    private PropertyTagRepository propertyTagRepository;
+    private ResourceTagRepository resourceTagRepository;
 
     @Inject
-    public PropertyTagService(PropertyTagRepository propertyTagRepository) {
-        this.propertyTagRepository = propertyTagRepository;
+    public ResourceTagService(ResourceTagRepository resourceTagRepository) {
+        this.resourceTagRepository = resourceTagRepository;
     }
 
-    public List<PropertyTagResponseDTO> getPropertyTags(String filter, RestParameters restParams) {
+    public List<ResourceTag> getResourceTags(String filter, RestParameters restParams) {
         Pageable pageable = null;
         List<String> fields = null;
         if(restParams != null) {
@@ -37,22 +38,22 @@ public class PropertyTagService {
         if(filter == null) {
             filter = "";
         }
-        List<PropertyTag> result = propertyTagRepository.findByNameContainingIgnoreCase(filter, pageable);
-        return PropertyTagResponseDTO.fromEntities(result, fields);
+        List<ResourceTag> result = resourceTagRepository.findWhereNameLike(filter, pageable);
+        return result;
     }
 
-    public List<PropertyTag> getOrCreateTags(List<String> tagNames) {
-        List<PropertyTag> response = new ArrayList<>();
+    public List<ResourceTag> getOrCreateTags(List<String> tagNames) {
+        List<ResourceTag> response = new ArrayList<>();
         if(tagNames == null) {
             return response;
         }
-        PropertyTag tag = null;
+        ResourceTag tag = null;
         for(String s : tagNames) {
-            tag = propertyTagRepository.findByName(s);
+            tag = resourceTagRepository.findByName(s);
             if(tag == null) {
-                tag = new PropertyTag();
+                tag = new ResourceTag();
                 tag.setName(s);
-                tag = propertyTagRepository.save(tag);
+                tag = resourceTagRepository.save(tag);
             }
             response.add(tag);
         }

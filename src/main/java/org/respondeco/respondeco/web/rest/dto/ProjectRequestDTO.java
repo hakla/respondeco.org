@@ -2,7 +2,6 @@ package org.respondeco.respondeco.web.rest.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,9 +52,12 @@ public class ProjectRequestDTO {
     private List<String> propertyTags;
 
     @ApiModelProperty(value = "The resource requirements for the project")
-    private List<ResourceRequirementDTO> resourceRequirements;
+    private List<ResourceRequirementRequestDTO> resourceRequirements;
 
     @ApiModelProperty(value = "The file which is used a the logo for the project")
     private ImageDTO logo;
+
+    private Long organizationId;
+    private Long managerId;
 
 }

@@ -15,6 +15,8 @@ import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateDeserializer;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Roman Kern on 18.11.14.
@@ -52,7 +54,7 @@ public class ResourceOfferDTO {
     public LocalDate getStartDate() { return this.startDate; }
     public LocalDate getEndDate() { return this.endDate; }
 
-    private String[] resourceTags;
+    private List<String> resourceTags;
 
     public ResourceOfferDTO(){ }
     public ResourceOfferDTO(ResourceOffer offer){
@@ -60,19 +62,15 @@ public class ResourceOfferDTO {
         this.setId(offer.getId());
         this.setAmount(offer.getAmount());
         this.setDescription(offer.getDescription());
-        this.setOrganizationId(offer.getOrganisation().getId());
+        this.setOrganizationId(offer.getOrganization().getId());
         this.setIsCommercial(offer.getIsCommercial());
         this.setIsRecurrent(offer.getIsRecurrent());
         this.setStartDate(offer.getStartDate());
         this.setEndDate(offer.getEndDate());
 
-        resourceTags = new String[offer.getResourceTags().size()];
-
-        int i=0;
-
+        resourceTags = new ArrayList<>();
         for(ResourceTag tag : offer.getResourceTags()) {
-            resourceTags[i] = tag.getName();
-            i++;
+            resourceTags.add(tag.getName());
         }
     }
 

@@ -12,6 +12,7 @@
                 <div class="form-group col-xs-6">
                     <label translate="project.tags">Tags</label>
                     <tags-input ng-model="selectedTags" add-on-space="true" display-property="name" min-length="1"
+                            add-on-enter="false", add-on-space="true"
                             placeholder="{{'project.tags.placeholder' | translate}}">
                         <auto-complete source="getPropertyTagNames($query)" min-length="1"></auto-complete>
                     </tags-input>

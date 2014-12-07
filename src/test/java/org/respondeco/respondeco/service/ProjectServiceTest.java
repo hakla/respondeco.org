@@ -59,6 +59,9 @@ public class ProjectServiceTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private ResourceService resourceService;
+
     private ProjectService projectService;
     private Project basicProject;
     private User defaultUser;
@@ -74,6 +77,7 @@ public class ProjectServiceTest {
                 userService,
                 userRepositoryMock,
                 propertyTagServiceMock,
+                resourceService,
                 imageRepositoryMock);
 
 
