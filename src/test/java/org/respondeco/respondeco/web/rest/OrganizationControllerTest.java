@@ -102,8 +102,10 @@ public class OrganizationControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository, imageRepository);
-        OrganizationController organizationController = new OrganizationController(
-            organizationService, userService, resourceService, orgJoinRequestService, supporterRatingService);
+
+        OrganizationController organizationController =
+            new OrganizationController(organizationService, userService, resourceService,
+                orgJoinRequestService, supporterRatingService);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();

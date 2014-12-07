@@ -13,10 +13,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         resourceRequirements: []
     };
     $scope.projects = Project.query();
-    $scope.viewedProject = Project.currentProject;
 
-    // rating mock
-    $scope.rate = 4;
+    $scope.canRate = true;
+    $scope.isRating = false;
+    $scope.rating = {
+        ratingId: null,
+        projectId: null,
+        value: 5,
+        comment: null
+    };
+
+    if($scope.canRate) {
+        $("#rating").trigger("show");
+    }
 
     // details mock
     $scope.status = {
@@ -170,6 +179,27 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $scope.resource = $scope.project.resourceRequirements[index];
         $scope.selectedResourceTags = $scope.resource.resourceTags;
     };
+
+    $scope.enableRating = function() {
+        if($scope.canRate) {
+            $scope.isRating = true;
+        }
+    }
+
+    $scope.disableRating = function() {
+        $scope.isRating = false;
+    }
+
+    $scope.rateProject = function() {
+        if($scope.project != null) {
+            $scope.rating.projectId = $scope.project.id;
+            if ($scope.rating.ratingId == null) {
+                Project.rate($scope.rating);
+            } else {
+                Project.updateRating($scope.rating);
+            }
+        }
+    }
 
     if (isNew === false) {
         $scope.update($routeParams.id);

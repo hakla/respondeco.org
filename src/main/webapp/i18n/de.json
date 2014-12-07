@@ -222,6 +222,11 @@
             "idnull": "Das Projekt konnte nicht gespeichert werden da keine id angegeben wurde"
         }
     },
+    "rating": {
+        "placeholder": "Ihre Meinung...",
+        "ratenow": "Jetzt Bewerten",
+        "notnow": "Später bewerten"
+    },
 
     "main": {
         "title": "Willkommen bei respondeco!",
