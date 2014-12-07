@@ -52,7 +52,7 @@ public class PropertyTagRepositoryTest {
             propertyTag.setName("tag" + i);
             propertyTagRepository.save(propertyTag);
         }
-        List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("", null);
+        List<PropertyTag> tags = propertyTagRepository.findByNameContainingIgnoreCase("", null);
         System.err.println(tags);
         Set<String> namesSet = new HashSet<>();
         tags.forEach(t ->
@@ -72,7 +72,7 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 15);
-        List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("", request);
+        List<PropertyTag> tags = propertyTagRepository.findByNameContainingIgnoreCase("", request);
         assertEquals(tags.size(), 15);
 
     }
@@ -91,7 +91,7 @@ public class PropertyTagRepositoryTest {
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 10);
-        List<PropertyTag> tags = propertyTagRepository.findWhereNameLike("b", request);
+        List<PropertyTag> tags = propertyTagRepository.findByNameContainingIgnoreCase("b", request);
         assertEquals(tags.size(), 10);
         for(PropertyTag t : tags) {
             assertTrue(t.getName().startsWith("blub"));

@@ -220,6 +220,7 @@ public class ProjectService {
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByTags(tags, pageRequest);
         } else {
+            name = "%" + name + "%";
             result = projectRepository.findByNameAndTags(name, tags, pageRequest);
         }
 
@@ -241,6 +242,7 @@ public class ProjectService {
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
         } else {
+            name = "%" + name + "%";
             result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
         }
 
