@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface SupporterRatingRepository extends JpaRepository<SupporterRating, Long> {
     @Query(
-            "SELECT COUNT(r) AS count, AVG(r) AS rating " +
+            "SELECT COUNT(r) AS count, AVG(r.rating) AS rating " +
                     "FROM SupporterRating r INNER JOIN r.organization o " +
                     "WHERE o.id = :organizationId")
     public AggregatedRating getAggregatedRatingForOrganization(@Param("organizationId") Long id);
