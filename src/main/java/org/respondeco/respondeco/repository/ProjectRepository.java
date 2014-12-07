@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.repository;
 
+import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.PropertyTag;
 import org.springframework.data.domain.Pageable;

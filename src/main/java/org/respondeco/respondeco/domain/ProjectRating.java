@@ -8,29 +8,32 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.List;
 
 /**
- * A ResourceRequirement.
+ * Created by Clemens Puehringer on 02/12/14.
  */
+
 @Entity
-@Table(name = "T_RESOURCEREQUIREMENT")
+@Table(name = "T_PROJECT_RATING")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@PrimaryKeyJoinColumn(name = "resource_id", referencedColumnName = "id")
 @Getter
 @Setter
 @ToString
-public class ResourceRequirement extends ResourceBase implements Serializable {
+public class ProjectRating extends AbstractAuditingEntity {
 
+    @NotNull
+    private Integer rating;
+
+    private String comment;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @Column(name = "is_essential")
-    private Boolean isEssential;
-
-    @OneToMany(mappedBy = "resourceRequirement")
-    private List<ResourceOffer> resourceOffers;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

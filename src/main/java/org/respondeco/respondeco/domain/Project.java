@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * A ProjectIdea.
+ * A Project
  */
 @Entity
 @Table(name = "T_PROJECT")
@@ -73,5 +73,8 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @OneToMany(mappedBy = "project")
     private List<ResourceRequirement> resourceRequirements;
+
+    @OneToMany(mappedBy = "project")
+    private List<ProjectRating> ratings;
 
 }

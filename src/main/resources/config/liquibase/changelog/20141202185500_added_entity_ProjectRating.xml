@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity Image.
+    -->
+    <changeSet id="20141202185500" author="Clemens Puehringer">
+        <createTable tableName="T_PROJECT_RATING">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="project_id" type="bigint"/>
+            <column name="user_id" type="bigint"/>
+            <column name="rating" type="int"/>
+            <column name="comment" type="varchar(2048)"/>
+            <column name="created_by" type="varchar(50)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+            <column name="is_active" type="boolean" defaultValue="true"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+            constraintName="fk_rating_project_id"
+            baseColumnNames="project_id"
+            baseTableName="T_PROJECT_RATING"
+            referencedColumnNames="id"
+            referencedTableName="T_PROJECT"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_rating_user_id"
+                baseColumnNames="user_id"
+                baseTableName="T_PROJECT_RATING"
+                referencedColumnNames="id"
+                referencedTableName="T_USER"/>
+
+    </changeSet>
+</databaseChangeLog>

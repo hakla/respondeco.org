@@ -34,8 +34,8 @@ import javax.validation.constraints.NotNull;
 public class ResourceOffer extends ResourceBase implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "organisation_id")
-    private Organization organisation;
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
 
     @Column(name = "is_commercial", nullable = false)
     private Boolean isCommercial = false;
@@ -54,4 +54,9 @@ public class ResourceOffer extends ResourceBase implements Serializable {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @ManyToOne
+    @JoinColumn(name = "requirement_id")
+    private ResourceRequirement resourceRequirement;
+
 }
