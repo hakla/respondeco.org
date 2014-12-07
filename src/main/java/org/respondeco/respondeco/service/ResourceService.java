@@ -71,22 +71,8 @@ public class ResourceService {
 
     private User getAdminUser() throws ResourceException {
         User result = null;
-        Boolean isAdmin = false;
         try{
             result = this.userService.getUserWithAuthorities();
-
-            for(Authority authority: result.getAuthorities()){
-                if(authority.getName() == "ROLE_ADMIN"){
-                    isAdmin = true;
-                    break;
-                }
-            }
-            if(isAdmin == false){
-                throw new IllegalAccessException(String.format("The Current User %s is not authorized for this execution", result.getLogin()));
-            }
-        }
-        catch (IllegalAccessException e){
-            throw new ResourceException(e.getMessage(), EnumResourceException.USER_NOT_AUTHORIZED, e);
         }
         catch (Exception e){
             throw new ResourceException("Unexpected Exception during the user rights check", EnumResourceException.USER_NOT_AUTHORIZED, e);
@@ -101,12 +87,12 @@ public class ResourceService {
         if(isProjectBased == true){
             Project project = this.projectRepository.findOne(id);
             currentResult = project;
-            result = project.getOrganization() == user.getOrganization();
+            result = project.getOrganization().getOwner() == user;
         }
         else{
             Organization organization = this.organizationRepository.findOne(id);
             currentResult = organization;
-            result = organization == user.getOrganization();
+            result = organization.getOnwer() == user;
         }
         if (result == false){
             throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);

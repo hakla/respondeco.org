@@ -64,7 +64,7 @@ public class ResourceController {
         return this.resourceService.getOfferById(id);
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -104,7 +104,7 @@ public class ResourceController {
         return result;
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers/{id}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -142,7 +142,7 @@ public class ResourceController {
         return result;
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers/{id}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -186,7 +186,7 @@ public class ResourceController {
     }
 
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceRequirements",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -223,7 +223,7 @@ public class ResourceController {
         return result;
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceRequirements/{resourceRequirementId}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
