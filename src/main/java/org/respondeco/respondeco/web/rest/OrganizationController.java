@@ -274,13 +274,14 @@ public class OrganizationController {
     /**
      * POST  /rest/project/{id}/ratings -> Create a new projectrating.
      */
+    /**
     @ApiOperation(value = "Create a supporterrating", notes = "Create or update a supporterrating")
     @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid SupporterRatingRequestDTO supporterRatingRequest) {
+    public ResponseEntity<?> create(@RequestBody @Valid RatingRequestDTO supporterRatingRequest) {
         log.debug("REST request to create SupporterRating : {}", supporterRatingRequest);
         ResponseEntity<?> responseEntity;
         try {
@@ -305,10 +306,11 @@ public class OrganizationController {
         }
         return responseEntity;
     }
-
+    **/
     /**
      * POST  /rest/organizations/{id}/supporterratings -> Update a supporterRating.
      */
+    /**
     @ApiOperation(value = "Update a supporterRating", notes = "Update a suppoerterRating")
     @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
             method = RequestMethod.PUT,
@@ -334,6 +336,7 @@ public class OrganizationController {
     /**
      * GET  /rest/organizations/{id}/supporterratings-> get the "id" supporterRating.
      */
+    /**
     @ApiOperation(value = "Get supporterRating", notes = "Get a supporterRating by its id")
     @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
             method = RequestMethod.GET,
@@ -369,4 +372,5 @@ public class OrganizationController {
         }
         return response;
     }
+            **/
 }

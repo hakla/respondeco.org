@@ -55,8 +55,7 @@ public class ResourceOffer extends ResourceBase implements Serializable {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "requirement_id")
-    private ResourceRequirement resourceRequirement;
+    @OneToMany(mappedBy = "resourceOffer")
+    private List<ResourceMatch> resourceMatches;
 
 }

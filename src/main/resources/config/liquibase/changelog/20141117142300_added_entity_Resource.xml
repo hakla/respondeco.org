@@ -18,6 +18,7 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="original_amount" type="int"/>
             <column name="amount" type="decimal(10,2)"/>
             <column name="description" type="varchar(255)"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">

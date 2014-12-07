@@ -1,8 +1,7 @@
 package org.respondeco.respondeco.web.rest.dto;
 
 import lombok.Data;
-import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.ProjectRating;
+import org.respondeco.respondeco.domain.Rating;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,16 +13,16 @@ import java.util.List;
  */
 
 @Data
-public class ProjectRatingResponseDTO {
+public class RatingResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
             "id", "rating", "comment");
 
-    public static ProjectRatingResponseDTO fromEntity(ProjectRating projectRating, Collection<String> fieldNames) {
+    public static RatingResponseDTO fromEntity(Rating projectRating, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
             fieldNames = DEFAULT_FIELDS;
         }
-        ProjectRatingResponseDTO responseDTO = new ProjectRatingResponseDTO();
+        RatingResponseDTO responseDTO = new RatingResponseDTO();
         if (fieldNames.contains("id")) {
             responseDTO.setId(projectRating.getId());
         }
@@ -36,13 +35,13 @@ public class ProjectRatingResponseDTO {
         return responseDTO;
     }
 
-    public static List<ProjectRatingResponseDTO> fromEntities(Collection<ProjectRating> projectRatings, Collection<String> fieldNames) {
+    public static List<RatingResponseDTO> fromEntities(Collection<Rating> projectRatings, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
             fieldNames = DEFAULT_FIELDS;
         }
-        List<ProjectRatingResponseDTO> responseDTOs = new ArrayList<>();
-        for(ProjectRating projectRating : projectRatings) {
-            responseDTOs.add(ProjectRatingResponseDTO.fromEntity(projectRating, fieldNames));
+        List<RatingResponseDTO> responseDTOs = new ArrayList<>();
+        for(Rating projectRating : projectRatings) {
+            responseDTOs.add(RatingResponseDTO.fromEntity(projectRating, fieldNames));
         }
         return responseDTOs;
     }

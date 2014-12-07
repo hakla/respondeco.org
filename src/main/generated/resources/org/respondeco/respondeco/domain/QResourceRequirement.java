@@ -53,9 +53,12 @@ public class QResourceRequirement extends EntityPathBase<ResourceRequirement> {
     //inherited
     public final StringPath name = _super.name;
 
+    //inherited
+    public final NumberPath<Integer> originalAmount = _super.originalAmount;
+
     public final QProject project;
 
-    public final ListPath<ResourceOffer, QResourceOffer> resourceOffers = this.<ResourceOffer, QResourceOffer>createList("resourceOffers", ResourceOffer.class, QResourceOffer.class, PathInits.DIRECT2);
+    public final ListPath<ResourceMatch, QResourceMatch> resourceMatches = this.<ResourceMatch, QResourceMatch>createList("resourceMatches", ResourceMatch.class, QResourceMatch.class, PathInits.DIRECT2);
 
     //inherited
     public final ListPath<ResourceTag, QResourceTag> resourceTags = _super.resourceTags;

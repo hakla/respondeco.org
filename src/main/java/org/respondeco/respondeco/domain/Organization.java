@@ -61,7 +61,10 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     private Image logo;
 
     @OneToMany(mappedBy = "organization")
-    private List<SupporterRating> ratings;
+    private List<ResourceOffer> resourceOffers;
+
+    @OneToMany(mappedBy = "organization")
+    private List<ResourceMatch> resourceMatches;
 
     public void addMember(User user) {
         members.add(user);

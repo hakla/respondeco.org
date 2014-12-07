@@ -2,7 +2,6 @@ package org.respondeco.respondeco.web.rest.dto;
 
 import lombok.Data;
 import org.respondeco.respondeco.domain.AggregatedRating;
-import org.respondeco.respondeco.domain.ProjectRating;
 
 import java.util.ArrayList;
 import java.util.Arrays;

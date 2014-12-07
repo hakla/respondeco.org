@@ -10,16 +10,20 @@
     <!--
         Added the entity Image.
     -->
-    <changeSet id="20141202185600" author="Clemens Puehringer">
-        <createTable tableName="T_SUPPORTER_RATING">
+    <changeSet id="20141207173500" author="Clemens Puehringer">
+        <createTable tableName="T_RESOURCE_MATCH">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="amount" type="int"/>
+            <column name="match_direction" type="varchar(20)"/>
+            <column name="accepted" type="boolean"/>
             <column name="project_id" type="bigint"/>
             <column name="organization_id" type="bigint"/>
-            <column name="user_id" type="bigint"/>
-            <column name="rating" type="double"/>
-            <column name="comment" type="varchar(2048)"/>
+            <column name="resource_requirement_id" type="bigint"/>
+            <column name="resource_offer_id" type="bigint"/>
+            <column name="project_rating_id" type="bigint"/>
+            <column name="supporter_rating_id" type="bigint"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>
@@ -32,25 +36,32 @@
         </createTable>
 
         <addForeignKeyConstraint
-            constraintName="fk_supporter_rating_project_id"
+            constraintName="fk_match_project_id"
             baseColumnNames="project_id"
-            baseTableName="T_SUPPORTER_RATING"
+            baseTableName="T_RESOURCE_MATCH"
             referencedColumnNames="id"
             referencedTableName="T_PROJECT"/>
 
         <addForeignKeyConstraint
-            constraintName="fk_supporter_rating_organization_id"
+            constraintName="fk_match_organization_id"
             baseColumnNames="organization_id"
-            baseTableName="T_SUPPORTER_RATING"
+            baseTableName="T_RESOURCE_MATCH"
             referencedColumnNames="id"
             referencedTableName="T_ORGANIZATION"/>
 
         <addForeignKeyConstraint
-                constraintName="fk_supporter_rating_user_id"
-                baseColumnNames="user_id"
-                baseTableName="T_SUPPORTER_RATING"
-                referencedColumnNames="id"
-                referencedTableName="T_USER"/>
+            constraintName="fk_match_resource_requirement_id"
+            baseColumnNames="resource_requirement_id"
+            baseTableName="T_RESOURCE_MATCH"
+            referencedColumnNames="id"
+            referencedTableName="T_RESOURCE"/>
+
+        <addForeignKeyConstraint
+            constraintName="fk_match_resource_offer_id"
+            baseColumnNames="resource_offer_id"
+            baseTableName="T_RESOURCE_MATCH"
+            referencedColumnNames="id"
+            referencedTableName="T_RESOURCE"/>
 
     </changeSet>
 </databaseChangeLog>
