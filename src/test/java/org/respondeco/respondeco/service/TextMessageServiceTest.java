@@ -17,6 +17,7 @@ import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -82,7 +83,7 @@ public class TextMessageServiceTest {
         })
         .when(textMessageRepositoryMock).save(isA(TextMessage.class));
 
-        textMessageService.createTextMessage(receiver, content);
+        textMessageService.createTextMessage(new UserDTO(receivingUser), content);
 
         assertEquals(savedMessage.getSender(), currentUser);
         assertEquals(savedMessage.getReceiver(), receivingUser);
@@ -95,15 +96,15 @@ public class TextMessageServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsNull() throws Exception {
-        String receiver = "testReceiver";
-        textMessageService.createTextMessage(receiver, null);
+        UserDTO user = new UserDTO();
+        textMessageService.createTextMessage(user, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsEmpty() throws Exception {
-        String receiver = "testReceiver";
+        UserDTO user = new UserDTO();
         String content = "";
-        textMessageService.createTextMessage(receiver, content);
+        textMessageService.createTextMessage(user, content);
     }
 
     @Test(expected = NoSuchUserException.class)
@@ -112,10 +113,11 @@ public class TextMessageServiceTest {
         String content = "testContent";
         User currentUser = new User();
         currentUser.setLogin("testSender");
+        UserDTO user = new UserDTO();
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
 
-        textMessageService.createTextMessage(receiver, content);
+        textMessageService.createTextMessage(user, content);
     }
 
     @Test

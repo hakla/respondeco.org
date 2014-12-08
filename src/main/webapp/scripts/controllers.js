@@ -91,7 +91,7 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     ];
     
     var getCurrentOrgJoinRequests = function() {
-        OrgJoinRequest.getCurrent().$promise.then(function(data) {
+        OrgJoinRequest.current(function(data) {
             $scope.orgJoinRequests = data;
 
             data.forEach(function(el) {

@@ -4,15 +4,13 @@ respondecoApp.factory('Organization', function ($resource) {
         return $resource('app/rest/organizations/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
-            'update': { method: 'POST', url: 'app/rest/organizations/updateOrganization' },
+            'update': { method: 'PUT', url: 'app/rest/organizations' },
             'getMembers': { method: 'GET', url: 'app/rest/organizations/:id/members', isArray: true },
-            'getOrgJoinRequests': { method: 'GET', url: 'app/rest/organizations/:id/orgJoinRequests', isArray: true }
+            'getOrgJoinRequests': { method: 'GET', url: 'app/rest/organizations/:id/orgjoinrequests', isArray: true },
+            'getInvitableUsers': { method: 'GET', url: 'app/rest/organizations/:id/invitableusers', isArray: true }
         });
     }).factory('User', function($resource) {
-        return $resource('app/rest/users/:loginName', {}, {
-            'get': { method: 'GET'},
-            'getById': { method: 'GET', url: 'app/rest/users/byId/:id' },
-            'getByOrgId': { method: 'GET', url: 'app/rest/users/getByOrgId/:id', isArray: true },
-            'getInvitableUsers': { method: 'GET', url: 'app/rest/users/getInvitableUsersByOrgId/:id', isArray: true }
+        return $resource('app/rest/users/:id', {}, {
+            'get': { method: 'GET'}
         });
     });

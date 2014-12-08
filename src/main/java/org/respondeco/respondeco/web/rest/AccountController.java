@@ -1,18 +1,16 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.respondeco.respondeco.domain.Authority;
-import org.respondeco.respondeco.domain.Image;
-import org.respondeco.respondeco.domain.PersistentToken;
-import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
+import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
-import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
+import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -31,6 +29,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
@@ -41,6 +40,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/app")
+@Transactional
 public class AccountController {
 
     private final Logger log = LoggerFactory.getLogger(AccountController.class);
@@ -65,6 +65,9 @@ public class AccountController {
 
     @Inject
     private MailService mailService;
+
+    @Inject
+    private OrgJoinRequestService orgJoinRequestService;
 
     /**
      * POST  /rest/register -> register the user.
@@ -124,6 +127,7 @@ public class AccountController {
         return Optional.ofNullable(userService.getUserWithAuthorities())
             .map(user -> new ResponseEntity<>(
                 new UserDTO(
+                    user.getId(),
                     user.getLogin(),
                     null,
                     user.getTitle(),
@@ -242,5 +246,41 @@ public class AccountController {
         IWebContext context = new SpringWebContext(request, response, servletContext,
                 locale, variables, applicationContext);
         return templateEngine.process("activationEmail", context);
+    }
+
+    /**
+     * POST  /rest/leaveOrg
+     */
+    @RequestMapping(value = "/rest/account/leaveorganization",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> leaveOrganization() {
+        log.debug("REST request to leave Organization : {}");
+        userService.leaveOrganization();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * GET  /rest/orgjoinrequests/:organization -> get the "organization" orgjoinrequest.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/account/orgjoinrequests",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<OrgJoinRequestDTO>> getByCurrentUser() {
+        log.debug("REST request to get OrgJoinRequest as User: {}");
+        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
+        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.OK);
+
+        if (orgJoinRequests.isEmpty() == false) {
+            List<OrgJoinRequestDTO> dtos = new ArrayList<>();
+            orgJoinRequests.forEach(p -> dtos.add(new OrgJoinRequestDTO(p)));
+            entity = new ResponseEntity<>(dtos, HttpStatus.OK);
+        }
+
+        return entity;
     }
 }

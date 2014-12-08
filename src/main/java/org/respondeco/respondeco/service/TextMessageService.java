@@ -7,6 +7,7 @@ import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,15 +39,15 @@ public class TextMessageService {
         this.userRepository = userRepository;
     }
 
-    public TextMessage createTextMessage(String receiver, String content) throws NoSuchUserException {
+    public TextMessage createTextMessage(UserDTO receiver, String content) throws NoSuchUserException {
         if(content == null || content.length() <= 0) {
             throw new IllegalArgumentException("Content must not be empty");
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getLogin().equals(receiver)) {
-            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver));
+        User receivingUser = userService.getUser(receiver.getId());
+        if(currentUser.equals(receivingUser)) {
+            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver.getId()));
         }
-        User receivingUser = userRepository.findByLogin(receiver);
         if(receivingUser == null) {
             throw new NoSuchUserException(String.format("Receiver %s does not exist", receiver));
         }
@@ -69,8 +70,8 @@ public class TextMessageService {
         return response;
     }
 
-    public List<TextMessageResponseDTO> getTextMessagesForUser(String login) {
-        User user = userRepository.findByLogin(login);
+    public List<TextMessageResponseDTO> getTextMessagesForUser(Long id) {
+        User user = userRepository.findOne(id);
         return textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(user));
     }
 
@@ -92,7 +93,7 @@ public class TextMessageService {
     private TextMessageResponseDTO textMessageToDTO(TextMessage message) {
         return new TextMessageResponseDTO(
                 message.getId(),
-                message.getSender().getLogin(),
+                new UserDTO(message.getSender()),
                 message.getContent(),
                 message.getTimestamp());
     }

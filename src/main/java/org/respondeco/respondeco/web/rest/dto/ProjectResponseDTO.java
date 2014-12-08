@@ -51,13 +51,14 @@ public class ProjectResponseDTO {
             responseDTO.setEndDate(project.getEndDate());
         }
         if (fieldNames.contains("organization")) {
-            responseDTO.setOrganization(project.getOrganization());
+            responseDTO.setOrganization(OrganizationResponseDTO
+                    .fromEntity(project.getOrganization(),null));
         }
         if (fieldNames.contains("organizationId")) {
             responseDTO.setOrganizationId(project.getOrganization().getId());
         }
         if (fieldNames.contains("manager")) {
-            responseDTO.setManager(project.getManager());
+            responseDTO.setManager(new UserDTO(project.getManager()));
         }
         if (fieldNames.contains("managerId")) {
             responseDTO.setManagerId(project.getManager().getId());
@@ -79,6 +80,8 @@ public class ProjectResponseDTO {
         //TODO FIX
         /**
         if (fieldNames.contains("ratings")) {
+            responseDTO.setRatings(ProjectRatingResponseDTO
+                    .fromEntities(project.getRatings(),null));
             responseDTO.setRatings(RatingResponseDTO.fromEntities(project.getResourceMatches().g, null));
         }
          **/
@@ -104,9 +107,9 @@ public class ProjectResponseDTO {
     private LocalDate startDate;
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate endDate;
-    private Organization organization;
+    private OrganizationResponseDTO organization;
     private Long organizationId;
-    private User manager;
+    private UserDTO manager;
     private Long managerId;
     private List<PropertyTagResponseDTO> propertyTags;
     private List<ResourceRequirementResponseDTO> resourceRequirements;

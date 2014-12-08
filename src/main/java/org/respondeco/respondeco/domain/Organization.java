@@ -26,7 +26,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@ToString(exclude = {"owner", "members", "logo"})
+@ToString(exclude = {"owner", "members", "logo", "ratings", "projects"})
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -65,6 +65,9 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 
     @OneToMany(mappedBy = "organization")
     private List<ResourceMatch> resourceMatches;
+
+    @OneToMany(mappedBy = "organization")
+    private List<Project> projects;
 
     public void addMember(User user) {
         members.add(user);

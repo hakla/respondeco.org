@@ -20,7 +20,8 @@ import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
+import org.respondeco.respondeco.web.rest.dto.OrganizationRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.OrganizationResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -84,7 +85,7 @@ public class OrgJoinRequestControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrgJoinRequestService orgJoinRequestService = new OrgJoinRequestService(orgjoinrequestRepository,userService,userRepository,organizationRepository);
-        OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgjoinrequestRepository, orgJoinRequestService);
+        OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgJoinRequestService);
 
         this.restOrgJoinRequestMockMvc = MockMvcBuilders.standaloneSetup(orgjoinrequestController).build();
 
@@ -134,10 +135,9 @@ public class OrgJoinRequestControllerTest {
         organization.setIsNpo(false);
         organizationRepository.save(organization);
 
-
         orgjoinrequestDTO = new OrgJoinRequestDTO();
 
-        orgjoinrequestDTO.setOrganization(new OrganizationDTO(organization));
+        orgjoinrequestDTO.setOrganization(OrganizationResponseDTO.fromEntity(organization,null));
         orgjoinrequestDTO.setUser(new UserDTO(defaultUser));
 
         orgJoinRequest = new OrgJoinRequest();
