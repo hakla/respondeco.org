@@ -2,7 +2,7 @@ exports.config = {
   specs: ['*/*.spec.js'],
   baseUrl: 'http://localhost:9000',
   onPrepare: function() {
-      browser.driver.manage().window().maximize;
+      browser.driver.manage().window().setSize(1280, 1024);
     },
     suites: {
         textmessages: 'textmessages/*.spec.js',
@@ -13,10 +13,8 @@ exports.config = {
     },
     params: {
         login: {
-            user: 'user',
-            password: 'user'
+            user: 'admin',
+            password: 'admin'
         }
     }
-
-
 };

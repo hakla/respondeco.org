@@ -9,12 +9,18 @@ describe('e2e: newproject', function() {
     login.login();
     browser.waitForAngular();
 
-    beforeEach(function() {
+    it('should redirect to projects after clicking on cancel', function() {
         newProjectPage.navigate();
         browser.waitForAngular();
+
+        newProjectPage.cancelButton.click();
+        browser.waitForAngular();
+        expect(browser.getLocationAbsUrl()).toContain('projects');
     });
 
-    /*it('should create a new project', function() {
+    it('should fill out the form for a new project', function() {
+        newProjectPage.navigate();
+        browser.waitForAngular();
 
         newProjectPage.name.sendKeys("Project");
         newProjectPage.purpose.sendKeys("Ich würde gerne Hosen sammeln");
@@ -30,21 +36,14 @@ describe('e2e: newproject', function() {
         newProjectPage.startDate.sendKeys("20.04.2015");
         newProjectPage.endDate.sendKeys("21.04.2015");
 
-
         browser.waitForAngular();
-    });*/
-
-    it('should redirect to projects after clicking on cancel', function() {
-        newProjectPage.cancelButton.click();
-        browser.waitForAngular();
-        expect(browser.getLocationAbsUrl()).toContain('projects');
-
     });
 
     it('should add resource requirements', function() {
+        expect(newProjectPage.projectRequirements).toBe(undefined);
+
         newProjectPage.addResourceButton.click();
         browser.waitForAngular();
-
 
         newProjectPage.resourceName.sendKeys("Ressource");
         newProjectPage.resourceDescription.sendKeys("Ich hätte gern die folgende Ressource");
@@ -60,13 +59,27 @@ describe('e2e: newproject', function() {
         newProjectPage.resourceEssential.click();
 
         newProjectPage.resourceSaveButton.click();
-
         browser.waitForAngular();
 
-
-        browser.sleep(4000);
-
+        expect(newProjectPage.projectRequirements).not.toBe(null);
     });
+
+    it('should create the project', function() {
+        browser.sleep(2000);
+        newProjectPage.saveButton.click();
+
+        browser.sleep(3000);
+    });
+    
+
+       /* it('should remove the added requirement', function() {
+            expect(newProjectPage.projectRequirements).not.toBe(null);
+            
+            newProjectPage.resourceEditLink.click();
+            browser.waitForAngular();
+
+            expect(newProjectPage.projectRequirements).toBe(undefined);
+        });*/
  
 
 });

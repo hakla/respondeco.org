@@ -12,7 +12,7 @@ var Login = function() {
         element(by.model("password")).sendKeys(params.login.password);
         element(by.css('[ng-click="login()"]')).click();
         browser.waitForAngular();
-    }
+    };
 };
 
 module.exports = new Login();

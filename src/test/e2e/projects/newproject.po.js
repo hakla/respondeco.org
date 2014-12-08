@@ -31,11 +31,12 @@ var NewProjectPage = function() {
 
     this.resourceSaveButton = element(by.id("resourceSaveButton"));
     this.resourceCancelButton = element(by.id("resourceCancelButton"));
-
-
+    
+    this.projectsRequirements = element(by.model("projects.requirements"));
 
     this.navigate = function() {
         browser.get("http://localhost:9000/#/projects/edit/undefined");
+        browser.waitForAngular();
     }
 };
 
