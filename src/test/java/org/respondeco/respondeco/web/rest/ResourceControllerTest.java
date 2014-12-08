@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
@@ -14,9 +16,11 @@ import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.service.ResourceTagService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.util.RestUtil;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -30,6 +34,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +85,8 @@ public class ResourceControllerTest {
     @Mock
     private ResourceTagRepository resourceTagRepository;
     @Mock
+    private ResourceTagService resourceTagService;
+    @Mock
     private OrganizationRepository organizationRepository;
     @Mock
     private ProjectRepository projectRepository;
@@ -106,7 +113,6 @@ public class ResourceControllerTest {
     private ResourceOffer resourceOffer;
     private List<ResourceOfferDTO> resourceOffers;
     private ResourceRequirement resourceRequirement;
-    private List<ResourceRequirementDTO> resourceRequirements;
 
     @Before
     public void setup() {
@@ -114,7 +120,7 @@ public class ResourceControllerTest {
         resourceService = spy(new ResourceService(
             resourceOfferRepository,
             resourceRequirementRepository,
-            resourceTagRepository,
+            resourceTagService,
             organizationRepository,
             projectRepository,
             imageRepository,
@@ -133,7 +139,7 @@ public class ResourceControllerTest {
         resourceOffer.setDescription(RESOURCE_OFFER_DESCRIPTION);
         Organization org = new Organization();
         org.setId(RESOUCE_OFFER_ORGANIZATION_ID);
-        resourceOffer.setOrganisation(org);
+        resourceOffer.setOrganization(org);
         resourceOffer.setAmount(RESOURCE_OFFER_AMOUNT);
         resourceOffer.setIsCommercial(RESOURCE_OFFER_IS_COMMERCIAL);
         resourceOffer.setResourceTags(resourceTags);
@@ -161,29 +167,29 @@ public class ResourceControllerTest {
                 dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         }else if (operation == 1){
             doReturn(resourceOffer).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
-                dto.getName(), dto.getAmount(),dto.getDescription(), dto.getIsCommercial(),
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
                 dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         }else if (operation == 2){
-            doReturn(resourceOffer).when(resourceService).deleteOffer(dto.getId());
+            doNothing().when(resourceService).deleteOffer(dto.getId());
         }else if(operation == 3){
-            doReturn(resourceOffers).when(resourceService).getAllOffers();
-            doReturn(new ResourceOfferDTO(resourceOffer)).when(resourceService).getOfferById(dto.getId());
+            doReturn(resourceOffers).when(resourceService).getAllOffers(dto.getOrganizationId());
+            doReturn(resourceOffer).when(resourceService).getOfferById(dto.getId());
         }
         return dto;
     }
-    private ResourceRequirementDTO bindRequirementDTOMockData(Integer operation) throws Exception{
+    private ResourceRequirementRequestDTO bindRequirementDTOMockData(Integer operation) throws Exception{
         reset(resourceService);
-        ResourceRequirementDTO dto = new ResourceRequirementDTO(resourceRequirement);
+        ResourceRequirementRequestDTO dto = new ResourceRequirementRequestDTO(resourceRequirement);
         if(operation == 0) {
             doReturn(resourceRequirement).when(resourceService).createRequirement(dto.getName(), dto.getAmount(),
                 dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         } else if (operation == 1) {
             doReturn(resourceRequirement).when(resourceService).updateRequirement(dto.getId(),
-                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsEssential(), dto.getResourceTags());
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         }else if (operation == 2){
-            doReturn(resourceRequirement).when(resourceService).deleteRequirement(dto.getId());
+            doNothing().when(resourceService).deleteRequirement(dto.getId());
         }else if(operation == 3){
-            doReturn(resourceOffers).when(resourceService).getAllRequirements();
+            doReturn(Arrays.asList(resourceRequirement)).when(resourceService).getAllRequirements();
         }
         return dto;
     }
@@ -199,17 +205,17 @@ public class ResourceControllerTest {
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteOffer(dto.getId());
         }else if (operation == 3){
-            verify(resourceService, times(1)).getAllOffers();
+            verify(resourceService, times(1)).getAllOffers(any(), any(), any(), any(), any(), any());
             verify(resourceService, times(1)).getOfferById(dto.getId());
         }
     }
-    private void verifyRequirement(Integer operation, ResourceRequirementDTO dto) throws Exception{
+    private void verifyRequirement(Integer operation, ResourceRequirementRequestDTO dto) throws Exception{
         if(operation == 0){
             verify(resourceService, times(1)).createRequirement(dto.getName(), dto.getAmount(),
                 dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         }else if (operation == 1){
             verify(resourceService, times(1)).updateRequirement(dto.getId(),
-                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsEssential(), dto.getResourceTags());
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteRequirement(dto.getId());
         }else if (operation == 3){
@@ -250,7 +256,7 @@ public class ResourceControllerTest {
         // clean mock
         dto = this.bindOfferDTOMockData(0);
         dto.setId(null);
-        doThrow(new Exception("")).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
             dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
             dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         restMockMvc.perform(post("/app/rest/resourceOffers")
@@ -287,7 +293,7 @@ public class ResourceControllerTest {
 
         //Throw Exception
         dto = this.bindOfferDTOMockData(1);
-        doThrow(new Exception()).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
+        doThrow(new ResourceException("", EnumResourceException.NOT_FOUND)).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
             dto.getName(), dto.getAmount(),dto.getDescription(), dto.getIsCommercial(),
             dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
 
@@ -301,7 +307,6 @@ public class ResourceControllerTest {
         //endregion
 
         //region DELETE
-
         dto = this.bindOfferDTOMockData(2);
         restMockMvc.perform(delete("/app/rest/resourceOffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -321,7 +326,7 @@ public class ResourceControllerTest {
 
         //throw resource exception
         dto = this.bindOfferDTOMockData(2);
-        doThrow(new Exception()).when(resourceService).
+        doThrow(new ResourceException("", EnumResourceException.NOT_FOUND)).when(resourceService).
             deleteOffer(dto.getId());
         restMockMvc.perform(delete("/app/rest/resourceOffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -350,7 +355,7 @@ public class ResourceControllerTest {
     @Test
     public void testCRUDRequirements() throws Exception{
         //region CREATE
-        ResourceRequirementDTO dto = this.bindRequirementDTOMockData(0);
+        ResourceRequirementRequestDTO dto = this.bindRequirementDTOMockData(0);
         dto.setId(null);
 
         // Create Project
@@ -406,7 +411,7 @@ public class ResourceControllerTest {
         resourceRequirement.setName(RESOURCE_OFFER_NAME);
         dto = this.bindRequirementDTOMockData(1);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).updateRequirement(
-            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsEssential(),
+            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
             dto.getResourceTags());
 
         restMockMvc.perform(put("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
@@ -418,7 +423,7 @@ public class ResourceControllerTest {
         //Throw Exception
         dto = this.bindRequirementDTOMockData(1);
         doThrow(new Exception()).when(resourceService).updateRequirement(
-            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsEssential(),
+            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
             dto.getResourceTags());
 
         restMockMvc.perform(put("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())

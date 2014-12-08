@@ -37,8 +37,8 @@ public class PropertyTagService {
         if(filter == null) {
             filter = "";
         }
-        List<PropertyTag> result = propertyTagRepository.findWhereNameLike(filter, pageable);
-        return PropertyTagResponseDTO.fromEntity(result, fields);
+        List<PropertyTag> result = propertyTagRepository.findByNameContainingIgnoreCase(filter, pageable);
+        return PropertyTagResponseDTO.fromEntities(result, fields);
     }
 
     public List<PropertyTag> getOrCreateTags(List<String> tagNames) {

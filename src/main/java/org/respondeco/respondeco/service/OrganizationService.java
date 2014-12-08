@@ -53,7 +53,9 @@ public class OrganizationService {
         newOrganization.setDescription(description);
         newOrganization.setEmail(email);
         newOrganization.setIsNpo(isNpo);
-        newOrganization.setLogo(imageRepository.findOne(logoId));
+        if(logoId != null) {
+            newOrganization.setLogo(imageRepository.findOne(logoId));
+        }
 
         if (organizationRepository.findByOwner(currentUser) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
@@ -92,9 +94,21 @@ public class OrganizationService {
         log.debug("Found Information for Organization: {}", currentOrganization);
         return currentOrganization;
     }
-
     /**
      * Get Organization by Id
+     * @param id organization id
+     * @return organization
+     * @throws NoSuchOrganizationException if organization with id could not be found
+     */
+    @Transactional(readOnly=true)
+    public Organization getOrganization(Long id) {
+        log.debug("getOrganization() with id " + id + " called");
+        Organization org = organizationRepository.findOne(id);
+
+        return org;
+    }
+    /**
+     * Get OrganizationDTO by Id
      * @param id organization id
      * @return organizationDTO
      * @throws NoSuchOrganizationException if organization with id could not be found
@@ -143,7 +157,9 @@ public class OrganizationService {
         currentOrganization.setEmail(email);
         currentOrganization.setIsNpo(isNpo);
         currentOrganization.setOwner(currentUser);
-        currentOrganization.setLogo(imageRepository.findOne(logoId));
+        if(logoId != null) {
+            currentOrganization.setLogo(imageRepository.findOne(logoId));
+        }
 
         organizationRepository.save(currentOrganization);
         log.debug("Changed Information for Organization: {}", currentOrganization);

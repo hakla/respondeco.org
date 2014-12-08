@@ -15,7 +15,8 @@ exports.config = {
         textmessages: 'textmessages/*.spec.js',
         login: 'login/*.spec.js',
         register: 'register/*.spec.js',
-        settings: 'settings/*.spec.js'
+        settings: 'settings/*.spec.js',
+        newresourceoffers: 'resourceoffers/*.spec.js'
     },
     params: {
         login: {

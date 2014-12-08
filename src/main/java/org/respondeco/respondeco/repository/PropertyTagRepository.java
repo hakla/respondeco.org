@@ -14,8 +14,7 @@ import java.util.List;
  */
 public interface PropertyTagRepository extends JpaRepository<PropertyTag, Long> {
 
-    @Query("SELECT pt FROM PropertyTag pt WHERE pt.name LIKE %?1%")
-    public List<PropertyTag> findWhereNameLike(String filter, Pageable pageable);
+    public List<PropertyTag> findByNameContainingIgnoreCase(String filter, Pageable pageable);
 
     public PropertyTag findByName(String name);
 

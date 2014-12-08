@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
@@ -11,11 +10,12 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
+import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.ResourceJoinTagException;
 import org.respondeco.respondeco.service.exception.ResourceTagException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -54,6 +54,8 @@ public class ResourceServiceTest {
     private ImageRepository imageRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private ResourceTagService resourceTagServiceMock;
 
     private ResourceService resourceService;
     private ResourceOffer expOffer = null;
@@ -62,7 +64,7 @@ public class ResourceServiceTest {
     private Project expProject;
     private Organization expOrg;
 
-    private User logedInUser;
+    private User loggedInUser;
 
     private Long newTagId = 1L;
 
@@ -78,7 +80,7 @@ public class ResourceServiceTest {
         this.resourceService = new ResourceService(
             resourceOfferRepositoryMock,
             resourceRequirementRepositoryMock,
-            resourceTagRepositoryMock,
+            resourceTagServiceMock,
             organizationRepository,
             projectRepository,
             imageRepository,
@@ -91,36 +93,37 @@ public class ResourceServiceTest {
         expOffer = null;
         expResourceTag = null;
         expectedReq = null;
-        logedInUser = null;
+        loggedInUser = null;
         expProject = null;
         expOrg = null;
         newTagId = 1L;
     }
 
-    private String[] prepareCreateOffer(){
-        Organization organisation = new Organization();
-        organisation.setId(1L);
+    private List<String> prepareCreateOffer(){
+        Organization organization = new Organization();
+        organization.setId(1L);
         expOffer = new ResourceOffer();
         expOffer.setDescription(" Here is my test Requirement... bla bla. ");
         expOffer.setAmount(new BigDecimal(10));
-        expOffer.setOrganisation(organisation);
+        expOffer.setOrganization(organization);
         expOffer.setIsCommercial(true);
         expOffer.setIsRecurrent(false);
         expOffer.setStartDate(LocalDate.now());
         expOffer.setId(1L);
         expOffer.setName(" TEST ");
         expResourceTag = new ResourceTag(1L, "test ");
-
         expResourceTag.setId(1L);
         expOffer.addResourceTag(expResourceTag);
-        String[] tags = new String[1];
-        tags[0] = expResourceTag.getName();
+        List<String> tags = new ArrayList<>();
+        tags.add(expResourceTag.getName());
 
         List<ResourceTag> resourceTags = new ArrayList<ResourceTag>();
         List<ResourceOffer> resourceOffers = new ArrayList<ResourceOffer>();
 
+        resourceTags.add(expResourceTag);
+
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
-        when(resourceOfferRepositoryMock.findByNameAndOrganisationId(expOffer.getName(), expOffer.getOrganisation().getId())).thenReturn(resourceOffers);
+        when(resourceOfferRepositoryMock.findByName(expOffer.getName(), null)).thenReturn(resourceOffers);
         //Assign all variables to new Resource Requirement Objekt and execute Save
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -129,14 +132,14 @@ public class ResourceServiceTest {
             Console.out().print(args[0]);
             return result;
         }).when(resourceOfferRepositoryMock).save(isA(offerCl));
-        this.prepareTagRepository(tags[0], resourceTags);
+        this.prepareTagRepository(tags.get(0), resourceTags);
 
         return tags;
     }
 
     private void prepareUser(){
-        logedInUser = new User();
-        logedInUser.setId(1L);
+        loggedInUser = new User();
+        loggedInUser.setId(1L);
         Set<Authority> authorities = new HashSet<>(1);
         Authority a1 = new Authority();
         a1.setName("ROLE_ADMIN");
@@ -144,11 +147,12 @@ public class ResourceServiceTest {
         Authority a2 = new Authority();
         a2.setName("ROLE_USER");
         authorities.add(a2);
-        logedInUser.setAuthorities(authorities);
+        loggedInUser.setAuthorities(authorities);
         expOrg = new Organization();
         expOrg.setId(1L);
-        logedInUser.setOrganization(expOrg);
-        when(this.userService.getUserWithAuthorities()).thenReturn(logedInUser);
+        expOrg.setOwner(loggedInUser);
+        loggedInUser.setOrganization(expOrg);
+        when(this.userService.getUserWithAuthorities()).thenReturn(loggedInUser);
         when(this.organizationRepository.findOne(isA(longCl))).thenReturn(expOrg);
     }
 
@@ -160,7 +164,7 @@ public class ResourceServiceTest {
         when(this.projectRepository.findOne(expProject.getId())).thenReturn(expProject);
     }
 
-    private String[] prepareCreateRequirement(){
+    private List<String> prepareCreateRequirement(){
         this.prepareProject(1L);
         //region Test data
         expectedReq = new ResourceRequirement();
@@ -173,18 +177,19 @@ public class ResourceServiceTest {
         expResourceTag = new ResourceTag(1L, "test ");
         expResourceTag.setId(1L);
         expectedReq.addResourceTag(expResourceTag);
-        String[] tags = new String[1];
-        tags[0] = expResourceTag.getName();
+        List<String> tags = new ArrayList<>();
+        tags.add(expResourceTag.getName());
 
 
         List<ResourceTag> resourceTags = new ArrayList<ResourceTag>();
         List<ResourceRequirement> resourceReqs = new ArrayList<ResourceRequirement>();
 
-        //resourceTags.add(testResourceTag);
+        resourceTags.add(expResourceTag);
         //endregion
 
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
-        when(resourceRequirementRepositoryMock.findByNameAndProjectId(expectedReq.getName(), expectedReq.getProject().getId())).thenReturn(resourceReqs);
+        when(resourceRequirementRepositoryMock.findByNameAndProject(expectedReq.getName(),
+            expectedReq.getProject())).thenReturn(resourceReqs);
         //Assign all variables to new Resource Requirement Objekt and execute Save
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -193,7 +198,7 @@ public class ResourceServiceTest {
             Console.out().print(args[0]);
             return result;
         }).when(resourceRequirementRepositoryMock).save(isA(reqCl));
-        this.prepareTagRepository(tags[0], resourceTags);
+        this.prepareTagRepository(tags.get(0), resourceTags);
 
         return tags;
     }
@@ -201,7 +206,8 @@ public class ResourceServiceTest {
     private void prepareTagRepository(String tagName, List<ResourceTag> resourceTags){
         // -> saveResourceTag method
         // Step 3: Return Empty list for our search case
-        when(resourceTagRepositoryMock.findByName(tagName)).thenReturn(resourceTags);
+        when(resourceTagRepositoryMock.findByName(tagName)).thenReturn(null);
+        when(resourceTagServiceMock.getOrCreateTags(any(List.class))).thenReturn(resourceTags);
         // Step 4: Save Resource Tag
         if(newTagId != null) {
             doAnswer(invocation -> {
@@ -220,10 +226,12 @@ public class ResourceServiceTest {
     @Test
     public void testCreateRequirement_OK() throws Exception {
         this.prepareUser();
-        String[] tags = this.prepareCreateRequirement();
+        List<String> tags = this.prepareCreateRequirement();
 
         //save without any tags
-        ResourceRequirement actual = this.resourceService.createRequirement(expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expProject.getId(), expectedReq.getIsEssential(), tags);
+        ResourceRequirement actual = this.resourceService
+            .createRequirement(expectedReq.getName(), expectedReq.getAmount(),
+                expectedReq.getDescription(), expectedReq.getProject(), expectedReq.getIsEssential(), tags);
 
         assertEquals(expectedReq.getId(), actual.getId());
         assertEquals(expectedReq.getAmount(), actual.getAmount());
@@ -242,31 +250,30 @@ public class ResourceServiceTest {
         }
         //verifying user authorities has been called.
         verify(userService, times(1)).getUserWithAuthorities();
-        verify(projectRepository, times(1)).findOne(isA(longCl));
         verify(organizationRepository, times(0)).findOne(isA(longCl));
 
         verify(resourceRequirementRepositoryMock, times(1)).save(isA(reqCl));
-        //No tags has been added
-        verify(resourceTagRepositoryMock, times(1)).findByName(isA(stringCl));
-        verify(resourceTagRepositoryMock, times(1)).save(isA(tagCl));
     }
 
-    @Test(expected = ResourceException.class)
-    public void testUpdateRequirement_Fail_NoEntryFound() throws Exception {
-        this.prepareUser();
-        String[] tags = this.prepareCreateRequirement();
+    @Test(expected = NoSuchProjectException.class)
+    public void testUpdateRequirement_Fail() throws Exception {
+        List<String> tags = this.prepareCreateRequirement();
         //save without any tags
-        ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(), expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getIsEssential(), tags);
+        ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(),
+            expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), 0L, //just to make the project run
+            expectedReq.getIsEssential(), tags);
     }
 
     @Test
     public void testUpdateRequirement() throws Exception{
         this.prepareUser();
-        String[] tags = this.prepareCreateRequirement();
+        List<String> tags = this.prepareCreateRequirement();
 
         when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
         //save without any tags
-        ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(), expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getIsEssential(), tags);
+        ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(),
+            expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject(), //just to make the project run
+            expectedReq.getIsEssential(), tags);
 
         assertEquals(expectedReq.getId(), actual.getId());
         assertEquals(expectedReq.getAmount(), actual.getAmount());
@@ -282,41 +289,16 @@ public class ResourceServiceTest {
         }
         //verifying user authorities has been called.
         verify(userService, times(1)).getUserWithAuthorities();
-        verify(projectRepository, times(1)).findOne(isA(longCl));
         verify(organizationRepository, times(0)).findOne(isA(longCl));
 
         verify(resourceRequirementRepositoryMock, times(1)).save(isA(reqCl));
-        //No tags has been added
-        verify(resourceTagRepositoryMock, times(1)).findByName(isA(stringCl));
-        verify(resourceTagRepositoryMock, times(1)).save(isA(tagCl));
-        //No Tag joins added
-    }
-
-    @Test(expected = ResourceTagException.class)
-    public void testCreateRequirement_TagFailed() throws Exception {
-        this.prepareUser();
-        String[] tags = this.prepareCreateRequirement();
-        tags[0] = null;
-
-        //save without any tags
-        ResourceRequirement actual = this.resourceService.createRequirement(expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject().getId(), expectedReq.getIsEssential(), tags);
-    }
-
-    @Test(expected = ResourceTagException.class)
-    public void testCreateRequirement_TagSaveFailed() throws Exception {
-        this.newTagId = null;
-        this.prepareUser();
-        String[] tags = this.prepareCreateRequirement();
-
-
-        //save without any tags
-        ResourceRequirement actual = this.resourceService.createRequirement(expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject().getId(), expectedReq.getIsEssential(), tags);
     }
 
     @Test
     public void testDeleteRequirement() throws Exception {
         this.prepareUser();
-        String[] tags = this.prepareCreateRequirement();
+        List<String> tags = this.prepareCreateRequirement();
+
         when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
         this.resourceService.deleteRequirement(expectedReq.getId());
 
@@ -342,12 +324,12 @@ public class ResourceServiceTest {
         }).when(resourceRequirementRepositoryMock).findAll();
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceRequirementDTO> items = this.resourceService.getAllRequirements();
+        List<ResourceRequirement> items = this.resourceService.getAllRequirements();
         assertEquals(items.size(), listSize);
         for(int i = 0; i < items.size(); i++){
-            ResourceRequirementDTO current = items.get(i);
+            ResourceRequirement current = items.get(i);
             assertEquals(current.getId(), expected);
-            assertEquals(current.getProjectId(), expProject.getId());
+            assertEquals(current.getProject().getId(), expProject.getId());
             expected += 9L;
         }
 
@@ -383,7 +365,7 @@ public class ResourceServiceTest {
             return internalItems;
         }).when(resourceRequirementRepositoryMock).findByProjectId(isA(longCl));
         int listSize = 1;
-        List<ResourceRequirementDTO> expectedItem = this.resourceService.getAllRequirements(projectID);
+        List<ResourceRequirementRequestDTO> expectedItem = this.resourceService.getAllRequirements(projectID);
         assertEquals(expectedItem.size(), listSize);
         assertEquals(expectedItem.get(0).getProjectId(), projectID);
         assertEquals(expectedItem.get(0).getId(), expectedRequirementID);
@@ -393,16 +375,16 @@ public class ResourceServiceTest {
     @Test
     public void testCreateOffer_OK() throws Exception {
         this.prepareUser();
-        String[] tags = this.prepareCreateOffer();
+        List<String> tags = this.prepareCreateOffer();
 
         //save without any tags
-        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getOrganisation().getId(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
+        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getOrganization().getId(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
         assertEquals(expOffer.getName(), actual.getName());
         assertEquals(expOffer.getDescription(), actual.getDescription());
-        assertEquals(expOffer.getOrganisation(), actual.getOrganisation());
+        assertEquals(expOffer.getOrganization(), actual.getOrganization());
         assertEquals(expOffer.getIsCommercial(), actual.getIsCommercial());
         assertEquals(expOffer.getIsRecurrent(), actual.getIsRecurrent());
         assertEquals(expOffer.getStartDate(), actual.getStartDate());
@@ -415,39 +397,28 @@ public class ResourceServiceTest {
         }
 
         verify(resourceOfferRepositoryMock, times(1)).save(isA(offerCl));
-        //No tags has been added
-        verify(resourceTagRepositoryMock, times(1)).findByName(isA(stringCl));
-        verify(resourceTagRepositoryMock, times(1)).save(isA(tagCl));
-    }
-
-    @Test(expected = ResourceTagException.class)
-    public void testCreateOffer_TagFailed() throws Exception {
-        this.prepareUser();
-        String[] tags = this.prepareCreateOffer();
-        tags[0] = null;
-        //save without any tags
-        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getOrganisation().getId(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
     }
 
     @Test(expected = ResourceException.class)
     public void testUpdateOffer_Fail() throws Exception {
         this.prepareUser();
-        String[] tags = this.prepareCreateOffer();
-        ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganisation().getId(), expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
-
+        List<String> tags = this.prepareCreateOffer();
+        this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(), expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
     }
     @Test
     public void testUpdateOffer() throws Exception {
         this.prepareUser();
-        String[] tags = this.prepareCreateOffer();
+        List<String> tags = this.prepareCreateOffer();
         when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
-        ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganisation().getId(), expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
+        ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(),
+            expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(),
+            expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
         assertEquals(expOffer.getName(), actual.getName());
         assertEquals(expOffer.getDescription(), actual.getDescription());
-        assertEquals(expOffer.getOrganisation(), actual.getOrganisation());
+        assertEquals(expOffer.getOrganization(), actual.getOrganization());
         assertEquals(expOffer.getIsCommercial(), actual.getIsCommercial());
         assertEquals(expOffer.getIsRecurrent(), actual.getIsRecurrent());
         assertEquals(expOffer.getStartDate(), actual.getStartDate());
@@ -461,13 +432,12 @@ public class ResourceServiceTest {
 
         verify(resourceOfferRepositoryMock, times(1)).save(isA(offerCl));
         //No tags has been added
-        verify(resourceTagRepositoryMock, times(1)).findByName(isA(stringCl));
-        verify(resourceTagRepositoryMock, times(1)).save(isA(tagCl));
+        verify(resourceTagServiceMock, times(1)).getOrCreateTags(any());
     }
     @Test
     public void testDeleteOffer() throws Exception {
         this.prepareUser();
-        String[] tags = this.prepareCreateOffer();
+        List<String> tags = this.prepareCreateOffer();
         when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
         this.resourceService.deleteOffer(expOffer.getId());
 
@@ -483,18 +453,18 @@ public class ResourceServiceTest {
             List<ResourceOffer> items = new ArrayList<ResourceOffer>(2);
             ResourceOffer item1 = new ResourceOffer();
             item1.setId(1L);
-            item1.setOrganisation(expOrg);
+            item1.setOrganization(expOrg);
             items.add(item1);
             ResourceOffer item2 = new ResourceOffer();
             item2.setId(10L);
-            item2.setOrganisation(expOrg);
+            item2.setOrganization(expOrg);
             items.add(item2);
             return items;
-        }).when(resourceOfferRepositoryMock).findAll();
+        }).when(resourceOfferRepositoryMock).findByOrganization(expOrg.getId());
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceOfferDTO> list = this.resourceService.getAllOffers();
-        assertEquals(list.size(), listSize);
+        List<ResourceOfferDTO> list = this.resourceService.getAllOffers(expOrg.getId());
+        assertEquals(listSize, list.size());
         for(int i = 0; i < list.size(); i++){
             ResourceOfferDTO current = list.get(i);
             assertEquals(current.getId(), expected);
@@ -511,10 +481,10 @@ public class ResourceServiceTest {
             List<ResourceOffer> items = new ArrayList<ResourceOffer>(2);
             ResourceOffer item1 = new ResourceOffer();
             item1.setId(3L);
-            item1.setOrganisation(alternative);
+            item1.setOrganization(alternative);
             items.add(item1);
             return items;
-        }).when(resourceOfferRepositoryMock).findByOrganisationId(isA(longCl));
+        }).when(resourceOfferRepositoryMock).findByOrganization(isA(longCl));
         listSize = 1;
         list = this.resourceService.getAllOffers(99L);
 
@@ -525,7 +495,6 @@ public class ResourceServiceTest {
             assertEquals(current.getOrganizationId(), alternative.getId());
         }
 
-        verify(this.resourceOfferRepositoryMock, times(1)).findByOrganisationId(isA(longCl));
-        verify(this.resourceOfferRepositoryMock, times(1)).findAll();
+        verify(this.resourceOfferRepositoryMock, times(2)).findByOrganization(isA(longCl));
     }
 }

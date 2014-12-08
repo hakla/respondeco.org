@@ -138,7 +138,7 @@ public class OrgJoinRequestServiceTest {
 
         orgJoinRequestService.createOrgJoinRequest(defaultOrganization.getName(),orgOwner.getLogin());
 
-        List<OrgJoinRequest> orgJoinRequestList = orgJoinRequestService.getOrgJoinRequestByOrgName(defaultOrganization.getName());
+        List<OrgJoinRequest> orgJoinRequestList = orgJoinRequestService.getOrgJoinRequestByOrganization(defaultOrganization.getId());
         OrgJoinRequest orgJoinRequest = orgJoinRequestList.get(0);
         assertNotNull(orgJoinRequest);
 
@@ -148,7 +148,7 @@ public class OrgJoinRequestServiceTest {
 
     @Test(expected = NoSuchOrganizationException.class)
     public void testGetOrgJoinRequestByOrgName_NoSuchOrganization() throws Exception {
-        orgJoinRequestService.getOrgJoinRequestByOrgName("testOrg1");
+        orgJoinRequestService.getOrgJoinRequestByOrganization(231l);
     }
 
     @Test

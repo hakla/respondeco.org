@@ -7902,6 +7902,11 @@ body {
 }
 
 /* line 17, ../../scss/main.scss */
+[ng-view].well {
+  margin-top: 50px;
+}
+
+/* line 21, ../../scss/main.scss */
 .ribbon-development, .ribbon-test {
   position: absolute;
   width: 149px;
@@ -7914,29 +7919,29 @@ body {
   background-repeat: no-repeat;
 }
 
-/* line 29, ../../scss/main.scss */
+/* line 33, ../../scss/main.scss */
 .ribbon-development {
   background-image: url("../images/development_ribbon.png");
 }
 
-/* line 33, ../../scss/main.scss */
+/* line 37, ../../scss/main.scss */
 .ribbon-test {
   background-image: url("../images/test_ribbon.png");
 }
 
-/* line 37, ../../scss/main.scss */
+/* line 41, ../../scss/main.scss */
 .error {
   color: white;
   background-color: red;
 }
 
 /* make sure browsers use the pointer cursor for anchors, even with no href */
-/* line 43, ../../scss/main.scss */
+/* line 47, ../../scss/main.scss */
 a:hover {
   cursor: pointer;
 }
 
-/* line 47, ../../scss/main.scss */
+/* line 51, ../../scss/main.scss */
 [ng-click],
 [data-ng-click],
 [x-ng-click] {
@@ -7944,7 +7949,7 @@ a:hover {
 }
 
 /* start Password strength bar style */
-/* line 54, ../../scss/main.scss */
+/* line 58, ../../scss/main.scss */
 ul#strength {
   display: inline;
   list-style: none;
@@ -7954,12 +7959,12 @@ ul#strength {
   vertical-align: 2px;
 }
 
-/* line 63, ../../scss/main.scss */
+/* line 67, ../../scss/main.scss */
 .point:last {
   margin: 0 !important;
 }
 
-/* line 67, ../../scss/main.scss */
+/* line 71, ../../scss/main.scss */
 .point {
   background: #DDD;
   border-radius: 2px;
@@ -7973,7 +7978,7 @@ ul#strength {
 /************************
  * Nav
  ************************/
-/* line 81, ../../scss/main.scss */
+/* line 85, ../../scss/main.scss */
 .navbar {
   margin-bottom: 0;
 }
@@ -7981,73 +7986,73 @@ ul#strength {
 /************************
  * Settings
  ************************/
-/* line 88, ../../scss/main.scss */
+/* line 92, ../../scss/main.scss */
 img {
   border-radius: 2px;
 }
 
-/* line 93, ../../scss/main.scss */
+/* line 97, ../../scss/main.scss */
 .profile img {
   width: 100%;
 }
 
-/* line 99, ../../scss/main.scss */
+/* line 103, ../../scss/main.scss */
 .member li {
   padding: 0 5px 7px 5px;
   border: 1px solid #e3e3e3;
 }
-/* line 103, ../../scss/main.scss */
+/* line 107, ../../scss/main.scss */
 .member li .pull-left {
   padding: 0 10px 10px 0;
 }
-/* line 106, ../../scss/main.scss */
+/* line 110, ../../scss/main.scss */
 .member li .pull-left img {
   border-radius: 2px;
   width: 100%;
 }
 
-/* line 114, ../../scss/main.scss */
+/* line 118, ../../scss/main.scss */
 .profile, .account, .member {
   transition: .3s ease opacity;
   opacity: 1;
 }
-/* line 118, ../../scss/main.scss */
+/* line 122, ../../scss/main.scss */
 .profile.ng-hide, .account.ng-hide, .member.ng-hide {
   opacity: 0;
 }
 
-/* line 124, ../../scss/main.scss */
+/* line 128, ../../scss/main.scss */
 .organization .organization-item {
   list-style-type: none;
   display: inline-block;
-  height: 200px;
+  height: 255px;
   margin: 25px 75px 25px 0;
   padding: 10px;
   background-color: #FFF;
   border: 1px solid #e3e3e3;
   border-radius: 2px;
 }
-/* line 134, ../../scss/main.scss */
-.organization .organization-item img {
-  max-height: 200px;
+/* line 138, ../../scss/main.scss */
+.organization .organization-item uploaded-image {
+  display: block;
   width: 200px;
 }
-/* line 139, ../../scss/main.scss */
+/* line 143, ../../scss/main.scss */
 .organization .organization-item h2 {
   margin-top: 0;
 }
-/* line 142, ../../scss/main.scss */
+/* line 146, ../../scss/main.scss */
 .organization .organization-item h2 a {
   color: #333;
   font-size: 18px;
 }
 
-/* line 151, ../../scss/main.scss */
+/* line 155, ../../scss/main.scss */
 .orgjoinrequest .btn-group {
   margin-top: 25px;
 }
 
-/* line 156, ../../scss/main.scss */
+/* line 160, ../../scss/main.scss */
 .my-drop-zone {
   text-align: center;
   border: none;
@@ -8055,7 +8060,7 @@ img {
   font-size: 4em;
   position: relative;
 }
-/* line 163, ../../scss/main.scss */
+/* line 167, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover {
   position: absolute;
   top: 0px;
@@ -8071,33 +8076,33 @@ img {
   transition: .25s ease opacity;
   cursor: pointer;
 }
-/* line 178, ../../scss/main.scss */
+/* line 182, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover:hover {
   opacity: 1;
 }
-/* line 182, ../../scss/main.scss */
+/* line 186, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover i {
   cursor: pointer;
 }
-/* line 186, ../../scss/main.scss */
+/* line 190, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover .progress-striped {
   position: absolute;
   left: 10%;
   width: 80%;
 }
 
-/* line 194, ../../scss/main.scss */
+/* line 198, ../../scss/main.scss */
 .nv-file-over {
   border: dotted 3px red;
 }
 
 /* Default class applied to drop zones on over */
-/* line 200, ../../scss/main.scss */
+/* line 204, ../../scss/main.scss */
 .another-file-over-class {
   border: dotted 3px green;
 }
 
-/* line 204, ../../scss/main.scss */
+/* line 208, ../../scss/main.scss */
 canvas {
   background-color: #f3f3f3;
   -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
@@ -8107,7 +8112,7 @@ canvas {
   width: 100%;
 }
 
-/* line 213, ../../scss/main.scss */
+/* line 217, ../../scss/main.scss */
 .project-item {
   list-style-type: none;
   display: inline-block;
@@ -8119,38 +8124,160 @@ canvas {
   min-width: 200px;
   height: 300px;
 }
-/* line 224, ../../scss/main.scss */
+/* line 228, ../../scss/main.scss */
 .project-item img {
   height: 200px;
   width: 100%;
 }
-/* line 229, ../../scss/main.scss */
+/* line 233, ../../scss/main.scss */
 .project-item h2 {
   margin-top: 0;
 }
-/* line 232, ../../scss/main.scss */
+/* line 236, ../../scss/main.scss */
 .project-item h2 a {
   color: #333;
   font-size: 18px;
 }
 
-/* line 241, ../../scss/main.scss */
+/* line 245, ../../scss/main.scss */
 tags-input .tags .tag-item {
   background: #EFEFEF;
   border-radius: 1px;
   color: #333;
   padding: 0 8px;
 }
-/* line 248, ../../scss/main.scss */
+/* line 252, ../../scss/main.scss */
 tags-input .tags .tag-item.selected {
   background: #ACACAC;
 }
-/* line 254, ../../scss/main.scss */
+/* line 258, ../../scss/main.scss */
 tags-input .host {
   margin: 0;
 }
 
-/* line 259, ../../scss/main.scss */
-.organization-logo img {
+/* line 264, ../../scss/main.scss */
+.organization-logo uploaded-image div {
+  background-position-x: 0;
+}
+
+/* line 269, ../../scss/main.scss */
+uploaded-image, [uploaded-image] {
+  height: 200px;
+  display: block;
+}
+/* line 273, ../../scss/main.scss */
+uploaded-image div, [uploaded-image] div {
+  height: 100%;
   width: 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* line 282, ../../scss/main.scss */
+.project-logo {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  min-height: 100px;
+}
+
+/* line 289, ../../scss/main.scss */
+.tags-container .tags {
+  cursor: default;
+  user-select: none;
+}
+/* line 293, ../../scss/main.scss */
+.tags-container .tags .remove-button {
+  display: none;
+}
+/* line 297, ../../scss/main.scss */
+.tags-container .tags input {
+  display: none;
+}
+
+/* line 302, ../../scss/main.scss */
+.rating-container {
+  text-align: center;
+  margin: 50px 0;
+}
+
+/* line 311, ../../scss/main.scss */
+.panel-body ul {
+  padding: 0;
+}
+/* line 314, ../../scss/main.scss */
+.panel-body ul li {
+  height: 100px;
+  list-style-type: none;
+}
+/* line 318, ../../scss/main.scss */
+.panel-body ul li div {
+  box-sizing: border-box;
+  padding-top: 27.5px;
+}
+/* line 323, ../../scss/main.scss */
+.panel-body ul li img {
+  height: 75px;
+}
+
+/* line 330, ../../scss/main.scss */
+.newsfeed ul {
+  padding: 0;
+}
+/* line 333, ../../scss/main.scss */
+.newsfeed ul li {
+  list-style-type: none;
+}
+
+/* line 340, ../../scss/main.scss */
+.resource-search-container form {
+  margin-top: 50px;
+}
+/* line 344, ../../scss/main.scss */
+.resource-search-container ul.resources {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 80px 0 50px 0;
+}
+/* line 349, ../../scss/main.scss */
+.resource-search-container ul.resources li {
+  margin-bottom: 60px;
+}
+/* line 352, ../../scss/main.scss */
+.resource-search-container ul.resources li img {
+  height: 64px;
+  width: 64px;
+}
+/* line 357, ../../scss/main.scss */
+.resource-search-container ul.resources li h2 {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* line 363, ../../scss/main.scss */
+.resource-search-container ul.resources li .rating {
+  margin-top: 4px;
+}
+/* line 367, ../../scss/main.scss */
+.resource-search-container ul.resources li .amount {
+  font-size: 20px;
+}
+/* line 372, ../../scss/main.scss */
+.resource-search-container ul.resources li .organization .organization-name {
+  font-size: 20px;
+  margin-right: 12px;
+}
+/* line 377, ../../scss/main.scss */
+.resource-search-container ul.resources li .organization i {
+  font-size: 12px;
+}
+/* line 382, ../../scss/main.scss */
+.resource-search-container ul.resources li .on-hover {
+  opacity: 0;
+  transition: .2s ease opacity;
+}
+/* line 387, ../../scss/main.scss */
+.resource-search-container ul.resources li:hover .on-hover {
+  opacity: 1;
 }

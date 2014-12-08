@@ -42,7 +42,9 @@ public class OrganizationDTO {
         this.email = org.getEmail();
         this.isNpo = org.getIsNpo();
         this.owner = new UserDTO(org.getOwner());
-        this.logo = new ImageDTO(org.getLogo());
+        if(org.getLogo() != null) {
+            this.logo = new ImageDTO(org.getLogo());
+        }
     }
 
 }

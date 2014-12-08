@@ -21,9 +21,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
-import org.respondeco.respondeco.service.OrganizationService;
-import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -74,6 +72,12 @@ public class OrganizationControllerTest {
     @Mock
     private OrganizationService organizationService;
 
+    @Mock
+    private OrgJoinRequestService orgJoinRequestService;
+
+    @Mock
+    private SupporterRatingService supporterRatingService;
+
     private MockMvc restOrganizationMockMvc;
 
     private OrganizationDTO organizationDTO;
@@ -98,7 +102,10 @@ public class OrganizationControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository, imageRepository);
-        OrganizationController organizationController = new OrganizationController(organizationService, userService, resourceService);
+
+        OrganizationController organizationController =
+            new OrganizationController(organizationService, userService, resourceService,
+                orgJoinRequestService, supporterRatingService);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();

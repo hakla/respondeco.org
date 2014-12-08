@@ -1,53 +1,67 @@
-<div>
- 
-    <h1>{{ 'global.resource.title' | translate }}</h1>
+<div class="clearfix resource-search-container">
+    <h1>
+        {{ 'global.resource.title' | translate }}
+    </h1>
 
-    <div class="row">
-        <div class=" col-md-5">
-            <div class="input-group">
-            <input type="text" class="form-control" placeholder=" {{'global.resource.placeholder.search' | translate}}"
-                    ng-model="filter">
-                <span class="input-group-btn"> 
-                    <button type="button" class="btn btn-default " ng-click="search()">
-                    {{'global.resource.searchbutton' | translate}}
-                    </button>
-                </span>
+    <form name="searchForm" class="row" role="form" novalidate ng-submit="search()">
+        <div class="form-group col-md-3">
+            <label translate="global.resource.name">name</label>
+            <input type="text" class="form-control" placeholder=" {{'global.resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
+        </div>
+        <div class="form-group col-md-3">
+            <label translate="global.resource.tags">tags</label>
+            <tags-input ng-model="searchTags" add-on-space="true" display-property="name" min-length="1" placeholder=" {{'global.resource.placeholder.search' | translate}}">
+            </tags-input>
+        </div>
+        <div class="form-group col-md-3">
+            <label translate="global.resource.organization">company</label>
+            <input class="form-control" type="text" placeholder=" {{'global.resource.placeholder.search' | translate}}" ng-model="resourceSearch.organization">
+            </input>
+        </div>
+        <div class="form-group col-md-3">
+            <label translate="global.resource.search.type" tooltip="{{ 'global.resource.search.tooltip.type' | translate }}">Type of resource</label>
+            <div class="btn-group">
+                <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="true">Kommerziell</label>
+                <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="false">Nicht Kommerziell</label>
             </div>
         </div>
-        <div class="col-md-7"> 
-            <button class="btn btn-success btn-mid pull-right"
-                    ng-click="redirectToResource('new')">
-                <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'global.resource.newbutton' | translate }}
+        <div class="col-md-5">
+            <button type="button" class="btn btn-default " ng-click="search()">
+                {{'global.resource.searchbutton' | translate}}
             </button>
         </div>
-    </div>
+    </form>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <td translate="global.resource.name">name</td>
-                    <td translate="global.resource.company">company</td>
-                    <td translate="global.resource.amount">amount</td>
-                    <td translate="global.resource.startDate">available from</td>
-                    <td translate="global.resource.endDate">available until</td>
-                    <td translate="global.resource.commercial">commercial</td>
-                    <td translate="global.resource.recurrent">recurrent</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-click=redirectToResource(resource.id) ng-repeat="resource in resources">
-                    <td>{{ resource.name }}</td>
-                    <td>{{ organization.name }}</td>
-                    <td>{{ resource.amount }}</td>
-                    <td>{{ resource.startDate | date}}</td>
-                    <td>{{ resource.endDate | date }}</td>
-                    <td ng-show="resource.isCommercial"><span class="glyphicon glyphicon-ok"/></td>
-                    <td ng-hide="resource.isCommercial"><span class="glyphicon glyphicon-remove"/></td>
-                    <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
-                    <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="row col-md-12">
+        <ul class="resources">
+            <li class="resource row" ng-repeat="resource in resources">
+                <div class="col-md-1">
+                    <img src="" alt="">
+                </div>
+                <div class="pull-right col-md-7">
+                    <div class="col-md-8 on-hover">
+                        {{ resource.description }}
+                    </div>
+                    <div class="col-md-4 on-hover">
+                        <button class="btn btn-primary" translate="global.resource.search.request">
+                            Request resource
+                        </button>
+                    </div>
+                </div>
+                <h2 class="col-md-4">
+                    {{ resource.name }}
+                    <span ng-hide="resource.amount == 1">({{ resource.amount }})</span>
+                    <sup class="on-hover">
+                        <small>
+                            {{ resource.startDate }} - {{ resource.endDate }}
+                        </small>
+                    </sup>
+                    <div class="organization">
+                        <span class="organization-name">{{ organization.name }}</span>
+                        <rating class="on-hover" ng-model="resource.rating" max="5" readonly="true"></rating>
+                    </div>
+                </h2>
+            </li>
+        </ul>
     </div>
 </div>

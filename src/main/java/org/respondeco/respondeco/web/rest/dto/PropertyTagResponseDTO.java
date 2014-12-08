@@ -18,7 +18,7 @@ public class PropertyTagResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList("name");
 
-    public static List<PropertyTagResponseDTO> fromEntity(List<PropertyTag> propertyTags, List<String> fieldNames) {
+    public static List<PropertyTagResponseDTO> fromEntities(List<PropertyTag> propertyTags, List<String> fieldNames) {
         if(propertyTags == null) {
             return null;
         }

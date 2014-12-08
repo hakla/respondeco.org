@@ -6,7 +6,7 @@
             "home": "Startseite",
             "organization": "Organisation",
             "projects": "Projekte",
-            "proposals": "Angebote",
+            "resource": "Marktplatz",
             "entities": {
                 "main": "Entities"
             },
@@ -56,6 +56,16 @@
             "recurrent":"Wiederkehrend",
             "newbutton":"Neue Ressource anlegen",
             "searchbutton":"Suchen",
+            "organization": "Organisation",
+            "tags": "Tags",
+            "available": "Verfügbar",
+            "search": {
+                "type": "Art der Ressource",
+                "request": "Ressource anfordern",
+                "tooltip": {
+                    "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
+                }
+            },
             "new": {
                 "title": "Neue Ressource anlegen",
                 "name": "Name",
@@ -183,12 +193,13 @@
             "logo": "Logo hinzufügen",
             "name.placeholder": "Name des Projekts",
             "purpose.placeholder": "Ziel des Projekts",
-            "startDate.placeholder": "01.01.2015",
-            "endDate.placeholder": "31.12.2018",
+            "startDate.placeholder": "Start des Projekts",
+            "endDate.placeholder": "Ende des Projekts",
             "tag.placeholder": "Property Tags des Projekts"
         },
         "details": {
-            "title": "Projektdetails",
+            "title": "Projektübersicht für \"{{project}}\"",
+            "purpose": "Projektziel",
             "delete": "Löschen"
         },
         "categories": {
@@ -203,7 +214,7 @@
         "concrete": "Konkretes Projekt",
         "startDate": "Start-Datum",
         "endDate": "End-Datum",
-        "tag": "Tags",
+        "tags": "Tags",
         "resource": "Ressoucen",
         "logo": "ProjectLogo",
         "name.placeholder": "Projektname",
@@ -220,6 +231,11 @@
             "enddate.beforestart": "Das Enddatum kann nicht vor dem Startdatum liegen",
             "idnull": "Das Projekt konnte nicht gespeichert werden da keine id angegeben wurde"
         }
+    },
+    "rating": {
+        "placeholder": "Ihre Meinung...",
+        "ratenow": "Jetzt Bewerten",
+        "notnow": "Später bewerten"
     },
 
     "main": {
@@ -283,10 +299,12 @@
     },
     "general": {
         "edit": "Bearbeiten",
+        "back": "Zurück",
         "button": {
             "save": "Speichern",
             "cancel": "Abbrechen"
-        }
+        },
+        "dateFormat": "dd.MM.yyyy"
     },
     "settings": {
         "title": "Einstellungen für Benutzer [<b>{{username}}</b>]",
@@ -519,7 +537,8 @@
         "accept": "Einladung annehmen",
         "decline": "Einladung ablehnen",
         "header.info": "Informationen über das Unternehmen",
-        "header.logo": "Logo"
+        "header.logo": "Logo",
+        "ownresources": "Ressourcen anzeigen"
     },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",

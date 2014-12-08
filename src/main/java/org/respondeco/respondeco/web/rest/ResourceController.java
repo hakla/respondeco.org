@@ -6,8 +6,10 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
+import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -18,13 +20,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Roman Kern on 18.11.14.
  */
 @RestController
+@Transactional
 @RequestMapping("/app")
 public class ResourceController {
     //region Private variables
@@ -49,9 +54,29 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferDTO> getAllResourceOffer() {
+    public List<ResourceOfferDTO> getAllResourceOffer(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String organization,
+        @RequestParam(required = false) String tags,
+        @RequestParam(required = false) Boolean available,
+        @RequestParam(required = false) Boolean commercial,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
+
         log.debug("REST request to get all resource offer");
-        return this.resourceService.getAllOffers();
+
+        if(name == null) name = "";
+        if(organization == null) organization = "";
+        if(tags == null) tags = "";
+        if(available == null) available = false;
+
+
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
+
+        return resourceOfferDTOs;
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -61,7 +86,7 @@ public class ResourceController {
     @Timed
     public ResourceOfferDTO getResourceOffer(@PathVariable Long id) {
         log.debug("REST request to get resource with id " + id);
-        return this.resourceService.getOfferById(id);
+        return new ResourceOfferDTO(this.resourceService.getOfferById(id));
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -87,9 +112,6 @@ public class ResourceController {
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
-
-        } catch (GeneralResourceException e){
-            message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d.",
                 resourceOfferDTO.getDescription(), resourceOfferDTO.getOrganizationId());
@@ -180,9 +202,13 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceRequirementDTO> getAllResourceRequirement() {
+    public List<ResourceRequirementRequestDTO> getAllResourceRequirement() {
         log.debug("REST request to get all resource requirements");
-        return this.resourceService.getAllRequirements();
+        List<ResourceRequirementRequestDTO> response = new ArrayList<>();
+        for(ResourceRequirement resourceRequirement : resourceService.getAllRequirements()) {
+            response.add(new ResourceRequirementRequestDTO(resourceRequirement));
+        }
+        return response;
     }
 
 
@@ -191,27 +217,27 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createResourceRequirement(@RequestBody ResourceRequirementDTO resourceRequirementDTO) throws Exception {
+    public ResponseEntity<?> createResourceRequirement(@RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) throws Exception {
         ResourceRequirement requirement = null;
-        ResponseEntity<ResourceRequirementDTO> result = null;
+        ResponseEntity<ResourceRequirementRequestDTO> result = null;
         String message = null;
         try {
             requirement = this.resourceService.createRequirement(
-                resourceRequirementDTO.getName(),
-                resourceRequirementDTO.getAmount(),
-                resourceRequirementDTO.getDescription(),
-                resourceRequirementDTO.getProjectId(),
-                resourceRequirementDTO.getIsEssential(),
-                resourceRequirementDTO.getResourceTags()
+                resourceRequirementRequestDTO.getName(),
+                resourceRequirementRequestDTO.getAmount(),
+                resourceRequirementRequestDTO.getDescription(),
+                resourceRequirementRequestDTO.getProjectId(),
+                resourceRequirementRequestDTO.getIsEssential(),
+                resourceRequirementRequestDTO.getResourceTags()
             );
-            resourceRequirementDTO.setId(requirement.getId());
-            result = new ResponseEntity<>(resourceRequirementDTO, HttpStatus.CREATED);
+            resourceRequirementRequestDTO.setId(requirement.getId());
+            result = new ResponseEntity<>(resourceRequirementRequestDTO, HttpStatus.CREATED);
 
         } catch (GeneralResourceException e){
             message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't save Resource Requirement with description '%s' and Project id: %d",
-                resourceRequirementDTO.getDescription(), resourceRequirementDTO.getProjectId());
+                resourceRequirementRequestDTO.getDescription(), resourceRequirementRequestDTO.getProjectId());
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();
@@ -228,23 +254,24 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> updateResourceRequirement(@PathVariable Long resourceRequirementId, @RequestBody ResourceRequirementDTO resourceRequirementDTO) {
+    public ResponseEntity<?> updateResourceRequirement(@PathVariable Long resourceRequirementId, @RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) {
         String message = null;
         ResponseEntity<?> result = null;
         try {
             this.resourceService.updateRequirement(
-                resourceRequirementDTO.getId(),
-                resourceRequirementDTO.getName(),
-                resourceRequirementDTO.getAmount(),
-                resourceRequirementDTO.getDescription(),
-                resourceRequirementDTO.getIsEssential(),
-                resourceRequirementDTO.getResourceTags()
+                resourceRequirementRequestDTO.getId(),
+                resourceRequirementRequestDTO.getName(),
+                resourceRequirementRequestDTO.getAmount(),
+                resourceRequirementRequestDTO.getDescription(),
+                resourceRequirementRequestDTO.getProjectId(),
+                resourceRequirementRequestDTO.getIsEssential(),
+                resourceRequirementRequestDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
         } catch (GeneralResourceException e){
             message = e.getMessage();
         } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't update Resource Requirement with %d", resourceRequirementDTO.getId());
+            message = String.format("Unexpected error. Couldn't update Resource Requirement with %d", resourceRequirementRequestDTO.getId());
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();

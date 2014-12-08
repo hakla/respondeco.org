@@ -2,27 +2,20 @@ package org.respondeco.respondeco.service;
 
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,7 +23,6 @@ import java.util.List;
  */
 
 @Service
-@Transactional
 public class ProjectService {
 
     private final Logger log = LoggerFactory.getLogger(ProjectService.class);
@@ -39,6 +31,7 @@ public class ProjectService {
     private UserService userService;
     private UserRepository userRepository;
     private PropertyTagService propertyTagService;
+    private ResourceService resourceService;
     private ImageRepository imageRepository;
 
     private RestUtil restUtil;
@@ -47,18 +40,21 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository,
                           UserService userService, UserRepository userRepository,
                           PropertyTagService propertyTagService,
+                          ResourceService resourceService,
                           ImageRepository imageRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.propertyTagService = propertyTagService;
+        this.resourceService = resourceService;
         this.imageRepository = imageRepository;
         this.restUtil = new RestUtil();
     }
 
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           LocalDate endDate, List<String> propertyTags,
-                          List<ResourceRequirementDTO> resourceRequirements, Long imageId) throws OperationForbiddenException {
+                          List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
+        throws Exception {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
@@ -77,6 +73,7 @@ public class ProjectService {
         newProject.setConcrete(isConcrete);
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);
+
         List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
         if(imageId != null) {
             newProject.setProjectLogo(imageRepository.findOne(imageId));
@@ -84,12 +81,23 @@ public class ProjectService {
         newProject.setPropertyTags(tags);
 
         projectRepository.save(newProject);
+
+        List<ResourceRequirement> requirements = new ArrayList<>();
+        if(resourceRequirements != null) {
+            for(ResourceRequirementRequestDTO req : resourceRequirements) {
+                requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(), req.getDescription(), newProject,
+                    req.getIsEssential(), req.getResourceTags()));
+            }
+        }
+        newProject.setResourceRequirements(requirements);
+        projectRepository.save(newProject);
+
         return newProject;
     }
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         LocalDate endDate, Long imageId, List<String> propertyTags,
-                        List<ResourceRequirementDTO> resourceRequirements) throws OperationForbiddenException {
+                        List<ResourceRequirementRequestDTO> resourceRequirements) throws Exception {
 
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
@@ -127,6 +135,24 @@ public class ProjectService {
         if(imageId != null) {
             project.setProjectLogo(imageRepository.findOne(imageId));
         }
+
+        log.debug("updating requirements: {}", resourceRequirements);
+
+        List<ResourceRequirement> requirements = new ArrayList<>();
+        if(resourceRequirements != null) {
+            for(ResourceRequirementRequestDTO req : resourceRequirements) {
+                if(req.getId() == null) {
+                    requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(),
+                        req.getDescription(), project, req.getIsEssential(), req.getResourceTags()));
+                } else {
+                    requirements.add(resourceService.updateRequirement(req.getId(), req.getName(), req.getAmount(),
+                        req.getDescription(), project, req.getIsEssential(), req.getResourceTags()));
+                }
+            }
+        }
+
+        log.debug("requirements updated");
+        project.setResourceRequirements(requirements);
         projectRepository.save(project);
         return project;
     }
@@ -194,6 +220,7 @@ public class ProjectService {
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByTags(tags, pageRequest);
         } else {
+            name = "%" + name + "%";
             result = projectRepository.findByNameAndTags(name, tags, pageRequest);
         }
 
@@ -215,6 +242,7 @@ public class ProjectService {
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
         } else {
+            name = "%" + name + "%";
             result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
         }
 
