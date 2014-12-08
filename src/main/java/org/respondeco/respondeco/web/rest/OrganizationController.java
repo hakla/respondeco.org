@@ -194,6 +194,41 @@ public class OrganizationController {
         return  resourceOfferDTOs;
     }
 
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organizations/{id}/resourcerequests",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<ClaimResourceDTO>> getAllResourceRequests(
+        @PathVariable Long id,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
+
+        log.debug("REST request to get all resource claim requests for organization with id " + id);
+        ResponseEntity<List<ClaimResourceDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<ResourceMatch> resourceClaims = resourceService.getResourceRequestsForOrganization(id, restParameters);
+
+        for(ResourceMatch match : resourceClaims) {
+            ClaimResourceDTO resourceDTO = new ClaimResourceDTO();
+            resourceDTO.setResourceOfferId(match.getResourceOffer().getId());
+            resourceDTO.setResourceRequirementId(match.getResourceRequirement().getId());
+            resourceDTO.setOrganizationId(match.getOrganization().getId());
+            resourceDTO.setProjectId(match.getProject().getId());
+
+            responseEntity.getBody().add(resourceDTO);
+        }
+
+        return responseEntity;
+    }
+
+
+
+
     /**
      * GET  /rest/organizations/:id/orgJoinRequests -> get the orgjoinrequests for organization :id
      */

@@ -43,6 +43,15 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             @Param("tags")  Collection<String> tags, Pageable pageable);
 
     @Query("SELECT DISTINCT p " +
+        "FROM Project p " +
+        "INNER JOIN p.organization o " +
+        "WHERE o.id = :orgId " +
+        "AND p.active = 1")
+    public List<Project> findByOrganization(
+        @Param("orgId") Long orgId, Pageable pageable);
+
+
+    @Query("SELECT DISTINCT p " +
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
             "WHERE pt.name in :tags " +
             "AND p.active = 1")

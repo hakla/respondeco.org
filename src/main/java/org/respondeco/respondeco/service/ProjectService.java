@@ -241,7 +241,11 @@ public class ProjectService {
 
         List<Project> result;
         if((name == null || name.length() == 0) && tags.size() == 0) {
-            result = projectRepository.findByActiveIsTrue(pageRequest);
+            if(orgId != null) {
+                result = projectRepository.findByOrganization(orgId, pageRequest);
+            } else {
+                result = projectRepository.findByActiveIsTrue(pageRequest);
+            }
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
         } else {

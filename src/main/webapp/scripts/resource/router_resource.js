@@ -21,5 +21,11 @@ respondecoApp
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
+                }).when('/chooseproject', {
+                    templateUrl: '/views/claimresource.html',
+                    controller: 'ResourceController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
                 });
     });

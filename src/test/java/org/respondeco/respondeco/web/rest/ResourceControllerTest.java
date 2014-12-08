@@ -94,6 +94,8 @@ public class ResourceControllerTest {
     private ImageRepository imageRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private ResourceMatchRepository resourceMatchRepository;
 
     private MockMvc restMockMvc;
 
@@ -124,7 +126,8 @@ public class ResourceControllerTest {
             organizationRepository,
             projectRepository,
             imageRepository,
-            userService));
+            userService,
+            resourceMatchRepository));
         ResourceController controller = new ResourceController(resourceService);
 
         restMockMvc = MockMvcBuilders.standaloneSetup(controller).build();

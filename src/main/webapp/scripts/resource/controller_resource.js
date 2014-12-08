@@ -1,22 +1,27 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project) {
 
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
+	$scope.projects = [];
 	$scope.organization = null;
 	$scope.formSaveError = null;
  	$scope.selectedTags = [];
  	$scope.searchTags = [];
 
 	$scope.resourceSearch = {name: null, organization: null, tags: null, available: false};
+	
+	$scope.resourceRequirements = [];
+	$scope.showRequirements = false;
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
 	var orgId;
+	var claim = {};
 
-
-	if($location.path() === 'ownresource') {
+	console.log($location.path());
+	if($location.path() === '/ownresource') {
 		Account.get(null, function(account) {
 			orgId = account.organizationId;
 
@@ -26,6 +31,43 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$scope.resources = Resource.query();
 	}
 
+	//Claim Resource
+	var updateProjects = function() {
+		Account.get(null, function(account) {
+			orgId = account.organizationId;
+			claim.organizationId = orgId;
+
+			$scope.projects = Project.getProjectsByOrgId({organizationId:orgId}, function() {
+				console.log($scope.projects);
+			});
+		});
+	}
+		
+
+	$scope.selectProject = function(project) {
+		$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
+			$scope.showRequirements = true;
+			claim.projectId = project.id;
+		});
+	}
+
+	$scope.selectRequirement = function(requirement) {
+		claim.resourceRequirementId = requirement.id;
+
+		Resource.claimResource(claim, function() {
+			console.log("DONE");
+		});
+	}
+
+	$scope.claimResource = function(res) {
+		claim.resourceOfferId = res.id;
+		console.log(res.id);
+		updateProjects();
+	}
+
+	$scope.redirectToChooseProject = function() {
+		$location.path('chooseproject');
+	}
 
 	Account.get(null, function(account) {
 		$scope.resource.organizationId = account.organizationId;
@@ -122,5 +164,14 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
             $scope.resources = Resource.getByOrgId({id:orgId});
         });
     };
+
+    $scope.claim = function(id) {
+    	
+
+
+
+
+
+    }
 
 });

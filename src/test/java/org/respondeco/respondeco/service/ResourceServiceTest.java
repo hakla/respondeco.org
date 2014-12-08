@@ -56,6 +56,8 @@ public class ResourceServiceTest {
     private UserService userService;
     @Mock
     private ResourceTagService resourceTagServiceMock;
+    @Mock
+    private ResourceMatchRepository resourceMatchRepository;
 
     private ResourceService resourceService;
     private ResourceOffer expOffer = null;
@@ -84,7 +86,8 @@ public class ResourceServiceTest {
             organizationRepository,
             projectRepository,
             imageRepository,
-            userService
+            userService,
+            resourceMatchRepository
         );
     }
 

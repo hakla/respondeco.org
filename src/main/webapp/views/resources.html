@@ -43,7 +43,7 @@
                         {{ resource.description }}
                     </div>
                     <div class="col-md-4 on-hover">
-                        <button class="btn btn-primary" translate="resource.search.request">
+                        <button ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
                             Request resource
                         </button>
                     </div>
@@ -65,3 +65,63 @@
         </ul>
     </div>
 </div>
+
+<div class="modal fade" id="claimResourceModal" tabindex="-1" role="dialog" aria-labelledby="resourceModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="sendform" role="form" novalidate show-validation
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="create()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="resourceModalLabel"
+                            translate="global.textmessages.createmessage">Claim Resource</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger" ng-show="searchError" translate="project.error.searcherror">
+                                    <strong>Server could not be reached, something went wrong</strong>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="alert alert-warning" ng-show="noProjects" translate="project.search.empty">
+                                    <strong>There are no projects matching your criteria</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                    
+                            <div class="col-sm-12">
+                                <resp-project project="project" on-project-click="selectProject(project)"
+                                              ng-repeat="project in projects"></resp-project>
+                            </div>
+
+
+                        <div class="row">
+                            <ul class="requirements">
+                                <li class="requirements row" ng-repeat="requirement in resourceRequirements">
+                                    <button type="button" ng-click="selectRequirement(requirement)" > requirement.name </button>
+                                </li>
+
+                            <ul>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span>
+                            <span translate="global.form.cancel">Cancel</span>
+                        </button>
+                        <button type="submit" ng-disabled="sendform.$invalid" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-save"></span>
+                            <span translate="global.form.send">Send</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

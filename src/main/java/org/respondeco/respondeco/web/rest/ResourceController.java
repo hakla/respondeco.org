@@ -1,12 +1,15 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.ResourceException;
+import org.respondeco.respondeco.web.rest.dto.ClaimResourceDTO;
+import org.respondeco.respondeco.web.rest.dto.ClaimResourceResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
@@ -88,6 +91,34 @@ public class ResourceController {
         log.debug("REST request to get resource with id " + id);
         return new ResourceOfferDTO(this.resourceService.getOfferById(id));
     }
+
+
+    /**
+     * Create Claim ResourceOffer Request
+     * @param claimResourceDTO
+     * @return
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourcerequests",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> claimResourceOffer(@RequestBody ClaimResourceDTO claimResourceDTO) {
+        log.debug("REST request to claim ResourceOffer : " + claimResourceDTO);
+        ResponseEntity<?> responseEntity;
+
+        ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(
+            claimResourceDTO.getResourceOfferId(),
+            claimResourceDTO.getResourceRequirementId(),
+            claimResourceDTO.getOrganizationId(),
+            claimResourceDTO.getProjectId()
+        );
+
+        responseEntity = new ResponseEntity<>(HttpStatus.OK);
+
+        return responseEntity;
+    }
+
 
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers",

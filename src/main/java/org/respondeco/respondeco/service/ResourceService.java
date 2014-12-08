@@ -49,7 +49,7 @@ public class ResourceService {
     private ResourceTagService resourceTagService;
     private OrganizationRepository organizationRepository;
     private ProjectRepository projectRepository;
-
+    private ResourceMatchRepository resourceMatchRepository;
     private ImageRepository imageRepository;
 
     private UserService userService;
@@ -66,7 +66,8 @@ public class ResourceService {
                            OrganizationRepository organizationRepository,
                            ProjectRepository projectRepository,
                            ImageRepository imageRepository,
-                           UserService userService) {
+                           UserService userService,
+                           ResourceMatchRepository resourceMatchRepository) {
         this.resourceOfferRepository = resourceOfferRepository;
         this.resourceRequirementRepository = resourceRequirementRepository;
         this.resourceTagService = resourceTagService;
@@ -75,6 +76,7 @@ public class ResourceService {
         this.restUtil = new RestUtil();
         this.imageRepository = imageRepository;
         this.userService = userService;
+        this.resourceMatchRepository = resourceMatchRepository;
     }
 
     private void ensureUserIsPartOfOrganisation(Project project) throws ResourceException {
@@ -346,6 +348,56 @@ public class ResourceService {
     public ResourceOffer getOfferById(Long id) {
         return resourceOfferRepository.getOne(id);
     }
+
+
+    /**
+     * Create a claim resource request
+     * @param resourceOfferId
+     * @param resourceRequirementId
+     * @param organizationId
+     * @param projectId
+     * @return
+     */
+    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId) {
+
+        ResourceMatch resourceMatch = new ResourceMatch();
+
+        ResourceOffer resourceOffer = resourceOfferRepository.findOne(resourceOfferId);
+        ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
+        Organization organization = organizationRepository.findOne(organizationId);
+        Project project = projectRepository.findOne(projectId);
+
+        resourceMatch.setResourceOffer(resourceOffer);
+        resourceMatch.setResourceRequirement(resourceRequirement);
+        resourceMatch.setOrganization(organization);
+        resourceMatch.setProject(project);
+
+        resourceMatchRepository.save(resourceMatch);
+        return resourceMatch;
+    }
+
+
+    /**
+     *
+     * @param organizationId
+     * @return
+     */
+    @Transactional(readOnly=true)
+    public List<ResourceMatch> getResourceRequestsForOrganization(Long organizationId, RestParameters restParameters) {
+        PageRequest pageRequest = restParameters.buildPageRequest();
+
+        QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
+        BooleanExpression resourceMatchOrganization = resourceMatch.organization.id.eq(organizationId);
+        BooleanExpression resourceMatchAccepted = resourceMatch.accepted.eq(false);
+
+        Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization);
+
+        List<ResourceMatch> requests = resourceMatchRepository.findAll(where, pageRequest).getContent();
+
+        return requests;
+    }
+
+
 
 
     // endregion
