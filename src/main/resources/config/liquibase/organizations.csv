@@ -1,0 +1,4 @@
+id;name;email;is_npo;owner;is_active
+1;testorg1;blub@test.at;false;3;true
+2;userorg;bla@blub.at;false;4;true
+3;annenpo;blub@npo.at;true;5;true

@@ -22,8 +22,6 @@
             <column name="is_concrete" type="boolean" defaultValue="false"/>
             <column name="start_date" type="date" />
             <column name="end_date" type="date" />
-            <column name="rating" type="double" />
-            <column name="rating_count" type="int" />
 
             <column name="projectLogo_id" type="bigint"/>
 

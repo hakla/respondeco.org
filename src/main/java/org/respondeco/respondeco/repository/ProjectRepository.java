@@ -3,6 +3,7 @@ package org.respondeco.respondeco.repository;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.PropertyTag;
+import org.respondeco.respondeco.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     public List<Project> findByActiveIsTrue(Pageable pageable);
 
     public Project findByIdAndActiveIsTrue(Long id);
+
+    public List<Project> findByManager(User user);
 
     @Query("SELECT DISTINCT p " +
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +

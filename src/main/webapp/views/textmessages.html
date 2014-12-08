@@ -74,7 +74,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="message in textMessages" ng-click="viewMessage(message)">
-                            <td><strong>{{message.sender}}</strong></td>
+                            <td><strong>{{message.sender.login}}</strong></td>
                             <td>{{message.timestamp | date}}</td>
                         </tr>
                     </tbody>
@@ -93,7 +93,7 @@
                                             <strong translate="global.textmessages.from">From </strong>:
                                         </td>
                                         <td>
-                                            <span>{{ viewedTextMessage.sender }}</span>
+                                            <span>{{ viewedTextMessage.sender.login }}</span>
                                         </td>
                                     </tr>
                                     <tr>

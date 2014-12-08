@@ -21,8 +21,11 @@
     <include file="classpath:config/liquibase/changelog/20141116203100_added_table_resource_resourcetag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141116201700_added_table_project_propertytag.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141126023848_added_entity_Image.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141297173500_added_entity_ResourceMatch.xml" relativeToChangelogFile="false"/>
-    <include file="classpath:config/liquibase/changelog/20141297173600_added_entity_Rating.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141207173500_added_entity_ResourceMatch.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141207173600_added_entity_Rating.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141208154300_load_default_Organizations.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141208154500_load_default_Projects.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141208171000_load_default_PropertyTags.xml" relativeToChangelogFile="false"/>
     <!-- JHipster will add liquibase changelogs here -->
 
 </databaseChangeLog>

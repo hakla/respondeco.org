@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.beans.Expression;
 import java.math.BigDecimal;
@@ -49,6 +50,10 @@ public class ResourceService {
     private OrganizationRepository organizationRepository;
     private ProjectRepository projectRepository;
 
+    private ImageRepository imageRepository;
+
+    private UserService userService;
+
     private RestUtil restUtil;
 
     // endregion
@@ -59,21 +64,38 @@ public class ResourceService {
                            ResourceRequirementRepository resourceRequirementRepository,
                            ResourceTagService resourceTagService,
                            OrganizationRepository organizationRepository,
-                           ProjectRepository projectRepository) {
+                           ProjectRepository projectRepository,
+                           ImageRepository imageRepository,
+                           UserService userService) {
         this.resourceOfferRepository = resourceOfferRepository;
         this.resourceRequirementRepository = resourceRequirementRepository;
         this.resourceTagService = resourceTagService;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
         this.restUtil = new RestUtil();
+        this.imageRepository = imageRepository;
+        this.userService = userService;
     }
 
+    private void ensureUserIsPartOfOrganisation(Project project) throws ResourceException {
+        User user = userService.getUserWithAuthorities();
+        if (project.getOrganization().getOwner() != user){
+            throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);
+        }
+    }
+
+    private void ensureUserIsPartOfOrganisation(Organization organization) throws ResourceException {
+        User user = userService.getUserWithAuthorities();
+        if (organization.getOwner() != user){
+            throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);
+        }
+    }
     // endregion
 
     // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+        throws ResourceException {
         Project project = projectRepository.findOne(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
@@ -83,18 +105,20 @@ public class ResourceService {
 
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Project project, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+        throws ResourceException {
         ResourceRequirement newRequirement = null;
-        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByNameAndProject(name, project);
+        ensureUserIsPartOfOrganisation(project);
+        List<ResourceRequirement> entries = resourceRequirementRepository.findByNameAndProject(name, project);
         if (entries == null || entries.isEmpty() == true) {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
+            newRequirement.setOriginalAmount(amount);
             newRequirement.setAmount(amount);
             newRequirement.setDescription(description);
             newRequirement.setProject(project);
             newRequirement.setIsEssential(isEssential);
             newRequirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-            this.resourceRequirementRepository.save(newRequirement);
+            resourceRequirementRepository.save(newRequirement);
         } else {
             throw new ResourceException(
                 String.format("Requirement with description '%s' for the Project %d already exists",
@@ -106,7 +130,7 @@ public class ResourceService {
 
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+        throws ResourceException, OperationForbiddenException {
         Project project = projectRepository.findOne(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
@@ -116,18 +140,19 @@ public class ResourceService {
 
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Project project, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, ResourceTagException, ResourceJoinTagException, Exception {
+        throws ResourceException, OperationForbiddenException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if(project.equals(requirement.getProject()) == false) {
             throw new OperationForbiddenException("cannot modify resource requirements of other projects");
         }
         if (requirement != null) {
+            ensureUserIsPartOfOrganisation(requirement.getProject());
             requirement.setName(name);
             requirement.setAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
             requirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-            this.resourceRequirementRepository.save(requirement);
+            resourceRequirementRepository.save(requirement);
 
         } else {
             throw new ResourceException(String.format("No resource requirement found for the id: %d", id),
@@ -137,9 +162,11 @@ public class ResourceService {
         return requirement;
     }
 
-    public void deleteRequirement(Long id) throws ResourceException {
-        if (this.resourceRequirementRepository.findOne(id) != null) {
-            this.resourceRequirementRepository.delete(id);
+    public void deleteRequirement(Long id) throws Exception, ResourceException {
+        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
+        if (requirement != null) {
+            ensureUserIsPartOfOrganisation(requirement.getProject());
+            resourceRequirementRepository.delete(id);
         } else {
             throw new ResourceException(String.format("No resource requirement found for the id: %d", id), EnumResourceException.NOT_FOUND);
         }
@@ -162,7 +189,7 @@ public class ResourceService {
     // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, Boolean isRecurrent, LocalDate startDate,
-                                     LocalDate endDate, List<String> resourceTags) throws ResourceException, ResourceTagException, ResourceJoinTagException{
+                                     LocalDate endDate, List<String> resourceTags) {
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
@@ -188,6 +215,8 @@ public class ResourceService {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
 
         if (offer != null) {
+            ensureUserIsPartOfOrganisation(organizationRepository.findOne(organisationId));
+
             offer.setName(name);
             offer.setAmount(amount);
             offer.setDescription(description);
@@ -197,9 +226,6 @@ public class ResourceService {
             offer.setEndDate(endDate);
             offer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
             this.resourceOfferRepository.save(offer);
-
-
-
         }
         else{
             throw new ResourceException(String.format("Offer with Id: %d do not exists", offerId),

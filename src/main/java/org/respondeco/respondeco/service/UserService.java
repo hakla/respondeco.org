@@ -181,41 +181,11 @@ public class UserService {
         }
     }
 
-    public void deleteMember(String userlogin) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
-        User user = getUserWithAuthorities();
-        User member = userRepository.findByLogin(userlogin);
-        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
-
-        if(member == null) {
-            throw new NoSuchUserException(String.format("User %s does not exist", userlogin));
-        }
-        if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
-        }
-        if(organization.getOwner().equals(user.getLogin())==false) {
-            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ", organization.getOwner()));
-        }
-        log.debug("Deleting member from organization", user.getLogin(), organization.getName());
-        member.setOrganization(null);
-    }
-
     public void leaveOrganization() {
         User user = getUserWithAuthorities();
 
         log.debug("Leaving organization");
         user.setOrganization(null);
-    }
-
-    public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException {
-        Organization organization = organizationRepository.findOne(orgId);
-        User user = getUserWithAuthorities();
-
-        if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", orgId));
-        }
-
-        log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUsersByOrganizationId(orgId);
     }
 
     public List<String> findUsernamesLike(String usernamePart, Integer limit) {
@@ -227,40 +197,7 @@ public class UserService {
         return result;
     }
 
-    public List<User> findInvitableUsersByOrgId(Long orgId) {
-        Organization organization = organizationRepository.getOne(orgId);
-
-        // if there is no organization than all users should be returned
-        if(organization != null) {
-            List<User> users = userRepository.findInvitableUsers();
-            User owner = null;
-
-            // find the owner and remove him from the list
-            // @TODO set the orgId of the owner when set as owner
-            for (User user: users) {
-                if (organization.getOwner().equals(user.getLogin())) {
-                    owner = user;
-                    break;
-                }
-            }
-
-            if (owner != null) {
-                users.remove(owner);
-            }
-
-            return users;
-        }
-        return userRepository.findAll();
-    }
-
-    public List<UserDTO> getOrganizationMembers(Long id) {
-        List<User> users = userRepository.findUsersByOrganizationId(id);
-        List<UserDTO> userDTOs = new ArrayList<>();
-
-        for(User user : users) {
-            userDTOs.add(new UserDTO(user));
-        }
-
-        return userDTOs;
+    public User getUser(Long id) {
+        return userRepository.findOne(id);
     }
 }

@@ -6,7 +6,7 @@ respondecoApp.factory('OrgJoinRequest', function ($resource) {
             'get': { method: 'GET', isArray: true},
             'accept': { method: 'POST', url: '/app/rest/orgjoinrequests/accept/:id' },
             'decline': { method: 'POST', url: '/app/rest/orgjoinrequests/decline/:id' },
-            'getCurrent': { method: 'GET', url: '/app/rest/orgjoinrequest/current', isArray: true },
+            'current': { method: 'GET', url: '/app/rest/account/orgjoinrequests', isArray: true },
             'delete': { method: 'DELETE', url: '/app/rest/orgjoinrequests/:id' }
         });
     });

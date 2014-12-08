@@ -1,12 +1,21 @@
 package org.respondeco.respondeco.web.rest;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.respondeco.respondeco.Application;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.ResourceException;
+import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
+import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.service.ResourceTagService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
@@ -26,10 +35,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.mockito.Mockito.spy;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Matchers.isNotNull;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -43,24 +57,62 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     TransactionalTestExecutionListener.class })
 public class ResourceControllerTest {
 
+    //region DEFAULT Initialiazation values
+    private static final Long RESOURCE_OFFER_ID = 1L;
+    private static final String RESOURCE_OFFER_NAME = "TEST OFFER NAME";
+    private static final String RESOURCE_OFFER_DESCRIPTION = "HEY HERE MY SUPER OFFER DESCRIPTION. BLA BLA";
+    private static final Long RESOUCE_OFFER_ORGANIZATION_ID = 1L;
+    private static final BigDecimal RESOURCE_OFFER_AMOUNT = new BigDecimal(10);
+    private static final Boolean RESOURCE_OFFER_IS_COMMERCIAL = true;
 
+    private static final Long RESOURCE_REQUIREMENT_ID = 1L;
+    private static final String RESOURCE_REQUIREMENT_NAME = "TEST REQUIREMENT NAME";
+    private static final String RESOURCE_REQUIREMENT_DESCRIPTION = "HEY HERE MY SUPER REQUIREMENT DESCRIPTION. BLA BLA";
+    private static final Long RESOUCE_REQUIREMENT_PROJECT_ID = 1L;
+    private static final BigDecimal RESOURCE_REQUIREMENT_AMOUNT = new BigDecimal(1032);
+    private static final Boolean RESOURCE_REQUIREMENT_IS_ESSENTIAL = true;
+
+    private static final String RESOURCE_TAG_NAME1 = "MY SUPER TAG 1";
+    private static final String RESOURCE_TAG_NAME2 = "HEY TAG 2";
+    //endregion
+
+    @Mock
     private ResourceService resourceService;
-
-
-    @Inject
+    @Mock
     private ResourceOfferRepository resourceOfferRepository;
-    @Inject
+    @Mock
     private ResourceRequirementRepository resourceRequirementRepository;
-    @Inject
+    @Mock
+    private ResourceTagRepository resourceTagRepository;
+    @Mock
     private ResourceTagService resourceTagService;
-    @Inject
+    @Mock
     private OrganizationRepository organizationRepository;
-    @Inject
+    @Mock
     private ProjectRepository projectRepository;
-    @Inject
-    private RestUtil restUtil;
+    @Mock
+    private ImageRepository imageRepository;
+    @Mock
+    private UserService userService;
 
     private MockMvc restMockMvc;
+
+
+    private static Class<Long> longCl = Long.class;
+    private static Class<String> stringCl = String.class;
+    private static Class<BigDecimal> bigDecCl = BigDecimal.class;
+    private static Class<Boolean> boolCl = Boolean.class;
+    private static Class<LocalDate> locDateCl = LocalDate.class;
+    private static Class<String[]> strArrCl = String[].class;
+
+
+    private static Class<ResourceRequirement> reqCl = ResourceRequirement.class;
+    private static Class<ResourceOffer> offerCl = ResourceOffer.class;
+    private static Class<ResourceTag> tagCl = ResourceTag.class;
+
+    private ResourceOffer resourceOffer;
+    private List<ResourceOfferDTO> resourceOffers;
+    private ResourceRequirement resourceRequirement;
 
     @Before
     public void setup() {
@@ -70,146 +122,357 @@ public class ResourceControllerTest {
             resourceRequirementRepository,
             resourceTagService,
             organizationRepository,
-            projectRepository));
+            projectRepository,
+            imageRepository,
+            userService));
         ResourceController controller = new ResourceController(resourceService);
 
         restMockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        List<ResourceTag> resourceTags = new ArrayList<>();
+        resourceTags.add(new ResourceTag(1L, RESOURCE_TAG_NAME1));
+        resourceTags.add(new ResourceTag(2L, RESOURCE_TAG_NAME2));
+
+        resourceOffer = new ResourceOffer();
+        resourceOffer.setId(RESOURCE_OFFER_ID);
+        resourceOffer.setName(RESOURCE_OFFER_NAME);
+        resourceOffer.setDescription(RESOURCE_OFFER_DESCRIPTION);
+        Organization org = new Organization();
+        org.setId(RESOUCE_OFFER_ORGANIZATION_ID);
+        resourceOffer.setOrganization(org);
+        resourceOffer.setAmount(RESOURCE_OFFER_AMOUNT);
+        resourceOffer.setIsCommercial(RESOURCE_OFFER_IS_COMMERCIAL);
+        resourceOffer.setResourceTags(resourceTags);
+        resourceOffers = new ArrayList<>(1);
+        resourceOffers.add(new ResourceOfferDTO(resourceOffer));
+
+        resourceRequirement = new ResourceRequirement();
+        resourceRequirement.setId(RESOURCE_REQUIREMENT_ID);
+        resourceRequirement.setName(RESOURCE_REQUIREMENT_NAME);
+        resourceRequirement.setDescription(RESOURCE_REQUIREMENT_DESCRIPTION);
+        resourceRequirement.setAmount(RESOURCE_REQUIREMENT_AMOUNT);
+        resourceRequirement.setIsEssential(RESOURCE_REQUIREMENT_IS_ESSENTIAL);
+        resourceRequirement.setResourceTags(resourceTags);
+        Project project = new Project();
+        project.setId(RESOUCE_REQUIREMENT_PROJECT_ID);
+        resourceRequirement.setProject(project);
+    }
+
+    private ResourceOfferDTO bindOfferDTOMockData(Integer operation) throws Exception{
+        reset(resourceService);
+        ResourceOfferDTO dto = new ResourceOfferDTO(resourceOffer);
+        if(operation == 0) {
+            doReturn(resourceOffer).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
+                dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
+                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+        }else if (operation == 1){
+            doReturn(resourceOffer).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
+                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+        }else if (operation == 2){
+            doNothing().when(resourceService).deleteOffer(dto.getId());
+        }else if(operation == 3){
+            doReturn(resourceOffers).when(resourceService).getAllOffers(dto.getOrganizationId());
+            doReturn(resourceOffer).when(resourceService).getOfferById(dto.getId());
+        }
+        return dto;
+    }
+    private ResourceRequirementRequestDTO bindRequirementDTOMockData(Integer operation) throws Exception{
+        reset(resourceService);
+        ResourceRequirementRequestDTO dto = new ResourceRequirementRequestDTO(resourceRequirement);
+        if(operation == 0) {
+            doReturn(resourceRequirement).when(resourceService).createRequirement(dto.getName(), dto.getAmount(),
+                dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
+        } else if (operation == 1) {
+            doReturn(resourceRequirement).when(resourceService).updateRequirement(dto.getId(),
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
+        }else if (operation == 2){
+            doNothing().when(resourceService).deleteRequirement(dto.getId());
+        }else if(operation == 3){
+            doReturn(Arrays.asList(resourceRequirement)).when(resourceService).getAllRequirements();
+        }
+        return dto;
+    }
+    private void verifyOffer(Integer operation, ResourceOfferDTO dto) throws Exception{
+        if(operation == 0){
+            verify(resourceService, times(1)).createOffer(dto.getName(), dto.getAmount(),
+                dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
+                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+        }else if (operation == 1){
+            verify(resourceService, times(1)).updateOffer(dto.getId(), dto.getOrganizationId(),
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
+                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+        }else if(operation == 2){
+            verify(resourceService, times(1)).deleteOffer(dto.getId());
+        }else if (operation == 3){
+            verify(resourceService, times(1)).getAllOffers(any(), any(), any(), any(), any(), any());
+            verify(resourceService, times(1)).getOfferById(dto.getId());
+        }
+    }
+    private void verifyRequirement(Integer operation, ResourceRequirementRequestDTO dto) throws Exception{
+        if(operation == 0){
+            verify(resourceService, times(1)).createRequirement(dto.getName(), dto.getAmount(),
+                dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
+        }else if (operation == 1){
+            verify(resourceService, times(1)).updateRequirement(dto.getId(),
+                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
+        }else if(operation == 2){
+            verify(resourceService, times(1)).deleteRequirement(dto.getId());
+        }else if (operation == 3){
+            verify(resourceService, times(1)).getAllRequirements();
+        }
     }
 
     @Test
-    public void testOffer() throws Exception{
+    public void testCRUDOffer() throws Exception{
+        //region CREATE
+        ResourceOfferDTO dto = this.bindOfferDTOMockData(0);
+        dto.setId(null);
 
-        ResourceOfferDTO sentDTO = new ResourceOfferDTO();
-        sentDTO.setName("test");
-        sentDTO.setDescription("Hakkiod");
-        sentDTO.setOrganizationId(1L);
-        sentDTO.setAmount(new BigDecimal(10));
-        sentDTO.setIsCommercial(true);
-
-        sentDTO.setResourceTags(Arrays.asList("My Super Tag"));
         // Create Project
-        restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
+        restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isCreated())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        //    .andExpect(jsonPath("$.id").value(sentOfferDTO.getId().intValue()))
-        ;
-        restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isBadRequest());
+            .andExpect(jsonPath("$.id").value(resourceOffer.getId().intValue()))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        sentDTO.setName(null);
-        restMockMvc.perform(post("/app/rest/organisations/{organizationId}/resourceOffer", 1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isBadRequest());
+        this.verifyOffer(0, dto);
 
-        sentDTO.setName("yuppi");
-        restMockMvc.perform(put("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
+        // Offer already exists
+        // clean mock
+        dto = this.bindOfferDTOMockData(0);
+        dto.setId(null);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(
+            dto.getName(), dto.getAmount(), dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
+            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+        restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isBadRequest());
+        this.verifyOffer(0, dto);
 
-        sentDTO.setId(1L);
-        restMockMvc.perform(put("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
+        // unexpected exception
+        // clean mock
+        dto = this.bindOfferDTOMockData(0);
+        dto.setId(null);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
+            dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
+            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+        restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyOffer(0, dto);
+
+        //endregion
+
+        //region UPDATE
+        // clean mock
+        resourceOffer.setName("yuppi");
+        dto = this.bindOfferDTOMockData(1);
+        restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isOk());
+        this.verifyOffer(1, dto);
 
+
+        //Throw Resource Excpetion
+        resourceOffer.setName(RESOURCE_OFFER_NAME);
+        dto = this.bindOfferDTOMockData(1);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).updateOffer(
+            dto.getId(), dto.getOrganizationId(), dto.getName(), dto.getAmount(),dto.getDescription(),
+            dto.getIsCommercial(), dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+
+        restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyOffer(1, dto);
+
+        //Throw Exception
+        dto = this.bindOfferDTOMockData(1);
+        doThrow(new ResourceException("", EnumResourceException.NOT_FOUND)).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
+            dto.getName(), dto.getAmount(),dto.getDescription(), dto.getIsCommercial(),
+            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+
+        restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyOffer(1, dto);
+
+
+        //endregion
+
+        //region DELETE
+        dto = this.bindOfferDTOMockData(2);
+        restMockMvc.perform(delete("/app/rest/resourceOffers/{id}", resourceOffer.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isOk());
+        this.verifyOffer(2, dto);
+
+        //throw resource exception
+        dto = this.bindOfferDTOMockData(2);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).
+            deleteOffer(dto.getId());
+        restMockMvc.perform(delete("/app/rest/resourceOffers/{id}", resourceOffer.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyOffer(2, dto);
+
+        //throw resource exception
+        dto = this.bindOfferDTOMockData(2);
+        doThrow(new ResourceException("", EnumResourceException.NOT_FOUND)).when(resourceService).
+            deleteOffer(dto.getId());
+        restMockMvc.perform(delete("/app/rest/resourceOffers/{id}", resourceOffer.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyOffer(2, dto);
+
+        //endregion
+
+        //region READ DATA
+        dto = this.bindOfferDTOMockData(3);
         restMockMvc.perform(get("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isOk());
 
-        restMockMvc.perform(get("/app/rest/organisations/{organizationId}/resourceOffers", 1L)
+        restMockMvc.perform(get("/app/rest/resourceOffers/{id}", dto.getOrganizationId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(jsonPath("$.id").value(resourceOffer.getId().intValue()))
             .andExpect(status().isOk());
-
-        restMockMvc.perform(delete("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", 1L, 1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isOk());
-
-        restMockMvc.perform(delete("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", -1L, -1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isBadRequest());
-
-        restMockMvc.perform(delete("/app/rest/organisations/{organizationId}/resourceOffers/{resourceOfferId}", null, null)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isNotFound());
+        this.verifyOffer(3, dto);
+        //endregion
     }
 
     @Test
-    public void testRequirement() throws Exception{
+    public void testCRUDRequirements() throws Exception{
+        //region CREATE
+        ResourceRequirementRequestDTO dto = this.bindRequirementDTOMockData(0);
+        dto.setId(null);
 
-        ResourceRequirementRequestDTO sentDTO = new ResourceRequirementRequestDTO();
-        sentDTO.setName("test");
-        sentDTO.setDescription("Hakkiod");
-        sentDTO.setProjectId(1L);
-        sentDTO.setAmount(new BigDecimal(10));
-        sentDTO.setIsEssential(true);
-
-        sentDTO.setResourceTags(Arrays.asList("My Super Tag"));
         // Create Project
-        restMockMvc.perform(post("/app/rest/projects{projectId}/resourceRequirements", 1L)
+        restMockMvc.perform(post("/app/rest/resourceRequirements")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isCreated())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        //    .andExpect(jsonPath("$.id").value(sentDTO.getId().intValue()))
-        ;
+            .andExpect(jsonPath("$.id").value(resourceRequirement.getId().intValue()))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        restMockMvc.perform(post("/app/rest/projects{projectId}/resourceRequirements", 1L)
+        this.verifyRequirement(0, dto);
+
+        // Offer already exists
+        // clean mock
+        dto = this.bindRequirementDTOMockData(0);
+        dto.setId(null);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createRequirement(
+            dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
+            dto.getResourceTags());
+        restMockMvc.perform(post("/app/rest/resourceRequirements")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isBadRequest());
+        this.verifyRequirement(0, dto);
 
-        sentDTO.setName(null);
-        restMockMvc.perform(post("/app/rest/projects{projectId}/resourceRequirements", 1L)
+        // unexpected exception
+        // clean mock
+        dto = this.bindRequirementDTOMockData(0);
+        dto.setId(null);
+        doThrow(new Exception("")).when(resourceService).createRequirement(
+            dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
+            dto.getResourceTags());
+        restMockMvc.perform(post("/app/rest/resourceRequirements")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isBadRequest());
+        this.verifyRequirement(0, dto);
 
-        sentDTO.setName("yeapiyayeah");
-        restMockMvc.perform(put("/app/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}", 1L, 1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isBadRequest());
+        //endregion
 
-        sentDTO.setId(1L);
-        restMockMvc.perform(put("/app/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}", 1L, 1L)
+        //region UPDATE
+        // clean mock
+        resourceRequirement.setName("yuppi");
+        dto = this.bindRequirementDTOMockData(1);
+        restMockMvc.perform(put("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isOk());
+        this.verifyRequirement(1, dto);
 
+
+        //Throw Resource Excpetion
+        resourceRequirement.setName(RESOURCE_OFFER_NAME);
+        dto = this.bindRequirementDTOMockData(1);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).updateRequirement(
+            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
+            dto.getResourceTags());
+
+        restMockMvc.perform(put("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyRequirement(1, dto);
+
+        //Throw Exception
+        dto = this.bindRequirementDTOMockData(1);
+        doThrow(new Exception()).when(resourceService).updateRequirement(
+            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
+            dto.getResourceTags());
+
+        restMockMvc.perform(put("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyRequirement(1, dto);
+
+
+        //endregion
+
+        //region DELETE
+
+        dto = this.bindRequirementDTOMockData(2);
+        restMockMvc.perform(delete("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isOk());
+        this.verifyRequirement(2, dto);
+
+        //throw resource exception
+        dto = this.bindRequirementDTOMockData(2);
+        doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).
+            deleteRequirement(dto.getId());
+        restMockMvc.perform(delete("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyRequirement(2, dto);
+
+        //throw resource exception
+        dto = this.bindRequirementDTOMockData(2);
+        doThrow(new Exception()).when(resourceService).
+            deleteRequirement(dto.getId());
+        restMockMvc.perform(delete("/app/rest/resourceRequirements/{resourceRequirementId}", resourceRequirement.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isBadRequest());
+        this.verifyRequirement(2, dto);
+
+        //endregion
+
+        //region READ DATA
+        dto = this.bindRequirementDTOMockData(3);
         restMockMvc.perform(get("/app/rest/resourceRequirements")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isOk());
-
-        restMockMvc.perform(get("/app/rest/projects/{projectId}/resourceRequirements", 1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isOk());
-
-        restMockMvc.perform(delete("/app/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}", 1L, 1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isOk());
-
-        restMockMvc.perform(delete("/app/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}", -1L, -1L)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isBadRequest());
-
-        restMockMvc.perform(delete("/app/rest/projects/{projectId}/resourceRequirements/{resourceRequirementId}", null, null)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sentDTO)))
-            .andExpect(status().isMethodNotAllowed());
+        this.verifyRequirement(3, dto);
+        //endregion
     }
 }
