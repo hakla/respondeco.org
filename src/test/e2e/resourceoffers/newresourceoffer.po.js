@@ -4,13 +4,13 @@ var NewResourceOffers = function() {
     this.name = element(by.model("resource.name"));
     this.description = element(by.model("resource.description"));
     this.amount = element(by.model("resource.amount"));
-    this.tags = element(by.model("resource.resourceTags"));
+    this.tags = element(by.model("selectedTags"));
 
     this.isCommercial = element(by.model("resource.isCommercial"));
     this.isRecurrent = element(by.model("resource.isRecurrent"));
     this.startDate = element(by.model("resource.startDate"));
     this.endDate = element(by.model("resource.endDate"));
-    
+
     this.cancel = element(by.id("cancelButton"));
     this.saveButton = element(by.id("saveButton"));
 

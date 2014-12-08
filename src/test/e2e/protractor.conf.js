@@ -3,13 +3,6 @@ exports.config = {
   baseUrl: 'http://localhost:9000',
   onPrepare: function() {
       browser.driver.manage().window().maximize;
-
-      //browser.get("http://localhost:9000/#/login");
-      //element(by.model('username')).sendKeys("user");
-      //element(by.model('password')).sendKeys("user");
-      //element(by.css('[ng-click="login()"]')).click();
-
-      //browser.waitForAngular();
     },
     suites: {
         textmessages: 'textmessages/*.spec.js',

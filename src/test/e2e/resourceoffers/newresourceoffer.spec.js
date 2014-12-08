@@ -2,14 +2,16 @@ describe('e2e: newresourceoffer', function() {
     var offer = require('./newresourceoffer.po.js');
     var login = require('../login.js');
 
+    login.login();
+    browser.waitForAngular();
+
     beforeEach(function() {
-        login.login();
         offer.navigate();
         browser.waitForAngular();
     });
 
     it('should navigate to create new resourceoffer', function() {
-        expect(browser.getLocationAbsUrl()).toEqual("/resource/new");
+        expect(browser.getLocationAbsUrl()).toContain("/resource/new");
     });
 
     it('should create a new resourceoffer', function() {
@@ -26,6 +28,8 @@ describe('e2e: newresourceoffer', function() {
 
         offer.saveButton.click();
 
-        expect(browser.getLocationAbsUrl()).toEqual("/resource");
+        browser.waitForAngular();
+
+        expect(browser.getLocationAbsUrl()).toEqual("/ownresource");
     });
 });

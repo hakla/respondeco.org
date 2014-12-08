@@ -29,7 +29,7 @@ describe('e2e: registration', function() {
         registerPage.registerButton.click();
         browser.waitForAngular();
 
-        expect(registerPage.errorUserExistsMessage.isDisplayed()).toBe(true);
+        expect(registerPage.errorMessage.isDisplayed()).toBe(true);
     });
 
     it('should show an error if the confirmed password does not match', function() {
