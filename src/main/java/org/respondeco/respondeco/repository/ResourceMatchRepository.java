@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.repository;
 
+import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ResourceMatch;
@@ -15,6 +16,19 @@ import java.util.List;
 
 public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Long> {
 
-    public List<ResourceMatch> findByProjectAndOrganization(Project project, Organization organization);
+    public ResourceMatch findByProjectAndOrganization(Project project, Organization organization);
 
+    @Query("SELECT COUNT(r) AS count, AVG(r.rating) AS rating " +
+                    "FROM Rating r " +
+                    "WHERE r IN (SELECT rm.projectRating " +
+                        "FROM ResourceMatch rm " +
+                        "WHERE rm.project.id = :projectid)")
+    public AggregatedRating getAggregatedRatingByProject(@Param("projectid") Long id);
+
+    @Query("SELECT COUNT(r) AS count, AVG(r.rating) AS rating " +
+            "FROM Rating r " +
+            "WHERE r IN (SELECT rm.supporterRating " +
+            "FROM ResourceMatch rm " +
+            "WHERE rm.organization.id = :organizationid)")
+    public AggregatedRating getAggregatedRatingByOrganization(@Param("organizationid") Long id);
 }

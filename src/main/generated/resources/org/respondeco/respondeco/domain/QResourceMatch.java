@@ -29,7 +29,7 @@ public class QResourceMatch extends EntityPathBase<ResourceMatch> {
     //inherited
     public final BooleanPath active = _super.active;
 
-    public final NumberPath<Integer> amount = createNumber("amount", Integer.class);
+    public final NumberPath<java.math.BigDecimal> amount = createNumber("amount", java.math.BigDecimal.class);
 
     //inherited
     public final StringPath createdBy = _super.createdBy;

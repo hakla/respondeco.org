@@ -2,6 +2,7 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
@@ -348,4 +349,38 @@ public class ProjectController {
         }
         return response;
     }**/
+
+    @RequestMapping(value = "/rest/projects/{id}/ratings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<AggregatedRatingResponseDTO> getAggregatedRating(@PathVariable Long id) {
+        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
+        ResponseEntity<AggregatedRatingResponseDTO> responseDTO;
+        if(aggregatedRating != null) {
+            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                    .fromEntity(aggregatedRating, null);
+            responseDTO =
+                    new ResponseEntity<AggregatedRatingResponseDTO>(aggregatedRatingResponseDTO, HttpStatus.OK);
+        }
+        else {
+            responseDTO =
+                    new ResponseEntity<AggregatedRatingResponseDTO>(HttpStatus.NOT_FOUND);
+        }
+        return responseDTO;
+    }
+
+    @RequestMapping(value = "/rest/projects/{id}/ratings/{matchId}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> rateProject(
+            @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
+            @PathVariable Long id,
+            @PathVariable Long matchId) throws NoSuchResourceMatchException {
+        ratingService.rateOrganization(matchId,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

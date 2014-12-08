@@ -14,4 +14,5 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     Organization findByOwner(User owner);
     Organization findByName(String orgName);
     List<Organization> findByActiveIsTrue();
+    Organization findByIdAndActiveIsTrue(Long id);
 }

@@ -76,7 +76,7 @@ public class OrganizationControllerTest {
     private OrgJoinRequestService orgJoinRequestService;
 
     @Mock
-    private SupporterRatingService supporterRatingService;
+    private RatingService ratingService;
 
     private MockMvc restOrganizationMockMvc;
 
@@ -105,7 +105,7 @@ public class OrganizationControllerTest {
 
         OrganizationController organizationController =
             new OrganizationController(organizationService, userService, resourceService,
-                orgJoinRequestService, supporterRatingService);
+                orgJoinRequestService, ratingService);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();
