@@ -120,8 +120,11 @@ public class ProjectServiceTest {
         projectService.create("test project", "test purpose", false, null, null, null, null, null);
 
         verify(userService, times(1)).getUserWithAuthorities();
-        verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
+        // Check if called two times
+        // One time to create the project and one time after the requirements have been created
+        // A requirement needs a project id. That's why there should be two invocations
+        verify(projectRepositoryMock, times(2)).save(isA(Project.class));
     }
 
     @Test
@@ -141,8 +144,11 @@ public class ProjectServiceTest {
                 null);
 
         verify(userService, times(1)).getUserWithAuthorities();
-        verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
+        // Check if called two times
+        // One time to create the project and one time after the requirements have been created
+        // A requirement needs a project id. That's why there should be two invocations
+        verify(projectRepositoryMock, times(2)).save(isA(Project.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -535,7 +541,7 @@ public class ProjectServiceTest {
 
         List<Project> projects = projectService.findProjects(name, tagsString, null);
 
-        verify(projectRepositoryMock, times(1)).findByNameAndTags(name, tagsList, null);
+        verify(projectRepositoryMock, times(1)).findByNameAndTags("%" + name + "%", tagsList, null);
     }
 
     @Test
@@ -559,7 +565,7 @@ public class ProjectServiceTest {
                 .findProjectsFromOrganization(defaultOrganization.getId(), name, tagsString, null);
 
         verify(projectRepositoryMock, times(1))
-                .findByOrganizationAndNameAndTags(defaultOrganization.getId(), name, tagsList, null);
+                .findByOrganizationAndNameAndTags(defaultOrganization.getId(), "%" + name + "%", tagsList, null);
     }
 
 }

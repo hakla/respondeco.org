@@ -6,6 +6,7 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
+import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
@@ -88,7 +89,7 @@ public class ResourceController {
         return new ResourceOfferDTO(this.resourceService.getOfferById(id));
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,9 +112,6 @@ public class ResourceController {
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
-
-        } catch (GeneralResourceException e){
-            message = e.getMessage();
         } catch (Exception e) {
             message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d.",
                 resourceOfferDTO.getDescription(), resourceOfferDTO.getOrganizationId());
@@ -128,7 +126,7 @@ public class ResourceController {
         return result;
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers/{id}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -166,7 +164,7 @@ public class ResourceController {
         return result;
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceOffers/{id}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -214,7 +212,7 @@ public class ResourceController {
     }
 
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceRequirements",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -251,7 +249,7 @@ public class ResourceController {
         return result;
     }
 
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceRequirements/{resourceRequirementId}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)

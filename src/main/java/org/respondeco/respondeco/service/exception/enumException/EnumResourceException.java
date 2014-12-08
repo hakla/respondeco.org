@@ -24,5 +24,9 @@ public enum EnumResourceException {
     /*
     Exception on delete (or set inactive) Statement
      */
-    DELETE
+    DELETE,
+    /*
+    Current User is not authorized to execute the service
+     */
+    USER_NOT_AUTHORIZED
 }

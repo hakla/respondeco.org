@@ -13,6 +13,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.testutil.TestUtil;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -116,6 +117,7 @@ public class ProjectControllerTest {
         projectRequestDTO.setName(DEFAULT_NAME);
         projectRequestDTO.setPurpose(DEFAULT_PURPOSE);
         projectRequestDTO.setConcrete(false);
+        projectRequestDTO.setLogo(new ImageDTO());
 
 
         defaultOrganization = new Organization();

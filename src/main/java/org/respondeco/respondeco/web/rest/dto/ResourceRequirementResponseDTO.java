@@ -30,6 +30,9 @@ public class ResourceRequirementResponseDTO {
             fieldNames = DEFAULT_FIELDS;
         }
         List<ResourceRequirementResponseDTO> responseDTOs = new ArrayList<>();
+        if(resourceRequirements == null) {
+            return responseDTOs;
+        }
         ResourceRequirementResponseDTO responseDTO;
         for(ResourceRequirement resourceRequirement : resourceRequirements) {
             responseDTO = new ResourceRequirementResponseDTO();

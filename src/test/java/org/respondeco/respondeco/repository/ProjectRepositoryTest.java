@@ -83,26 +83,6 @@ public class ProjectRepositoryTest {
     }
 
     @Test
-    public void testSave_shouldSaveCorrectly() throws Exception {
-        LocalDate startDate = LocalDate.now();
-        LocalDate endDate = LocalDate.now().plusDays(3);
-        project.setName("testproject");
-        project.setPurpose("testpurpose");
-        project.setConcrete(true);
-        project.setStartDate(startDate);
-        project.setEndDate(endDate);
-
-        projectRepository.save(project);
-        Project savedProject = projectRepository.findOne(project.getId());
-
-        assertEquals(savedProject.getName(), "testproject");
-        assertEquals(savedProject.getPurpose(), "testpurpose");
-        assertEquals(savedProject.isConcrete(), true);
-        assertEquals(savedProject.getStartDate(), startDate);
-        assertEquals(savedProject.getEndDate(), endDate);
-    }
-
-    @Test
     @Transactional
     public void testFindByActiveIsTrue_shouldReturnOnlyActive() throws Exception {
         Project project2 = new Project();
@@ -179,7 +159,7 @@ public class ProjectRepositoryTest {
         projectRepository.save(project);
         projectRepository.save(project2);
         projectRepository.save(project3);
-        List<Project> projects = projectRepository.findByNameAndTags("project", null, null);
+        List<Project> projects = projectRepository.findByNameAndTags("%project%", null, null);
         assertEquals(2, projects.size());
 
     }
@@ -266,7 +246,7 @@ public class ProjectRepositoryTest {
         projectRepository.save(project3);
         projectRepository.flush();
 
-        List<Project> projects = projectRepository.findByNameAndTags("xxxxx", Arrays.asList(tag1.getName()), null);
+        List<Project> projects = projectRepository.findByNameAndTags("%xxxxx%", Arrays.asList(tag1.getName()), null);
         assertEquals(2, projects.size());
         assertTrue(projects.contains(project));
         assertTrue(projects.contains(project3));
@@ -302,7 +282,7 @@ public class ProjectRepositoryTest {
         PageRequest request = new PageRequest(1, 5, new Sort(
                 new Sort.Order(Sort.Direction.ASC, "name")
         ));
-        List<Project> projects = projectRepository.findByNameAndTags("project", null, request);
+        List<Project> projects = projectRepository.findByNameAndTags("%project%", null, request);
         assertEquals(5, projects.size());
         for(int i=0;i<5;i++) {
             assertEquals(ascendingStrings.get(i+5), projects.get(i).getName());
@@ -338,7 +318,7 @@ public class ProjectRepositoryTest {
         PageRequest request = new PageRequest(2, 10, new Sort(
                 new Sort.Order(Sort.Direction.DESC, "purpose")
         ));
-        List<Project> projects = projectRepository.findByNameAndTags("project", null, request);
+        List<Project> projects = projectRepository.findByNameAndTags("%project%", null, request);
         assertEquals(10, projects.size());
         for(int i=0;i<10;i++) {
             assertEquals(ascendingStrings.get(9-i), projects.get(i).getPurpose());
@@ -383,7 +363,7 @@ public class ProjectRepositoryTest {
         projectRepository.flush();
 
         List<Project> projects = projectRepository
-                .findByOrganizationAndNameAndTags(organization.getId(), "project", null, null);
+                .findByOrganizationAndNameAndTags(organization.getId(), "%project%", null, null);
         assertEquals(30, projects.size());
         for(int i=0;i<30;i++) {
             assertEquals(organization, projects.get(i).getOrganization());
