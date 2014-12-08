@@ -56,6 +56,8 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public final QUser owner;
 
+    public final ListPath<Project, QProject> projects = this.<Project, QProject>createList("projects", Project.class, QProject.class, PathInits.DIRECT2);
+
     public final ListPath<SupporterRating, QSupporterRating> ratings = this.<SupporterRating, QSupporterRating>createList("ratings", SupporterRating.class, QSupporterRating.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> spokesPerson = createNumber("spokesPerson", Long.class);

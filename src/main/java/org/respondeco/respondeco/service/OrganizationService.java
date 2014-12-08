@@ -2,15 +2,11 @@ package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
-import org.respondeco.respondeco.service.util.RandomUtil;
-import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,39 +103,18 @@ public class OrganizationService {
 
         return org;
     }
-    /**
-     * Get OrganizationDTO by Id
-     * @param id organization id
-     * @return organizationDTO
-     * @throws NoSuchOrganizationException if organization with id could not be found
-     */
-    @Transactional(readOnly=true)
-    public OrganizationDTO getOrganizationById(Long id) throws NoSuchOrganizationException {
-        log.debug("getOrganizationById() with id " + id + " called");
-        OrganizationDTO organizationDTO;
-        Organization org = organizationRepository.findOne(id);
-        organizationDTO = new OrganizationDTO(org);
-
-        return organizationDTO;
-    }
 
     /**
      * Returns all Organizations
      * @return
      */
     @Transactional(readOnly = true)
-    public List<OrganizationDTO> getOrganizations() {
+    public List<Organization> getOrganizations() {
         log.debug("getOrganizations() called");
 
-        OrganizationDTO orgDTO;
         List<Organization> organizations = organizationRepository.findByActiveIsTrue();
-        List<OrganizationDTO> organizationDTOs = new ArrayList<OrganizationDTO>();
 
-        for(Organization org: organizations) {
-            organizationDTOs.add(new OrganizationDTO(org));
-        }
-
-        return organizationDTOs;
+        return organizations;
     }
 
     public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchOrganizationException {

@@ -74,74 +74,19 @@ public class OrgJoinRequestController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> getAll(@RequestParam String filter) {
+    public ResponseEntity<?> getAll() {
         log.debug("REST request to get OrgJoinRequests");
         ResponseEntity<?> responseEntity;
         try {
-            if(filter==null) {
-                return Optional.ofNullable(orgjoinrequestRepository.findAll())
-                        .map(orgjoinrequest -> new ResponseEntity<>(
-                                orgjoinrequest,
-                                HttpStatus.OK))
-                        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-            }
-            else if (filter.equals("ownerrequests")) {
-                return Optional.ofNullable(orgJoinRequestService.getOrgJoinRequestsByOwner())
-                        .map(orgjoinrequest -> new ResponseEntity<>(
-                                orgjoinrequest,
-                                HttpStatus.OK))
-                        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-            }
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return Optional.ofNullable(orgjoinrequestRepository.findAll())
+                    .map(orgjoinrequest -> new ResponseEntity<>(
+                            orgjoinrequest,
+                            HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         } catch (NoSuchOrganizationException e) {
             log.error("Could not find OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return responseEntity;
-    }
-
-    /**
-     * GET  /rest/orgjoinrequests/:organization -> get the "organization" orgjoinrequest.
-     */
-            @RolesAllowed(AuthoritiesConstants.USER)
-            @RequestMapping(value = "/rest/orgjoinrequests/myOrgJoinRequests",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<List<OrgJoinRequestDTO>> getByCurrentUser() {
-        log.debug("REST request to get OrgJoinRequest : {}");
-        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
-        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (orgJoinRequests.isEmpty() == false) {
-            List<OrgJoinRequestDTO> dtos = new ArrayList<>();
-            orgJoinRequests.forEach(p -> dtos.add(new OrgJoinRequestDTO(p)));
-            entity = new ResponseEntity<>(dtos, HttpStatus.OK);
-        }
-
-        return entity;
-    }
-
-    /**
-     * GET  /rest/orgjoinrequest/current -> get the orgjoinrequest of active user.
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/orgjoinrequest/current",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<List<OrgJoinRequestDTO>> getRequestForUser() {
-        log.debug("REST request to get OrgJoinRequest : {}");
-        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity;
-        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
-
-        if (orgJoinRequests.isEmpty()) {
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            List<OrgJoinRequestDTO> orgJoinRequestDTOs = new ArrayList<>();
-            orgJoinRequests.forEach(p -> orgJoinRequestDTOs.add(new OrgJoinRequestDTO(p)));
-            responseEntity = new ResponseEntity<>(orgJoinRequestDTOs, HttpStatus.OK);
-        }
-
         return responseEntity;
     }
 

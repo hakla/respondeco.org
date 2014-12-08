@@ -82,6 +82,17 @@ public class OrgJoinRequestService {
         return orgJoinRequestRepository.findByUserAndActiveIsTrue(user);
     }
 
+    public List<OrgJoinRequest> getOrgJoinRequestsByOwner() throws NoSuchOrganizationException {
+        User user = userService.getUserWithAuthorities();
+        log.debug("Get List of OrgJoinRequest by Owner");
+        Organization organization = organizationRepository.findByOwner(user);
+        if (organization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization does not exist"));
+        }
+        return orgJoinRequestRepository.findByOrganization(organization);
+    }
+
+/*
     public List<OrgJoinRequestWithActiveFlagDTO> getOrgJoinRequestsByOwner() throws NoSuchOrganizationException {
         User user = userService.getUserWithAuthorities();
         log.debug("Get List of OrgJoinRequest by Owner");
@@ -100,7 +111,7 @@ public class OrgJoinRequestService {
         }
 
         return orgJoinRequestWithActiveFlagDTOList;
-    }
+    }*/
 
     public void acceptRequest(Long requestId) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException, AlreadyInOrganizationException {
         User user = userService.getUserWithAuthorities();

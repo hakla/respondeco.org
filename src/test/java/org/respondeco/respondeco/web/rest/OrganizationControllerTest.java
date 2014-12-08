@@ -23,7 +23,7 @@ import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
+import org.respondeco.respondeco.web.rest.dto.OrganizationRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -80,7 +80,7 @@ public class OrganizationControllerTest {
 
     private MockMvc restOrganizationMockMvc;
 
-    private OrganizationDTO organizationDTO;
+    private OrganizationRequestDTO organizationRequestDTO;
     private User defaultUser;
     private Set<Authority> userAuthorities;
 
@@ -128,12 +128,12 @@ public class OrganizationControllerTest {
 
         this.restOrganizationMockMvc = MockMvcBuilders.standaloneSetup(organizationController).build();
 
-        organizationDTO = new OrganizationDTO();
+        organizationRequestDTO = new OrganizationRequestDTO();
 
-        organizationDTO.setName(DEFAULT_ORGNAME);
-        organizationDTO.setDescription(DEFAULT_DESCRIPTION);
-        organizationDTO.setEmail(DEFAULT_EMAIL);
-        organizationDTO.setNpo(DEFAULT_NPO);
+        organizationRequestDTO.setName(DEFAULT_ORGNAME);
+        organizationRequestDTO.setDescription(DEFAULT_DESCRIPTION);
+        organizationRequestDTO.setEmail(DEFAULT_EMAIL);
+        organizationRequestDTO.setNpo(DEFAULT_NPO);
 
         organizationRepository.deleteAll();
     }
@@ -144,7 +144,7 @@ public class OrganizationControllerTest {
         // Create Organization
         restOrganizationMockMvc.perform(post("/app/rest/organizations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(organizationDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
                 .andExpect(status().isOk());
 
         // Read All Organization
@@ -171,14 +171,14 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
 
         // Update Organization
-        organizationDTO.setName(UPDATED_ORGNAME);
-        organizationDTO.setDescription(UPDATED_DESCRIPTION);
-        organizationDTO.setEmail(UPDATED_EMAIL);
-        organizationDTO.setNpo(UPDATED_NPO);
+        organizationRequestDTO.setName(UPDATED_ORGNAME);
+        organizationRequestDTO.setDescription(UPDATED_DESCRIPTION);
+        organizationRequestDTO.setEmail(UPDATED_EMAIL);
+        organizationRequestDTO.setNpo(UPDATED_NPO);
 
         restOrganizationMockMvc.perform(post("/app/rest/organizations/updateOrganization")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(organizationDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
                 .andExpect(status().isOk());
 
         // Read updated Organization

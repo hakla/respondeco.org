@@ -119,20 +119,6 @@ public class UserController {
     }
 
     /**
-     * POST  /rest/leaveOrg
-     */
-    @RequestMapping(value = "/rest/user/leaveOrganization",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> leaveOrganization() {
-        log.debug("REST request to leave Organization : {}");
-        userService.leaveOrganization();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
      * GET  /rest/users -> get all users
      */
     @RequestMapping(value = "/rest/users/getInvitableUsersByOrgId/{orgId}",

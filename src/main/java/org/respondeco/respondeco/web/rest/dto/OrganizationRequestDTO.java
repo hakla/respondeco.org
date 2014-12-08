@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 @Data
-public class OrganizationDTO {
+public class OrganizationRequestDTO {
 
     @ApiModelProperty(value = "Organization ID")
     private Long id;
@@ -31,20 +31,5 @@ public class OrganizationDTO {
     private UserDTO owner;
 
     private ImageDTO logo;
-
-
-
-    public OrganizationDTO(){}
-    public OrganizationDTO(Organization org) {
-        this.id = org.getId();
-        this.name = org.getName();
-        this.description = org.getDescription();
-        this.email = org.getEmail();
-        this.isNpo = org.getIsNpo();
-        this.owner = new UserDTO(org.getOwner());
-        if(org.getLogo() != null) {
-            this.logo = new ImageDTO(org.getLogo());
-        }
-    }
 
 }
