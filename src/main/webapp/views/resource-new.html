@@ -30,30 +30,49 @@
             </div>
 
             <div class="form-group">
-                <button type="button" class="btn {{ resource.isCommercial ? 'btn-success' : 'btn-primary'}}" 
-                        ng-model="resource.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-                <span class="glyphicon {{ resource.isCommercial ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
-                {{'resource.new.commercial' | translate}}
-            </button>
-            </div>
-            
-            <div class="form-group">
                 <button type="button" class="btn {{ resource.isRecurrent ? 'btn-success' : 'btn-primary'}}" 
                         ng-model="resource.isRecurrent" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
                 <span class="glyphicon {{ resource.isRecurrent ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
                 {{'resource.new.recurrent' | translate}}
-            </button>
+                </button>
             </div>
 
             <div class="form-group">
-                <label translate="resource.new.startDate">available from</label>
-                <input type="date" ng-model="resource.startDate" placeholder="resource.placeholder.startDate" class="form-control" required>
+                <button type="button" class="btn {{ resource.isCommercial ? 'btn-success' : 'btn-primary'}}" 
+                        ng-model="resource.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                    <span class="glyphicon {{ resource.isCommercial ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> 
+                    {{'resource.new.commercial' | translate}}
+                </button>
             </div>
 
             <div class="form-group">
-                <label translate="resource.new.endDate">available until</label>
-                <input type="date" ng-model="resource.endDate"placeholder="resource.placeholder.endDate" class="form-control" required>
+                <label ng-show="resource.isCommercial" translate="resource.new.price">price</label>
+                <input type="text" class="form-control" placeholder="{{'resource.placeholder.price' | translate }}" ng-show="resource.isCommercial">
             </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="col-md-4">
+                        <label translate="resource.new.startDate">available from</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="{{'resource.placeholder.startDate' | translate}}" ng-model="resource.startDate" name="startDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedStartDate" close-text="close">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label translate="resource.new.endDate">available until</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="{{'resource.placeholder.endDate' | translate}}" ng-model="resource.endDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedEndDate" close-text="close">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
             <div class="alert alert-danger" ng-show="formSaveError" translate="resource.new.error">
                 <strong>resource could not be created</strong>
             </div>

@@ -516,7 +516,8 @@
             "endDate":"Verfügbar bis",
             "savebutton":"Speichern",
             "cancelbutton":"Abbrechen",
-            "error": "Ressource konnte nicht erstellt werden!"
+            "error": "Ressource konnte nicht erstellt werden!",
+            "price": "Preis"
         },
         "edit": {
             "title": "Ressource bearbeiten"
@@ -524,9 +525,12 @@
         "placeholder": {
             "name": "Name der Ressource",
             "description" : "Beschreibung der Ressource",
-            "amount" : "Anzahl der Ressourcen",
-            "tags": "Tags für Ressource",
-            "search": "Suchkriterien eingeben"
+            "amount" : "Menge der Ressource",
+            "tags": "Tags der Ressource",
+            "search": "Suchkriterien eingeben",
+            "price": "Preis der Ressource",
+            "startDate": "Verfügbar ab",
+            "endDate": "Verfügbar bis"
         },
         "own": {
             "title": "Ressourcen von",

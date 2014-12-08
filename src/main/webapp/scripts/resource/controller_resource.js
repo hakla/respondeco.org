@@ -35,6 +35,24 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		});
 	});
 
+	//DatePicker
+	$scope.openedStartDate = false;
+    $scope.openedEndDate = false;
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+    };
+
+    $scope.openStart = function($event) {
+        $event.stopPropagation();
+        $scope.openedStartDate = true;
+    };
+
+    $scope.openEnd = function($event) {
+        $event.stopPropagation();
+        $scope.openedEndDate = true;
+    };
+
 	$scope.redirectToResource = function(id) {
 		$location.path('resource/' + id);
 	}
@@ -60,8 +78,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.create = function() {
+        $scope.resource.startDate = new XDate($scope.resource.startDate).toString("yyyy-MM-dd");
+        $scope.resource.endDate = new XDate($scope.resource.endDate).toString("yyyy-MM-dd");
+
 		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name});
-		console.log($.map($scope.resource.resourceTags, function(tag) {return {name: tag}}));
 
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
@@ -96,14 +116,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
     $scope.deleteMessage = "resource.own.delete";
 
     $scope.delete = function(id) {
-        if (deleteState === false) {
-            $scope.deleteMessage = "resource.own.confirmDelete";
-            $scope.deleteType = "danger";
-            deleteState = true;
-            return;
-        }
-
-        deleteState = true;
         Resource.delete({
             id: id
         }, function() {
