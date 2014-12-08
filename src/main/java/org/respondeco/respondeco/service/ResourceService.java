@@ -112,6 +112,7 @@ public class ResourceService {
         if (entries == null || entries.isEmpty() == true) {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
+            newRequirement.setOriginalAmount(amount);
             newRequirement.setAmount(amount);
             newRequirement.setDescription(description);
             newRequirement.setProject(project);

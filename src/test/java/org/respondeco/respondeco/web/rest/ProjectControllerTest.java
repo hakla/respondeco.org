@@ -86,7 +86,7 @@ public class ProjectControllerTest {
     private ResourceService resourceServiceMock;
 
     @Mock
-    private ProjectRatingService projectRatingServiceMock;
+    private RatingService ratingServiceMock;
 
     @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
@@ -109,7 +109,7 @@ public class ProjectControllerTest {
                 propertyTagServiceMock,
                 resourceServiceMock,
                 imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, projectRatingServiceMock);
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 

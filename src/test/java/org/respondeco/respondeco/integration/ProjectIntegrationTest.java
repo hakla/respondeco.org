@@ -4,14 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.*;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -29,13 +26,11 @@ import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,11 +38,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import org.respondeco.respondeco.Application;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * Test class for the ProjectIdeaResource REST controller.
@@ -91,7 +82,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
     private ResourceService resourceService;
 
     @Inject
-    private ProjectRatingService projectRatingService;
+    private RatingService ratingService;
 
     @Inject
     private PlatformTransactionManager txManager;
@@ -113,7 +104,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 propertyTagService,
                 resourceService,
                 imageRepository));
-        ProjectController projectController = new ProjectController(projectService, resourceService, projectRatingService);
+        ProjectController projectController = new ProjectController(projectService, resourceService, ratingService);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
