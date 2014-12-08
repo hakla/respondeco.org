@@ -2,15 +2,10 @@ package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.security.SecurityUtils;
-import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
-import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
-import org.respondeco.respondeco.service.exception.OrganizationAlreadyExistsException;
-import org.respondeco.respondeco.service.util.RandomUtil;
-import org.respondeco.respondeco.web.rest.dto.OrganizationDTO;
+import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +32,16 @@ public class OrganizationService {
         this.userService = userService;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
+    }
+
+    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, ImageDTO logo) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+        Long logoId = null;
+
+        if (logo != null) {
+            logoId = logo.getId();
+        }
+
+        return createOrganizationInformation(name, description, email, isNpo, logoId);
     }
 
     public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
@@ -81,19 +86,6 @@ public class OrganizationService {
         return currentOrganization;
     }
 
-    @Transactional(readOnly = true)
-    public Organization getOrganizationByOwner() throws NoSuchOrganizationException {
-        log.debug("getOrganizationByOwner() called");
-
-        User currentUser = userService.getUserWithAuthorities();
-
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
-        if(currentOrganization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
-        }
-        log.debug("Found Information for Organization: {}", currentOrganization);
-        return currentOrganization;
-    }
     /**
      * Get Organization by Id
      * @param id organization id
@@ -107,39 +99,28 @@ public class OrganizationService {
 
         return org;
     }
-    /**
-     * Get OrganizationDTO by Id
-     * @param id organization id
-     * @return organizationDTO
-     * @throws NoSuchOrganizationException if organization with id could not be found
-     */
-    @Transactional(readOnly=true)
-    public OrganizationDTO getOrganizationById(Long id) throws NoSuchOrganizationException {
-        log.debug("getOrganizationById() with id " + id + " called");
-        OrganizationDTO organizationDTO;
-        Organization org = organizationRepository.findOne(id);
-        organizationDTO = new OrganizationDTO(org);
-
-        return organizationDTO;
-    }
 
     /**
      * Returns all Organizations
      * @return
      */
     @Transactional(readOnly = true)
-    public List<OrganizationDTO> getOrganizations() {
+    public List<Organization> getOrganizations() {
         log.debug("getOrganizations() called");
 
-        OrganizationDTO orgDTO;
         List<Organization> organizations = organizationRepository.findByActiveIsTrue();
-        List<OrganizationDTO> organizationDTOs = new ArrayList<OrganizationDTO>();
 
-        for(Organization org: organizations) {
-            organizationDTOs.add(new OrganizationDTO(org));
+        return organizations;
+    }
+
+    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, ImageDTO logo) throws NoSuchOrganizationException {
+        Long logoId = null;
+
+        if (logo != null) {
+            logoId = logo.getId();
         }
 
-        return organizationDTOs;
+        updaterOrganizationInformation(name, description, email, isNpo, logoId);
     }
 
     public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchOrganizationException {
@@ -175,5 +156,61 @@ public class OrganizationService {
         userRepository.save(currentUser);
         organizationRepository.delete(currentOrganization);
         log.debug("Deleted Information for Organization: {}", currentOrganization);
+    }
+
+    public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
+        User user = userService.getUserWithAuthorities();
+        User member = userRepository.findOne(userId);
+        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
+
+        if(member == null) {
+            throw new NoSuchUserException(String.format("User %s does not exist", userId));
+        }
+        if(organization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
+        }
+        if(organization.getOwner().equals(user) == false) {
+            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ", organization.getOwner()));
+        }
+        log.debug("Deleting member from organization", user.getLogin(), organization.getName());
+        member.setOrganization(null);
+    }
+
+    public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException {
+        Organization organization = organizationRepository.findOne(orgId);
+        User user = userService.getUserWithAuthorities();
+
+        if(organization == null) {
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", orgId));
+        }
+
+        log.debug("Finding members of organization", organization.getName());
+        return userRepository.findUsersByOrganizationId(orgId);
+    }
+
+    public List<User> findInvitableUsersByOrgId(Long orgId) {
+        Organization organization = organizationRepository.getOne(orgId);
+
+        // if there is no organization than all users should be returned
+        if(organization != null) {
+            List<User> users = userRepository.findInvitableUsers();
+            User owner = null;
+
+            // find the owner and remove him from the list
+            // @TODO set the orgId of the owner when set as owner
+            for (User user: users) {
+                if (organization.getOwner().equals(user.getLogin())) {
+                    owner = user;
+                    break;
+                }
+            }
+
+            if (owner != null) {
+                users.remove(owner);
+            }
+
+            return users;
+        }
+        return userRepository.findAll();
     }
 }
