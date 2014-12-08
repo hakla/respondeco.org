@@ -6,7 +6,7 @@
             "home": "Startseite",
             "organization": "Organisation",
             "projects": "Projekte",
-            "proposals": "Angebote",
+            "resource": "Marktplatz",
             "entities": {
                 "main": "Entities"
             },
@@ -56,6 +56,16 @@
             "recurrent":"Wiederkehrend",
             "newbutton":"Neue Ressource anlegen",
             "searchbutton":"Suchen",
+            "organization": "Organisation",
+            "tags": "Tags",
+            "available": "Verfügbar",
+            "search": {
+                "type": "Art der Ressource",
+                "request": "Ressource anfordern",
+                "tooltip": {
+                    "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
+                }
+            },
             "new": {
                 "title": "Neue Ressource anlegen",
                 "name": "Name",

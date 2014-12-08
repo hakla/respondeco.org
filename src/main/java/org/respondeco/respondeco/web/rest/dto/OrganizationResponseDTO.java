@@ -55,20 +55,15 @@ public class OrganizationResponseDTO {
                 responseDTO.setLogo(new ImageDTO(organization.getLogo()));
             }
         }
-        /*
         if (fieldNames.contains("members")) {
             List<UserDTO> membersDTO = new ArrayList<UserDTO>();
             for (User member : organization.getMembers()) {
                 membersDTO.add(new UserDTO(member));
             }
             responseDTO.setMembers(membersDTO);
-        }*/
+        }
         if (fieldNames.contains("spokesperson")) {
             responseDTO.setSpokesperson(organization.getSpokesPerson());
-        }
-        if (fieldNames.contains("ratings")) {
-            responseDTO.setRatings(SupporterRatingResponseDTO
-                    .fromEntities(organization.getRatings(),null));
         }
         if(fieldNames.contains("projects")) {
             responseDTO.setProjects(ProjectResponseDTO
@@ -96,7 +91,7 @@ public class OrganizationResponseDTO {
     private UserDTO owner;
     private List<ProjectResponseDTO> projects;
     private ImageDTO logo;
-    private List<SupporterRatingResponseDTO> ratings;
+    private List<UserDTO> members;
     private Long spokesperson;
 
 }

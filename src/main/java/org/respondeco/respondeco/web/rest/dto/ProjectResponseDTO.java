@@ -77,10 +77,14 @@ public class ProjectResponseDTO {
                 responseDTO.setLogo(new ImageDTO(project.getProjectLogo()));
             }
         }
+        //TODO FIX
+        /**
         if (fieldNames.contains("ratings")) {
             responseDTO.setRatings(ProjectRatingResponseDTO
                     .fromEntities(project.getRatings(),null));
+            responseDTO.setRatings(RatingResponseDTO.fromEntities(project.getResourceMatches().g, null));
         }
+         **/
         return responseDTO;
     }
 
@@ -110,6 +114,6 @@ public class ProjectResponseDTO {
     private List<PropertyTagResponseDTO> propertyTags;
     private List<ResourceRequirementResponseDTO> resourceRequirements;
     private ImageDTO logo;
-    private List<ProjectRatingResponseDTO> ratings;
+    private List<RatingResponseDTO> ratings;
 
 }

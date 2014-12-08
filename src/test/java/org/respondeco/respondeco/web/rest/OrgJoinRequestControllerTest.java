@@ -85,7 +85,7 @@ public class OrgJoinRequestControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrgJoinRequestService orgJoinRequestService = new OrgJoinRequestService(orgjoinrequestRepository,userService,userRepository,organizationRepository);
-        OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgjoinrequestRepository, orgJoinRequestService);
+        OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgJoinRequestService);
 
         this.restOrgJoinRequestMockMvc = MockMvcBuilders.standaloneSetup(orgjoinrequestController).build();
 

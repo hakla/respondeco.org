@@ -1,8 +1,6 @@
 package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.repository.ProjectRatingRepository;
-import org.respondeco.respondeco.repository.SupporterRatingRepository;
 import org.respondeco.respondeco.service.exception.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +15,11 @@ import java.util.List;
 @Service
 @Transactional
 public class SupporterRatingService {
+
+
+    /**
+     * RESTRUCTURE INTO A SHARED RatingService
+
 
     private SupporterRatingRepository supporterRatingRepository;
 
@@ -102,4 +105,5 @@ public class SupporterRatingService {
         supporterRating.setComment(comment);
         supporterRatingRepository.save(supporterRating);
     }
+    */
 }

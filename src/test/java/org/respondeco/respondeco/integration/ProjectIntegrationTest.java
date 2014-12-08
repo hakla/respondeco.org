@@ -25,6 +25,7 @@ import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.ProjectController;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -120,6 +121,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
         projectRequestDTO.setName(DEFAULT_NAME);
         projectRequestDTO.setPurpose(DEFAULT_PURPOSE);
         projectRequestDTO.setConcrete(false);
+        projectRequestDTO.setLogo(new ImageDTO());
 
         orgAdmin = new User();
         orgAdmin.setLogin("orgAdmin");

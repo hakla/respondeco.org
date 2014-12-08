@@ -29,6 +29,7 @@ import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -112,7 +113,7 @@ public class TextMessageControllerTest {
         receiver.setLogin("testReceiver");
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
-        textMessageRequestDTO.setReceiver("testReceiver");
+        textMessageRequestDTO.setReceiver(new UserDTO(receiver));
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
@@ -135,7 +136,7 @@ public class TextMessageControllerTest {
         sender.setAuthorities(senderAuthorities);
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
-        textMessageRequestDTO.setReceiver("testSender");
+        textMessageRequestDTO.setReceiver(new UserDTO(sender));
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
@@ -156,7 +157,7 @@ public class TextMessageControllerTest {
         sender.setAuthorities(senderAuthorities);
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
-        textMessageRequestDTO.setReceiver("nonexistingReceiver");
+        textMessageRequestDTO.setReceiver(new UserDTO());
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
@@ -180,7 +181,7 @@ public class TextMessageControllerTest {
         receiver.setLogin("testReceiver");
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
-        textMessageRequestDTO.setReceiver(receiver.getLogin());
+        textMessageRequestDTO.setReceiver(new UserDTO(receiver));
         textMessageRequestDTO.setContent("");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(sender);
@@ -211,11 +212,11 @@ public class TextMessageControllerTest {
         receiver.setAuthorities(receiverAuthorities);
 
         TextMessageRequestDTO textMessageRequestDTO = new TextMessageRequestDTO();
-        textMessageRequestDTO.setReceiver("testReceiver");
+        textMessageRequestDTO.setReceiver(new UserDTO(receiver));
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         TextMessageResponseDTO responseDTO = new TextMessageResponseDTO();
-        responseDTO.setSender(sender.getLogin());
+        responseDTO.setSender(new UserDTO(sender));
         responseDTO.setContent(DEFAULT_CONTENT);
         responseDTO.setTimestamp(DateTime.now());
 

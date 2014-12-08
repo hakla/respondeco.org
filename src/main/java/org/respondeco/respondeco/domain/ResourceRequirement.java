@@ -20,7 +20,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "resource_id", referencedColumnName = "id")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"resourceMatches", "project"})
 public class ResourceRequirement extends ResourceBase implements Serializable {
 
     @ManyToOne
@@ -31,6 +31,6 @@ public class ResourceRequirement extends ResourceBase implements Serializable {
     private Boolean isEssential;
 
     @OneToMany(mappedBy = "resourceRequirement")
-    private List<ResourceOffer> resourceOffers;
+    private List<ResourceMatch> resourceMatches;
 
 }

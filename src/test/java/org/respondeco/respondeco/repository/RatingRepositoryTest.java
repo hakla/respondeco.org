@@ -23,7 +23,7 @@ import javax.inject.Inject;
     DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
-public class ProjectRatingRepositoryTest {
+public class RatingRepositoryTest {
 
     @Inject
     private ProjectRepository projectRepository;
@@ -35,7 +35,7 @@ public class ProjectRatingRepositoryTest {
     private UserRepository userRepository;
 
     @Inject
-    private ProjectRatingRepository projectRatingRepository;
+    private RatingRepository ratingRepository;
 
     @Before
     public void setup() {
