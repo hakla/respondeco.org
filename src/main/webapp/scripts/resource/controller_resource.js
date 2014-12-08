@@ -13,6 +13,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
+	var orgId;
+
 
 	if($location.path() === 'ownresource') {
 		Account.get(null, function(account) {
@@ -37,6 +39,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('resource/' + id);
 	}
 
+	$scope.redirectToOwnResource = function() {
+		$location.path('ownresource');
+	}
+
 	$scope.search = function() {
 		$scope.resourceSearch.tags = $.map($scope.searchTags, function(tag) {return tag.name}).join(","); //create comma separated list
 		console.log($scope.resourceSearch.tags);
@@ -59,18 +65,11 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
 		function() {	
-			$scope.redirectToResource('');
+			$scope.redirectToOwnResource('');
 		}, 
 		function() {
 			$scope.formSaveError = true;
 		});
-	}
-
-	$scope.delete = function(id) {
-		Resource.delete({id: id},
-			function() {
-				$scope.resources = Resource.query();
-			});
 	}
 
 	$scope.update = function(id) {
@@ -91,5 +90,25 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	if($scope.isNew == false) {
 		$scope.update(id);
 	}
+
+	var deleteState = false;
+    $scope.deleteType = "default";
+    $scope.deleteMessage = "resource.own.delete";
+
+    $scope.delete = function(id) {
+        if (deleteState === false) {
+            $scope.deleteMessage = "resource.own.confirmDelete";
+            $scope.deleteType = "danger";
+            deleteState = true;
+            return;
+        }
+
+        deleteState = true;
+        Resource.delete({
+            id: id
+        }, function() {
+            $scope.resources = Resource.getByOrgId({id:orgId});
+        });
+    };
 
 });

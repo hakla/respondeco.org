@@ -1,25 +1,25 @@
 <div class="clearfix resource-search-container">
     <h1>
-        {{ 'global.resource.title' | translate }}
+        {{ 'resource.title' | translate }}
     </h1>
 
     <form name="searchForm" class="row" role="form" novalidate ng-submit="search()">
         <div class="form-group col-md-3">
-            <label translate="global.resource.name">name</label>
-            <input type="text" class="form-control" placeholder=" {{'global.resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
+            <label translate="resource.name">name</label>
+            <input type="text" class="form-control" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
         </div>
         <div class="form-group col-md-3">
-            <label translate="global.resource.tags">tags</label>
-            <tags-input ng-model="searchTags" add-on-space="true" display-property="name" min-length="1" placeholder=" {{'global.resource.placeholder.search' | translate}}">
+            <label translate="resource.tags">tags</label>
+            <tags-input ng-model="searchTags" add-on-space="true" display-property="name" min-length="1" placeholder=" {{'resource.placeholder.search' | translate}}">
             </tags-input>
         </div>
         <div class="form-group col-md-3">
-            <label translate="global.resource.organization">company</label>
-            <input class="form-control" type="text" placeholder=" {{'global.resource.placeholder.search' | translate}}" ng-model="resourceSearch.organization">
+            <label translate="resource.organization">company</label>
+            <input class="form-control" type="text" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.organization">
             </input>
         </div>
         <div class="form-group col-md-3">
-            <label translate="global.resource.search.type" tooltip="{{ 'global.resource.search.tooltip.type' | translate }}">Type of resource</label>
+            <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label>
             <div class="btn-group">
                 <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="true">Kommerziell</label>
                 <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="false">Nicht Kommerziell</label>
@@ -27,7 +27,7 @@
         </div>
         <div class="col-md-5">
             <button type="button" class="btn btn-default " ng-click="search()">
-                {{'global.resource.searchbutton' | translate}}
+                {{'resource.searchbutton' | translate}}
             </button>
         </div>
     </form>
@@ -43,7 +43,7 @@
                         {{ resource.description }}
                     </div>
                     <div class="col-md-4 on-hover">
-                        <button class="btn btn-primary" translate="global.resource.search.request">
+                        <button class="btn btn-primary" translate="resource.search.request">
                             Request resource
                         </button>
                     </div>

@@ -45,64 +45,7 @@
             "confirm": "Bestätigen",
             "save": "Speichern"
         },
-        "resource": {
-            "title":"Ressourcen",
-            "name": "Name",
-            "company": "Unternehmen",
-            "amount": "Anzahl",
-            "startDate": "Verfügbar ab",
-            "endDate": "Verfügbar bis",
-            "commercial":"Kommerziell",
-            "recurrent":"Wiederkehrend",
-            "newbutton":"Neue Ressource anlegen",
-            "searchbutton":"Suchen",
-            "organization": "Organisation",
-            "tags": "Tags",
-            "available": "Verfügbar",
-            "search": {
-                "type": "Art der Ressource",
-                "request": "Ressource anfordern",
-                "tooltip": {
-                    "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
-                }
-            },
-            "new": {
-                "title": "Neue Ressource anlegen",
-                "name": "Name",
-                "tags": "Tags",
-                "description": "Beschreibung",
-                "amount":"Anzahl",
-                "commercial":"Kommerzielle Ressource",
-                "recurrent":"Wiederkehrende Ressource",
-                "startDate": "Verfügbar ab",
-                "endDate":"Verfügbar bis",
-                "savebutton":"Speichern",
-                "cancelbutton":"Abbrechen",
-                "error": "Ressource konnte nicht erstellt werden!"
-            },
-            "edit": {
-                "title": "Ressource bearbeiten"
-            },
-            "placeholder": {
-                "name": "Name der Ressource",
-                "description" : "Beschreibung der Ressource",
-                "amount" : "Anzahl der Ressourcen",
-                "tags": "Tags für Ressource",
-                "search": "Suchkriterien eingeben"
-            },
-            "own": {
-                "title": "Ressourcen von",
-                "editbutton": "Bearbeiten",
-                "deletebutton": "Löschen"
-            },
-            "requirement": {
-                "title": "Ressourcenanforderung hinzufügen",
-                "isEssential": "Notwendig",
-                "tableheader": "Benötigte Ressourcen",
-                "name": "Name",
-                "amount": "Menge"
-            }
-        },
+
         "messages": {
             "info": {
                 "authenticated": "Wenn Sie sich <a href=\"#/login\">anmelden</a> möchten, versuchen Sie es mit <br/>- Administrator (Name=\"admin\" und Passwort=\"admin\")<br/>- Benutzer (Name=\"user\" und Passwort=\"user\").",
@@ -539,6 +482,65 @@
         "header.info": "Informationen über das Unternehmen",
         "header.logo": "Logo",
         "ownresources": "Ressourcen anzeigen"
+    },
+    "resource": {
+        "title":"Ressourcen",
+        "name": "Name",
+        "company": "Unternehmen",
+        "amount": "Anzahl",
+        "startDate": "Verfügbar ab",
+        "endDate": "Verfügbar bis",
+        "commercial":"Kommerziell",
+        "recurrent":"Wiederkehrend",
+        "newbutton":"Neue Ressource anlegen",
+        "searchbutton":"Suchen",
+        "organization": "Organisation",
+        "tags": "Tags",
+        "available": "Verfügbar",
+        "search": {
+            "type": "Art der Ressource",
+            "request": "Ressource anfordern",
+            "tooltip": {
+                "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
+            }
+        },
+        "new": {
+            "title": "Neue Ressource anlegen",
+            "name": "Name",
+            "tags": "Tags",
+            "description": "Beschreibung",
+            "amount":"Anzahl",
+            "commercial":"Kommerzielle Ressource",
+            "recurrent":"Wiederkehrende Ressource",
+            "startDate": "Verfügbar ab",
+            "endDate":"Verfügbar bis",
+            "savebutton":"Speichern",
+            "cancelbutton":"Abbrechen",
+            "error": "Ressource konnte nicht erstellt werden!"
+        },
+        "edit": {
+            "title": "Ressource bearbeiten"
+        },
+        "placeholder": {
+            "name": "Name der Ressource",
+            "description" : "Beschreibung der Ressource",
+            "amount" : "Anzahl der Ressourcen",
+            "tags": "Tags für Ressource",
+            "search": "Suchkriterien eingeben"
+        },
+        "own": {
+            "title": "Ressourcen von",
+            "editbutton": "Bearbeiten",
+            "delete": "Löschen",
+            "confirmDelete": "Unwiderruflich Löschen"
+        },
+        "requirement": {
+            "title": "Ressourcenanforderung hinzufügen",
+            "isEssential": "Notwendig",
+            "tableheader": "Benötigte Ressourcen",
+            "name": "Name",
+            "amount": "Menge"
+        }
     },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",

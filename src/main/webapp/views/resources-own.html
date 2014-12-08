@@ -1,9 +1,9 @@
 <div>
  
-    <h1> {{ 'global.resource.own.title' | translate }} {{organization.name}}
+    <h1> {{ 'resource.own.title' | translate }} {{organization.name}}
         <button class="btn btn-success btn-mid pull-right"
                 ng-click="redirectToResource('new')">
-            <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'global.resource.newbutton' | translate }}
+            <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'resource.newbutton' | translate }}
         </button>
     </h1>
 
@@ -11,12 +11,12 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <td translate="global.resource.name">name</td>
-                    <td translate="global.resource.amount">amount</td>
-                    <td translate="global.resource.startDate">available from</td>
-                    <td translate="global.resource.endDate">available until</td>
-                    <td translate="global.resource.commercial">commercial</td>
-                    <td translate="global.resource.recurrent">recurrent</td>
+                    <td translate="resource.name">name</td>
+                    <td translate="resource.amount">amount</td>
+                    <td translate="resource.startDate">available from</td>
+                    <td translate="resource.endDate">available until</td>
+                    <td translate="resource.commercial">commercial</td>
+                    <td translate="resource.recurrent">recurrent</td>
                 </tr>
             </thead>
             </thead>
@@ -32,11 +32,9 @@
                     <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
                     <td> 
                         <button type="button" class="btn btn-default" ng-click="redirectToResource(resource.id)">
-                            {{ 'global.resource.own.editbutton' | translate }}
+                            {{ 'resource.own.editbutton' | translate }}
                         </button>
-                        <button type="button" class="btn btn-default btn-danger" ng-click="delete(resource.id)">
-                            {{ 'global.resource.own.deletebutton' | translate }}
-                        </button>
+                        <button type="button" class="btn btn-{{deleteType}}" ng-click='delete(resource.id)'>{{ deleteMessage | translate }}</button>
                     </td>
                 </tr>
             </tbody>
