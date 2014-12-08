@@ -2,11 +2,9 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
-import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.Rating;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
-import org.respondeco.respondeco.service.ProjectRatingService;
+import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
@@ -19,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,13 +38,13 @@ public class ProjectController {
 
     private ProjectService projectService;
     private ResourceService resourceService;
-    private ProjectRatingService projectRatingService;
+    private RatingService ratingService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourceService resourceService, ProjectRatingService projectRatingService) {
+    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService) {
         this.projectService = projectService;
         this.resourceService = resourceService;
-        this.projectRatingService = projectRatingService;
+        this.ratingService = ratingService;
     }
 
     /**
@@ -77,9 +76,9 @@ public class ProjectController {
         } catch(OperationForbiddenException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch(Exception e) {
+        } catch (ResourceException e) {
             log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }
@@ -114,9 +113,9 @@ public class ProjectController {
         } catch(OperationForbiddenException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch(Exception e) {
+        } catch (ResourceException e) {
             log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }

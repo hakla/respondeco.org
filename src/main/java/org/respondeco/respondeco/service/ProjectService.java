@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class ProjectService {
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           LocalDate endDate, List<String> propertyTags,
                           List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
-        throws Exception {
+        throws OperationForbiddenException, ResourceException {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
@@ -97,7 +99,8 @@ public class ProjectService {
 
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         LocalDate endDate, Long imageId, List<String> propertyTags,
-                        List<ResourceRequirementRequestDTO> resourceRequirements) throws Exception {
+                        List<ResourceRequirementRequestDTO> resourceRequirements)
+        throws OperationForbiddenException, ResourceException {
 
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {

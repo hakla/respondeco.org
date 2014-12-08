@@ -7,6 +7,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Created by Clemens Puehringer on 07/12/14.
@@ -22,7 +23,7 @@ import javax.persistence.*;
     "resourceRequirement", "organization", "project"})
 public class ResourceMatch extends AbstractAuditingEntity {
 
-    private Integer amount;
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "match_direction")

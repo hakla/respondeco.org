@@ -19,10 +19,10 @@
             </div>
             <div class="rating-container">
                 <div class="row">
-                    <div id="rating" class="col-md-12" popover="Bewerten Sie das Projekt!" popover-trigger="show">
+                    <div id="rating" class="col-md-12" data-toggle="popover" data-content="Rate the Project now!">
                         <span>Aktuelle Bewertung: </span>
                         <rating ng-model="rating.value" max="5" readonly="!canRate" on-leave="overStar = null"
-                            ng-click="enableRating()"></rating>
+                            ng-click="showRating()"></rating>
                     </div>
                 </div>
                 <div ng-show="isRating">
@@ -41,7 +41,7 @@
                         <div class="col-md-12">
                             <button class="btn btn-success" ng-click="rateProject()"
                                     translate="rating.ratenow">Rate now</button>
-                            <button class="btn btn-default" ng-click="disableRating()"
+                            <button class="btn btn-default" ng-click="hideRating()"
                                     translate="rating.notnow">Not now</button>
                         </div>
                     </div>

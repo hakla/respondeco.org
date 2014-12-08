@@ -1,6 +1,11 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, ResourceRequirement, PropertyTagNames, $location, $routeParams, $sce) {
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    });
+    $("#rating").popover("show");
+
     $scope.project = {
         id: null,
         name: null,
@@ -180,13 +185,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $scope.selectedResourceTags = $scope.resource.resourceTags;
     };
 
-    $scope.enableRating = function() {
+    $scope.showRating = function() {
         if($scope.canRate) {
             $scope.isRating = true;
         }
     }
 
-    $scope.disableRating = function() {
+    $scope.hideRating = function() {
         $scope.isRating = false;
     }
 
@@ -194,7 +199,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         if($scope.project != null) {
             $scope.rating.projectId = $scope.project.id;
             if ($scope.rating.ratingId == null) {
-                Project.rate($scope.rating);
+                Project.rate($scope.rating,
+                function() {
+                    $scope.rateSucces = "SUCCESS";
+                    $scope.canRate = false;
+                });
             } else {
                 Project.updateRating($scope.rating);
             }

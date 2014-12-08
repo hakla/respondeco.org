@@ -1,8 +1,12 @@
 package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.repository.OrganizationRepository;
+import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.RatingRepository;
+import org.respondeco.respondeco.repository.ResourceMatchRepository;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,20 +19,72 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ProjectRatingService {
+public class RatingService {
 
     private RatingRepository ratingRepository;
+
+    private ResourceMatchRepository resourceMatchRepository;
+
+    private ProjectRepository projectRepository;
+
+    private OrganizationRepository organizationRepository;
 
     private UserService userService;
 
     private ProjectService projectService;
 
     @Inject
-    public ProjectRatingService(RatingRepository ratingRepository, UserService userService, ProjectService projectService) {
+    public RatingService(RatingRepository ratingRepository, ResourceMatchRepository resourceMatchRepository,
+                         ProjectRepository projectRepository, OrganizationRepository organizationRepository,
+                         UserService userService, ProjectService projectService) {
         this.ratingRepository = ratingRepository;
+        this.resourceMatchRepository = resourceMatchRepository;
+        this.projectRepository = projectRepository;
+        this.organizationRepository = organizationRepository;
         this.userService = userService;
         this.projectService = projectService;
     }
+
+    public RatingPermissions getRatingPermissionsForProject(Long projectId) {
+        RatingPermissions ratingPermissions = new RatingPermissions();
+        Project project = projectRepository.findOne(projectId);
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser.equals(project.getManager())) {
+            for(ResourceMatch rm : project.getResourceMatches()) {
+                if(rm.getSupporterRating() == null && rm.getAccepted() == true) {
+                    ratingPermissions.addOrganization(rm.getOrganization().getId());
+                }
+            }
+        } else {
+            Organization userOrg = organizationRepository.findByOwner(currentUser);
+            if(userOrg != null) {
+                for (ResourceMatch rm : userOrg.getResourceMatches()) {
+                    if (project.equals(rm.getProject())) {
+                        if (rm.getProjectRating() == null && rm.getAccepted() == true) {
+                            ratingPermissions.setProjectId(project.getId());
+                        }
+                    }
+                }
+            }
+        }
+        return ratingPermissions;
+    }
+
+    public Boolean checkIfUserCanRateOrganization(Long organizationId) {
+        User currentUser = userService.getUserWithAuthorities();
+        List<Project> projects = projectRepository.findByManager(currentUser);
+        for(Project p : projects) {
+            for(ResourceMatch rm : p.getResourceMatches()) {
+                if(rm.getProjectRating() == null) {
+                    if(rm.getOrganization().getId().equals(organizationId)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
 
     public AggregatedRating getAggregatedRating(Long projectId) {

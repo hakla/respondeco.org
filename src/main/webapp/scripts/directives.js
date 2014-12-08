@@ -230,13 +230,3 @@ angular.module('respondecoApp')
         };
     });
 
-//configure popover directive to enable show and hide triggers
-respondecoApp.config(['$tooltipProvider', function($tooltipProvider){
-    $tooltipProvider.setTriggers({
-        'mouseenter': 'mouseleave',
-        'click': 'click',
-        'focus': 'blur',
-        'never': 'mouseleave',
-        'show': 'hide'
-    });
-}]);
