@@ -5,6 +5,8 @@ import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by Chris on 10.11.2014.
  */
@@ -15,7 +17,11 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 public class OrgJoinRequestDTO {
 
     private Long id;
+
+    @NotNull
     private OrganizationResponseDTO organization;
+
+    @NotNull
     private UserDTO user;
 
     public OrgJoinRequestDTO(OrgJoinRequest orgJoinRequest) {

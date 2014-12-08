@@ -180,12 +180,12 @@ public class OrgJoinRequestServiceTest {
 
         orgJoinRequestService.createOrgJoinRequest(defaultOrganization.getName(),defaultUser.getLogin());
 
-        List<OrgJoinRequestWithActiveFlagDTO> orgJoinRequestListWithFlagDTOList = orgJoinRequestService.getOrgJoinRequestsByOwner();
-        OrgJoinRequestWithActiveFlagDTO orgJoinRequestWithActiveFlagDTO = orgJoinRequestListWithFlagDTOList.get(0);
-        assertNotNull(orgJoinRequestWithActiveFlagDTO);
+        List<OrgJoinRequest> orgJoinRequestList = orgJoinRequestService.getOrgJoinRequestsByOwner();
+        OrgJoinRequest orgJoinRequest = orgJoinRequestList.get(0);
+        assertNotNull(orgJoinRequest);
 
-        assertEquals(orgJoinRequestWithActiveFlagDTO.getOrgName(),defaultOrganization.getName());
-        assertEquals(orgJoinRequestWithActiveFlagDTO.getUserLogin(),defaultUser.getLogin());
+        assertEquals(orgJoinRequest.getOrganization(),defaultOrganization);
+        assertEquals(orgJoinRequest.getUser(),defaultUser);
     }
 
     @Test(expected = NoSuchOrganizationException.class)

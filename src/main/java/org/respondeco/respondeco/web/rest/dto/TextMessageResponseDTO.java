@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
+import org.respondeco.respondeco.domain.User;
 
 import java.time.LocalDate;
 
@@ -17,7 +18,7 @@ public class TextMessageResponseDTO {
 
     private Long id;
 
-    private String sender;
+    private UserDTO sender;
 
     private String content;
 

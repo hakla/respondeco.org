@@ -43,22 +43,7 @@ public class UserController {
     /**
      * GET  /rest/users/:login -> get the "login" user.
      */
-    @RequestMapping(value = "/rest/users/{login}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    ResponseEntity<User> getUser(@PathVariable String login) {
-        log.debug("REST request to get User : {}", login);
-        return Optional.ofNullable(userRepository.findByLogin(login))
-            .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    /**
-     * GET  /rest/users/:login -> get the "login" user.
-     */
-    @RequestMapping(value = "/rest/users/byId/{id}",
+    @RequestMapping(value = "/rest/users/{id}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -68,33 +53,6 @@ public class UserController {
         return Optional.ofNullable(userRepository.findOne(id))
             .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    /**
-     * POST  /rest/deleteMember-> delete Member by userlogin
-     */
-    @RequestMapping(value = "/rest/user/deleteMember/{userlogin}",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> deleteMember(@PathVariable String userlogin) {
-        log.debug("REST request to delete Member : {}", userlogin);
-        ResponseEntity<?> responseEntity;
-        try {
-            userService.deleteMember(userlogin);
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchUserException e) {
-            log.error("Could not delete Member : {}", userlogin, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NoSuchOrganizationException e) {
-            log.error("Could not delete Member : {}", userlogin, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotOwnerOfOrganizationException e) {
-            log.error("Could not delete Member : {}", userlogin, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
     }
 
     /**
@@ -116,19 +74,5 @@ public class UserController {
             limit = 20;
         }
         return userService.findUsernamesLike(filter, limit);
-    }
-
-    /**
-     * GET  /rest/users -> get all users
-     */
-    @RequestMapping(value = "/rest/users/getInvitableUsersByOrgId/{orgId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<User>> getInvitableUsers(@PathVariable Long orgId) {
-        return Optional.ofNullable(userService.findInvitableUsersByOrgId(orgId))
-            .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

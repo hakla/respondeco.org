@@ -11,6 +11,7 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/app")
+@Transactional
 public class OrganizationController {
 
     private final Logger log = LoggerFactory.getLogger(OrganizationController.class);
@@ -65,7 +68,7 @@ public class OrganizationController {
                 newOrganization.getDescription(),
                 newOrganization.getEmail(),
                 newOrganization.isNpo(),
-                newOrganization.getLogo() != null ? newOrganization.getLogo().getId() : null);
+                newOrganization.getLogo());
 
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (AlreadyInOrganizationException e) {
@@ -79,8 +82,9 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/project -> get all the projects.
+     * GET  /rest/organizations -> get all the organizations.
      */
+    @RolesAllowed(AuthoritiesConstants.USER)
     @ApiOperation(value = "Get organizations", notes = "Get organizations")
     @RequestMapping(value = "/rest/organizations",
             method = RequestMethod.GET,
@@ -100,6 +104,7 @@ public class OrganizationController {
     /**
      * GET  /rest/organization/:id -> get the "id" organization.
      */
+    @RolesAllowed(AuthoritiesConstants.USER)
     @ApiOperation(value = "Get organization", notes = "Get a organization by its id")
     @RequestMapping(value = "/rest/organizations/{id}",
             method = RequestMethod.GET,
@@ -123,35 +128,11 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/organizations/:owner -> get the organization of current owner.
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations/myorganization",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<OrganizationResponseDTO> getByOwner(
-            @RequestParam(required = false) String fields) {
-        log.debug("REST request to get owner's Organization : {}");
-        Organization organization = organizationService.getOrganizationByOwner();
-        ResponseEntity<OrganizationResponseDTO> response;
-        RestParameters restParameters = new RestParameters(null, null, null, fields);
-        if(organization != null) {
-            OrganizationResponseDTO responseDTO = OrganizationResponseDTO
-                    .fromEntity(organization, restParameters.getFields());
-            response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return response;
-    }
-
-    /**
      * POST  /rest/organizations -> Update an organization.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations/updateOrganization",
-            method = RequestMethod.POST,
+    @RequestMapping(value = "/rest/organizations",
+            method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> update(@RequestBody @Valid OrganizationRequestDTO organization){
@@ -163,7 +144,7 @@ public class OrganizationController {
                     organization.getDescription(),
                     organization.getEmail(),
                     organization.isNpo(),
-                    organization.getLogo().getId());
+                    organization.getLogo());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not update Organization : {}", organization, e);
@@ -198,7 +179,7 @@ public class OrganizationController {
      */
 
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations/{id}/resourceOffers",
+    @RequestMapping(value = "/rest/organizations/{id}/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -217,7 +198,7 @@ public class OrganizationController {
      * GET  /rest/organizations/:id/orgJoinRequests -> get the orgjoinrequests for organization :id
      */
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/organizations/{id}/orgJoinRequests",
+    @RequestMapping(value = "/rest/organizations/{id}/orgjoinrequests",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -250,13 +231,13 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    ResponseEntity<List<UserDTO>> getUserByOrgId(@PathVariable Long id) {
+    ResponseEntity<List<UserDTO>> getMembers(@PathVariable Long id) {
         log.debug("REST request to get Users by OrgId : {}", id);
         ResponseEntity<List<UserDTO>> responseEntity;
 
         try {
             // get all users for organization with id :id
-            List<User> users = userService.getUserByOrgId(id);
+            List<User> users = organizationService.getUserByOrgId(id);
             List<UserDTO> userDTOs = new ArrayList<>();
 
             if (users.isEmpty()) {
@@ -314,7 +295,7 @@ public class OrganizationController {
     /**
      * POST  /rest/organizations/{id}/supporterratings -> Update a supporterRating.
      */
-    @ApiOperation(value = "Update a supporterRating", notes = "Update a suppoerterRating")
+    @ApiOperation(value = "Update a supporterRating", notes = "Update a supporterRating")
     @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -374,4 +355,50 @@ public class OrganizationController {
         }
         return response;
     }
+
+    /**
+     * POST  /rest/deleteMember-> delete Member by userlogin
+     */
+    @RequestMapping(value = "/rest/organization/{id}/members/{userId}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> deleteMember(@PathVariable Long userId) {
+        log.debug("REST request to delete Member : {}", userId);
+        ResponseEntity<?> responseEntity;
+        try {
+            organizationService.deleteMember(userId);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchUserException e) {
+            log.error("Could not delete Member : {}", userId, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not delete Member : {}", userId, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NotOwnerOfOrganizationException e) {
+            log.error("Could not delete Member : {}", userId, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * GET  /rest/users -> get all users
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/invitableusers",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<List<UserDTO>> getInvitableUsers(@PathVariable Long id) {
+        List<UserDTO> users = new ArrayList<>();
+
+        for (User user: organizationService.findInvitableUsersByOrgId(id)) {
+            users.add(new UserDTO(user));
+        }
+
+        return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
+    }
+
 }

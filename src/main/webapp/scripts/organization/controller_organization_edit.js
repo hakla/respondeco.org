@@ -65,7 +65,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         }, function(org) {
             $scope.organization = org;
             
-            $scope.users = User.getInvitableUsers({
+            $scope.users = Organization.getInvitableUsers({
                 id: $scope.organization.id
             });
 
@@ -111,15 +111,17 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     $scope.sendInvite = function() {
         OrgJoinRequest.save({
             organization: {
-                name: $scope.organization.name
+                id: $scope.organization.id
             },
             user: {
-                login: $scope.selectedUser.login
+                id: $scope.selectedUser.id
             }
         }, function(data) {
             updateOrgJoinRequests();
             TextMessage.save({
-                receiver: data.userLogin,
+                receiver: {
+                    id: data.user.id
+                },
                 content: "You got invited to join the organization " + $scope.organization.name + "!"
             });
         }, function(error) {

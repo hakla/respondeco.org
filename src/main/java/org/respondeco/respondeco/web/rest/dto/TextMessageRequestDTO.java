@@ -19,7 +19,7 @@ public class TextMessageRequestDTO {
 
     @ApiModelProperty(value = "The receiver of the message", required = true)
     @NotNull
-    private String receiver;
+    private UserDTO receiver;
 
     @ApiModelProperty(value = "The content of the message", required = true)
     @NotNull

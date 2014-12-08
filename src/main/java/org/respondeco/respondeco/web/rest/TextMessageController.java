@@ -86,14 +86,14 @@ public class TextMessageController {
      */
     @ApiOperation(value = "Get text messages",
             notes = "Get all text messages for the given userlogin (admin only)")
-    @RequestMapping(value = "/rest/textmessages/admin/{receiver}",
+    @RequestMapping(value = "/rest/textmessages/admin/{receiverId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    public List<TextMessageResponseDTO> getAllForReceiver(@PathVariable String receiver) {
-        log.debug("REST request to get TextMessages for : {}", receiver);
-        return textMessageService.getTextMessagesForUser(receiver);
+    public List<TextMessageResponseDTO> getAllForReceiver(@PathVariable Long receiverId) {
+        log.debug("REST request to get TextMessages for : {}", receiverId);
+        return textMessageService.getTextMessagesForUser(receiverId);
     }
 
     /**

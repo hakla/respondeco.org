@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/app")
+@Transactional
 public class AccountController {
 
     private final Logger log = LoggerFactory.getLogger(AccountController.class);
@@ -125,6 +127,7 @@ public class AccountController {
         return Optional.ofNullable(userService.getUserWithAuthorities())
             .map(user -> new ResponseEntity<>(
                 new UserDTO(
+                    user.getId(),
                     user.getLogin(),
                     null,
                     user.getTitle(),
@@ -263,35 +266,15 @@ public class AccountController {
      * GET  /rest/orgjoinrequests/:organization -> get the "organization" orgjoinrequest.
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/account/userrequests",
+    @RequestMapping(value = "/rest/account/orgjoinrequests",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<OrgJoinRequestDTO>> getByCurrentUser() {
         log.debug("REST request to get OrgJoinRequest as User: {}");
         List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
-        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (orgJoinRequests.isEmpty() == false) {
-            List<OrgJoinRequestDTO> dtos = new ArrayList<>();
-            orgJoinRequests.forEach(p -> dtos.add(new OrgJoinRequestDTO(p)));
-            entity = new ResponseEntity<>(dtos, HttpStatus.OK);
-        }
+        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.OK);
 
-        return entity;
-    }
-
-    /**
-     * GET  /rest/orgjoinrequests/:organization -> get the "organization" orgjoinrequest.
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/account/ownerrequests",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<List<OrgJoinRequestDTO>> getByCurrentOwner() {
-        log.debug("REST request to get OrgJoinRequest as Owner : {}");
-        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestsByOwner();
-        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (orgJoinRequests.isEmpty() == false) {
             List<OrgJoinRequestDTO> dtos = new ArrayList<>();
             orgJoinRequests.forEach(p -> dtos.add(new OrgJoinRequestDTO(p)));
