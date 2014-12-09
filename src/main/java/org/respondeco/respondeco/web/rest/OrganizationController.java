@@ -316,14 +316,14 @@ public class OrganizationController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            ratingService.rateOrganization(ratingRequestDTO.getMatchid(),
+            ratingService.rateOrganization(id,ratingRequestDTO.getMatchid(),
                     ratingRequestDTO.getRating(),
                     ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchProjectException | NoSuchResourceMatchException | NoSuchOrganizationException e ) {
+        } catch (NoSuchOrganizationException e) {
             log.error("Could not grate organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (SupporterRatingException e) {
+        } catch (NoSuchProjectException | NoSuchResourceMatchException | SupporterRatingException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;

@@ -257,15 +257,15 @@ public class ProjectController {
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> rateProject(
             @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
-            @PathVariable Long id) throws NoSuchResourceMatchException {
+            @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
             ratingService.rateProject(id,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchProjectException | NoSuchResourceMatchException | NoSuchOrganizationException e ) {
+        } catch (NoSuchProjectException e ) {
             log.error("Could not grate project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException e) {
+        } catch (ProjectRatingException  | NoSuchResourceMatchException | NoSuchOrganizationException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
