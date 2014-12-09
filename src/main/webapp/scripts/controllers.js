@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function ($scope, $location) {
+respondecoApp.controller('MainController', function($scope, $location) {
     $scope.main = function() {
         return $location.path() === '' || $location.path() === '/';
     };
@@ -16,29 +16,27 @@ respondecoApp.controller('MainController', function ($scope, $location) {
     };
 });
 
-respondecoApp.controller('AdminController', function ($scope) {
-});
+respondecoApp.controller('AdminController', function($scope) {});
 
-respondecoApp.controller('LanguageController', function ($scope, $translate, LanguageService) {
-    $scope.changeLanguage = function (languageKey) {
+respondecoApp.controller('LanguageController', function($scope, $translate, LanguageService) {
+    $scope.changeLanguage = function(languageKey) {
         $translate.use(languageKey);
 
-        LanguageService.getBy(languageKey).then(function (languages) {
+        LanguageService.getBy(languageKey).then(function(languages) {
             $scope.languages = languages;
         });
     };
 
-    LanguageService.getBy().then(function (languages) {
+    LanguageService.getBy().then(function(languages) {
         $scope.languages = languages;
     });
 });
 
-respondecoApp.controller('MenuController', function ($scope) {
-});
+respondecoApp.controller('MenuController', function($scope) {});
 
-respondecoApp.controller('LoginController', function ($scope, $location, AuthenticationSharedService) {
+respondecoApp.controller('LoginController', function($scope, $location, AuthenticationSharedService) {
     $scope.rememberMe = true;
-    $scope.login = function () {
+    $scope.login = function() {
         AuthenticationSharedService.login({
             username: $scope.username,
             password: $scope.password,
@@ -47,13 +45,14 @@ respondecoApp.controller('LoginController', function ($scope, $location, Authent
     }
 });
 
-respondecoApp.controller('LogoutController', function ($location, AuthenticationSharedService) {
+respondecoApp.controller('LogoutController', function($location, AuthenticationSharedService) {
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function ($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
+respondecoApp.controller('SettingsController', function($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
     $scope.onComplete = function(fileItem, response) {
         $scope.settingsAccount.profilePicture = response;
+        $scope.profilePicture = response.id;
 
         $scope.save();
     };
@@ -65,13 +64,13 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     Account.get(function(account) {
         $scope.settingsAccount = account;
 
-        if ($scope.settingsAccount.organization !== undefined) {
-            $scope.organization = $scope.settingsAccount.organization;
+        if ($scope.settingsAccount.organizationId != null) {
+            reloadOrganization($scope.settingsAccount.organizationId);
         }
 
-        if($scope.settingsAccount.firstName == null) {
+        if ($scope.settingsAccount.firstName == null) {
             $scope.fullName = $scope.settingsAccount.lastName;
-        } else if($scope.settingsAccount.lastName == null) {
+        } else if ($scope.settingsAccount.lastName == null) {
             $scope.fullName = $scope.settingsAccount.firstName;
         } else {
             $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
@@ -89,7 +88,7 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         "MALE",
         "FEMALE"
     ];
-    
+
     var getCurrentOrgJoinRequests = function() {
         OrgJoinRequest.current(function(data) {
             $scope.orgJoinRequests = data;
@@ -104,28 +103,44 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
         });
     };
 
+    var reloadOrganization = function(id) {
+        if (id != null) {
+            $scope.organization = Organization.get({
+                id: id
+            });
+        } else {
+            Account.get(function(account) {
+                if (account.organizationId != null) {
+                    reloadOrganization(account.organizationId);
+                } else {
+                    $scope.organization = null;
+                }
+            });
+        }
+    };
+
     getCurrentOrgJoinRequests();
 
-    $scope.save = function () {
+    $scope.save = function() {
         Account.save($scope.settingsAccount,
-            function (value, responseHeaders) {
+            function(value, responseHeaders) {
                 $scope.error = null;
                 $scope.success = 'OK';
                 $scope.settingsAccount = Account.get();
             },
-            function (httpResponse) {
+            function(httpResponse) {
                 $scope.success = null;
                 $scope.error = "ERROR";
             });
     };
-     $scope.delete = function() {
+    $scope.delete = function() {
         Account.delete(
-            function (value, responseHeaders) {
+            function(value, responseHeaders) {
                 $scope.error = null;
                 $scope.accountdeleted = "OK";
                 AuthenticationSharedService.logout();
             },
-            function (httpResponse) {
+            function(httpResponse) {
                 $scope.accountdeleted = null;
                 $scope.error = "ERROR";
             });
@@ -134,13 +149,22 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
     $scope.acceptInvitation = function(id) {
         OrgJoinRequest.accept({
             id: id
-        }, getCurrentOrgJoinRequests);
+        }, function() {
+            getCurrentOrgJoinRequests();
+            reloadOrganization();
+        });
     };
 
     $scope.declineInvitation = function(id) {
         OrgJoinRequest.decline({
             id: id
         }, getCurrentOrgJoinRequests);
+    };
+
+    $scope.leaveOrganization = function() {
+        Account.leaveOrganization(function() {
+            reloadOrganization();
+        });
     };
 
     $scope.edit = {
@@ -151,24 +175,24 @@ respondecoApp.controller('SettingsController', function ($scope, Account, Authen
 
 
 
-respondecoApp.controller('RegisterController', function ($scope, $translate, Register) {
+respondecoApp.controller('RegisterController', function($scope, $translate, Register) {
     $scope.success = null;
     $scope.error = null;
     $scope.doNotMatch = null;
     $scope.errorUserExists = null;
-    $scope.register = function () {
+    $scope.register = function() {
         if ($scope.registerAccount.password != $scope.confirmPassword) {
             $scope.doNotMatch = "ERROR";
         } else {
             $scope.registerAccount.langKey = $translate.use();
             $scope.doNotMatch = null;
             Register.save($scope.registerAccount,
-                function (value, responseHeaders) {
+                function(value, responseHeaders) {
                     $scope.error = null;
                     $scope.errorUserExists = null;
                     $scope.success = 'OK';
                 },
-                function (httpResponse) {
+                function(httpResponse) {
                     $scope.success = null;
                     if (httpResponse.status === 304 &&
                         httpResponse.data.error && httpResponse.data.error === "Not Modified") {
@@ -183,33 +207,35 @@ respondecoApp.controller('RegisterController', function ($scope, $translate, Reg
     }
 });
 
-respondecoApp.controller('ActivationController', function ($scope, $routeParams, Activate) {
-    Activate.get({key: $routeParams.key},
-        function (value, responseHeaders) {
+respondecoApp.controller('ActivationController', function($scope, $routeParams, Activate) {
+    Activate.get({
+            key: $routeParams.key
+        },
+        function(value, responseHeaders) {
             $scope.error = null;
             $scope.success = 'OK';
         },
-        function (httpResponse) {
+        function(httpResponse) {
             $scope.success = null;
             $scope.error = "ERROR";
         });
 });
 
-respondecoApp.controller('PasswordController', function ($scope, Password) {
+respondecoApp.controller('PasswordController', function($scope, Password) {
     $scope.success = null;
     $scope.error = null;
     $scope.doNotMatch = null;
-    $scope.changePassword = function () {
+    $scope.changePassword = function() {
         if ($scope.password != $scope.confirmPassword) {
             $scope.doNotMatch = "ERROR";
         } else {
             $scope.doNotMatch = null;
             Password.save($scope.password,
-                function (value, responseHeaders) {
+                function(value, responseHeaders) {
                     $scope.error = null;
                     $scope.success = 'OK';
                 },
-                function (httpResponse) {
+                function(httpResponse) {
                     $scope.success = null;
                     $scope.error = "ERROR";
                 });
@@ -217,18 +243,20 @@ respondecoApp.controller('PasswordController', function ($scope, Password) {
     };
 });
 
-respondecoApp.controller('SessionsController', function ($scope, resolvedSessions, Sessions) {
+respondecoApp.controller('SessionsController', function($scope, resolvedSessions, Sessions) {
     $scope.success = null;
     $scope.error = null;
     $scope.sessions = resolvedSessions;
-    $scope.invalidate = function (series) {
-        Sessions.delete({series: encodeURIComponent(series)},
-            function (value, responseHeaders) {
+    $scope.invalidate = function(series) {
+        Sessions.delete({
+                series: encodeURIComponent(series)
+            },
+            function(value, responseHeaders) {
                 $scope.error = null;
                 $scope.success = "OK";
                 $scope.sessions = Sessions.get();
             },
-            function (httpResponse) {
+            function(httpResponse) {
                 $scope.success = null;
                 $scope.error = "ERROR";
             });

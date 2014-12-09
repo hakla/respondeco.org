@@ -111,7 +111,7 @@
                     <h4>{{fullName}}</h4>
                     <file-upload complete="onComplete" value="profilePicture" />
                 </div>
-                <div class="col-md-4 account" ng-hide="edit.account">
+                <div class="col-md-6 account" ng-hide="edit.account">
                     <h4 translate="settings.account.info_heading">Account information</h4>
                     <div ng-hide="edit.account">
                         <dl class="dl-horizontal">
@@ -141,26 +141,31 @@
 
                     </div>
                     <div class="text-right" ng-hide="edit.account">
-                        <button id="editButton" type="button" ng-click="edit.account = !edit.account">
+                        <button class="btn btn-default" id="editButton" type="button" ng-click="edit.account = !edit.account">
                             <span translate="general.edit">edit</span>
                         </button>
                     </div>
                 </div>
-                <div class="col-md-5 member" ng-hide="edit.account">
+                <div class="col-md-3 member" ng-hide="edit.account || organization == null">
                     <h4>Member by</h4>
+                    <h3>
+                      {{ organization.name }}
+                      <button type="button" class="btn btn-link pull-right" ng-click="leaveOrganization()" translate="settings.leave">Leave</button>
+                    </h3>
+                    <uploaded-image name="organization.logo.id" class="organization-logo"></uploaded-image>
                 </div>
             </form>
 
-            <div class='organization row col-md-12'>
+            <div class='organization row col-md-12' ng-hide="orgJoinRequests.length == 0">
                 <div>
                     <h3 translate='orgJoinRequest.openInvitations'>Open invitations</h3>
                     <ul>
                         <li class="organization-item" ng-repeat="orgJoinRequest in orgJoinRequests">
-                            <a ng-click="redirectToOrganization(organization.name)">
-                                <img src="{{organization.logo | logo}}" alt="logo {{orgJoinRequest.organization.name}}">
+                            <a ng-click="redirectToOrganization(orgJoinRequest.organization.name)">
+                                <uploaded-image name="orgJoinRequest.organization.logo.id" class="organization-logo"></uploaded-image>
                             </a>
                             <h2>
-                                <a ng-click="redirectToOrganization(organization.name)">{{orgJoinRequest.organization.name}}</a>
+                                <a ng-click="redirectToOrganization(orgJoinRequest.organization.name)">{{orgJoinRequest.organization.name}}</a>
                             </h2>
                             <div class="btn-group pull-right" role="group" aria-label="...">
                                 <button type="button" class="btn btn-success" ng-click='acceptInvitation(orgJoinRequest.id)'>
