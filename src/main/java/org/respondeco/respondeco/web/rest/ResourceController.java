@@ -75,9 +75,16 @@ public class ResourceController {
 
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
+        List<ResourceOffer> entries = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
 
-        return resourceOfferDTOs;
+        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
+        if(entries.isEmpty() == false) {
+            for (ResourceOffer offer :entries) {
+                result.add(new ResourceOfferDTO(offer));
+            }
+        }
+
+        return result;
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)

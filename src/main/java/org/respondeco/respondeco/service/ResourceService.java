@@ -246,7 +246,7 @@ public class ResourceService {
         }
     }
 
-    public List<ResourceOfferDTO> getAllOffers(String name, String organization, String tags, Boolean available, Boolean isCommercial, RestParameters restParameters) {
+    public List<ResourceOffer> getAllOffers(String name, String organization, String tags, Boolean available, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         if(restParameters != null) {
@@ -280,19 +280,6 @@ public class ResourceService {
             if(tags.isEmpty() == false) {
                 List<String> tagList = restUtil.splitCommaSeparated(tags);
 
-                /*
-                for(String t : tagList) {
-                    if(resourceOfferTagLike == null) {
-                        resourceOfferTagLike = resourceOffer.resourceTags.any().name.toLowerCase().like(t);
-
-                    } else {
-                        //tags connected with or -> show all resources which contain one of the searched tags
-                        resourceOfferTagLike = resourceOfferTagLike.or(resourceOffer.resourceTags.any().name.toLowerCase().like(t));
-                    }
-                }*/
-                log.debug("TAGS: " + tagList.toString());
-                log.debug("resourceOfferTagLike: " + resourceOffer.resourceTags.any().name.toLowerCase().in(tagList).toString() );
-
                 resourceOfferTagLike = resourceOffer.resourceTags.any().name.in(tagList);
             }
 
@@ -309,20 +296,12 @@ public class ResourceService {
             }
 
             Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
-                resourceOfferAvailable, resourceCommercial);
+                resourceOfferAvailable, resourceCommercial, resourceOfferTagLike);
 
-            entries = resourceOfferRepository.findAll(resourceOfferTagLike, pageRequest).getContent();
-            log.debug("TEST:" + entries.toString());
+            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
         }
 
-
-        if(entries.isEmpty() == false) {
-            for (ResourceOffer offer :entries) {
-                result.add(new ResourceOfferDTO(offer));
-            }
-        }
-
-        return result;
+        return entries;
     }
 
     public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
