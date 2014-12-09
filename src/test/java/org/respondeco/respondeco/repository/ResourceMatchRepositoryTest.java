@@ -80,10 +80,12 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
 
         resourceMatch = new ResourceMatch();
         resourceMatch.setProject(project);
+        resourceMatch.setAccepted(true);
         resourceMatch.setOrganization(organization);
 
         resourceMatch2 = new ResourceMatch();
         resourceMatch2.setProject(project);
+        resourceMatch2.setAccepted(true);
         resourceMatch2.setOrganization(organization);
 
         rating = new Rating();
