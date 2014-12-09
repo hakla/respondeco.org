@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -23,7 +24,7 @@ import javax.inject.Inject;
     DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
-public class RatingRepositoryTest {
+public class RatingRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Inject
     private ProjectRepository projectRepository;

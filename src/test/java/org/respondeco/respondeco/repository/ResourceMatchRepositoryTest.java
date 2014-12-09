@@ -7,6 +7,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -29,7 +30,7 @@ import static org.junit.Assert.assertTrue;
     DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
-public class ResourceMatchRepositoryTest {
+public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Inject
     private ProjectRepository projectRepository;

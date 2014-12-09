@@ -32,7 +32,7 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.query({filter: "test"});
-            //flush the backend to "execute" the request to do the expected POST assertion.
+            //flush the backend to "execute" the request to do the expected GET assertion.
             httpBackend.flush();
         });
 
@@ -42,7 +42,7 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.query({tags: "test,foo,bar"});
-            //flush the backend to "execute" the request to do the expected POST assertion.
+            //flush the backend to "execute" the request to do the expected GET assertion.
             httpBackend.flush();
         });
 
@@ -52,6 +52,26 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.query({filter: "test", tags: "test,foo,bar"});
+            //flush the backend to "execute" the request to do the expected GET assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend for aggregated project rating', function(){
+            var returnData = {count: 1, rating: 2.0};
+            httpBackend.expectGET('app/rest/projects/2/ratings').respond(returnData);
+
+            //WHEN
+            serviceTested.getAggregatedRating({pid: 2});
+            //flush the backend to "execute" the request to do the expected GET assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to create a rating', function(){
+            var testRating = {rating: 3, comment: "kinda mediocre"};
+            httpBackend.expectPOST('app/rest/projects/2/ratings', testRating).respond(200);
+
+            //WHEN
+            serviceTested.rateProject({pid: 2}, testRating);
             //flush the backend to "execute" the request to do the expected POST assertion.
             httpBackend.flush();
         });
