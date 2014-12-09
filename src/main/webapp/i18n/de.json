@@ -493,7 +493,7 @@
         "title":"Ressourcen-Anfragen für ihre Angebote",
         "acceptButton": "Annehmen",
         "declineButton": "Ablehnen",
-        "backButton": "Zurück"
+        "backButton": "Zurück zur Organisation"
     },
     "resource": {
         "title":"Ressourcen",
@@ -515,6 +515,11 @@
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
             }
+        },
+        "claim": {
+            "title": "Ressource anfordern",
+            "chooseproject": "Für welches ihrer Projekte wird die Ressource benötigt?",
+            "chooserequirement": "Für welche Anforderung soll die Ressource verwendet werden?"
         },
         "new": {
             "title": "Neue Ressource anlegen",

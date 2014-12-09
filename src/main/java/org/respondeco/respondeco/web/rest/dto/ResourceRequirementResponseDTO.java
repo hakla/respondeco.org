@@ -11,6 +11,7 @@ import org.respondeco.respondeco.domain.ResourceTag;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class ResourceRequirementResponseDTO {
         "id", "name", "amount", "description", "isEssential",
         "resourceTags");
 
-    public static ResourceRequirementResponseDTO fromEntity(ResourceRequirement resourceRequirement, List<String> fieldNames) {
+    public static ResourceRequirementResponseDTO fromEntity(ResourceRequirement resourceRequirement, Collection<String> fieldNames) {
         ResourceRequirementResponseDTO responseDTO = new ResourceRequirementResponseDTO();
 
             if(fieldNames == null || fieldNames.size() == 0) {

@@ -62,19 +62,26 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.selectRequirement = function(requirement) {
 		claim.resourceRequirementId = requirement.id;
 
-		Resource.claimResource(claim, function() {
-			console.log("DONE");
-		});
+		
 	}
 
 	$scope.claimResource = function(res) {
 		claim.resourceOfferId = res.id;
-		console.log(res.id);
 		updateProjects();
 	}
 
-	$scope.redirectToChooseProject = function() {
-		$location.path('chooseproject');
+	$scope.clearClaimResource = function() {
+		$scope.showRequirements = false;
+		claim = {organizationId: null, projectId: null, resourceOfferId: null, resourceRequirementId: null};
+		$scope.resourceRequirements = [];
+	}
+
+	$scope.sendClaimRequest = function() {
+		Resource.claimResource(claim, function() {
+			$scope.clearClaimResource();
+		}, function() {
+			console.log("ERROR");
+		});
 	}
 
 	$scope.redirectToProject = function(id) {
