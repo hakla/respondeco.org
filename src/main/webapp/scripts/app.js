@@ -3,7 +3,7 @@
 /* App Module */
 
 var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngRoute', 'ngCookies', 'respondecoAppUtils', 'pascalprecht.translate', 'truncate',
+    'ngResource', 'ngRoute', 'ngCookies', 'pascalprecht.translate', 'truncate',
     'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'respondecoAppFilters',
     'angularFileUpload', 'ngTagsInput', 'ui.bootstrap']);
 
@@ -61,39 +61,6 @@ respondecoApp
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.user]
-                    }
-                })
-                .when('/metrics', {
-                    templateUrl: 'views/metrics.html',
-                    controller: 'MetricsController',
-                    access: {
-                        authorizedRoles: [USER_ROLES.admin]
-                    }
-                })
-                .when('/health', {
-                    templateUrl: 'views/health.html',
-                    controller: 'HealthController',
-                    access: {
-                        authorizedRoles: [USER_ROLES.admin]
-                    }
-                })
-                .when('/logs', {
-                    templateUrl: 'views/logs.html',
-                    controller: 'LogsController',
-                    resolve:{
-                        resolvedLogs:['LogsService', function (LogsService) {
-                            return LogsService.findAll();
-                        }]
-                    },
-                    access: {
-                        authorizedRoles: [USER_ROLES.admin]
-                    }
-                })
-                .when('/audits', {
-                    templateUrl: 'views/audits.html',
-                    controller: 'AuditsController',
-                    access: {
-                        authorizedRoles: [USER_ROLES.admin]
                     }
                 })
                 .when('/logout', {

@@ -110,8 +110,7 @@ describe('Resource Controller Tests ', function () {
         it('should search for resources', function() {
             spyOn(ResourceService,"query");
             $scope.search("filter");
-            expect(ResourceService.query).toHaveBeenCalledWith({filter:'filter'},
-                jasmine.any(Function));
+            expect(ResourceService.query).toHaveBeenCalled();
 
             ResourceService.query.calls.mostRecent().args[1]({
                 res: 'resources'
@@ -128,14 +127,14 @@ describe('Resource Controller Tests ', function () {
 
         it('should delete a resource', function() {
             spyOn(ResourceService, "delete");
-            spyOn(ResourceService, "query");
+            spyOn(ResourceService, "getByOrgId");
 
             $scope.delete('1');
 
             expect(ResourceService.delete).toHaveBeenCalledWith({id:'1'}, jasmine.any(Function));
 
             ResourceService.delete.calls.mostRecent().args[1]();
-            expect(ResourceService.query).toHaveBeenCalled();
+            expect(ResourceService.getByOrgId).toHaveBeenCalled();
         });
 
         it('should update the model', function() {
