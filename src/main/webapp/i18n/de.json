@@ -481,7 +481,19 @@
         "decline": "Einladung ablehnen",
         "header.info": "Informationen über das Unternehmen",
         "header.logo": "Logo",
-        "ownresources": "Ressourcen anzeigen"
+        "ownresources": "Ressourcen anzeigen",
+        "requests": "Ressourcen-Anfragen"
+    },
+    "resourcematch": {
+        "error": {
+            "nosuchmatch": "Es konnte kein Resource-Match mit dieser id gefunden werden"
+        }
+    },
+    "resourcerequest": {
+        "title":"Ressourcen-Anfragen für ihre Angebote",
+        "acceptButton": "Annehmen",
+        "declineButton": "Ablehnen",
+        "backButton": "Zurück"
     },
     "resource": {
         "title":"Ressourcen",

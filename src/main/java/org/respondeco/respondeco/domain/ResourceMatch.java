@@ -29,7 +29,7 @@ public class ResourceMatch extends AbstractAuditingEntity {
     @Column(name = "match_direction")
     private MatchDirection matchDirection;
 
-    private Boolean accepted = false;
+    private Boolean accepted;
 
     @OneToOne
     @JoinColumn(name = "project_rating_id")

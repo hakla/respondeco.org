@@ -327,7 +327,7 @@ public class ResourceService {
 
     public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganization(organizationId);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganizationId(organizationId);
 
         log.debug(entries.toString());
         if(entries.isEmpty() == false) {
@@ -351,12 +351,12 @@ public class ResourceService {
 
 
     /**
-     * Create a claim resource request
+     * Request a Resource Offer
      * @param resourceOfferId
      * @param resourceRequirementId
      * @param organizationId
      * @param projectId
-     * @return
+     * @return ResourceMatch representing the resource request
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId) {
 
@@ -371,16 +371,42 @@ public class ResourceService {
         resourceMatch.setResourceRequirement(resourceRequirement);
         resourceMatch.setOrganization(organization);
         resourceMatch.setProject(project);
+        resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
 
         resourceMatchRepository.save(resourceMatch);
         return resourceMatch;
     }
 
+    /**
+     * Accept or decline the resource request
+     * @param resourceMatchId resourceMatch id
+     * @param accept true if accepted, false if declined
+     * @return accepted or declined ResourceMatch
+     */
+    public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept) {
+
+        //TODO: add authority check
+        ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);
+
+        if(resourceMatchId == null) {
+            throw new IllegalValueException("resourcematch.error.idnull", "Resourcematch id must not be null");
+        }
+        if(resourceMatch == null) {
+            throw new NoSuchResourceMatchException(resourceMatchId);
+        }
+
+        resourceMatch.setAccepted(accept);
+
+        return resourceMatchRepository.save(resourceMatch);
+    }
+
+
+
 
     /**
-     *
-     * @param organizationId
-     * @return
+     * Get Resource Requests for specific Organization with given id. (Claim Resource)
+     * @param organizationId Organization id
+     * @return List of ResourceMatches representing open resource requests
      */
     @Transactional(readOnly=true)
     public List<ResourceMatch> getResourceRequestsForOrganization(Long organizationId, RestParameters restParameters) {
@@ -388,7 +414,7 @@ public class ResourceService {
 
         QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
         BooleanExpression resourceMatchOrganization = resourceMatch.organization.id.eq(organizationId);
-        BooleanExpression resourceMatchAccepted = resourceMatch.accepted.eq(false);
+        BooleanExpression resourceMatchAccepted = resourceMatch.accepted.isNull();
 
         Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization);
 

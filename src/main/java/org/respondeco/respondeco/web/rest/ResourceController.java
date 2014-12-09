@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
@@ -118,6 +119,29 @@ public class ResourceController {
 
         return responseEntity;
     }
+
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourcerequests/{id}",
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> acceptResourceRequest(
+        @PathVariable Long id,
+        @RequestBody ClaimResourceDTO claimResourceDTO) {
+        log.debug("REST request to accept or decline resource request. accept = " + claimResourceDTO.isAccepted());
+        ResponseEntity<?> responseEntity;
+
+        ResourceMatch resourceMatch = resourceService.answerResourceRequest(id,claimResourceDTO.isAccepted() );
+
+        responseEntity = new ResponseEntity<>(HttpStatus.OK);
+
+        return responseEntity;
+    }
+
+
+
+
 
 
     @RolesAllowed(AuthoritiesConstants.USER)

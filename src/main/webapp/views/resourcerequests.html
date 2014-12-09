@@ -1,0 +1,23 @@
+<div>
+ 
+    <h1> {{ 'resourcerequest.title' | translate }} {{organization.name}}
+        <button class="btn btn-mid pull-right"
+                ng-click="redirectToOrganization()">
+            {{ 'resourcerequest.backButton' | translate }}
+        </button>
+    </h1>
+
+
+        <li ng-repeat="request in requests">
+            Das Project {{request.project.name}} mit der Ressourcenanforderung {{request.resourceRequirement.name}}
+            interessiert sich für ihre Ressource {{request.resourceOffer.name}}.
+
+            <button ng-click="acceptRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcerequest.acceptButton">
+                accept
+            </button>
+            <button ng-click="declineRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcerequest.declineButton">
+                decline
+            </button>
+        </li>
+    </div>
+</div>

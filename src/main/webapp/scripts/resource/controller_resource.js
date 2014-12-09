@@ -14,13 +14,14 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.resourceRequirements = [];
 	$scope.showRequirements = false;
 
+	$scope.requests = [];
+
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
 	var orgId;
 	var claim = {};
 
-	console.log($location.path());
 	if($location.path() === '/ownresource') {
 		Account.get(null, function(account) {
 			orgId = account.organizationId;
@@ -29,6 +30,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		});
 	} else {
 		$scope.resources = Resource.query();
+	}
+
+	if($location.path() === '/requests') {
+		Account.get(null, function(account) {
+			orgId = account.organizationId;
+			loadRequests();
+		});
 	}
 
 	//Claim Resource
@@ -68,6 +76,32 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.redirectToChooseProject = function() {
 		$location.path('chooseproject');
 	}
+
+	$scope.acceptRequest = function(request) {
+		Resource.updateRequest({id:request.matchId},{accepted:true}, function() {
+			loadRequests();
+		});
+	}
+
+	$scope.declineRequest = function(request) {
+		Resource.updateRequest({id:request.matchId},{accepted:false}, function() {
+			loadRequests();
+		});
+	}
+
+	var loadRequests = function() {
+
+		$scope.requests = Organization.getResourceRequests({id:orgId}, function() {
+				
+		}, function() {
+			console.log("error");
+		});
+	}
+
+	$scope.redirectToOrganization = function() {
+		$location.path('organization/' + orgId);
+	}
+
 
 	Account.get(null, function(account) {
 		$scope.resource.organizationId = account.organizationId;

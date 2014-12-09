@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -200,7 +201,7 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<ClaimResourceDTO>> getAllResourceRequests(
+    public ResponseEntity<List<ClaimResourceResponseDTO>> getAllResourceRequests(
         @PathVariable Long id,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
@@ -208,17 +209,23 @@ public class OrganizationController {
         @RequestParam(required = false) String order) {
 
         log.debug("REST request to get all resource claim requests for organization with id " + id);
-        ResponseEntity<List<ClaimResourceDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        ResponseEntity<List<ClaimResourceResponseDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         List<ResourceMatch> resourceClaims = resourceService.getResourceRequestsForOrganization(id, restParameters);
 
         for(ResourceMatch match : resourceClaims) {
-            ClaimResourceDTO resourceDTO = new ClaimResourceDTO();
-            resourceDTO.setResourceOfferId(match.getResourceOffer().getId());
-            resourceDTO.setResourceRequirementId(match.getResourceRequirement().getId());
-            resourceDTO.setOrganizationId(match.getOrganization().getId());
-            resourceDTO.setProjectId(match.getProject().getId());
+            ClaimResourceResponseDTO resourceDTO = new ClaimResourceResponseDTO();
+
+            OrganizationResponseDTO organizationDTO = OrganizationResponseDTO.fromEntity(match.getOrganization(), null);
+            ProjectResponseDTO projectDTO = ProjectResponseDTO.fromEntity(match.getProject(), null);
+            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(match.getResourceOffer());
+            ResourceRequirementResponseDTO resourceRequirementResponseDTO = ResourceRequirementResponseDTO.fromEntity(match.getResourceRequirement(), null);
+
+            resourceDTO.setProject(projectDTO);
+            resourceDTO.setResourceOffer(resourceOfferDTO);
+            resourceDTO.setResourceRequirement(resourceRequirementResponseDTO);
+            resourceDTO.setMatchId(match.getId());
 
             responseEntity.getBody().add(resourceDTO);
         }

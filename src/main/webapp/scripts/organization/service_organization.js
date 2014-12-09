@@ -7,7 +7,8 @@ respondecoApp.factory('Organization', function ($resource) {
             'update': { method: 'PUT', url: 'app/rest/organizations' },
             'getMembers': { method: 'GET', url: 'app/rest/organizations/:id/members', isArray: true },
             'getOrgJoinRequests': { method: 'GET', url: 'app/rest/organizations/:id/orgjoinrequests', isArray: true },
-            'getInvitableUsers': { method: 'GET', url: 'app/rest/organizations/:id/invitableusers', isArray: true }
+            'getInvitableUsers': { method: 'GET', url: 'app/rest/organizations/:id/invitableusers', isArray: true },
+            'getResourceRequests' : {method: 'GET', url: 'app/rest/organizations/:id/resourcerequests', isArray:true }
         });
     }).factory('User', function($resource) {
         return $resource('app/rest/users/:id', {}, {

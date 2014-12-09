@@ -20,4 +20,6 @@ public class ClaimResourceDTO {
 
     private Long projectId;
 
+    private boolean accepted;
+
 }
