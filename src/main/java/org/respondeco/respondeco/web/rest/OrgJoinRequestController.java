@@ -59,6 +59,9 @@ public class OrgJoinRequestController {
         } catch (NoSuchUserException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (AlreadyInvitedToOrganizationException e) {
+            log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+            responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }
