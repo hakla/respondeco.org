@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
@@ -8,7 +7,6 @@ import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestWithActiveFlagDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,7 +38,7 @@ public class OrgJoinRequestService {
         this.userRepository=userRepository;
         this.organizationRepository=organizationRepository;
     }
-    public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO) throws NoSuchOrganizationException, NoSuchUserException {
+    public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO) throws NoSuchOrganizationException, NoSuchUserException, AlreadyInvitedToOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         User user = userRepository.findOne(userDTO.getId());
         Organization organization = organizationRepository.findOne(organizationDTO.getId());
@@ -54,7 +51,14 @@ public class OrgJoinRequestService {
         if(organization.getOwner().equals(currentUser)==false) {
             throw new IllegalArgumentException(String.format("Current user %s is not owner of organization", currentUser));
         }
-        OrgJoinRequest orgJoinRequest = new OrgJoinRequest();
+
+        OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByUserAndOrganizationAndActiveIsTrue(user, organization);
+
+        if (orgJoinRequest != null) {
+            throw new AlreadyInvitedToOrganizationException(String.format("User %s has an open invitation to join organization %s", user, organization));
+        }
+
+        orgJoinRequest = new OrgJoinRequest();
         orgJoinRequest.setOrganization(organization);
         orgJoinRequest.setUser(user);
         orgJoinRequestRepository.save(orgJoinRequest);
