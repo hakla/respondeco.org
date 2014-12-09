@@ -119,7 +119,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
-            Project.getResourceMatchesByProjectId(id, function(matches) {
+            Project.getResourceMatchesByProjectId({id:id}, function(matches) {
                 $scope.resourceMatches = matches;
                 console.log($scope.resourceMatches);
             });

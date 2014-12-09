@@ -53,10 +53,10 @@ public class ResourceMatchResponseDTO {
         if (fieldNames.contains("resourceRequirement")) {
             responseDTO.setResourceRequirement(ResourceRequirementResponseDTO.fromEntity(match.getResourceRequirement(), null));
         }
-        if (fieldNames.contains("projectRating")) {
+        if (fieldNames.contains("projectRating") && match.getProjectRating() != null) {
             responseDTO.setProjectRating(RatingResponseDTO.fromEntity(match.getProjectRating(), null));
         }
-        if (fieldNames.contains("supporterRating")) {
+        if (fieldNames.contains("supporterRating")&& match.getSupporterRating() != null) {
             responseDTO.setSupporterRating(RatingResponseDTO.fromEntity(match.getSupporterRating(), null));
         }
         if (fieldNames.contains("accepted")) {
