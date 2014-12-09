@@ -33,6 +33,7 @@ respondecoApp.factory('Activate', function ($resource) {
 
 respondecoApp.factory('Account', function ($resource) {
         return $resource('app/rest/account', {}, {
+            'leaveOrganization': { method: 'POST', url: 'app/rest/account/leaveorganization' }
         });
     });
 
@@ -45,63 +46,6 @@ respondecoApp.factory('Sessions', function ($resource) {
         return $resource('app/rest/account/sessions/:series', {}, {
             'get': { method: 'GET', isArray: true}
         });
-    });
-
-respondecoApp.factory('MetricsService',function ($http) {
-    		return {
-            get: function() {
-                var promise = $http.get('metrics/metrics').then(function(response){
-                    return response.data;
-                });
-                return promise;
-            }
-        };
-    });
-
-respondecoApp.factory('ThreadDumpService', function ($http) {
-        return {
-            dump: function() {
-                var promise = $http.get('dump').then(function(response){
-                    return response.data;
-                });
-                return promise;
-            }
-        };
-    });
-
-respondecoApp.factory('HealthCheckService', function ($rootScope, $http) {
-        return {
-            check: function() {
-                var promise = $http.get('health').then(function(response){
-                    return response.data;
-                });
-                return promise;
-            }
-        };
-    });
-
-respondecoApp.factory('LogsService', function ($resource) {
-        return $resource('app/rest/logs', {}, {
-            'findAll': { method: 'GET', isArray: true},
-            'changeLevel':  { method: 'PUT'}
-        });
-    });
-
-respondecoApp.factory('AuditsService', function ($http) {
-        return {
-            findAll: function() {
-                var promise = $http.get('app/rest/audits/all').then(function (response) {
-                    return response.data;
-                });
-                return promise;
-            },
-            findByDates: function(fromDate, toDate) {
-                var promise = $http.get('app/rest/audits/byDates', {params: {fromDate: fromDate, toDate: toDate}}).then(function (response) {
-                    return response.data;
-                });
-                return promise;
-            }
-        }
     });
 
 respondecoApp.factory('Session', function () {

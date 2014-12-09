@@ -16,7 +16,10 @@ module.exports = function (config) {
           // source files, that you wanna generate coverage for
           // do not include tests or libraries
           // (these files will be instrumented by Istanbul)
-          'src/main/webapp/scripts/**/*.js': ['coverage']
+          'src/main/webapp/scripts/**/!(vendor)/**/*.js': ['coverage'],
+          'src/main/webapp/scripts/*.js': ['coverage']
+
+            //'src/main/webapp/scripts/**/!(vendor)/**/*.js',
         },
 
         // list of files / patterns to load in the browser
@@ -37,11 +40,13 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
             'src/main/webapp/bower_components/angular-file-upload/angular-file-upload.min.js',
             'src/main/webapp/scripts/*.js',
-            'src/main/webapp/scripts/**/!(vendor)/**/*.js',
+            'src/main/webapp/scripts/**/*.js',
             'src/test/javascript/**/!(karma.conf).js',
             'src/main/webapp/bower_components/ui-bootstrap/src/bindHtml/bindHtml.js',
             'src/main/webapp/bower_components/ui-bootstrap/src/position/position.js',
             'src/main/webapp/bower_components/ui-bootstrap/src/typeahead/typeahead.js',
+            'src/main/webapp/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js',
+            'src/main/webapp/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js',
             'src/main/webapp/bower_components/ng-tags-input/ng-tags-input.js'
         ],
 
