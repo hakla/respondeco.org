@@ -127,10 +127,10 @@ public class RatingService {
     public AggregatedRating getAggregatedRatingByProject(Long projectId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByProject(projectId);
         if(objectArray[0][1] == null) {
-            objectArray[0][1] = 0;
+            objectArray[0][1] = 0.0;
         }
         AggregatedRating aggregatedRating = new AggregatedRating();
-        aggregatedRating.setCount((Integer) objectArray[0][0]);
+        aggregatedRating.setCount((Long) objectArray[0][0]);
         aggregatedRating.setRating((Double) objectArray[0][1]);
         return aggregatedRating;
     }
@@ -138,10 +138,10 @@ public class RatingService {
     public AggregatedRating getAggregatedRatingByOrganization(Long organizationId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByOrganization(organizationId);
         if(objectArray[0][1] == null) {
-            objectArray[0][1] = 0;
+            objectArray[0][1] = 0.0;
         }
         AggregatedRating aggregatedRating = new AggregatedRating();
-        aggregatedRating.setCount((Integer) objectArray[0][0]);
+        aggregatedRating.setCount((Long) objectArray[0][0]);
         aggregatedRating.setRating((Double) objectArray[0][1]);
         return aggregatedRating;
     }
