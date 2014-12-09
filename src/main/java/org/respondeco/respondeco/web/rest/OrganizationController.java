@@ -262,109 +262,6 @@ public class OrganizationController {
     }
 
     /**
-     * POST  /rest/project/{id}/ratings -> Create a new projectrating.
-     */
-    /**
-    @ApiOperation(value = "Create a supporterrating", notes = "Create or update a supporterrating")
-    @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid RatingRequestDTO supporterRatingRequest) {
-        log.debug("REST request to create SupporterRating : {}", supporterRatingRequest);
-        ResponseEntity<?> responseEntity;
-        try {
-            supporterRatingService.createSupporterRating(
-                    supporterRatingRequest.getRating(),
-                    supporterRatingRequest.getComment(),
-                    supporterRatingRequest.getProjectId(),
-                    supporterRatingRequest.getOrganizationId());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(SupporterRatingException e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        } catch(NoSuchOrganizationException e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(NoSuchProjectException e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(Exception e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return responseEntity;
-    }
-    **/
-    /**
-     * POST  /rest/organizations/{id}/supporterratings -> Update a supporterRating.
-     */
-    /**
-    @ApiOperation(value = "Update a supporterRating", notes = "Update a suppoerterRating")
-    @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
-            method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid SupporterRatingRequestDTO supporterRatingRequest) {
-        log.error("REST request to update SupporterRating : {}", supporterRatingRequest);
-        ResponseEntity<?> responseEntity;
-        try {
-            supporterRatingService.updateSupporterRating(
-                    supporterRatingRequest.getRating(),
-                    supporterRatingRequest.getComment(),
-                    supporterRatingRequest.getId());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(NoSuchSupporterRatingException e) {
-            log.error("Could not update ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
-    }
-
-    /**
-     * GET  /rest/organizations/{id}/supporterratings-> get the "id" supporterRating.
-     */
-    /**
-    @ApiOperation(value = "Get supporterRating", notes = "Get a supporterRating by its id")
-    @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<?> get(
-            @PathVariable Long id,
-            @RequestParam(required = true) Long projectId,
-            @RequestParam(required = false) String fields,
-            @RequestParam(required = false) Boolean aggregated) {
-        log.debug("REST request to get ProjectRating : {}", id);
-        ResponseEntity<?> response;
-        RestParameters restParameters = new RestParameters(null, null, null, fields);
-        if (aggregated == false || aggregated == null) {
-            SupporterRating supporterRating = supporterRatingService.getSupporterRating(id,projectId);
-            if(supporterRating != null) {
-                SupporterRatingResponseDTO responseDTO = SupporterRatingResponseDTO
-                        .fromEntity(supporterRating, restParameters.getFields());
-                response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-            } else {
-                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
-        else {
-            AggregatedRating aggregatedRating = supporterRatingService.getAggregatedRating(id);
-            if(aggregatedRating != null) {
-                AggregatedRatingResponseDTO responseDTO = AggregatedRatingResponseDTO
-                        .fromEntity(aggregatedRating, restParameters.getFields());
-                response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-            } else {
-                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
-        return response;
-    }
-            **/
-
-    /**
      * POST  /rest/deleteMember-> delete Member by userlogin
      */
     @RequestMapping(value = "/rest/organization/{id}/members/{userId}",
@@ -410,36 +307,47 @@ public class OrganizationController {
     }
 
     @RequestMapping(value = "/rest/organizations/{id}/ratings",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<AggregatedRatingResponseDTO> getAggregatedRating(@PathVariable Long id) {
-        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
-        ResponseEntity<AggregatedRatingResponseDTO> responseDTO;
-        if(aggregatedRating != null) {
-            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-                    .fromEntity(aggregatedRating, null);
-            responseDTO =
-                    new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
-        }
-        else {
-            responseDTO =
-                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseDTO;
-    }
-
-    @RequestMapping(value = "/rest/organizations/{id}/ratings/{projectId}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> rateProject(
+    public ResponseEntity<?> rateOrganization(
             @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
-            @PathVariable Long id,
-            @PathVariable Long projectId) throws NoSuchResourceMatchException {
-        ratingService.rateProject(projectId,id,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
-        return new ResponseEntity<>(HttpStatus.CREATED);
+            @PathVariable Long id) {
+        ResponseEntity<?> responseEntity;
+        try {
+            ratingService.rateOrganization(ratingRequestDTO.getMatchid(),
+                    ratingRequestDTO.getRating(),
+                    ratingRequestDTO.getComment());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchProjectException | NoSuchResourceMatchException | NoSuchOrganizationException e ) {
+            log.error("Could not grate organization {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SupporterRatingException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/rest/organizations/{id}/ratings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
+        AggregatedRating aggregatedRating;
+        ResponseEntity<?> responseDTO;
+        try {
+            aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
+            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                    .fromEntity(aggregatedRating, null);
+            responseDTO = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+        } catch (NoSuchSupporterRatingException e) {
+            log.error("Could not get aggregatedRating for organization {}", id, e);
+            responseDTO = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SupporterRatingException e) {
+            responseDTO = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseDTO;
     }
 }

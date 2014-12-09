@@ -22,6 +22,8 @@ public class RatingRequestDTO {
 
     private Long id;
 
+    private Long matchid;
+
     @NotNull
     @Min(1)
     @Max(10)

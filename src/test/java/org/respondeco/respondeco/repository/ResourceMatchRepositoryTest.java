@@ -86,13 +86,14 @@ public class ResourceMatchRepositoryTest {
         resourceMatch = new ResourceMatch();
         resourceMatch.setProject(project);
         resourceMatch.setOrganization(organization);
-        resourceMatch.setProjectRating(rating);
 
 
         rating = new Rating();
         rating.setRating(2);
         rating.setComment("test");
         rating.setResourceMatch(resourceMatch);
+        resourceMatch.setProjectRating(rating);
+        ratingRepository.save(rating);
 
 
     }
@@ -102,11 +103,12 @@ public class ResourceMatchRepositoryTest {
     public void testGetAggregatedRating() {
 
         resourceMatchRepository.save(resourceMatch);
-        ratingRepository.save(rating);
 
 
-        Object[] aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
-        assertTrue(aggregatedRating[0].equals(1));
+
+        Object[][] aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
+        assertTrue(aggregatedRating[0][0].equals(new Integer(1)));
+        assertTrue(aggregatedRating[0][1].equals(new Double(2.0)));
 
     }
 }

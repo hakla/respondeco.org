@@ -45,11 +45,14 @@ public class RatingService {
         this.projectService = projectService;
     }
 
-    public void rateProject(Long projectId, Long organizationId, Integer ratingValue, String comment)
-            throws NoSuchResourceMatchException {
+    public void rateProject(Long projectId, Integer ratingValue, String comment)
+            throws NoSuchResourceMatchException,
+            NoSuchOrganizationException,
+            NoSuchProjectException,
+            ProjectRatingException {
         User user = userService.getUserWithAuthorities();
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = user.getOrganization();
         if(project == null) {
             throw new NoSuchProjectException(String.format("Project doesn't exist"));
         }
@@ -66,10 +69,10 @@ public class RatingService {
         }
         if(organization.getOwner().equals(user) == false) {
             throw new ProjectRatingException(".notowneroforganization",
-                    String.format("You are not the owner of organization %s" , organizationId));
+                    String.format("You are not the owner of organization %s", organization.getId()));
         }
         if(resourceMatch.getProjectRating() != null) {
-            throw new SupporterRatingException(".allreadyrated",
+            throw new ProjectRatingException(".allreadyrated",
                     String.format("You have already rated for this match %s" , resourceMatch.getId()));
         }
         Rating rating = new Rating();
@@ -81,7 +84,10 @@ public class RatingService {
     }
 
     public void rateOrganization(Long matchId, Integer ratingValue, String comment)
-            throws NoSuchResourceMatchException {
+            throws NoSuchResourceMatchException,
+            NoSuchProjectException,
+            NoSuchOrganizationException,
+            SupporterRatingException {
         User user = userService.getUserWithAuthorities();
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(matchId);
         if(resourceMatch == null) {
@@ -119,66 +125,35 @@ public class RatingService {
         ratingRepository.save(rating);
     }
 
-    public Object[] getAggregatedRatingByProject(Long projectId) {
-        return resourceMatchRepository.getAggregatedRatingByProject(projectId);
+    public AggregatedRating getAggregatedRatingByProject(Long projectId)
+            throws NoSuchProjectRatingException,
+            ProjectRatingException {
+        Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByProject(projectId);
+        if(objectArray[0] == null) {
+            throw new NoSuchProjectRatingException(String.format("There exists no such rating for project %s", projectId));
+        }
+        if(objectArray[0][0] == null || objectArray[0][1] == null) {
+            throw new ProjectRatingException(".wrongAggregatedRating", String.format("AggregatedRating is wrong"));
+        }
+        AggregatedRating aggregatedRating = new AggregatedRating();
+        aggregatedRating.setCount((Integer) objectArray[0][0]);
+        aggregatedRating.setRating((Double) objectArray[0][1]);
+        return aggregatedRating;
     }
 
-    public AggregatedRating getAggregatedRatingByOrganization(Long organizationId) {
-        return resourceMatchRepository.getAggregatedRatingByOrganization(organizationId);
+    public AggregatedRating getAggregatedRatingByOrganization(Long organizationId)
+            throws NoSuchSupporterRatingException,
+            SupporterRatingException {
+        Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByOrganization(organizationId);
+        if(objectArray[0] == null) {
+            throw new NoSuchSupporterRatingException(String.format("There exists no such rating for organization %s", organizationId));
+        }
+        if(objectArray[0][0] == null || objectArray[0][1] == null) {
+            throw new SupporterRatingException(".wrongAggregatedRating", String.format("AggregatedRating is wrong"));
+        }
+        AggregatedRating aggregatedRating = new AggregatedRating();
+        aggregatedRating.setCount((Integer) objectArray[0][0]);
+        aggregatedRating.setRating((Double) objectArray[0][1]);
+        return aggregatedRating;
     }
-/**
-    public Rating createProjectRating(Integer rating, String comment, Long projectId) throws ProjectRatingException, NotOwnerOfOrganizationException {
-        User user = userService.getUserWithAuthorities();
-        Project project = projectService.findProjectById(projectId);
-        if(project == null) {
-            throw new NoSuchProjectException(projectId);
-        }
-        Rating projectRating1 = ratingRepository.findByUserAndProject(user,project);
-        if(projectRating1!=null) {
-            throw new ProjectRatingException(".multiplerating", String.format("Can't rate project %s twice", projectId));
-        }
-        if(user.getOrganization().getOwner().equals(user) == false) {
-            throw new NotOwnerOfOrganizationException(String.format("User is not owner of organization"));
-        }
-        if(user.getOrganization().equals(project.getOrganization())) {
-            throw new ProjectRatingException(".ownorganization", String.format("Can't rate own project %s", projectId));
-        }
-        List<Organization> organizations = ratingRepository.findOrganizationsByResourceRequirements(projectId);
-        if(organizations.contains(user.getOrganization())) {
-            throw new ProjectRatingException(".noresourceexchange", String.format("Can't rate project %s because organization didn't offer resource", projectId));
-        }
-        Rating projectRating = new Rating();
-        projectRating.setRating(rating);
-        projectRating.setComment(comment);
-        //projectRating.setProject(project);
-        //projectRating.setUser(user);
-        ratingRepository.save(projectRating);
-        return projectRating;
-    }
-
-    public Rating getProjectRating(Long projectId) {
-        User user = userService.getUserWithAuthorities();
-        Project project = projectService.findProjectById(projectId);
-        if(project == null) {
-            throw new NoSuchProjectException(projectId);
-        }
-        Rating projectRating = ratingRepository.findByUserAndProject(user,project);
-        return projectRating;
-    }
-
-    public void updateProjectRating(Integer rating, String comment, Long ratingId) throws NoSuchProjectRatingException {
-        User user = userService.getUserWithAuthorities();
-        Rating projectRating = ratingRepository.findOne(ratingId);
-        if(projectRating == null) {
-            throw new NoSuchProjectRatingException(String.format("There is no such project rating"));
-        }
-        /**
-        if(projectRating.getUser().equals(user) == false) {
-            throw new NoSuchProjectRatingException(String.format("This rating is not user's rating %s", user.getLogin()));
-        }
-
-        projectRating.setRating(rating);
-        projectRating.setComment(comment);
-        ratingRepository.save(projectRating);
-    }**/
 }
