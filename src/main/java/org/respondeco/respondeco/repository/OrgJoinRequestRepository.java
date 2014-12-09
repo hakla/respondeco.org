@@ -19,4 +19,5 @@ public interface OrgJoinRequestRepository extends JpaRepository<OrgJoinRequest, 
     OrgJoinRequest findByIdAndActiveIsTrue(Long id);
     List<OrgJoinRequest> findByOrganization(Organization organization);
     List<OrgJoinRequest> findByUser(User user);
+    OrgJoinRequest findByUserAndOrganizationAndActiveIsTrue(User user, Organization organization);
 }
