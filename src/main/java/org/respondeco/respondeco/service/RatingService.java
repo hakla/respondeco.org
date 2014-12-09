@@ -124,13 +124,8 @@ public class RatingService {
         ratingRepository.save(rating);
     }
 
-    public AggregatedRating getAggregatedRatingByProject(Long projectId)
-            throws NoSuchProjectRatingException,
-            ProjectRatingException {
+    public AggregatedRating getAggregatedRatingByProject(Long projectId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByProject(projectId);
-        if(objectArray[0] == null) {
-            throw new NoSuchProjectRatingException(String.format("There exists no such rating for project %s", projectId));
-        }
         if(objectArray[0][1] == null) {
             objectArray[0][1] = 0;
         }
@@ -140,9 +135,7 @@ public class RatingService {
         return aggregatedRating;
     }
 
-    public AggregatedRating getAggregatedRatingByOrganization(Long organizationId)
-            throws NoSuchSupporterRatingException,
-            SupporterRatingException {
+    public AggregatedRating getAggregatedRatingByOrganization(Long organizationId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByOrganization(organizationId);
         if(objectArray[0][1] == null) {
             objectArray[0][1] = 0;

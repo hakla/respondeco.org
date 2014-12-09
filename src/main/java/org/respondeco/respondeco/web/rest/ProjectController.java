@@ -277,19 +277,9 @@ public class ProjectController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
-        AggregatedRating aggregatedRating;
-        ResponseEntity<?> responseDTO;
-        try {
-            aggregatedRating = ratingService.getAggregatedRatingByProject(id);
-            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-                .fromEntity(aggregatedRating, null);
-            responseDTO = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
-        } catch (NoSuchProjectRatingException e) {
-            log.error("Could not get aggregatedRating for project {}", id, e);
-            responseDTO = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException e) {
-            responseDTO = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseDTO;
+        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
+        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+            .fromEntity(aggregatedRating, null);
+        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
     }
 }
