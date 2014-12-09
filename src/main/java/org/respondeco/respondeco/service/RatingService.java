@@ -82,7 +82,7 @@ public class RatingService {
         ratingRepository.save(rating);
     }
 
-    public void rateOrganization(Long matchId, Integer ratingValue, String comment)
+    public void rateOrganization(Long orgId, Long matchId, Integer ratingValue, String comment)
             throws NoSuchResourceMatchException,
             NoSuchProjectException,
             NoSuchOrganizationException,
@@ -97,7 +97,7 @@ public class RatingService {
         if(project == null) {
             throw new NoSuchProjectException(String.format("Project doesn't exist"));
         }
-        if(organization == null) {
+        if(organization == null || organization.getId().equals(orgId) == false) {
             throw new NoSuchOrganizationException(String.format("Organization doesn't exist"));
         }
         if(project.getManager().equals(user) == false) {
@@ -124,15 +124,10 @@ public class RatingService {
         ratingRepository.save(rating);
     }
 
-    public AggregatedRating getAggregatedRatingByProject(Long projectId)
-            throws NoSuchProjectRatingException,
-            ProjectRatingException {
+    public AggregatedRating getAggregatedRatingByProject(Long projectId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByProject(projectId);
-        if(objectArray[0] == null) {
-            throw new NoSuchProjectRatingException(String.format("There exists no such rating for project %s", projectId));
-        }
-        if(objectArray[0][0] == null || objectArray[0][1] == null) {
-            throw new ProjectRatingException(".wrongAggregatedRating", String.format("AggregatedRating is wrong"));
+        if(objectArray[0][1] == null) {
+            objectArray[0][1] = 0;
         }
         AggregatedRating aggregatedRating = new AggregatedRating();
         aggregatedRating.setCount((Integer) objectArray[0][0]);
@@ -140,15 +135,10 @@ public class RatingService {
         return aggregatedRating;
     }
 
-    public AggregatedRating getAggregatedRatingByOrganization(Long organizationId)
-            throws NoSuchSupporterRatingException,
-            SupporterRatingException {
+    public AggregatedRating getAggregatedRatingByOrganization(Long organizationId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByOrganization(organizationId);
-        if(objectArray[0] == null) {
-            throw new NoSuchSupporterRatingException(String.format("There exists no such rating for organization %s", organizationId));
-        }
-        if(objectArray[0][0] == null || objectArray[0][1] == null) {
-            throw new SupporterRatingException(".wrongAggregatedRating", String.format("AggregatedRating is wrong"));
+        if(objectArray[0][1] == null) {
+            objectArray[0][1] = 0;
         }
         AggregatedRating aggregatedRating = new AggregatedRating();
         aggregatedRating.setCount((Integer) objectArray[0][0]);

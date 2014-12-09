@@ -283,15 +283,15 @@ public class ProjectController {
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> rateProject(
             @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
-            @PathVariable Long id) throws NoSuchResourceMatchException {
+            @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
             ratingService.rateProject(id,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchProjectException | NoSuchResourceMatchException | NoSuchOrganizationException e ) {
+        } catch (NoSuchProjectException e ) {
             log.error("Could not grate project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException e) {
+        } catch (ProjectRatingException  | NoSuchResourceMatchException | NoSuchOrganizationException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
@@ -303,19 +303,9 @@ public class ProjectController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
-        AggregatedRating aggregatedRating;
-        ResponseEntity<?> responseDTO;
-        try {
-            aggregatedRating = ratingService.getAggregatedRatingByProject(id);
-            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-                .fromEntity(aggregatedRating, null);
-            responseDTO = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
-        } catch (NoSuchProjectRatingException e) {
-            log.error("Could not get aggregatedRating for project {}", id, e);
-            responseDTO = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException e) {
-            responseDTO = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseDTO;
+        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
+        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+            .fromEntity(aggregatedRating, null);
+        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
     }
 }

@@ -355,14 +355,14 @@ public class OrganizationController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            ratingService.rateOrganization(ratingRequestDTO.getMatchid(),
+            ratingService.rateOrganization(id, ratingRequestDTO.getMatchid(),
                     ratingRequestDTO.getRating(),
                     ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchProjectException | NoSuchResourceMatchException | NoSuchOrganizationException e ) {
+        } catch (NoSuchOrganizationException e) {
             log.error("Could not grate organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (SupporterRatingException e) {
+        } catch (NoSuchProjectException | NoSuchResourceMatchException | SupporterRatingException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
@@ -374,19 +374,9 @@ public class OrganizationController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
-        AggregatedRating aggregatedRating;
-        ResponseEntity<?> responseDTO;
-        try {
-            aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
-            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-                    .fromEntity(aggregatedRating, null);
-            responseDTO = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
-        } catch (NoSuchSupporterRatingException e) {
-            log.error("Could not get aggregatedRating for organization {}", id, e);
-            responseDTO = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (SupporterRatingException e) {
-            responseDTO = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseDTO;
+        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
+        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                .fromEntity(aggregatedRating, null);
+        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
     }
 }

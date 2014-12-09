@@ -25,10 +25,9 @@ public class RatingRequestDTO {
     private Long matchid;
 
     @NotNull
-    @Min(1)
-    @Max(10)
+    @Min(0)
+    @Max(5)
     private Integer rating;
 
     private String comment;
-
 }
