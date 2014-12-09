@@ -1,16 +1,13 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
-import org.respondeco.respondeco.service.exception.ResourceException;
-import org.respondeco.respondeco.web.rest.dto.ClaimResourceDTO;
-import org.respondeco.respondeco.web.rest.dto.ClaimResourceResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
@@ -96,7 +93,7 @@ public class ResourceController {
 
     /**
      * Create Claim ResourceOffer Request
-     * @param claimResourceDTO
+     * @param resourceMatchRequestDTO
      * @return
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -104,15 +101,15 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> claimResourceOffer(@RequestBody ClaimResourceDTO claimResourceDTO) {
-        log.debug("REST request to claim ResourceOffer : " + claimResourceDTO);
+    public ResponseEntity<?> claimResourceOffer(@RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) {
+        log.debug("REST request to claim ResourceOffer : " + resourceMatchRequestDTO);
         ResponseEntity<?> responseEntity;
 
         ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(
-            claimResourceDTO.getResourceOfferId(),
-            claimResourceDTO.getResourceRequirementId(),
-            claimResourceDTO.getOrganizationId(),
-            claimResourceDTO.getProjectId()
+            resourceMatchRequestDTO.getResourceOfferId(),
+            resourceMatchRequestDTO.getResourceRequirementId(),
+            resourceMatchRequestDTO.getOrganizationId(),
+            resourceMatchRequestDTO.getProjectId()
         );
 
         responseEntity = new ResponseEntity<>(HttpStatus.OK);
@@ -128,11 +125,11 @@ public class ResourceController {
     @Timed
     public ResponseEntity<?> acceptResourceRequest(
         @PathVariable Long id,
-        @RequestBody ClaimResourceDTO claimResourceDTO) {
-        log.debug("REST request to accept or decline resource request. accept = " + claimResourceDTO.isAccepted());
+        @RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) {
+        log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
         ResponseEntity<?> responseEntity;
 
-        ResourceMatch resourceMatch = resourceService.answerResourceRequest(id,claimResourceDTO.isAccepted() );
+        ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
 
         responseEntity = new ResponseEntity<>(HttpStatus.OK);
 

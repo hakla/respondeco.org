@@ -10,7 +10,7 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
  * Created by Benjamin Fraller on 08.12.2014.
  */
 @Data
-public class ClaimResourceDTO {
+public class ResourceMatchRequestDTO {
 
     private Long resourceOfferId;
 

@@ -7,17 +7,23 @@
         </button>
     </h1>
 
+    <table class="table">
+        <tr ng-repeat="request in requests">
+            <td>Das Project <a ng-click="redirectToProject(request.project.id)"> {{request.project.name}} </a> mit der Ressourcenanforderung {{request.resourceRequirement.name}}
+            interessiert sich für ihre Ressource {{request.resourceOffer.name}}.</td>
 
-        <li ng-repeat="request in requests">
-            Das Project {{request.project.name}} mit der Ressourcenanforderung {{request.resourceRequirement.name}}
-            interessiert sich für ihre Ressource {{request.resourceOffer.name}}.
+            <td>
+                <button ng-click="acceptRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcerequest.acceptButton">
+                    accept
+                </button>
+            </td>
+            <td>
+                <button ng-click="declineRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcerequest.declineButton">
+                    decline
+                </button>
+            </td>
+        </tr>
 
-            <button ng-click="acceptRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcerequest.acceptButton">
-                accept
-            </button>
-            <button ng-click="declineRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcerequest.declineButton">
-                decline
-            </button>
-        </li>
-    </div>
+    </table>
+    
 </div>

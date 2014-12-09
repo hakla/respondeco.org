@@ -7,24 +7,20 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
-import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Organization.
@@ -201,7 +197,7 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<ClaimResourceResponseDTO>> getAllResourceRequests(
+    public ResponseEntity<List<ResourceMatchResponseDTO>> getAllResourceRequests(
         @PathVariable Long id,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
@@ -209,13 +205,13 @@ public class OrganizationController {
         @RequestParam(required = false) String order) {
 
         log.debug("REST request to get all resource claim requests for organization with id " + id);
-        ResponseEntity<List<ClaimResourceResponseDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         List<ResourceMatch> resourceClaims = resourceService.getResourceRequestsForOrganization(id, restParameters);
 
         for(ResourceMatch match : resourceClaims) {
-            ClaimResourceResponseDTO resourceDTO = new ClaimResourceResponseDTO();
+            ResourceMatchResponseDTO resourceDTO = new ResourceMatchResponseDTO();
 
             OrganizationResponseDTO organizationDTO = OrganizationResponseDTO.fromEntity(match.getOrganization(), null);
             ProjectResponseDTO projectDTO = ProjectResponseDTO.fromEntity(match.getProject(), null);

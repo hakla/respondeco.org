@@ -79,12 +79,12 @@
             <div class="resource-requirements">
                 <h2>Details</h2>
                 <accordion close-others="true">
-                    <accordion-group is-open="status.open1">
+                    <accordion-group is-open="status.open1" ng-repeat="requirement in project.resourceRequirements">
                         <accordion-heading>
                             <div class="row">
-                                <div class="col-md-4">Boot</div>
+                                <div class="col-md-4">{{requirement.name}}</div>
                                 <div class="col-md-2 col-md-offset-6">
-                                    2/4
+                                    0/{{requirement.amount}}
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
                                 </div>
                             </div>
@@ -102,29 +102,7 @@
                             </li>
                         </ul>
                     </accordion-group>
-                    <accordion-group is-open="status.open2">
-                        <accordion-heading>
-                            <div class="row">
-                                <div class="col-md-4">Demonstrationsmaterial</div>
-                                <div class="col-md-2 col-md-offset-6">
-                                    5/20
-                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open2, 'glyphicon-chevron-right': !status.open2}"></i>
-                                </div>
-                            </div>
-                        </accordion-heading>
-                    </accordion-group>
-                    <accordion-group is-open="status.open3">
-                        <accordion-heading>
-                            <div class="row">
-                                <div class="col-md-4">...</div>
-                                <div class="col-md-2 col-md-offset-6">
-                                    2/6
-                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open3, 'glyphicon-chevron-right': !status.open3}"></i>
-                                </div>
-                            </div>
-                        </accordion-heading>
-                        This is just some content to illustrate fancy headings.
-                    </accordion-group>
+                    
                 </accordion>
             </div>
         </div>

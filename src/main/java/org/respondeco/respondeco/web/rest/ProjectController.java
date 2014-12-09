@@ -3,6 +3,7 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
@@ -239,6 +240,11 @@ public class ProjectController {
     }
 
 
+    /**
+     * Get all resource requirements for a specific project given by project id
+     * @param id project id
+     * @return list of ReqsourceRequirements wrapped into DTO
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
         method = RequestMethod.GET,
@@ -247,6 +253,24 @@ public class ProjectController {
     public List<ResourceRequirementRequestDTO> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
         return this.resourceService.getAllRequirements(id);
+    }
+
+
+    /**
+     * Get Resource Matches for a specific Project given by id
+     * @param id Project id
+     * @return List of ResourceMatches wrapped into DTO
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/projects/{id}/resourcematches",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<ResourceMatchResponseDTO> getResourceMatches(@PathVariable Long id) {
+
+        List<ResourceMatch> resourceMatches = resourceService.getResourceMatchesForProject(id);
+
+        return ResourceMatchResponseDTO.fromEntities(resourceMatches, null);
     }
 
     /**

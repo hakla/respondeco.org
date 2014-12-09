@@ -77,6 +77,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('chooseproject');
 	}
 
+	$scope.redirectToProject = function(id) {
+		$location.path('projects/'+id);
+	}
+
 	$scope.acceptRequest = function(request) {
 		Resource.updateRequest({id:request.matchId},{accepted:true}, function() {
 			loadRequests();

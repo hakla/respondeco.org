@@ -400,6 +400,17 @@ public class ResourceService {
         return resourceMatchRepository.save(resourceMatch);
     }
 
+    /**
+     * Find accepted ResourceMatches for project with given project id
+     * @param projectId project id
+     * @return List of Resource Matches which were accepted
+     */
+    public List<ResourceMatch> getResourceMatchesForProject(Long projectId) {
+
+
+        return resourceMatchRepository.findByProjectIdAndAcceptedIsTrueAndActiveIsTrue(projectId);
+    }
+
 
 
 

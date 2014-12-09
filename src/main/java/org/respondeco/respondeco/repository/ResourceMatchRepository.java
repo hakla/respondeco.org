@@ -19,4 +19,5 @@ public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Lo
 
     public List<ResourceMatch> findByProjectAndOrganization(Project project, Organization organization);
 
+    public List<ResourceMatch> findByProjectIdAndAcceptedIsTrueAndActiveIsTrue(Long id);
 }
