@@ -25,6 +25,6 @@ public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Lo
 
     @Query("SELECT count(sr), AVG(sr.rating) " +
             "FROM Organization o INNER JOIN o.resourceMatches rm INNER JOIN rm.supporterRating sr " +
-            "WHERE o.id = :orgnizationid")
+            "WHERE o.id = :organizationid")
     public Object[][] getAggregatedRatingByOrganization(@Param("organizationid") Long id);
 }
