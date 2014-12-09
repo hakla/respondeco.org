@@ -19,10 +19,10 @@
             </div>
             <div class="rating-container">
                 <div class="row">
-                    <div id="rating" class="col-md-12" data-toggle="popover" data-content="Rate the Project now!">
+                    <div id="rating" class="col-md-12">
                         <span>Aktuelle Bewertung: </span>
-                        <rating ng-model="rating.value" max="5" readonly="!canRate" on-leave="overStar = null"
-                            ng-click="showRating()"></rating>
+                        <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                ng-click="showRating()" ng-model="rating.value"></rating>
                     </div>
                 </div>
                 <div ng-show="isRating">
@@ -92,7 +92,11 @@
                         <ul>
                             <li>
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
-                                <div class="col-md-6 strong">Unternehmen 1</div>
+                                <div class="col-md-6 strong">
+                                        <div class="col-xs-12">Unternehmen 1</div>
+                                            <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                                    ng-click="showRating()" ng-model="rating.value"></rating>
+                                $</div>
                                 <div class="col-md-4 pull-right">1/4</div>
                             </li>
                             <li>
@@ -102,7 +106,7 @@
                             </li>
                         </ul>
                     </accordion-group>
-                    
+
                 </accordion>
             </div>
         </div>

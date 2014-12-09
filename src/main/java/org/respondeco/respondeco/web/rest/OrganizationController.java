@@ -36,16 +36,20 @@ public class OrganizationController {
     private OrganizationService organizationService;
     private UserService userService;
     private OrgJoinRequestService orgJoinRequestService;
-    private SupporterRatingService supporterRatingService;
+    private RatingService ratingService;
 
 
     @Inject
-    public OrganizationController (OrganizationService organizationService, UserService userService, ResourceService resourceService, OrgJoinRequestService orgJoinRequestService, SupporterRatingService supporterRatingService) {
+    public OrganizationController (OrganizationService organizationService,
+                                   UserService userService,
+                                   ResourceService resourceService,
+                                   OrgJoinRequestService orgJoinRequestService,
+                                   RatingService ratingService) {
         this.organizationService = organizationService;
         this.userService = userService;
         this.resourceService = resourceService;
         this.orgJoinRequestService = orgJoinRequestService;
-        this.supporterRatingService = supporterRatingService;
+        this.ratingService = ratingService;
     }
 
     /**
@@ -241,7 +245,7 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
 
-    public ResponseEntity<List<OrgJoinRequestDTO>> getByOrgId(@PathVariable Long id){
+    public ResponseEntity<?> getByOrgId(@PathVariable Long id){
         log.debug("REST request to get OrgJoinRequest : {}", id);
         ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         try {
@@ -443,4 +447,37 @@ public class OrganizationController {
         return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/rest/organizations/{id}/ratings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<AggregatedRatingResponseDTO> getAggregatedRating(@PathVariable Long id) {
+        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
+        ResponseEntity<AggregatedRatingResponseDTO> responseDTO;
+        if(aggregatedRating != null) {
+            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                    .fromEntity(aggregatedRating, null);
+            responseDTO =
+                    new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+        }
+        else {
+            responseDTO =
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseDTO;
+    }
+
+    @RequestMapping(value = "/rest/organizations/{id}/ratings/{projectId}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> rateProject(
+            @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
+            @PathVariable Long id,
+            @PathVariable Long projectId) throws NoSuchResourceMatchException {
+        ratingService.rateProject(projectId,id,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

@@ -15,4 +15,8 @@ public class NoSuchProjectException extends IllegalValueException {
     public NoSuchProjectException(Long id, Throwable t) {
         super(KEY, BASE_MESSAGE + id, t);
     }
+
+    public NoSuchProjectException(String message) {
+        super(KEY, message);
+    }
 }

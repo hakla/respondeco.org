@@ -1,10 +1,11 @@
 'use strict';
 
-respondecoApp.controller('ProjectController', function($scope, Project, ResourceRequirement, PropertyTagNames, $location, $routeParams, $sce) {
+respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
+                                                       PropertyTagNames, $location, $routeParams, $sce) {
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
-    $("#rating").popover("show");
+    //$("#rating").popover("show");
 
     $scope.project = {
         id: null,
@@ -22,15 +23,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
     $scope.canRate = true;
     $scope.isRating = false;
     $scope.rating = {
-        ratingId: null,
-        projectId: null,
+        id: null,
+        projectId: $routeParams.id,
         value: 5,
         comment: null
     };
-
-    if($scope.canRate) {
-        $("#rating").trigger("show");
-    }
 
     // details mock
     $scope.status = {
@@ -202,15 +199,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
     $scope.rateProject = function() {
         if($scope.project != null) {
-            $scope.rating.projectId = $scope.project.id;
-            if ($scope.rating.ratingId == null) {
-                Project.rate($scope.rating,
+            if ($scope.rating.id == null) {
+                alert($scope.rating.projectId)
+                Project.rateProject($scope.rating,
                 function() {
                     $scope.rateSucces = "SUCCESS";
                     $scope.canRate = false;
+                    $scope.hideRating();
                 });
-            } else {
-                Project.updateRating($scope.rating);
             }
         }
     }

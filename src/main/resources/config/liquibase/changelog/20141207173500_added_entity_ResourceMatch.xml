@@ -15,7 +15,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="amount" type="int"/>
+            <column name="amount" type="dec"/>
             <column name="match_direction" type="varchar(20)"/>
             <column name="accepted" type="boolean"/>
             <column name="project_id" type="bigint"/>

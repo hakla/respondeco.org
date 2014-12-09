@@ -228,5 +228,22 @@ angular.module('respondecoApp')
                 }
             }
         };
+    }).directive('respRating', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/rating.html',
+            scope: {
+                currentRating: '=',
+                onRate: '&',
+                readonly: '='
+            },
+            controller: function($scope) {
+
+                $scope.doRate = function() {
+                    $scope.onRate($scope.currentRating);
+                }
+            }
+        };
     });
 
