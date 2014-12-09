@@ -17,13 +17,15 @@ import java.util.List;
 public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Long> {
 
     public ResourceMatch findByProjectAndOrganization(Project project, Organization organization);
-
-    @Query("SELECT COUNT(r) AS count, AVG(r.rating) AS rating " +
-                    "FROM Rating r " +
-                    "WHERE r IN (SELECT rm.projectRating " +
-                        "FROM ResourceMatch rm " +
-                        "WHERE rm.project.id = :projectid)")
-    public AggregatedRating getAggregatedRatingByProject(@Param("projectid") Long id);
+/*
+    @Query("SELECT COUNT(rm) AS count " +
+                    "FROM Project p INNER JOIN p.resourceMatches rm " +
+                    "WHERE p.id = :projectid")
+*/
+    @Query("SELECT rm.projectRating.id " +
+            "FROM Project p INNER JOIN p.resourceMatches rm " +
+            "WHERE p.id = :projectid")
+    public Object[] getAggregatedRatingByProject(@Param("projectid") Long id);
 
     @Query("SELECT COUNT(r) AS count, AVG(r.rating) AS rating " +
             "FROM Rating r " +

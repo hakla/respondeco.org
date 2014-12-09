@@ -105,8 +105,8 @@ public class ResourceMatchRepositoryTest {
         ratingRepository.save(rating);
 
 
-        AggregatedRating aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
-        assertTrue(aggregatedRating != null);
+        Object[] aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
+        assertTrue(aggregatedRating[0].equals(1));
 
     }
 }

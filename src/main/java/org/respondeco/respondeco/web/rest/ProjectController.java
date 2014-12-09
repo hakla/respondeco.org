@@ -349,7 +349,7 @@ public class ProjectController {
         }
         return response;
     }**/
-
+/*
     @RequestMapping(value = "/rest/projects/{id}/ratings",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -362,16 +362,16 @@ public class ProjectController {
             AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
                     .fromEntity(aggregatedRating, null);
             responseDTO =
-                    new ResponseEntity<AggregatedRatingResponseDTO>(aggregatedRatingResponseDTO, HttpStatus.OK);
+                    new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
         }
         else {
             responseDTO =
-                    new ResponseEntity<AggregatedRatingResponseDTO>(HttpStatus.NOT_FOUND);
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return responseDTO;
-    }
+    }*/
 
-    @RequestMapping(value = "/rest/projects/{id}/ratings/{matchId}",
+    @RequestMapping(value = "/rest/projects/{id}/resourcematches/{matchId}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

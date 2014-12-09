@@ -119,7 +119,7 @@ public class RatingService {
         ratingRepository.save(rating);
     }
 
-    public AggregatedRating getAggregatedRatingByProject(Long projectId) {
+    public Object[] getAggregatedRatingByProject(Long projectId) {
         return resourceMatchRepository.getAggregatedRatingByProject(projectId);
     }
 

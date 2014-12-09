@@ -421,11 +421,11 @@ public class OrganizationController {
             AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
                     .fromEntity(aggregatedRating, null);
             responseDTO =
-                    new ResponseEntity<AggregatedRatingResponseDTO>(aggregatedRatingResponseDTO, HttpStatus.OK);
+                    new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
         }
         else {
             responseDTO =
-                    new ResponseEntity<AggregatedRatingResponseDTO>(HttpStatus.NOT_FOUND);
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return responseDTO;
     }
