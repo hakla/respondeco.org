@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -86,13 +87,14 @@ public class ResourceMatchRepositoryTest {
         resourceMatch = new ResourceMatch();
         resourceMatch.setProject(project);
         resourceMatch.setOrganization(organization);
-        resourceMatch.setProjectRating(rating);
 
 
         rating = new Rating();
         rating.setRating(2);
         rating.setComment("test");
         rating.setResourceMatch(resourceMatch);
+        resourceMatch.setProjectRating(rating);
+        ratingRepository.save(rating);
 
 
     }
@@ -102,11 +104,11 @@ public class ResourceMatchRepositoryTest {
     public void testGetAggregatedRating() {
 
         resourceMatchRepository.save(resourceMatch);
-        ratingRepository.save(rating);
 
-
-        Object[] aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
-        assertTrue(aggregatedRating[0].equals(1));
+        Object[][] aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
+        assertTrue(aggregatedRating[0] != null);
+        assertTrue(aggregatedRating[0][0] != null);
+        assertTrue(aggregatedRating[0][1] != null);
 
     }
 }

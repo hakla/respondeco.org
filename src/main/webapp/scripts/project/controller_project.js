@@ -22,12 +22,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.canRate = true;
     $scope.isRating = false;
-    $scope.rating = {
-        id: null,
-        projectId: $routeParams.id,
-        value: 5,
-        comment: null
-    };
+    $scope.shownRating = 0;
+    $scope.ratingCount = 0;
+    $scope.ratingComment = null;
+
+    Project.getAggregatedRating({pid: $routeParams.id},
+        function(rating) {
+            $scope.shownRating = rating.rating;
+            $scope.ratingCount = rating.count;
+        });
 
     // details mock
     $scope.status = {
@@ -200,8 +203,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.rateProject = function() {
         if($scope.project != null) {
             if ($scope.rating.id == null) {
-                alert($scope.rating.projectId)
-                Project.rateProject($scope.rating,
+                Project.rateProject({pid: $routeParams.id}, {rating: $scope.shownRating, comment: $scope.ratingComment},
                 function() {
                     $scope.rateSucces = "SUCCESS";
                     $scope.canRate = false;

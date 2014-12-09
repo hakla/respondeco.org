@@ -22,12 +22,13 @@ public class RatingRequestDTO {
 
     private Long id;
 
+    private Long matchid;
+
     @NotNull
     @Min(1)
     @Max(10)
     private Integer rating;
 
-    @NotNull
     private String comment;
 
 }

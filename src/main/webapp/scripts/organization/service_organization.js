@@ -9,7 +9,8 @@ respondecoApp.factory('Organization', function ($resource) {
             'getOrgJoinRequests': { method: 'GET', url: 'app/rest/organizations/:id/orgjoinrequests', isArray: true },
             'getInvitableUsers': { method: 'GET', url: 'app/rest/organizations/:id/invitableusers', isArray: true },
             'getResourceRequests' : {method: 'GET', url: 'app/rest/organizations/:id/resourcerequests', isArray:true },
-            'rateOrganization' : {method: 'POST', url: 'app/rest/organizations/:id/ratings'}
+            'rateOrganization' : {method: 'POST', url: 'app/rest/organizations/:id/ratings'},
+            'getAggregatedRating' : {method: 'GET', url: 'app/rest/organizations/:id/ratings'}
         });
     }).factory('User', function($resource) {
         return $resource('app/rest/users/:id', {}, {

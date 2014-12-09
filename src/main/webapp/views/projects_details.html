@@ -22,7 +22,7 @@
                     <div id="rating" class="col-md-12">
                         <span>Aktuelle Bewertung: </span>
                         <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                ng-click="showRating()" ng-model="rating.value"></rating>
+                                ng-click="showRating()" ng-model="rating.rating"></rating>
                     </div>
                 </div>
                 <div ng-show="isRating">
@@ -95,7 +95,7 @@
                                 <div class="col-md-6 strong">
                                         <div class="col-xs-12">Unternehmen 1</div>
                                             <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                                    ng-click="showRating()" ng-model="rating.value"></rating>
+                                                    ng-click="showRating()" ng-model="rating.rating"></rating>
                                 $</div>
                                 <div class="col-md-4 pull-right">1/4</div>
                             </li>
