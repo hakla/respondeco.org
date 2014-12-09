@@ -266,7 +266,7 @@ public class ProjectController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceMatchResponseDTO> getResourceMatches(@PathVariable Long id) {
+    public List<ResourceMatchResponseDTO> getAllResourceMatchesForProject(@PathVariable Long id) {
 
         List<ResourceMatch> resourceMatches = resourceService.getResourceMatchesForProject(id);
 

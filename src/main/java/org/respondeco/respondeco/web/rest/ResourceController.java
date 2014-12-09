@@ -112,7 +112,9 @@ public class ResourceController {
             resourceMatchRequestDTO.getProjectId()
         );
 
-        responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        log.debug("ResourceRequirement: " + resourceMatch.getResourceRequirement().getId());
+
+        responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 
         return responseEntity;
     }

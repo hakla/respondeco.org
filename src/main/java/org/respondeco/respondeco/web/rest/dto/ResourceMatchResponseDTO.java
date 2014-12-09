@@ -31,7 +31,7 @@ public class ResourceMatchResponseDTO {
     OrganizationResponseDTO organization;
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
-        "matchId", "project", "organization", "resourceOffer","resourceRequirement, projectRating", "supporterRating", "accepted");
+        "matchId", "project", "organization", "resourceOffer","resourceRequirement", "projectRating", "supporterRating", "accepted");
 
     public static ResourceMatchResponseDTO fromEntity(ResourceMatch match, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {

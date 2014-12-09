@@ -121,7 +121,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
                 $scope.resourceMatches = matches;
-                console.log($scope.resourceMatches);
+
+                //assign matches to requirement
+                $scope.project.resourceRequirements.forEach(function(req) {
+                    req.matches = [];
+                    matches.forEach(function(match) {
+                        if(match.resourceRequirement.id == req.id) {
+                            req.matches.push(match);
+                        }
+                    });
+                });
             });
         });
     };
