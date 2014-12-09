@@ -243,7 +243,7 @@ public class ProjectController {
     /**
      * Get all resource requirements for a specific project given by project id
      * @param id project id
-     * @return list of ReqsourceRequirements wrapped into DTO
+     * @return list of ResourceRequirements wrapped into DTO
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
@@ -266,11 +266,18 @@ public class ProjectController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceMatchResponseDTO> getAllResourceMatchesForProject(@PathVariable Long id) {
+    public ResponseEntity<List<ResourceMatchResponseDTO>> getAllResourceMatchesForProject(@PathVariable Long id) {
+        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity;
 
         List<ResourceMatch> resourceMatches = resourceService.getResourceMatchesForProject(id);
+        if(resourceMatches.isEmpty() == false) {
+            List<ResourceMatchResponseDTO> resourceMatchResponseDTO = ResourceMatchResponseDTO.fromEntities(resourceMatches, null);
+            responseEntity = new ResponseEntity<>(resourceMatchResponseDTO, HttpStatus.OK);
+        } else {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return ResourceMatchResponseDTO.fromEntities(resourceMatches, null);
+        return responseEntity;
     }
 
     /**
