@@ -481,7 +481,19 @@
         "decline": "Einladung ablehnen",
         "header.info": "Informationen über das Unternehmen",
         "header.logo": "Logo",
-        "ownresources": "Ressourcen anzeigen"
+        "ownresources": "Ressourcen anzeigen",
+        "requests": "Ressourcen-Anfragen"
+    },
+    "resourcematch": {
+        "error": {
+            "nosuchmatch": "Es konnte kein Resource-Match mit dieser id gefunden werden"
+        }
+    },
+    "resourcerequest": {
+        "title":"Ressourcen-Anfragen für ihre Angebote",
+        "acceptButton": "Annehmen",
+        "declineButton": "Ablehnen",
+        "backButton": "Zurück zur Organisation"
     },
     "resource": {
         "title":"Ressourcen",
@@ -502,6 +514,14 @@
             "request": "Ressource anfordern",
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
+            }
+        },
+        "claim": {
+            "title": "Ressource anfordern",
+            "chooseproject": "Für welches ihrer Projekte wird die Ressource benötigt?",
+            "chooserequirement": "Für welche Anforderung soll die Ressource verwendet werden?",
+            "error": {
+                "matchexists": "Die Anfrage wurde bereits versendet"
             }
         },
         "new": {

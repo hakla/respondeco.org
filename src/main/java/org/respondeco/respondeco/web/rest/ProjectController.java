@@ -3,6 +3,7 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
@@ -243,6 +244,11 @@ public class ProjectController {
     }
 
 
+    /**
+     * Get all resource requirements for a specific project given by project id
+     * @param id project id
+     * @return list of ResourceRequirements wrapped into DTO
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
         method = RequestMethod.GET,
@@ -251,6 +257,31 @@ public class ProjectController {
     public List<ResourceRequirementRequestDTO> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
         return this.resourceService.getAllRequirements(id);
+    }
+
+
+    /**
+     * Get Resource Matches for a specific Project given by id
+     * @param id Project id
+     * @return List of ResourceMatches wrapped into DTO
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/projects/{id}/resourcematches",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<ResourceMatchResponseDTO>> getAllResourceMatchesForProject(@PathVariable Long id) {
+        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity;
+
+        List<ResourceMatch> resourceMatches = resourceService.getResourceMatchesForProject(id);
+        if(resourceMatches.isEmpty() == false) {
+            List<ResourceMatchResponseDTO> resourceMatchResponseDTO = ResourceMatchResponseDTO.fromEntities(resourceMatches, null);
+            responseEntity = new ResponseEntity<>(resourceMatchResponseDTO, HttpStatus.OK);
+        } else {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
     }
 
     /**

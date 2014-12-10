@@ -28,6 +28,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         comment: null
     };
 
+    $scope.collected = 0;
+    $scope.collectedEssential = 0;
+
+    $scope.resourceRequirementsWithMatches = [];
+
     if($scope.canRate) {
         $("#rating").trigger("show");
     }
@@ -87,6 +92,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             });
             req.resourceTags = actualTags;
         }
+
+        $.map($scope.project.resourceRequirements, function(req) { delete req.matches; delete req.sum; delete req.essentialSum; return req; });
+
         var project = {
             id: $scope.project.id,
             name: $scope.project.name,
@@ -118,8 +126,60 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         }, function() {
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
+
+            $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
+
+            Project.getResourceMatchesByProjectId({id:id}, function(matches) {
+
+                //assign matches to requirement and calculate amount
+                 $scope.resourceRequirementsWithMatches.forEach(function(req) {
+                    req.matches = [];
+                    req.sum = 0;
+                    req.essentialSum = 0;
+
+                    matches.forEach(function(match) {
+                        if(match.resourceRequirement.id == req.id) {
+                            req.matches.push(match);
+                            req.sum = req.sum + match.amount;
+
+                            if(match.resourceRequirement.isEssential === true) {
+                                req.essentialSum = req.essentialSum + match.amount;
+                            }
+                        }
+                    });
+                });
+
+                calculateCollected();
+
+            });
         });
     };
+
+    var calculateCollected = function() {
+        var reqs = $scope.resourceRequirementsWithMatches;
+        var quantifier;
+        var percentage = 0;
+        var percentageEssential = 0;
+        var countEssential = 0;
+
+        if(reqs.length>0) {
+            quantifier = 100 / reqs.length;
+
+            reqs.forEach(function(req) {
+                percentage = percentage + (req.sum / req.originalAmount / reqs.length);
+
+                if(req.isEssential === true) {
+                    countEssential++;
+                    percentageEssential = percentageEssential + (req.sum / req.originalAmount );
+                }
+            });
+        }
+        
+        $scope.collected = percentage*100;
+        $scope.collectedEssential = percentageEssential/countEssential*100;
+
+        console.log($scope.collected);
+    }
 
     $scope.delete = function(id) {
         Project.delete({

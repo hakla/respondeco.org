@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.domain.ResourceTag;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,20 +24,14 @@ public class ResourceRequirementResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
         "id", "name", "amount", "description", "isEssential",
-        "resourceTags");
+        "resourceTags", "originalAmount");
 
-    public static List<ResourceRequirementResponseDTO> fromEntities(List<ResourceRequirement> resourceRequirements,
-                                                                  List<String> fieldNames) {
-        if(fieldNames == null || fieldNames.size() == 0) {
-            fieldNames = DEFAULT_FIELDS;
-        }
-        List<ResourceRequirementResponseDTO> responseDTOs = new ArrayList<>();
-        if(resourceRequirements == null) {
-            return responseDTOs;
-        }
-        ResourceRequirementResponseDTO responseDTO;
-        for(ResourceRequirement resourceRequirement : resourceRequirements) {
-            responseDTO = new ResourceRequirementResponseDTO();
+    public static ResourceRequirementResponseDTO fromEntity(ResourceRequirement resourceRequirement, Collection<String> fieldNames) {
+        ResourceRequirementResponseDTO responseDTO = new ResourceRequirementResponseDTO();
+
+            if(fieldNames == null || fieldNames.size() == 0) {
+                fieldNames = DEFAULT_FIELDS;
+            }
             if (fieldNames.contains("id")) {
                 responseDTO.setId(resourceRequirement.getId());
             }
@@ -62,8 +58,22 @@ public class ResourceRequirementResponseDTO {
                 responseDTO.setResourceTags(ResourceTagResponseDTO
                     .fromEntities(resourceRequirement.getResourceTags(), null));
             }
+            if (fieldNames.contains("originalAmount")) {
+                responseDTO.setOriginalAmount(resourceRequirement.getOriginalAmount());
+            }
 
-            responseDTOs.add(responseDTO);
+            return responseDTO;
+        }
+
+
+    public static List<ResourceRequirementResponseDTO> fromEntities(List<ResourceRequirement> resourceRequirements,
+                                                                  List<String> fieldNames) {
+        if(fieldNames == null || fieldNames.size() == 0) {
+            fieldNames = DEFAULT_FIELDS;
+        }
+        List<ResourceRequirementResponseDTO> responseDTOs = new ArrayList<>();
+        for(ResourceRequirement resourceRequirement : resourceRequirements) {
+            responseDTOs.add(ResourceRequirementResponseDTO.fromEntity(resourceRequirement, fieldNames));
         }
         return responseDTOs;
     }
@@ -73,8 +83,10 @@ public class ResourceRequirementResponseDTO {
     private ProjectResponseDTO projectResponseDTO;
     private String name;
     private BigDecimal amount;
+    private BigDecimal originalAmount;
     private String description;
     private Boolean isEssential;
     private List<ResourceTagResponseDTO> resourceTags;
+
 
 }

@@ -6,6 +6,7 @@ import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.QResourceMatch;
 import org.respondeco.respondeco.domain.QResourceOffer;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -25,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.beans.Expression;
+import java.io.NotActiveException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,7 @@ public class ResourceService {
     private ResourceTagService resourceTagService;
     private OrganizationRepository organizationRepository;
     private ProjectRepository projectRepository;
-
+    private ResourceMatchRepository resourceMatchRepository;
     private ImageRepository imageRepository;
 
     private UserService userService;
@@ -66,7 +68,8 @@ public class ResourceService {
                            OrganizationRepository organizationRepository,
                            ProjectRepository projectRepository,
                            ImageRepository imageRepository,
-                           UserService userService) {
+                           UserService userService,
+                           ResourceMatchRepository resourceMatchRepository) {
         this.resourceOfferRepository = resourceOfferRepository;
         this.resourceRequirementRepository = resourceRequirementRepository;
         this.resourceTagService = resourceTagService;
@@ -75,6 +78,7 @@ public class ResourceService {
         this.restUtil = new RestUtil();
         this.imageRepository = imageRepository;
         this.userService = userService;
+        this.resourceMatchRepository = resourceMatchRepository;
     }
 
     private void ensureUserIsPartOfOrganisation(Project project) throws ResourceException {
@@ -244,7 +248,7 @@ public class ResourceService {
         }
     }
 
-    public List<ResourceOfferDTO> getAllOffers(String name, String organization, String tags, Boolean available, Boolean isCommercial, RestParameters restParameters) {
+    public List<ResourceOffer> getAllOffers(String name, String organization, String tags, Boolean available, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         if(restParameters != null) {
@@ -255,7 +259,7 @@ public class ResourceService {
         List<ResourceOffer> entries;
 
         if(name.isEmpty() && organization.isEmpty() && tags.isEmpty() && available == false && isCommercial == null) {
-            entries = resourceOfferRepository.findAll();
+            entries = resourceOfferRepository.findByActiveIsTrue();
         } else {
             //create dynamic query with help of querydsl
             BooleanExpression resourceOfferNameLike = null;
@@ -263,9 +267,11 @@ public class ResourceService {
             BooleanExpression resourceOfferTagLike = null;
             BooleanExpression resourceOfferAvailable = null;
             BooleanExpression resourceCommercial = null;
+            BooleanExpression isActive = null;
 
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
 
+            isActive = resourceOffer.active.isTrue();
 
             if(name.isEmpty() == false) {
                 resourceOfferNameLike = resourceOffer.name.toLowerCase().contains(name.toLowerCase());
@@ -277,19 +283,6 @@ public class ResourceService {
 
             if(tags.isEmpty() == false) {
                 List<String> tagList = restUtil.splitCommaSeparated(tags);
-
-                /*
-                for(String t : tagList) {
-                    if(resourceOfferTagLike == null) {
-                        resourceOfferTagLike = resourceOffer.resourceTags.any().name.toLowerCase().like(t);
-
-                    } else {
-                        //tags connected with or -> show all resources which contain one of the searched tags
-                        resourceOfferTagLike = resourceOfferTagLike.or(resourceOffer.resourceTags.any().name.toLowerCase().like(t));
-                    }
-                }*/
-                log.debug("TAGS: " + tagList.toString());
-                log.debug("resourceOfferTagLike: " + resourceOffer.resourceTags.any().name.toLowerCase().in(tagList).toString() );
 
                 resourceOfferTagLike = resourceOffer.resourceTags.any().name.in(tagList);
             }
@@ -307,25 +300,17 @@ public class ResourceService {
             }
 
             Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
-                resourceOfferAvailable, resourceCommercial);
+                resourceOfferAvailable, resourceCommercial, resourceOfferTagLike, isActive);
 
-            entries = resourceOfferRepository.findAll(resourceOfferTagLike, pageRequest).getContent();
-            log.debug("TEST:" + entries.toString());
+            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
         }
 
-
-        if(entries.isEmpty() == false) {
-            for (ResourceOffer offer :entries) {
-                result.add(new ResourceOfferDTO(offer));
-            }
-        }
-
-        return result;
+        return entries;
     }
 
     public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganization(organizationId);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganizationIdAndActiveIsTrue(organizationId);
 
         log.debug(entries.toString());
         if(entries.isEmpty() == false) {
@@ -343,9 +328,134 @@ public class ResourceService {
      * @param id resourceOffer id
      * @return ResourceOfferDTO
      */
-    public ResourceOffer getOfferById(Long id) {
-        return resourceOfferRepository.getOne(id);
+    public ResourceOffer getOfferById(Long id) throws GeneralResourceException {
+        ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
+        if (resourceOffer.isActive() == false) {
+            throw new GeneralResourceException("resource with given id is not active");
+        }
+
+        return resourceOffer;
     }
+
+
+    /**
+     * Request a Resource Offer
+     * @param resourceOfferId
+     * @param resourceRequirementId
+     * @param organizationId
+     * @param projectId
+     * @return ResourceMatch representing the resource request
+     */
+    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
+        throws IllegalValueException, MatchAlreadyExistsException {
+
+        ResourceMatch resourceMatch = new ResourceMatch();
+
+        ResourceOffer resourceOffer = resourceOfferRepository.findOne(resourceOfferId);
+        if(resourceOffer == null) {
+            throw new IllegalValueException("no resourceoffer with id {} found", resourceOfferId.toString());
+        }
+        ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
+        if(resourceRequirement == null) {
+            throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirement.toString());
+        }
+
+        Project project = resourceRequirement.getProject();
+        Organization organization = resourceOffer.getOrganization();
+        List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProject(resourceOffer,
+            resourceRequirement, organization, project);
+
+        if(result.isEmpty() == true) {
+            resourceMatch.setResourceOffer(resourceOffer);
+            resourceMatch.setResourceRequirement(resourceRequirement);
+            resourceMatch.setOrganization(organization);
+            resourceMatch.setProject(project);
+            resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+
+            resourceMatchRepository.save(resourceMatch);
+        } else {
+            throw new MatchAlreadyExistsException("claim.error.matchexists", "match already exists");
+        }
+
+        return resourceMatch;
+    }
+
+    /**
+     * Accept or decline the resource request
+     * @param resourceMatchId resourceMatch id
+     * @param accept true if accepted, false if declined
+     * @return accepted or declined ResourceMatch
+     */
+    public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept) {
+
+        //TODO: add authority check
+        ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);
+
+        if(resourceMatchId == null) {
+            throw new IllegalValueException("resourcematch.error.idnull", "Resourcematch id must not be null");
+        }
+        if(resourceMatch == null) {
+            throw new NoSuchResourceMatchException(resourceMatchId);
+        }
+
+        resourceMatch.setAccepted(accept);
+
+        //check if resourceOffer amount is completely consumed by resourceRequirement
+        ResourceOffer offer = resourceMatch.getResourceOffer();
+        ResourceRequirement req = resourceMatch.getResourceRequirement();
+
+        //offer greater req amount -> keep offer active and lower amount
+        if(offer.getAmount().compareTo(req.getAmount()) == 1 ) {
+            offer.setAmount( offer.getAmount().subtract(req.getAmount()) );
+            resourceMatch.setAmount(req.getAmount());
+
+        } else {
+            //requirement consumes offer -> offer is no longer active
+            resourceMatch.setAmount(offer.getAmount());
+            offer.setActive(false);
+
+            //actualize requirement amounts
+            req.setAmount( req.getAmount().subtract(offer.getAmount()) );
+        }
+
+        resourceOfferRepository.save(offer);
+
+        return resourceMatchRepository.save(resourceMatch);
+    }
+
+    /**
+     * Find accepted ResourceMatches for project with given project id
+     * @param projectId project id
+     * @return List of Resource Matches which were accepted
+     */
+    public List<ResourceMatch> getResourceMatchesForProject(Long projectId) {
+        return resourceMatchRepository.findByProjectIdAndAcceptedIsTrueAndActiveIsTrue(projectId);
+    }
+
+
+
+
+    /**
+     * Get Resource Requests for specific Organization with given id. (Claim Resource)
+     * @param organizationId Organization id
+     * @return List of ResourceMatches representing open resource requests
+     */
+    @Transactional(readOnly=true)
+    public List<ResourceMatch> getResourceRequestsForOrganization(Long organizationId, RestParameters restParameters) {
+        PageRequest pageRequest = restParameters.buildPageRequest();
+
+        QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
+        BooleanExpression resourceMatchOrganization = resourceMatch.organization.id.eq(organizationId);
+        BooleanExpression resourceMatchAccepted = resourceMatch.accepted.isNull();
+
+        Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization);
+
+        List<ResourceMatch> requests = resourceMatchRepository.findAll(where, pageRequest).getContent();
+
+        return requests;
+    }
+
+
 
 
     // endregion

@@ -7,11 +7,9 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
-import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Organization.
@@ -194,6 +191,47 @@ public class OrganizationController {
 
         return  resourceOfferDTOs;
     }
+
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organizations/{id}/resourcerequests",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<ResourceMatchResponseDTO>> getAllResourceRequests(
+        @PathVariable Long id,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
+
+        log.debug("REST request to get all resource claim requests for organization with id " + id);
+        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<ResourceMatch> resourceClaims = resourceService.getResourceRequestsForOrganization(id, restParameters);
+
+        for(ResourceMatch match : resourceClaims) {
+            ResourceMatchResponseDTO resourceDTO = new ResourceMatchResponseDTO();
+
+            OrganizationResponseDTO organizationDTO = OrganizationResponseDTO.fromEntity(match.getOrganization(), null);
+            ProjectResponseDTO projectDTO = ProjectResponseDTO.fromEntity(match.getProject(), null);
+            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(match.getResourceOffer());
+            ResourceRequirementResponseDTO resourceRequirementResponseDTO = ResourceRequirementResponseDTO.fromEntity(match.getResourceRequirement(), null);
+
+            resourceDTO.setProject(projectDTO);
+            resourceDTO.setResourceOffer(resourceOfferDTO);
+            resourceDTO.setResourceRequirement(resourceRequirementResponseDTO);
+            resourceDTO.setMatchId(match.getId());
+
+            responseEntity.getBody().add(resourceDTO);
+        }
+
+        return responseEntity;
+    }
+
+
+
 
     /**
      * GET  /rest/organizations/:id/orgJoinRequests -> get the orgjoinrequests for organization :id

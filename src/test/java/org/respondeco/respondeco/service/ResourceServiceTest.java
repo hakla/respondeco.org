@@ -56,6 +56,8 @@ public class ResourceServiceTest {
     private UserService userService;
     @Mock
     private ResourceTagService resourceTagServiceMock;
+    @Mock
+    private ResourceMatchRepository resourceMatchRepository;
 
     private ResourceService resourceService;
     private ResourceOffer expOffer = null;
@@ -84,7 +86,8 @@ public class ResourceServiceTest {
             organizationRepository,
             projectRepository,
             imageRepository,
-            userService
+            userService,
+            resourceMatchRepository
         );
     }
 
@@ -460,7 +463,7 @@ public class ResourceServiceTest {
             item2.setOrganization(expOrg);
             items.add(item2);
             return items;
-        }).when(resourceOfferRepositoryMock).findByOrganization(expOrg.getId());
+        }).when(resourceOfferRepositoryMock).findByOrganizationId(expOrg.getId());
         Long expected = 1L;
         int listSize = 2;
         List<ResourceOfferDTO> list = this.resourceService.getAllOffers(expOrg.getId());
@@ -484,7 +487,7 @@ public class ResourceServiceTest {
             item1.setOrganization(alternative);
             items.add(item1);
             return items;
-        }).when(resourceOfferRepositoryMock).findByOrganization(isA(longCl));
+        }).when(resourceOfferRepositoryMock).findByOrganizationId(isA(longCl));
         listSize = 1;
         list = this.resourceService.getAllOffers(99L);
 
@@ -495,6 +498,6 @@ public class ResourceServiceTest {
             assertEquals(current.getOrganizationId(), alternative.getId());
         }
 
-        verify(this.resourceOfferRepositoryMock, times(2)).findByOrganization(isA(longCl));
+        verify(this.resourceOfferRepositoryMock, times(2)).findByOrganizationId(isA(longCl));
     }
 }

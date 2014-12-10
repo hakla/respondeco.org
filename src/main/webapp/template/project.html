@@ -1,9 +1,11 @@
-<div class="project-item" ng-click="projectClicked(project)">
+<div class="project-item col-md-3" ng-click="projectClicked(project)">
     <a>
         <uploaded-image name="project.logo.id" />
     </a>
     <h2>
         <a>{{project.name}}</a>
     </h2>
-    <span>Tags:</span><span ng-repeat="tag in project.propertyTags">{{ tag.name }},</span>
+    <div ng-hide="tags == false">
+      <span>Tags:</span><span ng-repeat="tag in project.propertyTags">{{ tag.name }},</span>
+    </div>
 </div>
