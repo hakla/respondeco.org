@@ -135,6 +135,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
+            if ($scope.project.concrete === true) {
+                var startDate = new XDate($scope.project.startDate);
+
+                if (startDate.diffDays() < 0) {
+                    $scope.remainingDays = Math.round(startDate.diffDays() * -1) + 1;
+                } else {
+                    $scope.remainingDays = true;
+                }
+            }
+
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {

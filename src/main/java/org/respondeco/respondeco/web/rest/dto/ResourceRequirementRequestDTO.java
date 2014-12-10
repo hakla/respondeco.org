@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 @ApiModel(value = "Resource Requirement", description = "manage all resource requirements")
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourceRequirementRequestDTO {
 
     @ApiModelProperty(value = "ID of the given Resource requirement")
