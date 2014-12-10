@@ -79,8 +79,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.sendClaimRequest = function() {
 		Resource.claimResource(claim, function() {
 			$scope.clearClaimResource();
-		}, function() {
-			console.log("ERROR");
+		}, function(data) {
+			$scope.claimError = data.key;
 		});
 	}
 
@@ -209,14 +209,5 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
             $scope.resources = Resource.getByOrgId({id:orgId});
         });
     };
-
-    $scope.claim = function(id) {
-    	
-
-
-
-
-
-    }
 
 });

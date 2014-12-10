@@ -7,8 +7,11 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
+import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
@@ -112,16 +115,23 @@ public class ResourceController {
         log.debug("REST request to claim ResourceOffer : " + resourceMatchRequestDTO);
         ResponseEntity<?> responseEntity;
 
-        ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(
+        ResourceMatch resourceMatch = null;
+        try {
+            resourceMatch = resourceService.createClaimResourceRequest(
             resourceMatchRequestDTO.getResourceOfferId(),
             resourceMatchRequestDTO.getResourceRequirementId(),
             resourceMatchRequestDTO.getOrganizationId(),
-            resourceMatchRequestDTO.getProjectId()
-        );
+            resourceMatchRequestDTO.getProjectId());
 
-        log.debug("ResourceRequirement: " + resourceMatch.getResourceRequirement().getId());
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 
-        responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (MatchAlreadyExistsException e) {
+            log.error("Could not claim resource offer : {}", resourceMatchRequestDTO, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        } catch (IllegalValueException e) {
+            log.error("Could not create match for claiming offer : {}", resourceMatchRequestDTO, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         return responseEntity;
     }
@@ -132,7 +142,7 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> acceptResourceRequest(
+    public ResponseEntity<?> answerResourceRequest(
         @PathVariable Long id,
         @RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) {
         log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
@@ -144,10 +154,6 @@ public class ResourceController {
 
         return responseEntity;
     }
-
-
-
-
 
 
     @RolesAllowed(AuthoritiesConstants.USER)
