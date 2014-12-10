@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -84,7 +85,7 @@ public class OrganizationController {
     /**
      * GET  /rest/organizations -> get all the organizations.
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     @ApiOperation(value = "Get organizations", notes = "Get organizations")
     @RequestMapping(value = "/rest/organizations",
             method = RequestMethod.GET,
@@ -104,7 +105,7 @@ public class OrganizationController {
     /**
      * GET  /rest/organization/:id -> get the "id" organization.
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     @ApiOperation(value = "Get organization", notes = "Get a organization by its id")
     @RequestMapping(value = "/rest/organizations/{id}",
             method = RequestMethod.GET,
@@ -178,7 +179,7 @@ public class OrganizationController {
      * GET /rest/organizations/:id/resourceOffers -> get the resourceOffers for the organization :id
      */
 
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     @RequestMapping(value = "/rest/organizations/{id}/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -197,7 +198,7 @@ public class OrganizationController {
     /**
      * GET  /rest/organizations/:id/orgJoinRequests -> get the orgjoinrequests for organization :id
      */
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations/{id}/orgjoinrequests",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)

@@ -16,7 +16,9 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
+import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
@@ -71,21 +73,29 @@ public class OrgJoinRequestControllerTest {
     @Mock
     private OrganizationRepository organizationRepository;
 
-    private MockMvc restOrgJoinRequestMockMvc;
+    @Mock
+    private AccountController accountController;
 
-    private OrgJoinRequestDTO orgjoinrequestDTO;
+    @Mock
+    private MailService mailService;
+
+    @Mock
+    private OrganizationService organizationService;
+
+    private MockMvc restOrgJoinRequestMockMvc;
 
     private Organization organization;
     private User defaultUser;
     private User potMember;
     private Set<Authority> userAuthorities;
     private OrgJoinRequest orgJoinRequest;
+    private OrgJoinRequestDTO orgjoinrequestDTO;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         OrgJoinRequestService orgJoinRequestService = new OrgJoinRequestService(orgjoinrequestRepository,userService,userRepository,organizationRepository);
-        OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgJoinRequestService);
+        OrgJoinRequestController orgjoinrequestController = new OrgJoinRequestController(orgJoinRequestService, userService, mailService, accountController, organizationService);
 
         this.restOrgJoinRequestMockMvc = MockMvcBuilders.standaloneSetup(orgjoinrequestController).build();
 

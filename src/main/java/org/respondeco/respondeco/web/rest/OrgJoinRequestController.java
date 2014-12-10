@@ -2,25 +2,33 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.OrgJoinRequest;
+import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
+import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.spring4.context.SpringWebContext;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing OrgJoinRequest.
@@ -32,11 +40,19 @@ public class OrgJoinRequestController {
 
     private final Logger log = LoggerFactory.getLogger(OrgJoinRequestController.class);
 
+    private OrganizationService organizationService;
     private OrgJoinRequestService orgJoinRequestService;
+    private UserService userService;
+    private MailService mailService;
+    private AccountController accountController;
 
     @Inject
-    public OrgJoinRequestController(OrgJoinRequestService orgJoinRequestService) {
+    public OrgJoinRequestController(OrgJoinRequestService orgJoinRequestService, UserService userService, MailService mailService, AccountController accountController, OrganizationService organizationService) {
         this.orgJoinRequestService = orgJoinRequestService;
+        this.userService = userService;
+        this.mailService = mailService;
+        this.accountController = accountController;
+        this.organizationService = organizationService;
     }
 
     /**
@@ -46,19 +62,48 @@ public class OrgJoinRequestController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> create(@RequestBody @Valid OrgJoinRequestDTO orgjoinrequest) {
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> create(@RequestBody @Valid OrgJoinRequestDTO orgjoinrequest, HttpServletRequest request, HttpServletResponse response) {
         log.debug("REST request to save OrgJoinRequest : {}", orgjoinrequest);
         ResponseEntity<?> responseEntity;
+        UserDTO user = orgjoinrequest.getUser();
         try {
+            if (user.getId() == null) {
+                throw new NoSuchUserException("");
+            }
+
             orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization(),
-                    orgjoinrequest.getUser());
+                user);
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (NoSuchUserException e) {
-            log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            // if the user doesn't exist the owner can send an invitation to the user
+            if ("sendInvitation".matches(user.getLogin())) {
+                // create a new user with the specified email
+                User newUser = userService.createUserInformation(user.getEmail(), "tochange", null, null, null, user.getEmail(), null, null, null, null);
+
+                // set the organization for the user
+                userService.setOrganization(newUser, orgjoinrequest.getOrganization().getId());
+
+                // send the invited user an email so he can accept the invitation
+                mailService.sendActivationEmail(user.getEmail(), accountController.createHtmlContentFromTemplate(newUser, Locale.GERMAN, request, response, "invitationEmail"), Locale.GERMAN);
+
+                try {
+                    // and create a new orgjoinrequest that gets accepted automatically when the user registers
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setId(newUser.getId());
+                    orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization(), userDTO);
+                    responseEntity = new ResponseEntity<>(HttpStatus.OK);
+                } catch (AlreadyInvitedToOrganizationException e1) {
+                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
+                    responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+                responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         } catch (AlreadyInvitedToOrganizationException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
@@ -105,9 +150,6 @@ public class OrgJoinRequestController {
         } catch (NoSuchOrganizationException e) {
             log.error("Could not accept OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (AlreadyInOrganizationException e) {
-            log.error("Could not accept OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }

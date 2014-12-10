@@ -24,6 +24,13 @@ respondecoApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+                .when('/activateInvitation', {
+                    templateUrl: 'views/register.html',
+                    controller: 'RegisterController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
                 .when('/login', {
                     templateUrl: 'views/login.html',
                     controller: 'LoginController',
@@ -124,8 +131,8 @@ respondecoApp
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
                     Session.invalidate();
                     $rootScope.authenticated = false;
-                    if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
-                            $location.path() !== "/activate" && $location.path() !== "/login") {
+                    var allowedRoutes = ["/", "", "/register", "/activate", "/login", "/activateInvitation", "/organization", "/projects"];
+                    if (allowedRoutes.indexOf($location.path()) === -1) {
                         var redirect = $location.path();
                         $location.path('/login').search('redirect', redirect).replace();
                     }
