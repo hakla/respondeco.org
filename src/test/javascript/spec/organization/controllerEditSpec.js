@@ -93,8 +93,8 @@ describe('Controllers Tests ', function () {
 
             // success callback
             OrgJoinRequestService.save.calls.mostRecent().args[1]({
-                data: {
-                    userLogin: 'admin'
+                user: {
+                    id: 1
                 }
             });
 
@@ -110,7 +110,7 @@ describe('Controllers Tests ', function () {
 
         it('should call update', function() {
             spyOn(OrganizationService, 'get');
-            spyOn(UserService, 'getInvitableUsers');
+            spyOn(OrganizationService, 'getInvitableUsers');
             spyOn(OrganizationService, 'getOrgJoinRequests');
             spyOn(OrganizationService, 'getMembers');
 
@@ -124,7 +124,7 @@ describe('Controllers Tests ', function () {
                 id: 1
             });
 
-            expect(UserService.getInvitableUsers).toHaveBeenCalled();
+            expect(OrganizationService.getInvitableUsers).toHaveBeenCalled();
             expect(OrganizationService.getOrgJoinRequests).toHaveBeenCalled();
             expect(OrganizationService.getMembers).toHaveBeenCalled();
         });
