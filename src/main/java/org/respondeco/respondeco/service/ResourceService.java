@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.beans.Expression;
+import java.io.NotActiveException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -326,8 +327,13 @@ public class ResourceService {
      * @param id resourceOffer id
      * @return ResourceOfferDTO
      */
-    public ResourceOffer getOfferById(Long id) {
-        return resourceOfferRepository.getOne(id);
+    public ResourceOffer getOfferById(Long id) throws GeneralResourceException {
+        ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
+        if (resourceOffer.isActive() == false) {
+            throw new GeneralResourceException("resource with given id is not active");
+        }
+
+        return resourceOffer;
     }
 
 
