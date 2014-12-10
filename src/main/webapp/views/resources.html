@@ -39,7 +39,7 @@
                     <img src="" alt="">
                 </div>
                 <div class="pull-right col-md-7">
-                    <div class="col-md-8 on-hover">
+                    <div class="col-md-8">
                         {{ resource.description }}
                     </div>
                     <div class="col-md-4 on-hover">
@@ -51,14 +51,14 @@
                 <h2 class="col-md-4">
                     {{ resource.name }}
                     <span ng-hide="resource.amount == 1">({{ resource.amount }})</span>
-                    <sup class="on-hover">
+                    <sup>
                         <small>
                             {{ resource.startDate }} - {{ resource.endDate }}
                         </small>
                     </sup>
                     <div class="organization">
                         <span class="organization-name">{{ organization.name }}</span>
-                        <rating class="on-hover" ng-model="resource.rating" max="5" readonly="true"></rating>
+                        <rating ng-model="resource.rating" max="5" readonly="true"></rating>
                     </div>
                 </h2>
             </li>
