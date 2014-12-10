@@ -339,7 +339,8 @@ public class ResourceService {
      * @param projectId
      * @return ResourceMatch representing the resource request
      */
-    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId) {
+    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId)
+        throws IllegalValueException, MatchAlreadyExistsException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
@@ -360,11 +361,8 @@ public class ResourceService {
             throw new IllegalValueException("no project with id {} found", project.toString());
         }
 
-        resourceMatch.setResourceOffer(resourceOffer);
-        resourceMatch.setResourceRequirement(resourceRequirement);
-        resourceMatch.setOrganization(organization);
-        resourceMatch.setProject(project);
-        resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+        List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProject(resourceOffer,
+            resourceRequirement, organization, project);
 
         if(result.isEmpty() == true) {
             resourceMatch.setResourceOffer(resourceOffer);
