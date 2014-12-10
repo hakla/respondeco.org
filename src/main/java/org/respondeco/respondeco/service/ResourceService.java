@@ -257,7 +257,7 @@ public class ResourceService {
         List<ResourceOffer> entries;
 
         if(name.isEmpty() && organization.isEmpty() && tags.isEmpty() && available == false && isCommercial == null) {
-            entries = resourceOfferRepository.findAll();
+            entries = resourceOfferRepository.findByActiveIsTrue();
         } else {
             //create dynamic query with help of querydsl
             BooleanExpression resourceOfferNameLike = null;
@@ -265,9 +265,11 @@ public class ResourceService {
             BooleanExpression resourceOfferTagLike = null;
             BooleanExpression resourceOfferAvailable = null;
             BooleanExpression resourceCommercial = null;
+            BooleanExpression isActive = null;
 
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
 
+            isActive = resourceOffer.active.isTrue();
 
             if(name.isEmpty() == false) {
                 resourceOfferNameLike = resourceOffer.name.toLowerCase().contains(name.toLowerCase());
@@ -296,7 +298,7 @@ public class ResourceService {
             }
 
             Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
-                resourceOfferAvailable, resourceCommercial, resourceOfferTagLike);
+                resourceOfferAvailable, resourceCommercial, resourceOfferTagLike, isActive);
 
             entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
         }
@@ -337,18 +339,26 @@ public class ResourceService {
      * @param projectId
      * @return ResourceMatch representing the resource request
      */
-    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId,
-                                                    Long organizationId, Long projectId) throws ResourceException{
+    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId) {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
         ResourceOffer resourceOffer = resourceOfferRepository.findOne(resourceOfferId);
+        if(resourceOffer == null) {
+            throw new IllegalValueException("no resourceoffer with id {} found", resourceOfferId.toString());
+        }
         ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
+        if(resourceRequirement == null) {
+            throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirement.toString());
+        }
         Organization organization = organizationRepository.findOne(organizationId);
+        if(organization == null) {
+            throw new IllegalValueException("no organization with id {} found", organization.toString());
+        }
         Project project = projectRepository.findOne(projectId);
-
-        //Check if user authorized
-        this.ensureUserIsPartOfOrganisation(organization);
+        if(project == null) {
+            throw new IllegalValueException("no project with id {} found", project.toString());
+        }
 
         resourceMatch.setResourceOffer(resourceOffer);
         resourceMatch.setResourceRequirement(resourceRequirement);
@@ -356,7 +366,18 @@ public class ResourceService {
         resourceMatch.setProject(project);
         resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
 
-        resourceMatchRepository.save(resourceMatch);
+        if(result.isEmpty() == true) {
+            resourceMatch.setResourceOffer(resourceOffer);
+            resourceMatch.setResourceRequirement(resourceRequirement);
+            resourceMatch.setOrganization(organization);
+            resourceMatch.setProject(project);
+            resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+
+            resourceMatchRepository.save(resourceMatch);
+        } else {
+            throw new MatchAlreadyExistsException("claim.error.matchexists", "match already exists");
+        }
+
         return resourceMatch;
     }
 
@@ -381,23 +402,25 @@ public class ResourceService {
 
         resourceMatch.setAccepted(accept);
 
-        // update the offer amount and decrease the resource requirements
-        // but before check total available amount of offer
-        ResourceOffer resourceOffer = resourceMatch.getResourceOffer();
-        ResourceRequirement resourceRequirement = resourceMatch.getResourceRequirement();
-        // TODO: should be reviewed, Roman
-        BigDecimal newAmount = resourceRequirement.getAmount().add(resourceMatch.getAmount());
-        if(resourceRequirement.getOriginalAmount().compareTo(newAmount) == -1){
-            resourceMatch.setAmount(resourceRequirement.getOriginalAmount().subtract(resourceRequirement.getAmount()));
-        }
-        if(resourceOffer.getAmount() .compareTo(resourceMatch.getAmount()) == -1){
-            resourceMatch.setAmount(resourceOffer.getAmount());
-        }
-        resourceRequirement.setAmount(resourceRequirement.getAmount().add(resourceMatch.getAmount()));
-        resourceOffer.setAmount(resourceOffer.getAmount().add(resourceMatch.getAmount()));
+        //check if resourceOffer amount is completely consumed by resourceRequirement
+        ResourceOffer offer = resourceMatch.getResourceOffer();
+        ResourceRequirement req = resourceMatch.getResourceRequirement();
 
-        resourceOfferRepository.save(resourceOffer);
-        resourceRequirementRepository.save(resourceRequirement);
+        //offer greater req amount -> keep offer active and lower amount
+        if(offer.getAmount().compareTo(req.getAmount()) == 1 ) {
+            offer.setAmount( offer.getAmount().subtract(req.getAmount()) );
+            resourceMatch.setAmount(req.getAmount());
+
+        } else {
+            //requirement consumes offer -> offer is no longer active
+            resourceMatch.setAmount(offer.getAmount());
+            offer.setActive(false);
+
+            //actualize requirement amounts
+            req.setAmount( req.getAmount().subtract(offer.getAmount()) );
+        }
+
+        resourceOfferRepository.save(offer);
 
         return resourceMatchRepository.save(resourceMatch);
     }

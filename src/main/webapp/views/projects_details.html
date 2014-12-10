@@ -84,7 +84,7 @@
                             <div class="row">
                                 <div class="col-md-4">{{requirement.name}}</div>
                                 <div class="col-md-2 col-md-offset-6">
-                                    {{requirement.sum}}/{{requirement.amount}}
+                                    {{requirement.sum}}/{{requirement.originalAmount}}
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                             <li ng-repeat="match in requirement.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
                                 <div class="col-md-6 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4 pull-right">{{match.resourceOffer.amount}}/{{requirement.amount}}</div>
+                                <div class="col-md-4 pull-right">{{match.resourceOffer.amount}}/{{requirement.originalAmount}}</div>
                             </li>
                         </ul>
                     </accordion-group>
