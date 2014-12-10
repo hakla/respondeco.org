@@ -102,8 +102,8 @@ public class AccountControllerTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(defaultAdmin)))
                 .andExpect(status().isOk());
-
     }
+
     @Test
     public void testNonAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/app/rest/authenticate")
