@@ -43,7 +43,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var updateProjects = function() {
 		Account.get(null, function(account) {
 			orgId = account.organizationId;
-			claim.organizationId = orgId;
 
 			$scope.projects = Project.getProjectsByOrgId({organizationId:orgId}, function() {
 				console.log($scope.projects);
@@ -61,8 +60,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.selectRequirement = function(requirement) {
 		claim.resourceRequirementId = requirement.id;
-
-		
+		claim.organizationId = requirement.organizationId;
 	}
 
 	$scope.claimResource = function(res) {

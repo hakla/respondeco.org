@@ -6,6 +6,7 @@ import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.QResourceMatch;
 import org.respondeco.respondeco.domain.QResourceOffer;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -345,7 +346,7 @@ public class ResourceService {
      * @param projectId
      * @return ResourceMatch representing the resource request
      */
-    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId)
+    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
         throws IllegalValueException, MatchAlreadyExistsException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
@@ -358,15 +359,9 @@ public class ResourceService {
         if(resourceRequirement == null) {
             throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirement.toString());
         }
-        Organization organization = organizationRepository.findOne(organizationId);
-        if(organization == null) {
-            throw new IllegalValueException("no organization with id {} found", organization.toString());
-        }
-        Project project = projectRepository.findOne(projectId);
-        if(project == null) {
-            throw new IllegalValueException("no project with id {} found", project.toString());
-        }
 
+        Project project = resourceRequirement.getProject();
+        Organization organization = resourceOffer.getOrganization();
         List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProject(resourceOffer,
             resourceRequirement, organization, project);
 

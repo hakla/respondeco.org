@@ -129,9 +129,7 @@ public class ResourceController {
         try {
             resourceMatch = resourceService.createClaimResourceRequest(
             resourceMatchRequestDTO.getResourceOfferId(),
-            resourceMatchRequestDTO.getResourceRequirementId(),
-            resourceMatchRequestDTO.getOrganizationId(),
-            resourceMatchRequestDTO.getProjectId());
+            resourceMatchRequestDTO.getResourceRequirementId());
 
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 

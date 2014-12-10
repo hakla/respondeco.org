@@ -1,7 +1,7 @@
 <div>
  
     <h1> {{ 'resource.own.title' | translate }} {{organization.name}}
-        <button class="btn btn-success btn-mid pull-right"
+        <button class="btn btn-primary pull-right"
                 ng-click="redirectToResource('new')">
             <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'resource.newbutton' | translate }}
         </button>
@@ -24,7 +24,7 @@
                 <tr ng-repeat="resource in resources">
                     <td>{{ resource.name }}</td>
                     <td>{{ resource.amount }}</td>
-                    <td>{{ resource.startDate | date: 'dd-MM-yyyy' }}</td>
+                    <td>{{ resource.startDate | date }}</td>
                     <td>{{ resource.endDate | date }}</td>
                     <td ng-show="resource.isCommercial"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isCommercial"><span class="glyphicon glyphicon-remove"/></td>
@@ -32,9 +32,8 @@
                     <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
                     <td>
                         <button type="button" class="btn btn-default btn-xs" ng-click="redirectToResource(resource.id)">
-                            {{ 'resource.own.editbutton' | translate }}
+                            <i class="glyphicon glyphicon-edit"></i>
                         </button>
-                        <resp-confirm-delete on-confirm="delete(resource.id)"></resp-confirm-delete>
                     </td>
                 </tr>
             </tbody>
