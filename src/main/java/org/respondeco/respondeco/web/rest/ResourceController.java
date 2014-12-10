@@ -7,6 +7,8 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
+import org.respondeco.respondeco.service.exception.ResourceException;
+import org.respondeco.respondeco.web.rest.dto.ResourceMatchOfferResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -111,17 +113,56 @@ public class ResourceController {
     public ResponseEntity<?> claimResourceOffer(@RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) {
         log.debug("REST request to claim ResourceOffer : " + resourceMatchRequestDTO);
         ResponseEntity<?> responseEntity;
+        try {
+            ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(
+                resourceMatchRequestDTO.getResourceOfferId(),
+                resourceMatchRequestDTO.getResourceRequirementId(),
+                resourceMatchRequestDTO.getOrganizationId(),
+                resourceMatchRequestDTO.getProjectId()
+            );
 
-        ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(
-            resourceMatchRequestDTO.getResourceOfferId(),
-            resourceMatchRequestDTO.getResourceRequirementId(),
-            resourceMatchRequestDTO.getOrganizationId(),
-            resourceMatchRequestDTO.getProjectId()
-        );
+            log.debug("ResourceRequirement: " + resourceMatch.getResourceRequirement().getId());
 
-        log.debug("ResourceRequirement: " + resourceMatch.getResourceRequirement().getId());
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (ResourceException e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("errorMessage", e.getMessage());
+            responseEntity = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+        }
 
-        responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        return responseEntity;
+    }
+
+    /**
+     * Create offer ResourceOffer Request
+     * @param ResourceMatchOfferResourceOfferDTO
+     * @return
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/resourceoffers",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> offerResourceOffer(@RequestBody ResourceMatchOfferResourceOfferDTO resourceMatchOfferResourceOfferDTO) {
+        log.debug("REST request to offer ResourceOffer : " + resourceMatchOfferResourceOfferDTO);
+        ResponseEntity<?> responseEntity;
+        try {
+            ResourceMatch resourceMatch = resourceService.createOfferResourceOffer(
+                resourceMatchOfferResourceOfferDTO.getAmount(),
+                resourceMatchOfferResourceOfferDTO.getResourceOfferId(),
+                resourceMatchOfferResourceOfferDTO.getResourceRequirementId(),
+                resourceMatchOfferResourceOfferDTO.getOrganizationId(),
+                resourceMatchOfferResourceOfferDTO.getProjectId()
+            );
+
+            log.debug("ResourceOffer: " + resourceMatch.getResourceOffer().getId());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (ResourceException e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("errorMessage", e.getMessage());
+            responseEntity = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+        }
 
         return responseEntity;
     }
@@ -138,9 +179,15 @@ public class ResourceController {
         log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
         ResponseEntity<?> responseEntity;
 
-        ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
-
-        responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        try {
+            ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (ResourceException e){
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("errorMessage", e.getMessage());
+            responseEntity = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+        }
 
         return responseEntity;
     }
