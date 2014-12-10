@@ -3,6 +3,7 @@ package org.respondeco.respondeco.web.rest.dto;
 import lombok.Data;
 import org.respondeco.respondeco.domain.ResourceMatch;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,8 +31,10 @@ public class ResourceMatchResponseDTO {
 
     OrganizationResponseDTO organization;
 
+    BigDecimal amount;
+
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
-        "matchId", "project", "organization", "resourceOffer","resourceRequirement", "projectRating", "supporterRating", "accepted");
+        "matchId", "project", "organization", "resourceOffer","resourceRequirement", "projectRating", "supporterRating", "accepted", "amount");
 
     public static ResourceMatchResponseDTO fromEntity(ResourceMatch match, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -61,6 +64,10 @@ public class ResourceMatchResponseDTO {
         }
         if (fieldNames.contains("accepted")) {
             responseDTO.setAccepted(match.getAccepted());
+        }
+
+        if( fieldNames.contains("amount")) {
+            responseDTO.setAmount(match.getAmount());
         }
 
         return responseDTO;

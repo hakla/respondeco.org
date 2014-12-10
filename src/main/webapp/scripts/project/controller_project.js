@@ -29,6 +29,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
     };
 
     $scope.collected = 0;
+    $scope.collectedEssential = 0;
 
     $scope.resourceRequirementsWithMatches = [];
 
@@ -123,13 +124,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $scope.project = Project.get({
             id: id
         }, function() {
-            console.log($scope.project);
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
-
-            console.log($scope.resourceRequirementsWithMatches);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
 
@@ -141,11 +139,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
                     matches.forEach(function(match) {
                         if(match.resourceRequirement.id == req.id) {
-                           req.matches.push(match);
-                            req.sum = req.sum + match.resourceOffer.amount;
+                            req.matches.push(match);
+                            req.sum = req.sum + match.amount;
 
                             if(match.resourceRequirement.isEssential === true) {
-                                req.essentialSum + match.resourceOffer.amount;
+                                req.essentialSum = req.essentialSum + match.amount;
                             }
                         }
                     });
@@ -166,13 +164,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
         if(reqs.length>0) {
             quantifier = 100 / reqs.length;
-            console.log("TEST");
+
             reqs.forEach(function(req) {
-                percentage = percentage + (req.sum / req.amount / reqs.length);
+                percentage = percentage + (req.sum / req.originalAmount / reqs.length);
 
                 if(req.isEssential === true) {
                     countEssential++;
-                    percentageEssential = percentageEssential + (req.sum / req.amount );
+                    percentageEssential = percentageEssential + (req.sum / req.originalAmount );
                 }
             });
         }
@@ -180,7 +178,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
         $scope.collected = percentage*100;
         $scope.collectedEssential = percentageEssential/countEssential*100;
 
-        console.log($scope.collectedEssential);
+        console.log($scope.collected);
     }
 
     $scope.delete = function(id) {

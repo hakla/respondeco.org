@@ -405,10 +405,16 @@ public class ResourceService {
 
         //offer greater req amount -> keep offer active and lower amount
         if(offer.getAmount().compareTo(req.getAmount()) == 1 ) {
+            offer.setAmount( offer.getAmount().subtract(req.getAmount()) );
+            resourceMatch.setAmount(req.getAmount());
 
         } else {
             //requirement consumes offer -> offer is no longer active
+            resourceMatch.setAmount(offer.getAmount());
             offer.setActive(false);
+
+            //actualize requirement amounts
+            req.setAmount( req.getAmount().subtract(offer.getAmount()) );
         }
 
         resourceOfferRepository.save(offer);
