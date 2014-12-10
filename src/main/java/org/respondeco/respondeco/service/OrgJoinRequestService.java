@@ -78,10 +78,13 @@ public class OrgJoinRequestService {
     }
 
     public List<OrgJoinRequest> getOrgJoinRequestByCurrentUser() {
-        User user = userService.getUserWithAuthorities();
-
         log.debug("Get List of OrgJoinRequest by Current User");
 
+        return getOrgJoinRequestByUser(userService.getUserWithAuthorities());
+    }
+
+    public List<OrgJoinRequest> getOrgJoinRequestByUser(User user) {
+        log.debug("Get List of OrgJoinRequest by User");
         return orgJoinRequestRepository.findByUserAndActiveIsTrue(user);
     }
 
@@ -110,8 +113,7 @@ public class OrgJoinRequestService {
         return orgJoinRequestWithActiveFlagDTOList;
     }*/
 
-    public void acceptRequest(Long requestId) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException, AlreadyInOrganizationException {
-        User user = userService.getUserWithAuthorities();
+    public void acceptRequest(Long requestId, User user) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException {
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByIdAndActiveIsTrue(requestId);
         if(orgJoinRequest==null) {
             throw new NoSuchOrgJoinRequestException(String.format("OrgJoinRequest does not exist"));
@@ -123,13 +125,18 @@ public class OrgJoinRequestService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }
-        if(user.getOrganization()!=null) {
-            throw new AlreadyInOrganizationException(String.format("User %s is already in an Organization", user.getLogin()));
-        }
+        // TODO talk with the team about this --> should a user really have to leave the formerly organization just to accept a new invitation?
+//        if(user.getOrganization()!=null) {
+//            throw new AlreadyInOrganizationException(String.format("User %s is already in an Organization", user.getLogin()));
+//        }
         user.setOrganization(organization);
         orgJoinRequest.setActive(false);
         orgJoinRequestRepository.save(orgJoinRequest);
         log.debug("Accepted Request and Deleted OrgJoinRequest: {}", requestId);
+    }
+
+    public void acceptRequest(Long requestId) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException {
+        acceptRequest(requestId, userService.getUserWithAuthorities());
     }
 
     public void declineRequest(Long requestId) throws NoSuchOrgJoinRequestException, NoSuchOrganizationException {

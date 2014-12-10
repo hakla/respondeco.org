@@ -37,6 +37,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
 
     $scope.collected = 0;
+    $scope.collectedEssential = 0;
 
     $scope.resourceRequirementsWithMatches = [];
 
@@ -100,7 +101,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             req.resourceTags = actualTags;
         }
 
-        $.map($scope.project.resourceRequirements, function(req) { delete req.matches; delete req.sum; return req; });
+        $.map($scope.project.resourceRequirements, function(req) { delete req.matches; delete req.sum; delete req.essentialSum; return req; });
 
         var project = {
             id: $scope.project.id,
@@ -131,13 +132,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.project = Project.get({
             id: id
         }, function() {
-            console.log($scope.project);
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
-
-            console.log($scope.resourceRequirementsWithMatches);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
 
@@ -145,12 +143,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                  $scope.resourceRequirementsWithMatches.forEach(function(req) {
                     req.matches = [];
                     req.sum = 0;
+                    req.essentialSum = 0;
 
                     matches.forEach(function(match) {
                         if(match.resourceRequirement.id == req.id) {
-                           req.matches.push(match);
-                           console.log("PUSHING");
-                            req.sum = req.sum + match.resourceRequirement.amount;
+                            req.matches.push(match);
+                            req.sum = req.sum + match.amount;
+
+                            if(match.resourceRequirement.isEssential === true) {
+                                req.essentialSum = req.essentialSum + match.amount;
+                            }
 
                             //if there is no rating for this org already, get it
                             if(!$scope.organizationRatings[match.organization.id]) {
@@ -175,17 +177,27 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         var reqs = $scope.resourceRequirementsWithMatches;
         var quantifier;
         var percentage = 0;
+        var percentageEssential = 0;
+        var countEssential = 0;
 
         if(reqs.length>0) {
             quantifier = 100 / reqs.length;
-            console.log("TEST");
+
             reqs.forEach(function(req) {
-                percentage = percentage + (req.sum / req.amount / reqs.length);
+                percentage = percentage + (req.sum / req.originalAmount / reqs.length);
+
+                if(req.isEssential === true) {
+                    countEssential++;
+                    percentageEssential = percentageEssential + (req.sum / req.originalAmount );
+                }
             });
         }
 
+        $scope.collected = percentage*100 || 0;
+        $scope.collectedEssential = percentageEssential/countEssential*100 || 0;
 
-        $scope.collected = percentage*100;
+        $scope.collected = Math.round($scope.collected);
+        $scope.collectedEssential = Math.round($scope.collectedEssential);
     }
 
     $scope.delete = function(id) {

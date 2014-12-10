@@ -66,16 +66,15 @@
         </div>
         <div class="col-md-6">
             <div class="remaining">
-                <h2>7 Tage verbleiben</h2>
+                <div class="col-md-2 pull-right"><strong>10.12.2014</strong></div>
+                <strong>{{remainingDays}} Tage verbleiben</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
-                <div class="row">
-                    <div class="col-md-2">10.12.2014</div>
-                    <div class="col-md-2 pull-right">31.12.2014</div>
-                </div>
             </div>
             <div class="resources">
-                <h2>{{collected}}% Ressourcen gesammelt</h2>
+                <strong>{{collected}}% Ressourcen gesammelt</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
+                <strong>{{collectedEssential}}% der notwendigen Ressourcen gesammelt</strong>
+                <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
                 <h2>Details</h2>
@@ -85,7 +84,7 @@
                             <div class="row">
                                 <div class="col-md-4">{{requirement.name}}</div>
                                 <div class="col-md-2 col-md-offset-6">
-                                    {{requirement.sum}}/{{requirement.amount}}
+                                    {{requirement.sum}}/{{requirement.originalAmount}}
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
                                 </div>
                             </div>

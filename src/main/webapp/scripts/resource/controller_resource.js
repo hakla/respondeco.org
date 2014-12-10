@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project) {
 
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.projects = [];
@@ -45,14 +45,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var updateProjects = function() {
 		Account.get(null, function(account) {
 			orgId = account.organizationId;
-			claim.organizationId = orgId;
 
 			$scope.projects = Project.getProjectsByOrgId({organizationId:orgId}, function() {
 				console.log($scope.projects);
 			});
 		});
 	}
-
 
 	$scope.selectProject = function(project) {
 		$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
@@ -63,8 +61,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.selectRequirement = function(requirement) {
 		claim.resourceRequirementId = requirement.id;
-
-
+		claim.organizationId = requirement.organizationId;
 	}
 
 	$scope.claimResource = function(res) {
@@ -81,8 +78,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.sendClaimRequest = function() {
 		Resource.claimResource(claim, function() {
 			$scope.clearClaimResource();
-		}, function() {
-			console.log("ERROR");
+		}, function(data) {
+			$scope.claimError = data.key;
 		});
 	}
 
@@ -211,14 +208,5 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
             $scope.resources = Resource.getByOrgId({id:orgId});
         });
     };
-
-    $scope.claim = function(id) {
-
-
-
-
-
-
-    }
 
 });

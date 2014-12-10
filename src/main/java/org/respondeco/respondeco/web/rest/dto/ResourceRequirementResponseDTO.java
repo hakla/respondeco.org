@@ -24,7 +24,7 @@ public class ResourceRequirementResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
         "id", "name", "amount", "description", "isEssential",
-        "resourceTags");
+        "resourceTags", "originalAmount");
 
     public static ResourceRequirementResponseDTO fromEntity(ResourceRequirement resourceRequirement, Collection<String> fieldNames) {
         ResourceRequirementResponseDTO responseDTO = new ResourceRequirementResponseDTO();
@@ -58,6 +58,9 @@ public class ResourceRequirementResponseDTO {
                 responseDTO.setResourceTags(ResourceTagResponseDTO
                     .fromEntities(resourceRequirement.getResourceTags(), null));
             }
+            if (fieldNames.contains("originalAmount")) {
+                responseDTO.setOriginalAmount(resourceRequirement.getOriginalAmount());
+            }
 
             return responseDTO;
         }
@@ -80,8 +83,10 @@ public class ResourceRequirementResponseDTO {
     private ProjectResponseDTO projectResponseDTO;
     private String name;
     private BigDecimal amount;
+    private BigDecimal originalAmount;
     private String description;
     private Boolean isEssential;
     private List<ResourceTagResponseDTO> resourceTags;
+
 
 }

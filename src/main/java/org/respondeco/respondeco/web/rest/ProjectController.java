@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -156,6 +157,7 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    @PermitAll
     public List<ProjectResponseDTO> getByNameAndTags(
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String tags,
@@ -177,6 +179,7 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    @PermitAll
     public List<ProjectResponseDTO> getByOrganizationAndNameAndTags(
             @PathVariable Long organizationId,
             @RequestParam(required = false) String filter,
@@ -200,6 +203,7 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    @PermitAll
     public ResponseEntity<ProjectResponseDTO> get(
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {

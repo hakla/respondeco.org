@@ -79,8 +79,7 @@
                         <h3 class="modal-title" id="resourceModalLabel"
                             translate="resource.claim.title">Claim Resource</h4>
                     </div>
-                    <div class="modal-body">
-
+                    <div class="modal-body clearfix">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="alert alert-danger" ng-show="searchError" translate="project.error.searcherror">
@@ -94,20 +93,19 @@
                             </div>
                         </div>
 
-                        <h4 translate="resource.claim.chooseproject">choose project</h3>
-                            <div class="col-sm-12">
-                                <resp-project project="project" on-project-click="selectProject(project)"
-                                              ng-repeat="project in projects"></resp-project>
-                            </div>
+                        <h4 translate="resource.claim.chooseproject">choose project</h4>
+                        <div class="col-sm-12">
+                            <resp-project project="project" on-project-click="selectProject(project)"
+                                          ng-repeat="project in projects" tags="false"></resp-project>
+                        </div>
 
-                            <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
-                            <ul class="requirements">
-                                <li class="requirements row" ng-repeat="requirement in resourceRequirements">
-                                    <input type="checkbox" ng-click="selectRequirement(requirement)" > {{requirement.name}} </button>
-                                </li>
+                        <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
+                        <ul class="requirements">
+                            <li class="requirements row" ng-repeat="requirement in resourceRequirements">
+                                <input type="checkbox" ng-click="selectRequirement(requirement)" > {{requirement.name}} </button>
+                            </li>
 
-                            <ul>
-
+                        <ul>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearClaimResource()">

@@ -1,20 +1,20 @@
-id;name;amount;is_active
-1;res1;1;true
-2;res2;2;true
-3;res3;3;true
-4;res4;4;true
-5;res5;5;true
-6;res6;6;true
-7;res7;7;true
-8;res8;8;true
-9;res9;9;true
-10;res10;10;true
-11;res11;11;true
-12;res12;12;true
-13;res13;13;true
-14;res14;14;true
-15;res15;15;true
-16;res16;16;true
+id;name;amount;is_active;original_amount;description
+1;res1;1;true;1;description
+2;res2;2;true;2;description
+3;res3;3;true;3;description
+4;res4;4;true;4;description
+5;res5;5;true;5;description
+6;res6;6;true;6;description
+7;res7;7;true;7;description
+8;res8;8;true;8;description
+9;res9;9;true;9;description
+10;res10;10;true;10;description
+11;res11;11;true;11;description
+12;res12;12;true;12;description
+13;res13;13;true;13;description
+14;res14;14;true;14;description
+15;res15;15;true;15;description
+16;res16;16;true;16;description
 
 
 

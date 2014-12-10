@@ -7,8 +7,11 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
+import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
@@ -75,9 +78,16 @@ public class ResourceController {
 
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceOfferDTO> resourceOfferDTOs = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
+        List<ResourceOffer> entries = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
 
-        return resourceOfferDTOs;
+        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
+        if(entries.isEmpty() == false) {
+            for (ResourceOffer offer :entries) {
+                result.add(new ResourceOfferDTO(offer));
+            }
+        }
+
+        return result;
     }
 
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -85,9 +95,19 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResourceOfferDTO getResourceOffer(@PathVariable Long id) {
+    public ResponseEntity<ResourceOfferDTO> getResourceOffer(@PathVariable Long id) {
         log.debug("REST request to get resource with id " + id);
-        return new ResourceOfferDTO(this.resourceService.getOfferById(id));
+        ResponseEntity<ResourceOfferDTO> responseEntity;
+
+        try {
+            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(this.resourceService.getOfferById(id));
+            responseEntity = new ResponseEntity<>(resourceOfferDTO, HttpStatus.OK);
+
+        } catch (GeneralResourceException e) {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
     }
 
 
@@ -105,16 +125,21 @@ public class ResourceController {
         log.debug("REST request to claim ResourceOffer : " + resourceMatchRequestDTO);
         ResponseEntity<?> responseEntity;
 
-        ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(
+        ResourceMatch resourceMatch = null;
+        try {
+            resourceMatch = resourceService.createClaimResourceRequest(
             resourceMatchRequestDTO.getResourceOfferId(),
-            resourceMatchRequestDTO.getResourceRequirementId(),
-            resourceMatchRequestDTO.getOrganizationId(),
-            resourceMatchRequestDTO.getProjectId()
-        );
+            resourceMatchRequestDTO.getResourceRequirementId());
 
-        log.debug("ResourceRequirement: " + resourceMatch.getResourceRequirement().getId());
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 
-        responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (MatchAlreadyExistsException e) {
+            log.error("Could not claim resource offer : {}", resourceMatchRequestDTO, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        } catch (IllegalValueException e) {
+            log.error("Could not create match for claiming offer : {}", resourceMatchRequestDTO, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         return responseEntity;
     }
@@ -125,7 +150,7 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> acceptResourceRequest(
+    public ResponseEntity<?> answerResourceRequest(
         @PathVariable Long id,
         @RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) {
         log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
@@ -137,10 +162,6 @@ public class ResourceController {
 
         return responseEntity;
     }
-
-
-
-
 
 
     @RolesAllowed(AuthoritiesConstants.USER)

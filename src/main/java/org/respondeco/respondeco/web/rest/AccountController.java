@@ -9,6 +9,8 @@ import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrgJoinRequestException;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
@@ -19,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -44,6 +47,9 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     private final Logger log = LoggerFactory.getLogger(AccountController.class);
+
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     @Inject
     private ServletContext servletContext;
@@ -78,14 +84,41 @@ public class AccountController {
     @Timed
     public ResponseEntity<?> registerAccount(@RequestBody UserDTO userDTO, HttpServletRequest request,
                                              HttpServletResponse response) {
-        return Optional.ofNullable(userRepository.findByLogin(userDTO.getLogin()))
-            .map(user -> new ResponseEntity<>(HttpStatus.NOT_MODIFIED))
+        return Optional.ofNullable(userRepository.findByLogin(userDTO.getEmail()))
+            .map(user -> {
+                if (user.isActivated() == true) {
+                    return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                } else if (user.getOrganization() != null) {
+                    // user was invited to join respondeco via an organization
+                    user.setActivated(true);
+                    user.setActivationKey(null);
+                    user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+                    userRepository.save(user);
+
+                    List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByUser(user);
+
+                    for (OrgJoinRequest orgJoinRequest : orgJoinRequests) {
+                        try {
+                            if (orgJoinRequest.getOrganization().equals(user.getOrganization())) {
+                                orgJoinRequestService.acceptRequest(orgJoinRequest.getId(), user);
+                            } else {
+                                orgJoinRequestService.declineRequest(orgJoinRequest.getId());
+                            }
+                        } catch (NoSuchOrgJoinRequestException e) {
+                        }
+                    }
+
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            })
             .orElseGet(() -> {
-                User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
+                User user = userService.createUserInformation(userDTO.getEmail(), userDTO.getPassword(),
                         userDTO.getTitle(), userDTO.getFirstName(), userDTO.getLastName(),
                         userDTO.getEmail().toLowerCase(), userDTO.getGender(),userDTO.getDescription(), userDTO.getLangKey(), userDTO.getProfilePicture());
                 final Locale locale = Locale.forLanguageTag(user.getLangKey());
-                String content = createHtmlContentFromTemplate(user, locale, request, response);
+                String content = createHtmlContentFromTemplate(user, locale, request, response, "activationEmail");
                 mailService.sendActivationEmail(user.getEmail(), content, locale);
                 return new ResponseEntity<>(HttpStatus.CREATED);});
     }
@@ -236,16 +269,16 @@ public class AccountController {
         }
     }
 
-    private String createHtmlContentFromTemplate(final User user, final Locale locale, final HttpServletRequest request,
-                                                 final HttpServletResponse response) {
+    public String createHtmlContentFromTemplate(final User user, final Locale locale, final HttpServletRequest request,
+                                                 final HttpServletResponse response, final String template) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("user", user);
         variables.put("baseUrl", request.getScheme() + "://" +   // "http" + "://
-                                 request.getServerName() +       // "myhost"
-                                 ":" + request.getServerPort());
+            request.getServerName() +       // "myhost"
+            ":" + request.getServerPort());
         IWebContext context = new SpringWebContext(request, response, servletContext,
-                locale, variables, applicationContext);
-        return templateEngine.process("activationEmail", context);
+            locale, variables, applicationContext);
+        return templateEngine.process(template, context);
     }
 
     /**

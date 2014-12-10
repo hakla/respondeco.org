@@ -93,9 +93,13 @@ public class ProjectResponseDTO {
             fieldNames = DEFAULT_FIELDS;
         }
         List<ProjectResponseDTO> responseDTOs = new ArrayList<>();
-        for(Project project : projects) {
-            responseDTOs.add(ProjectResponseDTO.fromEntity(project, fieldNames));
+
+        if (projects != null) {
+            for (Project project : projects) {
+                responseDTOs.add(ProjectResponseDTO.fromEntity(project, fieldNames));
+            }
         }
+
         return responseDTOs;
     }
 

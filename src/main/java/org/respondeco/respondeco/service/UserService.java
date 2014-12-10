@@ -200,4 +200,9 @@ public class UserService {
     public User getUser(Long id) {
         return userRepository.findOne(id);
     }
+
+    public void setOrganization(User user, Long id) {
+        user.setOrganization(organizationRepository.findOne(id));
+        userRepository.save(user);
+    }
 }
