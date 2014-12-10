@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Long>, QueryDslPredicateExecutor {
 
-    public ResourceMatch findByProjectAndOrganization(Project project, Organization organization);
+    public List<ResourceMatch> findByProjectAndOrganization(Project project, Organization organization);
 
     public List<ResourceMatch> findByProjectIdAndAcceptedIsTrueAndActiveIsTrue(Long id);
 

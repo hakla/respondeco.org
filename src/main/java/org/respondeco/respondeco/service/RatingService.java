@@ -58,10 +58,11 @@ public class RatingService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization doesn't exist"));
         }
-        ResourceMatch resourceMatch = resourceMatchRepository.findByProjectAndOrganization(project,organization);
-        if(resourceMatch == null) {
+        List<ResourceMatch> resourceMatches = resourceMatchRepository.findByProjectAndOrganization(project,organization);
+        if(resourceMatches.size() == 0) {
             throw new NoSuchResourceMatchException(String.format("ResourceMatch doesn't exist"));
         }
+        ResourceMatch resourceMatch = resourceMatches.get(0);
         if(resourceMatch.getAccepted() == false) {
             throw new ProjectRatingException(".notaccepted",
                     String.format("Rating this match %s is not accepted" , resourceMatch.getId()));

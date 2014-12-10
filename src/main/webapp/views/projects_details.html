@@ -22,7 +22,8 @@
                     <div id="rating" class="col-md-12">
                         <span>Aktuelle Bewertung: </span>
                         <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                ng-click="showRating()" ng-model="rating.rating"></rating>
+                                ng-click="showRating()" ng-model="shownRating"></rating>
+                        <span>{{shownRating}}({{ratingCount}})</span>
                     </div>
                 </div>
                 <div ng-show="isRating">
@@ -92,8 +93,14 @@
                         <ul>
                             <li ng-repeat="match in requirement.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
-                                <div class="col-md-6 strong">{{match.organization.name}}</div>
+                                <div class="col-md-4 strong">{{match.organization.name}}</div>
                                 <div class="col-md-4 pull-right">{{match.resourceOffer.amount}}/{{requirement.amount}}</div>
+                                <div class="col-md-4">
+                                    <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                            ng-click="rateOrganization(match.matchId, match.organization.id)"
+                                            ng-model="organizationRatings[match.organization.id]"></rating>
+                                    <span>{{organizationRatingCounts[match.organization.id]}}({{organizationRatings[match.organization.id]}})</span>
+                                </div>
                             </li>
                         </ul>
                     </accordion-group>

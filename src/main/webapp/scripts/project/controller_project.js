@@ -32,6 +32,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             $scope.ratingCount = rating.count;
         });
 
+    $scope.organizationRatings = new Object();
+    $scope.organizationRatingCounts = new Object();
+
+
     $scope.collected = 0;
 
     $scope.resourceRequirementsWithMatches = [];
@@ -147,6 +151,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                            req.matches.push(match);
                            console.log("PUSHING");
                             req.sum = req.sum + match.resourceRequirement.amount;
+
+                            //if there is no rating for this org already, get it
+                            if(!$scope.organizationRatings[match.organization.id]) {
+                                $scope.organizationRatings[match.organization.id] =
+                                    Organization.getAggregatedRating({id: match.organization.id}, function(rating) {
+                                        $scope.organizationRatings[match.organization.id] = rating.rating;
+                                        $scope.organizationRatingCounts[match.organization.id] = rating.count;
+                                    }
+                                )
+                            }
                         }
                     });
                 });
@@ -250,15 +264,30 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.rateProject = function() {
         if($scope.project != null) {
-            if ($scope.rating.id == null) {
-                Project.rateProject({pid: $routeParams.id}, {rating: $scope.shownRating, comment: $scope.ratingComment},
+            Project.rateProject({pid: $routeParams.id}, {rating: $scope.shownRating, comment: $scope.ratingComment},
                 function() {
                     $scope.rateSucces = "SUCCESS";
                     $scope.canRate = false;
                     $scope.hideRating();
+                    Project.getAggregatedRating({pid: $routeParams.id},
+                        function(rating) {
+                            $scope.shownRating = rating.rating;
+                            $scope.ratingCount = rating.count;
+                        });
                 });
-            }
+
         }
+    }
+
+    $scope.rateOrganization = function(matchid, orgid) {
+        Organization.rateOrganization({id: orgid}, {
+            matchid: matchid, rating: $scope.organizationRatings[orgid], comment: ""},
+            function() {
+                Organization.getAggregatedRating({id: orgid}, function(rating) {
+                    $scope.organizationRatings[orgid] = rating.rating;
+                    $scope.organizationRatingCounts[orgid] = rating.count;
+                });
+            });
     }
 
     if (isNew === false) {
