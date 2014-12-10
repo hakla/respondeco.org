@@ -7,6 +7,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * Created by clemens on 07/12/14.
@@ -20,6 +22,8 @@ import javax.persistence.*;
 @ToString(exclude = {"resourceMatch"})
 public class Rating extends AbstractAuditingEntity {
 
+    @Min(0)
+    @Max(5)
     private Integer rating;
     private String comment;
 

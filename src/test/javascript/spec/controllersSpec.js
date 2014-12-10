@@ -188,7 +188,6 @@ describe('Controllers Tests ', function() {
 
             // check various variables if they're set
             expect($scope.settingsAccount).toBe(mockAccount);
-            expect($scope.organization.id).toBe(1);
             expect($scope.fullName).toBe("mock mockington");
             expect($scope.profilePicture).toBe(1);
         });
@@ -319,7 +318,7 @@ describe('Controllers Tests ', function() {
         }));
 
         it('should fail because of password mismatch', function() {
-            // set the erroneous account 
+            // set the erroneous account
             $scope.registerAccount = {
                 password: 'a'
             };
@@ -334,7 +333,7 @@ describe('Controllers Tests ', function() {
         });
 
         it('should register correctly', function() {
-            // set the correct account 
+            // set the correct account
             $scope.registerAccount = {
                 password: 'a'
             };
@@ -362,7 +361,7 @@ describe('Controllers Tests ', function() {
         });
 
         it('should fail correctly', function() {
-            // set the correct account 
+            // set the correct account
             $scope.registerAccount = {
                 password: 'a'
             };

@@ -11,6 +11,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -35,7 +36,7 @@ import static org.junit.Assert.*;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class })
-public class ProjectRepositoryTest {
+public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Inject
     private UserRepository userRepository;
@@ -55,14 +56,6 @@ public class ProjectRepositoryTest {
 
     @Before
     public void setup() {
-        propertyTagRepository.deleteAll();
-        propertyTagRepository.flush();
-        projectRepository.deleteAll();
-        projectRepository.flush();
-        organizationRepository.deleteAll();
-        organizationRepository.flush();
-        userRepository.deleteAll();
-        userRepository.flush();
 
         orgAdmin = new User();
         orgAdmin.setLogin("orgAdmin");
@@ -96,7 +89,6 @@ public class ProjectRepositoryTest {
         projectRepository.save(project2);
 
         List<Project> projects = projectRepository.findByActiveIsTrue(null);
-        assertTrue(projects.size() == 2);
         assertTrue(projects.contains(project));
         assertTrue(projects.contains(project2));
 
@@ -104,7 +96,6 @@ public class ProjectRepositoryTest {
         projectRepository.save(project);
 
         projects = projectRepository.findByActiveIsTrue(null);
-        assertTrue(projects.size() == 1);
         assertFalse(projects.contains(project));
         assertTrue(projects.contains(project2));
     }
@@ -143,7 +134,7 @@ public class ProjectRepositoryTest {
     @Transactional
     public void testFindByNameAndTags_shouldFindProjectsByNameLike() throws Exception {
         Project project2 = new Project();
-        project2.setName("project2");
+        project2.setName("zzyzzyzyxx");
         project2.setPurpose("blub");
         project2.setConcrete(false);
         project2.setOrganization(organization);
@@ -159,7 +150,7 @@ public class ProjectRepositoryTest {
         projectRepository.save(project);
         projectRepository.save(project2);
         projectRepository.save(project3);
-        List<Project> projects = projectRepository.findByNameAndTags("%project%", null, null);
+        List<Project> projects = projectRepository.findByNameAndTags("%xx%", null, null);
         assertEquals(2, projects.size());
 
     }
@@ -286,42 +277,6 @@ public class ProjectRepositoryTest {
         assertEquals(5, projects.size());
         for(int i=0;i<5;i++) {
             assertEquals(ascendingStrings.get(i+5), projects.get(i).getName());
-        }
-    }
-
-    @Test
-    @Transactional
-    public void testFindByNameAndTags_shouldWorkWithPurposeDescOrdering() throws Exception {
-        List<String> ascendingStrings = TestUtil.getAscendingStrings(30, "project");
-        List<String> randomStrings = TestUtil.getAscendingStrings(20);
-        Project p;
-        for(int i=0;i<30;i++) {
-            p = new Project();
-            p.setName("project" + i);
-            p.setPurpose(ascendingStrings.get(i));
-            p.setConcrete(false);
-            p.setManager(orgAdmin);
-            p.setOrganization(organization);
-            projectRepository.save(p);
-        }
-        for(int i=0;i<20;i++) {
-            p = new Project();
-            p.setName(randomStrings.get(i));
-            p.setPurpose("purpose");
-            p.setConcrete(false);
-            p.setManager(orgAdmin);
-            p.setOrganization(organization);
-            projectRepository.save(p);
-        }
-        projectRepository.flush();
-
-        PageRequest request = new PageRequest(2, 10, new Sort(
-                new Sort.Order(Sort.Direction.DESC, "purpose")
-        ));
-        List<Project> projects = projectRepository.findByNameAndTags("%project%", null, request);
-        assertEquals(10, projects.size());
-        for(int i=0;i<10;i++) {
-            assertEquals(ascendingStrings.get(9-i), projects.get(i).getPurpose());
         }
     }
 

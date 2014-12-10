@@ -1,10 +1,11 @@
 'use strict';
 
-respondecoApp.controller('ProjectController', function($scope, Project, ResourceRequirement, PropertyTagNames, $location, $routeParams, $sce) {
+respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
+                                                       PropertyTagNames, $location, $routeParams, $sce) {
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
-    $("#rating").popover("show");
+    //$("#rating").popover("show");
 
     $scope.project = {
         id: null,
@@ -21,12 +22,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
     $scope.canRate = true;
     $scope.isRating = false;
-    $scope.rating = {
-        ratingId: null,
-        projectId: null,
-        value: 5,
-        comment: null
-    };
+    $scope.shownRating = 0;
+    $scope.ratingCount = 0;
+    $scope.ratingComment = null;
+
+    Project.getAggregatedRating({pid: $routeParams.id},
+        function(rating) {
+            $scope.shownRating = rating.rating;
+            $scope.ratingCount = rating.count;
+        });
+
+    $scope.organizationRatings = new Object();
+    $scope.organizationRatingCounts = new Object();
+
 
     $scope.collected = 0;
     $scope.collectedEssential = 0;
@@ -127,6 +135,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
+            if ($scope.project.concrete === true) {
+                var startDate = new XDate($scope.project.startDate);
+
+                if (startDate.diffDays() < 0) {
+                    $scope.remainingDays = Math.round(startDate.diffDays() * -1) + 1;
+                } else {
+                    $scope.remainingDays = true;
+                }
+            }
+
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
@@ -144,6 +162,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
                             if(match.resourceRequirement.isEssential === true) {
                                 req.essentialSum = req.essentialSum + match.amount;
+                            }
+
+                            //if there is no rating for this org already, get it
+                            if(!$scope.organizationRatings[match.organization.id]) {
+                                $scope.organizationRatings[match.organization.id] =
+                                    Organization.getAggregatedRating({id: match.organization.id}, function(rating) {
+                                        $scope.organizationRatings[match.organization.id] = rating.rating;
+                                        $scope.organizationRatingCounts[match.organization.id] = rating.count;
+                                    }
+                                )
                             }
                         }
                     });
@@ -174,11 +202,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
                 }
             });
         }
-        
-        $scope.collected = percentage*100;
-        $scope.collectedEssential = percentageEssential/countEssential*100;
 
-        console.log($scope.collected);
+        $scope.collected = percentage*100 || 0;
+        $scope.collectedEssential = percentageEssential/countEssential*100 || 0;
+
+        $scope.collected = Math.round($scope.collected);
+        $scope.collectedEssential = Math.round($scope.collectedEssential);
     }
 
     $scope.delete = function(id) {
@@ -257,17 +286,30 @@ respondecoApp.controller('ProjectController', function($scope, Project, Resource
 
     $scope.rateProject = function() {
         if($scope.project != null) {
-            $scope.rating.projectId = $scope.project.id;
-            if ($scope.rating.ratingId == null) {
-                Project.rate($scope.rating,
+            Project.rateProject({pid: $routeParams.id}, {rating: $scope.shownRating, comment: $scope.ratingComment},
                 function() {
                     $scope.rateSucces = "SUCCESS";
                     $scope.canRate = false;
+                    $scope.hideRating();
+                    Project.getAggregatedRating({pid: $routeParams.id},
+                        function(rating) {
+                            $scope.shownRating = rating.rating;
+                            $scope.ratingCount = rating.count;
+                        });
                 });
-            } else {
-                Project.updateRating($scope.rating);
-            }
+
         }
+    }
+
+    $scope.rateOrganization = function(matchid, orgid) {
+        Organization.rateOrganization({id: orgid}, {
+            matchid: matchid, rating: $scope.organizationRatings[orgid], comment: ""},
+            function() {
+                Organization.getAggregatedRating({id: orgid}, function(rating) {
+                    $scope.organizationRatings[orgid] = rating.rating;
+                    $scope.organizationRatingCounts[orgid] = rating.count;
+                });
+            });
     }
 
     if (isNew === false) {

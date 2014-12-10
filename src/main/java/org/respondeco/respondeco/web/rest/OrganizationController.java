@@ -7,6 +7,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,16 +38,20 @@ public class OrganizationController {
     private OrganizationService organizationService;
     private UserService userService;
     private OrgJoinRequestService orgJoinRequestService;
-    private SupporterRatingService supporterRatingService;
+    private RatingService ratingService;
 
 
     @Inject
-    public OrganizationController (OrganizationService organizationService, UserService userService, ResourceService resourceService, OrgJoinRequestService orgJoinRequestService, SupporterRatingService supporterRatingService) {
+    public OrganizationController (OrganizationService organizationService,
+                                   UserService userService,
+                                   ResourceService resourceService,
+                                   OrgJoinRequestService orgJoinRequestService,
+                                   RatingService ratingService) {
         this.organizationService = organizationService;
         this.userService = userService;
         this.resourceService = resourceService;
         this.orgJoinRequestService = orgJoinRequestService;
-        this.supporterRatingService = supporterRatingService;
+        this.ratingService = ratingService;
     }
 
     /**
@@ -242,7 +247,7 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
 
-    public ResponseEntity<List<OrgJoinRequestDTO>> getByOrgId(@PathVariable Long id){
+    public ResponseEntity<?> getByOrgId(@PathVariable Long id){
         log.debug("REST request to get OrgJoinRequest : {}", id);
         ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         try {
@@ -297,109 +302,6 @@ public class OrganizationController {
     }
 
     /**
-     * POST  /rest/project/{id}/ratings -> Create a new projectrating.
-     */
-    /**
-    @ApiOperation(value = "Create a supporterrating", notes = "Create or update a supporterrating")
-    @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid RatingRequestDTO supporterRatingRequest) {
-        log.debug("REST request to create SupporterRating : {}", supporterRatingRequest);
-        ResponseEntity<?> responseEntity;
-        try {
-            supporterRatingService.createSupporterRating(
-                    supporterRatingRequest.getRating(),
-                    supporterRatingRequest.getComment(),
-                    supporterRatingRequest.getProjectId(),
-                    supporterRatingRequest.getOrganizationId());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(SupporterRatingException e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        } catch(NoSuchOrganizationException e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(NoSuchProjectException e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(Exception e) {
-            log.error("Could not save ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return responseEntity;
-    }
-    **/
-    /**
-     * POST  /rest/organizations/{id}/supporterratings -> Update a supporterRating.
-     */
-    /**
-    @ApiOperation(value = "Update a supporterRating", notes = "Update a suppoerterRating")
-    @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
-            method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid SupporterRatingRequestDTO supporterRatingRequest) {
-        log.error("REST request to update SupporterRating : {}", supporterRatingRequest);
-        ResponseEntity<?> responseEntity;
-        try {
-            supporterRatingService.updateSupporterRating(
-                    supporterRatingRequest.getRating(),
-                    supporterRatingRequest.getComment(),
-                    supporterRatingRequest.getId());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(NoSuchSupporterRatingException e) {
-            log.error("Could not update ProjectRating : {}", supporterRatingRequest, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
-    }
-
-    /**
-     * GET  /rest/organizations/{id}/supporterratings-> get the "id" supporterRating.
-     */
-    /**
-    @ApiOperation(value = "Get supporterRating", notes = "Get a supporterRating by its id")
-    @RequestMapping(value = "/rest/organizations/{id}/supporterratings",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<?> get(
-            @PathVariable Long id,
-            @RequestParam(required = true) Long projectId,
-            @RequestParam(required = false) String fields,
-            @RequestParam(required = false) Boolean aggregated) {
-        log.debug("REST request to get ProjectRating : {}", id);
-        ResponseEntity<?> response;
-        RestParameters restParameters = new RestParameters(null, null, null, fields);
-        if (aggregated == false || aggregated == null) {
-            SupporterRating supporterRating = supporterRatingService.getSupporterRating(id,projectId);
-            if(supporterRating != null) {
-                SupporterRatingResponseDTO responseDTO = SupporterRatingResponseDTO
-                        .fromEntity(supporterRating, restParameters.getFields());
-                response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-            } else {
-                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
-        else {
-            AggregatedRating aggregatedRating = supporterRatingService.getAggregatedRating(id);
-            if(aggregatedRating != null) {
-                AggregatedRatingResponseDTO responseDTO = AggregatedRatingResponseDTO
-                        .fromEntity(aggregatedRating, restParameters.getFields());
-                response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-            } else {
-                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
-        return response;
-    }
-            **/
-
-    /**
      * POST  /rest/deleteMember-> delete Member by userlogin
      */
     @RequestMapping(value = "/rest/organization/{id}/members/{userId}",
@@ -444,4 +346,38 @@ public class OrganizationController {
         return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/rest/organizations/{id}/ratings",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> rateOrganization(
+            @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
+            @PathVariable Long id) {
+        ResponseEntity<?> responseEntity;
+        try {
+            ratingService.rateOrganization(id, ratingRequestDTO.getMatchid(),
+                    ratingRequestDTO.getRating(),
+                    ratingRequestDTO.getComment());
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not grate organization {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NoSuchProjectException | NoSuchResourceMatchException | SupporterRatingException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/rest/organizations/{id}/ratings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
+        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
+        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                .fromEntity(aggregatedRating, null);
+        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+    }
 }

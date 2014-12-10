@@ -19,10 +19,11 @@
             </div>
             <div class="rating-container">
                 <div class="row">
-                    <div id="rating" class="col-md-12" data-toggle="popover" data-content="Rate the Project now!">
+                    <div id="rating" class="col-md-12">
                         <span>Aktuelle Bewertung: </span>
-                        <rating ng-model="rating.value" max="5" readonly="!canRate" on-leave="overStar = null"
-                            ng-click="showRating()"></rating>
+                        <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                ng-click="showRating()" ng-model="shownRating"></rating>
+                        <span>{{shownRating}}({{ratingCount}})</span>
                     </div>
                 </div>
                 <div ng-show="isRating">
@@ -64,17 +65,19 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="remaining">
-                <h2>7 Tage verbleiben</h2>
+            <div class="remaining" ng-show="remainingDays >= 0 && project.concrete == true">
+                <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
+                <strong>{{remainingDays}} Tage verbleiben</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
-                <div class="row">
-                    <div class="col-md-2">10.12.2014</div>
-                    <div class="col-md-2 pull-right">31.12.2014</div>
-                </div>
             </div>
+            <p class="remaining" ng-show="remainingDays == true">
+                <strong translate="project.started">Project started already. Come back later to keep on track!</strong>
+            </p>
             <div class="resources">
-                <h2>{{collected}}% Ressourcen gesammelt</h2>
+                <strong>{{collected}}% Ressourcen gesammelt</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
+                <strong>{{collectedEssential}}% der notwendigen Ressourcen gesammelt</strong>
+                <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
                 <h2>Details</h2>
@@ -84,7 +87,8 @@
                             <div class="row">
                                 <div class="col-md-4">{{requirement.name}}</div>
                                 <div class="col-md-2 col-md-offset-6">
-                                    {{requirement.sum}}/{{requirement.originalAmount}}
+                                    <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
+                                    <span ng-show="requirement.sum == undefined">0</span>/{{requirement.originalAmount}}
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
                                 </div>
                             </div>
@@ -92,12 +96,18 @@
                         <ul>
                             <li ng-repeat="match in requirement.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
-                                <div class="col-md-6 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.originalAmount}}</div>
+                                <div class="col-md-4 strong">{{match.organization.name}}</div>
+                                <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.amount}}</div>
+                                <div class="col-md-4">
+                                    <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                            ng-click="rateOrganization(match.matchId, match.organization.id)"
+                                            ng-model="organizationRatings[match.organization.id]"></rating>
+                                    <span>{{organizationRatingCounts[match.organization.id]}}</span>
+                                </div>
                             </li>
                         </ul>
                     </accordion-group>
-                    
+
                 </accordion>
             </div>
         </div>

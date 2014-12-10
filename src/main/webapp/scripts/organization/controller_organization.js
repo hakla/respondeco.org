@@ -48,7 +48,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     };
 
     $scope.updateUser = function($item, $model, $label) {
-        $selectedUser = $item;
+        $scope.selectedUser = $item;
     };
 
     $scope.redirectToOverview = function() {

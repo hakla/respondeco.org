@@ -15,4 +15,13 @@ public class NoSuchResourceMatchException extends IllegalValueException {
     public NoSuchResourceMatchException(Long id, Throwable t) {
         super(KEY, BASE_MESSAGE + id, t);
     }
+
+    public NoSuchResourceMatchException(String message) {
+        super(KEY, message);
+    }
+
+    public NoSuchResourceMatchException(String message, Throwable t) {
+        super(KEY, message, t);
+    }
+
 }

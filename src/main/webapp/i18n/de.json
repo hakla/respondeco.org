@@ -163,6 +163,7 @@
         "name.placeholder": "Projektname",
         "tags.placeholder": "Tags",
         "search.empty": "Es gibt keine Projekte die Ihren Suchkriterien entsprechen!",
+        "started": "Dieses Projekt ist schon am Laufen. Kommen Sie später wieder um Neuigkeiten zu sehen",
         "error": {
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
             "notvalidmanager": "Der Manager konnte nicht gesetzt werden, neuer Manager gehört nicht Ihrer Organisation an",
