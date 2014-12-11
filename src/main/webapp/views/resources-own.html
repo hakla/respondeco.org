@@ -16,7 +16,6 @@
                     <td translate="resource.startDate">available from</td>
                     <td translate="resource.endDate">available until</td>
                     <td translate="resource.commercial">commercial</td>
-                    <td translate="resource.recurrent">recurrent</td>
                 </tr>
             </thead>
             </thead>
@@ -28,8 +27,6 @@
                     <td>{{ resource.endDate | date }}</td>
                     <td ng-show="resource.isCommercial"><span class="glyphicon glyphicon-ok"/></td>
                     <td ng-hide="resource.isCommercial"><span class="glyphicon glyphicon-remove"/></td>
-                    <td ng-show="resource.isRecurrent"><span class="glyphicon glyphicon-ok"/></td>
-                    <td ng-hide="resource.isRecurrent"><span class="glyphicon glyphicon-remove"/></td>
                     <td>
                         <button type="button" class="btn btn-default btn-xs" ng-click="redirectToResource(resource.id)">
                             <i class="glyphicon glyphicon-edit"></i>

@@ -28,7 +28,6 @@ describe('Resource Controller Tests ', function () {
                 "Computer", "Test"
               ],
               "amount": 5,
-              "isRecurrent": false,
               "isCommercial": false,
               "organizationId": 1
             }
@@ -52,7 +51,6 @@ describe('Resource Controller Tests ', function () {
                 "Computer", "Test"
               ],
               "amount": 5,
-              "isRecurrent": false,
               "isCommercial": false,
               "organizationId": 1
             }
@@ -98,13 +96,12 @@ describe('Resource Controller Tests ', function () {
             $scope.resource.dateStart = "11.11.2014";
             $scope.resource.dateEnd = "12.12.2014";
             $scope.resource.isCommercial = true;
-            $scope.resource.isRecurrent = true;
 
             $scope.clear();
 
             expect($scope.resource).toEqual({'id': null, 'name': null, 'description': null,
                 'resourceTags': [], 'amount': null, 'startDate': null, 'endDate': null,
-                'isCommercial': false, 'isRecurrent': false});
+                'isCommercial': false);
         });
 
         it('should search for resources', function() {
