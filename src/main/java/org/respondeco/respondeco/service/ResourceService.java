@@ -99,7 +99,7 @@ public class ResourceService {
     // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException {
+        throws ResourceException, NoSuchProjectException {
         Project project = projectRepository.findOne(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
@@ -134,7 +134,7 @@ public class ResourceService {
 
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, OperationForbiddenException {
+        throws ResourceException, OperationForbiddenException, NoSuchProjectException {
         Project project = projectRepository.findOne(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
@@ -386,7 +386,7 @@ public class ResourceService {
      * @param accept true if accepted, false if declined
      * @return accepted or declined ResourceMatch
      */
-    public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept) {
+    public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept) throws IllegalValueException {
 
         //TODO: add authority check
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);

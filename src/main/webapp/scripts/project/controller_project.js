@@ -20,30 +20,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
     $scope.projects = Project.query();
 
-    $scope.canRate = true;
-    $scope.isRating = false;
-    $scope.shownRating = 0;
-    $scope.ratingCount = 0;
-    $scope.ratingComment = null;
-
-    Project.getAggregatedRating({pid: $routeParams.id},
-        function(rating) {
-            $scope.shownRating = rating.rating;
-            $scope.ratingCount = rating.count;
-        });
-
-    $scope.organizationRatings = new Object();
-    $scope.organizationRatingCounts = new Object();
-
-
     $scope.collected = 0;
     $scope.collectedEssential = 0;
 
     $scope.resourceRequirementsWithMatches = [];
-
-    if($scope.canRate) {
-        $("#rating").trigger("show");
-    }
 
     // details mock
     $scope.status = {
@@ -149,6 +129,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
 
+                //get rating permissions for the matches
+                var matchIds = $.map(matches, function(match) {return match.matchId}).join(",");
+                Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'matches', matches: matchIds},
+                    function(permissions) {
+                        permissions.forEach(function(permission) {
+                            $scope.matchRatingPermissions[permission.matchid] = permission.allowed;
+                        })
+                    });
+
                 //assign matches to requirement and calculate amount
                  $scope.resourceRequirementsWithMatches.forEach(function(req) {
                     req.matches = [];
@@ -167,11 +156,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                             //if there is no rating for this org already, get it
                             if(!$scope.organizationRatings[match.organization.id]) {
                                 $scope.organizationRatings[match.organization.id] =
-                                    Organization.getAggregatedRating({id: match.organization.id}, function(rating) {
-                                        $scope.organizationRatings[match.organization.id] = rating.rating;
-                                        $scope.organizationRatingCounts[match.organization.id] = rating.count;
-                                    }
-                                )
+                                    $scope.refreshOrganizationRating(match.organization.id);
                             }
                         }
                     });
@@ -274,6 +259,43 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.selectedResourceTags = $scope.resource.resourceTags;
     };
 
+    if (isNew === false) {
+        $scope.update($routeParams.id);
+    }
+
+    //RATING
+    $scope.canRate = false;
+    $scope.ratedMatch = null;
+    $scope.isRating = false;
+    $scope.shownRating = 0;
+    $scope.ratingCount = 0;
+    $scope.ratingComment = null;
+
+    $scope.organizationRatings = new Object();
+    $scope.matchRatingPermissions = new Object();
+
+    $scope.refreshProjectRating = function() {
+        //get new aggregated rating
+        Project.getAggregatedRating({pid: $routeParams.id},
+            function(rating) {
+                $scope.shownRating = rating.rating;
+                $scope.ratingCount = rating.count;
+            });
+        //check if rating is possible
+        Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'project'},
+            function(permissions) {
+                $scope.canRate = permissions[0].allowed;
+                $scope.ratedMatch = permissions[0].matchid;
+            });
+    }
+    $scope.refreshProjectRating();
+
+    $scope.refreshOrganizationRating = function(orgid) {
+        Organization.getAggregatedRating({id: orgid}, function(rating) {
+            $scope.organizationRatings[orgid] = {rating: rating.rating, count: rating.count};
+        });
+    }
+
     $scope.showRating = function() {
         if($scope.canRate) {
             $scope.isRating = true;
@@ -286,16 +308,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.rateProject = function() {
         if($scope.project != null) {
-            Project.rateProject({pid: $routeParams.id}, {rating: $scope.shownRating, comment: $scope.ratingComment},
+            Project.rateProject({pid: $routeParams.id},
+                {matchid: $scope.ratedMatch, rating: $scope.shownRating, comment: $scope.ratingComment},
                 function() {
                     $scope.rateSucces = "SUCCESS";
-                    $scope.canRate = false;
+                    $scope.ratingComment = "";
                     $scope.hideRating();
-                    Project.getAggregatedRating({pid: $routeParams.id},
-                        function(rating) {
-                            $scope.shownRating = rating.rating;
-                            $scope.ratingCount = rating.count;
-                        });
+                    //get new aggregated rating
+                    $scope.refreshProjectRating();
                 });
 
         }
@@ -303,16 +323,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.rateOrganization = function(matchid, orgid) {
         Organization.rateOrganization({id: orgid}, {
-            matchid: matchid, rating: $scope.organizationRatings[orgid], comment: ""},
+            matchid: matchid, rating: $scope.organizationRatings[orgid].rating, comment: ""},
             function() {
-                Organization.getAggregatedRating({id: orgid}, function(rating) {
-                    $scope.organizationRatings[orgid] = rating.rating;
-                    $scope.organizationRatingCounts[orgid] = rating.count;
-                });
+                $scope.matchRatingPermissions[matchid] = false;
+                $scope.refreshOrganizationRating(orgid);
             });
     }
 
-    if (isNew === false) {
-        $scope.update($routeParams.id);
-    }
 });

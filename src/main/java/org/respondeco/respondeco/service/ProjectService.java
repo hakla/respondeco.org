@@ -56,7 +56,7 @@ public class ProjectService {
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           LocalDate endDate, List<String> propertyTags,
                           List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
-        throws OperationForbiddenException, ResourceException {
+        throws OperationForbiddenException, ResourceException, IllegalValueException {
         sanityCheckDate(isConcrete, startDate, endDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
@@ -100,7 +100,7 @@ public class ProjectService {
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         LocalDate endDate, Long imageId, List<String> propertyTags,
                         List<ResourceRequirementRequestDTO> resourceRequirements)
-        throws OperationForbiddenException, ResourceException {
+        throws OperationForbiddenException, ResourceException, IllegalValueException {
 
         sanityCheckDate(isConcrete, startDate, endDate);
         if(id == null) {
@@ -160,8 +160,8 @@ public class ProjectService {
         return project;
     }
 
-    public Project setManager(Long id, String newManagerLogin) throws NoSuchUserException,
-            OperationForbiddenException, NoSuchProjectException {
+    public Project setManager(Long id, String newManagerLogin) throws IllegalValueException,
+        OperationForbiddenException {
         User newManager = userRepository.findByLogin(newManagerLogin);
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);
@@ -186,7 +186,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project delete(Long id) throws OperationForbiddenException {
+    public Project delete(Long id) throws OperationForbiddenException, NoSuchProjectException {
         Project project = projectRepository.findOne(id);
         if(project == null) {
             throw new NoSuchProjectException(id);
@@ -257,7 +257,7 @@ public class ProjectService {
 
     }
 
-    private void sanityCheckDate(boolean isConcrete, LocalDate startDate, LocalDate endDate) {
+    private void sanityCheckDate(boolean isConcrete, LocalDate startDate, LocalDate endDate) throws IllegalValueException {
         if(isConcrete == true) {
             if(startDate == null) {
                 throw new IllegalValueException("project.error.startdate.null",

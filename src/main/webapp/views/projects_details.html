@@ -99,10 +99,11 @@
                                 <div class="col-md-4 strong">{{match.organization.name}}</div>
                                 <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.amount}}</div>
                                 <div class="col-md-4">
-                                    <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                    <rating max="5" on-leave="overStar = null"
+                                            readonly="!matchRatingPermissions[match.matchId]"
                                             ng-click="rateOrganization(match.matchId, match.organization.id)"
-                                            ng-model="organizationRatings[match.organization.id]"></rating>
-                                    <span>{{organizationRatingCounts[match.organization.id]}}</span>
+                                            ng-model="organizationRatings[match.organization.id].rating"></rating>
+                                    <span>{{organizationRatings[match.organization.id].count}}</span>
                                 </div>
                             </li>
                         </ul>

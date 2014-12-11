@@ -237,7 +237,7 @@ angular.module('respondecoApp')
             scope: {
                 currentRating: '=',
                 onRate: '&',
-                readonly: '='
+                canRate: '='
             },
             controller: function($scope) {
 

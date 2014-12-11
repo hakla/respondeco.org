@@ -1,14 +1,15 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.RatingPermission;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
-import org.respondeco.respondeco.service.SupporterRatingService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +28,9 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Project.
@@ -297,7 +299,8 @@ public class ProjectController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            ratingService.rateProject(id,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
+            ratingService.rateProject(id,ratingRequestDTO.getMatchid(),
+                ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchProjectException e ) {
             log.error("Could not grate project {}", id, e);
@@ -308,15 +311,49 @@ public class ProjectController {
         return responseEntity;
     }
 
+    /**
+     * get an aggregated rating for a project, or get a rating permission indicator indicating if the project can be
+     * rated by the current user
+     * @param id the id of the project in question
+     * @param permission flag, if present, check if the current user is allowed to rate the project and return a
+     *                   RatingPermissionResponseDTO
+     * @return a ResponseEntity containing either and AggregatedRatingResponseDTO or
+     * a RatingPermissionResponseDTO object
+     */
     @RequestMapping(value = "/rest/projects/{id}/ratings",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
-        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
-        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-            .fromEntity(aggregatedRating, null);
-        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id,
+                                                 @RequestParam(required = false) String permission,
+                                                 @RequestParam(required = false) List<Long> matches) {
+        ResponseEntity<?> responseEntity;
+        if(permission != null) {
+            if("matches".equals(permission)) {
+                List<RatingPermission> permissions = null;
+                try {
+                    permissions = ratingService.checkPermissionsForMatches(matches);
+                    List<RatingPermissionResponseDTO> responseDTOs = RatingPermissionResponseDTO.fromEntities(permissions);
+                    responseEntity = new ResponseEntity<>(responseDTOs, HttpStatus.OK);
+                } catch (NoSuchResourceMatchException e) {
+                    responseEntity = ErrorHelper.buildErrorResponse(e);
+                }
+            } else {
+                try {
+                    RatingPermission ratingPermission = ratingService.checkPermissionForProject(id);
+                    RatingPermissionResponseDTO responseDTO = RatingPermissionResponseDTO.fromEntity(ratingPermission);
+                    responseEntity = new ResponseEntity<>(Arrays.asList(responseDTO), HttpStatus.OK);
+                } catch (NoSuchProjectException e) {
+                    responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            }
+        } else {
+            AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
+            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                .fromEntity(aggregatedRating, null);
+            responseEntity = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+        }
+        return responseEntity;
     }
 }
