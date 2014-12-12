@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class AggregatedRating {
 
-    private Integer count;
+    private Long count;
     private Double rating;
 
 }

@@ -10,7 +10,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
  	$scope.searchTags = [];
 
 	$scope.resourceSearch = {name: null, organization: null, tags: null, available: false};
-	
+
 	$scope.resourceRequirements = [];
 	$scope.showRequirements = false;
 
@@ -26,11 +26,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		Account.get(null, function(account) {
 			orgId = account.organizationId;
 
-			$scope.resources = Resource.getByOrgId({id:orgId});
-		});
-	} else {
-		$scope.resources = Resource.query();
-	}
+      $scope.resources = Resource.getByOrgId({
+        id: orgId
+      });
+    });
+  } else {
+    $scope.resources = Resource.query();
+  }
 
 	if($location.path() === '/requests') {
 		Account.get(null, function(account) {
@@ -43,14 +45,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var updateProjects = function() {
 		Account.get(null, function(account) {
 			orgId = account.organizationId;
-			claim.organizationId = orgId;
 
 			$scope.projects = Project.getProjectsByOrgId({organizationId:orgId}, function() {
 				console.log($scope.projects);
 			});
 		});
 	}
-		
 
 	$scope.selectProject = function(project) {
 		$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
@@ -61,8 +61,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.selectRequirement = function(requirement) {
 		claim.resourceRequirementId = requirement.id;
-
-		
+		claim.organizationId = requirement.organizationId;
 	}
 
 	$scope.claimResource = function(res) {
@@ -103,7 +102,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var loadRequests = function() {
 
 		$scope.requests = Organization.getResourceRequests({id:orgId}, function() {
-				
+
 		}, function() {
 			console.log("error");
 		});
@@ -152,7 +151,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$scope.resourceSearch.tags = $.map($scope.searchTags, function(tag) {return tag.name}).join(","); //create comma separated list
 		console.log($scope.resourceSearch.tags);
 		Resource.query({
-				name: $scope.resourceSearch.name, 
+				name: $scope.resourceSearch.name,
 				organization: $scope.resourceSearch.organization,
 				tags: $scope.resourceSearch.tags,
 				available: $scope.resourceSearch.available,
@@ -170,10 +169,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name});
 
-		Resource[$scope.isNew ? 'save' : 'update']($scope.resource, 
-		function() {	
+		Resource[$scope.isNew ? 'save' : 'update']($scope.resource,
+		function() {
 			$scope.redirectToOwnResource('');
-		}, 
+		},
 		function() {
 			$scope.formSaveError = true;
 		});
@@ -190,7 +189,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.clear = function() {
-		$scope.resource = {id: null, name: null, description: null, resourceTags: [], 
+		$scope.resource = {id: null, name: null, description: null, resourceTags: [],
 			amount: null, startDate: null, endDate: null, isCommercial: false, isRecurrent: false};
 	}
 

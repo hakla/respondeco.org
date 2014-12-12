@@ -8,6 +8,7 @@ import org.respondeco.respondeco.domain.PropertyTag;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -33,15 +34,14 @@ import static org.junit.Assert.assertTrue;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class })
-public class PropertyTagRepositoryTest {
+public class PropertyTagRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Inject
     private PropertyTagRepository propertyTagRepository;
 
     @Before
     public void setUp() {
-        propertyTagRepository.deleteAll();
-        propertyTagRepository.flush();
+
     }
 
     @Test
@@ -87,14 +87,14 @@ public class PropertyTagRepositoryTest {
         }
         for(int i=0;i<15;i++) {
             propertyTag = new PropertyTag();
-            propertyTag.setName("blub" + i);
+            propertyTag.setName("xxxx" + i);
             propertyTagRepository.save(propertyTag);
         }
         PageRequest request = new PageRequest(0, 10);
-        List<PropertyTag> tags = propertyTagRepository.findByNameContainingIgnoreCase("b", request);
+        List<PropertyTag> tags = propertyTagRepository.findByNameContainingIgnoreCase("x", request);
         assertEquals(tags.size(), 10);
         for(PropertyTag t : tags) {
-            assertTrue(t.getName().startsWith("blub"));
+            assertTrue(t.getName().startsWith("xxxx"));
         }
     }
 

@@ -6,6 +6,7 @@ import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.QResourceMatch;
 import org.respondeco.respondeco.domain.QResourceOffer;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -25,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.beans.Expression;
+import java.io.NotActiveException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +310,7 @@ public class ResourceService {
 
     public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
         List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganizationId(organizationId);
+        List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganizationIdAndActiveIsTrue(organizationId);
 
         log.debug(entries.toString());
         if(entries.isEmpty() == false) {
@@ -326,8 +328,13 @@ public class ResourceService {
      * @param id resourceOffer id
      * @return ResourceOfferDTO
      */
-    public ResourceOffer getOfferById(Long id) {
-        return resourceOfferRepository.getOne(id);
+    public ResourceOffer getOfferById(Long id) throws GeneralResourceException {
+        ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
+        if (resourceOffer.isActive() == false) {
+            throw new GeneralResourceException("resource with given id is not active");
+        }
+
+        return resourceOffer;
     }
 
 
@@ -339,7 +346,7 @@ public class ResourceService {
      * @param projectId
      * @return ResourceMatch representing the resource request
      */
-    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId, Long organizationId, Long projectId)
+    public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
         throws IllegalValueException, MatchAlreadyExistsException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
@@ -352,15 +359,9 @@ public class ResourceService {
         if(resourceRequirement == null) {
             throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirement.toString());
         }
-        Organization organization = organizationRepository.findOne(organizationId);
-        if(organization == null) {
-            throw new IllegalValueException("no organization with id {} found", organization.toString());
-        }
-        Project project = projectRepository.findOne(projectId);
-        if(project == null) {
-            throw new IllegalValueException("no project with id {} found", project.toString());
-        }
 
+        Project project = resourceRequirement.getProject();
+        Organization organization = resourceOffer.getOrganization();
         List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProject(resourceOffer,
             resourceRequirement, organization, project);
 

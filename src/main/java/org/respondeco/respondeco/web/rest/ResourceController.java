@@ -97,9 +97,19 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResourceOfferDTO getResourceOffer(@PathVariable Long id) {
+    public ResponseEntity<ResourceOfferDTO> getResourceOffer(@PathVariable Long id) {
         log.debug("REST request to get resource with id " + id);
-        return new ResourceOfferDTO(this.resourceService.getOfferById(id));
+        ResponseEntity<ResourceOfferDTO> responseEntity;
+
+        try {
+            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(this.resourceService.getOfferById(id));
+            responseEntity = new ResponseEntity<>(resourceOfferDTO, HttpStatus.OK);
+
+        } catch (GeneralResourceException e) {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
     }
 
 
@@ -121,9 +131,7 @@ public class ResourceController {
         try {
             resourceMatch = resourceService.createClaimResourceRequest(
             resourceMatchRequestDTO.getResourceOfferId(),
-            resourceMatchRequestDTO.getResourceRequirementId(),
-            resourceMatchRequestDTO.getOrganizationId(),
-            resourceMatchRequestDTO.getProjectId());
+            resourceMatchRequestDTO.getResourceRequirementId());
 
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 

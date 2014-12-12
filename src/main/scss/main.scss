@@ -214,6 +214,16 @@ canvas {
     width: 100%;
 }
 
+.modal-content {
+    .project-item {
+        height: 200px;
+
+        uploaded-image {
+            height: 145px;
+        }
+    }
+}
+
 .project-item {
     list-style-type: none;
     display: inline-block;
@@ -221,8 +231,6 @@ canvas {
     background-color: #FFF;
     border: 1px solid #e3e3e3;
     border-radius: 2px;
-    width: 25%;
-    min-width: 200px;
     height: 300px;
 
     img {

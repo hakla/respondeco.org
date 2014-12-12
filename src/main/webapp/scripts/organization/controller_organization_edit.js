@@ -64,7 +64,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
             id: id
         }, function(org) {
             $scope.organization = org;
-            
+
             $scope.users = Organization.getInvitableUsers({
                 id: $scope.organization.id
             });
@@ -109,29 +109,64 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     $scope.sendInvite = function() {
-        OrgJoinRequest.save({
-            organization: {
-                id: $scope.organization.id
-            },
-            user: {
-                id: $scope.selectedUser.id
-            }
-        }, function(data) {
-            updateOrgJoinRequests();
-            TextMessage.save({
-                receiver: {
-                    id: data.user.id
-                },
-                content: "You got invited to join the organization " + $scope.organization.name + "!"
+        // save if the user should be created and invited to join the organization
+        var invite = false;
+
+        if (typeof $scope.selectedUser === 'string') {
+            $scope.users.forEach(function(user) {
+                if (user.login == $scope.selectedUser || user.email == $scope.selectedUser) {
+                    $scope.selectedUser = user;
+                }
             });
-        }, function(error) {
-            if (error.status === 400) {
-                $scope.alerts.push({
-                    msg: 'A user can only be invited once',
-                    type: 'warning'
-                });
+
+            if (typeof $scope.selectedUser === 'string') {
+                invite = confirm("Ein Benutzer mit dieser E-Mail Adresse existiert noch nicht, soll er eingeladen werden?");
+
+                if (invite === true) {
+                    $scope.selectedUser = {
+                        login: "sendInvitation",
+                        email: $scope.selectedUser
+                    };
+                } else {
+                    // user doesn't exist and no invite should be sent - there's nothing to do
+                    return;
+                }
             }
-        });
+        }
+
+        if (invite === false) {
+            OrgJoinRequest.save({
+                organization: {
+                    id: $scope.organization.id
+                },
+                user: {
+                    id: $scope.selectedUser.id
+                }
+            }, function(data) {
+                updateOrgJoinRequests();
+                TextMessage.save({
+                    receiver: {
+                        id: data.user.id
+                    },
+                    content: "You got invited to join the organization " + $scope.organization.name + "!"
+                });
+            }, function(error) {
+                if (error.status === 400) {
+                    $scope.alerts.push({
+                        msg: 'A user can only be invited once',
+                        type: 'warning'
+                    });
+                }
+            });
+        } else {
+            OrgJoinRequest.save({
+                organization: {
+                    id: $scope.organization.id
+                },
+                user: $scope.selectedUser
+            }, updateOrgJoinRequests);
+        }
+
         $scope.selectedUser = null;
     };
 

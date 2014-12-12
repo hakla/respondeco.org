@@ -9,10 +9,10 @@
             Hi
         </p>
         <p th:text="#{email.activation.text1}">
-            Ihr respondeco.org Account wurde erfolgreich erstellt, um die Registrierung abzuschließen klicken Sie bitte auf den Aktivierungslink.
+            Sie wurden eingeladen respondeco beizutreten! Um die Registrierung abzuschließen klicken Sie bitte auf den Aktivierungslink.
         </p>
         <p>
-            <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}"
+            <a th:href="@{|${baseUrl}/#/activateInvitation?key=${user.activationKey}&amp;email=${user.login}|}"
                th:text="|${user.login}|">Aktivierungslink</a>
         </p>
         <p>

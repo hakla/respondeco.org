@@ -42,7 +42,7 @@ public class AggregatedRatingResponseDTO {
         }
         return responseDTOs;
     }
-    private Integer count;
+    private Long count;
     private Double rating;
 
 }

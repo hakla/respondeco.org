@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity Image.
+    -->
+    <changeSet id="20141209154500" author="Christoph Schiessl">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/resourcematch.csv"
+                  separator=";"
+                  tableName="T_RESOURCE_MATCH"/>
+        <update tableName="T_RATING">
+            <column name="match_id" value='1' type="bigint"/>
+            <where>id='1'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='2' type="bigint"/>
+            <where>id='2'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='4' type="bigint"/>
+            <where>id='3'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='6' type="bigint"/>
+            <where>id='4'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='1' type="bigint"/>
+            <where>id='5'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='2' type="bigint"/>
+            <where>id='6'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='4' type="bigint"/>
+            <where>id='7'</where>
+        </update>
+        <update tableName="T_RATING">
+            <column name="match_id" value='5' type="bigint"/>
+            <where>id='8'</where>
+        </update>
+
+
+    </changeSet>
+</databaseChangeLog>

@@ -197,7 +197,8 @@ angular.module('respondecoApp')
             templateUrl: 'template/project.html',
             scope: {
                 project: '=',
-                onProjectClick: '&'
+                onProjectClick: '&',
+                tags: '='
             },
             controller: function($scope) {
                 $scope.projectClicked = function() {
@@ -225,6 +226,23 @@ angular.module('respondecoApp')
                 $scope.confirmDelete = function() {
                     $scope.onConfirm();
                     $scope.isDeleting = false;
+                }
+            }
+        };
+    }).directive('respRating', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/rating.html',
+            scope: {
+                currentRating: '=',
+                onRate: '&',
+                readonly: '='
+            },
+            controller: function($scope) {
+
+                $scope.doRate = function() {
+                    $scope.onRate($scope.currentRating);
                 }
             }
         };

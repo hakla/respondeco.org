@@ -1,0 +1,10 @@
+id;accepted;project_id;organization_id;resource_requirement_id;resource_offer_id;project_rating_id;supporter_rating_id;is_active;amount
+1;true;1;1;9;1;1;5;true;1
+2;true;1;2;10;2;2;6;true;2
+3;true;1;1;11;3;null;null;true;3
+4;true;2;2;12;4;null;7;true;4
+5;true;2;2;13;5;null;8;true;5
+6;true;3;3;14;6;4;null;true;6
+7;true;3;2;15;7;null;null;true;7
+8;true;3;3;16;8;null;null;true;8
+
