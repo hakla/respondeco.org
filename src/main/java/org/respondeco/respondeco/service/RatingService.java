@@ -82,7 +82,7 @@ public class RatingService {
                     project, resourceMatch.getProject()));
         }
         if(resourceMatch.getProjectRating() != null) {
-            throw new ProjectRatingException(".allreadyrated",
+            throw new ProjectRatingException(".project.allreadyrated",
                     String.format("You have already rated for this match %s" , resourceMatch.getId()));
         }
         Rating rating = new Rating();
@@ -113,19 +113,19 @@ public class RatingService {
         }
         if(project.getManager().equals(user) == false) {
             throw new SupporterRatingException(".notmanagerofproject", String
-                    .format("You are not the manager of project %s", project.getId()));
+                    .format("You are not the manager of project %d", project.getId()));
         }
         if(organization.getOwner().equals(user) == true) {
-            throw new SupporterRatingException(".notallowedtorate",
-                    String.format("You are not allowed to rate this organization %s", organization.getId()));
+            throw new SupporterRatingException(".cannotrateown",
+                    String.format("You are not allowed to rate your own organization: %d", organization.getId()));
         }
         if(resourceMatch.getAccepted() == false) {
             throw new SupporterRatingException(".notaccepted",
-                    String.format("Rating this match %s is not accepted" , resourceMatch.getId()));
+                    String.format("This match has not been accepted yet: %d" , resourceMatch.getId()));
         }
         if(resourceMatch.getSupporterRating() != null) {
-            throw new SupporterRatingException(".allreadyrated",
-                    String.format("You have already rated for this match %s", matchId));
+            throw new SupporterRatingException(".org.alreadyrated",
+                    String.format("You have already rated for this match %d", matchId));
         }
         Rating rating = new Rating();
         rating.setRating(ratingValue);

@@ -1,11 +1,7 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
-                                                       PropertyTagNames, $location, $routeParams, $sce) {
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    });
-    //$("#rating").popover("show");
+                                                       PropertyTagNames, $location, $routeParams, $sce, $translate) {
 
     $scope.project = {
         id: null,
@@ -23,6 +19,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.collected = 0;
     $scope.collectedEssential = 0;
 
+    $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
     // details mock
@@ -129,6 +126,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
 
+                //for each match, put it in a map with the id as key
+                matches.forEach(function(match) {
+                    $scope.resourceMatches[match.matchId] = match;
+                });
                 //get rating permissions for the matches
                 var matchIds = $.map(matches, function(match) {return match.matchId}).join(",");
                 Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'matches', matches: matchIds},
@@ -270,6 +271,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
     $scope.ratingComment = null;
+    $scope.currentMatchId = null;
+    $scope.currentOrgRating = 0;
+    $scope.currentOrgRatingComment = "";
+
+    $scope.projectRatingError = null;
+    $scope.projectRatingErrorMessage = null;
+    $scope.orgRatingError = null;
 
     $scope.organizationRatings = new Object();
     $scope.matchRatingPermissions = new Object();
@@ -314,20 +322,65 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                     $scope.rateSucces = "SUCCESS";
                     $scope.ratingComment = "";
                     $scope.hideRating();
+                    $scope.clearRating();
                     //get new aggregated rating
                     $scope.refreshProjectRating();
+                },
+                function(error) {
+                    $scope.projectRatingError = "ERROR";
+                    if(error.status == 400) {
+                        console.log("translating " + error.data.key);
+                        $translate(error.data.key).then(function(translated) {
+                            $("#projectRatingError").text(translated);
+                        });
+                    }
                 });
 
         }
     }
 
-    $scope.rateOrganization = function(matchid, orgid) {
+    $scope.rateMatch = function(id) {
+        if(!$scope.matchRatingPermissions[id]) {
+            return;
+        }
+        $scope.currentMatchId = id;
+        var match = $scope.resourceMatches[id];
+        $scope.currentOrgRating = $scope.organizationRatings[match.organization.id].rating;
+        $('#rateMatchModal').modal('show');
+    }
+
+    $scope.rateOrganization = function() {
+        var matchid = $scope.currentMatchId;
+        var orgid = $scope.resourceMatches[matchid].organization.id;
         Organization.rateOrganization({id: orgid}, {
-            matchid: matchid, rating: $scope.organizationRatings[orgid].rating, comment: ""},
+            matchid: matchid, rating: $scope.currentOrgRating,
+                comment: $scope.currentOrgRatingComment},
             function() {
                 $scope.matchRatingPermissions[matchid] = false;
                 $scope.refreshOrganizationRating(orgid);
+                $scope.clearRating();
+            },
+            function(error) {
+                $scope.orgRatingError = "ERROR";
+                if(error.status == 400) {
+                    console.log("translating " + error.data.key);
+                    $translate(error.data.key).then(function(translated) {
+                        $("#orgRatingError").text(translated);
+                    });
+                }
+
             });
+    }
+
+    $scope.clearRating = function() {
+        $('#rateMatchModal').modal('hide');
+        $scope.isRating = false;
+        $scope.ratingComment = null;
+        $scope.currentMatchId = null;
+        $scope.currentOrgRating = 0;
+        $scope.currentOrgRatingComment = null;
+        $scope.projectRatingError = null;
+        $scope.orgRatingError = null;
     }
 
 });
