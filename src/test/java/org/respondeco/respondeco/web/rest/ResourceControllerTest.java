@@ -208,7 +208,7 @@ public class ResourceControllerTest {
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteOffer(dto.getId());
         }else if (operation == 3){
-            verify(resourceService, times(1)).getAllOffers(any(), any(), any(), any(), any(), any());
+            verify(resourceService, times(1)).getAllOffers(any(), any(), any());
             verify(resourceService, times(1)).getOfferById(dto.getId());
         }
     }

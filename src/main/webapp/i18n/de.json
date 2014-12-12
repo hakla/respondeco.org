@@ -498,7 +498,7 @@
     },
     "resource": {
         "title":"Ressourcen",
-        "name": "Name / Tags / Organisation",
+        "name": "Name",
         "company": "Unternehmen",
         "amount": "Anzahl",
         "startDate": "Verfügbar ab",
@@ -511,6 +511,7 @@
         "tags": "Tags",
         "available": "Verfügbar",
         "search": {
+            "filter": "Name / Tags / Organisation",
             "type": "Art der Ressource",
             "request": "Ressource anfordern",
             "tooltip": {

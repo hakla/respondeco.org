@@ -5,6 +5,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ResourceMatch;
+import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
@@ -28,6 +29,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 import java.util.List;
 
 /**
@@ -257,9 +259,16 @@ public class ProjectController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceRequirementRequestDTO> getAllResourceRequirement(@PathVariable Long id) {
+    public ResponseEntity<List<ResourceRequirementResponseDTO>> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
-        return this.resourceService.getAllRequirements(id);
+        ResponseEntity<List<ResourceRequirementResponseDTO>> responseEntity;
+
+        List<ResourceRequirement> resourceRequirements = resourceService.getAllRequirements(id);
+
+        List<ResourceRequirementResponseDTO> resourceRequirementResponseDTOs = ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
+
+        responseEntity = new ResponseEntity<>(resourceRequirementResponseDTOs, HttpStatus.OK);
+        return responseEntity;
     }
 
     /**

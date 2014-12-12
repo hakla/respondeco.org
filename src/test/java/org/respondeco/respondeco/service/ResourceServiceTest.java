@@ -368,9 +368,9 @@ public class ResourceServiceTest {
             return internalItems;
         }).when(resourceRequirementRepositoryMock).findByProjectId(isA(longCl));
         int listSize = 1;
-        List<ResourceRequirementRequestDTO> expectedItem = this.resourceService.getAllRequirements(projectID);
+        List<ResourceRequirement> expectedItem = this.resourceService.getAllRequirements(projectID);
         assertEquals(expectedItem.size(), listSize);
-        assertEquals(expectedItem.get(0).getProjectId(), projectID);
+        assertEquals(expectedItem.get(0).getProject().getId(), projectID);
         assertEquals(expectedItem.get(0).getId(), expectedRequirementID);
         verify(this.resourceRequirementRepositoryMock, times(1)).findByProjectId(isA(longCl));
     }
@@ -466,12 +466,12 @@ public class ResourceServiceTest {
         }).when(resourceOfferRepositoryMock).findByOrganizationId(expOrg.getId());
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceOfferDTO> list = this.resourceService.getAllOffers(expOrg.getId());
+        List<ResourceOffer> list = this.resourceService.getAllOffers(expOrg.getId());
         assertEquals(listSize, list.size());
         for(int i = 0; i < list.size(); i++){
-            ResourceOfferDTO current = list.get(i);
+            ResourceOffer current = list.get(i);
             assertEquals(current.getId(), expected);
-            assertEquals(current.getOrganizationId(), expOrg.getId());
+            assertEquals(current.getOrganization().getId(), expOrg.getId());
             expected += 9L;
         }
 
@@ -493,9 +493,9 @@ public class ResourceServiceTest {
 
         assertEquals(list.size(), listSize);
         for(int i = 0; i < list.size(); i++){
-            ResourceOfferDTO current = list.get(i);
+            ResourceOffer current = list.get(i);
             assertEquals(current.getId(), expected);
-            assertEquals(current.getOrganizationId(), alternative.getId());
+            assertEquals(current.getOrganization().getId(), alternative.getId());
         }
 
         verify(this.resourceOfferRepositoryMock, times(2)).findByOrganizationId(isA(longCl));
