@@ -22,17 +22,32 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var orgId;
 	var claim = {};
 
-	if($location.path() === '/ownresource') {
-		Account.get(null, function(account) {
-			orgId = account.organizationId;
 
-      $scope.resources = Resource.getByOrgId({
-        id: orgId
-      });
-    });
-  } else {
-    $scope.resources = Resource.query();
-  }
+	var filterOwnResources = function(resources) {
+	  	resources.forEach(function(res, index) {
+	  		if(res.organization.id == orgId) {
+	  			resources.splice(index,1);
+	  		}
+	  	});
+
+  		$scope.resources = resources;
+  	}
+
+  	Account.get(null, function(account) {
+  		orgId = account.organizationId;
+  	});
+
+	if($location.path() === '/ownresource') {
+	      $scope.resources = Resource.getByOrgId({
+	        id: orgId
+	      });
+	  } else {
+	    Resource.query(function(data) {
+	    	filterOwnResources(data);
+	    });
+	 }
+
+
 
 	if($location.path() === '/requests') {
 		Account.get(null, function(account) {

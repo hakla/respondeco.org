@@ -32,6 +32,8 @@ import java.util.List;
 
 /**
  * REST controller for managing Project.
+ *
+ * This REST-Controller handles all requests for /rest/projects
  */
 @RestController
 @Transactional
@@ -251,7 +253,7 @@ public class ProjectController {
      * @return list of ResourceRequirements wrapped into DTO
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
+    @RequestMapping(value = "/rest/projects/{id}/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

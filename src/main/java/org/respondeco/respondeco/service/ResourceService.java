@@ -1,32 +1,24 @@
 package org.respondeco.respondeco.service;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.types.*;
+import com.mysema.query.types.ExpressionUtils;
+import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.domain.QResourceMatch;
-import org.respondeco.respondeco.domain.QResourceOffer;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
-import javax.annotation.Resource;
 import javax.inject.Inject;
-import java.beans.Expression;
-import java.io.NotActiveException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +30,10 @@ import java.util.List;
  * Create/Update/Delete Resources Requirement
  * Manage new Tags
  */
-
 @Service
 @Transactional
 public class ResourceService {
 
-    // region Private Variables
     private final Logger log = LoggerFactory.getLogger(ResourceService.class);
     private ResourceOfferRepository resourceOfferRepository;
     private ResourceRequirementRepository resourceRequirementRepository;
@@ -58,9 +48,6 @@ public class ResourceService {
 
     private RestUtil restUtil;
 
-    // endregion
-
-    // region Constructor
     @Inject
     public ResourceService(ResourceOfferRepository resourceOfferRepository,
                            ResourceRequirementRepository resourceRequirementRepository,
@@ -94,9 +81,7 @@ public class ResourceService {
             throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);
         }
     }
-    // endregion
 
-    // region public methods for Resource Requirement Create/Update/Delete + Select all/by project ID
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
         throws ResourceException {
@@ -188,9 +173,7 @@ public class ResourceService {
         }
         return result;
     }
-    // endregion
 
-    // region public methods for Resource Offer Create/Update/Delete + Select all/by organisation ID
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, Boolean isRecurrent, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags) {
@@ -248,17 +231,25 @@ public class ResourceService {
         }
     }
 
-    public List<ResourceOffer> getAllOffers(String name, String organization, String tags, Boolean available, Boolean isCommercial, RestParameters restParameters) {
+    /**
+     * Get all ResourceOffers
+     * @param name
+     * @param organization
+     * @param tags
+     * @param isCommercial
+     * @param restParameters
+     * @return
+     */
+    public List<ResourceOffer> getAllOffers(String name, String organization, String tags, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         if(restParameters != null) {
             pageRequest = restParameters.buildPageRequest();
         }
 
-        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
         List<ResourceOffer> entries;
 
-        if(name.isEmpty() && organization.isEmpty() && tags.isEmpty() && available == false && isCommercial == null) {
+        if(name.isEmpty() && organization.isEmpty() && tags.isEmpty() && isCommercial == null) {
             entries = resourceOfferRepository.findByActiveIsTrue();
         } else {
             //create dynamic query with help of querydsl
@@ -287,12 +278,6 @@ public class ResourceService {
                 resourceOfferTagLike = resourceOffer.resourceTags.any().name.in(tagList);
             }
 
-            if(available == true) {
-                resourceOfferAvailable = resourceOffer.startDate.before(LocalDate.now()).
-                    and(resourceOffer.endDate.after(LocalDate.now()));
-
-            }
-
             if(isCommercial!=null && isCommercial == true) {
                 resourceCommercial = resourceOffer.isCommercial.eq(true);
             } else if(isCommercial!=null && isCommercial == false) {
@@ -300,7 +285,7 @@ public class ResourceService {
             }
 
             Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
-                resourceOfferAvailable, resourceCommercial, resourceOfferTagLike, isActive);
+                resourceCommercial, resourceOfferTagLike, isActive);
 
             entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
         }
@@ -339,12 +324,12 @@ public class ResourceService {
 
 
     /**
-     * Request a Resource Offer
-     * @param resourceOfferId
-     * @param resourceRequirementId
-     * @param organizationId
-     * @param projectId
-     * @return ResourceMatch representing the resource request
+     * Creates a new ResourceMatch for claiming a ResourceOffer
+     * @param resourceOfferId id of the claimed resourceoffer
+     * @param resourceRequirementId id of the resourcerequirement, where the resourceoffer is used.
+     * @return created ResourceMatch for the claimed ResourceOffer
+     * @throws IllegalValueException
+     * @throws MatchAlreadyExistsException
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
         throws IllegalValueException, MatchAlreadyExistsException {
@@ -357,11 +342,23 @@ public class ResourceService {
         }
         ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
         if(resourceRequirement == null) {
-            throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirement.toString());
+            throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirementId.toString());
         }
 
         Project project = resourceRequirement.getProject();
+        if(project == null) {
+            throw new IllegalValueException("no project for resourceRequirement {} found", resourceRequirement.toString());
+        }
+
         Organization organization = resourceOffer.getOrganization();
+        if(organization == null) {
+            throw new IllegalValueException("no organization for resourceoffer {} found", resourceOffer.toString());
+        }
+
+        if(project.getOrganization().getId() == organization.getId()) {
+            throw new IllegalValueException("claim.error.ownresource", "cannot claim own resourceoffer" + resourceOffer.toString());
+        }
+
         List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProject(resourceOffer,
             resourceRequirement, organization, project);
 
@@ -455,8 +452,4 @@ public class ResourceService {
         return requests;
     }
 
-
-
-
-    // endregion
 }

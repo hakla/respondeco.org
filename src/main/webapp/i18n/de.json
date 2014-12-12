@@ -522,7 +522,8 @@
             "chooseproject": "Für welches ihrer Projekte wird die Ressource benötigt?",
             "chooserequirement": "Für welche Anforderung soll die Ressource verwendet werden?",
             "error": {
-                "matchexists": "Die Anfrage wurde bereits versendet"
+                "matchexists": "Die Anfrage wurde bereits versendet",
+                "ownresource": "Sie können ihre eigene Ressource nicht anfordern"
             }
         },
         "new": {
