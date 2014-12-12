@@ -21,8 +21,7 @@
                 <div class="row">
                     <div id="rating" class="col-md-12">
                         <span>Aktuelle Bewertung: </span>
-                        <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                ng-click="showRating()" ng-model="shownRating"></rating>
+                        <rating max="5" readonly="!canRate" on-leave="overStar = null" ng-click="showRating()" ng-model="shownRating"></rating>
                         <span>{{shownRating}}({{ratingCount}})</span>
                     </div>
                 </div>
@@ -34,16 +33,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <textarea ng-model="rating.comment" cols="30" rows="5"
-                                      placeholder="{{'rating.placeholder' | translate}}"></textarea>
+                            <textarea ng-model="rating.comment" cols="30" rows="5" placeholder="{{'rating.placeholder' | translate}}"></textarea>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button class="btn btn-success" ng-click="rateProject()"
-                                    translate="rating.ratenow">Rate now</button>
-                            <button class="btn btn-default" ng-click="hideRating()"
-                                    translate="rating.notnow">Not now</button>
+                            <button class="btn btn-success" ng-click="rateProject()" translate="rating.ratenow">Rate now</button>
+                            <button class="btn btn-default" ng-click="hideRating()" translate="rating.notnow">Not now</button>
                         </div>
                     </div>
                 </div>
@@ -66,7 +62,8 @@
         </div>
         <div class="col-md-6">
             <div class="remaining" ng-show="remainingDays >= 0 && project.concrete == true">
-                <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
+                <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong>
+                </div>
                 <strong>{{remainingDays}} Tage verbleiben</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
@@ -85,8 +82,11 @@
                     <accordion-group ng-open="requirement.id" ng-repeat="requirement in project.resourceRequirements">
                         <accordion-heading>
                             <div class="row">
-                                <div class="col-md-4">{{requirement.name}}</div>
-                                <div class="col-md-2 col-md-offset-6">
+                                <div class="col-md-8">{{requirement.name}}</div>
+                                <div class="col-md-2 on-hover">
+                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                                </div>
+                                <div class="col-md-2">
                                     <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
                                     <span ng-show="requirement.sum == undefined">0</span>/{{requirement.originalAmount}}
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
@@ -99,9 +99,7 @@
                                 <div class="col-md-4 strong">{{match.organization.name}}</div>
                                 <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.amount}}</div>
                                 <div class="col-md-4">
-                                    <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                            ng-click="rateOrganization(match.matchId, match.organization.id)"
-                                            ng-model="organizationRatings[match.organization.id]"></rating>
+                                    <rating max="5" readonly="!canRate" on-leave="overStar = null" ng-click="rateOrganization(match.matchId, match.organization.id)" ng-model="organizationRatings[match.organization.id]"></rating>
                                     <span>{{organizationRatingCounts[match.organization.id]}}</span>
                                 </div>
                             </li>
@@ -109,6 +107,41 @@
                     </accordion-group>
 
                 </accordion>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-apply" id="apply" tabindex="-1" role="dialog" aria-labelledby="applyLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="clearRequirement()">&times;</button>
+                    <h2 class="modal-title" id="applyLabel" translate="resource.offer.title">Choose resource offer</h2>
+                </div>
+                <div class="modal-body">
+                    <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
+                        <dl class="dl-horizontal">
+                            <dt>Ausgewählte Ressource:</dt>
+                            <dd>{{ selectedRequirement.name }}</dd>
+                            <dt>Noch benötigte Anzahl</dt>
+                            <dd>{{ selectedRequirement.amount }}</dd>
+                        </dl>
+                        <ul>
+                            <li ng-repeat="offer in resourceOffers">
+                                <h3>{{ offer.name }}</h3>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="resourceCancelButton" type="button" class="btn btn-link" data-dismiss="modal">
+                        {{ 'resource.new.cancelbutton' | translate }}
+                    </button>
+                    <button id="resourceSaveButton" type="button" ng-click="donate()" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
+                        <span class="glyphicon glyphicon-save"></span> {{ 'resource.new.savebutton' | translate }}
+                    </button>
+                </div>
+                </form>
             </div>
         </div>
     </div>

@@ -386,15 +386,27 @@ uploaded-image, [uploaded-image] {
                     font-size: 12px;
                 }
             }
+        }
+    }
+}
 
-            .on-hover {
-                opacity: 0;
-                transition: .2s ease opacity;
-            }
 
-            &:hover .on-hover {
-                opacity: 1;
-            }
+.on-hover {
+    opacity: 0;
+    transition: .2s ease opacity;
+}
+
+* {
+    &:hover > .on-hover {
+        opacity: 1;
+    }
+}
+
+.modal-apply {
+    dl.dl-horizontal {
+        dt {
+            width: 200px;
+            text-align: left;
         }
     }
 }

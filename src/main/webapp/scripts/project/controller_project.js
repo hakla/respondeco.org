@@ -1,7 +1,7 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
-                                                       PropertyTagNames, $location, $routeParams, $sce) {
+                                                       PropertyTagNames, $location, $routeParams, $sce, Account, $modal) {
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
@@ -52,6 +52,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     var searchText = null;
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+    var organization;
+    var account;
+    var allowedToApply = false;
 
     $scope.list_of_string = [];
 
@@ -311,6 +314,35 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 });
             });
     }
+
+    $scope.projectApply = function(resourceRequirement, $event) {
+        $event.stopPropagation();
+        $event.preventDefault();
+
+        $scope.selectedRequirement = resourceRequirement;
+
+        $('#apply').modal('toggle');
+    };
+
+    $scope.isAllowedToApply = function() {
+        return allowedToApply;
+    };
+
+    Account.get(function(acc) {
+        account = acc;
+        Organization.get({
+            id: acc.organizationId
+        }, function(org) {
+            organization = org;
+            if (organization != null && organization.owner.id === acc.id) {
+                // owner
+                allowedToApply = true;
+                $scope.resourceOffers = Organization.getResourceOffers({
+                    id: organization.id
+                });
+            }
+        });
+    });
 
     if (isNew === false) {
         $scope.update($routeParams.id);

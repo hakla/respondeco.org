@@ -25,7 +25,7 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung"
-            },
+            },  
             "admin": "Administration",
             "language": "Sprache"
         },
@@ -565,6 +565,10 @@
             "tableheader": "Benötigte Ressourcen",
             "name": "Name",
             "amount": "Menge"
+        },
+        "offer": {
+            "title": "Ressource auswählen",
+            "donate": "Spenden"
         }
     },
     "orgJoinRequest": {

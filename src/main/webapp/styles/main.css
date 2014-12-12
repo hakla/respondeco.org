@@ -8279,12 +8279,20 @@ uploaded-image div, [uploaded-image] div {
 .resource-search-container ul.resources li .organization i {
   font-size: 12px;
 }
-/* line 390, ../../scss/main.scss */
-.resource-search-container ul.resources li .on-hover {
+
+/* line 394, ../../scss/main.scss */
+.on-hover {
   opacity: 0;
   transition: .2s ease opacity;
 }
-/* line 395, ../../scss/main.scss */
-.resource-search-container ul.resources li:hover .on-hover {
+
+/* line 400, ../../scss/main.scss */
+*:hover > .on-hover {
   opacity: 1;
+}
+
+/* line 407, ../../scss/main.scss */
+.modal-apply dl.dl-horizontal dt {
+  width: 200px;
+  text-align: left;
 }
