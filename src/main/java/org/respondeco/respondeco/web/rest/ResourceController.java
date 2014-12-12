@@ -65,8 +65,6 @@ public class ResourceController {
     @Timed
     public List<ResourceOfferResponseDTO> getAllResourceOffers(
         @RequestParam(required = false) String name,
-        @RequestParam(required = false) String organization,
-        @RequestParam(required = false) String tags,
         @RequestParam(required = false) Boolean commercial,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
@@ -76,11 +74,9 @@ public class ResourceController {
         log.debug("REST request to get all resource offers");
 
         if(name == null) name = "";
-        if(organization == null) organization = "";
-        if(tags == null) tags = "";
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceOffer> entries = resourceService.getAllOffers(name, organization, tags, commercial, restParameters);
+        List<ResourceOffer> entries = resourceService.getAllOffers(name, commercial, restParameters);
 
         List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(entries, restParameters.getFields());
 

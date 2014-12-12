@@ -498,7 +498,7 @@
     },
     "resource": {
         "title":"Ressourcen",
-        "name": "Name",
+        "name": "Name / Tags / Organisation",
         "company": "Unternehmen",
         "amount": "Anzahl",
         "startDate": "Verfügbar ab",

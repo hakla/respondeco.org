@@ -9,7 +9,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
  	$scope.selectedTags = [];
  	$scope.searchTags = [];
 
-	$scope.resourceSearch = {name: null, organization: null, tags: null, available: false};
+	$scope.resourceSearch = {name: null, isCommercial: null};
 
 	$scope.resourceRequirements = [];
 	$scope.showRequirements = false;
@@ -21,7 +21,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	var orgId;
 	var claim = {};
-
 
 	var filterOwnResources = function(resources) {
 	  	resources.forEach(function(res, index) {
@@ -46,7 +45,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	    	filterOwnResources(data);
 	    });
 	 }
-
 
 
 	if($location.path() === '/requests') {
@@ -163,13 +161,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
-		$scope.resourceSearch.tags = $.map($scope.searchTags, function(tag) {return tag.name}).join(","); //create comma separated list
 		console.log($scope.resourceSearch.tags);
 		Resource.query({
 				name: $scope.resourceSearch.name,
-				organization: $scope.resourceSearch.organization,
-				tags: $scope.resourceSearch.tags,
-				available: $scope.resourceSearch.available,
 				commercial: $scope.resourceSearch.isCommercial
 			}, function(res) {
 				$scope.resources = res;

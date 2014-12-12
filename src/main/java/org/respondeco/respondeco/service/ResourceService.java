@@ -8,7 +8,6 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
-import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
@@ -165,15 +164,30 @@ public class ResourceService {
         return resourceRequirementRepository.findAll();
     }
 
-    public List<ResourceRequirementRequestDTO> getAllRequirements(Long projectId) {
-        List<ResourceRequirementRequestDTO> result = new ArrayList<>();
+    /**
+     * Get all ResourceRequirements for a specific project given by id
+     * @param projectId
+     * @return List of ResourceRequirements
+     */
+    public List<ResourceRequirement> getAllRequirements(Long projectId) {
         List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectId(projectId);
-        for (ResourceRequirement requirement : entries) {
-            result.add(new ResourceRequirementRequestDTO(requirement));
-        }
-        return result;
+
+        return entries;
     }
 
+    /**
+     * Create a new ResourceOffer
+     * @param name ResourceOffer name
+     * @param amount ResourceOffer amount
+     * @param description ResourceOffer description
+     * @param organizationId organization id which created the ResourceOffer
+     * @param isCommercial true if ResourceOffer is a commercial Resource, false otherwise
+     * @param isRecurrent
+     * @param startDate available at startDate
+     * @param endDate available until endDate
+     * @param resourceTags Tags describing the ResourceOffer
+     * @return created ResourceOffer
+     */
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, Boolean isRecurrent, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags) {
@@ -233,14 +247,12 @@ public class ResourceService {
 
     /**
      * Get all ResourceOffers
-     * @param name
-     * @param organization
-     * @param tags
-     * @param isCommercial
-     * @param restParameters
-     * @return
+     * @param searchField contains search parameters for resource name, organization name and tags
+     * @param isCommercial if true return only commercial resources, if false return only non commercial ones
+     * @param restParameters Rest Parameters to be set
+     * @return List of active ResourceOffers filtered by set parameters. (searchField, isCommercial)
      */
-    public List<ResourceOffer> getAllOffers(String name, String organization, String tags, Boolean isCommercial, RestParameters restParameters) {
+    public List<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         if(restParameters != null) {
@@ -249,33 +261,22 @@ public class ResourceService {
 
         List<ResourceOffer> entries;
 
-        if(name.isEmpty() && organization.isEmpty() && tags.isEmpty() && isCommercial == null) {
+        if(searchField.isEmpty() && isCommercial == null) {
             entries = resourceOfferRepository.findByActiveIsTrue();
         } else {
             //create dynamic query with help of querydsl
-            BooleanExpression resourceOfferNameLike = null;
-            BooleanExpression resourceOfferOrganizationLike = null;
-            BooleanExpression resourceOfferTagLike = null;
-            BooleanExpression resourceOfferAvailable = null;
-            BooleanExpression resourceCommercial = null;
-            BooleanExpression isActive = null;
-
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
 
-            isActive = resourceOffer.active.isTrue();
+            BooleanExpression resourceOfferNameLike = null;
+            BooleanExpression resourceCommercial = null;
+            BooleanExpression resourceOfferOrganizationLike = null;
+            BooleanExpression resourceOfferTagLike = null;
+            BooleanExpression isActive = resourceOffer.active.isTrue();
 
-            if(name.isEmpty() == false) {
-                resourceOfferNameLike = resourceOffer.name.toLowerCase().contains(name.toLowerCase());
-            }
-
-            if(organization.isEmpty() == false) {
-                resourceOfferOrganizationLike = resourceOffer.organization.name.toLowerCase().contains(organization.toLowerCase());
-            }
-
-            if(tags.isEmpty() == false) {
-                List<String> tagList = restUtil.splitCommaSeparated(tags);
-
-                resourceOfferTagLike = resourceOffer.resourceTags.any().name.in(tagList);
+            if(searchField.isEmpty() == false) {
+                resourceOfferNameLike = resourceOffer.name.containsIgnoreCase(searchField);
+                resourceOfferOrganizationLike = resourceOffer.organization.name.containsIgnoreCase(searchField);
+                resourceOfferTagLike = resourceOffer.resourceTags.any().name.toLowerCase().in(searchField.toLowerCase());
             }
 
             if(isCommercial!=null && isCommercial == true) {
@@ -284,8 +285,8 @@ public class ResourceService {
                 resourceCommercial = resourceOffer.isCommercial.eq(false);
             }
 
-            Predicate where = ExpressionUtils.allOf(resourceOfferNameLike, resourceOfferOrganizationLike,
-                resourceCommercial, resourceOfferTagLike, isActive);
+            Predicate predicateAnyOf = ExpressionUtils.anyOf(resourceOfferNameLike, resourceOfferOrganizationLike, resourceOfferTagLike);
+            Predicate where = ExpressionUtils.allOf(predicateAnyOf, resourceCommercial, isActive);
 
             entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
         }
@@ -293,25 +294,21 @@ public class ResourceService {
         return entries;
     }
 
-    public List<ResourceOfferDTO> getAllOffers(Long organizationId) {
-        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
+    /**
+     * Get all ResourceOffers for a specific organization given by id
+     * @param organizationId Organization id
+     * @return List of ResourceOffers
+     */
+    public List<ResourceOffer> getAllOffers(Long organizationId) {
         List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganizationIdAndActiveIsTrue(organizationId);
 
-        log.debug(entries.toString());
-        if(entries.isEmpty() == false) {
-            for (ResourceOffer offer : entries) {
-                result.add(new ResourceOfferDTO(offer));
-            }
-        } else {
-            log.debug("entries are empty");
-        }
-        return result;
+        return entries;
     }
 
     /**
      * Get ResourceOffer by given id
      * @param id resourceOffer id
-     * @return ResourceOfferDTO
+     * @return ResourceOffer
      */
     public ResourceOffer getOfferById(Long id) throws GeneralResourceException {
         ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
@@ -321,7 +318,6 @@ public class ResourceService {
 
         return resourceOffer;
     }
-
 
     /**
      * Creates a new ResourceMatch for claiming a ResourceOffer
