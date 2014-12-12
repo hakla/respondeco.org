@@ -8241,42 +8241,43 @@ uploaded-image div, [uploaded-image] div {
 .resource-search-container form {
   margin-top: 50px;
 }
-/* line 352, ../../scss/main.scss */
-.resource-search-container ul.resources {
+
+/* line 353, ../../scss/main.scss */
+ul.resources {
   list-style-type: none;
   padding-left: 0;
   margin: 80px 0 50px 0;
 }
-/* line 357, ../../scss/main.scss */
-.resource-search-container ul.resources li {
+/* line 358, ../../scss/main.scss */
+ul.resources li {
   margin-bottom: 60px;
 }
-/* line 360, ../../scss/main.scss */
-.resource-search-container ul.resources li img {
+/* line 361, ../../scss/main.scss */
+ul.resources li img {
   height: 64px;
   width: 64px;
 }
-/* line 365, ../../scss/main.scss */
-.resource-search-container ul.resources li h2 {
+/* line 366, ../../scss/main.scss */
+ul.resources li h2 {
   position: relative;
   margin-top: 0;
   margin-bottom: 0;
 }
-/* line 371, ../../scss/main.scss */
-.resource-search-container ul.resources li .rating {
+/* line 372, ../../scss/main.scss */
+ul.resources li .rating {
   margin-top: 4px;
 }
-/* line 375, ../../scss/main.scss */
-.resource-search-container ul.resources li .amount {
+/* line 376, ../../scss/main.scss */
+ul.resources li .amount {
   font-size: 20px;
 }
-/* line 380, ../../scss/main.scss */
-.resource-search-container ul.resources li .organization .organization-name {
+/* line 381, ../../scss/main.scss */
+ul.resources li .organization .organization-name {
   font-size: 20px;
   margin-right: 12px;
 }
-/* line 385, ../../scss/main.scss */
-.resource-search-container ul.resources li .organization i {
+/* line 386, ../../scss/main.scss */
+ul.resources li .organization i {
   font-size: 12px;
 }
 
@@ -8295,4 +8296,13 @@ uploaded-image div, [uploaded-image] div {
 .modal-apply dl.dl-horizontal dt {
   width: 200px;
   text-align: left;
+}
+/* line 413, ../../scss/main.scss */
+.modal-apply li.resource {
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+/* line 418, ../../scss/main.scss */
+.modal-apply li.resource.selected {
+  background: #F2F2F2;
 }

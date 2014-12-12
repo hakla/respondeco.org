@@ -8,7 +8,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.ResourceException;
-import org.respondeco.respondeco.web.rest.dto.ResourceMatchOfferResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
@@ -148,7 +148,7 @@ public class ResourceController {
 
     /**
      * Create offer ResourceOffer Request
-     * @param ResourceMatchOfferResourceOfferDTO
+     * @param ProjectApplyDTO
      * @return
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -156,16 +156,15 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> offerResourceOffer(@RequestBody ResourceMatchOfferResourceOfferDTO resourceMatchOfferResourceOfferDTO) {
-        log.debug("REST request to offer ResourceOffer : " + resourceMatchOfferResourceOfferDTO);
+    public ResponseEntity<?> offerResourceOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
+        log.debug("REST request to offer ResourceOffer : " + projectApplyDTO);
         ResponseEntity<?> responseEntity;
         try {
             ResourceMatch resourceMatch = resourceService.createOfferResourceOffer(
-                resourceMatchOfferResourceOfferDTO.getAmount(),
-                resourceMatchOfferResourceOfferDTO.getResourceOfferId(),
-                resourceMatchOfferResourceOfferDTO.getResourceRequirementId(),
-                resourceMatchOfferResourceOfferDTO.getOrganizationId(),
-                resourceMatchOfferResourceOfferDTO.getProjectId()
+                projectApplyDTO.getResourceOfferId(),
+                projectApplyDTO.getResourceRequirementId(),
+                projectApplyDTO.getOrganizationId(),
+                projectApplyDTO.getProjectId()
             );
 
             log.debug("ResourceOffer: " + resourceMatch.getResourceOffer().getId());

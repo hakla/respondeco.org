@@ -126,9 +126,18 @@
                             <dt>Noch benötigte Anzahl</dt>
                             <dd>{{ selectedRequirement.amount }}</dd>
                         </dl>
-                        <ul>
-                            <li ng-repeat="offer in resourceOffers">
-                                <h3>{{ offer.name }}</h3>
+                        <ul class="resources">
+                            <li ng-click="selectResourceOffer(offer, $event)" class="resource row" ng-repeat="offer in resourceOffers">
+                                <div class="col-md-2">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="pull-right col-md-6">
+                                    {{ offer.description }}
+                                </div>
+                                <h2 class="col-md-4">
+                                    {{ offer.name }}
+                                    <span ng-hide="offer.amount == 1">({{ offer.amount }})</span>
+                                </h2>
                             </li>
                         </ul>
                     </form>
@@ -137,7 +146,7 @@
                     <button id="resourceCancelButton" type="button" class="btn btn-link" data-dismiss="modal">
                         {{ 'resource.new.cancelbutton' | translate }}
                     </button>
-                    <button id="resourceSaveButton" type="button" ng-click="donate()" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
+                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit()" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
                         <span class="glyphicon glyphicon-save"></span> {{ 'resource.new.savebutton' | translate }}
                     </button>
                 </div>

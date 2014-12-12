@@ -52,9 +52,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     var searchText = null;
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+
+    // project apply
     var organization;
     var account;
     var allowedToApply = false;
+    var selectedResourceOffer;
 
     $scope.list_of_string = [];
 
@@ -326,6 +329,31 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.isAllowedToApply = function() {
         return allowedToApply;
+    };
+
+    $scope.selectResourceOffer = function(offer, $event) {
+        var $target = $($event.target);
+
+        $target.closest("ul").find(".selected").removeClass("selected");
+
+        if ($target.is("li") === false) {
+            $target = $target.closest("li");
+        } else {
+            $target= $target;
+        }
+
+        $target.addClass("selected");
+        selectedResourceOffer = offer;
+    };
+
+    $scope.projectApplySubmit = function() {
+        // submit projectApply request to backend
+        // 
+        // Params
+        // $scope.project
+        // $scope.selectedRequirement
+        // organization
+        // selectedResourceOffer
     };
 
     Account.get(function(acc) {

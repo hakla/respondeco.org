@@ -13,9 +13,8 @@ import java.util.List;
  * Created by Roman Kern on 09.12.14.
  */
 @Data
-public class ResourceMatchOfferResourceOfferDTO {
+public class ProjectApplyDTO {
 
-    BigDecimal amount;
     Long resourceOfferId;
     Long resourceRequirementId;
     Long organizationId;

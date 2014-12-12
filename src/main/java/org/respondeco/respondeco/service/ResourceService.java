@@ -342,8 +342,6 @@ public class ResourceService {
      * Request a Resource Offer
      * @param resourceOfferId
      * @param resourceRequirementId
-     * @param organizationId
-     * @param projectId
      * @return ResourceMatch representing the resource request
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
@@ -460,7 +458,6 @@ public class ResourceService {
     /**
      * Create new Offer from organization for a specific requirement in project. Make it Transactional, for that no
      * one can write more than amount of the requirement
-     * @param amount of items, organization offers
      * @param offerId from Organization
      * @param requirementId from project
      * @param organizationId that offer an resource
@@ -468,7 +465,7 @@ public class ResourceService {
      * @return ResourceMatch Entity
      */
     @Transactional
-    public ResourceMatch createOfferResourceOffer(BigDecimal amount, Long offerId, Long requirementId,
+    public ResourceMatch createOfferResourceOffer(Long offerId, Long requirementId,
                                           Long organizationId, Long projectId) throws ResourceException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
@@ -486,6 +483,22 @@ public class ResourceService {
             throw new ResourceException("Organization cannot offer resources to own project", EnumResourceException.USER_NOT_AUTHORIZED);
         }
 
+        BigDecimal amount;
+
+        // if the offer has more items than the requirement --> use the requirement amount
+        if (resourceOffer.getAmount().compareTo(resourceRequirement.getAmount()) > 0) {
+            amount = resourceRequirement.getAmount();
+
+            // TODO if empty what should we do?
+            resourceOffer.setAmount(resourceOffer.getAmount().subtract(resourceRequirement.getAmount()));
+            resourceRequirement.setAmount(new BigDecimal(0));
+        } else {
+            amount = resourceOffer.getAmount();
+
+            // TODO if empty what should we do?
+            resourceRequirement.setAmount(resourceRequirement.getAmount().subtract(resourceOffer.getAmount()));
+            resourceOffer.setAmount(new BigDecimal(0));
+        }
 
         resourceMatch.setResourceOffer(resourceOffer);
         resourceMatch.setResourceRequirement(resourceRequirement);
@@ -494,6 +507,8 @@ public class ResourceService {
         resourceMatch.setAmount(amount);
         resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_OFFERED);
 
+        resourceRequirementRepository.save(resourceRequirement);
+        resourceOfferRepository.save(resourceOffer);
         resourceMatchRepository.save(resourceMatch);
 
         return resourceMatch;
