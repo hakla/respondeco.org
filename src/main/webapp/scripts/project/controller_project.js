@@ -275,8 +275,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.currentOrgRating = 0;
     $scope.currentOrgRatingComment = "";
 
+    $scope.ratingSuccess = null;
     $scope.projectRatingError = null;
-    $scope.projectRatingErrorMessage = null;
     $scope.orgRatingError = null;
 
     $scope.organizationRatings = new Object();
@@ -319,19 +319,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             Project.rateProject({pid: $routeParams.id},
                 {matchid: $scope.ratedMatch, rating: $scope.shownRating, comment: $scope.ratingComment},
                 function() {
-                    $scope.rateSucces = "SUCCESS";
-                    $scope.ratingComment = "";
+                    $scope.ratingSuccess = "SUCCESS";
+                    $scope.projectRatingError = null;
                     $scope.hideRating();
                     $scope.clearRating();
-                    //get new aggregated rating
                     $scope.refreshProjectRating();
                 },
                 function(error) {
                     $scope.projectRatingError = "ERROR";
+                    $scope.ratingSuccess = null;
                     if(error.status == 400) {
                         console.log("translating " + error.data.key);
                         $translate(error.data.key).then(function(translated) {
-                            $("#projectRatingError").text(translated);
+                            $scope.setProjectRatingError(translated);
                         });
                     }
                 });
@@ -346,7 +346,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.currentMatchId = id;
         var match = $scope.resourceMatches[id];
         $scope.currentOrgRating = $scope.organizationRatings[match.organization.id].rating;
-        $('#rateMatchModal').modal('show');
+        $scope.showOrgRatingModal();
     }
 
     $scope.rateOrganization = function() {
@@ -365,7 +365,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 if(error.status == 400) {
                     console.log("translating " + error.data.key);
                     $translate(error.data.key).then(function(translated) {
-                        $("#orgRatingError").text(translated);
+                        $scope.setOrgRatingError(translated);
                     });
                 }
 
@@ -373,7 +373,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     }
 
     $scope.clearRating = function() {
-        $('#rateMatchModal').modal('hide');
+        $scope.hideOrgRatingModal();
         $scope.isRating = false;
         $scope.ratingComment = null;
         $scope.currentMatchId = null;
@@ -381,6 +381,22 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.currentOrgRatingComment = null;
         $scope.projectRatingError = null;
         $scope.orgRatingError = null;
+    }
+
+    $scope.showOrgRatingModal = function() {
+        $('#rateMatchModal').modal('show');
+    }
+
+    $scope.hideOrgRatingModal = function() {
+        $('#rateMatchModal').modal('hide');
+    }
+
+    $scope.setProjectRatingError = function(error) {
+        $("#projectRatingError").text(error);
+    }
+
+    $scope.setOrgRatingError = function(error) {
+        $("#orgRatingError").text(error);
     }
 
 });

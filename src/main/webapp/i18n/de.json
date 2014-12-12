@@ -188,6 +188,7 @@
         "match": {
             "dorate": "Bewerten Sie die Interaktion"
         },
+        "success": "Ihre Bewertung wurde abgegeben!",
         "error": {
             "general": "Es ist ein Fehler aufgetreten.",
             "cannotrateown": "Sie können Ihre eigene Organisation nicht bewerten.",

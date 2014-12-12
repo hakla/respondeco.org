@@ -24,6 +24,14 @@
                         <rating max="5" readonly="!canRate" on-leave="overStar = null"
                                 ng-click="showRating()" ng-model="shownRating"></rating>
                     </div>
+                    <div class="row" ng-show="ratingSuccess">
+                        <div class="col-md-12">
+                            <div id="projectRatingSuccess" class="alert alert-success"
+                                 translate="rating.success">
+                                You have successfully rated!
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div ng-show="isRating">
                     <div class="row">
@@ -45,9 +53,9 @@
                                     translate="rating.notnow">Not now</button>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" ng-show="projectRatingError">
                         <div class="col-md-12">
-                            <div id="projectRatingError" class="alert alert-danger" ng-show="projectRatingError"
+                            <div id="projectRatingError" class="alert alert-danger"
                                  translate="rating.error.general">
                                 <strong>An error has occured!</strong>
                                 Sorry, something went wrong.
