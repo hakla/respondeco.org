@@ -14,6 +14,8 @@ describe('Resource Controller Tests ', function () {
             ProjectService = Project;
             OrganizationService = Organization;
 
+
+
             $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, 
                     Resource: ResourceService, Account: AccountService, Project:ProjectService, Organization: OrganizationService});
         }));
@@ -42,13 +44,15 @@ describe('Resource Controller Tests ', function () {
             expect(OrganizationService.get).toHaveBeenCalled();
             OrganizationService.get.calls.mostRecent().args[1]({
                 organization: {
-                    id: "1",
+                    id: 1,
                     name: "test"
                 }
             });
 
-            expect($scope.organization).toEqual( {id:1, name:"test"} );
-
+            expect($scope.organization).toEqual( {
+                organization: {
+                    id:1, name:"test"}
+                } );
         });
 
          it('should get Account for requests', function() {
@@ -208,15 +212,16 @@ describe('Resource Controller Tests ', function () {
               "organizationId": 1
             }
 
-            spyOn(ResourceService, "save");
+            $scope.isNew = false;
+
+            spyOn(ResourceService, "update");
 
             $scope.create();
 
-            expect(ResourceService.save).toHaveBeenCalled();
-            expect(ResourceService.save).toHaveBeenCalledWith($scope.resource, jasmine.any(Function), jasmine.any(Function));
+            expect(ResourceService.update).toHaveBeenCalledWith($scope.resource, jasmine.any(Function), jasmine.any(Function));
 
             //Simulate error callback
-            ResourceService.save.calls.mostRecent().args[2]({
+            ResourceService.update.calls.mostRecent().args[2]({
                 data: {
                     error: "Error"
                 }
@@ -341,15 +346,19 @@ describe('Resource Controller Tests ', function () {
         });
         
         it('should openStartDate', function() {
-            $scope.openStart();
+            var eventMock = { stopPropagation: function() {}, preventDefault: function() {}, stopImmediatePropagation: function() {} }
+
+            $scope.openStart(eventMock);
 
             expect($scope.openedStartDate).toBe(true);
         });
 
         it('should open EndDate', function() {
-            $scope.openEnd();
+            var eventMock = { stopPropagation: function() {}, preventDefault: function() {}, stopImmediatePropagation: function() {} }
 
-            expect($scope.openendEndDate).toBe(true);
+            $scope.openEnd(eventMock);
+
+            expect($scope.openedEndDate).toBe(true);
         });
 
         it('should redirect to own resources', function() {
@@ -358,6 +367,13 @@ describe('Resource Controller Tests ', function () {
             expect(location.path()).toEqual('/ownresource');
         });
 
+        it('should map tags', function() {
+            var tags = ["test", "hallo", "computer"];
+
+            var mappedTags = $scope.mapTags(tags);
+
+            expect(mappedTags).toEqual([{name:'test'}, {name:'hallo'}, {name:'computer'}]);
+        });
 
 
     });

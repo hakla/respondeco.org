@@ -28,8 +28,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		Account.get(null, function(account) {
 	  		$scope.orgId = account.organizationId;
 
-	  		console.log(account);
-
 	  		if($location.path() === '/ownresource') {
 		    	Resource.getByOrgId({
 		        	id: $scope.orgId
@@ -49,11 +47,11 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		if($location.path() === '/requests') {
 			$scope.loadRequests();
 		}
+
+		if($scope.isNew == false) {
+			$scope.update(id);
+		}
 	};
-	
-  	
-	$scope.getAccount();
-	
 
 	//Claim Resource
 	$scope.updateProjects = function() {
@@ -121,9 +119,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('organization/' + $scope.orgId);
 	}
 
-
-	
-
 	//DatePicker
 	$scope.openedStartDate = false;
     $scope.openedEndDate = false;
@@ -151,7 +146,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
-		console.log($scope.resourceSearch.tags);
 		Resource.query({
 				name: $scope.resourceSearch.name,
 				commercial: $scope.resourceSearch.isCommercial
@@ -166,7 +160,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
         $scope.resource.startDate = new XDate($scope.resource.startDate).toString("yyyy-MM-dd");
         $scope.resource.endDate = new XDate($scope.resource.endDate).toString("yyyy-MM-dd");
 
-		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name});
+		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name}); //object-array to string-array
 
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource,
 		function() {
@@ -180,8 +174,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.update = function(id) {
 		Resource.get({id: id}, function(resource) {
 			$scope.resource = resource;
-			$scope.selectedTags = $.map($scope.resource.resourceTags, function(tag) {return {name: tag}}); //string-array to object-array
 
+			$scope.selectedTags = $.map($scope.resource.resourceTags, function(tag) {return {name: tag}}); //string-array to object-array
 		}, function() {
 			$scope.redirectToResource('new');
 		});
@@ -190,10 +184,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.clear = function() {
 		$scope.resource = {id: null, name: null, description: null, resourceTags: [],
 			amount: null, startDate: null, endDate: null, isCommercial: false, isRecurrent: false};
-	}
-
-	if($scope.isNew == false) {
-		$scope.update(id);
 	}
 
 	var deleteState = false;
@@ -207,5 +197,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
             $scope.resources = Resource.getByOrgId({id:$scope.orgId});
         });
     };
+
+	$scope.getAccount();
 
 });
