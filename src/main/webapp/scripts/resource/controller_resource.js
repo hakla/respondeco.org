@@ -19,69 +19,74 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
 
-	var orgId;
-	var claim = {};
+	$scope.orgId = null;
+	$scope.claim = {};
 
 	$scope.resources = Resource.query();
 
-  	Account.get(null, function(account) {
-  		orgId = account.organizationId;
+	$scope.getAccount = function() {
+		Account.get(null, function(account) {
+	  		$scope.orgId = account.organizationId;
 
-  		if($location.path() === '/ownresource') {
-		      $scope.resources = Resource.getByOrgId({
-		        id: orgId
-		      });
-		  } else {
-		    $scope.resources = Resource.query();
-		 }
+	  		console.log(account);
 
+	  		if($location.path() === '/ownresource') {
+		    	Resource.getByOrgId({
+		        	id: $scope.orgId
+		      	}, function(data) {
+		      		$scope.resources = data;
+		      	});
+		  	} else {
+		    	$scope.resources = Resource.query();
+			}
+
+
+			$scope.organization = Organization.get({id: account.organizationId}, function(organization) {
+				$scope.organization = organization;
+			});
+		});
 
 		if($location.path() === '/requests') {
-			Account.get(null, function(account) {
-				orgId = account.organizationId;
-				loadRequests();
-			});
+			$scope.loadRequests();
 		}
-  	});
-
+	};
+	
+  	
+	$scope.getAccount();
 	
 
 	//Claim Resource
-	var updateProjects = function() {
-		Account.get(null, function(account) {
-			orgId = account.organizationId;
-
-			$scope.projects = Project.getProjectsByOrgId({organizationId:orgId}, function() {
-				console.log($scope.projects);
-			});
+	$scope.updateProjects = function() {
+		$scope.projects = Project.getProjectsByOrgId({organizationId:$scope.orgId}, function() {
+			console.log($scope.projects);
 		});
 	}
 
 	$scope.selectProject = function(project) {
 		$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
 			$scope.showRequirements = true;
-			claim.projectId = project.id;
+			$scope.claim.projectId = project.id;
 		});
 	}
 
 	$scope.selectRequirement = function(requirement) {
-		claim.resourceRequirementId = requirement.id;
-		claim.organizationId = requirement.organizationId;
+		$scope.claim.resourceRequirementId = requirement.id;
+		$scope.claim.organizationId = requirement.organizationId;
 	}
 
 	$scope.claimResource = function(res) {
-		claim.resourceOfferId = res.id;
-		updateProjects();
+		$scope.claim.resourceOfferId = res.id;
+		$scope.updateProjects();
 	}
 
 	$scope.clearClaimResource = function() {
 		$scope.showRequirements = false;
-		claim = {organizationId: null, projectId: null, resourceOfferId: null, resourceRequirementId: null};
+		$scope.claim = {organizationId: null, projectId: null, resourceOfferId: null, resourceRequirementId: null};
 		$scope.resourceRequirements = [];
 	}
 
 	$scope.sendClaimRequest = function() {
-		Resource.claimResource(claim, function() {
+		Resource.claimResource($scope.claim, function() {
 			$scope.clearClaimResource();
 		}, function(data) {
 			$scope.claimError = data.key;
@@ -94,37 +99,30 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.acceptRequest = function(request) {
 		Resource.updateRequest({id:request.matchId},{accepted:true}, function() {
-			loadRequests();
+			$scope.loadRequests();
 		});
 	}
 
 	$scope.declineRequest = function(request) {
 		Resource.updateRequest({id:request.matchId},{accepted:false}, function() {
-			loadRequests();
+			$scope.loadRequests();
 		});
 	}
 
-	var loadRequests = function() {
-
-		$scope.requests = Organization.getResourceRequests({id:orgId}, function() {
-
+	$scope.loadRequests = function() {
+		Organization.getResourceRequests({id:$scope.orgId}, function(data) {
+			$scope.requests = data;
 		}, function() {
 			console.log("error");
 		});
 	}
 
 	$scope.redirectToOrganization = function() {
-		$location.path('organization/' + orgId);
+		$location.path('organization/' + $scope.orgId);
 	}
 
 
-	Account.get(null, function(account) {
-		$scope.resource.organizationId = account.organizationId;
-
-		$scope.organization = Organization.get({id: account.organizationId}, function(organization) {
-			$scope.organization = organization;
-		});
-	});
+	
 
 	//DatePicker
 	$scope.openedStartDate = false;
@@ -206,7 +204,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
         Resource.delete({
             id: id
         }, function() {
-            $scope.resources = Resource.getByOrgId({id:orgId});
+            $scope.resources = Resource.getByOrgId({id:$scope.orgId});
         });
     };
 
