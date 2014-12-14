@@ -161,11 +161,11 @@ public class OrganizationService {
     public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
         User user = userService.getUserWithAuthorities();
         User member = userRepository.findOne(userId);
-        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
 
         if(member == null) {
             throw new NoSuchUserException(String.format("User %s does not exist", userId));
         }
+        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
         }
@@ -174,6 +174,7 @@ public class OrganizationService {
         }
         log.debug("Deleting member from organization", user.getLogin(), organization.getName());
         member.setOrganization(null);
+        userRepository.save(member);
     }
 
     public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException {
@@ -199,7 +200,7 @@ public class OrganizationService {
             // find the owner and remove him from the list
             // @TODO set the orgId of the owner when set as owner
             for (User user: users) {
-                if (organization.getOwner().equals(user.getLogin())) {
+                if (organization.getOwner().equals(user)) {
                     owner = user;
                     break;
                 }
