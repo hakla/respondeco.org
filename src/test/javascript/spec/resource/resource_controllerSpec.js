@@ -14,8 +14,6 @@ describe('Resource Controller Tests ', function () {
             ProjectService = Project;
             OrganizationService = Organization;
 
-
-
             $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, 
                     Resource: ResourceService, Account: AccountService, Project:ProjectService, Organization: OrganizationService});
         }));
@@ -51,8 +49,9 @@ describe('Resource Controller Tests ', function () {
 
             expect($scope.organization).toEqual( {
                 organization: {
-                    id:1, name:"test"}
-                } );
+                    id:1, name:"test"
+                }
+            });
         });
 
          it('should get Account for requests', function() {
@@ -366,16 +365,6 @@ describe('Resource Controller Tests ', function () {
             $scope.redirectToOwnResource();
             expect(location.path()).toEqual('/ownresource');
         });
-
-        it('should map tags', function() {
-            var tags = ["test", "hallo", "computer"];
-
-            var mappedTags = $scope.mapTags(tags);
-
-            expect(mappedTags).toEqual([{name:'test'}, {name:'hallo'}, {name:'computer'}]);
-        });
-
-
     });
 
 

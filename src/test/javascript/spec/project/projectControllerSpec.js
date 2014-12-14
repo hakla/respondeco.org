@@ -104,5 +104,33 @@ describe('Project Controller Tests ', function() {
             }]);
         });
 
+        it('should clear the resource requirement', function() {
+
+            scope.resource = {name: 'test', amount: 2, isEssential: true};
+            scope.clearRequirement();
+
+            expect(scope.resource).toEqual({resourceTags:[], isEssential: false});
+        });
+
+        it('should remove a requirement', function() {
+            scope.project.resourceRequirements = [{name:'res1'}, {name:'res2'}];
+
+            scope.removeRequirement(1);
+
+            expect(scope.project.resourceRequirements).toEqual([{name:'res1'}]);
+        });
+
+        it('should edit a requirement', function() {
+            scope.showResourceModal = function() {}; //skip opening the resource modal
+
+            scope.project.resourceRequirements = [{name: 'res1'}, {name:'res2'}];
+
+            scope.editRequirement(0);
+
+            expect(scope.resource).toEqual({name: 'res1'});
+
+
+        });
+
     });
 });
