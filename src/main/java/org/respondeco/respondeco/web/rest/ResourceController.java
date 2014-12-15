@@ -49,8 +49,6 @@ public class ResourceController {
     /**
      * Return all ResourceOffers
      * @param name
-     * @param organization
-     * @param tags
      * @param commercial
      * @param page
      * @param pageSize
@@ -193,7 +191,8 @@ public class ResourceController {
                 resourceOfferDTO.getIsRecurrent(),
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags()
+                resourceOfferDTO.getResourceTags(),
+                resourceOfferDTO.getLogoId()
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
@@ -237,7 +236,8 @@ public class ResourceController {
                 resourceOfferDTO.getIsRecurrent(),
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags()
+                resourceOfferDTO.getResourceTags(),
+                resourceOfferDTO.getLogoId()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
         } catch (GeneralResourceException e){

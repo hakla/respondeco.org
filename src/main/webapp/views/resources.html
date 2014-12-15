@@ -26,10 +26,10 @@
         <ul class="resources">
             <li class="resource row" ng-repeat="resource in resources">
                 <div class="col-md-1">
-                    <img src="" alt="">
+                    <uploaded-image name="resource.logo.id"></uploaded-image>
                 </div>
                 <div class="pull-right col-md-7">
-                    <div class="col-md-8 on-hover">
+                    <div class="col-md-8">
                         {{ resource.description }}
                     </div>
                     <div class="col-md-4 on-hover">
@@ -41,7 +41,7 @@
                 <h2 class="col-md-4">
                     {{ resource.name }}
                     <span ng-hide="resource.amount == 1">({{ resource.amount }})</span>
-                    <sup class="on-hover">
+                    <sup>
                         <small>
                             {{ resource.startDate }} - {{ resource.endDate }}
                         </small>
