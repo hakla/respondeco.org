@@ -7,7 +7,8 @@ respondecoApp.factory('Project', function($resource, $http) {
         'getProjectRequirements' : {method: 'GET', isArray:true, url: 'app/rest/projects/:id/resourceRequirements'},
         'getResourceMatchesByProjectId' : {method: 'GET', isArray:true, url: 'app/rest/projects/:id/resourcematches'},
         'getAggregatedRating' : {method: 'GET', url: 'app/rest/projects/:pid/ratings'},
-        'rateProject' : {method: 'POST', url: 'app/rest/projects/:pid/ratings'}
+        'rateProject' : {method: 'POST', url: 'app/rest/projects/:pid/ratings'},
+        'editable' : {method: 'GET', url: 'app/rest/projects/:id/editable', ignoreAuthModule: true}
     });
 }).factory('ResourceRequirement', function($resource) {
     return $resource('app/rest/resourceRequirements', {})

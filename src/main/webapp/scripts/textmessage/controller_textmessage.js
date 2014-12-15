@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('TextMessageController', function ($scope, TextMessage, UserNames) {
+respondecoApp.controller('TextMessageController', function ($scope, TextMessage, UserNames, $rootScope) {
 
         $scope.textMessageToSend = {
             receiver: "",
@@ -100,6 +100,18 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
         };
 
         $scope.viewMessage = function(message) {
+            // mark the selected message as read
+            TextMessage.markRead({
+                id: message.id
+            }, function() {
+                // reload the messages and the amount of new messages
+                TextMessage.countNewMessages(function(amount) {
+                    $rootScope.newMessages = amount[0];
+                });
+
+                $scope.refreshTextMessages();
+            });
+
             $scope.replyform.$setPristine();
             $scope.viewedTextMessage = message;
         }

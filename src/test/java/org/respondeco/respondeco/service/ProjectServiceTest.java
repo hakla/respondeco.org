@@ -62,6 +62,9 @@ public class ProjectServiceTest {
     @Mock
     private ResourceService resourceService;
 
+    @Mock
+    private ResourceMatchRepository resourceMatchRepository;
+
     private ProjectService projectService;
     private Project basicProject;
     private User defaultUser;
@@ -78,7 +81,8 @@ public class ProjectServiceTest {
                 userRepositoryMock,
                 propertyTagServiceMock,
                 resourceService,
-                imageRepositoryMock);
+                imageRepositoryMock,
+                resourceMatchRepository);
 
 
         defaultOrganization = new Organization();
@@ -117,7 +121,7 @@ public class ProjectServiceTest {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
-        projectService.create("test project", "test purpose", false, null, null, null, null, null);
+        projectService.create("test project", "test purpose", false, null,  null, null, null);
 
         verify(userService, times(1)).getUserWithAuthorities();
 
@@ -138,7 +142,6 @@ public class ProjectServiceTest {
                 "test purpose",
                 true,
                 LocalDate.now(),
-                LocalDate.now().plusDays(10),
                 null,
                 null,
                 null);
@@ -162,60 +165,6 @@ public class ProjectServiceTest {
                 "test purpose",
                 true,
                 null,
-                LocalDate.now(),
-                null,
-                null,
-                null);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseIsConcreteAndEndDateIsNull() throws Exception {
-
-        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        projectService.create(
-                "test project",
-                "test purpose",
-                true,
-                LocalDate.now(),
-                null,
-                null,
-                null,
-                null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseEndDateIsBeforeNow() throws Exception {
-
-        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        projectService.create(
-                "test project",
-                "test purpose",
-                true,
-                LocalDate.now(),
-                LocalDate.now().minusDays(10),
-                null,
-                null,
-                null);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSaveProject_shouldThrowExceptionBecauseEndDateIsBeforeStartDate() throws Exception {
-
-        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-
-        projectService.create(
-                "test project",
-                "test purpose",
-                true,
-                LocalDate.now().plusDays(15),
-                LocalDate.now().plusDays(10),
                 null,
                 null,
                 null);
@@ -232,25 +181,6 @@ public class ProjectServiceTest {
                 "modified name",
                 "modified name",
                 true,
-                null,
-                LocalDate.now(),
-                null,
-                null,
-                null);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testUpdateProject_shouldThrowExceptionBecauseIsConcreteAndEndDateIsNull() throws Exception {
-        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(basicProject);
-
-        projectService.update(basicProject.getId(),
-                "modified name",
-                "modified name",
-                true,
-                LocalDate.now(),
                 null,
                 null,
                 null,
@@ -270,26 +200,6 @@ public class ProjectServiceTest {
                 "modified name",
                 true,
                 LocalDate.now().minusDays(5),
-                LocalDate.now().minusDays(3),
-                null,
-                null,
-                null);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testUpdateProject_shouldThrowExceptionBecauseEndDateIsBeforeStartDate() throws Exception {
-
-        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
-        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(basicProject);
-
-        projectService.update(basicProject.getId(),
-                "modified name",
-                "modified name",
-                true,
-                LocalDate.now().plusDays(5),
-                LocalDate.now().plusDays(3),
                 null,
                 null,
                 null);
@@ -306,7 +216,6 @@ public class ProjectServiceTest {
                 "modified name",
                 "modified name",
                 false,
-                null,
                 null,
                 null,
                 null,
@@ -340,7 +249,6 @@ public class ProjectServiceTest {
                 null,
                 null,
                 null,
-                null,
                 null);
     }
 
@@ -363,7 +271,6 @@ public class ProjectServiceTest {
                 "modified name",
                 "modified name",
                 false,
-                null,
                 null,
                 null,
                 null,

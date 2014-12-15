@@ -2,13 +2,11 @@ package org.respondeco.respondeco.web.rest;
 
 import org.mockito.Mock;
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.repository.AuthorityRepository;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.PersistentTokenRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -57,9 +55,12 @@ public class UserControllerTest {
     @Mock
     private AuthorityRepository authorityRepository;
 
+    @Mock
+    private TextMessageService textMessageService;
+
     @Before
     public void setup() {
-        UserController userController = new UserController(userRepository,userService);
+        UserController userController = new UserController(userRepository,userService, textMessageService);
         ReflectionTestUtils.setField(userController, "userRepository", userRepository);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }

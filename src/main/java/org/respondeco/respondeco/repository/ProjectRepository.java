@@ -1,5 +1,7 @@
 package org.respondeco.respondeco.repository;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.PropertyTag;
@@ -7,8 +9,10 @@ import org.respondeco.respondeco.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.TemporalType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -66,5 +70,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     public List<Project> findByOrganizationAndTags(
             @Param("orgId") Long orgId,
             @Param("tags")  Collection<String> tags, Pageable pageable);
+
+    public List<Project> findByStartDate(LocalDate date);
 
 }

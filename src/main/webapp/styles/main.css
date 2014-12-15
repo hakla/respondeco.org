@@ -8288,3 +8288,29 @@ uploaded-image div, [uploaded-image] div {
 .resource-search-container ul.resources li:hover .on-hover {
   opacity: 1;
 }
+
+/* line 402, ../../scss/main.scss */
+.approved {
+  position: absolute;
+  height: 150px;
+  right: 150px;
+  top: -165px;
+}
+
+/* line 409, ../../scss/main.scss */
+.dropdown-toggle {
+  border-radius: 0 !important;
+}
+
+/* line 414, ../../scss/main.scss */
+.dropdown .badge {
+  background-color: #C40000;
+  top: -1px;
+  position: relative;
+  left: 12px;
+}
+
+/* line 422, ../../scss/main.scss */
+.highlight, .highlight td {
+  background-color: #FFF37B !important;
+}

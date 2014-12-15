@@ -1,6 +1,6 @@
 <div class="row">
     <div class="modal-header">
-        <button class="btn btn-primary pull-right" ng-click='edit()' translate='general.edit'>Edit</button>
+        <button class="btn btn-primary pull-right" ng-click='edit()' translate='general.edit' ng-show='editable'>Edit</button>
         <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
         <h2 translate="project.details.title" translate-values="{project: '{{project.name}}'}">Project overview for {{project.name}}</h2>
     </div>
@@ -65,14 +65,12 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="remaining" ng-show="remainingDays >= 0 && project.concrete == true">
+            <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
+            <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
                 <strong>{{remainingDays}} Tage verbleiben</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
-            <p class="remaining" ng-show="remainingDays == true">
-                <strong translate="project.started">Project started already. Come back later to keep on track!</strong>
-            </p>
             <div class="resources">
                 <strong>{{collected}}% Ressourcen gesammelt</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>

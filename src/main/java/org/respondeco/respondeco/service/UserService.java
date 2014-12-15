@@ -205,4 +205,8 @@ public class UserService {
         user.setOrganization(organizationRepository.findOne(id));
         userRepository.save(user);
     }
+
+    public User findUserByLogin(String loginName) {
+        return userRepository.findByLogin(loginName);
+    }
 }

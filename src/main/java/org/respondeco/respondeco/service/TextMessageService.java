@@ -44,12 +44,20 @@ public class TextMessageService {
             throw new IllegalArgumentException("Content must not be empty");
         }
         User currentUser = userService.getUserWithAuthorities();
-        User receivingUser = userService.getUser(receiver.getId());
-        if(currentUser.equals(receivingUser)) {
-            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver.getId()));
+        User receivingUser = null;
+
+        if (receiver.getId() != null) {
+            receivingUser = userService.getUser(receiver.getId());
+        } else if (receiver.getLogin() != null) {
+            receivingUser = userService.findUserByLogin(receiver.getLogin());
         }
+
         if(receivingUser == null) {
             throw new NoSuchUserException(String.format("Receiver %s does not exist", receiver));
+        }
+
+        if(currentUser.equals(receivingUser)) {
+            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver.getId()));
         }
         TextMessage newTextMessage = new TextMessage();
         newTextMessage.setSender(currentUser);
@@ -95,7 +103,8 @@ public class TextMessageService {
                 message.getId(),
                 new UserDTO(message.getSender()),
                 message.getContent(),
-                message.getTimestamp());
+                message.getTimestamp(),
+                !message.isRead());
     }
 
     private List<TextMessageResponseDTO> textMessagesToDTO(List<TextMessage> messages) {
@@ -106,4 +115,13 @@ public class TextMessageService {
         return result;
     }
 
+    public Long countNewMessages(User user) {
+        return textMessageRepository.countByReceiverAndActiveIsTrueAndReadIsFalse(user);
+    }
+
+    public void setRead(Long id) {
+        TextMessage message = textMessageRepository.findOne(id);
+        message.setRead(true);
+        textMessageRepository.save(message);
+    }
 }

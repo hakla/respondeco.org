@@ -32,7 +32,11 @@ respondecoApp.controller('LanguageController', function($scope, $translate, Lang
     });
 });
 
-respondecoApp.controller('MenuController', function($scope) {});
+respondecoApp.controller('MenuController', function($rootScope, TextMessage) {
+    TextMessage.countNewMessages(function(amount) {
+        $rootScope.newMessages = amount[0];
+    });
+});
 
 respondecoApp.controller('LoginController', function($scope, $location, AuthenticationSharedService) {
     $scope.rememberMe = true;

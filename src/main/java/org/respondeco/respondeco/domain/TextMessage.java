@@ -33,4 +33,7 @@ public class TextMessage extends AbstractAuditingEntity implements Serializable 
     @Column(name = "content")
     private String content;
 
+    @Column(name = "is_read")
+    private boolean read;
+
 }

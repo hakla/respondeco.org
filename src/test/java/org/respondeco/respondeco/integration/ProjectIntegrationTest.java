@@ -85,6 +85,9 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
     private RatingService ratingService;
 
     @Inject
+    private ResourceMatchRepository resourceMatchRepository;
+
+    @Inject
     private PlatformTransactionManager txManager;
 
     private ProjectService projectService;
@@ -103,8 +106,9 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 userRepository,
                 propertyTagService,
                 resourceService,
-                imageRepository));
-        ProjectController projectController = new ProjectController(projectService, resourceService, ratingService);
+                imageRepository,
+                resourceMatchRepository));
+        ProjectController projectController = new ProjectController(projectService, resourceService, ratingService, userServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -145,7 +149,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -161,7 +164,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -194,7 +196,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
@@ -233,7 +234,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
 
         projectRequestDTO.setConcrete(true);
         projectRequestDTO.setStartDate(LocalDate.now());
-        projectRequestDTO.setEndDate(LocalDate.now().plusDays(5));
 
         ResultCaptor<Project> projectCaptor = ResultCaptor.forType(Project.class);
         doAnswer(projectCaptor).when(projectService).create(
@@ -241,7 +241,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -263,8 +262,7 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 .andExpect(jsonPath("$.name").value(projectRequestDTO.getName()))
                 .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()))
                 .andExpect(jsonPath("$.concrete").value(true))
-                .andExpect(jsonPath("$.startDate").value(projectRequestDTO.getStartDate().toString("yyyy-MM-dd")))
-                .andExpect(jsonPath("$.endDate").value(projectRequestDTO.getEndDate().toString("yyyy-MM-dd")));
+                .andExpect(jsonPath("$.startDate").value(projectRequestDTO.getStartDate().toString("yyyy-MM-dd")));
 
     }
 
@@ -274,7 +272,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
 
         projectRequestDTO.setConcrete(true);
         projectRequestDTO.setStartDate(LocalDate.now().minusDays(5));
-        projectRequestDTO.setEndDate(LocalDate.now().minusDays(3));
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -289,7 +286,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
 
         projectRequestDTO.setConcrete(true);
         projectRequestDTO.setStartDate(LocalDate.now().plusDays(5));
-        projectRequestDTO.setEndDate(LocalDate.now().plusDays(3));
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -315,7 +311,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -354,7 +349,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -394,7 +388,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -439,7 +432,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -471,7 +463,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -508,7 +499,6 @@ public class ProjectIntegrationTest extends AbstractTransactionalJUnit4SpringCon
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());

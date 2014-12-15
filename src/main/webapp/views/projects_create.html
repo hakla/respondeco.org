@@ -1,24 +1,16 @@
 <div>
     <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" ng-submit="create()">
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-        <div class="modal-header clearfix">
+        <div class="modal-header clearfix row">
             <div class="col-md-3">
                 <h4 translate="project.createProject.title">Creating a project</h4>
             </div>
             <div class="col-md-9">
-                <div class="col-md-4 col-md-offset-1">
+                <div class="col-md-4 col-md-offset-5">
                     <div class="input-group" ng-show="project.concrete == true">
                         <input class="form-control" placeholder="{{'project.createProject.startDate.placeholder' | translate}}" ng-model="project.startDate" name="startDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedStartDate" close-text="close">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="input-group" ng-show="project.concrete == true">
-                        <input class="form-control" placeholder="{{'project.createProject.endDate.placeholder' | translate}}" ng-model="project.endDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedEndDate" close-text="close">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                         </span>
                     </div>
                 </div>

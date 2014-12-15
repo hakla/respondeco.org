@@ -13,7 +13,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         purpose: null,
         concrete: false,
         startDate: null,
-        endDate: null,
         logo: null,
         propertyTags: [],
         resourceRequirements: []
@@ -60,7 +59,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     $scope.openedStartDate = false;
-    $scope.openedEndDate = false;
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1
@@ -71,25 +69,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.openedStartDate = true;
     };
 
-    $scope.openEnd = function($event) {
-        $event.stopPropagation();
-        $scope.openedEndDate = true;
-    };
-
     $scope.onUploadComplete = function(fileItem, response) {
         $scope.project.logo = response;
     };
 
     $scope.create = function() {
         var startDate = $scope.project.startDate || null;
-        var endDate = $scope.project.endDate || null;
 
         if (startDate != null) {
             startDate = new XDate(startDate).toString("yyyy-MM-dd");
-        }
-
-        if (endDate != null) {
-            endDate = new XDate(endDate).toString("yyyy-MM-dd");
         }
 
         var actualTags;
@@ -109,7 +97,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             purpose: $scope.project.purpose,
             concrete: $scope.project.concrete,
             startDate: startDate,
-            endDate: endDate,
             logo: $scope.project.logo,
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
@@ -181,6 +168,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
             });
         });
+
+        Project.editable({
+            id: id
+        }, function() {
+            $scope.editable = true;
+        }, function() {
+            $scope.editable = false;
+        });
     };
 
     var calculateCollected = function() {
@@ -227,7 +222,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             purpose: null,
             concrete: false,
             startDate: null,
-            endDate: null,
             projectLogo: null
         };
         $location.path('/projects');

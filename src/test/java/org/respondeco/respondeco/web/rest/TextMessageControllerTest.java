@@ -88,13 +88,13 @@ public class TextMessageControllerTest {
 
         textMessageService = spy(new TextMessageService(textMessageRepositoryMock, userServiceMock, userRepositoryMock));
         TextMessageController textMessageController =
-                new TextMessageController(textMessageService);
+                new TextMessageController(textMessageService, userServiceMock);
         this.restTextMessageMockMvc = MockMvcBuilders.standaloneSetup(textMessageController).build();
 
         textMessageServiceAllMocked = new TextMessageService(textMessageRepositoryMock, userServiceMock,
                 userRepositoryMock);
         TextMessageController textMessageControllerAllMocked =
-                new TextMessageController(textMessageServiceAllMocked);
+                new TextMessageController(textMessageServiceAllMocked, userServiceMock);
         this.restTextMessageMockMvcAllMocked = MockMvcBuilders.standaloneSetup(textMessageControllerAllMocked).build();
 
     }
