@@ -2,6 +2,7 @@
     "global": {
         "title": "respondeco",
         "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
+        "backbutton": "Zurück",
         "menu": {
             "home": "Startseite",
             "organization": "Organisation",

@@ -365,6 +365,20 @@ describe('Resource Controller Tests ', function () {
             $scope.redirectToOwnResource();
             expect(location.path()).toEqual('/ownresource');
         });
+
+        it('should return if a resource is claimable or not', function() {
+            $scope.orgId = 1;
+            var resource = {name:'test', organization: {id:'1'}};
+
+            var claimable = $scope.isClaimable(resource);
+
+            expect(claimable).toBe(false);
+
+            var resource = {name:'test', organization: {id:'2'}};
+            claimable = $scope.isClaimable(resource);
+
+            expect(claimable).toBe(true);
+        });
     });
 
 

@@ -33,7 +33,7 @@
                         {{ resource.description }}
                     </div>
                     <div class="col-md-4 on-hover">
-                        <button ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
+                        <button ng-show="isClaimable(resource)" ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
                             Request resource
                         </button>
                     </div>
@@ -90,12 +90,12 @@
                         </div>
 
                         <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
-                        <ul class="requirements">
+                        <div class="btn-group">
                             <li class="requirements row" ng-repeat="requirement in resourceRequirements">
                                 <input type="checkbox" ng-click="selectRequirement(requirement)" > {{requirement.name}} </button>
                             </li>
 
-                        <ul>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearClaimResource()">

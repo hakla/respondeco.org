@@ -246,5 +246,16 @@ angular.module('respondecoApp')
                 }
             }
         };
+    }).directive('backButton', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/backbutton.html',
+            controller: function($scope) {
+                $scope.back = function() {
+                    window.history.back();
+                }
+            }
+        }; 
     });
 

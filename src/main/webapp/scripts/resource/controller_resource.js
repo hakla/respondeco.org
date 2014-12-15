@@ -38,19 +38,20 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		    	$scope.resources = Resource.query();
 			}
 
+			if($location.path() === '/requests') {
+				$scope.loadRequests();
+			}
+
+			if($scope.isNew == false) {
+				$scope.update(id);
+			}
 
 			$scope.organization = Organization.get({id: account.organizationId}, function(organization) {
 				$scope.organization = organization;
 			});
 		});
 
-		if($location.path() === '/requests') {
-			$scope.loadRequests();
-		}
-
-		if($scope.isNew == false) {
-			$scope.update(id);
-		}
+		
 	};
 
 	//Claim Resource
@@ -82,6 +83,18 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$scope.claim = {organizationId: null, projectId: null, resourceOfferId: null, resourceRequirementId: null};
 		$scope.resourceRequirements = [];
 	}
+
+	$scope.isClaimable = function(resource) {
+		var isClaimable = true;
+
+		if(resource.organization.id == $scope.orgId) {
+			isClaimable = false;
+		}
+
+		console.log(resource.name);
+		return isClaimable;
+	}
+
 
 	$scope.sendClaimRequest = function() {
 		Resource.claimResource($scope.claim, function() {
