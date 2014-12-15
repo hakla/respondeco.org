@@ -97,7 +97,7 @@
                             <li ng-repeat="match in requirement.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
                                 <div class="col-md-4 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.amount}}</div>
+                                <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.originalAmount}}</div>
                                 <div class="col-md-4">
                                     <rating max="5" readonly="!canRate" on-leave="overStar = null"
                                             ng-click="rateOrganization(match.matchId, match.organization.id)"

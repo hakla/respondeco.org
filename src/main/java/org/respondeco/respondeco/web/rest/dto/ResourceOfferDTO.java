@@ -25,6 +25,7 @@ import java.util.List;
 @ApiModel(value = "Resource Offer", description = "manage all resource offers")
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourceOfferDTO {
 
     @ApiModelProperty(value = "ID of the given Resource offer")

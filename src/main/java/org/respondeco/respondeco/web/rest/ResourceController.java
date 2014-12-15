@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * ResourceController
  *
- * This REST-Controller handles all requests for /rest/resourceoffers and /rest/resourcerequirements
+ * This REST-Controller handles all requests for resourceoffers and resourcerequirements
  */
 @RestController
 @Transactional
@@ -91,12 +91,14 @@ public class ResourceController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<ResourceOfferDTO> getResourceOffer(@PathVariable Long id) {
+    public ResponseEntity<ResourceOfferResponseDTO> getResourceOffer(@PathVariable Long id) {
         log.debug("REST request to get resource with id " + id);
-        ResponseEntity<ResourceOfferDTO> responseEntity;
+        ResponseEntity<ResourceOfferResponseDTO> responseEntity;
 
         try {
-            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(this.resourceService.getOfferById(id));
+            ResourceOffer resourceOffer = resourceService.getOfferById(id);
+
+            ResourceOfferResponseDTO resourceOfferDTO = ResourceOfferResponseDTO.fromEntity(resourceOffer, null);
             responseEntity = new ResponseEntity<>(resourceOfferDTO, HttpStatus.OK);
 
         } catch (GeneralResourceException e) {
@@ -312,6 +314,12 @@ public class ResourceController {
     }
 
 
+    /**
+     * Creates a new ResourceRequirement
+     * @param resourceRequirementRequestDTO ResourceRequirement to be saved in the db. Wrapped into RequestDTO.
+     * @return ResponseEntity with HttpStatus
+     * @throws Exception
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequirements",
         method = RequestMethod.POST,
@@ -349,6 +357,12 @@ public class ResourceController {
         return result;
     }
 
+    /**
+     * Updates a ResourceRequirement
+     * @param resourceRequirementId id of the resource requirement
+     * @param resourceRequirementRequestDTO update information for the resource requirement
+     * @return ResponseEntity with HttpStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequirements/{resourceRequirementId}",
         method = RequestMethod.PUT,
@@ -383,6 +397,11 @@ public class ResourceController {
         return result;
     }
 
+    /**
+     * Delete a Resource Requirement
+     * @param resourceRequirementId id of the resource requirement
+     * @return ResponseEnetity with HttpStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequirements/{resourceRequirementId}",
         method = RequestMethod.DELETE,
