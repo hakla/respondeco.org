@@ -309,7 +309,7 @@ public class OrganizationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> deleteMember(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteMember(@PathVariable Long id, @PathVariable Long userId) {
         log.debug("REST request to delete Member : {}", userId);
         ResponseEntity<?> responseEntity;
         try {

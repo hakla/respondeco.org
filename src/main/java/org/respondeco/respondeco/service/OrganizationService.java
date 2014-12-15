@@ -165,6 +165,7 @@ public class OrganizationService {
         if(member == null) {
             throw new NoSuchUserException(String.format("User %s does not exist", userId));
         }
+        System.out.println(member);
         Organization organization = organizationRepository.findOne(member.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
