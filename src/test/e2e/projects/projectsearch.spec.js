@@ -12,9 +12,8 @@ describe('e2e: project search', function() {
         searchProjectsPage.navigate();
         browser.waitForAngular();
 
-        searchProjectsPage.nameTextField.sendKeys("admin");
         searchProjectsPage.tagsInput.sendKeys("Umwelt ");
-        searchProjectsPage.searchButton.click();
+        searchProjectsPage.nameTextField.sendKeys("admin\n\n");
         browser.waitForAngular();
         expect(element(by.css('.project-item')).isPresent()).toBe(true);
         expect(browser.getLocationAbsUrl()).toContain('projects');

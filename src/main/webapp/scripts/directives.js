@@ -229,22 +229,40 @@ angular.module('respondecoApp')
                 }
             }
         };
-    }).directive('respRating', function() {
+    }).directive('respRating', ['Project', 'Organization', '$parse', function(Project, Organization, $parse) {
         return {
             restrict: 'AE',
-            replace: true,
             templateUrl: 'template/rating.html',
             scope: {
-                currentRating: '=',
+                canRateExpression: '&canRate',
                 onRate: '&',
-                canRate: '='
+                organization: '=?',
+                project: '=?',
+                ratingValue: '=?'
             },
             controller: function($scope) {
+                $scope.canRate = $scope.canRateExpression();
+                $scope.currentRating = 0;
+                if(!$scope.ratingValue) {
+                    if($scope.organization) {
+                        Organization.getAggregatedRating({id: $scope.organization}, function(rating) {
+                           $scope.currentRating = rating.rating;
+                        });
+                    } else if($scope.project) {
+                        Project.getAggregatedRating({pid: $scope.project}, function(rating) {
+                            $scope.currentRating = rating.rating;
+                        });
+                    }
+                } else {
+                    $scope.currentRating = $scope.ratingValue;
+                }
 
                 $scope.doRate = function() {
-                    $scope.onRate($scope.currentRating);
+                    if($scope.canRate && $scope.onRate) {
+                        $scope.onRate($scope.currentRating);
+                    }
                 }
             }
         };
-    });
+    }]);
 
