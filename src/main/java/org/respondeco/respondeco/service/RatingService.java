@@ -80,6 +80,7 @@ public class RatingService {
         rating.setComment(comment);
         rating.setResourceMatch(resourceMatch);
         resourceMatch.setProjectRating(rating);
+        resourceMatchRepository.save(resourceMatch);
         ratingRepository.save(rating);
     }
 
@@ -122,6 +123,7 @@ public class RatingService {
         rating.setComment(comment);
         rating.setResourceMatch(resourceMatch);
         resourceMatch.setSupporterRating(rating);
+        resourceMatchRepository.save(resourceMatch);
         ratingRepository.save(rating);
     }
 
