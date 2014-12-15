@@ -11,6 +11,5 @@ public class AggregatedRating {
 
     private Long count;
     private Double rating;
-    private Boolean rateable;
 
 }

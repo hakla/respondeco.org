@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by clemens on 15/11/14.
+ * Created by Clemens Puehringer on 15/11/14.
+ *
+ * Service class for Projects, contains methods for creating, updating, searching and deleting Projects
  */
 
 @Service
@@ -53,6 +55,23 @@ public class ProjectService {
         this.restUtil = new RestUtil();
     }
 
+    /**
+     * creates a new project based on the given values
+     * @param name the name of the project
+     * @param purpose the purpose of the project
+     * @param isConcrete indicates if the project has a startDate on which it will really begin
+     * @param startDate the date on which the project will start
+     * @param endDate the date on which the project will end
+     * @param propertyTags a list of tags for the project
+     * @param resourceRequirements a list of requirements for the project
+     * @param imageId the id of the image associated with the project
+     * @return the newly created project
+     * @throws OperationForbiddenException if the current user does not belong to an organization
+     * @throws ResourceException if a resource requirement could not be created,
+     * {@see ResourceService#createRequirement(String,BigDecimal,String,Project,Boolean,List<String>)}
+     * @throws IllegalValueException if the given parameters are inconsistent, e.g. the project is concrete, but start
+     * or end date are not given
+     */
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           LocalDate endDate, List<String> propertyTags,
                           List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
@@ -62,14 +81,10 @@ public class ProjectService {
         if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
-        Organization organization = currentUser.getOrganization();
-        if(organization == null) {
-            throw new NoSuchOrganizationException("current user does not belong to a organization");
-        }
 
         Project newProject = new Project();
         newProject.setManager(currentUser);
-        newProject.setOrganization(organization);
+        newProject.setOrganization(currentUser.getOrganization());
         newProject.setName(name);
         newProject.setPurpose(purpose);
         newProject.setConcrete(isConcrete);
@@ -97,6 +112,24 @@ public class ProjectService {
         return newProject;
     }
 
+    /**
+     *
+     * @param id the id of the project to alter
+     * @param name the possibly updated name of the project
+     * @param purpose the possibly updated purpose of the project
+     * @param isConcrete indicates if the project has a startDate on which it will really begin
+     * @param startDate the date on which the project will start
+     * @param endDate the date on which the project will end
+     * @param imageId the id of the image associated with the project
+     * @param propertyTags a list of tags for the project
+     * @param resourceRequirements a list of requirements for the project
+     * @return the updated project
+     * @throws OperationForbiddenException if the user's organization and the project's organization do not match or
+     * the user is neither the manager of the project nor the owner of the project's organization
+     * @throws ResourceException if a resource requirement could not be created or updated, {@see ResourceService}
+     * @throws IllegalValueException if no id was given or the project with the given id could not be found,
+     * or if the given parameters are inconsistent, e.g. the project is concrete, but start or end date are not given
+     */
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         LocalDate endDate, Long imageId, List<String> propertyTags,
                         List<ResourceRequirementRequestDTO> resourceRequirements)
@@ -107,23 +140,24 @@ public class ProjectService {
             throw new IllegalValueException("project.error.idnull", "Project id must not be null");
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.getOrganization() == null) {
-            throw new OperationForbiddenException("Current user does not belong to an Organization");
-        }
         Organization organization = currentUser.getOrganization();
+        //check if user does belong to an organization
         if(organization == null) {
-            throw new NoSuchOrganizationException("current user does not belong to a organization");
+            throw new NoSuchOrganizationException("current user does not belong to an organization");
         }
         Project project = projectRepository.findOne(id);
         if(project == null) {
+            //no project found
             throw new NoSuchProjectException(id);
         }
         if(project.getOrganization().equals(organization) == false) {
+            //project's org does not match user's org
             throw new OperationForbiddenException("Project " + project +
                     " is not a project from organization " + organization);
         }
         if(currentUser.equals(project.getManager()) == false) {
             if(currentUser.equals(organization.getOwner()) == false) {
+                //user is neither project manager nor organization owner
                 throw new OperationForbiddenException("Current user does have permission to alter project " + project);
             }
         }
@@ -144,6 +178,7 @@ public class ProjectService {
         List<ResourceRequirement> requirements = new ArrayList<>();
         if(resourceRequirements != null) {
             for(ResourceRequirementRequestDTO req : resourceRequirements) {
+                //if requirement is new: create, else: update
                 if(req.getId() == null) {
                     requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(),
                         req.getDescription(), project, req.getIsEssential(), req.getResourceTags()));
@@ -160,9 +195,18 @@ public class ProjectService {
         return project;
     }
 
-    public Project setManager(Long id, String newManagerLogin) throws IllegalValueException,
+    /**
+     * Set a new manager for the given project
+     * @param id the id of the project of which to set the manager
+     * @param newManagerId the user id of the new manager
+     * @return the altered project with the manager set to the new manager
+     * @throws IllegalValueException if the new manager does not belong to the project's organization
+     * @throws OperationForbiddenException if the current user is neither the manager of the project nor the owner
+     * of the project's organization
+     */
+    public Project setManager(Long id, Long newManagerId) throws IllegalValueException,
         OperationForbiddenException {
-        User newManager = userRepository.findByLogin(newManagerLogin);
+        User newManager = userRepository.findByIdAndActiveIsTrue(newManagerId);
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);
         }
@@ -171,6 +215,7 @@ public class ProjectService {
             throw new NoSuchProjectException(id);
         }
         User currentUser = userService.getUserWithAuthorities();
+        //check if user has authority to delete
         if(currentUser.equals(project.getManager()) == false) {
             if(currentUser.equals(project.getOrganization().getOwner()) == false) {
                 throw new OperationForbiddenException("current user has no authority to " +
@@ -186,6 +231,14 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+    /**
+     * delete a project
+     * @param id the id of the project to delete
+     * @return the deleted project
+     * @throws OperationForbiddenException if the current user is neither the manager of the project nor the owner
+     * of the project's organization
+     * @throws NoSuchProjectException if the project with the given id could not be found
+     */
     public Project delete(Long id) throws OperationForbiddenException, NoSuchProjectException {
         Project project = projectRepository.findOne(id);
         if(project == null) {
@@ -194,6 +247,7 @@ public class ProjectService {
         User currentUser = userService.getUserWithAuthorities();
         User manager = project.getManager();
         log.debug("current user: {}, manager: {}", currentUser, manager);
+        //check if user has authority to delete
         if(currentUser.equals(project.getManager()) == false) {
             if(currentUser.equals(project.getOrganization().getOwner()) == false) {
                 throw new OperationForbiddenException("current user has no authority to " +
@@ -205,10 +259,23 @@ public class ProjectService {
         return project;
     }
 
+    /**
+     * get a project by its id
+     * @param id the id of the project
+     * @return the project with the given id
+     */
     public Project findProjectById(Long id) {
         return projectRepository.findByIdAndActiveIsTrue(id);
     }
 
+    /**
+     * Find projects by name and tags
+     * @param name the name to search for
+     * @param tagsString the tags to search for
+     * @param restParams other parameters for paging and sorting
+     * @return a list of Projects which match the given name and are associated with the given tags, paged and sorted
+     * with the given RestParameters
+     */
     public List<Project> findProjects(String name, String tagsString, RestParameters restParams) {
         List<String> tags = restUtil.splitCommaSeparated(tagsString);
 
@@ -223,6 +290,7 @@ public class ProjectService {
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByTags(tags, pageRequest);
         } else {
+            //add wildcards to the name
             name = "%" + name + "%";
             result = projectRepository.findByNameAndTags(name, tags, pageRequest);
         }
@@ -230,6 +298,15 @@ public class ProjectService {
         return result;
     }
 
+    /**
+     * Find projects by organization, name and tags
+     * @param orgId projects will be searched for based on their organization
+     * @param name the name to search for
+     * @param tagsString the tags to search for
+     * @param restParams other parameters for paging and sorting
+     * @return a list of Projects which match the given name and are associated with the given tags, paged and sorted
+     * with the given RestParameters
+     */
     public List<Project> findProjectsFromOrganization(Long orgId, String name, String tagsString,
                                                                  RestParameters restParams) {
         List<String> tags = restUtil.splitCommaSeparated(tagsString);
@@ -249,6 +326,7 @@ public class ProjectService {
         } else if(name == null || name.length() == 0) {
             result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
         } else {
+            //add wildcards to the name
             name = "%" + name + "%";
             result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
         }
@@ -257,6 +335,13 @@ public class ProjectService {
 
     }
 
+    /**
+     * checks if the given values make sense
+     * @param isConcrete indicator if start and end date should be checked
+     * @param startDate the start date of the project, must not be null or after end date (if concrete)
+     * @param endDate the end date of the project, must not be null, before now or before start date (if concrete)
+     * @throws IllegalValueException if the given values make no sense, see parameter descriptions
+     */
     private void sanityCheckDate(boolean isConcrete, LocalDate startDate, LocalDate endDate) throws IllegalValueException {
         if(isConcrete == true) {
             if(startDate == null) {

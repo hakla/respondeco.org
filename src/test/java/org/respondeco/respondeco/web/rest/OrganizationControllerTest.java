@@ -1,9 +1,12 @@
 package org.respondeco.respondeco.web.rest;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,15 +18,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.respondeco.respondeco.domain.Authority;
-import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.exception.ProjectRatingException;
+import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -38,6 +45,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,7 +62,7 @@ import java.util.Set;
     TransactionalTestExecutionListener.class })
 public class OrganizationControllerTest {
 
-    @Inject
+    @Mock
     private OrganizationRepository organizationRepository;
 
     @Mock
@@ -70,19 +78,23 @@ public class OrganizationControllerTest {
     private ResourceService resourceService;
 
     @Mock
-    private OrganizationService organizationService;
+    private OrganizationService organizationServiceMock;
 
     @Mock
     private OrgJoinRequestService orgJoinRequestService;
 
     @Mock
-    private RatingService ratingService;
+    private RatingService ratingServiceMock;
 
     private MockMvc restOrganizationMockMvc;
 
+    private Organization org1;
+    private Organization org2;
     private OrganizationRequestDTO organizationRequestDTO;
     private User defaultUser;
     private Set<Authority> userAuthorities;
+
+    private ArgumentCaptor<Object> voidInterceptor;
 
     private static final String DEFAULT_ORGNAME = "testorg";
     private static final String UPDATED_ORGNAME = "testorg1";
@@ -101,11 +113,10 @@ public class OrganizationControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganizationService organizationService = new OrganizationService(organizationRepository, userService, userRepository, imageRepository);
 
         OrganizationController organizationController =
-            new OrganizationController(organizationService, userService, resourceService,
-                orgJoinRequestService, ratingService);
+            new OrganizationController(organizationServiceMock, userService, resourceService,
+                orgJoinRequestService, ratingServiceMock);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();
@@ -135,7 +146,17 @@ public class OrganizationControllerTest {
         organizationRequestDTO.setEmail(DEFAULT_EMAIL);
         organizationRequestDTO.setNpo(DEFAULT_NPO);
 
-        organizationRepository.deleteAll();
+        org1 = new Organization();
+        org1.setOwner(defaultUser);
+        org1.setId(100L);
+        org1.setName("test1");
+
+        org2 = new Organization();
+        org2.setOwner(defaultUser);
+        org2.setId(200L);
+        org2.setName("test2");
+
+        voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);
     }
 
     @Test
@@ -147,28 +168,31 @@ public class OrganizationControllerTest {
                 .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
                 .andExpect(status().isOk());
 
+        verify(organizationServiceMock, times(1)).createOrganizationInformation(
+            organizationRequestDTO.getName(),
+            organizationRequestDTO.getDescription(),
+            organizationRequestDTO.getEmail(),
+            organizationRequestDTO.isNpo(),
+            (ImageDTO) null);
+
+        doReturn(Arrays.asList(org1, org2)).when(organizationServiceMock).getOrganizations();
+
         // Read All Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        // Read Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{organization}", DEFAULT_ORGNAME))
-                 .andExpect(status().isOk())
-                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                 .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
-                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-                 .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-                 .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
-
-        // Read my Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/myOrganization", DEFAULT_ORGNAME))
+        restOrganizationMockMvc.perform(get("/app/rest/organizations"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(DEFAULT_ORGNAME))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-                .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-                .andExpect(jsonPath("$.isNpo").value(DEFAULT_NPO));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name").value(org1.getName()))
+                .andExpect(jsonPath("$[1].name").value(org2.getName()));
+
+        doReturn(org2).when(organizationServiceMock).getOrganization(200L);
+
+        // Read Organization
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/200"))
+                 .andExpect(status().isOk())
+                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                 .andExpect(jsonPath("$.name").value(org2.getName()));
 
         // Update Organization
         organizationRequestDTO.setName(UPDATED_ORGNAME);
@@ -176,28 +200,96 @@ public class OrganizationControllerTest {
         organizationRequestDTO.setEmail(UPDATED_EMAIL);
         organizationRequestDTO.setNpo(UPDATED_NPO);
 
-        restOrganizationMockMvc.perform(post("/app/rest/organizations/updateOrganization")
+        //do nothing but return immediately without errors
+        doAnswer(voidInterceptor).when(organizationServiceMock)
+            .updaterOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+
+        restOrganizationMockMvc.perform(put("/app/rest/organizations")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
                 .andExpect(status().isOk());
 
-        // Read updated Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{organization}", UPDATED_ORGNAME))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(UPDATED_ORGNAME))
-                .andExpect(jsonPath("$.description").value(UPDATED_DESCRIPTION))
-                .andExpect(jsonPath("$.email").value(UPDATED_EMAIL))
-                .andExpect(jsonPath("$.isNpo").value(UPDATED_NPO));
+        //do nothing but return immediately without errors
+        doAnswer(voidInterceptor).when(organizationServiceMock).deleteOrganizationInformation();
 
         // Delete Organization
         restOrganizationMockMvc.perform(delete("/app/rest/organizations")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
+        doReturn(null).when(organizationServiceMock).getOrganization(anyLong());
+
         // Read nonexisting Organization
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/{organization}", UPDATED_ORGNAME)
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/300", UPDATED_ORGNAME)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetAggregatedRating_expectOK_shouldCallServiceForAggregatedRating() throws Exception {
+        AggregatedRating aggregatedRating = new AggregatedRating();
+        aggregatedRating.setRating(3.5);
+        aggregatedRating.setCount(5L);
+
+        doReturn(aggregatedRating).when(ratingServiceMock).getAggregatedRatingByOrganization(anyLong());
+
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/ratings"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.rating").value(3.5))
+            .andExpect(jsonPath("$.count").value(5));
+    }
+
+    @Test
+    public void testRateOrganization_expectOK_shouldCallServiceToSaveRating() throws Exception {
+        RatingRequestDTO ratingRequestDTO = new RatingRequestDTO();
+        ratingRequestDTO.setRating(5);
+        ratingRequestDTO.setComment("foobar");
+        ratingRequestDTO.setMatchid(100L);
+
+        doAnswer(voidInterceptor).when(ratingServiceMock).rateOrganization(anyLong(), anyLong(), anyInt(), anyString());
+
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/1/ratings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(ratingRequestDTO)))
+            .andExpect(status().isOk());
+
+        verify(ratingServiceMock, times(1)).rateOrganization(anyLong(), anyLong(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testRateOrganization_expectNOT_FOUND_serviceThrowsNoSuchOrganizationException() throws Exception {
+        RatingRequestDTO ratingRequestDTO = new RatingRequestDTO();
+        ratingRequestDTO.setMatchid(100L);
+        ratingRequestDTO.setRating(5);
+        ratingRequestDTO.setComment("foobar");
+
+        doThrow(NoSuchOrganizationException.class).when(ratingServiceMock)
+            .rateOrganization(anyLong(), anyLong(), anyInt(), anyString());
+
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/1/ratings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(ratingRequestDTO)))
+            .andExpect(status().isNotFound());
+
+        verify(ratingServiceMock, times(1)).rateOrganization(anyLong(), anyLong(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testRateOrganization_expectBAD_REQUEST_serviceThrowsRatingException() throws Exception {
+        RatingRequestDTO ratingRequestDTO = new RatingRequestDTO();
+        ratingRequestDTO.setRating(5);
+        ratingRequestDTO.setComment("foobar");
+        ratingRequestDTO.setMatchid(100L);
+
+        doThrow(NoSuchProjectException.class).when(ratingServiceMock)
+            .rateOrganization(anyLong(), anyLong(), anyInt(), anyString());
+
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/1/ratings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(ratingRequestDTO)))
+            .andExpect(status().isBadRequest());
+
+        verify(ratingServiceMock, times(1)).rateOrganization(anyLong(), anyLong(), anyInt(), anyString());
     }
 }
