@@ -48,6 +48,10 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
     @NotNull
     protected String description;
 
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image logo;
+
     @ManyToMany
     @JoinTable(name="T_RESOURCE_T_RESOURCETAG",
         joinColumns={@JoinColumn(name="T_RESOURCE_id", referencedColumnName = "id")},

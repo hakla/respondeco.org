@@ -2,6 +2,11 @@
 
 respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project) {
 
+  $scope.onUploadComplete = function(fileItem, response) {
+      $scope.resource.logoId = response.id;
+      $scope.logoId = response.id;
+  };
+
 	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
 	$scope.projects = [];
 	$scope.organization = null;
@@ -18,6 +23,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
+	$scope.isOverview = id === undefined;
 
 	$scope.orgId = null;
 	$scope.claim = {};
@@ -48,7 +54,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			$scope.loadRequests();
 		}
 
-		if($scope.isNew == false) {
+		if($scope.isNew === false && $scope.isOverview === false) {
 			$scope.update(id);
 		}
 	};
@@ -157,9 +163,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.create = function() {
-        $scope.resource.startDate = new XDate($scope.resource.startDate).toString("yyyy-MM-dd");
-        $scope.resource.endDate = new XDate($scope.resource.endDate).toString("yyyy-MM-dd");
-
+    $scope.resource.startDate = new XDate($scope.resource.startDate).toString("yyyy-MM-dd");
+    $scope.resource.endDate = new XDate($scope.resource.endDate).toString("yyyy-MM-dd");
+    $scope.resource.organizationId = $scope.orgId;
 		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name}); //object-array to string-array
 
 		Resource[$scope.isNew ? 'save' : 'update']($scope.resource,
@@ -174,6 +180,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.update = function(id) {
 		Resource.get({id: id}, function(resource) {
 			$scope.resource = resource;
+      $scope.logoId = response.logo.id;
 
 			$scope.selectedTags = $.map($scope.resource.resourceTags, function(tag) {return {name: tag}}); //string-array to object-array
 		}, function() {

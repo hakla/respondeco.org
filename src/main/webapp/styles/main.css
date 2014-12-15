@@ -8242,49 +8242,55 @@ uploaded-image div, [uploaded-image] div {
   margin-top: 50px;
 }
 /* line 352, ../../scss/main.scss */
+.resource-search-container uploaded-image {
+  height: 70px;
+  display: block;
+  width: 100%;
+}
+/* line 358, ../../scss/main.scss */
 .resource-search-container ul.resources {
   list-style-type: none;
   padding-left: 0;
   margin: 80px 0 50px 0;
 }
-/* line 357, ../../scss/main.scss */
+/* line 363, ../../scss/main.scss */
 .resource-search-container ul.resources li {
   margin-bottom: 60px;
 }
-/* line 360, ../../scss/main.scss */
+/* line 366, ../../scss/main.scss */
 .resource-search-container ul.resources li img {
   height: 64px;
   width: 64px;
 }
-/* line 365, ../../scss/main.scss */
+/* line 371, ../../scss/main.scss */
 .resource-search-container ul.resources li h2 {
   position: relative;
   margin-top: 0;
   margin-bottom: 0;
 }
-/* line 371, ../../scss/main.scss */
+/* line 377, ../../scss/main.scss */
 .resource-search-container ul.resources li .rating {
   margin-top: 4px;
 }
-/* line 375, ../../scss/main.scss */
+/* line 381, ../../scss/main.scss */
 .resource-search-container ul.resources li .amount {
   font-size: 20px;
 }
-/* line 380, ../../scss/main.scss */
+/* line 386, ../../scss/main.scss */
 .resource-search-container ul.resources li .organization .organization-name {
   font-size: 20px;
   margin-right: 12px;
 }
-/* line 385, ../../scss/main.scss */
+/* line 391, ../../scss/main.scss */
 .resource-search-container ul.resources li .organization i {
   font-size: 12px;
 }
-/* line 390, ../../scss/main.scss */
+/* line 396, ../../scss/main.scss */
 .resource-search-container ul.resources li .on-hover {
   opacity: 0;
   transition: .2s ease opacity;
 }
-/* line 395, ../../scss/main.scss */
+/* line 401, ../../scss/main.scss */
 .resource-search-container ul.resources li:hover .on-hover {
   opacity: 1;
 }
