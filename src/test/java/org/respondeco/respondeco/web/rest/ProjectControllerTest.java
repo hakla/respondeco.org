@@ -6,14 +6,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.Organization;
-import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.PropertyTag;
-import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.*;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
+import org.respondeco.respondeco.service.exception.ResourceException;
+import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -27,6 +28,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -152,14 +154,14 @@ public class ProjectControllerTest {
     public void testCRUDProject() throws Exception {
 
         doReturn(project).when(projectServiceMock).create(
-                projectRequestDTO.getName(),
-                projectRequestDTO.getPurpose(),
-                projectRequestDTO.getConcrete(),
-                projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
-                projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getLogo().getId());
+            projectRequestDTO.getName(),
+            projectRequestDTO.getPurpose(),
+            projectRequestDTO.getConcrete(),
+            projectRequestDTO.getStartDate(),
+            projectRequestDTO.getEndDate(),
+            projectRequestDTO.getPropertyTags(),
+            projectRequestDTO.getResourceRequirements(),
+            projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -213,15 +215,15 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
 
         verify(projectServiceMock, times(1)).update(
-                projectRequestDTO.getId(),
-                projectRequestDTO.getName(),
-                projectRequestDTO.getPurpose(),
-                projectRequestDTO.getConcrete(),
-                projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
-                projectRequestDTO.getLogo().getId(),
-                projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+            projectRequestDTO.getId(),
+            projectRequestDTO.getName(),
+            projectRequestDTO.getPurpose(),
+            projectRequestDTO.getConcrete(),
+            projectRequestDTO.getStartDate(),
+            projectRequestDTO.getEndDate(),
+            projectRequestDTO.getLogo().getId(),
+            projectRequestDTO.getPropertyTags(),
+            projectRequestDTO.getResourceRequirements());
 
         project.setName(UPDATED_NAME);
         project.setPurpose(UPDATED_PURPOSE);
@@ -249,7 +251,7 @@ public class ProjectControllerTest {
         when(projectRepositoryMock.findByIdAndActiveIsTrue(1000L)).thenReturn(null);
         // Read nonexisting Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", 1000L)
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(1000L);
@@ -293,7 +295,7 @@ public class ProjectControllerTest {
 
         doReturn(Arrays.asList(project, project2)).when(projectServiceMock)
                 .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
-                        isNull(String.class), isA(RestParameters.class));
+                    isNull(String.class), isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/organizations/{id}/projects", defaultOrganization.getId()))
                 .andExpect(status().isOk())
@@ -305,7 +307,96 @@ public class ProjectControllerTest {
 
         verify(projectServiceMock, times(1))
                 .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
-                        isNull(String.class), isA(RestParameters.class));
+                    isNull(String.class), isA(RestParameters.class));
+    }
+
+    @Test
+    public void testProjectApplyOffer_SUCCESS() throws Exception {
+
+        final ProjectApplyDTO expected = new ProjectApplyDTO();
+        expected.setOrganizationId(1L);
+        expected.setProjectId(2L);
+        expected.setResourceOfferId(1L);
+        expected.setResourceRequirementId(2L);
+
+        final ResourceMatch actual = new ResourceMatch();
+
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            actual.setId(1L);
+
+            actual.setAmount(new BigDecimal(10));
+            ResourceOffer offer = new ResourceOffer();
+            offer.setId((Long) args[0]);
+            actual.setResourceOffer(offer);
+
+            ResourceRequirement req = new ResourceRequirement();
+            req.setId((Long) args[1]);
+            actual.setResourceRequirement(req);
+
+            Organization org = new Organization();
+            org.setId((Long) args[2]);
+            actual.setOrganization(org);
+
+            Project prj = new Project();
+            prj.setId((Long) args[3]);
+            actual.setProject(prj);
+
+            return actual;
+        }).when(resourceServiceMock).createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
+            expected.getOrganizationId(), expected.getProjectId());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/apply")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(expected)))
+            .andExpect(status().isCreated());
+
+        assertEquals(expected.getResourceOfferId(), actual.getResourceOffer().getId());
+        assertEquals(expected.getResourceRequirementId(), actual.getResourceRequirement().getId());
+        assertEquals(expected.getProjectId(), actual.getProject().getId());
+        assertEquals(expected.getOrganizationId(), actual.getOrganization().getId());
+
+        verify(resourceServiceMock, times(1))
+            .createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
+                expected.getOrganizationId(), expected.getProjectId());
+    }
+
+    @Test
+    public void testProjectApplyOffer_FAIL_UnauthorizedUser() throws Exception {
+
+        ProjectApplyDTO expected = new ProjectApplyDTO();
+
+        when(resourceServiceMock
+            .createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
+                expected.getOrganizationId(), expected.getProjectId())).thenThrow(new ResourceException("User not authorized",
+                EnumResourceException.USER_NOT_AUTHORIZED));
+
+        restProjectMockMvc.perform(post("/app//rest/projects/apply")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(expected)))
+            .andExpect(status().isBadRequest());
+
+        verify(resourceServiceMock, times(1))
+            .createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
+                expected.getOrganizationId(), expected.getProjectId());
+    }
+
+    @Test
+    public void testProjectApplyOffer_FAIL_OnCurruptOrgOrReqOrOffer() throws Exception {
+
+        ProjectApplyDTO expected = new ProjectApplyDTO();
+
+        when(resourceServiceMock.createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
+            expected.getOrganizationId(), expected.getProjectId())).thenThrow(new IllegalValueException("rest.test.item", "Error Accure"));
+
+        restProjectMockMvc.perform(post("/app//rest/projects/apply")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(expected)))
+            .andExpect(status().isBadRequest());
+
+        verify(resourceServiceMock, times(1))
+            .createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
+                expected.getOrganizationId(), expected.getProjectId());
     }
 
 }

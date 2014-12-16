@@ -146,39 +146,6 @@ public class ResourceController {
         return responseEntity;
     }
 
-    /**
-     * Create offer ResourceOffer Request
-     * @param ProjectApplyDTO
-     * @return
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceoffers",
-        method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<?> offerResourceOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
-        log.debug("REST request to offer ResourceOffer : " + projectApplyDTO);
-        ResponseEntity<?> responseEntity;
-        try {
-            ResourceMatch resourceMatch = resourceService.createOfferResourceOffer(
-                projectApplyDTO.getResourceOfferId(),
-                projectApplyDTO.getResourceRequirementId(),
-                projectApplyDTO.getOrganizationId(),
-                projectApplyDTO.getProjectId()
-            );
-
-            log.debug("ResourceOffer: " + resourceMatch.getResourceOffer().getId());
-
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (ResourceException e) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("errorMessage", e.getMessage());
-            responseEntity = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-        }
-
-        return responseEntity;
-    }
-
 
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequests/{id}",

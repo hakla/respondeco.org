@@ -2,13 +2,13 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
+import javassist.bytecode.stackmap.BasicBlock;
 import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
-import org.respondeco.respondeco.service.SupporterRatingService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
@@ -17,10 +17,10 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +49,42 @@ public class ProjectController {
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
+    }
+
+    /**
+     * Organization that apply new resource to a project
+     * @param projectApplyDTO data to apply
+     * @return HTPP Status OK: no errors accure, BAD REQUEST: error accures
+     */
+    @ApiOperation(value = "project apply", notes = "Create a project apply (org donate project)")
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/projects/apply",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> projectApplyOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
+        log.debug("REST request to projectApplyOffer with dto: {}", projectApplyDTO);
+        ResponseEntity<?> responseEntity;
+        try {
+            ResourceMatch resourceMatch = resourceService.createProjectApplyOffer(
+                projectApplyDTO.getResourceOfferId(),
+                projectApplyDTO.getResourceRequirementId(),
+                projectApplyDTO.getOrganizationId(),
+                projectApplyDTO.getProjectId()
+            );
+
+            log.debug("Resource Match: {}", resourceMatch);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (ResourceException e) {
+            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (IllegalValueException e){
+            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        }
+
+        return responseEntity;
     }
 
     /**

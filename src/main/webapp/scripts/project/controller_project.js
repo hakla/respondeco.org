@@ -339,7 +339,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         if ($target.is("li") === false) {
             $target = $target.closest("li");
         } else {
-            $target= $target;
+            $target = $target;
         }
 
         $target.addClass("selected");
@@ -348,29 +348,55 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.projectApplySubmit = function() {
         // submit projectApply request to backend
-        // 
+        //
         // Params
         // $scope.project
         // $scope.selectedRequirement
         // organization
         // selectedResourceOffer
+        var req = $scope.selectedRequirement;
+        var data = {
+            resourceOfferId: selectedResourceOffer.id,
+            resourceRequirementId: req.id,
+            organizationId: organization.id,
+            projectId: $scope.project.id
+        }
+        Project.apply(data, function(data){
+            getOffers();
+        });
     };
 
-    Account.get(function(acc) {
-        account = acc;
-        Organization.get({
-            id: acc.organizationId
-        }, function(org) {
-            organization = org;
-            if (organization != null && organization.owner.id === acc.id) {
-                // owner
-                allowedToApply = true;
-                $scope.resourceOffers = Organization.getResourceOffers({
-                    id: organization.id
-                });
-            }
+    function getOffers() {
+        Account.get(function (acc) {
+            account = acc;
+            Organization.get({
+                id: acc.organizationId
+            }, function (org) {
+                organization = org;
+                if (organization != null && organization.owner.id === acc.id &&
+                    $scope.project.organizationId != organization.id) {
+                    // owner
+                    allowedToApply = true;
+                    Organization.getResourceOffers({
+                        id: organization.id
+                    }, function (offers) {
+                        var arr = [];
+                        for (var i = 0, len = offers.length; i < len; i++) {
+                            if (offers[i].amount > 0) {
+                                arr.push(offers[i]);
+                            }
+                        }
+                        $scope.resourceOffers = arr;
+                        if(arr.length == 0){
+                            allowedToApply = false;
+                        }
+                    });
+                }
+            });
         });
-    });
+    }
+
+    getOffers();
 
     if (isNew === false) {
         $scope.update($routeParams.id);

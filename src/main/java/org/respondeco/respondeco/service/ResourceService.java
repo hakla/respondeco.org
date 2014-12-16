@@ -1,9 +1,7 @@
 package org.respondeco.respondeco.service;
 
-import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.*;
 import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.template.BooleanTemplate;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.domain.QResourceMatch;
@@ -17,16 +15,11 @@ import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
-import javax.annotation.Resource;
 import javax.inject.Inject;
-import java.beans.Expression;
-import java.io.NotActiveException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +110,7 @@ public class ResourceService {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
             newRequirement.setOriginalAmount(amount);
-            newRequirement.setAmount(new BigDecimal(0));//TODO: decrease or increase amount? logically increase
+            newRequirement.setAmount(BigDecimal.ZERO);//TODO: decrease or increase amount? logically increase
             newRequirement.setDescription(description);
             newRequirement.setProject(project);
             newRequirement.setIsEssential(isEssential);
@@ -360,7 +353,7 @@ public class ResourceService {
 
         Project project = resourceRequirement.getProject();
         Organization organization = resourceOffer.getOrganization();
-        List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProject(resourceOffer,
+        List<ResourceMatch> result = resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(resourceOffer,
             resourceRequirement, organization, project);
 
         if(result.isEmpty() == true) {
@@ -464,9 +457,8 @@ public class ResourceService {
      * @param projectId that claim for offer
      * @return ResourceMatch Entity
      */
-    @Transactional
-    public ResourceMatch createOfferResourceOffer(Long offerId, Long requirementId,
-                                          Long organizationId, Long projectId) throws ResourceException {
+    public ResourceMatch createProjectApplyOffer(Long offerId, Long requirementId,
+                                                 Long organizationId, Long projectId) throws ResourceException, IllegalValueException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
@@ -476,28 +468,43 @@ public class ResourceService {
         Organization organization = organizationRepository.findOne(organizationId);
         Project project = projectRepository.findOne(projectId);
 
+        List<ResourceMatch> hasData = resourceMatchRepository.
+            findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(resourceOffer,
+                resourceRequirement, organization, project);
+
         // Check if user authorized
         ensureUserIsPartOfOrganisation(organization);
 
+        if(hasData.isEmpty() == false){
+            throw new IllegalValueException("resourcematch.error.projectapply.offeralreadyexists", "Current offer has already been donated before");
+        }
+
         if(organization == project.getOrganization()){
-            throw new ResourceException("Organization cannot offer resources to own project", EnumResourceException.USER_NOT_AUTHORIZED);
+            throw new IllegalValueException("resourcematch.error.projectapply.ownproject", "Organization cannot offer resources to own project");
+        }
+        //,check if we need new apply
+        if(resourceRequirement.getAmount().equals(BigDecimal.ZERO) == true){
+            throw new IllegalValueException("resourcematch.error.projectapply.requestfulfilled", "Requirements are already fulfilled");
+        }
+
+        if(resourceOffer.getAmount().equals(BigDecimal.ZERO) == true){
+            throw new IllegalValueException("resourcematch.error.projectapply.offerdepleted", "Current Offer already depleted");
         }
 
         BigDecimal amount;
 
         // if the offer has more items than the requirement --> use the requirement amount
-        if (resourceOffer.getAmount().compareTo(resourceRequirement.getAmount()) > 0) {
+        if (resourceOffer.getAmount().compareTo(resourceRequirement.getAmount()) == 1) {
             amount = resourceRequirement.getAmount();
-
-            // TODO if empty what should we do?
+            /* apply offer should be manually.
             resourceOffer.setAmount(resourceOffer.getAmount().subtract(resourceRequirement.getAmount()));
             resourceRequirement.setAmount(new BigDecimal(0));
+            */
         } else {
             amount = resourceOffer.getAmount();
-
-            // TODO if empty what should we do?
+            /* apply offer should be manually
             resourceRequirement.setAmount(resourceRequirement.getAmount().subtract(resourceOffer.getAmount()));
-            resourceOffer.setAmount(new BigDecimal(0));
+            resourceOffer.setAmount(new BigDecimal(0));*/
         }
 
         resourceMatch.setResourceOffer(resourceOffer);
@@ -507,10 +514,10 @@ public class ResourceService {
         resourceMatch.setAmount(amount);
         resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_OFFERED);
 
-        resourceRequirementRepository.save(resourceRequirement);
-        resourceOfferRepository.save(resourceOffer);
         resourceMatchRepository.save(resourceMatch);
 
         return resourceMatch;
     }
+
+    //public ResourceMatch
 }
