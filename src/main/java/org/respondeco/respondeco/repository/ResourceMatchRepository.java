@@ -33,6 +33,6 @@ public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Lo
             "WHERE rm.accepted = true AND o.id = :organizationid")
     public Object[][] getAggregatedRatingByOrganization(@Param("organizationid") Long id);
 
-    public List<ResourceMatch> findByResourceOfferAndResourceRequirementAndOrganizationAndProject(
+    public List<ResourceMatch> findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
         ResourceOffer resourceOffer, ResourceRequirement resourceRequirement, Organization organization, Project project);
 }
