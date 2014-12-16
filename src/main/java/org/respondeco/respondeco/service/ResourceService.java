@@ -92,6 +92,17 @@ public class ResourceService {
         return createRequirement(name, amount, description, project, isEssential, resourceTags);
     }
 
+    /**
+     * Create a new ResourceRequirement
+     * @param name name of Resource Requirement
+     * @param amount amount of Resource Requirement
+     * @param description description of Resource Requirement
+     * @param project project of the Resource Requirement
+     * @param isEssential true if requirement is essential for the project, false otherwise
+     * @param resourceTags defined tags for the resource requirement
+     * @return saved ResourceRequirement
+     * @throws ResourceException
+     */
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Project project, Boolean isEssential, List<String> resourceTags)
         throws ResourceException {
@@ -117,6 +128,19 @@ public class ResourceService {
         return newRequirement;
     }
 
+    /**
+     * Updates a Resource Requirement
+     * @param id id of required resource
+     * @param name name of required resource
+     * @param amount amount of required resource
+     * @param description description of required resource
+     * @param projectId id of the project which contains the resource
+     * @param isEssential true if resource is essential for the project, false otherwise
+     * @param resourceTags tags of the resource
+     * @return updated Resource requirement
+     * @throws ResourceException
+     * @throws OperationForbiddenException
+     */
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
         throws ResourceException, OperationForbiddenException {
@@ -131,7 +155,7 @@ public class ResourceService {
                                                  Project project, Boolean isEssential, List<String> resourceTags)
         throws ResourceException, OperationForbiddenException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
-        if(project.equals(requirement.getProject()) == false) {
+        if (project.equals(requirement.getProject()) == false) {
             throw new OperationForbiddenException("cannot modify resource requirements of other projects");
         }
         if (requirement != null) {
@@ -253,7 +277,7 @@ public class ResourceService {
     }
 
     /**
-     * Get all ResourceOffers
+     * Get all ResourceOffers, filtered by searchField (name or organization or tags) and isCommercial
      * @param searchField contains search parameters for resource name, organization name and tags
      * @param isCommercial if true return only commercial resources, if false return only non commercial ones
      * @param restParameters Rest Parameters to be set
@@ -386,7 +410,8 @@ public class ResourceService {
      * @param accept true if accepted, false if declined
      * @return accepted or declined ResourceMatch
      */
-    public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept) {
+    public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept)
+        throws IllegalValueException, NoSuchResourceMatchException{
 
         //TODO: add authority check
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);
@@ -400,25 +425,28 @@ public class ResourceService {
 
         resourceMatch.setAccepted(accept);
 
-        //check if resourceOffer amount is completely consumed by resourceRequirement
-        ResourceOffer offer = resourceMatch.getResourceOffer();
-        ResourceRequirement req = resourceMatch.getResourceRequirement();
+        //TODO: check offer and req for null and throw exception (eventuell offer auf 0 setzen bei else)
+        if(accept == true) {
+            //check if resourceOffer amount is completely consumed by resourceRequirement
+            ResourceOffer offer = resourceMatch.getResourceOffer();
+            ResourceRequirement req = resourceMatch.getResourceRequirement();
 
-        //offer greater req amount -> keep offer active and lower amount
-        if(offer.getAmount().compareTo(req.getAmount()) == 1 ) {
-            offer.setAmount( offer.getAmount().subtract(req.getAmount()) );
-            resourceMatch.setAmount(req.getAmount());
+            //offer greater req amount -> keep offer active and lower amount
+            if (offer.getAmount().compareTo(req.getAmount()) == 1) {
+                offer.setAmount(offer.getAmount().subtract(req.getAmount()));
+                resourceMatch.setAmount(req.getAmount());
 
-        } else {
-            //requirement consumes offer -> offer is no longer active
-            resourceMatch.setAmount(offer.getAmount());
-            offer.setActive(false);
+            } else {
+                //requirement consumes offer -> offer is no longer active
+                resourceMatch.setAmount(offer.getAmount());
+                offer.setActive(false);
 
-            //actualize requirement amounts
-            req.setAmount( req.getAmount().subtract(offer.getAmount()) );
+                //actualize requirement amounts
+                req.setAmount(req.getAmount().subtract(offer.getAmount()));
+            }
+
+            resourceOfferRepository.save(offer);
         }
-
-        resourceOfferRepository.save(offer);
 
         return resourceMatchRepository.save(resourceMatch);
     }

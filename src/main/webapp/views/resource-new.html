@@ -20,7 +20,7 @@
                     
                     <div class="form-group">
                         <label translate="resource.new.amount">amount</label>
-                        <input type="number" class="form-control" placeholder="{{'resource.placeholder.amount' | translate}}" ng-model="resource.amount" required>
+                        <input type="number" min="0" ng-maxlength="10" name="amount" class="form-control" placeholder="{{'resource.placeholder.amount' | translate}}" ng-model="resource.amount" required>
                     </div>
                     
                     <div class="form-group">
@@ -61,7 +61,7 @@
                     <div class="col-md-4">
                         <label translate="resource.new.startDate">available from</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="{{'resource.placeholder.startDate' | translate}}" ng-model="resource.startDate" name="startDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedStartDate" close-text="close">
+                            <input class="form-control" placeholder="{{'resource.placeholder.startDate' | translate}}" ng-model="resource.startDate" name="startDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedStartDate" close-text="close" required>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
@@ -70,7 +70,7 @@
                     <div class="col-md-4">
                         <label translate="resource.new.endDate">available until</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="{{'resource.placeholder.endDate' | translate}}" ng-model="resource.endDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedEndDate" close-text="close">
+                            <input class="form-control" placeholder="{{'resource.placeholder.endDate' | translate}}" ng-model="resource.endDate" datepicker-popup="{{'general.dateFormat' | translate}}" datepicker-options="dateOptions" is-open="openedEndDate" close-text="close" required>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
@@ -81,6 +81,12 @@
     
             <div class="alert alert-danger" ng-show="formSaveError" translate="resource.new.error">
                 <strong>resource could not be created</strong>
+            </div>
+            <div class="alert alert-danger" ng-show="errorEndDateBeforeStartDate" translate="resource.new.error.startDate">
+                <strong>startDate must not be earlier than today</strong>
+            </div>
+            <div class="alert alert-danger" ng-show="!form.amount.$valid" translate="resource.new.error.startDate">
+                <strong>startDate must not be earlier than today</strong>
             </div>
 
         <div class="modal-footer">

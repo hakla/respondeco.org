@@ -9,6 +9,7 @@ import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
+import org.respondeco.respondeco.service.exception.NoSuchResourceMatchException;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -160,9 +161,13 @@ public class ResourceController {
         log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
         ResponseEntity<?> responseEntity;
 
-        ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
-
-        responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        try{
+            resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch(IllegalValueException ex) {
+            log.error("Could not set isAccepted for resourceMatch with id " + id);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         return responseEntity;
     }

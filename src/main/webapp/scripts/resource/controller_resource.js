@@ -51,8 +51,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 				$scope.organization = organization;
 			});
 		});
-
-		
 	};
 
 	$scope.onUploadComplete = function(fileItem, response) {
@@ -175,18 +173,25 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.create = function() {
-	    $scope.resource.startDate = new XDate($scope.resource.startDate).toString("yyyy-MM-dd");
-	    $scope.resource.endDate = new XDate($scope.resource.endDate).toString("yyyy-MM-dd");
-	    $scope.resource.organizationId = $scope.orgId;
-		$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name}); //object-array to string-array
+		//startDate has to be earlier than endDate
+		if(new XDate($scope.resource.startDate).diffDays(new XDate($scope.resource.endDate)) >= 0) {
+			$scope.resource.startDate = new XDate($scope.resource.startDate).toString("yyyy-MM-dd");
+			$scope.resource.endDate = new XDate($scope.resource.endDate).toString("yyyy-MM-dd");
 
-		Resource[$scope.isNew ? 'save' : 'update']($scope.resource,
-		function() {
-			$scope.redirectToOwnResource('');
-		},
-		function() {
-			$scope.formSaveError = true;
-		});
+			$scope.resource.organizationId = $scope.orgId;
+			$scope.resource.resourceTags = $.map($scope.selectedTags, function(tag) {return tag.name}); //object-array to string-array
+
+			Resource[$scope.isNew ? 'save' : 'update']($scope.resource,
+			function() {
+				$scope.redirectToOwnResource('');
+			},
+			function(error) {
+				console.log(error);
+				$scope.formSaveError = true;
+			});
+		} else {
+			$scope.errorEndDateBeforeStartDate = true;
+		}
 	}
 
 	$scope.update = function(id) {
