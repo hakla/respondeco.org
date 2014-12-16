@@ -178,24 +178,27 @@ public class OrganizationController {
         return responseEntity;
     }
 
-    /*
-     * GET /rest/organizations/:id/resourceOffers -> get the resourceOffers for the organization :id
+    /**
+     * Returns all ResourceOffers created by a specific Organzation given by id
+     * @param id
+     * @return ResponseEntity which contains a list of ResourceOfferResponseDTOs and a HTTP Status
      */
-
     @PermitAll
     @RequestMapping(value = "/rest/organizations/{id}/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferDTO> getAllResourceOffer(@PathVariable Long id) {
-        ResponseEntity<Organization> responseEntity;
-        OrganizationRequestDTO organizationRequestDTO;
+    public ResponseEntity<List<ResourceOfferResponseDTO>> getAllResourceOffers(@PathVariable Long id) {
+        ResponseEntity<List<ResourceOfferResponseDTO>> responseEntity;
 
-        log.debug("REST request to get all resource offer belongs to Organization id: {}", id);
+        log.debug("REST request to get all resource offers which belong to Organization id: {}", id);
 
-        List<ResourceOfferDTO> resourceOfferDTOs = this.resourceService.getAllOffers(id);
+        List<ResourceOffer> resourceOffers = this.resourceService.getAllOffers(id);
+        List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(resourceOffers, null);
 
-        return  resourceOfferDTOs;
+        responseEntity = new ResponseEntity<>(resourceOfferResponseDTOs, HttpStatus.OK);
+
+        return responseEntity;
     }
 
 

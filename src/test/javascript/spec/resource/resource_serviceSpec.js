@@ -28,7 +28,7 @@ describe('Resource Service Tests ', function () {
                 company: 'Company' };
             var organizationId = 1;
 
-            httpBackend.expectPOST('app/rest/resourceOffers').respond(returnData);
+            httpBackend.expectPOST('app/rest/resourceoffers').respond(returnData);
             serviceTested.save(resource);
 
             httpBackend.flush();
@@ -36,7 +36,7 @@ describe('Resource Service Tests ', function () {
 
         it('should get resources from the backend', function() {
 
-            httpBackend.expectGET('app/rest/resourceOffers').respond([{
+            httpBackend.expectGET('app/rest/resourceoffers').respond([{
                 id: 0, name: 'TestResource', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
                 dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
                 company: 'Company'

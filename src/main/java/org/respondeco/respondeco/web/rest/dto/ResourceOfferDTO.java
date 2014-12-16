@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
@@ -24,6 +25,7 @@ import java.util.List;
 @ApiModel(value = "Resource Offer", description = "manage all resource offers")
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourceOfferDTO {
 
     @ApiModelProperty(value = "ID of the given Resource offer")
@@ -37,6 +39,8 @@ public class ResourceOfferDTO {
     @ApiModelProperty(value = "ID of the organization that created this offer", required = true)
     private Long organizationId;
 
+    @ApiModelProperty(value = "ID of the image to use as logo")
+    private Long logoId;
     private Boolean isCommercial = false;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)

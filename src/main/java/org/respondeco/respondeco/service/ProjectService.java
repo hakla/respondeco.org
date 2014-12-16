@@ -106,7 +106,7 @@ public class ProjectService {
         List<ResourceRequirement> requirements = new ArrayList<>();
         if(resourceRequirements != null) {
             for(ResourceRequirementRequestDTO req : resourceRequirements) {
-                requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(), req.getDescription(), newProject,
+                requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(), req.getDescription(), newProject.getId(),
                     req.getIsEssential(), req.getResourceTags()));
             }
         }
@@ -183,10 +183,10 @@ public class ProjectService {
                 //if requirement is new: create, else: update
                 if(req.getId() == null) {
                     requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(),
-                        req.getDescription(), project, req.getIsEssential(), req.getResourceTags()));
+                        req.getDescription(), project.getId(), req.getIsEssential(), req.getResourceTags()));
                 } else {
                     requirements.add(resourceService.updateRequirement(req.getId(), req.getName(), req.getAmount(),
-                        req.getDescription(), project, req.getIsEssential(), req.getResourceTags()));
+                        req.getDescription(), project.getId(), req.getIsEssential(), req.getResourceTags()));
                 }
             }
         }

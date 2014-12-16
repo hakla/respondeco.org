@@ -7,6 +7,7 @@ import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.RatingPermission;
 import org.respondeco.respondeco.domain.ResourceMatch;
+import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
@@ -30,12 +31,15 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * REST controller for managing Projects.
+ * REST controller for managing Project.
+ *
+ * This REST-Controller handles all requests for /rest/projects
  */
 @RestController
 @Transactional
@@ -335,13 +339,20 @@ public class ProjectController {
      * @return list of ResourceRequirements wrapped into DTO
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
+    @RequestMapping(value = "/rest/projects/{id}/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceRequirementRequestDTO> getAllResourceRequirement(@PathVariable Long id) {
+    public ResponseEntity<List<ResourceRequirementResponseDTO>> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
-        return this.resourceService.getAllRequirements(id);
+        ResponseEntity<List<ResourceRequirementResponseDTO>> responseEntity;
+
+        List<ResourceRequirement> resourceRequirements = resourceService.getAllRequirements(id);
+
+        List<ResourceRequirementResponseDTO> resourceRequirementResponseDTOs = ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
+
+        responseEntity = new ResponseEntity<>(resourceRequirementResponseDTOs, HttpStatus.OK);
+        return responseEntity;
     }
 
     /**

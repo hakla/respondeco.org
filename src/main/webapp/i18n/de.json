@@ -2,6 +2,7 @@
     "global": {
         "title": "respondeco",
         "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
+        "backbutton": "Zurück",
         "notChangeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
         "menu": {
             "home": "Startseite",
@@ -531,6 +532,7 @@
         "tags": "Tags",
         "available": "Verfügbar",
         "search": {
+            "filter": "Name / Tags / Organisation",
             "type": "Art der Ressource",
             "request": "Ressource anfordern",
             "tooltip": {
@@ -542,7 +544,8 @@
             "chooseproject": "Für welches ihrer Projekte wird die Ressource benötigt?",
             "chooserequirement": "Für welche Anforderung soll die Ressource verwendet werden?",
             "error": {
-                "matchexists": "Die Anfrage wurde bereits versendet"
+                "matchexists": "Die Anfrage wurde bereits versendet",
+                "ownresource": "Sie können ihre eigene Ressource nicht anfordern"
             }
         },
         "new": {

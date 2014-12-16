@@ -349,6 +349,12 @@ uploaded-image, [uploaded-image] {
         margin-top: 50px;
     }
 
+    uploaded-image {
+        height: 70px;
+        display: block;
+        width: 100%;
+    }
+
     ul.resources {
         list-style-type: none;
         padding-left: 0;

@@ -1,7 +1,7 @@
 'use strict';
 
 respondecoApp.factory('Resource', function ($resource) {
-	return $resource('app/rest/resourceOffers/:id', {id: '@id'}, {
+	return $resource('app/rest/resourceoffers/:id', {id: '@id'}, {
 		'get' : { method: 'GET'},
 		'update' : {method: 'PUT'},
 		'getByOrgId' : {method: 'GET', isArray:true, url: 'app/rest/organizations/:id/resourceoffers'},

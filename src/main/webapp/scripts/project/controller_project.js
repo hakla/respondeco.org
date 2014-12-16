@@ -249,10 +249,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.editRequirement = function(index) {
         edit = true;
-        $('#addResource').modal('toggle');
+        $scope.showResourceModal();
         $scope.resource = $scope.project.resourceRequirements[index];
         $scope.selectedResourceTags = $scope.resource.resourceTags;
     };
+
+    $scope.showResourceModal = function() {
+        $('#addResource').modal('toggle');
+    }
 
     if (isNew === false) {
         $scope.update($routeParams.id);
