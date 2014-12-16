@@ -11,6 +11,8 @@ import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -59,24 +61,23 @@ public class UserController {
     }
 
     /**
-     * GET  /rest/users/find?filter= -> get usernames matching the filter parameter
+     * GET  /rest/users -> get users where the name matches the filter parameter
      */
-    @RequestMapping(value = "/rest/names/users",
+    @RequestMapping(value = "/rest/users",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public List<String> getMatchingUsernames(
+    public List<UserDTO> getMatchingUsers(
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer limit) {
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) String fields) {
         log.debug("REST request to get usernames matching : {}", filter);
-        if(filter == null) {
-            filter = "";
-        }
-        if(limit == null) {
-            limit = 20;
-        }
-        return userService.findUsernamesLike(filter, limit);
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        List<User> users = userService.findUsersByNameLike(filter, restParameters);
+        return UserDTO.fromEntities(users, restParameters.getFields());
     }
 
 }

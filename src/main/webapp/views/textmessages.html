@@ -171,9 +171,9 @@
 
                         <div class="form-group">
                             <label translate="global.textmessages.receiver">Receiver</label>
-                            <input type="text" class="form-control" ng-minlength="1" name="sreceiver" autocomplete="off"
+                            <input type="text" class="form-control" name="sreceiver" autocomplete="off"
                                    ng-model="textMessageToSend.receiver" ng-model-options="{ getterSetter: true }"
-                                   typeahead="uname for uname in getUsernames($viewValue)" required>
+                                   typeahead="user as user.login for user in getUsernames($viewValue)" required>
                             <div ng-show="sendform.sreceiver.$dirty && sendform.sreceiver.$invalid">
                                 <p class="help-block" ng-show="sendform.sreceiver.$error.minlength"
                                    translate="global.textmessages.validate.receiver.minlength">

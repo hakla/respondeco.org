@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -188,10 +189,8 @@ public class UserService {
         user.setOrganization(null);
     }
 
-    public List<String> findUsernamesLike(String usernamePart, Integer limit) {
-        PageRequest request = new PageRequest(0, limit);
-        //TODO: fix pagination
-        List<String> result = userRepository.findUsernamesLike(usernamePart);
+    public List<User> findUsersByNameLike(String usernamePart, RestParameters restParameters) {
+        List<User> result = userRepository.findUsersByNameLike(usernamePart, restParameters.buildPageRequest());
         result.remove("system");
         result.remove("anonymousUser");
         return result;
