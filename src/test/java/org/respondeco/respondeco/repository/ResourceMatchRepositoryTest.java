@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -16,6 +17,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +51,12 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
     @Inject
     private ResourceMatchRepository resourceMatchRepository;
 
+    @Inject
+    private ResourceOfferRepository resourceOfferRepository;
+
+    @Inject
+    private ResourceRequirementRepository resourceRequirementRepository;
+
     private User orgAdmin;
     private Organization organization;
     private Project project;
@@ -56,6 +66,8 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
     private Rating rating4;
     private ResourceMatch resourceMatch;
     private ResourceMatch resourceMatch2;
+    private ResourceRequirement resourceRequirement;
+    private ResourceOffer resourceOffer;
 
     @Before
     public void setup() {
@@ -78,10 +90,28 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
         project.setOrganization(organization);
         projectRepository.save(project);
 
+        resourceOffer = new ResourceOffer();
+        resourceOffer.setAmount(new BigDecimal(1));
+        resourceOffer.setOriginalAmount(new BigDecimal(1));
+        resourceOffer.setName("testOffer");
+        resourceOffer.setDescription("testDescription");
+        resourceOffer.setOrganization(organization);
+        resourceOfferRepository.save(resourceOffer);
+
+        resourceRequirement = new ResourceRequirement();
+        resourceRequirement.setAmount(new BigDecimal(1));
+        resourceRequirement.setOriginalAmount(new BigDecimal(1));
+        resourceRequirement.setName("testOffer");
+        resourceRequirement.setDescription("testDescription");
+        resourceRequirement.setProject(project);
+        resourceRequirementRepository.save(resourceRequirement);
+
         resourceMatch = new ResourceMatch();
         resourceMatch.setProject(project);
         resourceMatch.setAccepted(true);
         resourceMatch.setOrganization(organization);
+        resourceMatch.setResourceOffer(resourceOffer);
+        resourceMatch.setResourceRequirement(resourceRequirement);
 
         resourceMatch2 = new ResourceMatch();
         resourceMatch2.setProject(project);
@@ -119,7 +149,6 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
     }
 
     @Test
-    @Transactional
     public void testGetAggregatedRatingForProject() {
 
         resourceMatchRepository.save(resourceMatch);
@@ -137,7 +166,6 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
     }
 
     @Test
-    @Transactional
     public void testGetAggregatedRatingForOrganization() {
 
         resourceMatchRepository.save(resourceMatch);
@@ -152,5 +180,48 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
         assertTrue(aggregatedRating[0][1] != null);
         assertEquals(aggregatedRating[0][0],count);
         assertEquals(aggregatedRating[0][1],rating);
+    }
+
+    @Test
+    public void testFindByProjectAndOrganization() {
+
+        resourceMatchRepository.save(resourceMatch);
+        resourceMatchRepository.save(resourceMatch2);
+        List<ResourceMatch> savedResourceMatches = resourceMatchRepository.findByProjectAndOrganization(project,organization);
+
+        assertTrue(savedResourceMatches.isEmpty()==false);
+        assertTrue(savedResourceMatches.size()==2);
+        assertTrue(savedResourceMatches.contains(resourceMatch));
+
+    }
+
+    @Test
+    public void testFindByProjectIdAndAcceptedIsTrueAndActiveIsTrue() {
+
+        resourceMatchRepository.save(resourceMatch);
+        resourceMatch2.setAccepted(false);
+        resourceMatchRepository.save(resourceMatch2);
+        List<ResourceMatch> savedResourceMatches = resourceMatchRepository.findByProjectIdAndAcceptedIsTrueAndActiveIsTrue(project.getId());
+
+        assertTrue(savedResourceMatches.isEmpty()==false);
+        assertTrue(savedResourceMatches.size()==1);
+        assertTrue(savedResourceMatches.contains(resourceMatch));
+    }
+
+    @Test
+    public void testFindByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue() {
+
+        resourceMatchRepository.save(resourceMatch);
+        resourceMatchRepository.save(resourceMatch2);
+        List<ResourceMatch> savedResourceMatches = resourceMatchRepository
+                .findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+                        resourceOffer,
+                        resourceRequirement,
+                        organization,
+                        project);
+
+        assertTrue(savedResourceMatches.isEmpty()==false);
+        assertTrue(savedResourceMatches.size()==1);
+        assertTrue(savedResourceMatches.contains(resourceMatch));
     }
 }
