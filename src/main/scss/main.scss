@@ -348,12 +348,18 @@ uploaded-image, [uploaded-image] {
     form {
         margin-top: 50px;
     }
-}
 
-ul.resources {
-    list-style-type: none;
-    padding-left: 0;
-    margin: 80px 0 50px 0;
+    uploaded-image {
+        height: 70px;
+        display: block;
+        width: 100%;
+    }
+
+    ul.resources {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 80px 0 50px 0;
+    }
 
     li {
         margin-bottom: 60px;
@@ -418,4 +424,28 @@ ul.resources {
     li.resource.selected {
         background: #F2F2F2;
     }
+}
+
+.approved {
+    position: absolute;
+    height: 150px;
+    right: 150px;
+    top: -165px;
+}
+
+.dropdown-toggle {
+    border-radius: 0 !important;
+}
+
+.dropdown {
+    .badge {
+        background-color: #C40000;
+        top: -1px;
+        position: relative;
+        left: 12px;
+    }
+}
+
+.highlight, .highlight td {
+    background-color: #FFF37B !important;
 }

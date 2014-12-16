@@ -5,9 +5,14 @@
 describe('e2e: newproject', function() {
     var newProjectPage = require('./newproject.po.js');
     var login = require('../login.js');
+    var loggedIn = false;
 
-    login.login();
-    browser.waitForAngular();
+    beforeEach(function() {
+        if(loggedIn == false) {
+            login.login();
+            loggedIn = true;
+        }
+    });
 
     it('should redirect to projects after clicking on cancel', function() {
         newProjectPage.navigate();

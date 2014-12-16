@@ -1,11 +1,13 @@
 describe('e2e: newresourceoffer', function() {
     var offer = require('./newresourceoffer.po.js');
     var login = require('../login.js');
-
-    login.login();
-    browser.waitForAngular();
+    var loggedIn = false;
 
     beforeEach(function() {
+        if(loggedIn == false) {
+            login.login();
+            loggedIn = true;
+        }
         offer.navigate();
         browser.waitForAngular();
     });
@@ -18,18 +20,21 @@ describe('e2e: newresourceoffer', function() {
         offer.name.sendKeys("Ressource");
         offer.description.sendKeys("Das ist eine tolle Ressource");
         offer.amount.sendKeys("5");
-        offer.tags.sendKeys("Computer, Technik, Cool");
+
+        actions = protractor.getInstance().actions()
+        actions.mouseMove(offer.tags)
+        actions.click()
+        actions.sendKeys("Hallo, Computer, Test ");
+        actions.perform()
 
         offer.startDate.sendKeys("10.10.2015");
         offer.endDate.sendKeys("11.10.2015");
 
         offer.isCommercial.click();
-        offer.isRecurrent.click();
-
         offer.saveButton.click();
 
         browser.waitForAngular();
 
-        expect(browser.getLocationAbsUrl()).toEqual("/ownresource");
+        expect(browser.getLocationAbsUrl()).toContain("/ownresource");
     });
 });

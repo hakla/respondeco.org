@@ -198,11 +198,15 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        return userRepository.findOne(id);
+        return userRepository.findByIdAndActiveIsTrue(id);
     }
 
     public void setOrganization(User user, Long id) {
         user.setOrganization(organizationRepository.findOne(id));
         userRepository.save(user);
+    }
+
+    public User findUserByLogin(String loginName) {
+        return userRepository.findByLogin(loginName);
     }
 }

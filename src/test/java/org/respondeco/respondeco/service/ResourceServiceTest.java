@@ -1,10 +1,13 @@
 package org.respondeco.respondeco.service;
 
 import net.sf.ehcache.util.SetAsList;
+import com.mysema.query.types.Predicate;
 import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,7 +17,11 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @Transactional
@@ -55,7 +61,7 @@ public class ResourceServiceTest {
     @Mock
     private ResourceTagService resourceTagServiceMock;
     @Mock
-    private ResourceMatchRepository resourceMatchRepository;
+    private ResourceMatchRepository resourceMatchRepositoryMock;
 
     private ResourceService resourceService;
     private ResourceOffer expOffer = null;
@@ -91,8 +97,10 @@ public class ResourceServiceTest {
             projectRepository,
             imageRepository,
             userService,
-            resourceMatchRepository
+            resourceMatchRepositoryMock
         );
+
+        prepareUser();
     }
 
     @After
@@ -119,7 +127,6 @@ public class ResourceServiceTest {
         expOffer.setAmount(new BigDecimal(10));
         expOffer.setOrganization(organization);
         expOffer.setIsCommercial(true);
-        expOffer.setIsRecurrent(false);
         expOffer.setStartDate(LocalDate.now());
         expOffer.setId(1L);
         expOffer.setName(" TEST ");
@@ -232,7 +239,6 @@ public class ResourceServiceTest {
         } else {
             when(resourceTagRepositoryMock.save(isA(tagCl))).thenThrow(new IllegalArgumentException());
         }
-
     }
 
     @Test
@@ -242,8 +248,8 @@ public class ResourceServiceTest {
 
         //save without any tags
         ResourceRequirement actual = this.resourceService
-            .createRequirement(expectedReq.getName(), expectedReq.getOriginalAmount(),
-                expectedReq.getDescription(), expectedReq.getProject(), expectedReq.getIsEssential(), tags);
+            .createRequirement(expectedReq.getName(), expectedReq.getAmount(),
+                expectedReq.getDescription(), expectedReq.getProject().getId(), expectedReq.getIsEssential(), tags);
 
         assertEquals(expectedReq.getId(), actual.getId());
         assertEquals(expectedReq.getOriginalAmount(), actual.getOriginalAmount());
@@ -284,7 +290,7 @@ public class ResourceServiceTest {
         when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
         //save without any tags
         ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(),
-            expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject(), //just to make the project run
+            expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject().getId(), //just to make the project run
             expectedReq.getIsEssential(), tags);
 
         assertEquals(expectedReq.getId(), actual.getId());
@@ -377,9 +383,9 @@ public class ResourceServiceTest {
             return internalItems;
         }).when(resourceRequirementRepositoryMock).findByProjectId(isA(longCl));
         int listSize = 1;
-        List<ResourceRequirementRequestDTO> expectedItem = this.resourceService.getAllRequirements(projectID);
+        List<ResourceRequirement> expectedItem = this.resourceService.getAllRequirements(projectID);
         assertEquals(expectedItem.size(), listSize);
-        assertEquals(expectedItem.get(0).getProjectId(), projectID);
+        assertEquals(expectedItem.get(0).getProject().getId(), projectID);
         assertEquals(expectedItem.get(0).getId(), expectedRequirementID);
         verify(this.resourceRequirementRepositoryMock, times(1)).findByProjectId(isA(longCl));
     }
@@ -390,7 +396,9 @@ public class ResourceServiceTest {
         List<String> tags = this.prepareCreateOffer();
 
         //save without any tags
-        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getOrganization().getId(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
+        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(),
+            expOffer.getDescription(), expOffer.getOrganization().getId(), expOffer.getIsCommercial(),
+            expOffer.getStartDate(), expOffer.getEndDate(), tags, null);
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
@@ -398,7 +406,6 @@ public class ResourceServiceTest {
         assertEquals(expOffer.getDescription(), actual.getDescription());
         assertEquals(expOffer.getOrganization(), actual.getOrganization());
         assertEquals(expOffer.getIsCommercial(), actual.getIsCommercial());
-        assertEquals(expOffer.getIsRecurrent(), actual.getIsRecurrent());
         assertEquals(expOffer.getStartDate(), actual.getStartDate());
         assertEquals(expOffer.getEndDate(), actual.getEndDate());
         assertEquals(expOffer.getResourceTags().size(), actual.getResourceTags().size());
@@ -415,7 +422,9 @@ public class ResourceServiceTest {
     public void testUpdateOffer_Fail() throws Exception {
         this.prepareUser();
         List<String> tags = this.prepareCreateOffer();
-        this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(), expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
+        this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(), expOffer.getName(),
+            expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getStartDate(),
+            expOffer.getEndDate(), tags, null);
     }
     @Test
     public void testUpdateOffer() throws Exception {
@@ -424,7 +433,7 @@ public class ResourceServiceTest {
         when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
         ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(),
             expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(),
-            expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags);
+            expOffer.getStartDate(), expOffer.getEndDate(), tags, null);
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
@@ -432,7 +441,6 @@ public class ResourceServiceTest {
         assertEquals(expOffer.getDescription(), actual.getDescription());
         assertEquals(expOffer.getOrganization(), actual.getOrganization());
         assertEquals(expOffer.getIsCommercial(), actual.getIsCommercial());
-        assertEquals(expOffer.getIsRecurrent(), actual.getIsRecurrent());
         assertEquals(expOffer.getStartDate(), actual.getStartDate());
         assertEquals(expOffer.getEndDate(), actual.getEndDate());
         assertEquals(expOffer.getResourceTags().size(), actual.getResourceTags().size());
@@ -475,12 +483,12 @@ public class ResourceServiceTest {
         }).when(resourceOfferRepositoryMock).findByOrganizationIdAndActiveIsTrue(expOrg.getId());
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceOfferDTO> list = this.resourceService.getAllOffers(expOrg.getId());
+        List<ResourceOffer> list = this.resourceService.getAllOffers(expOrg.getId());
         assertEquals(listSize, list.size());
         for(int i = 0; i < list.size(); i++){
-            ResourceOfferDTO current = list.get(i);
+            ResourceOffer current = list.get(i);
             assertEquals(current.getId(), expected);
-            assertEquals(current.getOrganizationId(), expOrg.getId());
+            assertEquals(current.getOrganization().getId(), expOrg.getId());
             expected += 9L;
         }
 
@@ -502,9 +510,9 @@ public class ResourceServiceTest {
 
         assertEquals(list.size(), listSize);
         for(int i = 0; i < list.size(); i++){
-            ResourceOfferDTO current = list.get(i);
+            ResourceOffer current = list.get(i);
             assertEquals(current.getId(), expected);
-            assertEquals(current.getOrganizationId(), alternative.getId());
+            assertEquals(current.getOrganization().getId(), alternative.getId());
         }
 
         verify(this.resourceOfferRepositoryMock, times(2)).findByOrganizationIdAndActiveIsTrue(isA(longCl));
@@ -577,8 +585,8 @@ public class ResourceServiceTest {
             ResourceMatch result = (ResourceMatch) args[0];
             result.setId(expected.getId());
             return result;
-        }).when(resourceMatchRepository).save(isA(ResourceMatch.class));
-        when(resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+        }).when(resourceMatchRepositoryMock).save(isA(ResourceMatch.class));
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
             isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
             thenReturn(new ArrayList<>());
 
@@ -618,8 +626,8 @@ public class ResourceServiceTest {
             ResourceMatch result = (ResourceMatch) args[0];
             result.setId(expected.getId());
             return result;
-        }).when(resourceMatchRepository).save(isA(ResourceMatch.class));
-        when(resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+        }).when(resourceMatchRepositoryMock).save(isA(ResourceMatch.class));
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
             isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
             thenReturn(new ArrayList<>());
 
@@ -645,7 +653,7 @@ public class ResourceServiceTest {
         prepareProjectApply(offer, req, org, project);
         // this will cause an error
         project.setOrganization(org);
-        when(resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
             isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
             thenReturn(new ArrayList<>());
 
@@ -661,7 +669,7 @@ public class ResourceServiceTest {
         Project project = new Project();
 
         prepareProjectApply(offer, req, org, project);
-        when(resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
             isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
             thenReturn(new ArrayList<>());
         // this will cause an error
@@ -679,7 +687,7 @@ public class ResourceServiceTest {
         Project project = new Project();
 
         prepareProjectApply(offer, req, org, project);
-        when(resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
             isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
             thenReturn(new ArrayList<>());
         // this will cause an error
@@ -701,10 +709,341 @@ public class ResourceServiceTest {
         // this will cause an error
         List<ResourceMatch> a = new ArrayList<ResourceMatch>();
         a.add(new ResourceMatch());
-        when(resourceMatchRepository.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
             isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
             thenReturn(a);
 
         resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
     }
+
+
+    @Test
+    public void testCreateClaimResourceRequest_shouldCreateMatch() throws Exception {
+
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+
+            ResourceOffer offer = new ResourceOffer();
+            Organization organization = new Organization();
+            organization.setId(3L);
+            offer.setId((Long)args[0]);
+            offer.setOrganization(organization);
+
+            return offer;
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+
+            ResourceRequirement requirement = new ResourceRequirement();
+            requirement.setId((Long) args[0]);
+            Project project = new Project();
+            Organization organization = new Organization();
+            project.setId(4L);
+            organization.setId(5L);
+            project.setOrganization(organization);
+            requirement.setProject(project);
+
+            return requirement;
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            return new ArrayList<ResourceMatch>();
+        }).when(resourceMatchRepositoryMock).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(), any(), any(), any());
+
+        ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(1L,2L);
+
+        verify(resourceOfferRepositoryMock, times(1)).findOne(1L);
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(2L);
+        verify(resourceMatchRepositoryMock, times(1)).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(), any(), any(), any());
+
+        assertTrue(resourceMatch.getResourceOffer().getId().equals(1L));
+        assertTrue(resourceMatch.getResourceRequirement().getId().equals(2L));
+        assertTrue(resourceMatch.getOrganization().getId().equals(3L));
+        assertTrue(resourceMatch.getProject().getId().equals(4L));
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testCreateClaimResourceRequest_shouldThrowExceptionBecauseResourceOfferIsNull() throws Exception {
+        doAnswer(invocation -> { return null;}).when(resourceOfferRepositoryMock).findOne(anyLong());
+
+        resourceService.createClaimResourceRequest(1L,2L);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testCreateClaimResourceRequest_shouldThrowExceptionBecauseResourceRequirementIsNull() throws Exception {
+        doAnswer(invocation -> {
+            return new ResourceOffer();
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
+        doAnswer(invocation -> {
+            return null;
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
+
+        resourceService.createClaimResourceRequest(1L,2L);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testCreateClaimResourceRequest_shouldThrowExceptionBecauseProjectIsNull() throws Exception {
+        doAnswer(invocation -> {
+            ResourceOffer resourceOffer = new ResourceOffer();
+            resourceOffer.setOrganization(new Organization());
+            return resourceOffer;
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
+        doAnswer(invocation -> {
+            ResourceRequirement requirement = new ResourceRequirement();
+            return requirement;
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
+
+        resourceService.createClaimResourceRequest(1L,2L);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testCreateClaimResourceRequest_shouldThrowExceptionBecauseOrganizationIsNull() throws Exception {
+        doAnswer(invocation -> {
+            ResourceOffer resourceOffer = new ResourceOffer();
+            return resourceOffer;
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
+        doAnswer(invocation -> {
+            ResourceRequirement requirement = new ResourceRequirement();
+            requirement.setProject(new Project());
+            return requirement;
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
+
+        resourceService.createClaimResourceRequest(1L,2L);
+    }
+
+    @Test(expected = MatchAlreadyExistsException.class)
+    public void testCreateClaimResourceRequest_shouldThrowExceptionBecauseMatchAlreadyExists() throws Exception {
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+
+            ResourceOffer offer = new ResourceOffer();
+            Organization organization = new Organization();
+            organization.setId((Long)args[0]);
+            offer.setId((Long)args[0]);
+            offer.setOrganization(organization);
+
+            return offer;
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+
+            ResourceRequirement requirement = new ResourceRequirement();
+            requirement.setId((Long) args[0]);
+            Project project = new Project();
+            Organization organization = new Organization();
+            project.setId(4L);
+            organization.setId(5L);
+            project.setOrganization(organization);
+            requirement.setProject(project);
+
+            return requirement;
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            List<ResourceMatch> matches = new ArrayList<ResourceMatch>();
+            matches.add(new ResourceMatch());
+
+            return matches;
+        }).when(resourceMatchRepositoryMock).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(ResourceOffer.class),any(ResourceRequirement.class),
+            any(Organization.class),any(Project.class));
+
+        resourceService.createClaimResourceRequest(1L,2L);
+    }
+
+
+    /**
+     * Creates a new ResourceMatch Object - Helper for ResourceRequest tests
+     * @param amountOffer amount of ResourceOffer
+     * @param amountRequirement amount of ResourceRequirement
+     * @return ResourceMatch
+     */
+    private ResourceMatch prepareResourceMatch(int amountOffer, int amountRequirement) {
+        ResourceMatch resourceMatch = new ResourceMatch();
+        resourceMatch.setId(1L);
+        resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+
+        ResourceOffer resourceOffer = new ResourceOffer();
+        resourceOffer.setAmount(new BigDecimal(amountOffer));
+
+        ResourceRequirement resourceRequirement = new ResourceRequirement();
+        resourceRequirement.setAmount(new BigDecimal(amountRequirement));
+
+        resourceMatch.setResourceOffer(resourceOffer);
+        resourceMatch.setResourceRequirement(resourceRequirement);
+
+        Organization org = new Organization();
+        org.setId(1L);
+        org.setOwner(loggedInUser);
+
+        Project project = new Project();
+        project.setOrganization(org);
+        resourceMatch.setProject(project);
+
+        return resourceMatch;
+    }
+
+    @Test
+    public void testAnswerResourceRequest_requestAcceptedOfferGreaterRequestAmount() throws Exception {
+
+        doAnswer(invocation -> {
+           return prepareResourceMatch(10,5);
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            Object args[] = invocation.getArguments();
+            return (ResourceOffer) args[0];
+        }).when(resourceOfferRepositoryMock).save(any(ResourceOffer.class));
+
+        doAnswer(invocation -> {
+            Object args[] = invocation.getArguments();
+            return (ResourceMatch) args[0];
+        }).when(resourceMatchRepositoryMock).save(any(ResourceMatch.class));
+
+        doReturn(loggedInUser).when(userService).getUserWithAuthorities();
+
+        ResourceMatch resourceMatch = resourceService.answerResourceRequest(1L, true);
+
+        verify(resourceMatchRepositoryMock,times(1)).findOne(anyLong());
+        verify(resourceOfferRepositoryMock,times(1)).save(any(ResourceOffer.class));
+        verify(resourceMatchRepositoryMock,times(1)).save(any(ResourceMatch.class));
+
+        assertEquals(resourceMatch.getAccepted(), true);
+        assertEquals(resourceMatch.getAmount(), new BigDecimal(5));
+        assertEquals(resourceMatch.getResourceOffer().getAmount(), new BigDecimal(5));
+        assertEquals(resourceMatch.getResourceOffer().isActive(), true);
+    }
+
+    @Test
+    public void testAnswerResourceRequest_requestAcceptedOfferSmallerRequestAmount() throws Exception {
+        doAnswer(invocation -> {
+            return prepareResourceMatch(5,9);
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            Object args[] = invocation.getArguments();
+            return (ResourceOffer) args[0];
+        }).when(resourceOfferRepositoryMock).save(any(ResourceOffer.class));
+
+        doAnswer(invocation -> {
+            Object args[] = invocation.getArguments();
+            return (ResourceMatch) args[0];
+        }).when(resourceMatchRepositoryMock).save(any(ResourceMatch.class));
+
+        doReturn(loggedInUser).when(userService).getUserWithAuthorities();
+
+        ResourceMatch resourceMatch = resourceService.answerResourceRequest(1L, true);
+
+        verify(resourceMatchRepositoryMock,times(1)).findOne(anyLong());
+        verify(resourceOfferRepositoryMock,times(1)).save(any(ResourceOffer.class));
+        verify(resourceMatchRepositoryMock,times(1)).save(any(ResourceMatch.class));
+
+        assertEquals(resourceMatch.getAccepted(), true);
+        assertEquals(resourceMatch.getAmount(), new BigDecimal(5));
+        assertEquals(resourceMatch.getResourceRequirement().getAmount(), new BigDecimal(4));
+        assertEquals(resourceMatch.getResourceOffer().isActive(), false);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testAnswerResourceRequest_shouldThrowExceptionBecauseMatchIdIsNull() throws Exception {
+        resourceService.answerResourceRequest(null, true);
+    }
+
+    @Test(expected = NoSuchResourceMatchException.class)
+    public void testAnswerResourceRequest_shouldThrowExceptionBecauseMatchIsNull() throws Exception {
+        doAnswer(invocation -> {
+            return null;
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        resourceService.answerResourceRequest(1L, true);
+    }
+
+    @Test(expected = OperationForbiddenException.class)
+    public void testAnswerResourceRequest_shouldThrowExceptionBecauseNoUserIsLoggedIn() throws Exception {
+        doAnswer(invocation -> {
+            return prepareResourceMatch(5,9);
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        doReturn(null).when(userService).getUserWithAuthorities();
+
+        resourceService.answerResourceRequest(1L, true);
+    }
+
+    @Test(expected = OperationForbiddenException.class)
+    public void testAnswerResourceRequest_shouldThrowExceptionBecauseUserHasNoOrganization() throws Exception {
+        doAnswer(invocation -> {
+            return prepareResourceMatch(5,9);
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        User user = new User();
+
+        doReturn(user).when(userService).getUserWithAuthorities();
+
+        resourceService.answerResourceRequest(1L, true);
+    }
+
+    @Test(expected = OperationForbiddenException.class)
+    public void testAnswerResourceRequest_shouldThrowExceptionBecauseUserHasNoAuthorization() throws Exception {
+        doAnswer(invocation -> {
+            return prepareResourceMatch(5,9);
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        User user = new User();
+        user.setId(2L);
+        Organization org = new Organization();
+        org.setOwner(user);
+        user.setOrganization(org);
+
+        doReturn(user).when(userService).getUserWithAuthorities();
+
+        resourceService.answerResourceRequest(1L, true);
+    }
+
+    @Test
+    public void testAnswerResourceRequest_shouldDeclineTheResourceRequest() throws Exception {
+        doAnswer(invocation -> {
+            return prepareResourceMatch(5,5);
+        }).when(resourceMatchRepositoryMock).findOne(anyLong());
+
+        doAnswer(invocation -> {
+            Object args[] = invocation.getArguments();
+            return (ResourceMatch) args[0];
+        }).when(resourceMatchRepositoryMock).save(any(ResourceMatch.class));
+
+        doReturn(loggedInUser).when(userService).getUserWithAuthorities();
+
+        ResourceMatch match = resourceService.answerResourceRequest(1L,false);
+
+        verify(resourceMatchRepositoryMock,times(1)).findOne(anyLong());
+        verify(resourceMatchRepositoryMock,times(1)).save(any(ResourceMatch.class));
+
+        assertEquals(match.getResourceOffer().getAmount(), new BigDecimal(5));
+        assertEquals(match.getAccepted(), false);
+    }
+
+    @Test
+    public void testGetResourceRequestsForOrganization_shouldReturnResourceMatches() throws Exception {
+        doAnswer(invocation -> {
+            List<ResourceMatch> matches = new ArrayList<>();
+            ResourceMatch match = new ResourceMatch();
+            Organization org = new Organization();
+            org.setId(1L);
+            match.setOrganization(org);
+
+            matches.add(match);
+
+            Page page = new PageImpl(matches);
+
+            return page;
+        }).when(resourceMatchRepositoryMock).findAll(any(Predicate.class), any(PageRequest.class));
+
+        List<ResourceMatch> resourceMatches = resourceService.getResourceRequestsForOrganization(1L, new RestParameters(1,20));
+        ResourceMatch match = resourceMatches.get(0);
+
+        verify(resourceMatchRepositoryMock, times(1)).findAll(any(Predicate.class), any(PageRequest.class));
+
+        assertTrue(match.getOrganization().getId().equals(1L));
+    }
+
 }

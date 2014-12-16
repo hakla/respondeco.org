@@ -9,6 +9,7 @@ import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Organization.
@@ -39,7 +41,6 @@ public class OrganizationController {
     private UserService userService;
     private OrgJoinRequestService orgJoinRequestService;
     private RatingService ratingService;
-
 
     @Inject
     public OrganizationController (OrganizationService organizationService,
@@ -92,7 +93,7 @@ public class OrganizationController {
     @RequestMapping(value = "/rest/organizations",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
+//    @Timed
     public List<OrganizationResponseDTO> getAll(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
@@ -177,24 +178,27 @@ public class OrganizationController {
         return responseEntity;
     }
 
-    /*
-     * GET /rest/organizations/:id/resourceOffers -> get the resourceOffers for the organization :id
+    /**
+     * Returns all ResourceOffers created by a specific Organzation given by id
+     * @param id
+     * @return ResponseEntity which contains a list of ResourceOfferResponseDTOs and a HTTP Status
      */
-
     @PermitAll
     @RequestMapping(value = "/rest/organizations/{id}/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferDTO> getAllResourceOffer(@PathVariable Long id) {
-        ResponseEntity<Organization> responseEntity;
-        OrganizationRequestDTO organizationRequestDTO;
+    public ResponseEntity<List<ResourceOfferResponseDTO>> getAllResourceOffers(@PathVariable Long id) {
+        ResponseEntity<List<ResourceOfferResponseDTO>> responseEntity;
 
-        log.debug("REST request to get all resource offer belongs to Organization id: {}", id);
+        log.debug("REST request to get all resource offers which belong to Organization id: {}", id);
 
-        List<ResourceOfferDTO> resourceOfferDTOs = this.resourceService.getAllOffers(id);
+        List<ResourceOffer> resourceOffers = this.resourceService.getAllOffers(id);
+        List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(resourceOffers, null);
 
-        return  resourceOfferDTOs;
+        responseEntity = new ResponseEntity<>(resourceOfferResponseDTOs, HttpStatus.OK);
+
+        return responseEntity;
     }
 
 
@@ -309,7 +313,7 @@ public class OrganizationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> deleteMember(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteMember(@PathVariable Long id, @PathVariable Long userId) {
         log.debug("REST request to delete Member : {}", userId);
         ResponseEntity<?> responseEntity;
         try {
@@ -374,10 +378,15 @@ public class OrganizationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
+    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id,
+                                                 @RequestParam(required = false) String permission) {
+        ResponseEntity<?> responseEntity;
+
         AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
         AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-                .fromEntity(aggregatedRating, null);
-        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+            .fromEntity(aggregatedRating, null);
+        responseEntity = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+
+        return responseEntity;
     }
 }

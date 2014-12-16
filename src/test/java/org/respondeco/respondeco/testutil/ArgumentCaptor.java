@@ -27,6 +27,9 @@ public class ArgumentCaptor<T> implements Answer {
 
     @Override
     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+        if(position < 0) {
+            return null;
+        }
         value = (T) invocationOnMock.getArguments()[position];
         if(callRealMethod) {
             return invocationOnMock.callRealMethod();

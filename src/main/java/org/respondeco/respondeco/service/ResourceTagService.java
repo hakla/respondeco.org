@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * Created by clemens on 04/12/14.
+ * Service for ResourceTags
+ * Responsible for saving and loading ResourceTags from the database
  */
 @Service
 @Transactional
@@ -28,20 +30,12 @@ public class ResourceTagService {
         this.resourceTagRepository = resourceTagRepository;
     }
 
-    public List<ResourceTag> getResourceTags(String filter, RestParameters restParams) {
-        Pageable pageable = null;
-        List<String> fields = null;
-        if(restParams != null) {
-            pageable = restParams.buildPageRequest();
-            fields = restParams.getFields();
-        }
-        if(filter == null) {
-            filter = "";
-        }
-        List<ResourceTag> result = resourceTagRepository.findWhereNameLike(filter, pageable);
-        return result;
-    }
-
+    /**
+     * Return Tags. If the tag exists get him from the database, otherwise
+     * create a new Tag and save the tag in the database.
+     * @param tagNames list of tags
+     * @return list of ResourceTags found or created
+     */
     public List<ResourceTag> getOrCreateTags(List<String> tagNames) {
         List<ResourceTag> response = new ArrayList<>();
         if(tagNames == null) {

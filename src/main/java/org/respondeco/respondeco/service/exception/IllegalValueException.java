@@ -3,7 +3,7 @@ package org.respondeco.respondeco.service.exception;
 /**
  * Created by clemens on 29/11/14.
  */
-public class IllegalValueException extends IllegalArgumentException {
+public class IllegalValueException extends Exception {
 
     private String internationalizationKey;
 

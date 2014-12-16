@@ -31,6 +31,14 @@ public class UserDTO {
     public UserDTO() {
     }
 
+    public UserDTO(String login) {
+        this.login = login;
+    }
+
+    public UserDTO(Long id) {
+        this.id = id;
+    }
+
     public UserDTO(Long id, String login, String password, String title, String gender, String firstName, String lastName,
                    String email, String description, String langKey, List<String> roles, Organization organization) {
         this.id = id;

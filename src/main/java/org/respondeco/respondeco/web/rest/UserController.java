@@ -6,6 +6,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
@@ -33,11 +34,13 @@ public class UserController {
 
     private UserRepository userRepository;
     private UserService userService;
+    private TextMessageService textMessageService;
 
     @Inject
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserRepository userRepository, UserService userService, TextMessageService textMessageService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.textMessageService = textMessageService;
     }
 
     /**
@@ -75,4 +78,5 @@ public class UserController {
         }
         return userService.findUsernamesLike(filter, limit);
     }
+
 }

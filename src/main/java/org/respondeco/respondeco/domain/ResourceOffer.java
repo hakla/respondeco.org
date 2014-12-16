@@ -40,9 +40,6 @@ public class ResourceOffer extends ResourceBase implements Serializable {
     @Column(name = "is_commercial", nullable = false)
     private Boolean isCommercial = false;
 
-    @Column(name = "is_recurrent")
-    private Boolean isRecurrent = false;
-
     //private BigDecimal price;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")

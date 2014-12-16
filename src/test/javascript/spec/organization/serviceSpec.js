@@ -58,5 +58,25 @@ describe('Organization Service Tests ', function () {
             httpBackend.flush();
         });
 
+        it('should call backend for aggregated organization rating', function(){
+            var returnData = {count: 1, rating: 2.0};
+            httpBackend.expectGET('app/rest/organizations/2/ratings').respond(returnData);
+
+            //WHEN
+            serviceTested.getAggregatedRating({id: 2});
+            //flush the backend to "execute" the request to do the expected GET assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to create an organization rating', function(){
+            var testRating = {rating: 3, comment: "kinda mediocre"};
+            httpBackend.expectPOST('app/rest/organizations/2/ratings', testRating).respond(200);
+
+            //WHEN
+            serviceTested.rateOrganization({id: 2}, testRating);
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
     });
 });
