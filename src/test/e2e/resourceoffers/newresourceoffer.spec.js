@@ -1,11 +1,13 @@
 describe('e2e: newresourceoffer', function() {
     var offer = require('./newresourceoffer.po.js');
     var login = require('../login.js');
-
-    login.login();
-    browser.waitForAngular();
+    var loggedIn = false;
 
     beforeEach(function() {
+        if(loggedIn == false) {
+            login.login();
+            loggedIn = true;
+        }
         offer.navigate();
         browser.waitForAngular();
     });

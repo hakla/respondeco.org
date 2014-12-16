@@ -1,10 +1,14 @@
 describe('e2e: searchresourceoffer', function() {
     var search = require('./searchresourceoffer.po.js');
     var login = require('../login.js');
-
-    login.login();
+    var loggedIn = false;
 
     beforeEach(function() {
+        if(loggedIn == false) {
+            login.login();
+            loggedIn = true;
+        }
+
         search.navigate();
         browser.waitForAngular();
     });
