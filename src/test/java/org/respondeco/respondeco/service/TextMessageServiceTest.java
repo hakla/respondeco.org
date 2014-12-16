@@ -15,6 +15,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
@@ -56,10 +57,13 @@ public class TextMessageServiceTest {
     private TextMessageService textMessageService;
     private TextMessage savedMessage;
 
+    private ArgumentCaptor<TextMessage> messageCaptor;
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         textMessageService = new TextMessageService(textMessageRepositoryMock, userServiceMock, userRepositoryMock);
+        messageCaptor = ArgumentCaptor.forType(TextMessage.class, 0, false);
     }
 
     @Test
@@ -73,22 +77,13 @@ public class TextMessageServiceTest {
         receivingUser.setId(2L);
         receivingUser.setLogin("testReceiver");
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
-        when(userRepositoryMock.findByLogin("testReceiver")).thenReturn(receivingUser);
+        doReturn(currentUser).when(userServiceMock).getUserWithAuthorities();
+        doReturn(receivingUser).when(userServiceMock).getUser(receivingUser.getId());
 
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            savedMessage = (TextMessage) args[0];
-            return (null);
-        })
-        .when(textMessageRepositoryMock).save(isA(TextMessage.class));
+        doAnswer(messageCaptor).when(textMessageRepositoryMock).save(isA(TextMessage.class));
+        textMessageService.createTextMessage(receivingUser.getId(), content);
 
-        textMessageService.createTextMessage(new UserDTO(receivingUser), content);
-
-        assertEquals(savedMessage.getSender(), currentUser);
-        assertEquals(savedMessage.getReceiver(), receivingUser);
-        assertEquals(savedMessage.getContent(), content);
-        assertNotNull(savedMessage.getTimestamp());
+        assertEquals(messageCaptor.getValue().getSender(), currentUser);
 
         verify(textMessageRepositoryMock, times(1)).save(isA(TextMessage.class));
         verify(userServiceMock, times(1)).getUserWithAuthorities();
@@ -97,14 +92,14 @@ public class TextMessageServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsNull() throws Exception {
         UserDTO user = new UserDTO();
-        textMessageService.createTextMessage(user, null);
+        textMessageService.createTextMessage(user.getId(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsEmpty() throws Exception {
         UserDTO user = new UserDTO();
         String content = "";
-        textMessageService.createTextMessage(user, content);
+        textMessageService.createTextMessage(user.getId(), content);
     }
 
     @Test(expected = NoSuchUserException.class)
@@ -117,7 +112,7 @@ public class TextMessageServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
 
-        textMessageService.createTextMessage(user, content);
+        textMessageService.createTextMessage(user.getId(), content);
     }
 
     @Test

@@ -156,9 +156,12 @@ public class ResourceController {
         log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
         ResponseEntity<?> responseEntity;
 
-        ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
-
-        responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        try {
+            ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalValueException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
 
         return responseEntity;
     }

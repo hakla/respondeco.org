@@ -39,25 +39,22 @@ public class TextMessageService {
         this.userRepository = userRepository;
     }
 
-    public TextMessage createTextMessage(UserDTO receiver, String content) throws NoSuchUserException {
+    public TextMessage createTextMessage(Long receiverId, String content) throws NoSuchUserException {
         if(content == null || content.length() <= 0) {
             throw new IllegalArgumentException("Content must not be empty");
         }
         User currentUser = userService.getUserWithAuthorities();
-        User receivingUser = null;
-
-        if (receiver.getId() != null) {
-            receivingUser = userService.getUser(receiver.getId());
-        } else if (receiver.getLogin() != null) {
-            receivingUser = userService.findUserByLogin(receiver.getLogin());
+        User receivingUser = userService.getUser(receiverId);
+        if(currentUser.equals(receivingUser)) {
+            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiverId));
         }
 
         if(receivingUser == null) {
-            throw new NoSuchUserException(String.format("Receiver %s does not exist", receiver));
+            throw new NoSuchUserException(String.format("Receiver %s does not exist", receiverId));
         }
 
         if(currentUser.equals(receivingUser)) {
-            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver.getId()));
+            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receivingUser.getId()));
         }
         TextMessage newTextMessage = new TextMessage();
         newTextMessage.setSender(currentUser);

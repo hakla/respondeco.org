@@ -1,12 +1,17 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.RatingPermission;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
-import org.respondeco.respondeco.service.*;
+import org.respondeco.respondeco.service.RatingService;
+import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -17,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +30,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * REST controller for managing Project.
+ * REST controller for managing Projects.
  */
 @RestController
 @Transactional
@@ -52,9 +58,13 @@ public class ProjectController {
     }
 
     /**
-     * POST  /rest/project -> Create a new project.
+     * POST  /rest/projects -> Creates a new project from the values sent in the request body.
+     *
+     * @param project the ProjectRequestDTO containing the values to create a new project
+     * @return status CREATED with the newly created project as ProjectResponseDTO, or if the request was not successful,
+     * an error response status and a potential error message
      */
-    @ApiOperation(value = "Create a project", notes = "Create or update a project")
+    @ApiOperation(value = "Create a project", notes = "Create a new project")
     @RequestMapping(value = "/rest/projects",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +74,7 @@ public class ProjectController {
         log.debug("REST request to create Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
-            projectService.create(
+            Project newProject = projectService.create(
                 project.getName(),
                 project.getPurpose(),
                 project.getConcrete(),
@@ -72,7 +82,8 @@ public class ProjectController {
                 project.getPropertyTags(),
                 project.getResourceRequirements(),
                 project.getLogo() != null ? project.getLogo().getId() : null);
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(newProject, null);
+            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
@@ -87,9 +98,13 @@ public class ProjectController {
     }
 
     /**
-     * POST  /rest/project -> Create a new project.
+     * PUT  /rest/projects -> Updates an existing project with new information
+     * @param project the new information to save, the project id must be present in order to update the
+     *                existing project
+     * @return status OK with the updated project as ProjectResponseDTO, or if the request was not successful,
+     * an error response status and a potential error message
      */
-    @ApiOperation(value = "Update a project", notes = "Create or update a project")
+    @ApiOperation(value = "Update a project", notes = "Update an existing project")
     @RequestMapping(value = "/rest/projects",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -99,7 +114,7 @@ public class ProjectController {
         log.error("REST request to update Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
-            projectService.update(
+            Project updatedProject = projectService.update(
                     project.getId(),
                     project.getName(),
                     project.getPurpose(),
@@ -108,7 +123,8 @@ public class ProjectController {
                     project.getLogo() != null ? project.getLogo().getId() : null,
                     project.getPropertyTags(),
                     project.getResourceRequirements());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(updatedProject, null);
+            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
@@ -123,7 +139,11 @@ public class ProjectController {
     }
 
     /**
-     * POST  /rest/project/manager -> Change project manager of a project
+     * PUT  /rest/projects/{id}/manager -> Change project manager of a project
+     * @param id the id of the project of which to change the manager, given by the REST path
+     * @param newManagerId The id of the new project manager
+     * @return status OK with the updated project as ProjectResponseDTO, or if the request was not successful,
+     * an error response status and a potential error message
      */
     @ApiOperation(value = "Change manager", notes = "Change the manager of a project")
     @RequestMapping(value = "/rest/projects/{id}/manager",
@@ -131,26 +151,54 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> changeManager(@PathVariable Long id, @RequestBody String newManager) {
-        log.debug("REST request to change project manager of project {} to {}", id, newManager);
+    public ResponseEntity<?> changeManager(@PathVariable Long id, @RequestBody Long newManagerId) {
+        log.debug("REST request to change project manager of project {} to {}", id, newManagerId);
         ResponseEntity<?> responseEntity;
         try {
-            projectService.setManager(id, newManager);
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            Project project = projectService.setManager(id, newManagerId);
+            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(project, null);
+            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch(IllegalValueException e) {
-            log.error("Could not set manager of project {} to {}", id, newManager, e);
+            log.error("Could not set manager of project {} to {}", id, newManagerId, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         } catch(OperationForbiddenException e) {
-            log.error("Could not set manager of project {} to {}", id, newManager, e);
+            log.error("Could not set manager of project {} to {}", id, newManagerId, e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }
 
     /**
-     * GET  /rest/project -> get all the projects.
+     * GET  /rest/projects -> if not specified otherwise, returns all projects.
+     *
+     * optional parameters filter and tags are combined via OR, which means that if both parameters are
+     * given, projects matching the name OR are associated with one or more tags are returned.
+     *
+     * page and pageSize work as follows, supposed that there are 50 projects in the database, if page = 2 and
+     * pageSize = 15, database entries 16-30 will be returned, the offset and limit can be computed as follows:
+     * offset = (page - 1) * pageSize
+     * limit = pageSize
+     *
+     * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
+     *               will be returned
+     * @param tags optional parameter, if not null or empty, projects which have one or more of these tags
+     *             associated with them will be returned
+     * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
+     *             pageSize, dafault is 1 (first page)
+     * @param pageSize optional parameter indicating the size of the pages of projects to be returned
+     * @param fields optional parameter indicating the fields of the responses to be returned, if specified, only the
+     *               corresponding fields in the response DTO will be set.
+     *               example: fields=id,name
+     *               response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
+     * @param order optional parameter indicating the order of the returned values, orders can be specified as follows:
+     *              fieldname: orders the responses by the fieldname ascending,
+     *              +fieldname: same as fieldname,
+     *              -fieldname: orders the responses by the fieldname descending
+     *              example: order=-id,+name orders by id descending and name ascending
+     * @return a list of response DTOs matching the given criteria
      */
-    @ApiOperation(value = "Get projects", notes = "Get projects by name and tags")
+    @ApiOperation(value = "Get projects", notes = "Get projects by name and tags, " +
+        "or get all projects if the two paramters are not given")
     @RequestMapping(value = "/rest/projects",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -170,7 +218,34 @@ public class ProjectController {
     }
 
     /**
-     * GET  /rest/organizations/{id}/projects -> get all the projects for an organization.
+     * GET  /rest/organizations/{id}/projects -> if not specified otherwise, returns all projects from an organization.
+     *
+     * optional parameters filter and tags are combined via OR, which means that if both parameters are
+     * given, projects matching the name OR are associated with one or more tags are returned.
+     *
+     * page and pageSize work as follows, supposed that there are 50 projects in the database, if page = 2 and
+     * pageSize = 15, database entries 16-30 will be returned, the offset and limit can be computed as follows:
+     * offset = (page - 1) * pageSize
+     * limit = pageSize
+     *
+     * @param organizationId REST path variable indicating the organization of which to query the projects
+     * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
+     *               will be returned
+     * @param tags optional parameter, if not null or empty, projects which have one or more of these tags
+     *             associated with them will be returned
+     * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
+     *             pageSize, dafault is 1 (first page)
+     * @param pageSize optional parameter indicating the size of the pages of projects to be returned
+     * @param fields optional parameter indicating the fields of the responses to be returned, if specified, only the
+     *               corresponding fields in the response DTO will be set.
+     *               example: fields=id,name
+     *               response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
+     * @param order optional parameter indicating the order of the returned values, orders can be specified as follows:
+     *              fieldname: orders the responses by the fieldname ascending,
+     *              +fieldname: same as fieldname,
+     *              -fieldname: orders the responses by the fieldname descending
+     *              example: order=-id,+name orders by id descending and name ascending
+     * @return a list of response DTOs matching the given criteria
      */
     @ApiOperation(value = "Get projects", notes = "Get projects by organization, name and tags")
     @RequestMapping(value = "/rest/organizations/{organizationId}/projects",
@@ -194,7 +269,14 @@ public class ProjectController {
     }
 
     /**
-     * GET  /rest/project/:id -> get the "id" project.
+     * GET  /rest/project/{id} -> get the project with the given id
+     * @param id the id of the project ot get
+     * @param fields optional parameter indicating the fields of the responses to be returned, if specified, only the
+     *               corresponding fields in the response DTO will be set.
+     *               example: fields=id,name
+     *               response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
+     * @return status OK with the specified project as ProjectResponseDTO, or if the project was not found, a
+     * NOT_FOUND status with an empty response body
      */
     @ApiOperation(value = "Get project", notes = "Get a project by its id")
     @RequestMapping(value = "/rest/projects/{id}",
@@ -220,7 +302,10 @@ public class ProjectController {
     }
 
     /**
-     * DELETE  /rest/project/:id -> delete the "id" project.
+     * DELETE  /rest/project/{id} -> delete the project with the given id.
+     * @param id the id of the project to delete
+     * @return status OK if the request was successful, or if the request was not successful,
+     * an error response status and a potential error message
      */
     @ApiOperation(value = "Delete project", notes = "Delete a project by its id")
     @RequestMapping(value = "/rest/projects/{id}",
@@ -233,6 +318,7 @@ public class ProjectController {
         ResponseEntity<?> responseEntity = null;
         try {
             projectService.delete(id);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch(IllegalValueException e) {
             log.error("Could not delete project {}", id, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
@@ -283,7 +369,12 @@ public class ProjectController {
     }
 
     /**
-     * POST  /rest/project/{id}/ratings -> Create a new projectrating.
+     * POST  /rest/project/{id}/ratings -> Create a new projectrating for the project with the given id.
+     *
+     * @param ratingRequestDTO DTO containing the rating
+     * @param id REST path variable indicating the project for which the rating is meant
+     * @return status OK if the request was successful, or if the request was not successful,
+     * an error response status and a potential error message
      */
     @RequestMapping(value = "/rest/projects/{id}/ratings",
             method = RequestMethod.POST,
@@ -295,7 +386,8 @@ public class ProjectController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            ratingService.rateProject(id,ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
+            ratingService.rateProject(id,ratingRequestDTO.getMatchid(),
+                ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchProjectException e ) {
             log.error("Could not grate project {}", id, e);
@@ -306,16 +398,50 @@ public class ProjectController {
         return responseEntity;
     }
 
+    /**
+     * get an aggregated rating for a project, or get a rating permission indicator indicating if the project can be
+     * rated by the current user
+     * @param id the id of the project in question
+     * @param permission flag, if present, check if the current user is allowed to rate the project and return a
+     *                   RatingPermissionResponseDTO
+     * @return a ResponseEntity containing either and AggregatedRatingResponseDTO or
+     * a RatingPermissionResponseDTO object
+     */
     @RequestMapping(value = "/rest/projects/{id}/ratings",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
-        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
-        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-            .fromEntity(aggregatedRating, null);
-        return new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id,
+                                                 @RequestParam(required = false) String permission,
+                                                 @RequestParam(required = false) List<Long> matches) {
+        ResponseEntity<?> responseEntity;
+        if(permission != null) {
+            if("matches".equals(permission)) {
+                List<RatingPermission> permissions = null;
+                try {
+                    permissions = ratingService.checkPermissionsForMatches(matches);
+                    List<RatingPermissionResponseDTO> responseDTOs = RatingPermissionResponseDTO.fromEntities(permissions);
+                    responseEntity = new ResponseEntity<>(responseDTOs, HttpStatus.OK);
+                } catch (NoSuchResourceMatchException e) {
+                    responseEntity = ErrorHelper.buildErrorResponse(e);
+                }
+            } else {
+                try {
+                    RatingPermission ratingPermission = ratingService.checkPermissionForProject(id);
+                    RatingPermissionResponseDTO responseDTO = RatingPermissionResponseDTO.fromEntity(ratingPermission);
+                    responseEntity = new ResponseEntity<>(Arrays.asList(responseDTO), HttpStatus.OK);
+                } catch (NoSuchProjectException e) {
+                    responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            }
+        } else {
+            AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByProject(id);
+            AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
+                .fromEntity(aggregatedRating, null);
+            responseEntity = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
+        }
+        return responseEntity;
     }
 
     /**

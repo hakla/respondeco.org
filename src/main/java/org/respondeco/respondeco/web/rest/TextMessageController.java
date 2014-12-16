@@ -58,7 +58,8 @@ public class TextMessageController {
         log.debug("REST request to save TextMessage : {}", textMessageRequestDTO);
         ResponseEntity<?> responseEntity;
         try {
-            textMessageService.createTextMessage(textMessageRequestDTO.getReceiver(), textMessageRequestDTO.getContent());
+            textMessageService.createTextMessage(textMessageRequestDTO.getReceiver().getId(),
+                textMessageRequestDTO.getContent());
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NoSuchUserException e) {
             log.error("could not save text TextMessage", e);
@@ -83,21 +84,6 @@ public class TextMessageController {
     public List<TextMessageResponseDTO> getAllForCurrentUser() {
         log.debug("REST request to get all TextMessages for current user");
         return textMessageService.getTextMessagesForCurrentUser();
-    }
-
-    /**
-     * GET  /rest/textmessages/:receiver -> get the textmessages for the given receiver
-     */
-    @ApiOperation(value = "Get text messages",
-            notes = "Get all text messages for the given userlogin (admin only)")
-    @RequestMapping(value = "/rest/textmessages/admin/{receiverId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    public List<TextMessageResponseDTO> getAllForReceiver(@PathVariable Long receiverId) {
-        log.debug("REST request to get TextMessages for : {}", receiverId);
-        return textMessageService.getTextMessagesForUser(receiverId);
     }
 
     /**
