@@ -40,7 +40,6 @@ import static org.mockito.Mockito.*;
  * Created by Clemens Puehringer on 06/11/14.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class TextMessageServiceTest {

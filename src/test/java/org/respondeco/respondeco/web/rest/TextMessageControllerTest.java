@@ -87,7 +87,7 @@ public class TextMessageControllerTest {
         MockitoAnnotations.initMocks(this);
 
         TextMessageController textMessageController =
-                new TextMessageController(textMessageServiceMock);
+                new TextMessageController(textMessageServiceMock, userServiceMock);
         this.restTextMessageMockMvc = MockMvcBuilders.standaloneSetup(textMessageController).build();
 
     }

@@ -7,13 +7,16 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
+import org.respondeco.respondeco.service.exception.ResourceException;
+import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -30,77 +33,79 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Roman Kern on 18.11.14.
+ * ResourceController
+ *
+ * This REST-Controller handles all requests for resourceoffers and resourcerequirements
  */
 @RestController
 @Transactional
 @RequestMapping("/app")
 public class ResourceController {
-    //region Private variables
     private final Logger log = LoggerFactory.getLogger(ResourceController.class);
 
     private ResourceService resourceService;
-    //endregion
-
-    //region Constructor
 
     @Inject
     public ResourceController(ResourceService resourceService){
         this.resourceService = resourceService;
     }
 
-    //endregion
 
-    //region Offer Controller
-
+    /**
+     * Return all ResourceOffers
+     * @param name filter for name, organization and tags
+     * @param commercial if true then only commercial resources will be returned
+     *                   if false then only non-commercial resources will be returned
+     *                   if null both - commercial and non-commercial resources - will be returned
+     * @param page number of the page to be returned
+     * @param pageSize size of the returned page
+     * @param fields defines which fields will be returned
+     * @param order defines the order of the returned fields
+     * @return
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffers",
+    @RequestMapping(value = "/rest/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferDTO> getAllResourceOffer(
+    public List<ResourceOfferResponseDTO> getAllResourceOffers(
         @RequestParam(required = false) String name,
-        @RequestParam(required = false) String organization,
-        @RequestParam(required = false) String tags,
-        @RequestParam(required = false) Boolean available,
         @RequestParam(required = false) Boolean commercial,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) String fields,
         @RequestParam(required = false) String order) {
 
-        log.debug("REST request to get all resource offer");
+        log.debug("REST request to get all resource offers");
 
         if(name == null) name = "";
-        if(organization == null) organization = "";
-        if(tags == null) tags = "";
-        if(available == null) available = false;
-
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceOffer> entries = resourceService.getAllOffers(name, organization, tags, available, commercial, restParameters);
+        List<ResourceOffer> entries = resourceService.getAllOffers(name, commercial, restParameters);
 
-        List<ResourceOfferDTO> result = new ArrayList<ResourceOfferDTO>();
-        if(entries.isEmpty() == false) {
-            for (ResourceOffer offer :entries) {
-                result.add(new ResourceOfferDTO(offer));
-            }
-        }
+        List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(entries, restParameters.getFields());
 
-        return result;
+        return resourceOfferResponseDTOs;
     }
 
+    /**
+     * Returns ResourceOffer with given id, wrapped in a ResourceOfferResponse DTO
+     * @param id resourceoffer id
+     * @return ResourceOffer wrapped in ResourceOfferResponseDTO
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffers/{id}",
+    @RequestMapping(value = "/rest/resourceoffers/{id}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<ResourceOfferDTO> getResourceOffer(@PathVariable Long id) {
+    public ResponseEntity<ResourceOfferResponseDTO> getResourceOffer(@PathVariable Long id) {
         log.debug("REST request to get resource with id " + id);
-        ResponseEntity<ResourceOfferDTO> responseEntity;
+        ResponseEntity<ResourceOfferResponseDTO> responseEntity;
 
         try {
-            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(this.resourceService.getOfferById(id));
+            ResourceOffer resourceOffer = resourceService.getOfferById(id);
+
+            ResourceOfferResponseDTO resourceOfferDTO = ResourceOfferResponseDTO.fromEntity(resourceOffer, null);
             responseEntity = new ResponseEntity<>(resourceOfferDTO, HttpStatus.OK);
 
         } catch (GeneralResourceException e) {
@@ -112,9 +117,9 @@ public class ResourceController {
 
 
     /**
-     * Create Claim ResourceOffer Request
-     * @param resourceMatchRequestDTO
-     * @return
+     * Create a Request to claim a Resourceoffer
+     * @param resourceMatchRequestDTO information of the requested ResourceOffer
+     * @return ResourceOffer
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequests",
@@ -145,6 +150,12 @@ public class ResourceController {
     }
 
 
+    /**
+     * Answer the request for the claimed resourceoffer
+     * @param id id of the resourcematch containing the request
+     * @param resourceMatchRequestDTO ResourceMatch containing the resource request
+     * @return ResponseEntity with HTTPStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequests/{id}",
         method = RequestMethod.PUT,
@@ -156,19 +167,29 @@ public class ResourceController {
         log.debug("REST request to accept or decline resource request. accept = " + resourceMatchRequestDTO.isAccepted());
         ResponseEntity<?> responseEntity;
 
-        try {
-            ResourceMatch resourceMatch = resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
+        try{
+            resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalValueException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
+        } catch(IllegalValueException ex) {
+            log.error("Could not set isAccepted for resourceMatch with id " + id);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (OperationForbiddenException e) {
+            log.error("Operation forbidden: ", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return responseEntity;
     }
 
 
+    /**
+     * Create a new ResourceOffer
+     * @param resourceOfferDTO contains necessary information for the creation of a new ResourceOffer
+     * @return ResponseEntity with HTTPStatus
+     * @throws Exception
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffers",
+    @RequestMapping(value = "/rest/resourceoffers",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -183,10 +204,10 @@ public class ResourceController {
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getOrganizationId(),
                 resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getIsRecurrent(),
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags()
+                resourceOfferDTO.getResourceTags(),
+                resourceOfferDTO.getLogoId()
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
@@ -204,8 +225,14 @@ public class ResourceController {
         return result;
     }
 
+    /**
+     * Update a ResourceOffer
+     * @param id id of the ResourceOffer which will be updated
+     * @param resourceOfferDTO contains information which will be used for updating the ResourceOffer
+     * @return ResponseEntity with HTTPStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffers/{id}",
+    @RequestMapping(value = "/rest/resourceoffers/{id}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -221,10 +248,10 @@ public class ResourceController {
                 resourceOfferDTO.getAmount(),
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getIsRecurrent(),
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags()
+                resourceOfferDTO.getResourceTags(),
+                resourceOfferDTO.getLogoId()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
         } catch (GeneralResourceException e){
@@ -242,8 +269,13 @@ public class ResourceController {
         return result;
     }
 
+    /**
+     * Delete ResourceOffer -> Sets ResourceOffer isActive to false
+     * @param id id of ResourceOffer which will be deleted
+     * @return ResponseEntity with HTTPStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceOffers/{id}",
+    @RequestMapping(value = "/rest/resourceoffers/{id}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -271,27 +303,37 @@ public class ResourceController {
         return result;
     }
 
-    //endregion
-
-    //region Requirements
-
+    /**
+     * Returns all ResourceRequirements wrapped in a ResourceRequirementRequestDTO
+     * @return List of ResourceRequirements represented by DTO
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceRequirements",
+    @RequestMapping(value = "/rest/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<ResourceRequirementRequestDTO> getAllResourceRequirement() {
         log.debug("REST request to get all resource requirements");
         List<ResourceRequirementRequestDTO> response = new ArrayList<>();
-        for(ResourceRequirement resourceRequirement : resourceService.getAllRequirements()) {
-            response.add(new ResourceRequirementRequestDTO(resourceRequirement));
+
+        List<ResourceRequirement> resourceRequirements = resourceService.getAllRequirements();
+        if(resourceRequirements.isEmpty() == false) {
+            ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
         }
+
+
         return response;
     }
 
 
+    /**
+     * Creates a new ResourceRequirement
+     * @param resourceRequirementRequestDTO ResourceRequirement to be saved in the db. Wrapped into RequestDTO.
+     * @return ResponseEntity with HttpStatus
+     * @throws Exception
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceRequirements",
+    @RequestMapping(value = "/rest/resourcerequirements",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -327,8 +369,14 @@ public class ResourceController {
         return result;
     }
 
+    /**
+     * Updates a ResourceRequirement
+     * @param resourceRequirementId id of the resource requirement
+     * @param resourceRequirementRequestDTO update information for the resource requirement
+     * @return ResponseEntity with HttpStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceRequirements/{resourceRequirementId}",
+    @RequestMapping(value = "/rest/resourcerequirements/{resourceRequirementId}",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -361,8 +409,13 @@ public class ResourceController {
         return result;
     }
 
+    /**
+     * Delete a Resource Requirement
+     * @param resourceRequirementId id of the resource requirement
+     * @return ResponseEnetity with HttpStatus
+     */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/resourceRequirements/{resourceRequirementId}",
+    @RequestMapping(value = "/rest/resourcerequirements/{resourceRequirementId}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -390,5 +443,4 @@ public class ResourceController {
         }
         return result;
     }
-    //endregion
 }

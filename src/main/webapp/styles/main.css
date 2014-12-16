@@ -8240,49 +8240,98 @@ uploaded-image div, [uploaded-image] div {
   margin-top: 50px;
 }
 /* line 352, ../../scss/main.scss */
+.resource-search-container uploaded-image {
+  height: 70px;
+  display: block;
+  width: 100%;
+}
+/* line 358, ../../scss/main.scss */
 .resource-search-container ul.resources {
   list-style-type: none;
   padding-left: 0;
   margin: 80px 0 50px 0;
 }
-/* line 357, ../../scss/main.scss */
-.resource-search-container ul.resources li {
+/* line 364, ../../scss/main.scss */
+.resource-search-container li {
   margin-bottom: 60px;
 }
-/* line 360, ../../scss/main.scss */
-.resource-search-container ul.resources li img {
+/* line 367, ../../scss/main.scss */
+.resource-search-container li img {
   height: 64px;
   width: 64px;
 }
-/* line 365, ../../scss/main.scss */
-.resource-search-container ul.resources li h2 {
+/* line 372, ../../scss/main.scss */
+.resource-search-container li h2 {
   position: relative;
   margin-top: 0;
   margin-bottom: 0;
 }
-/* line 371, ../../scss/main.scss */
-.resource-search-container ul.resources li .rating {
+/* line 378, ../../scss/main.scss */
+.resource-search-container li .rating {
   margin-top: 4px;
 }
-/* line 375, ../../scss/main.scss */
-.resource-search-container ul.resources li .amount {
+/* line 382, ../../scss/main.scss */
+.resource-search-container li .amount {
   font-size: 20px;
 }
-/* line 380, ../../scss/main.scss */
-.resource-search-container ul.resources li .organization .organization-name {
+/* line 387, ../../scss/main.scss */
+.resource-search-container li .organization .organization-name {
   font-size: 20px;
   margin-right: 12px;
 }
-/* line 385, ../../scss/main.scss */
-.resource-search-container ul.resources li .organization i {
+/* line 392, ../../scss/main.scss */
+.resource-search-container li .organization i {
   font-size: 12px;
 }
-/* line 390, ../../scss/main.scss */
-.resource-search-container ul.resources li .on-hover {
+
+/* line 400, ../../scss/main.scss */
+.on-hover {
   opacity: 0;
   transition: .2s ease opacity;
 }
-/* line 395, ../../scss/main.scss */
-.resource-search-container ul.resources li:hover .on-hover {
+
+/* line 406, ../../scss/main.scss */
+*:hover > .on-hover {
   opacity: 1;
+}
+
+/* line 413, ../../scss/main.scss */
+.modal-apply dl.dl-horizontal dt {
+  width: 200px;
+  text-align: left;
+}
+/* line 419, ../../scss/main.scss */
+.modal-apply li.resource {
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+/* line 424, ../../scss/main.scss */
+.modal-apply li.resource.selected {
+  background: #F2F2F2;
+}
+
+/* line 429, ../../scss/main.scss */
+.approved {
+  position: absolute;
+  height: 150px;
+  right: 150px;
+  top: -165px;
+}
+
+/* line 436, ../../scss/main.scss */
+.dropdown-toggle {
+  border-radius: 0 !important;
+}
+
+/* line 441, ../../scss/main.scss */
+.dropdown .badge {
+  background-color: #C40000;
+  top: -1px;
+  position: relative;
+  left: 12px;
+}
+
+/* line 449, ../../scss/main.scss */
+.highlight, .highlight td {
+  background-color: #FFF37B !important;
 }

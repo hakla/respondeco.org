@@ -2,6 +2,8 @@
     "global": {
         "title": "respondeco",
         "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
+        "backbutton": "Zurück",
+        "notChangeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
         "menu": {
             "home": "Startseite",
             "organization": "Organisation",
@@ -507,7 +509,13 @@
     },
     "resourcematch": {
         "error": {
-            "nosuchmatch": "Es konnte kein Resource-Match mit dieser id gefunden werden"
+            "nosuchmatch": "Es konnte kein Resource-Match mit dieser id gefunden werden",
+            "projectapply": {
+                "requestfulfilled": "Projektanforderung für die angegeben Resource(n) ist bereits erfüllt",
+                "offerdepleted": "Diese Resource ist bereits aufgebraucht und kann nicht gespendet werden",
+                "ownproject": "Sie können eigenem Projekt keine Spenden anbieten",
+                "offeralreadyexists": "Sie können nicht mehr als nur ein mal einen aktiven angebot spenden"
+            }
         }
     },
     "resourcerequest": {
@@ -524,13 +532,13 @@
         "startDate": "Verfügbar ab",
         "endDate": "Verfügbar bis",
         "commercial":"Kommerziell",
-        "recurrent":"Wiederkehrend",
         "newbutton":"Neue Ressource anlegen",
         "searchbutton":"Suchen",
         "organization": "Organisation",
         "tags": "Tags",
         "available": "Verfügbar",
         "search": {
+            "filter": "Name / Tags / Organisation",
             "type": "Art der Ressource",
             "request": "Ressource anfordern",
             "tooltip": {
@@ -542,7 +550,8 @@
             "chooseproject": "Für welches ihrer Projekte wird die Ressource benötigt?",
             "chooserequirement": "Für welche Anforderung soll die Ressource verwendet werden?",
             "error": {
-                "matchexists": "Die Anfrage wurde bereits versendet"
+                "matchexists": "Die Anfrage wurde bereits versendet",
+                "ownresource": "Sie können ihre eigene Ressource nicht anfordern"
             }
         },
         "new": {
@@ -552,7 +561,6 @@
             "description": "Beschreibung",
             "amount":"Anzahl",
             "commercial":"Kommerzielle Ressource",
-            "recurrent":"Wiederkehrende Ressource",
             "startDate": "Verfügbar ab",
             "endDate":"Verfügbar bis",
             "savebutton":"Speichern",
@@ -585,6 +593,10 @@
             "tableheader": "Benötigte Ressourcen",
             "name": "Name",
             "amount": "Menge"
+        },
+        "offer": {
+            "title": "Ressource auswählen",
+            "donate": "Spenden"
         }
     },
     "orgJoinRequest": {

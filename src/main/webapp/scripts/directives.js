@@ -229,7 +229,7 @@ angular.module('respondecoApp')
                 }
             }
         };
-    }).directive('respRating', ['Project', 'Organization', '$parse', function(Project, Organization, $parse) {
+    }).directive('respRating', ['Project', 'Organization', '$parse', function(Project, Organization) {
         return {
             restrict: 'AE',
             templateUrl: 'template/rating.html',
@@ -263,6 +263,17 @@ angular.module('respondecoApp')
                     }
                 }
             }
+        }
+    }]).directive('backButton', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/backbutton.html',
+            controller: function($scope) {
+                $scope.back = function() {
+                    window.history.back();
+                }
+            }
         };
-    }]);
+    });
 

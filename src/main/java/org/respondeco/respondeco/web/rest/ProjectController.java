@@ -3,21 +3,26 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
+import javassist.bytecode.stackmap.BasicBlock;
 import org.respondeco.respondeco.domain.AggregatedRating;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.RatingPermission;
 import org.respondeco.respondeco.domain.ResourceMatch;
+import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +32,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * REST controller for managing Projects.
+ * REST controller for managing Project.
+ *
+ * This REST-Controller handles all requests for /rest/projects
  */
 @RestController
 @Transactional
@@ -45,20 +54,62 @@ public class ProjectController {
     private ProjectService projectService;
     private ResourceService resourceService;
     private RatingService ratingService;
+    private UserService userService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService) {
+    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService, UserService userService) {
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
+        this.userService = userService;
     }
 
     /**
+<<<<<<< HEAD
+     * Organization that apply new resource to a project
+     * @param projectApplyDTO data to apply
+     * @return HTPP Status OK: no errors accure, BAD REQUEST: error accures
+     */
+    @ApiOperation(value = "project apply", notes = "Create a project apply (org donate project)")
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/projects/apply",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> projectApplyOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
+        log.debug("REST request to projectApplyOffer with dto: {}", projectApplyDTO);
+        ResponseEntity<?> responseEntity;
+        try {
+            ResourceMatch resourceMatch = resourceService.createProjectApplyOffer(
+                projectApplyDTO.getResourceOfferId(),
+                projectApplyDTO.getResourceRequirementId(),
+                projectApplyDTO.getOrganizationId(),
+                projectApplyDTO.getProjectId()
+            );
+
+            log.debug("Resource Match: {}", resourceMatch);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (ResourceException e) {
+            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (IllegalValueException e){
+            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        }
+
+        return responseEntity;
+    }
+
+    /**
+     * POST  /rest/project -> Create a new project.
+=======
      * POST  /rest/projects -> Creates a new project from the values sent in the request body.
      *
      * @param project the ProjectRequestDTO containing the values to create a new project
      * @return status CREATED with the newly created project as ProjectResponseDTO, or if the request was not successful,
      * an error response status and a potential error message
+>>>>>>> develop
      */
     @ApiOperation(value = "Create a project", notes = "Create a new project")
     @RequestMapping(value = "/rest/projects",
@@ -75,7 +126,6 @@ public class ProjectController {
                 project.getPurpose(),
                 project.getConcrete(),
                 project.getStartDate(),
-                project.getEndDate(),
                 project.getPropertyTags(),
                 project.getResourceRequirements(),
                 project.getLogo() != null ? project.getLogo().getId() : null);
@@ -117,7 +167,6 @@ public class ProjectController {
                     project.getPurpose(),
                     project.getConcrete(),
                     project.getStartDate(),
-                    project.getEndDate(),
                     project.getLogo() != null ? project.getLogo().getId() : null,
                     project.getPropertyTags(),
                     project.getResourceRequirements());
@@ -333,13 +382,20 @@ public class ProjectController {
      * @return list of ResourceRequirements wrapped into DTO
      */
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/projects/{id}/resourceRequirements",
+    @RequestMapping(value = "/rest/projects/{id}/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceRequirementRequestDTO> getAllResourceRequirement(@PathVariable Long id) {
+    public ResponseEntity<List<ResourceRequirementResponseDTO>> getAllResourceRequirement(@PathVariable Long id) {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
-        return this.resourceService.getAllRequirements(id);
+        ResponseEntity<List<ResourceRequirementResponseDTO>> responseEntity;
+
+        List<ResourceRequirement> resourceRequirements = resourceService.getAllRequirements(id);
+
+        List<ResourceRequirementResponseDTO> resourceRequirementResponseDTOs = ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
+
+        responseEntity = new ResponseEntity<>(resourceRequirementResponseDTOs, HttpStatus.OK);
+        return responseEntity;
     }
 
     /**
@@ -441,4 +497,46 @@ public class ProjectController {
         }
         return responseEntity;
     }
+
+    /**
+     * Checks if the currently authenticated user is allowed to edit a project
+     * @return
+     */
+    @RequestMapping(value = "/rest/projects/{id}/editable",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity isEditable(@PathVariable Long id) {
+        // Forbidden if the user is not allowed to edit --> return 403
+        ResponseEntity responseEntity;
+
+        try {
+            // check if the project is editable by the authenticated user
+            if (projectService.isEditable(id)) {
+                // and return a 200 if the user is allowed to edit
+                responseEntity = new ResponseEntity(HttpStatus.OK);
+            } else {
+                // and return a 403 code if the user is not allowed to edit
+                responseEntity = new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+        } catch (NullPointerException e) {
+            // No project found for the given id
+            responseEntity = new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/rest/projects/{id}/started",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public void isStarted(@PathVariable Long id) {
+        try {
+            projectService.checkProjectsToStart();
+        } catch (Exception e) {
+
+        }
+    }
+
 }
