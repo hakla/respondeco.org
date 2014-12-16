@@ -357,7 +357,8 @@ public class OrganizationControllerTest {
         defaultUser.setOrganization(defaultOrganization);
         inviteAbleUser.setOrganization(defaultOrganization);
         doReturn(defaultOrganization).when(organizationRepository).findOne(defaultOrganization.getId());
-        doReturn(Arrays.asList(defaultUser,inviteAbleUser)).when(userRepository).findUsersByOrganizationId(defaultOrganization.getId());
+        doReturn(Arrays.asList(defaultUser,inviteAbleUser)).when(organizationService)
+            .getUserByOrgId(defaultOrganization.getId());
 
         restOrganizationMockMvc.perform(get("/app/rest/organizations/{id}/members", defaultOrganization.getId()))
                 .andExpect(status().isOk())
