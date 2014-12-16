@@ -1,11 +1,7 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
-                                                       PropertyTagNames, $location, $routeParams, $sce) {
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    });
-    //$("#rating").popover("show");
+                                                       PropertyTagNames, $location, $routeParams, $sce, $translate) {
 
     $scope.project = {
         id: null,
@@ -13,37 +9,17 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         purpose: null,
         concrete: false,
         startDate: null,
-        endDate: null,
         logo: null,
         propertyTags: [],
         resourceRequirements: []
     };
     $scope.projects = Project.query();
 
-    $scope.canRate = true;
-    $scope.isRating = false;
-    $scope.shownRating = 0;
-    $scope.ratingCount = 0;
-    $scope.ratingComment = null;
-
-    Project.getAggregatedRating({pid: $routeParams.id},
-        function(rating) {
-            $scope.shownRating = rating.rating;
-            $scope.ratingCount = rating.count;
-        });
-
-    $scope.organizationRatings = new Object();
-    $scope.organizationRatingCounts = new Object();
-
-
     $scope.collected = 0;
     $scope.collectedEssential = 0;
 
+    $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
-
-    if($scope.canRate) {
-        $("#rating").trigger("show");
-    }
 
     // details mock
     $scope.status = {
@@ -60,7 +36,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     $scope.openedStartDate = false;
-    $scope.openedEndDate = false;
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1
@@ -71,25 +46,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.openedStartDate = true;
     };
 
-    $scope.openEnd = function($event) {
-        $event.stopPropagation();
-        $scope.openedEndDate = true;
-    };
-
     $scope.onUploadComplete = function(fileItem, response) {
         $scope.project.logo = response;
     };
 
     $scope.create = function() {
         var startDate = $scope.project.startDate || null;
-        var endDate = $scope.project.endDate || null;
 
         if (startDate != null) {
             startDate = new XDate(startDate).toString("yyyy-MM-dd");
-        }
-
-        if (endDate != null) {
-            endDate = new XDate(endDate).toString("yyyy-MM-dd");
         }
 
         var actualTags;
@@ -109,7 +74,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             purpose: $scope.project.purpose,
             concrete: $scope.project.concrete,
             startDate: startDate,
-            endDate: endDate,
             logo: $scope.project.logo,
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
@@ -149,6 +113,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
 
+                //for each match, put it in a map with the id as key
+                matches.forEach(function(match) {
+                    $scope.resourceMatches[match.matchId] = match;
+                });
+                //get rating permissions for the matches
+                var matchIds = $.map(matches, function(match) {return match.matchId}).join(",");
+                Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'matches', matches: matchIds},
+                    function(permissions) {
+                        permissions.forEach(function(permission) {
+                            $scope.matchRatingPermissions[permission.matchid] = permission.allowed;
+                        })
+                    });
+
                 //assign matches to requirement and calculate amount
                  $scope.resourceRequirementsWithMatches.forEach(function(req) {
                     req.matches = [];
@@ -167,11 +144,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                             //if there is no rating for this org already, get it
                             if(!$scope.organizationRatings[match.organization.id]) {
                                 $scope.organizationRatings[match.organization.id] =
-                                    Organization.getAggregatedRating({id: match.organization.id}, function(rating) {
-                                        $scope.organizationRatings[match.organization.id] = rating.rating;
-                                        $scope.organizationRatingCounts[match.organization.id] = rating.count;
-                                    }
-                                )
+                                    $scope.refreshOrganizationRating(match.organization.id);
                             }
                         }
                     });
@@ -180,6 +153,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 calculateCollected();
 
             });
+        });
+
+        Project.editable({
+            id: id
+        }, function() {
+            $scope.editable = true;
+        }, function() {
+            $scope.editable = false;
         });
     };
 
@@ -227,7 +208,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             purpose: null,
             concrete: false,
             startDate: null,
-            endDate: null,
             projectLogo: null
         };
         $location.path('/projects');
@@ -278,6 +258,50 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $('#addResource').modal('toggle');
     }
 
+    if (isNew === false) {
+        $scope.update($routeParams.id);
+    }
+
+    //RATING
+    $scope.canRate = false;
+    $scope.ratedMatch = null;
+    $scope.isRating = false;
+    $scope.shownRating = 0;
+    $scope.ratingCount = 0;
+    $scope.ratingComment = null;
+    $scope.currentMatchId = null;
+    $scope.currentOrgRating = 0;
+    $scope.currentOrgRatingComment = "";
+
+    $scope.ratingSuccess = null;
+    $scope.projectRatingError = null;
+    $scope.orgRatingError = null;
+
+    $scope.organizationRatings = new Object();
+    $scope.matchRatingPermissions = new Object();
+
+    $scope.refreshProjectRating = function() {
+        //get new aggregated rating
+        Project.getAggregatedRating({pid: $routeParams.id},
+            function(rating) {
+                $scope.shownRating = rating.rating;
+                $scope.ratingCount = rating.count;
+            });
+        //check if rating is possible
+        Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'project'},
+            function(permissions) {
+                $scope.canRate = permissions[0].allowed;
+                $scope.ratedMatch = permissions[0].matchid;
+            });
+    }
+    $scope.refreshProjectRating();
+
+    $scope.refreshOrganizationRating = function(orgid) {
+        Organization.getAggregatedRating({id: orgid}, function(rating) {
+            $scope.organizationRatings[orgid] = {rating: rating.rating, count: rating.count};
+        });
+    }
+
     $scope.showRating = function() {
         if($scope.canRate) {
             $scope.isRating = true;
@@ -290,33 +314,87 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.rateProject = function() {
         if($scope.project != null) {
-            Project.rateProject({pid: $routeParams.id}, {rating: $scope.shownRating, comment: $scope.ratingComment},
+            Project.rateProject({pid: $routeParams.id},
+                {matchid: $scope.ratedMatch, rating: $scope.shownRating, comment: $scope.ratingComment},
                 function() {
-                    $scope.rateSucces = "SUCCESS";
-                    $scope.canRate = false;
+                    $scope.ratingSuccess = "SUCCESS";
+                    $scope.projectRatingError = null;
                     $scope.hideRating();
-                    Project.getAggregatedRating({pid: $routeParams.id},
-                        function(rating) {
-                            $scope.shownRating = rating.rating;
-                            $scope.ratingCount = rating.count;
+                    $scope.clearRating();
+                    $scope.refreshProjectRating();
+                },
+                function(error) {
+                    $scope.projectRatingError = "ERROR";
+                    $scope.ratingSuccess = null;
+                    if(error.status == 400) {
+                        console.log("translating " + error.data.key);
+                        $translate(error.data.key).then(function(translated) {
+                            $scope.setProjectRatingError(translated);
                         });
+                    }
                 });
 
         }
     }
 
-    $scope.rateOrganization = function(matchid, orgid) {
+    $scope.rateMatch = function(id) {
+        if(!$scope.matchRatingPermissions[id]) {
+            return;
+        }
+        $scope.currentMatchId = id;
+        var match = $scope.resourceMatches[id];
+        $scope.currentOrgRating = $scope.organizationRatings[match.organization.id].rating;
+        $scope.showOrgRatingModal();
+    }
+
+    $scope.rateOrganization = function() {
+        var matchid = $scope.currentMatchId;
+        var orgid = $scope.resourceMatches[matchid].organization.id;
         Organization.rateOrganization({id: orgid}, {
-            matchid: matchid, rating: $scope.organizationRatings[orgid], comment: ""},
+            matchid: matchid, rating: $scope.currentOrgRating,
+                comment: $scope.currentOrgRatingComment},
             function() {
-                Organization.getAggregatedRating({id: orgid}, function(rating) {
-                    $scope.organizationRatings[orgid] = rating.rating;
-                    $scope.organizationRatingCounts[orgid] = rating.count;
-                });
+                $scope.matchRatingPermissions[matchid] = false;
+                $scope.refreshOrganizationRating(orgid);
+                $scope.clearRating();
+            },
+            function(error) {
+                $scope.orgRatingError = "ERROR";
+                if(error.status == 400) {
+                    console.log("translating " + error.data.key);
+                    $translate(error.data.key).then(function(translated) {
+                        $scope.setOrgRatingError(translated);
+                    });
+                }
+
             });
     }
 
-    if (isNew === false) {
-        $scope.update($routeParams.id);
+    $scope.clearRating = function() {
+        $scope.hideOrgRatingModal();
+        $scope.isRating = false;
+        $scope.ratingComment = null;
+        $scope.currentMatchId = null;
+        $scope.currentOrgRating = 0;
+        $scope.currentOrgRatingComment = null;
+        $scope.projectRatingError = null;
+        $scope.orgRatingError = null;
     }
+
+    $scope.showOrgRatingModal = function() {
+        $('#rateMatchModal').modal('show');
+    }
+
+    $scope.hideOrgRatingModal = function() {
+        $('#rateMatchModal').modal('hide');
+    }
+
+    $scope.setProjectRatingError = function(error) {
+        $("#projectRatingError").text(error);
+    }
+
+    $scope.setOrgRatingError = function(error) {
+        $("#orgRatingError").text(error);
+    }
+
 });

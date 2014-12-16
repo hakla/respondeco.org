@@ -131,6 +131,7 @@ public class OrgJoinRequestService {
 //        }
         user.setOrganization(organization);
         orgJoinRequest.setActive(false);
+        userRepository.save(user);
         orgJoinRequestRepository.save(orgJoinRequest);
         log.debug("Accepted Request and Deleted OrgJoinRequest: {}", requestId);
     }

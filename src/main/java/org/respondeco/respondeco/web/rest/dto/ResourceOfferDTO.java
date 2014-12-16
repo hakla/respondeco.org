@@ -43,8 +43,6 @@ public class ResourceOfferDTO {
     private Long logoId;
     private Boolean isCommercial = false;
 
-    private Boolean isRecurrent = false;
-
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     private LocalDate startDate;
@@ -54,7 +52,6 @@ public class ResourceOfferDTO {
     private LocalDate endDate;
 
     public Boolean getIsCommercial() { return this.isCommercial; }
-    public Boolean getIsRecurrent() { return this.isRecurrent; }
     public LocalDate getStartDate() { return this.startDate; }
     public LocalDate getEndDate() { return this.endDate; }
 
@@ -68,7 +65,6 @@ public class ResourceOfferDTO {
         this.setDescription(offer.getDescription());
         this.setOrganizationId(offer.getOrganization().getId());
         this.setIsCommercial(offer.getIsCommercial());
-        this.setIsRecurrent(offer.getIsRecurrent());
         this.setStartDate(offer.getStartDate());
         this.setEndDate(offer.getEndDate());
 
@@ -76,12 +72,5 @@ public class ResourceOfferDTO {
         for(ResourceTag tag : offer.getResourceTags()) {
             resourceTags.add(tag.getName());
         }
-    }
-
-    private String dateTimeToString(DateTime dateTime){
-        //DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
-        //String result = dateTime == null ? null : dateTime.toString(formatter);
-        return null;
-        //return result;
     }
 }

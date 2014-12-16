@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project) {
 
-	$scope.resource = {resourceTags: [], isCommercial: false, isRecurrent: false};
+	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
 	$scope.organization = null;
 	$scope.formSaveError = null;
@@ -208,7 +208,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.clear = function() {
 		$scope.resource = {id: null, name: null, description: null, resourceTags: [],
-			amount: null, startDate: null, endDate: null, isCommercial: false, isRecurrent: false};
+			amount: null, startDate: null, endDate: null, isCommercial: false};
 	}
 
 	var deleteState = false;

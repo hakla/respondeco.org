@@ -43,12 +43,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
-
     @NotNull
     @ManyToOne
     private Organization organization;
@@ -76,5 +70,11 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @OneToMany(mappedBy = "project")
     private List<ResourceMatch> resourceMatches;
+
+    /**
+     * If the project was started successfully (all essential resources were donated by the project start)
+     */
+    @Column(name = "is_successful")
+    private Boolean successful;
 
 }

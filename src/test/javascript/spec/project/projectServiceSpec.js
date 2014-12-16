@@ -66,12 +66,41 @@ describe('TextMessage Service Tests ', function () {
             httpBackend.flush();
         });
 
-        it('should call backend to create a rating', function(){
+        it('should call backend to create a project rating', function(){
             var testRating = {rating: 3, comment: "kinda mediocre"};
             httpBackend.expectPOST('app/rest/projects/2/ratings', testRating).respond(200);
 
             //WHEN
             serviceTested.rateProject({pid: 2}, testRating);
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to check if the user has the right to rate a project', function(){
+            var testPermisson = "project";
+            var testRatingPermissions = [{matchid: null, allowed: true}];
+            httpBackend.expectGET('app/rest/projects/2/ratings?permission=project')
+                .respond(testRatingPermissions);
+
+            //WHEN
+            serviceTested.checkIfRatingPossible({pid: 2, permission: testPermisson});
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to check if the user has the right to rate matches of the project', function(){
+            var testPermisson = "matches";
+            var testMatches = "3,4,5"
+            var testRatingPermissions = [
+                {matchid: 3, allowed: true},
+                {matchid: 4, allowed: true},
+                {matchid: 5, allowed: true}
+            ];
+            httpBackend.expectGET('app/rest/projects/2/ratings?matches=3,4,5&permission=matches')
+                .respond(testRatingPermissions);
+
+            //WHEN
+            serviceTested.checkIfRatingPossible({pid: 2, permission: testPermisson, matches: testMatches});
             //flush the backend to "execute" the request to do the expected POST assertion.
             httpBackend.flush();
         });

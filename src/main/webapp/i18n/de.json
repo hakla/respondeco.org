@@ -3,6 +3,7 @@
         "title": "respondeco",
         "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
         "backbutton": "Zurück",
+        "notChangeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
         "menu": {
             "home": "Startseite",
             "organization": "Organisation",
@@ -115,6 +116,9 @@
         },
         "textmessage": {
             "title": "Nachricht von "
+        },
+        "error": {
+            "server.unreachable": "Es konnte keine Verbindung mit dem Server hergestellt werden."
         }
     },
     "user": {
@@ -180,7 +184,24 @@
     "rating": {
         "placeholder": "Ihre Meinung...",
         "ratenow": "Jetzt Bewerten",
-        "notnow": "Später bewerten"
+        "notnow": "Später bewerten",
+        "yourrating": "Ihre Bewertung: ",
+        "yourcomment": "Kommentar",
+        "match": {
+            "dorate": "Bewerten Sie die Interaktion"
+        },
+        "success": "Ihre Bewertung wurde abgegeben!",
+        "error": {
+            "general": "Es ist ein Fehler aufgetreten.",
+            "cannotrateown": "Sie können Ihre eigene Organisation nicht bewerten.",
+            "notmanagerofproject": "Sie sind nicht der Verantwortliche für dieses Project",
+            "notaccepted": "Diese Transaktion wurde noch nicht bestätigt",
+            "project.alreadyrated": "Dieses Project wurde bereits von Ihnen bewertet.",
+            "org.alreadyrated": "Diese Parter-Organisation wurde bereits von Ihnen bewertet",
+            "notowneroforganization": "Nur der Leiter einer Organisation darf Projekte bewerten",
+            "notsameorganization": "Ihre Organisation darf diese Transaktion nicht bewerten",
+            "notsameproject": "Das gesendete Projekt stimmt nicht mit dem gesendeten Match überein"
+        }
     },
 
     "main": {
@@ -505,7 +526,6 @@
         "startDate": "Verfügbar ab",
         "endDate": "Verfügbar bis",
         "commercial":"Kommerziell",
-        "recurrent":"Wiederkehrend",
         "newbutton":"Neue Ressource anlegen",
         "searchbutton":"Suchen",
         "organization": "Organisation",
@@ -535,7 +555,6 @@
             "description": "Beschreibung",
             "amount":"Anzahl",
             "commercial":"Kommerzielle Ressource",
-            "recurrent":"Wiederkehrende Ressource",
             "startDate": "Verfügbar ab",
             "endDate":"Verfügbar bis",
             "savebutton":"Speichern",

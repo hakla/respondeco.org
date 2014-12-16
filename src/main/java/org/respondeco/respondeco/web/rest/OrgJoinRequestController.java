@@ -99,6 +99,12 @@ public class OrgJoinRequestController {
                 } catch (AlreadyInvitedToOrganizationException e1) {
                     log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
                     responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
+                } catch (NoSuchOrganizationException e1) {
+                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
+                    responseEntity = new ResponseEntity<>(e1.getMessage(), HttpStatus.BAD_REQUEST);
+                } catch (NoSuchUserException e1) {
+                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
+                    responseEntity = new ResponseEntity<>(e1.getMessage(), HttpStatus.BAD_REQUEST);
                 }
             } else {
                 log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
@@ -199,6 +205,9 @@ public class OrgJoinRequestController {
         } catch (NotOwnerOfOrganizationException | IllegalArgumentException e) {
             log.error("Could not delete OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not delete OrgJoinRequest : {}", e);
+            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }

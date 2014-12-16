@@ -11,6 +11,7 @@ import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchOrgJoinRequestException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
@@ -105,6 +106,9 @@ public class AccountController {
                                 orgJoinRequestService.declineRequest(orgJoinRequest.getId());
                             }
                         } catch (NoSuchOrgJoinRequestException e) {
+                            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                        } catch (NoSuchOrganizationException e) {
+                            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
                         }
                     }
 

@@ -46,8 +46,6 @@ public class QResourceOffer extends EntityPathBase<ResourceOffer> {
 
     public final BooleanPath isCommercial = createBoolean("isCommercial");
 
-    public final BooleanPath isRecurrent = createBoolean("isRecurrent");
-
     //inherited
     public final StringPath lastModifiedBy;
 

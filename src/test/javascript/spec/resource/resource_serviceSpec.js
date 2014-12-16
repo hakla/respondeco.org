@@ -24,7 +24,7 @@ describe('Resource Service Tests ', function () {
         it('should call the backend when resource gets saved', function(){
             var returnData = { result: 'ok' };
             var resource = { name: 'Resource', amount: '1', dateStart: 'Dec 6, 2014 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
+                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
                 company: 'Company' };
             var organizationId = 1;
 
@@ -38,15 +38,15 @@ describe('Resource Service Tests ', function () {
 
             httpBackend.expectGET('app/rest/resourceoffers').respond([{
                 id: 0, name: 'TestResource', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
+                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
                 company: 'Company'
             }, {
                 id: 1, name: 'TestResource2', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'false', isRecurrent: 'true',
+                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'false',
                 company: 'Company'
             }, {
                 id: 2, name: 'TestResource3', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true', isRecurrent: 'true',
+                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
                 company: 'Company'
             }]);
 

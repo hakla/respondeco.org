@@ -39,17 +39,22 @@ public class TextMessageService {
         this.userRepository = userRepository;
     }
 
-    public TextMessage createTextMessage(UserDTO receiver, String content) throws NoSuchUserException {
+    public TextMessage createTextMessage(Long receiverId, String content) throws NoSuchUserException {
         if(content == null || content.length() <= 0) {
             throw new IllegalArgumentException("Content must not be empty");
         }
         User currentUser = userService.getUserWithAuthorities();
-        User receivingUser = userService.getUser(receiver.getId());
+        User receivingUser = userService.getUser(receiverId);
         if(currentUser.equals(receivingUser)) {
-            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiver.getId()));
+            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiverId));
         }
+
         if(receivingUser == null) {
-            throw new NoSuchUserException(String.format("Receiver %s does not exist", receiver));
+            throw new NoSuchUserException(String.format("Receiver %s does not exist", receiverId));
+        }
+
+        if(currentUser.equals(receivingUser)) {
+            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receivingUser.getId()));
         }
         TextMessage newTextMessage = new TextMessage();
         newTextMessage.setSender(currentUser);
@@ -95,7 +100,8 @@ public class TextMessageService {
                 message.getId(),
                 new UserDTO(message.getSender()),
                 message.getContent(),
-                message.getTimestamp());
+                message.getTimestamp(),
+                !message.isRead());
     }
 
     private List<TextMessageResponseDTO> textMessagesToDTO(List<TextMessage> messages) {
@@ -106,4 +112,13 @@ public class TextMessageService {
         return result;
     }
 
+    public Long countNewMessages(User user) {
+        return textMessageRepository.countByReceiverAndActiveIsTrueAndReadIsFalse(user);
+    }
+
+    public void setRead(Long id) {
+        TextMessage message = textMessageRepository.findOne(id);
+        message.setRead(true);
+        textMessageRepository.save(message);
+    }
 }

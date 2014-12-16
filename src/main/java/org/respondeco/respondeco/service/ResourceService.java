@@ -214,7 +214,7 @@ public class ResourceService {
      * @return created ResourceOffer
      */
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
-                                     Boolean isCommercial, Boolean isRecurrent, LocalDate startDate,
+                                     Boolean isCommercial, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags, Long logoId) {
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
@@ -223,7 +223,6 @@ public class ResourceService {
         newOffer.setDescription(description);
         newOffer.setOrganization(organizationRepository.findOne(organizationId));
         newOffer.setIsCommercial(isCommercial);
-        newOffer.setIsRecurrent(isRecurrent);
         newOffer.setStartDate(startDate);
         newOffer.setEndDate(endDate);
         if(logoId != null) {
@@ -254,7 +253,7 @@ public class ResourceService {
      * @throws ResourceJoinTagException
      */
     public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount,
-                                     String description, Boolean isCommercial, Boolean isRecurrent,
+                                     String description, Boolean isCommercial,
                                      LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId)
         throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
@@ -266,7 +265,6 @@ public class ResourceService {
             offer.setAmount(amount);
             offer.setDescription(description);
             offer.setIsCommercial(isCommercial);
-            offer.setIsRecurrent(isRecurrent);
             offer.setStartDate(startDate);
             offer.setEndDate(endDate);
             offer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));

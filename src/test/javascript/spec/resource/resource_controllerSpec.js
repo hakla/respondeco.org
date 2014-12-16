@@ -14,7 +14,7 @@ describe('Resource Controller Tests ', function () {
             ProjectService = Project;
             OrganizationService = Organization;
 
-            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location, 
+            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location,
                     Resource: ResourceService, Account: AccountService, Project:ProjectService, Organization: OrganizationService});
         }));
 
@@ -175,7 +175,6 @@ describe('Resource Controller Tests ', function () {
                 "Computer", "Test"
               ],
               "amount": 5,
-              "isRecurrent": false,
               "isCommercial": false,
               "organizationId": 1
             }
@@ -187,7 +186,7 @@ describe('Resource Controller Tests ', function () {
             $scope.create();
 
             expect(ResourceService.save).toHaveBeenCalled();
-            
+
             ResourceService.save.calls.mostRecent().args[1]();
             ResourceService.save.calls.mostRecent().args[2]();
 
@@ -206,7 +205,6 @@ describe('Resource Controller Tests ', function () {
                 "Computer", "Test"
               ],
               "amount": 5,
-              "isRecurrent": false,
               "isCommercial": false,
               "organizationId": 1
             }
@@ -253,13 +251,12 @@ describe('Resource Controller Tests ', function () {
             $scope.resource.dateStart = "11.11.2014";
             $scope.resource.dateEnd = "12.12.2014";
             $scope.resource.isCommercial = true;
-            $scope.resource.isRecurrent = true;
 
             $scope.clear();
 
             expect($scope.resource).toEqual({'id': null, 'name': null, 'description': null,
                 'resourceTags': [], 'amount': null, 'startDate': null, 'endDate': null,
-                'isCommercial': false, 'isRecurrent': false});
+                'isCommercial': false});
         });
 
         it('should search for resources', function() {
@@ -272,7 +269,7 @@ describe('Resource Controller Tests ', function () {
             });
 
             ResourceService.query.calls.mostRecent().args[2]();
-            
+
             expect($scope.searchError).toBe(true);
         });
 
@@ -326,7 +323,7 @@ describe('Resource Controller Tests ', function () {
                     data: {
                         message: "test"
                     }
-                }], 
+                }],
                 [{
                     data: {
                         message: "testzwei"
@@ -343,7 +340,7 @@ describe('Resource Controller Tests ', function () {
             $scope.redirectToOrganization();
             expect(location.path()).toEqual('/organization/1');
         });
-        
+
         it('should openStartDate', function() {
             var eventMock = { stopPropagation: function() {}, preventDefault: function() {}, stopImmediatePropagation: function() {} }
 

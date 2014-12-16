@@ -115,7 +115,6 @@ public class ResourceServiceTest {
         expOffer.setAmount(new BigDecimal(10));
         expOffer.setOrganization(organization);
         expOffer.setIsCommercial(true);
-        expOffer.setIsRecurrent(false);
         expOffer.setStartDate(LocalDate.now());
         expOffer.setId(1L);
         expOffer.setName(" TEST ");
@@ -385,7 +384,9 @@ public class ResourceServiceTest {
         List<String> tags = this.prepareCreateOffer();
 
         //save without any tags
-        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getOrganization().getId(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags, expOffer.getLogo().getId());
+        ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(),
+            expOffer.getDescription(), expOffer.getOrganization().getId(), expOffer.getIsCommercial(),
+            expOffer.getStartDate(), expOffer.getEndDate(), tags, null);
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
@@ -393,7 +394,6 @@ public class ResourceServiceTest {
         assertEquals(expOffer.getDescription(), actual.getDescription());
         assertEquals(expOffer.getOrganization(), actual.getOrganization());
         assertEquals(expOffer.getIsCommercial(), actual.getIsCommercial());
-        assertEquals(expOffer.getIsRecurrent(), actual.getIsRecurrent());
         assertEquals(expOffer.getStartDate(), actual.getStartDate());
         assertEquals(expOffer.getEndDate(), actual.getEndDate());
         assertEquals(expOffer.getResourceTags().size(), actual.getResourceTags().size());
@@ -410,7 +410,9 @@ public class ResourceServiceTest {
     public void testUpdateOffer_Fail() throws Exception {
         this.prepareUser();
         List<String> tags = this.prepareCreateOffer();
-        this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(), expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags, expOffer.getLogo().getId());
+        this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(), expOffer.getName(),
+            expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getStartDate(),
+            expOffer.getEndDate(), tags, null);
     }
     @Test
     public void testUpdateOffer() throws Exception {
@@ -419,7 +421,7 @@ public class ResourceServiceTest {
         when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
         ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(),
             expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(),
-            expOffer.getIsRecurrent(), expOffer.getStartDate(), expOffer.getEndDate(), tags, expOffer.getLogo().getId());
+            expOffer.getStartDate(), expOffer.getEndDate(), tags, null);
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
@@ -427,7 +429,6 @@ public class ResourceServiceTest {
         assertEquals(expOffer.getDescription(), actual.getDescription());
         assertEquals(expOffer.getOrganization(), actual.getOrganization());
         assertEquals(expOffer.getIsCommercial(), actual.getIsCommercial());
-        assertEquals(expOffer.getIsRecurrent(), actual.getIsRecurrent());
         assertEquals(expOffer.getStartDate(), actual.getStartDate());
         assertEquals(expOffer.getEndDate(), actual.getEndDate());
         assertEquals(expOffer.getResourceTags().size(), actual.getResourceTags().size());

@@ -73,7 +73,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="message in textMessages" ng-click="viewMessage(message)">
+                        <tr ng-repeat="message in textMessages" ng-click="viewMessage(message)" ng-class="{ highlight: message.isNew }">
                             <td><strong>{{message.sender.login}}</strong></td>
                             <td>{{message.timestamp | date}}</td>
                         </tr>
@@ -172,7 +172,7 @@
                         <div class="form-group">
                             <label translate="global.textmessages.receiver">Receiver</label>
                             <input type="text" class="form-control" ng-minlength="1" name="sreceiver" autocomplete="off"
-                                   ng-model="textMessageToSend.receiver"
+                                   ng-model="textMessageToSend.receiver" ng-model-options="{ getterSetter: true }"
                                    typeahead="uname for uname in getUsernames($viewValue)" required>
                             <div ng-show="sendform.sreceiver.$dirty && sendform.sreceiver.$invalid">
                                 <p class="help-block" ng-show="sendform.sreceiver.$error.minlength"

@@ -68,10 +68,13 @@ public class ResourceRequirementResponseDTO {
 
     public static List<ResourceRequirementResponseDTO> fromEntities(List<ResourceRequirement> resourceRequirements,
                                                                   List<String> fieldNames) {
+        List<ResourceRequirementResponseDTO> responseDTOs = new ArrayList<>();
+        if(resourceRequirements == null) {
+            return responseDTOs;
+        }
         if(fieldNames == null || fieldNames.size() == 0) {
             fieldNames = DEFAULT_FIELDS;
         }
-        List<ResourceRequirementResponseDTO> responseDTOs = new ArrayList<>();
         for(ResourceRequirement resourceRequirement : resourceRequirements) {
             responseDTOs.add(ResourceRequirementResponseDTO.fromEntity(resourceRequirement, fieldNames));
         }
