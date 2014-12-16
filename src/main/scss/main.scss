@@ -15,7 +15,7 @@ body {
 }
 
 [ng-view].well {
-    margin-top: 50px;
+    margin-top: 10px;
 }
 
 .ribbon-development, .ribbon-test {
@@ -448,4 +448,14 @@ uploaded-image, [uploaded-image] {
 
 .highlight, .highlight td {
     background-color: #FFF37B !important;
+}
+
+.error-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 10px auto 0 auto;
+
+    .alert {
+        border-radius: 0;
+    }
 }

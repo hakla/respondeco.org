@@ -116,12 +116,11 @@ public class OrganizationController {
      *              example: order=-id,+name orders by id descending and name ascending
      * @return a list of matching organization DTOs
      */
-    @PermitAll
     @ApiOperation(value = "Get organizations", notes = "Get organizations")
     @RequestMapping(value = "/rest/organizations",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-//    @Timed
+    @Timed
     public List<OrganizationResponseDTO> getAll(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,

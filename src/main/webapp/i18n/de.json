@@ -178,7 +178,8 @@
             "enddate.null": "Das Enddatum muss angegeben werden wenn das Projekt als konkret markiert ist",
             "enddate.beforenow": "Das Enddatum muss in der Zukunft liegen",
             "enddate.beforestart": "Das Enddatum kann nicht vor dem Startdatum liegen",
-            "idnull": "Das Projekt konnte nicht gespeichert werden da keine id angegeben wurde"
+            "idnull": "Das Projekt konnte nicht gespeichert werden da keine id angegeben wurde",
+            "null": "Das Startdatum muss für ein konkretes Projekt ausgefüllt sein"
         }
     },
     "rating": {

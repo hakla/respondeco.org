@@ -7901,7 +7901,7 @@ body {
 
 /* line 17, ../../scss/main.scss */
 [ng-view].well {
-  margin-top: 50px;
+  margin-top: 10px;
 }
 
 /* line 21, ../../scss/main.scss */
@@ -8334,4 +8334,15 @@ uploaded-image div, [uploaded-image] div {
 /* line 449, ../../scss/main.scss */
 .highlight, .highlight td {
   background-color: #FFF37B !important;
+}
+
+/* line 453, ../../scss/main.scss */
+.error-container {
+  width: 80%;
+  max-width: 800px;
+  margin: 10px auto 0 auto;
+}
+/* line 458, ../../scss/main.scss */
+.error-container .alert {
+  border-radius: 0;
 }

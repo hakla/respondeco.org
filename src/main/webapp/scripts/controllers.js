@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function($scope, $location) {
+respondecoApp.controller('MainController', function($scope, $location, $rootScope) {
     $scope.main = function() {
         return $location.path() === '' || $location.path() === '/';
     };
@@ -13,6 +13,12 @@ respondecoApp.controller('MainController', function($scope, $location) {
 
     $scope.redirectToNewProject = function() {
         $location.path("projects/edit/new");
+    };
+
+    $rootScope.globalAlerts = [];
+
+    $rootScope.closeAlert = function(index) {
+        $rootScope.globalAlerts.splice(index, 1);
     };
 });
 
@@ -32,9 +38,18 @@ respondecoApp.controller('LanguageController', function($scope, $translate, Lang
     });
 });
 
-respondecoApp.controller('MenuController', function($rootScope, TextMessage) {
-    TextMessage.countNewMessages(function(amount) {
-        $rootScope.newMessages = amount[0];
+respondecoApp.controller('MenuController', function($rootScope, TextMessage, AuthenticationSharedService) {
+    var refresh = function() {
+        TextMessage.countNewMessages(function(amount) {
+            $rootScope.newMessages = amount[0];
+        });
+    };
+
+    refresh();
+
+    // refresh the messages on each route change
+    $rootScope.$on('$routeChangeStart', function(event, next) {
+        refresh();
     });
 });
 
