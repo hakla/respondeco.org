@@ -1,7 +1,9 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
-                                                       PropertyTagNames, $location, $routeParams, $sce, $translate) {
+                                                       PropertyTagNames, $location, $routeParams, $sce, $translate,
+                                                       Account, $modal) {
+
 
     $scope.project = {
         id: null,
@@ -28,6 +30,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     var searchText = null;
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+
+    // project apply
+    var organization;
+    var account;
+    var allowedToApply = false;
+    var selectedResourceOffer;
 
     $scope.list_of_string = [];
 
@@ -368,6 +376,90 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 }
 
             });
+    }
+
+    $scope.projectApply = function(resourceRequirement, $event) {
+        $event.stopPropagation();
+        $event.preventDefault();
+
+        $scope.selectedRequirement = resourceRequirement;
+
+        $('#apply').modal('toggle');
+    };
+
+    $scope.isAllowedToApply = function() {
+        return allowedToApply;
+    };
+
+    $scope.selectResourceOffer = function(offer, $event) {
+        var $target = $($event.target);
+
+        $target.closest("ul").find(".selected").removeClass("selected");
+
+        if ($target.is("li") === false) {
+            $target = $target.closest("li");
+        } else {
+            $target = $target;
+        }
+
+        $target.addClass("selected");
+        selectedResourceOffer = offer;
+    };
+
+    $scope.projectApplySubmit = function() {
+        // submit projectApply request to backend
+        //
+        // Params
+        // $scope.project
+        // $scope.selectedRequirement
+        // organization
+        // selectedResourceOffer
+        var req = $scope.selectedRequirement;
+        var data = {
+            resourceOfferId: selectedResourceOffer.id,
+            resourceRequirementId: req.id,
+            organizationId: organization.id,
+            projectId: $scope.project.id
+        }
+        Project.apply(data, function(data){
+            getOffers();
+        });
+    };
+
+    function getOffers() {
+        Account.get(function (acc) {
+            account = acc;
+            Organization.get({
+                id: acc.organizationId
+            }, function (org) {
+                organization = org;
+                if (organization != null && organization.owner.id === acc.id &&
+                    $scope.project.organizationId != organization.id) {
+                    // owner
+                    allowedToApply = true;
+                    Organization.getResourceOffers({
+                        id: organization.id
+                    }, function (offers) {
+                        var arr = [];
+                        for (var i = 0, len = offers.length; i < len; i++) {
+                            if (offers[i].amount > 0) {
+                                arr.push(offers[i]);
+                            }
+                        }
+                        $scope.resourceOffers = arr;
+                        if(arr.length == 0){
+                            allowedToApply = false;
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    getOffers();
+
+    if (isNew === false) {
+        $scope.update($routeParams.id);
     }
 
     $scope.clearRating = function() {

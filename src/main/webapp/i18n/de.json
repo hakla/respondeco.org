@@ -509,7 +509,13 @@
     },
     "resourcematch": {
         "error": {
-            "nosuchmatch": "Es konnte kein Resource-Match mit dieser id gefunden werden"
+            "nosuchmatch": "Es konnte kein Resource-Match mit dieser id gefunden werden",
+            "projectapply": {
+                "requestfulfilled": "Projektanforderung für die angegeben Resource(n) ist bereits erfüllt",
+                "offerdepleted": "Diese Resource ist bereits aufgebraucht und kann nicht gespendet werden",
+                "ownproject": "Sie können eigenem Projekt keine Spenden anbieten",
+                "offeralreadyexists": "Sie können nicht mehr als nur ein mal einen aktiven angebot spenden"
+            }
         }
     },
     "resourcerequest": {
@@ -587,6 +593,10 @@
             "tableheader": "Benötigte Ressourcen",
             "name": "Name",
             "amount": "Menge"
+        },
+        "offer": {
+            "title": "Ressource auswählen",
+            "donate": "Spenden"
         }
     },
     "orgJoinRequest": {

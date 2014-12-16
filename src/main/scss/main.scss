@@ -359,49 +359,70 @@ uploaded-image, [uploaded-image] {
         list-style-type: none;
         padding-left: 0;
         margin: 80px 0 50px 0;
+    }
 
-        li {
-            margin-bottom: 60px;
+    li {
+        margin-bottom: 60px;
 
-            img {
-                height: 64px;
-                width: 64px;
-            }
+        img {
+            height: 64px;
+            width: 64px;
+        }
 
-            h2 {
-                position: relative;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
+        h2 {
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
 
-            .rating {
-                margin-top: 4px;
-            }
+        .rating {
+            margin-top: 4px;
+        }
 
-            .amount {
+        .amount {
+            font-size: 20px;
+        }
+
+        .organization {
+            .organization-name {
                 font-size: 20px;
+                margin-right: 12px;
             }
 
-            .organization {
-                .organization-name {
-                    font-size: 20px;
-                    margin-right: 12px;
-                }
-
-                i {
-                    font-size: 12px;
-                }
-            }
-
-            .on-hover {
-                opacity: 0;
-                transition: .2s ease opacity;
-            }
-
-            &:hover .on-hover {
-                opacity: 1;
+            i {
+                font-size: 12px;
             }
         }
+    }
+}
+
+
+.on-hover {
+    opacity: 0;
+    transition: .2s ease opacity;
+}
+
+* {
+    &:hover > .on-hover {
+        opacity: 1;
+    }
+}
+
+.modal-apply {
+    dl.dl-horizontal {
+        dt {
+            width: 200px;
+            text-align: left;
+        }
+    }
+
+    li.resource {
+        padding: 10px 0;
+        margin-bottom: 20px;
+    }
+
+    li.resource.selected {
+        background: #F2F2F2;
     }
 }
 

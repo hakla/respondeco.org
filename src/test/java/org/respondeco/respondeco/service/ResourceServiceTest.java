@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.service;
 
+import net.sf.ehcache.util.SetAsList;
 import com.mysema.query.types.Predicate;
 import org.joda.time.LocalDate;
 import org.junit.After;
@@ -79,6 +80,12 @@ public class ResourceServiceTest {
     private static Class<ResourceOffer> offerCl = ResourceOffer.class;
     private static Class<ResourceTag> tagCl = ResourceTag.class;
 
+    private Long offerId = 1L;
+    private Long requirementId = 2L;
+    private Long organizationId = 1L;
+    private Long projectId = 2L;
+
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -105,6 +112,11 @@ public class ResourceServiceTest {
         expProject = null;
         expOrg = null;
         newTagId = 1L;
+
+        offerId = 1L;
+        requirementId = 2L;
+        organizationId = 1L;
+        projectId = 2L;
     }
 
     private List<String> prepareCreateOffer(){
@@ -176,7 +188,7 @@ public class ResourceServiceTest {
         //region Test data
         expectedReq = new ResourceRequirement();
         expectedReq.setDescription(" Here is my test Requirement... bla bla. ");
-        expectedReq.setAmount(new BigDecimal(10));
+        expectedReq.setOriginalAmount(new BigDecimal(10));
         expectedReq.setProject(expProject);
         expectedReq.setIsEssential(true);
         expectedReq.setId(1L);
@@ -240,7 +252,7 @@ public class ResourceServiceTest {
                 expectedReq.getDescription(), expectedReq.getProject().getId(), expectedReq.getIsEssential(), tags);
 
         assertEquals(expectedReq.getId(), actual.getId());
-        assertEquals(expectedReq.getAmount(), actual.getAmount());
+        assertEquals(expectedReq.getOriginalAmount(), actual.getOriginalAmount());
         assertEquals(expectedReq.getName(), actual.getName());
         assertEquals(expectedReq.getDescription(), actual.getDescription());
         assertEquals(expProject, actual.getProject());
@@ -468,7 +480,7 @@ public class ResourceServiceTest {
             item2.setOrganization(expOrg);
             items.add(item2);
             return items;
-        }).when(resourceOfferRepositoryMock).findByOrganizationId(expOrg.getId());
+        }).when(resourceOfferRepositoryMock).findByOrganizationIdAndActiveIsTrue(expOrg.getId());
         Long expected = 1L;
         int listSize = 2;
         List<ResourceOffer> list = this.resourceService.getAllOffers(expOrg.getId());
@@ -492,7 +504,7 @@ public class ResourceServiceTest {
             item1.setOrganization(alternative);
             items.add(item1);
             return items;
-        }).when(resourceOfferRepositoryMock).findByOrganizationId(isA(longCl));
+        }).when(resourceOfferRepositoryMock).findByOrganizationIdAndActiveIsTrue(isA(longCl));
         listSize = 1;
         list = this.resourceService.getAllOffers(99L);
 
@@ -503,7 +515,205 @@ public class ResourceServiceTest {
             assertEquals(current.getOrganization().getId(), alternative.getId());
         }
 
-        verify(this.resourceOfferRepositoryMock, times(2)).findByOrganizationId(isA(longCl));
+        verify(this.resourceOfferRepositoryMock, times(2)).findByOrganizationIdAndActiveIsTrue(isA(longCl));
+    }
+
+    /**
+     * Prepare for Project Apply Tests
+     * @param offer, that become our donation
+     * @param req, that need our donation
+     * @param org, organisation that apply the offer (donation)
+     * @param project, that need our offer (donation)
+     */
+    private void prepareProjectApply(ResourceOffer offer, ResourceRequirement req, Organization org, Project project){
+        BigDecimal offerAmount = new BigDecimal(18);
+        final BigDecimal requirementAmount = offerAmount.divide(new BigDecimal(2));
+
+        // create offer mock
+        offer.setId(offerId);
+        offer.setAmount(offerAmount);
+
+        // create requirement mock
+        req.setId(requirementId);
+        req.setAmount(requirementAmount);
+
+        // create organization mock with user that own the organization
+        org.setId(organizationId);
+        User orgUser = new User();
+        orgUser.setId(1L);
+        org.setOwner(orgUser);
+
+        // at least our project mock
+        project.setId(projectId);
+        User projectOwner = new User();
+        projectOwner.setId(2L);
+        Organization projectOrg = new Organization();
+        projectOrg.setId(2L);
+        projectOrg.setOwner(projectOwner);
+        project.setOrganization(projectOrg);
+
+
+        // mocks that defines our result
+        when(resourceOfferRepositoryMock.findOne(offerId)).thenReturn(offer);
+        when(resourceRequirementRepositoryMock.findOne(requirementId)).thenReturn(req);
+        when(organizationRepository.findOne(organizationId)).thenReturn(org);
+        when(projectRepository.findOne(projectId)).thenReturn(project);
+        when(userService.getUserWithAuthorities()).thenReturn(orgUser);
+
+
+    }
+
+    /**
+     * Test for successful project apply.
+     * @throws Exception should not thrown anything
+     */
+    @Test
+    public void testProjectApply_SUCCESS_OfferHigherThanReq() throws Exception {
+        ResourceOffer offer = new ResourceOffer();
+        ResourceRequirement req = new ResourceRequirement();
+        Organization org = new Organization();
+        Project project = new Project();
+
+        prepareProjectApply(offer, req, org, project);
+
+        ResourceMatch expected = new ResourceMatch();
+        expected.setId(1L);
+        expected.setAmount(req.getAmount());
+
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            ResourceMatch result = (ResourceMatch) args[0];
+            result.setId(expected.getId());
+            return result;
+        }).when(resourceMatchRepositoryMock).save(isA(ResourceMatch.class));
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+            isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
+            thenReturn(new ArrayList<>());
+
+        ResourceMatch actual = resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getAmount(), actual.getAmount());
+
+        verify(resourceOfferRepositoryMock, times(1)).findOne(offerId);
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(requirementId);
+        verify(organizationRepository, times(1)).findOne(organizationId);
+        verify(projectRepository, times(1)).findOne(projectId);
+        verify(userService, times(1)).getUserWithAuthorities();
+    }
+
+    /**
+     * Test for successful project apply.
+     * @throws Exception should not thrown anything
+     */
+    @Test
+    public void testProjectApply_SUCCESS_OfferLowerThanReq() throws Exception {
+        ResourceOffer offer = new ResourceOffer();
+        ResourceRequirement req = new ResourceRequirement();
+        Organization org = new Organization();
+        Project project = new Project();
+
+        prepareProjectApply(offer, req, org, project);
+        BigDecimal reqAmount = req.getAmount();
+        req.setAmount(offer.getAmount());
+        offer.setAmount(reqAmount);
+
+        ResourceMatch expected = new ResourceMatch();
+        expected.setId(1L);
+        expected.setAmount(offer.getAmount());
+
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            ResourceMatch result = (ResourceMatch) args[0];
+            result.setId(expected.getId());
+            return result;
+        }).when(resourceMatchRepositoryMock).save(isA(ResourceMatch.class));
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+            isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
+            thenReturn(new ArrayList<>());
+
+        ResourceMatch actual = resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getAmount(), actual.getAmount());
+
+        verify(resourceOfferRepositoryMock, times(1)).findOne(offerId);
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(requirementId);
+        verify(organizationRepository, times(1)).findOne(organizationId);
+        verify(projectRepository, times(1)).findOne(projectId);
+        verify(userService, times(1)).getUserWithAuthorities();
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testProjectApply_FAIL_ApplyToOwnProject() throws Exception {
+
+        ResourceOffer offer = new ResourceOffer();
+        ResourceRequirement req = new ResourceRequirement();
+        Organization org = new Organization();
+        Project project = new Project();
+
+        prepareProjectApply(offer, req, org, project);
+        // this will cause an error
+        project.setOrganization(org);
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+            isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
+            thenReturn(new ArrayList<>());
+
+        resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testProjectApply_FAIL_RequirementIsDepleted() throws Exception {
+
+        ResourceOffer offer = new ResourceOffer();
+        ResourceRequirement req = new ResourceRequirement();
+        Organization org = new Organization();
+        Project project = new Project();
+
+        prepareProjectApply(offer, req, org, project);
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+            isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
+            thenReturn(new ArrayList<>());
+        // this will cause an error
+        req.setAmount(BigDecimal.ZERO);
+
+        resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testProjectApply_FAIL_OfferIsDepleted() throws Exception {
+
+        ResourceOffer offer = new ResourceOffer();
+        ResourceRequirement req = new ResourceRequirement();
+        Organization org = new Organization();
+        Project project = new Project();
+
+        prepareProjectApply(offer, req, org, project);
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+            isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
+            thenReturn(new ArrayList<>());
+        // this will cause an error
+        offer.setAmount(BigDecimal.ZERO);
+
+        resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
+    }
+
+    @Test(expected = IllegalValueException.class)
+    public void testProjectApply_FAIL_OfferAlreadyEntered() throws Exception {
+
+        ResourceOffer offer = new ResourceOffer();
+        ResourceRequirement req = new ResourceRequirement();
+        Organization org = new Organization();
+        Project project = new Project();
+
+        prepareProjectApply(offer, req, org, project);
+
+        // this will cause an error
+        List<ResourceMatch> a = new ArrayList<ResourceMatch>();
+        a.add(new ResourceMatch());
+        when(resourceMatchRepositoryMock.findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
+            isA(ResourceOffer.class), isA(ResourceRequirement.class), isA(Organization.class), isA((Project.class)))).
+            thenReturn(a);
+
+        resourceService.createProjectApplyOffer(offerId, requirementId, organizationId, projectId);
     }
 
 
@@ -539,13 +749,13 @@ public class ResourceServiceTest {
 
         doAnswer(invocation -> {
             return new ArrayList<ResourceMatch>();
-        }).when(resourceMatchRepositoryMock).findByResourceOfferAndResourceRequirementAndOrganizationAndProject(any(),any(),any(),any());
+        }).when(resourceMatchRepositoryMock).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(), any(), any(), any());
 
         ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(1L,2L);
 
         verify(resourceOfferRepositoryMock, times(1)).findOne(1L);
         verify(resourceRequirementRepositoryMock, times(1)).findOne(2L);
-        verify(resourceMatchRepositoryMock, times(1)).findByResourceOfferAndResourceRequirementAndOrganizationAndProject(any(),any(),any(),any());
+        verify(resourceMatchRepositoryMock, times(1)).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(), any(), any(), any());
 
         assertTrue(resourceMatch.getResourceOffer().getId().equals(1L));
         assertTrue(resourceMatch.getResourceRequirement().getId().equals(2L));
@@ -636,7 +846,7 @@ public class ResourceServiceTest {
             matches.add(new ResourceMatch());
 
             return matches;
-        }).when(resourceMatchRepositoryMock).findByResourceOfferAndResourceRequirementAndOrganizationAndProject(any(ResourceOffer.class),any(ResourceRequirement.class),
+        }).when(resourceMatchRepositoryMock).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(ResourceOffer.class),any(ResourceRequirement.class),
             any(Organization.class),any(Project.class));
 
         resourceService.createClaimResourceRequest(1L,2L);

@@ -41,16 +41,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <textarea ng-model="rating.comment" cols="30" rows="5"
-                                      placeholder="{{'rating.placeholder' | translate}}"></textarea>
+                            <textarea ng-model="rating.comment" cols="30" rows="5" placeholder="{{'rating.placeholder' | translate}}"></textarea>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button class="btn btn-success" ng-click="rateProject()"
-                                    translate="rating.ratenow">Rate now</button>
-                            <button class="btn btn-default" ng-click="hideRating()"
-                                    translate="rating.notnow">Not now</button>
+                            <button class="btn btn-success" ng-click="rateProject()" translate="rating.ratenow">Rate now</button>
+                            <button class="btn btn-default" ng-click="hideRating()" translate="rating.notnow">Not now</button>
                         </div>
                     </div>
                     <div class="row" ng-show="projectRatingError">
@@ -97,8 +94,11 @@
                     <accordion-group ng-open="requirement.id" ng-repeat="requirement in project.resourceRequirements">
                         <accordion-heading>
                             <div class="row">
-                                <div class="col-md-4">{{requirement.name}}</div>
-                                <div class="col-md-2 col-md-offset-6">
+                                <div class="col-md-8">{{requirement.name}}</div>
+                                <div class="col-md-2 on-hover">
+                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                                </div>
+                                <div class="col-md-2">
                                     <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
                                     <span ng-show="requirement.sum == undefined">0</span>/{{requirement.originalAmount}}
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
@@ -121,6 +121,50 @@
                     </accordion-group>
 
                 </accordion>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-apply" id="apply" tabindex="-1" role="dialog" aria-labelledby="applyLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="clearRequirement()">&times;</button>
+                    <h2 class="modal-title" id="applyLabel" translate="resource.offer.title">Choose resource offer</h2>
+                </div>
+                <div class="modal-body">
+                    <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
+                        <dl class="dl-horizontal">
+                            <dt>Ausgewählte Ressource:</dt>
+                            <dd>{{ selectedRequirement.name }}</dd>
+                            <dt>Noch benötigte Anzahl</dt>
+                            <dd>{{ selectedRequirement.amount }}</dd>
+                        </dl>
+                        <ul class="resources">
+                            <li ng-click="selectResourceOffer(offer, $event)" class="resource row" ng-repeat="offer in resourceOffers">
+                                <div class="col-md-2">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="pull-right col-md-6">
+                                    {{ offer.description }}
+                                </div>
+                                <h2 class="col-md-4">
+                                    {{ offer.name }}
+                                    <span ng-hide="offer.amount == 1">({{ offer.amount }})</span>
+                                </h2>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="resourceCancelButton" type="button" class="btn btn-link" data-dismiss="modal">
+                        {{ 'resource.new.cancelbutton' | translate }}
+                    </button>
+                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit()" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
+                        <span class="glyphicon glyphicon-save"></span> {{ 'resource.new.savebutton' | translate }}
+                    </button>
+                </div>
+                </form>
             </div>
         </div>
     </div>
