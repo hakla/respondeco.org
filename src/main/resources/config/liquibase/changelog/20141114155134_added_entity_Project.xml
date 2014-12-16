@@ -21,7 +21,8 @@
             <column name="purpose" type="varchar(255)"/>
             <column name="is_concrete" type="boolean" defaultValue="false"/>
             <column name="start_date" type="date" />
-            <column name="end_date" type="date" />
+
+            <column name="is_successful" type="boolean" />
 
             <column name="projectLogo_id" type="bigint"/>
 

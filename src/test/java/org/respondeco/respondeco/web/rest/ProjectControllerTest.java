@@ -93,6 +93,9 @@ public class ProjectControllerTest {
     @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
 
+    @Mock
+    private ResourceMatchRepository resourceMatchRepository;
+
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
     private ProjectRequestDTO projectRequestDTO;
@@ -112,8 +115,9 @@ public class ProjectControllerTest {
                 userRepositoryMock,
                 propertyTagServiceMock,
                 resourceServiceMock,
-                imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock);
+                imageRepositoryMock,
+                resourceMatchRepository));
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock, userServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -162,7 +166,6 @@ public class ProjectControllerTest {
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -178,7 +181,6 @@ public class ProjectControllerTest {
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -208,7 +210,6 @@ public class ProjectControllerTest {
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
@@ -224,7 +225,6 @@ public class ProjectControllerTest {
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());

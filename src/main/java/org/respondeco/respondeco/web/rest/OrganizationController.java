@@ -93,7 +93,7 @@ public class OrganizationController {
     @RequestMapping(value = "/rest/organizations",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
+//    @Timed
     public List<OrganizationResponseDTO> getAll(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,

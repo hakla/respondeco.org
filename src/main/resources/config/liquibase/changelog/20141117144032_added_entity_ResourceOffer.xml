@@ -18,7 +18,6 @@
             <column name="resource_id" type="bigint"/>
             <column name="organization_id" type="bigint"/>
             <column name="is_commercial" type="bit" defaultValue="false"/>
-            <column name="is_recurrent" type="bit" defaultValue="false"/>
             <column name="start_date" type="date"/>
             <column name="end_date" type="date"/>
         </createTable>

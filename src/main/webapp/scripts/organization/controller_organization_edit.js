@@ -4,7 +4,6 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     var id = $routeParams.id;
     var isNew = id === 'new';
-
     var organization = {};
 
     $scope.logo = null;
@@ -180,5 +179,8 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     if (isNew == false) {
         $scope.update(id);
+
+        // the name of an organization cannot be changed after creation --> show a tooltip
+        $scope.tooltip_notChangeable = "global.notChangeable";
     }
 });

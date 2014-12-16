@@ -183,7 +183,6 @@ public class ResourceController {
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getOrganizationId(),
                 resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getIsRecurrent(),
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags()
@@ -221,7 +220,6 @@ public class ResourceController {
                 resourceOfferDTO.getAmount(),
                 resourceOfferDTO.getDescription(),
                 resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getIsRecurrent(),
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags()

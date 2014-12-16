@@ -74,7 +74,7 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav nav-pills navbar-right">
-                        <li class="dropdown pointer">
+                        <li class="dropdown pointer" ng-class="{ highlight: newMessages > 0 }">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
                                 <span>
                                     <span class="glyphicon glyphicon-user"></span>
@@ -90,6 +90,7 @@
                                         <span class="glyphicon glyphicon-envelope"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.messages">Messages</span>
+                                        <span class="badge" ng-show="newMessages > 0">{{ newMessages }}</span>
                                     </a>
                                 </li>
                                 <li ng-switch-when="true">
@@ -242,6 +243,7 @@
         <script src="scripts/project/service_project.js"></script>
         <script src="scripts/project/controller_project_search.js"></script>
         <script src="scripts/service_names.js"></script>
+        <script src="scripts/service_user.js"></script>
         <!-- endbuild -->
     </body>
 

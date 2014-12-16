@@ -47,9 +47,6 @@ public class ProjectResponseDTO {
         if (fieldNames.contains("startDate")) {
             responseDTO.setStartDate(project.getStartDate());
         }
-        if (fieldNames.contains("endDate")) {
-            responseDTO.setEndDate(project.getEndDate());
-        }
         if (fieldNames.contains("organization")) {
             responseDTO.setOrganization(OrganizationResponseDTO
                     .fromEntity(project.getOrganization(),null));
@@ -76,6 +73,9 @@ public class ProjectResponseDTO {
             if (project.getProjectLogo() != null) {
                 responseDTO.setLogo(new ImageDTO(project.getProjectLogo()));
             }
+        }
+        if (fieldNames.contains("successful")) {
+            responseDTO.setSuccessful(project.getSuccessful());
         }
         //TODO FIX
         /**
@@ -109,8 +109,6 @@ public class ProjectResponseDTO {
     private Boolean concrete;
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate startDate;
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
-    private LocalDate endDate;
     private OrganizationResponseDTO organization;
     private Long organizationId;
     private UserDTO manager;
@@ -119,5 +117,6 @@ public class ProjectResponseDTO {
     private List<ResourceRequirementResponseDTO> resourceRequirements;
     private ImageDTO logo;
     private List<RatingResponseDTO> ratings;
+    private Boolean successful;
 
 }

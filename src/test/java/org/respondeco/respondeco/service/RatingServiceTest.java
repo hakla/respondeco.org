@@ -83,7 +83,7 @@ public class RatingServiceTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         projectService = new ProjectService(projectRepositoryMock,userService,userRepositoryMock,propertyTagService,
-                resourceService,imageRepositoryMock);
+                resourceService,imageRepositoryMock,resourceMatchRepositoryMock);
         ratingService = new RatingService(ratingRepositoryMock,resourceMatchRepositoryMock,projectRepositoryMock,
                 organizationRepositoryMock,userService,projectService);
 

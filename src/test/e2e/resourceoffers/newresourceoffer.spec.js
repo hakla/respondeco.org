@@ -24,8 +24,6 @@ describe('e2e: newresourceoffer', function() {
         offer.endDate.sendKeys("11.10.2015");
 
         offer.isCommercial.click();
-        offer.isRecurrent.click();
-
         offer.saveButton.click();
 
         browser.waitForAngular();

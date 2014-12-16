@@ -167,11 +167,11 @@ public class ResourceControllerTest {
         if(operation == 0) {
             doReturn(resourceOffer).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
                 dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         }else if (operation == 1){
             doReturn(resourceOffer).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
                 dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         }else if (operation == 2){
             doNothing().when(resourceService).deleteOffer(dto.getId());
         }else if(operation == 3){
@@ -200,11 +200,11 @@ public class ResourceControllerTest {
         if(operation == 0){
             verify(resourceService, times(1)).createOffer(dto.getName(), dto.getAmount(),
                 dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         }else if (operation == 1){
             verify(resourceService, times(1)).updateOffer(dto.getId(), dto.getOrganizationId(),
                 dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteOffer(dto.getId());
         }else if (operation == 3){
@@ -248,7 +248,7 @@ public class ResourceControllerTest {
         dto.setId(null);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(
             dto.getName(), dto.getAmount(), dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(dto)))
@@ -261,7 +261,7 @@ public class ResourceControllerTest {
         dto.setId(null);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
             dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
         restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(dto)))
@@ -286,7 +286,7 @@ public class ResourceControllerTest {
         dto = this.bindOfferDTOMockData(1);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).updateOffer(
             dto.getId(), dto.getOrganizationId(), dto.getName(), dto.getAmount(),dto.getDescription(),
-            dto.getIsCommercial(), dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getIsCommercial(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
 
         restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -298,7 +298,7 @@ public class ResourceControllerTest {
         dto = this.bindOfferDTOMockData(1);
         doThrow(new ResourceException("", EnumResourceException.NOT_FOUND)).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
             dto.getName(), dto.getAmount(),dto.getDescription(), dto.getIsCommercial(),
-            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
 
         restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

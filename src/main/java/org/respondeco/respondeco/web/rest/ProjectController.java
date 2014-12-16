@@ -10,8 +10,9 @@ import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.RatingService;
 import org.respondeco.respondeco.service.ProjectService;
-import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.ResourceService;
+import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
@@ -45,12 +47,14 @@ public class ProjectController {
     private ProjectService projectService;
     private ResourceService resourceService;
     private RatingService ratingService;
+    private UserService userService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService) {
+    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService, UserService userService) {
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
+        this.userService = userService;
     }
 
     /**
@@ -75,7 +79,6 @@ public class ProjectController {
                 project.getPurpose(),
                 project.getConcrete(),
                 project.getStartDate(),
-                project.getEndDate(),
                 project.getPropertyTags(),
                 project.getResourceRequirements(),
                 project.getLogo() != null ? project.getLogo().getId() : null);
@@ -117,7 +120,6 @@ public class ProjectController {
                     project.getPurpose(),
                     project.getConcrete(),
                     project.getStartDate(),
-                    project.getEndDate(),
                     project.getLogo() != null ? project.getLogo().getId() : null,
                     project.getPropertyTags(),
                     project.getResourceRequirements());
@@ -441,4 +443,46 @@ public class ProjectController {
         }
         return responseEntity;
     }
+
+    /**
+     * Checks if the currently authenticated user is allowed to edit a project
+     * @return
+     */
+    @RequestMapping(value = "/rest/projects/{id}/editable",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity isEditable(@PathVariable Long id) {
+        // Forbidden if the user is not allowed to edit --> return 403
+        ResponseEntity responseEntity;
+
+        try {
+            // check if the project is editable by the authenticated user
+            if (projectService.isEditable(id)) {
+                // and return a 200 if the user is allowed to edit
+                responseEntity = new ResponseEntity(HttpStatus.OK);
+            } else {
+                // and return a 403 code if the user is not allowed to edit
+                responseEntity = new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+        } catch (NullPointerException e) {
+            // No project found for the given id
+            responseEntity = new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/rest/projects/{id}/started",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public void isStarted(@PathVariable Long id) {
+        try {
+            projectService.checkProjectsToStart();
+        } catch (Exception e) {
+
+        }
+    }
+
 }

@@ -398,3 +398,27 @@ uploaded-image, [uploaded-image] {
         }
     }
 }
+
+.approved {
+    position: absolute;
+    height: 150px;
+    right: 150px;
+    top: -165px;
+}
+
+.dropdown-toggle {
+    border-radius: 0 !important;
+}
+
+.dropdown {
+    .badge {
+        background-color: #C40000;
+        top: -1px;
+        position: relative;
+        left: 12px;
+    }
+}
+
+.highlight, .highlight td {
+    background-color: #FFF37B !important;
+}
