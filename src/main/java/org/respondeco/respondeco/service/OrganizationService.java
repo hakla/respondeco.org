@@ -34,7 +34,21 @@ public class OrganizationService {
         this.imageRepository = imageRepository;
     }
 
-    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, ImageDTO logo) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+    /**
+     * creates a new organization with the given information
+     *
+     * @param name the name of the new organization
+     * @param description a description of the organization
+     * @param email an official email for the organization
+     * @param isNpo indicator if the organization is an NPO
+     * @param logo a logo dto with the id of the project logo
+     * @return the newly created project
+     * @throws AlreadyInOrganizationException if the user is already in an organization
+     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
+     */
+    public Organization createOrganizationInformation(String name, String description, String email,
+                                                      Boolean isNpo, ImageDTO logo)
+        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
         Long logoId = null;
 
         if (logo != null) {
@@ -44,7 +58,21 @@ public class OrganizationService {
         return createOrganizationInformation(name, description, email, isNpo, logoId);
     }
 
-    public Organization createOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+    /**
+     * {@see OrganizationService#createOrganizationInformation(String,String,String,Boolean,ImageDTO}
+     *
+     * @param name
+     * @param description
+     * @param email
+     * @param isNpo
+     * @param logoId
+     * @return
+     * @throws AlreadyInOrganizationException
+     * @throws OrganizationAlreadyExistsException
+     */
+    public Organization createOrganizationInformation(String name, String description, String email,
+                                                      Boolean isNpo, Long logoId)
+        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
@@ -73,6 +101,13 @@ public class OrganizationService {
         return newOrganization;
     }
 
+    /**
+     * finds and returns an organization by its namne
+     *
+     * @param orgName the name of the organization to find
+     * @return the organization with the given name
+     * @throws NoSuchOrganizationException if no organization with that name exists
+     */
     @Transactional(readOnly = true)
     public Organization getOrganizationByName(String orgName) throws NoSuchOrganizationException {
         log.debug("getOrganizationByName(organization) called");
@@ -102,7 +137,7 @@ public class OrganizationService {
 
     /**
      * Returns all Organizations
-     * @return
+     * @return a list of all active organizations
      */
     @Transactional(readOnly = true)
     public List<Organization> getOrganizations() {
@@ -113,7 +148,18 @@ public class OrganizationService {
         return organizations;
     }
 
-    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, ImageDTO logo) throws NoSuchOrganizationException {
+    /**
+     * updates an organization's information with the given data
+     *
+     * @param name a new name for the organization
+     * @param description the new description for the organization
+     * @param email a new organization email
+     * @param isNpo flag if the organization is an NPO
+     * @param logo an ImageDTO containing the id of the organization's logo
+     * @throws NoSuchOrganizationException if the user is not the owner of any organization
+     */
+    public void updaterOrganizationInformation(String name, String description, String email,
+                                               Boolean isNpo, ImageDTO logo) throws NoSuchOrganizationException {
         Long logoId = null;
 
         if (logo != null) {
@@ -123,6 +169,16 @@ public class OrganizationService {
         updaterOrganizationInformation(name, description, email, isNpo, logoId);
     }
 
+    /**
+     * {@see OrganizationService#updateOrganizationInformation(String,String,String,Boolean,ImageDTO}
+     *
+     * @param name
+     * @param description
+     * @param email
+     * @param isNpo
+     * @param logoId
+     * @throws NoSuchOrganizationException
+     */
     public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
@@ -146,6 +202,11 @@ public class OrganizationService {
         log.debug("Changed Information for Organization: {}", currentOrganization);
     }
 
+    /**
+     * deletes the user's organization
+     *
+     * @throws NoSuchOrganizationException if the user is not the owner of any organization
+     */
     public void deleteOrganizationInformation() throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
@@ -158,6 +219,13 @@ public class OrganizationService {
         log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
 
+    /**
+     * removes a member from the organization
+     * @param userId the id of the user to remove
+     * @throws NoSuchUserException if the given user does not exist
+     * @throws NoSuchOrganizationException if the given user does not belong to an organization
+     * @throws NotOwnerOfOrganizationException if the current user is not the owner of the user's organization
+     */
     public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
         User user = userService.getUserWithAuthorities();
         User member = userRepository.findOne(userId);
@@ -178,6 +246,12 @@ public class OrganizationService {
         userRepository.save(member);
     }
 
+    /**
+     * searches users by their organization
+     * @param orgId the id of the organization to search the users for
+     * @return a list of users belonging to the given organization
+     * @throws NoSuchOrganizationException if the given organization does not exist
+     */
     public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException {
         Organization organization = organizationRepository.findOne(orgId);
         User user = userService.getUserWithAuthorities();
@@ -190,6 +264,11 @@ public class OrganizationService {
         return userRepository.findUsersByOrganizationId(orgId);
     }
 
+    /**
+     * finds users which can be invited by the given organization
+     * @param orgId the organization for which to search users
+     * @return a list of users which can be invited by the given organization
+     */
     public List<User> findInvitableUsersByOrgId(Long orgId) {
         Organization organization = organizationRepository.getOne(orgId);
 

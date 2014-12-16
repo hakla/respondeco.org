@@ -173,7 +173,7 @@ public class ProjectServiceTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseIsConcreteAndStartDateIsNull() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -190,7 +190,7 @@ public class ProjectServiceTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NoSuchProjectException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseProjectDoesNotExist() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
