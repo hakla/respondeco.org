@@ -11,12 +11,12 @@
         <div class="form-group col-md-3">
             <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label>
             <div class="btn-group">
-                <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="true">Kommerziell</label>
-                <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="false">Nicht Kommerziell</label>
+                <label id="commercialButton" class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="true">Kommerziell</label>
+                <label id="nonCommercialButton" class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="false">Nicht Kommerziell</label>
             </div>
         </div>
         <div class="col-md-5">
-            <button type="button" class="btn btn-default " ng-click="search()">
+            <button id="searchButton" type="button" class="btn btn-default " ng-click="search()">
                 {{'resource.searchbutton' | translate}}
             </button>
         </div>

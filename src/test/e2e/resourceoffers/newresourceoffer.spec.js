@@ -18,7 +18,12 @@ describe('e2e: newresourceoffer', function() {
         offer.name.sendKeys("Ressource");
         offer.description.sendKeys("Das ist eine tolle Ressource");
         offer.amount.sendKeys("5");
-        offer.tags.sendKeys("Computer, Technik, Cool");
+
+        actions = protractor.getInstance().actions()
+        actions.mouseMove(offer.tags)
+        actions.click()
+        actions.sendKeys("Hallo, Computer, Test ");
+        actions.perform()
 
         offer.startDate.sendKeys("10.10.2015");
         offer.endDate.sendKeys("11.10.2015");
@@ -30,6 +35,6 @@ describe('e2e: newresourceoffer', function() {
 
         browser.waitForAngular();
 
-        expect(browser.getLocationAbsUrl()).toEqual("/ownresource");
+        expect(browser.getLocationAbsUrl()).toContain("/ownresource");
     });
 });
