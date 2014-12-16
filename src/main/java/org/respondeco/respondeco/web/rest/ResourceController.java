@@ -6,10 +6,7 @@ import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.exception.GeneralResourceException;
-import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
-import org.respondeco.respondeco.service.exception.NoSuchResourceMatchException;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -49,12 +46,14 @@ public class ResourceController {
 
     /**
      * Return all ResourceOffers
-     * @param name
-     * @param commercial
-     * @param page
-     * @param pageSize
-     * @param fields
-     * @param order
+     * @param name filter for name, organization and tags
+     * @param commercial if true then only commercial resources will be returned
+     *                   if false then only non-commercial resources will be returned
+     *                   if null both - commercial and non-commercial resources - will be returned
+     * @param page number of the page to be returned
+     * @param pageSize size of the returned page
+     * @param fields defines which fields will be returned
+     * @param order defines the order of the returned fields
      * @return
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -146,8 +145,8 @@ public class ResourceController {
 
     /**
      * Answer the request for the claimed resourceoffer
-     * @param id
-     * @param resourceMatchRequestDTO
+     * @param id id of the resourcematch containing the request
+     * @param resourceMatchRequestDTO ResourceMatch containing the resource request
      * @return ResponseEntity with HTTPStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -167,6 +166,9 @@ public class ResourceController {
         } catch(IllegalValueException ex) {
             log.error("Could not set isAccepted for resourceMatch with id " + id);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (OperationForbiddenException e) {
+            log.error("Operation forbidden: ", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return responseEntity;

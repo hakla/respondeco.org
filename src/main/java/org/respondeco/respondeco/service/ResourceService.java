@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +36,6 @@ public class ResourceService {
     private final Logger log = LoggerFactory.getLogger(ResourceService.class);
     private ResourceOfferRepository resourceOfferRepository;
     private ResourceRequirementRepository resourceRequirementRepository;
-    private ResourceTagRepository resourceTagRepository;
     private ResourceTagService resourceTagService;
     private OrganizationRepository organizationRepository;
     private ProjectRepository projectRepository;
@@ -82,31 +80,28 @@ public class ResourceService {
         }
     }
 
-    public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
-                                                 Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException {
-        Project project = projectRepository.findOne(projectId);
-        if(project == null) {
-            throw new NoSuchProjectException(projectId);
-        }
-        return createRequirement(name, amount, description, project, isEssential, resourceTags);
-    }
-
     /**
      * Create a new ResourceRequirement
      * @param name name of Resource Requirement
      * @param amount amount of Resource Requirement
      * @param description description of Resource Requirement
-     * @param project project of the Resource Requirement
+     * @param projectId project id belonging to the Resource Requirement
      * @param isEssential true if requirement is essential for the project, false otherwise
      * @param resourceTags defined tags for the resource requirement
-     * @return saved ResourceRequirement
-     * @throws ResourceException
+     * @return saved ResourceRequirement created resource requirement
+     * @throws ResourceException if the resource can't be found
+     * @throws NoSuchProjectException if project of the resource can't be found
      */
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
-                                                 Project project, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException {
+                                                 Long projectId, Boolean isEssential, List<String> resourceTags)
+        throws ResourceException, NoSuchProjectException {
         ResourceRequirement newRequirement = null;
+
+        Project project = projectRepository.findOne(projectId);
+        if(project == null) {
+            throw new NoSuchProjectException(projectId);
+        }
+
         ensureUserIsPartOfOrganisation(project);
         List<ResourceRequirement> entries = resourceRequirementRepository.findByNameAndProject(name, project);
         if (entries == null || entries.isEmpty() == true) {
@@ -138,23 +133,19 @@ public class ResourceService {
      * @param isEssential true if resource is essential for the project, false otherwise
      * @param resourceTags tags of the resource
      * @return updated Resource requirement
-     * @throws ResourceException
-     * @throws OperationForbiddenException
+     * @throws ResourceException if resource requirement can't be found
+     * @throws OperationForbiddenException if operation is forbidden
+     * @throws NoSuchProjectException if project of the resource requirement can't be found
      */
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, OperationForbiddenException {
+        throws ResourceException, OperationForbiddenException, NoSuchProjectException {
+        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
+
         Project project = projectRepository.findOne(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
         }
-        return updateRequirement(id, name, amount, description, project, isEssential, resourceTags);
-    }
-
-    public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
-                                                 Project project, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, OperationForbiddenException {
-        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (project.equals(requirement.getProject()) == false) {
             throw new OperationForbiddenException("cannot modify resource requirements of other projects");
         }
@@ -175,7 +166,12 @@ public class ResourceService {
         return requirement;
     }
 
-    public void deleteRequirement(Long id) throws Exception, ResourceException {
+    /**
+     * Delete the resource requirement with id
+     * @param id id of the resource requirement
+     * @throws ResourceException if the resource requirement can't be found
+     */
+    public void deleteRequirement(Long id) throws ResourceException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
             ensureUserIsPartOfOrganisation(requirement.getProject());
@@ -185,6 +181,10 @@ public class ResourceService {
         }
     }
 
+    /**
+     * Return all Resource Requirements
+     * @return list or resource requirements
+     */
     public List<ResourceRequirement> getAllRequirements() {
         return resourceRequirementRepository.findAll();
     }
@@ -207,10 +207,10 @@ public class ResourceService {
      * @param description ResourceOffer description
      * @param organizationId organization id which created the ResourceOffer
      * @param isCommercial true if ResourceOffer is a commercial Resource, false otherwise
-     * @param isRecurrent
      * @param startDate available at startDate
      * @param endDate available until endDate
      * @param resourceTags Tags describing the ResourceOffer
+     * @param logoId id of the resource logo
      * @return created ResourceOffer
      */
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
@@ -230,13 +230,29 @@ public class ResourceService {
             newOffer.setLogo(imageRepository.findOne(logoId));
         }
 
-        log.debug("OFFER: " + newOffer.toString());
         newOffer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
         this.resourceOfferRepository.save(newOffer);
 
         return newOffer;
     }
 
+    /**
+     *
+     * @param offerId id of the resource offer
+     * @param organisationId organization id of the resource offer
+     * @param name name of the resource offer
+     * @param amount amount of the resource
+     * @param description description of the resource offer
+     * @param isCommercial true if the resource is a commercial resource, false otherwise
+     * @param startDate available from
+     * @param endDate available until
+     * @param resourceTags tags belonging to the resource
+     * @param logoId id of the resource logo
+     * @return updated Resource Offer
+     * @throws ResourceException if resource offer with id can't be found
+     * @throws ResourceTagException
+     * @throws ResourceJoinTagException
+     */
     public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount,
                                      String description, Boolean isCommercial, Boolean isRecurrent,
                                      LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId)
@@ -267,6 +283,11 @@ public class ResourceService {
         return offer;
     }
 
+    /**
+     * Delete ResourceOffer
+     * @param offerId id of resourceOffer
+     * @throws ResourceException if offer can't be found
+     */
     public void deleteOffer(Long offerId) throws ResourceException{
         if (this.resourceOfferRepository.findOne(offerId) != null) {
             this.resourceOfferRepository.delete(offerId);
@@ -405,15 +426,36 @@ public class ResourceService {
     }
 
     /**
+     * Check if user is authorized to answer a ResourceRequest
+     * @param project
+     * @return
+     * @throws OperationForbiddenException
+     */
+    private void checkAuthoritiesForResourceMatch(Project project) throws OperationForbiddenException{
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
+        if(user.getOrganization() == null) {
+            throw new OperationForbiddenException("user is no member of any organization");
+        }
+
+        //has to be the owner of the project's organization or the project manager
+        if(user != project.getOrganization().getOwner() && user != project.getManager() ) {
+            throw new OperationForbiddenException("user needs to be the owner of an organization or the project manager");
+        }
+    }
+
+    /**
      * Accept or decline the resource request
      * @param resourceMatchId resourceMatch id
      * @param accept true if accepted, false if declined
      * @return accepted or declined ResourceMatch
      */
     public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept)
-        throws IllegalValueException, NoSuchResourceMatchException{
+        throws IllegalValueException, OperationForbiddenException{
 
-        //TODO: add authority check
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);
 
         if(resourceMatchId == null) {
@@ -425,12 +467,26 @@ public class ResourceService {
 
         resourceMatch.setAccepted(accept);
 
-        //TODO: check offer and req for null and throw exception (eventuell offer auf 0 setzen bei else)
-        if(accept == true) {
-            //check if resourceOffer amount is completely consumed by resourceRequirement
-            ResourceOffer offer = resourceMatch.getResourceOffer();
-            ResourceRequirement req = resourceMatch.getResourceRequirement();
+        Project project = resourceMatch.getProject();
 
+        if(project == null) {
+            throw new NoSuchProjectException("can't find project for match with matchId " + resourceMatchId);
+        }
+
+        checkAuthoritiesForResourceMatch(project);
+
+        if(accept == true) {
+
+            ResourceOffer offer = resourceMatch.getResourceOffer();
+            if(offer == null) {
+                throw new IllegalValueException("resourcematch.error.noresourceofferfound", "resourcematch has no resourceoffer: "+ resourceMatch);
+            }
+            ResourceRequirement req = resourceMatch.getResourceRequirement();
+            if(req == null) {
+                throw new IllegalValueException("resourcematch.error.noresourcerequirementfound","resourcematch has no resourcerequirement: "+ resourceMatch);
+            }
+
+            //check if resourceOffer amount is completely consumed by resourceRequirement
             //offer greater req amount -> keep offer active and lower amount
             if (offer.getAmount().compareTo(req.getAmount()) == 1) {
                 offer.setAmount(offer.getAmount().subtract(req.getAmount()));
@@ -459,8 +515,6 @@ public class ResourceService {
     public List<ResourceMatch> getResourceMatchesForProject(Long projectId) {
         return resourceMatchRepository.findByProjectIdAndAcceptedIsTrueAndActiveIsTrue(projectId);
     }
-
-
 
 
     /**
