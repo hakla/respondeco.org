@@ -15,7 +15,7 @@ body {
 }
 
 [ng-view].well {
-    margin-top: 50px;
+    margin-top: 10px;
 }
 
 .ribbon-development, .ribbon-test {
@@ -348,6 +348,12 @@ uploaded-image, [uploaded-image] {
     form {
         margin-top: 50px;
     }
+
+    uploaded-image {
+        height: 70px;
+        display: block;
+        width: 100%;
+    }
 }
 
 ul.resources {
@@ -390,14 +396,13 @@ ul.resources {
     }
 }
 
-
 .on-hover {
     opacity: 0;
     transition: .2s ease opacity;
 }
 
-* {
-    &:hover > .on-hover {
+.hover-toggle {
+    &:hover .on-hover {
         opacity: 1;
     }
 }
@@ -418,4 +423,42 @@ ul.resources {
     li.resource.selected {
         background: #D3D3D3;
     }
+}
+
+.approved {
+    position: absolute;
+    height: 150px;
+    right: 150px;
+    top: -165px;
+}
+
+.dropdown-toggle {
+    border-radius: 0 !important;
+}
+
+.dropdown {
+    .badge {
+        background-color: #C40000;
+        top: -1px;
+        position: relative;
+        left: 12px;
+    }
+}
+
+.highlight, .highlight td {
+    background-color: #FFF37B !important;
+}
+
+.error-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 10px auto 0 auto;
+
+    .alert {
+        border-radius: 0;
+    }
+}
+
+.spacer-top {
+    margin-top: 16px;
 }

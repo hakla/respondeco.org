@@ -35,8 +35,6 @@ public class QProject extends EntityPathBase<Project> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> createdDate = _super.createdDate;
 
-    public final DatePath<org.joda.time.LocalDate> endDate = createDate("endDate", org.joda.time.LocalDate.class);
-
     //inherited
     public final NumberPath<Long> id = _super.id;
 
@@ -64,6 +62,8 @@ public class QProject extends EntityPathBase<Project> {
     public final ListPath<ResourceRequirement, QResourceRequirement> resourceRequirements = this.<ResourceRequirement, QResourceRequirement>createList("resourceRequirements", ResourceRequirement.class, QResourceRequirement.class, PathInits.DIRECT2);
 
     public final DatePath<org.joda.time.LocalDate> startDate = createDate("startDate", org.joda.time.LocalDate.class);
+
+    public final BooleanPath successful = createBoolean("successful");
 
     public QProject(String variable) {
         this(Project.class, forVariable(variable), INITS);

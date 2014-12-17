@@ -3,28 +3,25 @@ package org.respondeco.respondeco.web.rest;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
+import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
 import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
-import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.service.ResourceTagService;
 import org.respondeco.respondeco.testutil.TestUtil;
+import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -32,16 +29,15 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by Roman Kern on 25.11.14.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
@@ -167,11 +163,11 @@ public class ResourceControllerTest {
         if(operation == 0) {
             doReturn(resourceOffer).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
                 dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
         }else if (operation == 1){
             doReturn(resourceOffer).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
                 dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
         }else if (operation == 2){
             doNothing().when(resourceService).deleteOffer(dto.getId());
         }else if(operation == 3){
@@ -200,15 +196,15 @@ public class ResourceControllerTest {
         if(operation == 0){
             verify(resourceService, times(1)).createOffer(dto.getName(), dto.getAmount(),
                 dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
         }else if (operation == 1){
             verify(resourceService, times(1)).updateOffer(dto.getId(), dto.getOrganizationId(),
                 dto.getName(), dto.getAmount(), dto.getDescription(), dto.getIsCommercial(),
-                dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+                dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteOffer(dto.getId());
         }else if (operation == 3){
-            verify(resourceService, times(1)).getAllOffers(any(), any(), any(), any(), any(), any());
+            verify(resourceService, times(1)).getAllOffers(any(), any(), any());
             verify(resourceService, times(1)).getOfferById(dto.getId());
         }
     }
@@ -248,7 +244,7 @@ public class ResourceControllerTest {
         dto.setId(null);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(
             dto.getName(), dto.getAmount(), dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
         restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(dto)))
@@ -261,7 +257,7 @@ public class ResourceControllerTest {
         dto.setId(null);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).createOffer(dto.getName(), dto.getAmount(),
             dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
-            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
         restMockMvc.perform(post("/app/rest/resourceOffers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(dto)))
@@ -286,7 +282,7 @@ public class ResourceControllerTest {
         dto = this.bindOfferDTOMockData(1);
         doThrow(new ResourceException("", EnumResourceException.ALREADY_EXISTS)).when(resourceService).updateOffer(
             dto.getId(), dto.getOrganizationId(), dto.getName(), dto.getAmount(),dto.getDescription(),
-            dto.getIsCommercial(), dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getIsCommercial(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
 
         restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -298,7 +294,7 @@ public class ResourceControllerTest {
         dto = this.bindOfferDTOMockData(1);
         doThrow(new ResourceException("", EnumResourceException.NOT_FOUND)).when(resourceService).updateOffer(dto.getId(), dto.getOrganizationId(),
             dto.getName(), dto.getAmount(),dto.getDescription(), dto.getIsCommercial(),
-            dto.getIsRecurrent(), dto.getStartDate(), dto.getEndDate(), dto.getResourceTags());
+            dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
 
         restMockMvc.perform(put("/app/rest/resourceOffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -478,4 +474,112 @@ public class ResourceControllerTest {
         this.verifyRequirement(3, dto);
         //endregion
     }
+
+
+    /**
+     * Testing /app/rest/resourcerequests
+     * @throws Exception
+     */
+    @Test
+    public void testClaimResourceOffer_expectOK() throws Exception{
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+
+        ResourceMatch resourceMatch = new ResourceMatch();
+        resourceMatch.setId(1L);
+        resourceMatch.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+        resourceMatch.setResourceOffer(new ResourceOffer());
+        resourceMatch.setResourceRequirement(new ResourceRequirement());
+        resourceMatch.setOrganization(new Organization());
+        resourceMatch.setProject(new Project());
+
+        doReturn(resourceMatch).when(resourceService).createClaimResourceRequest(requestDTO.getResourceOfferId(), requestDTO.getResourceRequirementId());
+
+        restMockMvc.perform(post("/app/rest/resourcerequests")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testClaimResourceOffer_expectMatchAlreadyExists() throws Exception {
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+
+        doThrow(MatchAlreadyExistsException.class).when(resourceService).createClaimResourceRequest(requestDTO.getResourceOfferId(), requestDTO.getResourceRequirementId());
+
+        restMockMvc.perform(post("/app/rest/resourcerequests")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
+    @Test
+    public void testClaimResourceOffer_expectIllegalValueException() throws Exception {
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+
+        doThrow(IllegalValueException.class).when(resourceService).createClaimResourceRequest(requestDTO.getResourceOfferId(), requestDTO.getResourceRequirementId());
+
+        restMockMvc.perform(post("/app/rest/resourcerequests")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    public void testAnswerResourceRequest_expectOK() throws Exception {
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+        requestDTO.setAccepted(true);
+
+        ResourceMatch match = new ResourceMatch();
+        match.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+        match.setId(1L);
+
+        doReturn(match).when(resourceService).answerResourceRequest(1L,true);
+
+        restMockMvc.perform(put("/app/rest/resourcerequests/1")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testAnswerResourceRequest_expectIllegalValue() throws Exception {
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+        requestDTO.setAccepted(true);
+
+        ResourceMatch match = new ResourceMatch();
+        match.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+        match.setId(1L);
+
+        doThrow(IllegalValueException.class).when(resourceService).answerResourceRequest(1L,true);
+
+        restMockMvc.perform(put("/app/rest/resourcerequests/1")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isBadRequest());
+    }
+
+
+
 }

@@ -44,7 +44,7 @@
      */
         .config(function($httpProvider) {
 
-            var interceptor = ['$rootScope', '$q', 'httpBuffer', function($rootScope, $q, httpBuffer) {
+            var interceptor = ['$rootScope', '$q', 'httpBuffer', '$translate', function($rootScope, $q, httpBuffer, $translate) {
                 function success(response) {
                     return response;
                 }
@@ -57,6 +57,14 @@
                         return deferred.promise;
                     } else if (response.status === 403 && !response.config.ignoreAuthModule) {
                         $rootScope.$broadcast('event:auth-notAuthorized', response);
+                    } else if (response.status === 400 && response.data.key != undefined && response.data.message != undefined) {
+                        var message = $translate.instant(response.data.key);
+                        console.log(response.data.message);
+
+                        $rootScope.globalAlerts.push({
+                            type: 'danger',
+                            msg: message
+                        });
                     }
                     // otherwise, default behaviour
                     return $q.reject(response);

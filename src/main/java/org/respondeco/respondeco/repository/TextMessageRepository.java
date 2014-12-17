@@ -11,8 +11,7 @@ import java.util.List;
  */
 public interface TextMessageRepository extends JpaRepository<TextMessage, Long> {
 
-    List<TextMessage> findByReceiver(User receiver);
-
     List<TextMessage> findByReceiverAndActiveIsTrue(User receiver);
+    Long countByReceiverAndActiveIsTrueAndReadIsFalse(User receiver);
 
 }

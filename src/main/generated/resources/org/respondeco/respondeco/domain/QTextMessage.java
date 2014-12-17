@@ -44,6 +44,8 @@ public class QTextMessage extends EntityPathBase<TextMessage> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
 
+    public final BooleanPath read = createBoolean("read");
+
     public final QUser receiver;
 
     public final QUser sender;

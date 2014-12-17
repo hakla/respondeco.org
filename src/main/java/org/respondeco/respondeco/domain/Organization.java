@@ -57,7 +57,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     private Long spokesPerson;
 
     @ManyToOne
-    @JoinColumn(name = "imageId")
+    @JoinColumn(name = "image_id")
     private Image logo;
 
     @OneToMany(mappedBy = "organization")

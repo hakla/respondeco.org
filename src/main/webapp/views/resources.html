@@ -4,29 +4,16 @@
     </h1>
 
     <form name="searchForm" class="row" role="form" novalidate ng-submit="search()">
-        <div class="form-group col-md-3">
-            <label translate="resource.name">name</label>
+        <div class="form-group col-md-9">
+            <label translate="resource.search.filter">name / tags / organization</label>
             <input type="text" class="form-control" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
         </div>
         <div class="form-group col-md-3">
-            <label translate="resource.tags">tags</label>
-            <tags-input ng-model="searchTags" add-on-space="true" display-property="name" min-length="1" placeholder=" {{'resource.placeholder.search' | translate}}">
-            </tags-input>
-        </div>
-        <div class="form-group col-md-3">
-            <label translate="resource.organization">company</label>
-            <input class="form-control" type="text" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.organization">
-            </input>
-        </div>
-        <div class="form-group col-md-3">
             <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label>
-            <div class="btn-group">
-                <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="true">Kommerziell</label>
-                <label class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="false">Nicht Kommerziell</label>
-            </div>
+            <button class="btn btn-default" ng-model="resourceSearch.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" translate="resource.search.free"></button>
         </div>
         <div class="col-md-5">
-            <button type="button" class="btn btn-default " ng-click="search()">
+            <button id="searchButton" type="button" class="btn btn-default " ng-click="search()">
                 {{'resource.searchbutton' | translate}}
             </button>
         </div>
@@ -34,16 +21,16 @@
 
     <div class="row col-md-12">
         <ul class="resources">
-            <li class="resource row" ng-repeat="resource in resources">
+            <li class="resource row hover-toggle" ng-repeat="resource in resources">
                 <div class="col-md-1">
-                    <img src="" alt="">
+                    <uploaded-image name="resource.logo.id"></uploaded-image>
                 </div>
                 <div class="pull-right col-md-7">
                     <div class="col-md-8">
                         {{ resource.description }}
                     </div>
                     <div class="col-md-4 on-hover">
-                        <button ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
+                        <button ng-show="isClaimable(resource)" ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
                             Request resource
                         </button>
                     </div>
@@ -57,8 +44,8 @@
                         </small>
                     </sup>
                     <div class="organization">
-                        <span class="organization-name">{{ organization.name }}</span>
-                        <rating ng-model="resource.rating" max="5" readonly="true"></rating>
+                        <span class="organization-name">{{ resource.organization.name }}</span>
+                        <rating class="on-hover" ng-model="resource.rating" max="5" readonly="true"></rating>
                     </div>
                 </h2>
             </li>
@@ -100,12 +87,12 @@
                         </div>
 
                         <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
-                        <ul class="requirements">
+                        <div class="btn-group">
                             <li class="requirements row" ng-repeat="requirement in resourceRequirements">
                                 <input type="checkbox" ng-click="selectRequirement(requirement)" > {{requirement.name}} </button>
                             </li>
 
-                        <ul>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearClaimResource()">

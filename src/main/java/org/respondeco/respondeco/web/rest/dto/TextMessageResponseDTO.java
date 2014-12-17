@@ -24,4 +24,6 @@ public class TextMessageResponseDTO {
 
     private DateTime timestamp;
 
+    private Boolean isNew;
+
 }

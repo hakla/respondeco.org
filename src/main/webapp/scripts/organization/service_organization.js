@@ -13,8 +13,4 @@ respondecoApp.factory('Organization', function ($resource) {
             'getAggregatedRating' : {method: 'GET', url: 'app/rest/organizations/:id/ratings'},
             'getResourceOffers': { method: 'GET', url: 'app/rest/organizations/:id/resourceoffers', isArray: true }
         });
-    }).factory('User', function($resource) {
-        return $resource('app/rest/users/:id', {}, {
-            'get': { method: 'GET'}
-        });
     });

@@ -15,10 +15,10 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="price" type="decimal(19,2)"></column>
             <column name="resource_id" type="bigint"/>
             <column name="organization_id" type="bigint"/>
             <column name="is_commercial" type="bit" defaultValue="false"/>
-            <column name="is_recurrent" type="bit" defaultValue="false"/>
             <column name="start_date" type="date"/>
             <column name="end_date" type="date"/>
         </createTable>

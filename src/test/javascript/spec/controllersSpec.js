@@ -263,6 +263,9 @@ describe('Controllers Tests ', function() {
             // set the spy
             spyOn(_Account, 'save');
 
+            // set the mock
+            $scope.settingsAccount = mockAccount;
+
             // save the account
             $scope.save();
 

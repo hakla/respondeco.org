@@ -4,7 +4,6 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     var id = $routeParams.id;
     var isNew = id === 'new';
-
     var organization = {};
 
     $scope.logo = null;
@@ -44,7 +43,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     $scope.create = function() {
-        organization.npo = $scope.organization.npo || false;
+        organization.npo = $scope.organization.isNpo || false;
         organization.name = $scope.organization.name;
         organization.description = $scope.organization.description;
         organization.email = $scope.organization.email;
@@ -180,5 +179,8 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     if (isNew == false) {
         $scope.update(id);
+
+        // the name of an organization cannot be changed after creation --> show a tooltip
+        $scope.tooltip_notChangeable = "global.notChangeable";
     }
 });

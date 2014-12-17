@@ -18,6 +18,8 @@ public class QResourceBase extends EntityPathBase<ResourceBase> {
 
     private static final long serialVersionUID = -475296321L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QResourceBase resourceBase = new QResourceBase("resourceBase");
 
     public final QAbstractAuditingEntity _super = new QAbstractAuditingEntity(this);
@@ -44,6 +46,8 @@ public class QResourceBase extends EntityPathBase<ResourceBase> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
 
+    public final QImage logo;
+
     public final StringPath name = createString("name");
 
     public final NumberPath<java.math.BigDecimal> originalAmount = createNumber("originalAmount", java.math.BigDecimal.class);
@@ -51,15 +55,24 @@ public class QResourceBase extends EntityPathBase<ResourceBase> {
     public final ListPath<ResourceTag, QResourceTag> resourceTags = this.<ResourceTag, QResourceTag>createList("resourceTags", ResourceTag.class, QResourceTag.class, PathInits.DIRECT2);
 
     public QResourceBase(String variable) {
-        super(ResourceBase.class, forVariable(variable));
+        this(ResourceBase.class, forVariable(variable), INITS);
     }
 
     public QResourceBase(Path<? extends ResourceBase> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
     public QResourceBase(PathMetadata<?> metadata) {
-        super(ResourceBase.class, metadata);
+        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    }
+
+    public QResourceBase(PathMetadata<?> metadata, PathInits inits) {
+        this(ResourceBase.class, metadata, inits);
+    }
+
+    public QResourceBase(Class<? extends ResourceBase> type, PathMetadata<?> metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.logo = inits.isInitialized("logo") ? new QImage(forProperty("logo")) : null;
     }
 
 }

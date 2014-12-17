@@ -12,10 +12,14 @@ import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
+import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.exception.ProjectRatingException;
+import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -39,6 +43,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -93,6 +98,9 @@ public class ProjectControllerTest {
     @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
 
+    @Mock
+    private ResourceMatchRepository resourceMatchRepository;
+
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
     private ProjectRequestDTO projectRequestDTO;
@@ -100,6 +108,8 @@ public class ProjectControllerTest {
     private Organization defaultOrganization;
     private User orgAdmin;
     private User orgMember;
+
+    private ArgumentCaptor<Object> voidInterceptor;
 
     @Before
     public void setup() {
@@ -110,8 +120,9 @@ public class ProjectControllerTest {
                 userRepositoryMock,
                 propertyTagServiceMock,
                 resourceServiceMock,
-                imageRepositoryMock));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock);
+                imageRepositoryMock,
+                resourceMatchRepository));
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock, userServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -148,33 +159,33 @@ public class ProjectControllerTest {
         doReturn(new ArrayList<PropertyTag>()).when(propertyTagServiceMock).getOrCreateTags(anyObject());
 
         defaultOrganization.setOwner(orgAdmin);
+
+        voidInterceptor = ArgumentCaptor.forType(Object.class, 0, false);
     }
 
     @Test
     public void testCRUDProject() throws Exception {
 
         doReturn(project).when(projectServiceMock).create(
-            projectRequestDTO.getName(),
-            projectRequestDTO.getPurpose(),
-            projectRequestDTO.getConcrete(),
-            projectRequestDTO.getStartDate(),
-            projectRequestDTO.getEndDate(),
-            projectRequestDTO.getPropertyTags(),
-            projectRequestDTO.getResourceRequirements(),
-            projectRequestDTO.getLogo().getId());
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements(),
+                projectRequestDTO.getLogo().getId());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         verify(projectServiceMock, times(1)).create(
                 projectRequestDTO.getName(),
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
@@ -204,7 +215,6 @@ public class ProjectControllerTest {
                 projectRequestDTO.getPurpose(),
                 projectRequestDTO.getConcrete(),
                 projectRequestDTO.getStartDate(),
-                projectRequestDTO.getEndDate(),
                 projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
@@ -215,15 +225,14 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
 
         verify(projectServiceMock, times(1)).update(
-            projectRequestDTO.getId(),
-            projectRequestDTO.getName(),
-            projectRequestDTO.getPurpose(),
-            projectRequestDTO.getConcrete(),
-            projectRequestDTO.getStartDate(),
-            projectRequestDTO.getEndDate(),
-            projectRequestDTO.getLogo().getId(),
-            projectRequestDTO.getPropertyTags(),
-            projectRequestDTO.getResourceRequirements());
+                projectRequestDTO.getId(),
+                projectRequestDTO.getName(),
+                projectRequestDTO.getPurpose(),
+                projectRequestDTO.getConcrete(),
+                projectRequestDTO.getStartDate(),
+                projectRequestDTO.getLogo().getId(),
+                projectRequestDTO.getPropertyTags(),
+                projectRequestDTO.getResourceRequirements());
 
         project.setName(UPDATED_NAME);
         project.setPurpose(UPDATED_PURPOSE);
@@ -259,7 +268,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testGetByNameAndTags_shouldCallServiceFindProjects() throws Exception {
+    public void testGetByNameAndTags_shouldCallServiceToFindProjects() throws Exception {
         Project project2 = new Project();
         project2.setId(200L);
         project2.setName("test2");
@@ -284,7 +293,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testGetByOrganizationAndNameAndTags_shouldCallServiceFindProjectsFromOrganization() throws Exception {
+    public void testGetByOrganizationAndNameAndTags_shouldCallServiceToFindProjectsFromOrganization() throws Exception {
         Project project2 = new Project();
         project2.setId(200L);
         project2.setName("test2");
@@ -399,4 +408,113 @@ public class ProjectControllerTest {
                 expected.getOrganizationId(), expected.getProjectId());
     }
 
+    @Test
+    public void testGetAggregatedRating_matchesFlagSet_shouldCallServiceForMatchPermissions() throws Exception {
+        ResourceMatch rm1 = new ResourceMatch();
+        rm1.setId(100L);
+        RatingPermission perm1 = new RatingPermission();
+        perm1.setAllowed(true);
+        perm1.setResourceMatch(rm1);
+        ResourceMatch rm2 = new ResourceMatch();
+        rm2.setId(200L);
+        RatingPermission perm2 = new RatingPermission();
+        perm2.setAllowed(false);
+        perm2.setResourceMatch(rm2);
+
+        doReturn(Arrays.asList(perm1, perm2)).when(ratingServiceMock).checkPermissionsForMatches(anyList());
+
+        restProjectMockMvc.perform(get("/app/rest/projects/1/ratings?permission=matches&matches=100,200"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].allowed").value(true))
+            .andExpect(jsonPath("$[1].allowed").value(false));
+    }
+
+    @Test
+    public void testGetAggregatedRating_matchesFlagSet_shouldCallServiceForProjectPermission() throws Exception {
+        ResourceMatch rm1 = new ResourceMatch();
+        rm1.setId(100L);
+        RatingPermission perm1 = new RatingPermission();
+        perm1.setAllowed(true);
+        perm1.setResourceMatch(rm1);
+
+        doReturn(perm1).when(ratingServiceMock).checkPermissionForProject(anyLong());
+
+        restProjectMockMvc.perform(get("/app/rest/projects/1/ratings?permission=project"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].allowed").value(true));
+    }
+
+    @Test
+    public void testGetAggregatedRating_expectOK_shouldCallServiceForAggregatedRating() throws Exception {
+        AggregatedRating aggregatedRating = new AggregatedRating();
+        aggregatedRating.setRating(3.5);
+        aggregatedRating.setCount(5L);
+
+        doReturn(aggregatedRating).when(ratingServiceMock).getAggregatedRatingByProject(anyLong());
+
+        restProjectMockMvc.perform(get("/app/rest/projects/1/ratings"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.rating").value(3.5))
+            .andExpect(jsonPath("$.count").value(5));
+    }
+
+    @Test
+    public void testRateProject_expectOK_shouldCallServiceToSaveRating() throws Exception {
+        RatingRequestDTO ratingRequestDTO = new RatingRequestDTO();
+        ratingRequestDTO.setRating(5);
+        ratingRequestDTO.setComment("foobar");
+        ratingRequestDTO.setMatchid(100L);
+
+        doAnswer(voidInterceptor).when(ratingServiceMock).rateProject(anyLong(), anyLong(), anyInt(), anyString());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/1/ratings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(ratingRequestDTO)))
+            .andExpect(status().isOk());
+
+        verify(ratingServiceMock, times(1)).rateProject(anyLong(), anyLong(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testRateProject_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
+        RatingRequestDTO ratingRequestDTO = new RatingRequestDTO();
+        ratingRequestDTO.setRating(5);
+        ratingRequestDTO.setComment("foobar");
+        ratingRequestDTO.setMatchid(100L);
+
+        doThrow(NoSuchProjectException.class).when(ratingServiceMock)
+            .rateProject(anyLong(), anyLong(), anyInt(), anyString());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/1/ratings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(ratingRequestDTO)))
+            .andExpect(status().isNotFound());
+
+        verify(ratingServiceMock, times(1)).rateProject(anyLong(), anyLong(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testRateProject_expectBAD_REQUEST_serviceThrowsRatingException() throws Exception {
+        RatingRequestDTO ratingRequestDTO = new RatingRequestDTO();
+        ratingRequestDTO.setRating(5);
+        ratingRequestDTO.setComment("foobar");
+        ratingRequestDTO.setMatchid(100L);
+
+        doThrow(ProjectRatingException.class).when(ratingServiceMock)
+            .rateProject(anyLong(), anyLong(), anyInt(), anyString());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/1/ratings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(ratingRequestDTO)))
+            .andExpect(status().isBadRequest());
+
+        verify(ratingServiceMock, times(1)).rateProject(anyLong(), anyLong(), anyInt(), anyString());
+    }
 }

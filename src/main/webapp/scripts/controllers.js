@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-respondecoApp.controller('MainController', function($scope, $location) {
+respondecoApp.controller('MainController', function($scope, $location, $rootScope) {
     $scope.main = function() {
         return $location.path() === '' || $location.path() === '/';
     };
@@ -13,6 +13,12 @@ respondecoApp.controller('MainController', function($scope, $location) {
 
     $scope.redirectToNewProject = function() {
         $location.path("projects/edit/new");
+    };
+
+    $rootScope.globalAlerts = [];
+
+    $rootScope.closeAlert = function(index) {
+        $rootScope.globalAlerts.splice(index, 1);
     };
 });
 
@@ -32,7 +38,20 @@ respondecoApp.controller('LanguageController', function($scope, $translate, Lang
     });
 });
 
-respondecoApp.controller('MenuController', function($scope) {});
+respondecoApp.controller('MenuController', function($rootScope, TextMessage, AuthenticationSharedService) {
+    var refresh = function() {
+        TextMessage.countNewMessages(function(amount) {
+            $rootScope.newMessages = amount[0];
+        });
+    };
+
+    refresh();
+
+    // refresh the messages on each route change
+    $rootScope.$on('$routeChangeStart', function(event, next) {
+        refresh();
+    });
+});
 
 respondecoApp.controller('LoginController', function($scope, $location, AuthenticationSharedService) {
     $scope.rememberMe = true;
@@ -59,6 +78,7 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
 
     $scope.success = null;
     $scope.error = null;
+    $scope.fullName = null;
 
     $scope.settingsAccount = {};
     Account.get(function(account) {
@@ -126,7 +146,14 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
             function(value, responseHeaders) {
                 $scope.error = null;
                 $scope.success = 'OK';
-                $scope.settingsAccount = Account.get();
+                // $scope.settingsAccount = Account.get();
+                if ($scope.settingsAccount.firstName == null) {
+                    $scope.fullName = $scope.settingsAccount.lastName;
+                } else if ($scope.settingsAccount.lastName == null) {
+                    $scope.fullName = $scope.settingsAccount.firstName;
+                } else {
+                    $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
+                }
             },
             function(httpResponse) {
                 $scope.success = null;

@@ -6,8 +6,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.organizations = resolvedOrganization;
 
-    // get the current logged in user and set the organization owner to it
-
     $scope.update = function(name) {
         $scope.organization = Organization.get({
             id: name

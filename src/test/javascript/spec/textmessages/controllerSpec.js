@@ -14,6 +14,9 @@ describe('TextMessage Controller Tests ', function () {
             $scope.sendform = {
                 $setPristine: function() {}
             };
+            $scope.replyform = {
+                $setPristine: function() {}
+            };
             TextMessageService = TextMessage;
             $controller('TextMessageController', {$scope: $scope, TextMessage: TextMessageService});
         }));

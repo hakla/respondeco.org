@@ -7,7 +7,6 @@ var NewResourceOffers = function() {
     this.tags = element(by.model("selectedTags"));
 
     this.isCommercial = element(by.model("resource.isCommercial"));
-    this.isRecurrent = element(by.model("resource.isRecurrent"));
     this.startDate = element(by.model("resource.startDate"));
     this.endDate = element(by.model("resource.endDate"));
 

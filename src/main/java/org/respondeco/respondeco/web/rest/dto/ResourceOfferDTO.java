@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
@@ -24,6 +25,7 @@ import java.util.List;
 @ApiModel(value = "Resource Offer", description = "manage all resource offers")
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourceOfferDTO {
 
     @ApiModelProperty(value = "ID of the given Resource offer")
@@ -37,9 +39,11 @@ public class ResourceOfferDTO {
     @ApiModelProperty(value = "ID of the organization that created this offer", required = true)
     private Long organizationId;
 
+    @ApiModelProperty(value = "ID of the image to use as logo")
+    private Long logoId;
     private Boolean isCommercial = false;
 
-    private Boolean isRecurrent = false;
+    private BigDecimal price;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
@@ -48,11 +52,6 @@ public class ResourceOfferDTO {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     private LocalDate endDate;
-
-    public Boolean getIsCommercial() { return this.isCommercial; }
-    public Boolean getIsRecurrent() { return this.isRecurrent; }
-    public LocalDate getStartDate() { return this.startDate; }
-    public LocalDate getEndDate() { return this.endDate; }
 
     private List<String> resourceTags;
 
@@ -64,7 +63,6 @@ public class ResourceOfferDTO {
         this.setDescription(offer.getDescription());
         this.setOrganizationId(offer.getOrganization().getId());
         this.setIsCommercial(offer.getIsCommercial());
-        this.setIsRecurrent(offer.getIsRecurrent());
         this.setStartDate(offer.getStartDate());
         this.setEndDate(offer.getEndDate());
 
@@ -72,12 +70,5 @@ public class ResourceOfferDTO {
         for(ResourceTag tag : offer.getResourceTags()) {
             resourceTags.add(tag.getName());
         }
-    }
-
-    private String dateTimeToString(DateTime dateTime){
-        //DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
-        //String result = dateTime == null ? null : dateTime.toString(formatter);
-        return null;
-        //return result;
     }
 }

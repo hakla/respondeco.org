@@ -22,46 +22,49 @@ public class QResourceRequirement extends EntityPathBase<ResourceRequirement> {
 
     public static final QResourceRequirement resourceRequirement = new QResourceRequirement("resourceRequirement");
 
-    public final QResourceBase _super = new QResourceBase(this);
+    public final QResourceBase _super;
 
     //inherited
-    public final BooleanPath active = _super.active;
+    public final BooleanPath active;
 
     //inherited
-    public final NumberPath<java.math.BigDecimal> amount = _super.amount;
+    public final NumberPath<java.math.BigDecimal> amount;
 
     //inherited
-    public final StringPath createdBy = _super.createdBy;
+    public final StringPath createdBy;
 
     //inherited
-    public final DateTimePath<org.joda.time.DateTime> createdDate = _super.createdDate;
+    public final DateTimePath<org.joda.time.DateTime> createdDate;
 
     //inherited
-    public final StringPath description = _super.description;
+    public final StringPath description;
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final BooleanPath isEssential = createBoolean("isEssential");
 
     //inherited
-    public final StringPath lastModifiedBy = _super.lastModifiedBy;
+    public final StringPath lastModifiedBy;
 
     //inherited
-    public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
+    public final DateTimePath<org.joda.time.DateTime> lastModifiedDate;
+
+    // inherited
+    public final QImage logo;
 
     //inherited
-    public final StringPath name = _super.name;
+    public final StringPath name;
 
     //inherited
-    public final NumberPath<java.math.BigDecimal> originalAmount = _super.originalAmount;
+    public final NumberPath<java.math.BigDecimal> originalAmount;
 
     public final QProject project;
 
     public final ListPath<ResourceMatch, QResourceMatch> resourceMatches = this.<ResourceMatch, QResourceMatch>createList("resourceMatches", ResourceMatch.class, QResourceMatch.class, PathInits.DIRECT2);
 
     //inherited
-    public final ListPath<ResourceTag, QResourceTag> resourceTags = _super.resourceTags;
+    public final ListPath<ResourceTag, QResourceTag> resourceTags;
 
     public QResourceRequirement(String variable) {
         this(ResourceRequirement.class, forVariable(variable), INITS);
@@ -81,7 +84,20 @@ public class QResourceRequirement extends EntityPathBase<ResourceRequirement> {
 
     public QResourceRequirement(Class<? extends ResourceRequirement> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QResourceBase(type, metadata, inits);
+        this.active = _super.active;
+        this.amount = _super.amount;
+        this.createdBy = _super.createdBy;
+        this.createdDate = _super.createdDate;
+        this.description = _super.description;
+        this.id = _super.id;
+        this.lastModifiedBy = _super.lastModifiedBy;
+        this.lastModifiedDate = _super.lastModifiedDate;
+        this.logo = _super.logo;
+        this.name = _super.name;
+        this.originalAmount = _super.originalAmount;
         this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
+        this.resourceTags = _super.resourceTags;
     }
 
 }

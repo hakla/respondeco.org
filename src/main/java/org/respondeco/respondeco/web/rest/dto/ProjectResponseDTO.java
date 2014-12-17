@@ -25,7 +25,7 @@ public class ProjectResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
             "id", "name", "purpose", "concrete", "startDate", "endDate",
-            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings");
+            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings", "successful");
 
     public static ProjectResponseDTO fromEntity(Project project, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -46,9 +46,6 @@ public class ProjectResponseDTO {
         }
         if (fieldNames.contains("startDate")) {
             responseDTO.setStartDate(project.getStartDate());
-        }
-        if (fieldNames.contains("endDate")) {
-            responseDTO.setEndDate(project.getEndDate());
         }
         if (fieldNames.contains("organization")) {
             responseDTO.setOrganization(OrganizationResponseDTO
@@ -76,6 +73,9 @@ public class ProjectResponseDTO {
             if (project.getProjectLogo() != null) {
                 responseDTO.setLogo(new ImageDTO(project.getProjectLogo()));
             }
+        }
+        if (fieldNames.contains("successful")) {
+            responseDTO.setSuccessful(project.getSuccessful());
         }
         //TODO FIX
         /**
@@ -109,8 +109,6 @@ public class ProjectResponseDTO {
     private Boolean concrete;
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate startDate;
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
-    private LocalDate endDate;
     private OrganizationResponseDTO organization;
     private Long organizationId;
     private UserDTO manager;
@@ -119,5 +117,6 @@ public class ProjectResponseDTO {
     private List<ResourceRequirementResponseDTO> resourceRequirements;
     private ImageDTO logo;
     private List<RatingResponseDTO> ratings;
+    private Boolean successful;
 
 }

@@ -9,9 +9,11 @@ import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
+import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -35,10 +37,12 @@ public class TextMessageController {
     private final Logger log = LoggerFactory.getLogger(TextMessageController.class);
 
     private TextMessageService textMessageService;
+    private UserService userService;
 
     @Inject
-    public TextMessageController(TextMessageService textMessageService) {
+    public TextMessageController(TextMessageService textMessageService, UserService userService) {
         this.textMessageService =  textMessageService;
+        this.userService = userService;
     }
 
     /**
@@ -54,7 +58,8 @@ public class TextMessageController {
         log.debug("REST request to save TextMessage : {}", textMessageRequestDTO);
         ResponseEntity<?> responseEntity;
         try {
-            textMessageService.createTextMessage(textMessageRequestDTO.getReceiver(), textMessageRequestDTO.getContent());
+            textMessageService.createTextMessage(textMessageRequestDTO.getReceiver().getId(),
+                textMessageRequestDTO.getContent());
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (NoSuchUserException e) {
             log.error("could not save text TextMessage", e);
@@ -82,21 +87,6 @@ public class TextMessageController {
     }
 
     /**
-     * GET  /rest/textmessages/:receiver -> get the textmessages for the given receiver
-     */
-    @ApiOperation(value = "Get text messages",
-            notes = "Get all text messages for the given userlogin (admin only)")
-    @RequestMapping(value = "/rest/textmessages/admin/{receiverId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.ADMIN)
-    public List<TextMessageResponseDTO> getAllForReceiver(@PathVariable Long receiverId) {
-        log.debug("REST request to get TextMessages for : {}", receiverId);
-        return textMessageService.getTextMessagesForUser(receiverId);
-    }
-
-    /**
      * DELETE  /rest/textmessages/:id -> delete the "id" textmessage.
      */
     @ApiOperation(value = "Delete a text message",
@@ -118,4 +108,42 @@ public class TextMessageController {
         }
         return responseEntity;
     }
+
+    /**
+     * Returns the amount of unread messages
+     * @return
+     */
+    @RequestMapping(value = "/rest/messages/unread",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<Long> getCountOfNewMessages() {
+        ResponseEntity<Long> responseEntity;
+
+        return new ResponseEntity<>(textMessageService.countNewMessages(userService.getUserWithAuthorities()), HttpStatus.OK);
+    }
+
+    /**
+     * Marks the message with the given id as read
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/rest/messages/{id}/markread",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity setRead(@PathVariable Long id) {
+        ResponseEntity responseEntity = new ResponseEntity<>(HttpStatus.OK);
+
+        try {
+            textMessageService.setRead(id);
+        } catch (Exception e) {
+            responseEntity = new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return responseEntity;
+    }
+
 }

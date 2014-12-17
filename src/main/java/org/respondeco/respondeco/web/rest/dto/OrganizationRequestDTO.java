@@ -26,7 +26,7 @@ public class OrganizationRequestDTO {
 
     private String email;
 
-    private boolean isNpo;
+    private boolean npo;
 
     private UserDTO owner;
 
