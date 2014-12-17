@@ -4,7 +4,7 @@
 
 'use strict';
 
-describe('TextMessage Service Tests ', function () {
+describe('Project Service Tests ', function () {
 
     beforeEach(module('respondecoApp'));
 
@@ -101,6 +101,21 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.checkIfRatingPossible({pid: 2, permission: testPermisson, matches: testMatches});
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to create new project apply', function() {
+            var testProjectApply = {
+                resourceOfferId: 1,
+                resourceRequirementId: 1,
+                organizationId: 1,
+                projectId: 2
+            };
+            httpBackend.expectPOST('/app/rest/projects/apply', testProjectApply).respond(201);
+
+            //WHEN
+            serviceTested.apply(testProjectApply);
             //flush the backend to "execute" the request to do the expected POST assertion.
             httpBackend.flush();
         });

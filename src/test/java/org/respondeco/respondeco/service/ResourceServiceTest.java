@@ -182,6 +182,7 @@ public class ResourceServiceTest {
         expectedReq = new ResourceRequirement();
         expectedReq.setDescription(" Here is my test Requirement... bla bla. ");
         expectedReq.setOriginalAmount(new BigDecimal(10));
+        expectedReq.setAmount(new BigDecimal(10));
         expectedReq.setProject(expProject);
         expectedReq.setIsEssential(true);
         expectedReq.setId(1L);
@@ -873,6 +874,7 @@ public class ResourceServiceTest {
         Project project = new Project();
         project.setOrganization(org);
         resourceMatch.setProject(project);
+        resourceMatch.setOrganization(org);
 
         return resourceMatch;
     }
