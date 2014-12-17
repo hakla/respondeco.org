@@ -108,7 +108,7 @@ public class ResourceService {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
             newRequirement.setOriginalAmount(amount);
-            newRequirement.setAmount(BigDecimal.ZERO);//TODO: decrease or increase amount? logically increase
+            newRequirement.setAmount(amount);
             newRequirement.setDescription(description);
             newRequirement.setProject(project);
             newRequirement.setIsEssential(isEssential);

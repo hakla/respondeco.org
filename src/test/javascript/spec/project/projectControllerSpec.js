@@ -7,13 +7,13 @@ describe('Project Controller Tests ', function() {
     beforeEach(module('respondecoApp'));
 
     describe('ProjectController', function() {
-        var scope, location, routeParams, translate, ProjectNamesService, PropertyTagsNamesService,
-            ProjectService, ResourceRequirementService, OrganizationService;
+        var scope, location, routeParams, ProjectNamesService, PropertyTagsNamesService, ProjectService,
+            ResourceRequirementService, AccountService, sce, OrganizationService, translate;
         var fakeDeferred;
         var emptyProject;
 
-        beforeEach(inject(function($rootScope, $controller, $location, $q, $sce, $routeParams, $translate,
-                                   ProjectNames, PropertyTagNames, Project, ResourceRequirement, Organization) {
+        beforeEach(inject(function($rootScope, $controller, $location, $q, $sce, $routeParams, ProjectNames,
+                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate) {
             scope = $rootScope.$new();
             location = $location;
             translate = $translate;
@@ -23,6 +23,9 @@ describe('Project Controller Tests ', function() {
             ResourceRequirementService = ResourceRequirement;
             OrganizationService = Organization;
             routeParams = $routeParams;
+            AccountService = Account;
+            OrganizationService = Organization;
+            sce = $sce;
             fakeDeferred = {
                 $promise: {
                     then: function(object) {}
@@ -49,6 +52,8 @@ describe('Project Controller Tests ', function() {
                 ProjectNames: ProjectNamesService,
                 PropertyTagNames: PropertyTagsNamesService,
                 ResourceRequirement: ResourceRequirementService,
+                $sce: sce,
+                Account: AccountService,
                 Organization: OrganizationService
             });
 
@@ -236,5 +241,44 @@ describe('Project Controller Tests ', function() {
             OrganizationService.rateOrganization.calls.mostRecent().args[3](error);
             expect(scope.orgRatingError).toBe("ERROR");
         });
+        it('should get all available offers for apply', function(){
+            // set current project organization id
+            scope.project.organizationId = 2;
+            spyOn(AccountService, 'get');
+            spyOn(OrganizationService, 'get');
+            spyOn(OrganizationService, 'getResourceOffers');
+
+
+            scope.getOffers();
+            expect(AccountService.get).toHaveBeenCalled();
+
+            AccountService.get.calls.mostRecent().args[0]({
+                id: 1,
+                organizationId: 1
+            });
+            expect(scope.ProjectApply.account.id).toBe(1);
+
+            expect(OrganizationService.get).toHaveBeenCalledWith({ id: 1}, jasmine.any(Function));
+
+            // simulate success callback
+            OrganizationService.get.calls.mostRecent().args[1]({
+                id: 1,
+                organizationId: 1,
+                owner: { id: 1}
+            });
+
+            expect(OrganizationService.getResourceOffers).toHaveBeenCalledWith({ id: 1}, jasmine.any(Function));
+
+            OrganizationService.getResourceOffers.calls.mostRecent().args[1](
+                [
+                    { amount: 10 },
+                    { amount: 20 },
+                ]
+            );
+
+            expect(scope.ProjectApply.organization.owner.id).toBe(1);
+            expect(scope.resourceOffers.length).toBe(2);
+        });
+
     });
 });

@@ -146,7 +146,7 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
             function(value, responseHeaders) {
                 $scope.error = null;
                 $scope.success = 'OK';
-                $scope.settingsAccount = Account.get();
+                // $scope.settingsAccount = Account.get();
                 if ($scope.settingsAccount.firstName == null) {
                     $scope.fullName = $scope.settingsAccount.lastName;
                 } else if ($scope.settingsAccount.lastName == null) {
