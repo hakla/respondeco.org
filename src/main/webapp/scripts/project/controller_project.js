@@ -38,7 +38,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         account: null,
         allowedToApply: false,
         selectedResourceOffer: null,
-        error: null
+        selectedRequirement: null
     };
 
     $scope.list_of_string = [];
@@ -385,8 +385,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.projectApply = function(resourceRequirement, $event) {
         $event.stopPropagation();
         $event.preventDefault();
-
-        $scope.selectedRequirement = resourceRequirement;
+        resourceRequirement.$target = $($event.target).closest("div.panel-heading");
+        $scope.ProjectApply.selectedRequirement = resourceRequirement;
 
         $('#apply').modal('toggle');
     };
@@ -395,49 +395,45 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         return $scope.ProjectApply.allowedToApply;
     };
 
-    $scope.showError = function(){
-        return $scope.ProjectApply.error;
-    }
-
     $scope.selectResourceOffer = function(offer, $event) {
         var $target = $($event.target);
 
-        $target.closest("ul").find(".selected").removeClass("selected");
+        var selected = $target.closest("ul").find(".selected");
+        selected.removeClass("selected");
 
         if ($target.is("li") === false) {
-            $target = $target.closest("li");
-        } else {
-            $target = $target;
+            selected = $target = $target.closest("li");
         }
+        offer.$target = selected;
 
         $target.addClass("selected");
         $scope.ProjectApply.selectedResourceOffer = offer;
     };
 
-    $scope.projectApplySubmit = function($event, modal) {
-        // submit projectApply request to backend
-        //
-        // Params
-        // $scope.project
-        // $scope.selectedRequirement
-        // organization
-        // selectedResourceOffer
-        var req = $scope.selectedRequirement;
+    $scope.projectApplySubmit = function($event) {
         var data = {
             resourceOfferId: $scope.ProjectApply.selectedResourceOffer.id,
-            resourceRequirementId: req.id,
+            resourceRequirementId: $scope.ProjectApply.selectedRequirement.id,
             organizationId: $scope.ProjectApply.organization.id,
             projectId: $scope.project.id
         }
+        // please do not remove this variable. some user operation can be faster than timeout.
+        // this cause an exception.
+        var reqTarget = $scope.ProjectApply.selectedRequirement.$target;
         Project.apply(data, function(data){
+            $scope.ProjectApply.selectedResourceOffer.$target.removeClass("selected");
+            $scope.ProjectApply.selectedResourceOffer = null;
+            $scope.ProjectApply.selectedRequirement = null;
             $scope.getOffers();
-            $scope.ProjectApply.error = null;
-
         }, function(error){
-            $scope.ProjectApply.error = error.data.key;
+            reqTarget.css("background-color", "#EBCCD1");
+            setTimeout(function(){ reqTarget.css("background-color", ""); }, 5000);
         });
     };
 
+    /**
+     * Get all resource offer from the organization the user currently in.
+     */
     $scope.getOffers = function() {
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
