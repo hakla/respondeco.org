@@ -25,7 +25,7 @@ public class ProjectResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
             "id", "name", "purpose", "concrete", "startDate", "endDate",
-            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings");
+            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings", "successful");
 
     public static ProjectResponseDTO fromEntity(Project project, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {

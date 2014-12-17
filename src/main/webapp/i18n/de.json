@@ -126,11 +126,6 @@
             "nosuchuser": "Der angegebene Benutzer existiert nicht"
         }
     },
-    "organization": {
-        "error": {
-            "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden"
-        }
-    },
     "project": {
         "info": "Projekt Information",
         "title": "Projekte",
@@ -506,7 +501,11 @@
         "header.info": "Informationen über das Unternehmen",
         "header.logo": "Logo",
         "ownresources": "Ressourcen anzeigen",
-        "requests": "Ressourcen-Anfragen"
+        "requests": "Ressourcen-Anfragen",
+        "backToOverview": "Zurück zur Übersicht",
+        "error": {
+            "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden"
+        }
     },
     "resourcematch": {
         "error": {

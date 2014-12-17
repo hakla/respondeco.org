@@ -427,11 +427,11 @@ public class ResourceService {
 
     /**
      * Check if user is authorized to answer a ResourceRequest
-     * @param project
+     * @param organization
      * @return
      * @throws OperationForbiddenException
      */
-    private void checkAuthoritiesForResourceMatch(Project project) throws OperationForbiddenException{
+    private void checkAuthoritiesForResourceMatch(Organization organization) throws OperationForbiddenException{
         User user = userService.getUserWithAuthorities();
         if(user == null) {
             throw new OperationForbiddenException("no current user found");
@@ -442,8 +442,8 @@ public class ResourceService {
         }
 
         //has to be the owner of the project's organization or the project manager
-        if(user != project.getOrganization().getOwner() && user != project.getManager() ) {
-            throw new OperationForbiddenException("user needs to be the owner of an organization or the project manager");
+        if(user.equals(organization.getOwner()) == false) {
+            throw new OperationForbiddenException("user needs to be the owner of the organization");
         }
     }
 
@@ -465,18 +465,20 @@ public class ResourceService {
             throw new NoSuchResourceMatchException(resourceMatchId);
         }
 
-        resourceMatch.setAccepted(accept);
-
         Project project = resourceMatch.getProject();
+        Organization organization = resourceMatch.getOrganization();
 
         if(project == null) {
             throw new NoSuchProjectException("can't find project for match with matchId " + resourceMatchId);
         }
 
-        checkAuthoritiesForResourceMatch(project);
+        // check if user is owner of the organization that owns the resource offer
+        checkAuthoritiesForResourceMatch(organization);
+
+        // set the accepted flag
+        resourceMatch.setAccepted(accept);
 
         if(accept == true) {
-
             ResourceOffer offer = resourceMatch.getResourceOffer();
             if(offer == null) {
                 throw new IllegalValueException("resourcematch.error.noresourceofferfound", "resourcematch has no resourceoffer: "+ resourceMatch);

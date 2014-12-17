@@ -354,12 +354,12 @@ uploaded-image, [uploaded-image] {
         display: block;
         width: 100%;
     }
+}
 
-    ul.resources {
-        list-style-type: none;
-        padding-left: 0;
-        margin: 80px 0 50px 0;
-    }
+ul.resources {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 80px 0 50px 0;
 
     li {
         margin-bottom: 60px;
@@ -396,14 +396,13 @@ uploaded-image, [uploaded-image] {
     }
 }
 
-
 .on-hover {
     opacity: 0;
     transition: .2s ease opacity;
 }
 
-* {
-    &:hover > .on-hover {
+.hover-toggle {
+    &:hover .on-hover {
         opacity: 1;
     }
 }

@@ -93,7 +93,7 @@
                 <accordion close-others="true">
                     <accordion-group ng-open="requirement.id" ng-repeat="requirement in project.resourceRequirements">
                         <accordion-heading>
-                            <div class="row">
+                            <div class="row hover-toggle">
                                 <div class="col-md-8">{{requirement.name}}</div>
                                 <div class="col-md-2 on-hover">
                                     <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
