@@ -76,5 +76,20 @@ describe('TextMessage Service Tests ', function () {
             httpBackend.flush();
         });
 
+        it('should call backend to create new project apply', function(){
+           var testProjectApply = {
+                resourceOfferId: 1,
+                resourceRequirementId: 1,
+                organizationId: 1,
+                projectId: 2
+           };
+            httpBackend.expectPOST('app/rest/projects/apply', testProjectApply).respond(201);
+
+            //WHEN
+            serviceTested.query(testProjectApply);
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
     });
 });

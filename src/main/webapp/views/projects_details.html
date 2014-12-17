@@ -1,5 +1,8 @@
 <div class="row">
     <div class="modal-header">
+        <div class="alert alert-danger ng-scope" ng-show="showError()">
+            <strong>{{ ProjectApply.error | translate }}</strong>
+        </div>
         <button class="btn btn-primary pull-right" ng-click='edit()' translate='general.edit'>Edit</button>
         <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
         <h2 translate="project.details.title" translate-values="{project: '{{project.name}}'}">Project overview for {{project.name}}</h2>
@@ -146,7 +149,7 @@
                     <button id="resourceCancelButton" type="button" class="btn btn-link" data-dismiss="modal">
                         {{ 'resource.new.cancelbutton' | translate }}
                     </button>
-                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit()" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
+                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit($event, this)" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
                         <span class="glyphicon glyphicon-save"></span> {{ 'resource.new.savebutton' | translate }}
                     </button>
                 </div>

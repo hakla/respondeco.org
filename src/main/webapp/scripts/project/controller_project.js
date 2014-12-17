@@ -1,7 +1,7 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
-                                                       PropertyTagNames, $location, $routeParams, $sce, Account, $modal) {
+                                                       PropertyTagNames, $location, $routeParams, $sce, Account) {
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
@@ -54,10 +54,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
     // project apply
-    var organization;
-    var account;
-    var allowedToApply = false;
-    var selectedResourceOffer;
+
+    $scope.ProjectApply =
+    {
+        organization: null,
+        account: null,
+        allowedToApply: false,
+        selectedResourceOffer: null,
+        error: null
+    };
 
     $scope.list_of_string = [];
 
@@ -328,8 +333,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     $scope.isAllowedToApply = function() {
-        return allowedToApply;
+        return $scope.ProjectApply.allowedToApply;
     };
+
+    $scope.showError = function(){
+        return $scope.ProjectApply.error;
+    }
 
     $scope.selectResourceOffer = function(offer, $event) {
         var $target = $($event.target);
@@ -343,10 +352,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         }
 
         $target.addClass("selected");
-        selectedResourceOffer = offer;
+        $scope.ProjectApply.selectedResourceOffer = offer;
     };
 
-    $scope.projectApplySubmit = function() {
+    $scope.projectApplySubmit = function($event, modal) {
         // submit projectApply request to backend
         //
         // Params
@@ -356,29 +365,33 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         // selectedResourceOffer
         var req = $scope.selectedRequirement;
         var data = {
-            resourceOfferId: selectedResourceOffer.id,
+            resourceOfferId: $scope.ProjectApply.selectedResourceOffer.id,
             resourceRequirementId: req.id,
-            organizationId: organization.id,
+            organizationId: $scope.ProjectApply.organization.id,
             projectId: $scope.project.id
         }
         Project.apply(data, function(data){
-            getOffers();
+            $scope.getOffers();
+            $scope.ProjectApply.error = null;
+
+        }, function(error){
+            $scope.ProjectApply.error = error.data.key;
         });
     };
 
-    function getOffers() {
+    $scope.getOffers = function() {
         Account.get(function (acc) {
-            account = acc;
+            $scope.ProjectApply.account = acc;
             Organization.get({
                 id: acc.organizationId
             }, function (org) {
-                organization = org;
-                if (organization != null && organization.owner.id === acc.id &&
-                    $scope.project.organizationId != organization.id) {
+                $scope.ProjectApply.organization = org;
+                if (org != null && org.owner.id === acc.id &&
+                    $scope.project.organizationId != org.id) {
                     // owner
-                    allowedToApply = true;
+                    $scope.ProjectApply.allowedToApply = true;
                     Organization.getResourceOffers({
-                        id: organization.id
+                        id: org.id
                     }, function (offers) {
                         var arr = [];
                         for (var i = 0, len = offers.length; i < len; i++) {
@@ -388,7 +401,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                         }
                         $scope.resourceOffers = arr;
                         if(arr.length == 0){
-                            allowedToApply = false;
+                            $scope.ProjectApply.allowedToApply = false;
                         }
                     });
                 }
@@ -396,7 +409,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         });
     }
 
-    getOffers();
+    $scope.getOffers();
 
     if (isNew === false) {
         $scope.update($routeParams.id);
