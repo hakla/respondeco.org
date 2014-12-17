@@ -141,10 +141,9 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
     @Test
     public void testFindUsernamesLike() {
 
-        List<String> savedUserNames = userRepository.findUsernamesLike("er2");
+        List<User> savedUserNames = userRepository.findUsersByNameLike("er2", null);
 
-        assertNotNull(savedUserNames);
-        assertTrue(savedUserNames.contains(user2.getLogin()));
+        assertTrue(savedUserNames.contains(user2));
     }
 
     @Test
