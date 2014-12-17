@@ -150,18 +150,20 @@ public class RatingService {
         User currentUser = userService.getUserWithAuthorities();
         RatingPermission permission = new RatingPermission();
         permission.setAllowed(false);
-        //check if user organization and project organization are the same
-        if(currentUser.getOrganization().equals(project.getOrganization()) == false) {
-            //check if user is owner of his organization
-            if(currentUser.getOrganization().getOwner().equals(currentUser) == true) {
-                List<ResourceMatch> matches = resourceMatchRepository
-                    .findByProjectAndOrganization(project, currentUser.getOrganization());
-                for(ResourceMatch match : matches) {
-                    //user can rate if there exists a match which has been accepted and is still without a project rating
-                    if(match.getAccepted() && match.getProjectRating() == null) {
-                        permission.setResourceMatch(match);
-                        permission.setAllowed(true);
-                        break;
+        if(currentUser.getOrganization() != null) {
+            //check if user organization and project organization are the same
+            if (currentUser.getOrganization().equals(project.getOrganization()) == false) {
+                //check if user is owner of his organization
+                if (currentUser.getOrganization().getOwner().equals(currentUser) == true) {
+                    List<ResourceMatch> matches = resourceMatchRepository
+                        .findByProjectAndOrganization(project, currentUser.getOrganization());
+                    for (ResourceMatch match : matches) {
+                        //user can rate if there exists a match which has been accepted and is still without a project rating
+                        if (match.getAccepted() && match.getProjectRating() == null) {
+                            permission.setResourceMatch(match);
+                            permission.setAllowed(true);
+                            break;
+                        }
                     }
                 }
             }

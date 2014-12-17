@@ -78,6 +78,7 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
 
     $scope.success = null;
     $scope.error = null;
+    $scope.fullName = null;
 
     $scope.settingsAccount = {};
     Account.get(function(account) {
@@ -146,6 +147,13 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
                 $scope.error = null;
                 $scope.success = 'OK';
                 $scope.settingsAccount = Account.get();
+                if ($scope.settingsAccount.firstName == null) {
+                    $scope.fullName = $scope.settingsAccount.lastName;
+                } else if ($scope.settingsAccount.lastName == null) {
+                    $scope.fullName = $scope.settingsAccount.firstName;
+                } else {
+                    $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
+                }
             },
             function(httpResponse) {
                 $scope.success = null;
