@@ -247,7 +247,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
     @Test
     @Transactional
     public void testFindByNameAndTags_shouldWorkWithOffsetAndLimit() throws Exception {
-        List<String> ascendingStrings = TestUtil.getAscendingStrings(20, "project");
+        List<String> ascendingStrings = TestUtil.getAscendingStrings(20, "xxxxxx");
         List<String> randomStrings = TestUtil.getAscendingStrings(20);
         Project p;
         for(int i=0;i<20;i++) {
@@ -273,7 +273,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         PageRequest request = new PageRequest(1, 5, new Sort(
                 new Sort.Order(Sort.Direction.ASC, "name")
         ));
-        List<Project> projects = projectRepository.findByNameAndTags("%project%", null, request);
+        List<Project> projects = projectRepository.findByNameAndTags("%xxxxx%", null, request);
         assertEquals(5, projects.size());
         for(int i=0;i<5;i++) {
             assertEquals(ascendingStrings.get(i+5), projects.get(i).getName());

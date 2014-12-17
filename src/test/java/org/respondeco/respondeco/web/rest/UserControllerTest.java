@@ -67,17 +67,19 @@ public class UserControllerTest {
 
     @Test
     public void testGetExistingUser() throws Exception {
-        restUserMockMvc.perform(get("/app/rest/users/admin")
+        restUserMockMvc.perform(get("/app/rest/users/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.lastName").value("Administrator"));
+                .andExpect(jsonPath("$.lastName").value("System"));
     }
+
 
     @Test
     public void testGetUnknownUser() throws Exception {
-        restUserMockMvc.perform(get("/app/rest/users/unknown")
+        restUserMockMvc.perform(get("/app/rest/users/200")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
 }
