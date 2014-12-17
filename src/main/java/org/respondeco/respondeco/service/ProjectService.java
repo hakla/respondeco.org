@@ -407,7 +407,7 @@ public class ProjectService {
 
             for (ResourceRequirement requirement : requirements) {
                 // check if a essential requirement is not saturated
-                if (requirement.getIsEssential() && requirement.getAmount().compareTo(new BigDecimal(0)) > 0) {
+                if (requirement.getIsEssential() != null && requirement.getAmount().compareTo(new BigDecimal(0)) > 0) {
                     essentialRequirements.add(requirement);
                     allNeededDonated = false;
                 }
@@ -426,8 +426,6 @@ public class ProjectService {
                         if (resourceOffer != null) {
                             resourceOffer.setAmount(resourceOffer.getAmount().add(match.getAmount()));
                         }
-
-                        resourceMatchRepository.delete(match);
                     });
                 }
             }

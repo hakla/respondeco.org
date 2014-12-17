@@ -5,6 +5,7 @@
 
 respondecoApp.factory('User', function($resource) {
     return $resource('app/rest/users/:id', {}, {
-        'get': { method: 'GET'}
+        'get': { method: 'GET'},
+        'getByName': { method: 'GET', isArray: true, url: "app/rest/users" }
     });
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('TextMessageController', function ($scope, TextMessage, UserNames, $rootScope) {
+respondecoApp.controller('TextMessageController', function ($scope, TextMessage, User, $rootScope) {
 
         $scope.textMessageToSend = {
             receiver: "",
@@ -23,7 +23,7 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
         $scope.deleteerrorMsg = null;
 
         $scope.getUsernames = function(partialName) {
-            return UserNames.getUsernames(partialName).$promise.then(
+            return User.getByName({filter: partialName, fields: "id,login", order: "+login"}).$promise.then(
                 function(response) {
                     return response;
                 }
@@ -80,8 +80,8 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                 });
         };
 
-        $scope.reply = function (sender) {
-            $scope.textMessageToSend.receiver = sender;
+        $scope.reply = function (receiver) {
+            $scope.textMessageToSend.receiver = receiver;
             $scope.create();
         }
 
@@ -97,6 +97,7 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
             $scope.deletesuccess = null;
             $scope.deleteerror = null;
             $scope.sendform.$setPristine();
+            $scope.replyform.$setPristine();
         };
 
         $scope.viewMessage = function(message) {
