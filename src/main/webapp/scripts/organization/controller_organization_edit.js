@@ -43,7 +43,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     };
 
     $scope.create = function() {
-        organization.npo = $scope.organization.npo || false;
+        organization.npo = $scope.organization.isNpo || false;
         organization.name = $scope.organization.name;
         organization.description = $scope.organization.description;
         organization.email = $scope.organization.email;

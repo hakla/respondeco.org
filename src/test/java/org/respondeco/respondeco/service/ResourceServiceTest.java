@@ -1,28 +1,21 @@
 package org.respondeco.respondeco.service;
 
-import net.sf.ehcache.util.SetAsList;
 import com.mysema.query.types.Predicate;
 import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import scala.Console;
@@ -398,7 +391,7 @@ public class ResourceServiceTest {
         //save without any tags
         ResourceOffer actual = this.resourceService.createOffer(expOffer.getName(), expOffer.getAmount(),
             expOffer.getDescription(), expOffer.getOrganization().getId(), expOffer.getIsCommercial(),
-            expOffer.getStartDate(), expOffer.getEndDate(), tags, null);
+            expOffer.getStartDate(), expOffer.getEndDate(), tags, null, expOffer.getPrice());
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());
@@ -424,7 +417,7 @@ public class ResourceServiceTest {
         List<String> tags = this.prepareCreateOffer();
         this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(), expOffer.getName(),
             expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(), expOffer.getStartDate(),
-            expOffer.getEndDate(), tags, null);
+            expOffer.getEndDate(), tags, null, expOffer.getPrice());
     }
     @Test
     public void testUpdateOffer() throws Exception {
@@ -433,7 +426,7 @@ public class ResourceServiceTest {
         when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
         ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(),
             expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(),
-            expOffer.getStartDate(), expOffer.getEndDate(), tags, null);
+            expOffer.getStartDate(), expOffer.getEndDate(), tags, null, expOffer.getPrice());
 
         assertEquals(expOffer.getId(), actual.getId());
         assertEquals(expOffer.getAmount(), actual.getAmount());

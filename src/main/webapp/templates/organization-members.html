@@ -6,7 +6,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="member in members">
-            <td>{{member.lastName}}</td>
+            <td>{{ member | formatUser }}</td>
         </tr>
     </tbody>
 </table>

@@ -63,6 +63,8 @@ public class QResourceOffer extends EntityPathBase<ResourceOffer> {
     //inherited
     public final NumberPath<java.math.BigDecimal> originalAmount;
 
+    public final NumberPath<java.math.BigDecimal> price = createNumber("price", java.math.BigDecimal.class);
+
     public final ListPath<ResourceMatch, QResourceMatch> resourceMatches = this.<ResourceMatch, QResourceMatch>createList("resourceMatches", ResourceMatch.class, QResourceMatch.class, PathInits.DIRECT2);
 
     //inherited

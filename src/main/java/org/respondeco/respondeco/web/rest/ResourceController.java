@@ -207,7 +207,8 @@ public class ResourceController {
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags(),
-                resourceOfferDTO.getLogoId()
+                resourceOfferDTO.getLogoId(),
+                resourceOfferDTO.getPrice()
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
@@ -251,7 +252,8 @@ public class ResourceController {
                 resourceOfferDTO.getStartDate(),
                 resourceOfferDTO.getEndDate(),
                 resourceOfferDTO.getResourceTags(),
-                resourceOfferDTO.getLogoId()
+                resourceOfferDTO.getLogoId(),
+                resourceOfferDTO.getPrice()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
         } catch (GeneralResourceException e){

@@ -9,10 +9,10 @@
             <button class="btn btn-primary" ng-show='isOwner()' ng-click='redirectToEdit()' translate='general.edit'>Edit</button>
         </div>
     </div>
-    <div class="row">
+    <div class="row spacer-top">
         <div class="col-md-3">
             <h2 translate='organization.detail.heading' translate-values="{organization: '{{organization.name}}'}">{{organization.name}}</h2>
-            <p ng-show='organization.npo'>NGO</p>
+            <p ng-show='organization.isNpo'>NGO</p>
             <uploaded-image name="organization.logo.id" class="organization-logo" />
         </div>
         <div class="col-md-5">
@@ -20,7 +20,7 @@
             <dl class="dl-horizontal">
                 <dt>
                     <span translate='organization.responsiblePerson'>Responsible person</span>:</dt>
-                <dd>{{ organization.owner.lastName }}</dd>
+                <dd>{{ organization.owner | formatUser }}</dd>
                 <dt>
                     <span translate='organization.contact'>Contact</span>:</dt>
                 <dd></dd>

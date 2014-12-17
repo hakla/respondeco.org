@@ -8347,3 +8347,8 @@ ul.resources li .organization i {
 .error-container .alert {
   border-radius: 0;
 }
+
+/* line 462, ../../scss/main.scss */
+.spacer-top {
+  margin-top: 16px;
+}

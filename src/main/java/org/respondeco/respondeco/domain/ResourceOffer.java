@@ -39,8 +39,8 @@ public class ResourceOffer extends ResourceBase implements Serializable {
 
     @Column(name = "is_commercial", nullable = false)
     private Boolean isCommercial = false;
-
-    //private BigDecimal price;
+    
+    private BigDecimal price;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @JsonDeserialize(using = LocalDateDeserializer.class)

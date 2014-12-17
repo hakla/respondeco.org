@@ -162,10 +162,15 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
-		Resource.query({
-				name: $scope.resourceSearch.name,
-				commercial: $scope.resourceSearch.isCommercial
-			}, function(res) {
+		var filter = {
+			name: $scope.resourceSearch.name
+		};
+
+		if ($scope.resourceSearch.isCommercial === false) {
+			filter.isCommercial = false;
+		}
+
+		Resource.query(filter, function(res) {
 				$scope.resources = res;
 			}, function(error) {
 				$scope.searchError = true;

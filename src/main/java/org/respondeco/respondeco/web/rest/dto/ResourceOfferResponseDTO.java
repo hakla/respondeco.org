@@ -27,7 +27,7 @@ public class ResourceOfferResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
         "id", "name", "amount", "price", "description", "isCommercial",
-        "resourceTags", "originalAmount", "startDate", "endDate", "organization", "logo");
+        "resourceTags", "originalAmount", "startDate", "endDate", "organization", "logo", "price");
 
     /**
      * Converts a ResourceOffer into a ResourceOfferResponseDTO object, which gets the fields defined
@@ -76,6 +76,9 @@ public class ResourceOfferResponseDTO {
         }
         if (fieldNames.contains("logo") && resourceOffer.getLogo() != null) {
             responseDTO.setLogo(new ImageDTO(resourceOffer.getLogo()));
+        }
+        if (fieldNames.contains("price")) {
+            responseDTO.setPrice(resourceOffer.getPrice());
         }
 
         return responseDTO;

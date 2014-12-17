@@ -543,7 +543,8 @@
             "request": "Ressource anfordern",
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
-            }
+            },
+            "free": "Nur Gratisangebote suchen"
         },
         "claim": {
             "title": "Ressource anfordern",
@@ -566,6 +567,7 @@
             "savebutton":"Speichern",
             "cancelbutton":"Abbrechen",
             "error": "Ressource konnte nicht erstellt werden!",
+            "error.amount": "Eine Ressource muss mindestens einmal vorhanden sein",
             "price": "Preis"
         },
         "edit": {

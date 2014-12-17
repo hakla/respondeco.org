@@ -211,11 +211,12 @@ public class ResourceService {
      * @param endDate available until endDate
      * @param resourceTags Tags describing the ResourceOffer
      * @param logoId id of the resource logo
+     * @param price
      * @return created ResourceOffer
      */
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, LocalDate startDate,
-                                     LocalDate endDate, List<String> resourceTags, Long logoId) {
+                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price) {
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
@@ -223,6 +224,7 @@ public class ResourceService {
         newOffer.setDescription(description);
         newOffer.setOrganization(organizationRepository.findOne(organizationId));
         newOffer.setIsCommercial(isCommercial);
+        newOffer.setPrice(price);
         newOffer.setStartDate(startDate);
         newOffer.setEndDate(endDate);
         if(logoId != null) {
@@ -247,6 +249,7 @@ public class ResourceService {
      * @param endDate available until
      * @param resourceTags tags belonging to the resource
      * @param logoId id of the resource logo
+     * @param price
      * @return updated Resource Offer
      * @throws ResourceException if resource offer with id can't be found
      * @throws ResourceTagException
@@ -254,7 +257,7 @@ public class ResourceService {
      */
     public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount,
                                      String description, Boolean isCommercial,
-                                     LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId)
+                                     LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
         throws ResourceException, ResourceTagException, ResourceJoinTagException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
 
@@ -265,6 +268,7 @@ public class ResourceService {
             offer.setOriginalAmount(amount);
             offer.setDescription(description);
             offer.setIsCommercial(isCommercial);
+            offer.setPrice(price);
             offer.setStartDate(startDate);
             offer.setEndDate(endDate);
             offer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));

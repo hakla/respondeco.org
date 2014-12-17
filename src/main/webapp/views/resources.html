@@ -10,10 +10,7 @@
         </div>
         <div class="form-group col-md-3">
             <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label>
-            <div class="btn-group">
-                <label id="commercialButton" class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="true">Kommerziell</label>
-                <label id="nonCommercialButton" class="btn btn-success" uncheckable ng-model="resourceSearch.isCommercial" btn-radio="false">Nicht Kommerziell</label>
-            </div>
+            <button class="btn btn-default" ng-model="resourceSearch.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" translate="resource.search.free"></button>
         </div>
         <div class="col-md-5">
             <button id="searchButton" type="button" class="btn btn-default " ng-click="search()">

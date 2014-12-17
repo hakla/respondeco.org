@@ -43,6 +43,8 @@ public class ResourceOfferDTO {
     private Long logoId;
     private Boolean isCommercial = false;
 
+    private BigDecimal price;
+
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     private LocalDate startDate;
@@ -50,10 +52,6 @@ public class ResourceOfferDTO {
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     private LocalDate endDate;
-
-    public Boolean getIsCommercial() { return this.isCommercial; }
-    public LocalDate getStartDate() { return this.startDate; }
-    public LocalDate getEndDate() { return this.endDate; }
 
     private List<String> resourceTags;
 

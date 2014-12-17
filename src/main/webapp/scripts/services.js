@@ -77,9 +77,11 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {
                     Account.get(function(data) {
-                        Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
-                        $rootScope.account = Session;
-                        authService.loginConfirmed(data);
+                        if (data.login != "anonymousUser") {
+                            Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+                            $rootScope.account = Session;
+                            authService.loginConfirmed(data);
+                        }
                     });
                 }).error(function (data, status, headers, config) {
                     $rootScope.authenticationError = true;
@@ -93,9 +95,11 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                 }).success(function (data, status, headers, config) {
                     if (!Session.login) {
                         Account.get(function(data) {
-                            Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
-                            $rootScope.account = Session;
-                            $rootScope.authenticated = true;
+                            if (data.login != "anonymousUser") {
+                                Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+                                $rootScope.account = Session;
+                                $rootScope.authenticated = true;
+                            }
                         });
                     }
                     $rootScope.authenticated = !!Session.login;
