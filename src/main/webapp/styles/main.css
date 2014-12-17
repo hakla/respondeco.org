@@ -8297,21 +8297,39 @@ ul.resources li .organization i {
 }
 
 /* line 412, ../../scss/main.scss */
-.modal-apply dl.dl-horizontal dt {
+.modal-apply dl.dl-horizontal dt, .modal-claim dl.dl-horizontal dt {
   width: 200px;
   text-align: left;
 }
 /* line 418, ../../scss/main.scss */
-.modal-apply li.resource {
+.modal-apply h4, .modal-claim h4 {
+  margin: 20px 0 10px 0;
+}
+/* line 422, ../../scss/main.scss */
+.modal-apply ul.resources, .modal-claim ul.resources {
+  margin: 30px 0 0 0;
+}
+/* line 426, ../../scss/main.scss */
+.modal-apply li.resource, .modal-claim li.resource {
   padding: 10px 0;
   margin-bottom: 20px;
 }
-/* line 423, ../../scss/main.scss */
-.modal-apply li.resource.selected {
-  background: #F2F2F2;
+/* line 431, ../../scss/main.scss */
+.modal-apply li.resource.selected, .modal-claim li.resource.selected {
+  background: #D3D3D3;
 }
 
-/* line 428, ../../scss/main.scss */
+/* line 437, ../../scss/main.scss */
+.modal .project-item {
+  width: 25%;
+  margin: 0 1.25%;
+}
+/* line 442, ../../scss/main.scss */
+.modal .project-item h2 a {
+  font-size: 14px;
+}
+
+/* line 449, ../../scss/main.scss */
 .approved {
   position: absolute;
   height: 150px;
@@ -8319,12 +8337,12 @@ ul.resources li .organization i {
   top: -165px;
 }
 
-/* line 435, ../../scss/main.scss */
+/* line 456, ../../scss/main.scss */
 .dropdown-toggle {
   border-radius: 0 !important;
 }
 
-/* line 440, ../../scss/main.scss */
+/* line 461, ../../scss/main.scss */
 .dropdown .badge {
   background-color: #C40000;
   top: -1px;
@@ -8332,23 +8350,23 @@ ul.resources li .organization i {
   left: 12px;
 }
 
-/* line 448, ../../scss/main.scss */
+/* line 469, ../../scss/main.scss */
 .highlight, .highlight td {
   background-color: #FFF37B !important;
 }
 
-/* line 452, ../../scss/main.scss */
+/* line 473, ../../scss/main.scss */
 .error-container {
   width: 80%;
   max-width: 800px;
   margin: 10px auto 0 auto;
 }
-/* line 457, ../../scss/main.scss */
+/* line 478, ../../scss/main.scss */
 .error-container .alert {
   border-radius: 0;
 }
 
-/* line 462, ../../scss/main.scss */
+/* line 483, ../../scss/main.scss */
 .spacer-top {
   margin-top: 16px;
 }

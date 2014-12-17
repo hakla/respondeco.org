@@ -260,7 +260,9 @@ public class ProjectController {
             @RequestParam(required = false) String order) {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<Project> projects = projectService.findProjects(filter, tags, restParameters);
+
+        // load projects and filter out the initial projects every organization has
+        List<Project> projects = projectService.findProjects(filter, tags, restParameters).stream().filter(p -> "ip".equals(p.getName()) == false).collect(Collectors.toList());
         return ProjectResponseDTO.fromEntities(projects, restParameters.getFields());
     }
 

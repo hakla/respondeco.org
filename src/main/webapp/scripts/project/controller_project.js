@@ -388,7 +388,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     $scope.isAllowedToApply = function() {
-        return allowedToApply;
+        return $scope.ProjectApply.allowedToApply;
     };
 
     $scope.selectResourceOffer = function(offer, $event) {

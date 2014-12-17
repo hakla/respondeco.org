@@ -407,12 +407,20 @@ ul.resources {
     }
 }
 
-.modal-apply {
+.modal-apply, .modal-claim {
     dl.dl-horizontal {
         dt {
             width: 200px;
             text-align: left;
         }
+    }
+
+    h4 {
+        margin: 20px 0 10px 0;
+    }
+
+    ul.resources {
+        margin: 30px 0 0 0;
     }
 
     li.resource {
@@ -422,6 +430,19 @@ ul.resources {
 
     li.resource.selected {
         background: #F2F2F2;
+    }
+}
+
+.modal {
+    .project-item {
+        width: 25%;
+        margin: 0 1.25%;
+
+        h2 {
+            a {
+                font-size: 14px;
+            }
+        }
     }
 }
 

@@ -43,6 +43,9 @@ public class OrganizationServiceTest {
     @Mock
     private ImageRepository imageRepositoryMock;
 
+    @Mock
+    private ProjectService projectService;
+
     private OrganizationService organizationService;
 
     private User defaultUser;
@@ -51,7 +54,7 @@ public class OrganizationServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        organizationService = new OrganizationService(organizationRepositoryMock, userService, userRepositoryMock, imageRepositoryMock);
+        organizationService = new OrganizationService(organizationRepositoryMock, userService, userRepositoryMock, imageRepositoryMock, projectService);
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testUser");

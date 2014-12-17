@@ -92,7 +92,9 @@ describe('Resource Controller Tests ', function () {
 
             var requirement = {id: 1, organizationId: 1};
 
-            $scope.selectRequirement(requirement);
+            $scope.selectRequirement(requirement, {
+                target: ""
+            });
 
             expect($scope.claim.resourceRequirementId).toEqual(1);
             expect($scope.claim.organizationId).toEqual(1);
@@ -303,7 +305,7 @@ describe('Resource Controller Tests ', function () {
         it('should update the projects', function() {
             $scope.orgId = 1;
 
-            spyOn(ProjectService,"getProjectsByOrgId");
+            spyOn(ProjectService,"getProjectsByOrgId").and.returnValue([]);
 
             $scope.updateProjects();
 

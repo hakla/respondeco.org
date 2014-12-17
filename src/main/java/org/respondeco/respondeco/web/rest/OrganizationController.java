@@ -83,10 +83,10 @@ public class OrganizationController {
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (AlreadyInOrganizationException e) {
             log.error("Could not save Organization : {}", newOrganization, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse("organization.error.alreadyInOrganization", "You're already in an organization. You can't be in an organization and create a new organization (at least not in respondeco)");
         } catch (OrganizationAlreadyExistsException e) {
             log.error("Could not save Organization : {}", newOrganization, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse("organization.error.alreadyExists", "You're already the owner of an organization. You can't be the owner of more than one organization (at least not in respondeco)");
         }
         return  responseEntity;
     }

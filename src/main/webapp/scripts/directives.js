@@ -201,7 +201,18 @@ angular.module('respondecoApp')
                 tags: '='
             },
             controller: function($scope) {
-                $scope.projectClicked = function() {
+                $scope.projectClicked = function(project, $event) {
+                    var $target = $($event.target);
+
+                    if ($target.is(".project-item") === false) {
+                        $target = $target.closest(".project-item");
+                    } else {
+                        $target = $target;
+                    }
+
+                    $target.parent().find(".selected").removeClass("selected");
+                    $target.addClass("selected");
+
                     $scope.onProjectClick();
                 }
             }

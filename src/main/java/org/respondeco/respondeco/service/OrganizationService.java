@@ -26,12 +26,15 @@ public class OrganizationService {
 
     private ImageRepository imageRepository;
 
+    private ProjectService projectService;
+
     @Inject
-    public OrganizationService(OrganizationRepository organizationRepository, UserService userService, UserRepository userRepository, ImageRepository imageRepository) {
+    public OrganizationService(OrganizationRepository organizationRepository, UserService userService, UserRepository userRepository, ImageRepository imageRepository, ProjectService projectService) {
         this.organizationRepository = organizationRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
+        this.projectService = projectService;
     }
 
     /**
@@ -97,6 +100,17 @@ public class OrganizationService {
 
         currentUser.setOrganization(organizationRepository.save(newOrganization));
         userRepository.save(currentUser);
+
+        try {
+            projectService.create("ip", "", false, null, null, null, null);
+        } catch (OperationForbiddenException e) {
+            e.printStackTrace();
+        } catch (ResourceException e) {
+            e.printStackTrace();
+        } catch (IllegalValueException e) {
+            e.printStackTrace();
+        }
+
         log.debug("Created Information for Organization: {}", newOrganization);
         return newOrganization;
     }

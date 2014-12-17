@@ -3,7 +3,7 @@
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
         <div class="modal-header">
             <div tooltip="{{ tooltip_notChangeable | translate }}" tooltip-placement="bottom" class="pull-right">
-                <button type="button" class="btn {{ organization.isNpo ? 'btn-success' : 'btn-primary'}}" ng-model="organization.isNpo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" disabled="isNew() == false">
+                <button type="button" class="btn {{ organization.isNpo ? 'btn-success' : 'btn-primary'}}" ng-model="organization.isNpo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-disabled="isNew() == false">
                     <span class="glyphicon {{ organization.isNpo ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'organization.isNPO' | translate}}
                 </button>
             </div>

@@ -504,7 +504,9 @@
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
         "error": {
-            "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden"
+            "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
+            "alreadyExists": "Du kannst nur eine Organisation besitzen",
+            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen"
         }
     },
     "resourcematch": {

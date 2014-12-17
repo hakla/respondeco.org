@@ -10,7 +10,7 @@
         </div>
         <div class="form-group col-md-3">
             <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label>
-            <button class="btn btn-default" ng-model="resourceSearch.isCommercial" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" translate="resource.search.free"></button>
+            <button class="btn btn-default" ng-model="resourceSearch.isCommercial" btn-checkbox btn-checkbox-true="false" btn-checkbox-false="true" translate="resource.search.free"></button>
         </div>
         <div class="col-md-5">
             <button id="searchButton" type="button" class="btn btn-default " ng-click="search()">
@@ -53,7 +53,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="claimResourceModal" tabindex="-1" role="dialog" aria-labelledby="resourceModalLabel"
+<div class="modal fade modal-claim" id="claimResourceModal" tabindex="-1" role="dialog" aria-labelledby="resourceModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -80,18 +80,30 @@
                             </div>
                         </div>
 
-                        <h4 translate="resource.claim.chooseproject">choose project</h4>
-                        <div class="col-sm-12">
-                            <resp-project project="project" on-project-click="selectProject(project)"
-                                          ng-repeat="project in projects" tags="false"></resp-project>
+                        <div class="clearfix">
+                            <h4 translate="resource.claim.chooseproject">choose project</h4>
+                            <div class="col-sm-12 spacer-top project-overview">
+                                <resp-project project="project" on-project-click="selectProject(project, $event)"
+                                              ng-repeat="project in projects" tags="false"></resp-project>
+                            </div>
                         </div>
 
-                        <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
-                        <div class="btn-group">
-                            <li class="requirements row" ng-repeat="requirement in resourceRequirements">
-                                <input type="checkbox" ng-click="selectRequirement(requirement)" > {{requirement.name}} </button>
-                            </li>
-
+                        <div class="clearfix">
+                            <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
+                            <ul class="resources spacer-top">
+                                <li ng-click="selectRequirement(requirement, $event)" class="resource row" ng-repeat="requirement in resourceRequirements">
+                                    <div class="col-md-2">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="pull-right col-md-6">
+                                        {{ requirement.description }}
+                                    </div>
+                                    <h2 class="col-md-4">
+                                        {{ requirement.name }}
+                                        <span ng-hide="requirement.amount == 1">({{ requirement.amount }})</span>
+                                    </h2>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="modal-footer">

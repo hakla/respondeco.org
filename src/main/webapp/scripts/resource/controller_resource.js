@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter) {
 
 	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
@@ -61,18 +61,45 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	//Claim Resource
 	$scope.updateProjects = function() {
 		$scope.projects = Project.getProjectsByOrgId({organizationId:$scope.orgId}, function() {
-			console.log($scope.projects);
-		});
-	}
+			$scope.projects.forEach(function(project, key) {
+				if (project.name === 'ip') {
+					project.name = $scope.organization.name;
+					project.initialProject = true;
+					$scope.projects.splice(key, 1);
+				}
+			});
 
-	$scope.selectProject = function(project) {
-		$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
-			$scope.showRequirements = true;
+			// reverse the array so the projects are ordered by creation date
+			// $scope.projects = $filter('orderBy')($scope.projects, "id", true);
+		});
+	};
+
+	$scope.selectProject = function(project, $event) {
+		if (project.initialProject == null || project.initialProject === false) {
+			$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
+				$scope.showRequirements = true;
+				$scope.claim.projectId = project.id;
+			});
+		} else {
+			$scope.showRequirements = false;
 			$scope.claim.projectId = project.id;
-		});
+			$scope.clamin.organizationId = $scope.organization.id;
+		}
 	}
 
-	$scope.selectRequirement = function(requirement) {
+	$scope.selectRequirement = function(requirement, $event) {
+		var $target = $($event.target);
+
+		$target.closest("ul").find(".selected").removeClass("selected");
+
+		if ($target.is("li") === false) {
+			$target = $target.closest("li");
+		} else {
+			$target = $target;
+		}
+
+		$target.addClass("selected");
+
 		$scope.claim.resourceRequirementId = requirement.id;
 		$scope.claim.organizationId = requirement.organizationId;
 	}
@@ -167,7 +194,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		};
 
 		if ($scope.resourceSearch.isCommercial === false) {
-			filter.isCommercial = false;
+			filter.commercial = false;
 		}
 
 		Resource.query(filter, function(res) {

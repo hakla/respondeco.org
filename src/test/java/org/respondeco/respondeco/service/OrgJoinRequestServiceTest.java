@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
@@ -20,7 +21,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,6 +54,9 @@ public class OrgJoinRequestServiceTest {
     @Mock
     private ImageRepository imageRepositoryMock;
 
+    @Mock
+    private ProjectService projectService;
+
     private OrgJoinRequestService orgJoinRequestService;
 
     private User orgOwner;
@@ -64,7 +67,7 @@ public class OrgJoinRequestServiceTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         orgJoinRequestService = new OrgJoinRequestService(orgJoinRequestRepositoryMock, userService, userRepositoryMock, organizationRepositoryMock);
-        organizationService = new OrganizationService(organizationRepositoryMock, userService, userRepositoryMock, imageRepositoryMock);
+        organizationService = new OrganizationService(organizationRepositoryMock, userService, userRepositoryMock, imageRepositoryMock, projectService);
 
         defaultUser = new User();
         defaultUser.setId(2L);
