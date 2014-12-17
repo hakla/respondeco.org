@@ -1,10 +1,10 @@
 id;rating;comment;is_active
-1;1;comment1;true
-2;2;comment2;true
-3;3;comment3;true
-4;4;comment4;true
-5;5;comment5;true
-6;3;comment6;true
-7;4;comment7;true
-8;1;comment8;true
+1;1;pretty bad;true
+2;2;meh, not too bad, but not really good;true
+3;3;pretty mediocre;true
+4;4;kinda good;true
+5;5;amazing project, i like it;true
+6;3;some things could have been done better;true
+7;4;nearly perfect exchange of wares;true
+8;1;never seen such incompetence;true
 
