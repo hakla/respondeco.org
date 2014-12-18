@@ -144,6 +144,9 @@ public class ResourceController {
         } catch (IllegalValueException e) {
             log.error("Could not create match for claiming offer : {}", resourceMatchRequestDTO, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (OperationForbiddenException e) {
+            log.error("Could not create match for claiming offer: User is not Authorized : {}", resourceMatchRequestDTO, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return responseEntity;

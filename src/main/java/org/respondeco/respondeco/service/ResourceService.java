@@ -382,7 +382,7 @@ public class ResourceService {
      * @throws MatchAlreadyExistsException
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
-        throws IllegalValueException, MatchAlreadyExistsException {
+        throws IllegalValueException, MatchAlreadyExistsException, OperationForbiddenException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
@@ -390,6 +390,16 @@ public class ResourceService {
         if(resourceOffer == null) {
             throw new IllegalValueException("no resourceoffer with id {} found", resourceOfferId.toString());
         }
+
+        Organization organization = resourceOffer.getOrganization();
+
+        if(organization == null) {
+            throw new IllegalValueException("no organization for resourceoffer {} found", resourceOffer.toString());
+        }
+
+        //check for authorization
+        //checkAuthoritiesForResourceMatch(organization);
+
         ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
         if(resourceRequirement == null) {
             throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirementId.toString());
@@ -398,12 +408,6 @@ public class ResourceService {
         Project project = resourceRequirement.getProject();
         if(project == null) {
             throw new IllegalValueException("no project for resourceRequirement {} found", resourceRequirement.toString());
-        }
-
-        Organization organization = resourceOffer.getOrganization();
-
-        if(organization == null) {
-            throw new IllegalValueException("no organization for resourceoffer {} found", resourceOffer.toString());
         }
 
         if(project.getOrganization().getId() == organization.getId()) {

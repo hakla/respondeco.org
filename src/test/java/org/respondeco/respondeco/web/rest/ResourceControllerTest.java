@@ -12,6 +12,7 @@ import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.service.exception.ResourceException;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.service.ResourceTagService;
@@ -581,6 +582,44 @@ public class ResourceControllerTest {
             .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
             .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testClaimResourceOffer_expectOperationForbiddenException() throws Exception {
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+
+        doThrow(OperationForbiddenException.class).when(resourceService).createClaimResourceRequest(requestDTO .getResourceOfferId(), requestDTO.getResourceRequirementId());
+
+        restMockMvc.perform(post("/app/rest/resourcerequests")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testAnswerResourceRequest_expectOperationForbidden() throws Exception {
+        ResourceMatchRequestDTO requestDTO = new ResourceMatchRequestDTO();
+        requestDTO.setOrganizationId(1L);
+        requestDTO.setProjectId(1L);
+        requestDTO.setResourceOfferId(1L);
+        requestDTO.setResourceRequirementId(1L);
+        requestDTO.setAccepted(true);
+
+        ResourceMatch match = new ResourceMatch();
+        match.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
+        match.setId(1L);
+
+        doThrow(OperationForbiddenException.class).when(resourceService).answerResourceRequest(1L,true);
+
+        restMockMvc.perform(put("/app/rest/resourcerequests/1")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(requestDTO)))
+            .andExpect(status().isForbidden());
+    }
+
 
 
 

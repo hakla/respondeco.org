@@ -118,7 +118,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.isClaimable = function(resource) {
 		var isClaimable = true;
 
-		if(resource.organization.id == $scope.orgId) {
+		if(resource.organization.id == $scope.orgId || $scope.orgId == undefined) {
 			isClaimable = false;
 		}
 

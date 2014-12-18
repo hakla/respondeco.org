@@ -378,6 +378,25 @@ describe('Resource Controller Tests ', function () {
 
             expect(claimable).toBe(true);
         });
+
+         it('should show an error if startDate is earlier than endDate', function() {
+            $scope.resource.startDate = '2014-10-10';
+            $scope.resource.endDate = '2014-09-09';
+
+            $scope.create();
+
+            expect($scope.errorEndDateBeforeStartDate).toBe(true);
+       });
+
+        it('should set resource logo', function() {
+            var fileItem = {};
+            var response = {data: 'test', id:1};
+
+            $scope.onUploadComplete(fileItem, response);
+
+            expect($scope.resource.logoId).toEqual(1);
+            expect($scope.logo).toEqual({data: 'test', id:1});
+        });
     });
 
 
