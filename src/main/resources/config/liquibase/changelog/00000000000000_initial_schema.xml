@@ -85,12 +85,6 @@
                                  referencedColumnNames="name"
                                  referencedTableName="T_AUTHORITY"/>
 
-        <addForeignKeyConstraint baseColumnNames="login"
-                                 baseTableName="T_USER_AUTHORITY"
-                                 constraintName="fk_user_login"
-                                 referencedColumnNames="login"
-                                 referencedTableName="T_USER"/>
-
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="T_PERSISTENT_TOKEN"
                                  constraintName="fk_user_persistent_token"
@@ -155,5 +149,5 @@
                                  referencedColumnNames="event_id"
                                  referencedTableName="T_PERSISTENT_AUDIT_EVENT"/>
     </changeSet>
-    
+
 </databaseChangeLog>

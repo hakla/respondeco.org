@@ -1,20 +1,20 @@
 id;name;amount;is_active;original_amount;description
-1;festplatten;5;true;5;5x 3 TB Festplatten, unbenutzt
-2;büroartikel;100;true;100;notizblöcke, kugelschreiber, etc.
-3;laptops;10;true;10;in gutem zustand
-4;kleinbus;3;true;3;alte kleinbusse, etwas abgenutzt, aber immer noch funktionsfähig
-5;laserdrucker;5;true;5;relativ neu, kaum verwendet
-6;computerbildschirme;4;true;4;seitenverhältnis 16:9, full hd
-7;kaffee;70;true;70;70 kg kaffeebohnen
-8;raspberry pi;7;true;7;raspberry pi 2. Generation, neuwertig
-9;kaffeemaschinen;9;true;9;wenn möglich vollautomaten
-10;computer;20;true;20;20 rechner (standrechner oder laptops) um unser büro auf einen neueren stand zu bringen
-11;drucker;2;true;2;wenn möglich laserdrucker
-12;bohnenkaffee;120;true;120;kaffeebohnen um unsere mitarbeiter bei bewusstsein zu halten
-13;papier;100;true;100;druckerpapier A4
-14;fahrzeuge;5;true;5;KFZ Fahrzeuge um unsere mitarbeiter zu transportieren
-15;computer;15;true;15;computer für unsere organisation
-16;schuhe;20;true;20;20 paar winterstiefel
+1;festplatten;5;1;5;5x 3 TB Festplatten, unbenutzt
+2;büroartikel;100;1;100;notizblöcke, kugelschreiber, etc.
+3;laptops;10;1;10;in gutem zustand
+4;kleinbus;3;1;3;alte kleinbusse, etwas abgenutzt, aber immer noch funktionsfähig
+5;laserdrucker;5;1;5;relativ neu, kaum verwendet
+6;computerbildschirme;4;1;4;seitenverhältnis 16:9, full hd
+7;kaffee;70;1;70;70 kg kaffeebohnen
+8;raspberry pi;7;1;7;raspberry pi 2. Generation, neuwertig
+9;kaffeemaschinen;9;1;9;wenn möglich vollautomaten
+10;computer;20;1;20;20 rechner (standrechner oder laptops) um unser büro auf einen neueren stand zu bringen
+11;drucker;2;1;2;wenn möglich laserdrucker
+12;bohnenkaffee;120;1;120;kaffeebohnen um unsere mitarbeiter bei bewusstsein zu halten
+13;papier;100;1;100;druckerpapier A4
+14;fahrzeuge;5;1;5;KFZ Fahrzeuge um unsere mitarbeiter zu transportieren
+15;computer;15;1;15;computer für unsere organisation
+16;schuhe;20;1;20;20 paar winterstiefel
 
 
 
