@@ -79,10 +79,11 @@
             </div>
         </div>
         <div class="col-md-6">
-            <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
-            <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
+            <img src="/images/approved.png" alt="approved" class="approved" ng-show="project.successful === true" />
+            <img src="/images/cancelled.png" alt="cancelled" class="approved" ng-show="project.successful === false" />
+            <div class="remaining" ng-show="remainingDays !== true && remainingDays > 0 && project.concrete === true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong>{{remainingDays}} Tage verbleiben</strong>
+                <strong>{{remainingDays}} Tag<span ng-show="remainingDays > 1">e</span> <span ng-show="remainingDays > 1">verbleiben</span><span ng-hide="remainingDays > 1">verbleibt</span></strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
             <div class="resources">

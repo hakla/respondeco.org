@@ -383,7 +383,7 @@ public class ProjectController {
      * @param id project id
      * @return list of ResourceRequirements wrapped into DTO
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     @RequestMapping(value = "/rest/projects/{id}/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -405,7 +405,7 @@ public class ProjectController {
      * @param id Project id
      * @return List of ResourceMatches wrapped into DTO
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     @RequestMapping(value = "/rest/projects/{id}/resourcematches",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -467,7 +467,7 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id,
                                                  @RequestParam(required = false) String permission,
                                                  @RequestParam(required = false) List<Long> matches) {
@@ -532,7 +532,7 @@ public class ProjectController {
     @RequestMapping(value = "/rest/projects/{id}/started",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     public void isStarted(@PathVariable Long id) {
         try {
             projectService.checkProjectsToStart();

@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -63,7 +64,7 @@ public class ResourceController {
      * @param order defines the order of the returned fields
      * @return
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     @RequestMapping(value = "/rest/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
