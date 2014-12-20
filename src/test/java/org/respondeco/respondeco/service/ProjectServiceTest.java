@@ -67,6 +67,9 @@ public class ProjectServiceTest {
     @Mock
     private ResourceMatchRepository resourceMatchRepository;
 
+    @Mock
+    private PostingFeedRepository postingFeedRepository;
+
     private ProjectService projectService;
     private Project basicProject;
     private User defaultUser;
@@ -84,7 +87,8 @@ public class ProjectServiceTest {
                 propertyTagServiceMock,
                 resourceService,
                 imageRepositoryMock,
-                resourceMatchRepository);
+                resourceMatchRepository,
+                postingFeedRepository);
 
 
         defaultOrganization = new Organization();

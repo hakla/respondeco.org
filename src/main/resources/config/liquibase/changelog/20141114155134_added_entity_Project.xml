@@ -35,6 +35,7 @@
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="boolean" defaultValue="true"/>
+            <column name="postingfeed_id" type="bigint"/>
         </createTable>
 
         <addForeignKeyConstraint
@@ -50,6 +51,13 @@
                 baseTableName="T_PROJECT"
                 referencedColumnNames="id"
                 referencedTableName="T_USER"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_postingfeed_project_id"
+                baseColumnNames="postingfeed_id"
+                baseTableName="T_PROJECT"
+                referencedColumnNames="id"
+                referencedTableName="T_POSTINGFEED"/>
 
     </changeSet>
 </databaseChangeLog>

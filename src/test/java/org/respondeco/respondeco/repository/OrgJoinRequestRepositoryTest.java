@@ -4,10 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.OrgJoinRequest;
-import org.respondeco.respondeco.domain.Organization;
-import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.domain.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -43,10 +40,14 @@ public class OrgJoinRequestRepositoryTest extends AbstractTransactionalJUnit4Spr
     @Inject
     private OrgJoinRequestRepository orgJoinRequestRepository;
 
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
+
     private User orgAdmin;
     private User defaultUser;
     private Organization organization;
     private OrgJoinRequest orgJoinRequest;
+    private PostingFeed postingFeed;
 
     @Before
     public void setup() {
@@ -61,9 +62,13 @@ public class OrgJoinRequestRepositoryTest extends AbstractTransactionalJUnit4Spr
         defaultUser.setGender(Gender.UNSPECIFIED);
         userRepository.save(defaultUser);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(orgAdmin);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
 
         orgAdmin.setOrganization(organization);

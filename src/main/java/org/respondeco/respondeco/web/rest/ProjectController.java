@@ -4,17 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
 import javassist.bytecode.stackmap.BasicBlock;
-import org.respondeco.respondeco.domain.AggregatedRating;
-import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.RatingPermission;
-import org.respondeco.respondeco.domain.ResourceMatch;
-import org.respondeco.respondeco.domain.ResourceRequirement;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
-import org.respondeco.respondeco.service.RatingService;
-import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -35,6 +28,7 @@ import javax.inject.Inject;
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,13 +49,19 @@ public class ProjectController {
     private ResourceService resourceService;
     private RatingService ratingService;
     private UserService userService;
+    private PostingFeedService postingFeedService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService, UserService userService) {
+    public ProjectController(ProjectService projectService,
+                             ResourceService resourceService,
+                             RatingService ratingService,
+                             UserService userService,
+                             PostingFeedService postingFeedService) {
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
         this.userService = userService;
+        this.postingFeedService = postingFeedService;
     }
 
     /**
@@ -541,4 +541,58 @@ public class ProjectController {
         }
     }
 
+    /**
+     * gents the list of postings ordered by creation date for the specified project
+     *
+     * @param id the id of the project for which to get the postings
+     * @return response status OK and the Postings for the project
+     */
+    @RequestMapping(value = "/rest/projects/{id}/postings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<List<PostingDTO>> getPostings(@PathVariable Long id) {
+        ResponseEntity<List<PostingDTO>> responseEntity;
+
+        List<PostingDTO> postings = new ArrayList<>();
+        try {
+            for(Posting posting : postingFeedService.getPostingsForProject(id)){
+                postings.add(new PostingDTO(posting));
+            }
+            responseEntity = new ResponseEntity<List<PostingDTO>>(postings,HttpStatus.OK);
+        } catch (NoSuchProjectException e) {
+            log.error("Could not get postings for project {}", id, e);
+            responseEntity = new ResponseEntity<List<PostingDTO>>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * creates a post for the organization in the postingfeed
+     * @param information the string which contains the informaiton of the posting
+     * @param id the id of the organization for which to create the posting
+     * @return response status ok if posting has
+     */
+    @RequestMapping(value = "/rest/projects/{id}/postings",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> postingForProject(
+            @RequestBody String information,
+            @PathVariable Long id) {
+        ResponseEntity<?> responseEntity;
+        try {
+            postingFeedService.addPostingForProjects(id, information);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchProjectException e) {
+            log.error("Could not post for project {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PostingFeedException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseEntity;
+    }
 }

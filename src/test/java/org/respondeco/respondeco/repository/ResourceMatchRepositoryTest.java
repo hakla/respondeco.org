@@ -57,6 +57,9 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
     @Inject
     private ResourceRequirementRepository resourceRequirementRepository;
 
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
+
     private User orgAdmin;
     private Organization organization;
     private Project project;
@@ -68,6 +71,8 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
     private ResourceMatch resourceMatch2;
     private ResourceRequirement resourceRequirement;
     private ResourceOffer resourceOffer;
+    private PostingFeed postingFeed;
+    private PostingFeed postingFeed2;
 
     @Before
     public void setup() {
@@ -77,9 +82,16 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
         orgAdmin.setGender(Gender.UNSPECIFIED);
         userRepository.save(orgAdmin);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
+        postingFeed2 = new PostingFeed();
+        postingFeedRepository.save(postingFeed2);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(orgAdmin);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
 
         project = new Project();
@@ -88,6 +100,7 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
         project.setConcrete(false);
         project.setManager(orgAdmin);
         project.setOrganization(organization);
+        project.setPostingFeed(postingFeed2);
         projectRepository.save(project);
 
         resourceOffer = new ResourceOffer();

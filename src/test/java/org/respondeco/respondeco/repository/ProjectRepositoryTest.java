@@ -50,9 +50,18 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
     @Inject
     private PropertyTagRepository propertyTagRepository;
 
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
+
     private User orgAdmin;
     private Organization organization;
     private Project project;
+    private PostingFeed postingFeed;
+    private PostingFeed postingFeed2;
+    private PostingFeed postingFeed3;
+    private PostingFeed postingFeed4;
+    private PostingFeed postingFeed5;
+    private PostingFeed postingFeed6;
 
     @Before
     public void setup() {
@@ -62,9 +71,28 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         orgAdmin.setGender(Gender.UNSPECIFIED);
         userRepository.save(orgAdmin);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
+        postingFeed2 = new PostingFeed();
+        postingFeedRepository.save(postingFeed2);
+
+        postingFeed3 = new PostingFeed();
+        postingFeedRepository.save(postingFeed3);
+
+        postingFeed4 = new PostingFeed();
+        postingFeedRepository.save(postingFeed4);
+
+        postingFeed5 = new PostingFeed();
+        postingFeedRepository.save(postingFeed5);
+
+        postingFeed6 = new PostingFeed();
+        postingFeedRepository.save(postingFeed6);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(orgAdmin);
+        organization.setPostingFeed(postingFeed3);
         organizationRepository.save(organization);
 
         project = new Project();
@@ -73,6 +101,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project.setConcrete(false);
         project.setOrganization(organization);
         project.setManager(orgAdmin);
+        project.setPostingFeed(postingFeed);
     }
 
     @Test
@@ -84,6 +113,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project2.setConcrete(false);
         project2.setOrganization(organization);
         project2.setManager(orgAdmin);
+        project2.setPostingFeed(postingFeed2);
 
         projectRepository.save(project);
         projectRepository.save(project2);
@@ -139,6 +169,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project2.setConcrete(false);
         project2.setOrganization(organization);
         project2.setManager(orgAdmin);
+        project2.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
 
         Project project3 = new Project();
         project3.setName("xxxxxxxx");
@@ -146,6 +177,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project3.setConcrete(false);
         project3.setOrganization(organization);
         project3.setManager(orgAdmin);
+        project3.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
 
         projectRepository.save(project);
         projectRepository.save(project2);
@@ -171,6 +203,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project2.setConcrete(false);
         project2.setOrganization(organization);
         project2.setManager(orgAdmin);
+        project2.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
 
         Project project3 = new Project();
         project3.setName("xxxxxxxx");
@@ -178,6 +211,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project3.setConcrete(false);
         project3.setOrganization(organization);
         project3.setManager(orgAdmin);
+        project3.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
 
         project.setPropertyTags(Arrays.asList(tag1, tag3));
         project2.setPropertyTags(Arrays.asList(tag3));
@@ -215,6 +249,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project2.setConcrete(false);
         project2.setOrganization(organization);
         project2.setManager(orgAdmin);
+        project2.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
 
         Project project3 = new Project();
         project3.setName("xxxxxxxx");
@@ -222,6 +257,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         project3.setConcrete(false);
         project3.setOrganization(organization);
         project3.setManager(orgAdmin);
+        project3.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
 
         project.setPropertyTags(Arrays.asList(tag1, tag3));
         project2.setPropertyTags(Arrays.asList(tag3));
@@ -257,6 +293,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
             p.setConcrete(false);
             p.setManager(orgAdmin);
             p.setOrganization(organization);
+            p.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
             projectRepository.save(p);
         }
         for(int i=0;i<20;i++) {
@@ -266,6 +303,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
             p.setConcrete(false);
             p.setManager(orgAdmin);
             p.setOrganization(organization);
+            p.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
             projectRepository.save(p);
         }
         projectRepository.flush();
@@ -293,6 +331,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
             p.setConcrete(false);
             p.setManager(orgAdmin);
             p.setOrganization(organization);
+            p.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
             projectRepository.save(p);
         }
 
@@ -304,6 +343,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         Organization otherOrg = new Organization();
         otherOrg.setName("otherorg");
         otherOrg.setOwner(otherUser);
+        otherOrg.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
         organizationRepository.save(otherOrg);
         organizationRepository.flush();
         for(int i=0;i<20;i++) {
@@ -313,6 +353,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
             p.setConcrete(false);
             p.setManager(otherUser);
             p.setOrganization(otherOrg);
+            p.setPostingFeed(postingFeedRepository.save(new PostingFeed()));
             projectRepository.save(p);
         }
         projectRepository.flush();

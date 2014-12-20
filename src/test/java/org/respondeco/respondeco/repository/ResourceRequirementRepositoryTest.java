@@ -44,12 +44,17 @@ public class ResourceRequirementRepositoryTest extends AbstractTransactionalJUni
     @Inject
     private ResourceRequirementRepository resourceRequirementRepository;
 
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
+
     private User orgAdmin;
     private Organization organization;
     private Project project;
     private Project project2;
     private ResourceRequirement resourceRequirement;
     private ResourceRequirement resourceRequirement2;
+    private PostingFeed postingFeed;
+    private PostingFeed postingFeed2;
 
     @Before
     public void setup() {
@@ -59,9 +64,16 @@ public class ResourceRequirementRepositoryTest extends AbstractTransactionalJUni
         orgAdmin.setGender(Gender.UNSPECIFIED);
         userRepository.save(orgAdmin);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
+        postingFeed2 = new PostingFeed();
+        postingFeedRepository.save(postingFeed2);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(orgAdmin);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
 
         project = new Project();
@@ -70,6 +82,7 @@ public class ResourceRequirementRepositoryTest extends AbstractTransactionalJUni
         project.setConcrete(false);
         project.setOrganization(organization);
         project.setManager(orgAdmin);
+        project.setPostingFeed(postingFeed2);
         projectRepository.save(project);
 
         resourceRequirement = new ResourceRequirement();

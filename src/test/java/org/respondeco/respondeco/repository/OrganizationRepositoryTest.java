@@ -45,9 +45,13 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
     @Inject
     private ProjectRepository projectRepository;
 
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
+
     private User orgAdmin;
     private Organization organization;
     private Organization organization2;
+    private PostingFeed postingFeed;
 
     @Before
     public void setup() {
@@ -57,9 +61,13 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
         orgAdmin.setGender(Gender.UNSPECIFIED);
         userRepository.save(orgAdmin);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(orgAdmin);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
     }
 
@@ -68,6 +76,7 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
         organization2 = new Organization();
         organization2.setName("testorg");
         organization2.setOwner(orgAdmin);
+        organization2.setPostingFeed(postingFeed);
         organizationRepository.save(organization2);
 
         List<Organization> organizations = organizationRepository.findByActiveIsTrue();

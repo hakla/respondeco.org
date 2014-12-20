@@ -41,18 +41,21 @@ public class OrganizationController {
     private UserService userService;
     private OrgJoinRequestService orgJoinRequestService;
     private RatingService ratingService;
+    private PostingFeedService postingFeedService;
 
     @Inject
     public OrganizationController (OrganizationService organizationService,
                                    UserService userService,
                                    ResourceService resourceService,
                                    OrgJoinRequestService orgJoinRequestService,
-                                   RatingService ratingService) {
+                                   RatingService ratingService,
+                                   PostingFeedService postingFeedService) {
         this.organizationService = organizationService;
         this.userService = userService;
         this.resourceService = resourceService;
         this.orgJoinRequestService = orgJoinRequestService;
         this.ratingService = ratingService;
+        this.postingFeedService = postingFeedService;
     }
 
     /**
@@ -490,4 +493,61 @@ public class OrganizationController {
 
         return responseEntity;
     }
+
+    /**
+     * gets the list of postings ordered by creation date for the specified organization
+     *
+     * @param id the id of the organization for which to get the postings
+     * @return response status OK and the Postings for the organization
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/postings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<List<PostingDTO>> getPostings(@PathVariable Long id) {
+        ResponseEntity<List<PostingDTO>> responseEntity;
+
+        List<PostingDTO> postings = new ArrayList<>();
+        try {
+             for(Posting posting : postingFeedService.getPostingsForOrganization(id)){
+                 postings.add(new PostingDTO(posting));
+             }
+            responseEntity = new ResponseEntity<List<PostingDTO>>(postings,HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not get postings for organization {}", id, e);
+            responseEntity = new ResponseEntity<List<PostingDTO>>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * creates a post for the organization in the postingfeed
+     * @param information the string which contains the informaiton of the posting
+     * @param id the id of the organization for which to create the posting
+     * @return response status ok if posting has
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/postings",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> postingForOrganization(
+            @RequestBody String information,
+            @PathVariable Long id) {
+        ResponseEntity<?> responseEntity;
+        try {
+            postingFeedService.addPostingForOrganization(id,information);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not post for organization {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PostingFeedException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseEntity;
+    }
+
+
 }

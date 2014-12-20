@@ -8,25 +8,14 @@
     <property name="now" value="current_timestamp" dbms="postgresql"/>
 
     <!--
-        Added the entity Organization.
+        Added the entity PostingFeed.
     -->
     <changeSet id="20141102153005" author="jhipster">
-        <createTable tableName="T_ORGANIZATION">
-
+        <createTable tableName="T_POSTINGFEED">
 
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="description" type="varchar(255)"/>
-            <column name="email" type="varchar(255)"/>
-            <column name="is_npo" type="bit"/>
-            <column name="owner" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="spokesperson" type="bigint"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>
             </column>
@@ -36,15 +25,7 @@
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="boolean"/>
-            <column name="image_id" type="bigint" defaultValue="NULL"/>
-            <column name="postingfeed_id" type="bigint"/>
         </createTable>
-        <addForeignKeyConstraint
-                constraintName="fk_postingfeed_organization_id"
-                baseColumnNames="postingfeed_id"
-                baseTableName="T_ORGANIZATION"
-                referencedColumnNames="id"
-                referencedTableName="T_POSTINGFEED"/>
         
     </changeSet>
 </databaseChangeLog>

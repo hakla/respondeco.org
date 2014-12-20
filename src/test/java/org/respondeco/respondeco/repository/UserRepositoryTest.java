@@ -5,10 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.Organization;
-import org.respondeco.respondeco.domain.TextMessage;
-import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.domain.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -41,9 +38,14 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
     @Inject
     private OrganizationRepository organizationRepository;
 
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
+
     private User user;
     private User user2;
     private User user3;
+
+    private PostingFeed postingFeed;
 
     private Organization organization;
 
@@ -69,9 +71,13 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
         user.setActivationKey("key3");
         userRepository.save(user3);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(user3);
+        organization.setPostingFeed(postingFeed);
 
         organizationRepository.save(organization);
 

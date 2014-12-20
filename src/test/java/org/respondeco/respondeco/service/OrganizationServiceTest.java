@@ -8,9 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.ImageRepository;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -46,6 +44,9 @@ public class OrganizationServiceTest {
     @Mock
     private ProjectService projectService;
 
+    @Mock
+    private PostingFeedRepository postingFeedRepository;
+
     private OrganizationService organizationService;
 
     private User defaultUser;
@@ -54,7 +55,13 @@ public class OrganizationServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        organizationService = new OrganizationService(organizationRepositoryMock, userService, userRepositoryMock, imageRepositoryMock, projectService);
+        organizationService = new OrganizationService(
+                organizationRepositoryMock,
+                userService,
+                userRepositoryMock,
+                imageRepositoryMock,
+                projectService,
+                postingFeedRepository);
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testUser");

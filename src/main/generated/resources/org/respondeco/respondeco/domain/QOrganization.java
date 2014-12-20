@@ -56,6 +56,8 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public final QUser owner;
 
+    public final QPostingFeed postingFeed;
+
     public final ListPath<Project, QProject> projects = this.<Project, QProject>createList("projects", Project.class, QProject.class, PathInits.DIRECT2);
 
     public final ListPath<ResourceMatch, QResourceMatch> resourceMatches = this.<ResourceMatch, QResourceMatch>createList("resourceMatches", ResourceMatch.class, QResourceMatch.class, PathInits.DIRECT2);
@@ -84,6 +86,7 @@ public class QOrganization extends EntityPathBase<Organization> {
         super(type, metadata, inits);
         this.logo = inits.isInitialized("logo") ? new QImage(forProperty("logo")) : null;
         this.owner = inits.isInitialized("owner") ? new QUser(forProperty("owner"), inits.get("owner")) : null;
+        this.postingFeed = inits.isInitialized("postingFeed") ? new QPostingFeed(forProperty("postingFeed")) : null;
     }
 
 }

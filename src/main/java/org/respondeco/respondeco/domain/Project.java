@@ -77,4 +77,9 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "is_successful")
     private Boolean successful;
 
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "postingfeed_id")
+    private PostingFeed postingFeed;
+
 }

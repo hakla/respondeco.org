@@ -68,6 +68,9 @@ public class RatingServiceTest {
     @Mock
     private ImageRepository imageRepositoryMock;
 
+    @Mock
+    private PostingFeedRepository postingFeedRepository;
+
 
     private RatingService ratingService;
 
@@ -82,8 +85,15 @@ public class RatingServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        projectService = new ProjectService(projectRepositoryMock,userService,userRepositoryMock,propertyTagService,
-                resourceService,imageRepositoryMock,resourceMatchRepositoryMock);
+        projectService = new ProjectService(
+                projectRepositoryMock,
+                userService,
+                userRepositoryMock,
+                propertyTagService,
+                resourceService,
+                imageRepositoryMock,
+                resourceMatchRepositoryMock,
+                postingFeedRepository);
         ratingService = new RatingService(ratingRepositoryMock,resourceMatchRepositoryMock,projectRepositoryMock,
                 organizationRepositoryMock,userService,projectService);
 

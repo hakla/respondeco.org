@@ -41,6 +41,7 @@ public class ProjectService {
     private ResourceService resourceService;
     private ImageRepository imageRepository;
     private ResourceMatchRepository resourceMatchRepository;
+    private PostingFeedRepository postingFeedRepository;
 
     private RestUtil restUtil;
 
@@ -50,7 +51,8 @@ public class ProjectService {
                           PropertyTagService propertyTagService,
                           ResourceService resourceService,
                           ImageRepository imageRepository,
-                          ResourceMatchRepository resourceMatchRepository) {
+                          ResourceMatchRepository resourceMatchRepository,
+                          PostingFeedRepository postingFeedRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
@@ -59,6 +61,7 @@ public class ProjectService {
         this.imageRepository = imageRepository;
         this.resourceMatchRepository = resourceMatchRepository;
         this.restUtil = new RestUtil();
+        this.postingFeedRepository = postingFeedRepository;
     }
 
     /**
@@ -100,7 +103,9 @@ public class ProjectService {
             newProject.setProjectLogo(imageRepository.findOne(imageId));
         }
         newProject.setPropertyTags(tags);
-
+        PostingFeed postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+        newProject.setPostingFeed(postingFeed);
         projectRepository.save(newProject);
 
         List<ResourceRequirement> requirements = new ArrayList<>();
@@ -111,6 +116,7 @@ public class ProjectService {
             }
         }
         newProject.setResourceRequirements(requirements);
+
         projectRepository.save(newProject);
 
         return newProject;
