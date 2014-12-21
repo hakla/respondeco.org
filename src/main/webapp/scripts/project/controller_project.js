@@ -21,6 +21,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
+    $scope.postings = Project.getPostingsByProjectId({id:$routeParams.id});
 
     // details mock
     $scope.status = {
@@ -90,7 +91,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
             }),
-            resourceRequirements: $scope.project.resourceRequirements
+            resourceRequirements: $scope.project.resourceRequirements,
+            postings: $scope.project.postings
         };
 
         Project[isNew ? 'save' : 'update'](project,
@@ -109,6 +111,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             id: id
         }, function() {
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
+            $scope.project.postings = $scope.project.postings || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
             if ($scope.project.concrete === true) {
@@ -501,4 +504,5 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $("#orgRatingError").text(error);
     }
 
+    //Posting
 });

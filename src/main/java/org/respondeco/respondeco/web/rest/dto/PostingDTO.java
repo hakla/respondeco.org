@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Posting;
 import org.respondeco.respondeco.domain.PostingFeed;
 import org.respondeco.respondeco.domain.User;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -35,14 +33,15 @@ public class PostingDTO {
             responseDTO.setInformation(posting.getInformation());
         }
         if (fieldNames.contains("author")) {
-            responseDTO.setAuthor(posting.getAuthor());
+            responseDTO.setAuthor(UserDTO.fromEntity(posting.getAuthor(),Arrays.asList("id","login")));
         }
         if (fieldNames.contains("postingfeed")) {
-            responseDTO.setPostingFeed(posting.getPostingfeed());
+            responseDTO.setPostingFeed_id(posting.getPostingfeed().getId());
         }
         if (fieldNames.contains("createddate")) {
             responseDTO.setCreatedDate(posting.getCreatedDate().toDate());
         }
+
         return responseDTO;
     }
 
@@ -59,8 +58,8 @@ public class PostingDTO {
 
     private Long id;
     private String information;
-    private User author;
-    private PostingFeed postingFeed;
+    private UserDTO author;
+    private Long postingFeed_id;
     private Date createdDate;
 
 
@@ -70,16 +69,16 @@ public class PostingDTO {
     public PostingDTO(Long id, String information, User author, PostingFeed postingFeed, Date createdDate) {
         this.id = id;
         this.information = information;
-        this.author = author;
-        this.postingFeed = postingFeed;
+        this.author = UserDTO.fromEntity(author,Arrays.asList("id","login"));
+        this.postingFeed_id = postingFeed.getId();
         this.createdDate = createdDate;
     }
 
     public PostingDTO(Posting posting) {
         this.id = posting.getId();
         this.information = posting.getInformation();
-        this.author = posting.getAuthor();
-        this.postingFeed = posting.getPostingfeed();
+        this.author = UserDTO.fromEntity(posting.getAuthor(),Arrays.asList("id","login"));
+        this.postingFeed_id = posting.getPostingfeed().getId();
         this.createdDate = posting.getCreatedDate().toDate();
     }
 }

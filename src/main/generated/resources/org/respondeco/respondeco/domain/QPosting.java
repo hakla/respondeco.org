@@ -46,6 +46,8 @@ public class QPosting extends EntityPathBase<Posting> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
 
+    public final QPostingFeed postingfeed;
+
     public QPosting(String variable) {
         this(Posting.class, forVariable(variable), INITS);
     }
@@ -65,6 +67,7 @@ public class QPosting extends EntityPathBase<Posting> {
     public QPosting(Class<? extends Posting> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.author = inits.isInitialized("author") ? new QUser(forProperty("author"), inits.get("author")) : null;
+        this.postingfeed = inits.isInitialized("postingfeed") ? new QPostingFeed(forProperty("postingfeed")) : null;
     }
 
 }

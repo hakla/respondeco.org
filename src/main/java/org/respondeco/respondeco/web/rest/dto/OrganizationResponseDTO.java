@@ -26,7 +26,7 @@ public class OrganizationResponseDTO {
     private static final Logger log = LoggerFactory.getLogger(OrganizationResponseDTO.class);
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
-            "id", "name", "description", "email", "isNpo", "owner", "spokesperson", "logo", "ratings", "projects");
+            "id", "name", "description", "email", "isNpo", "owner", "spokesperson", "logo", "ratings", "projects", "postings");
 
     public static OrganizationResponseDTO fromEntity(Organization organization, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -69,6 +69,11 @@ public class OrganizationResponseDTO {
             responseDTO.setProjects(ProjectResponseDTO
                     .fromEntities(organization.getProjects(),null));
         }
+        /*
+        if(fieldNames.contains("postings")) {
+            responseDTO.setPostings(PostingDTO
+                    .fromEntities(organization.getPostingFeed_id().getPostings(), null));
+        }*/
         return responseDTO;
     }
 
@@ -93,5 +98,6 @@ public class OrganizationResponseDTO {
     private ImageDTO logo;
     private List<UserDTO> members;
     private Long spokesperson;
+    private List<PostingDTO> postings;
 
 }
