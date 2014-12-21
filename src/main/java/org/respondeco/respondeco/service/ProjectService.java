@@ -12,6 +12,7 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -275,10 +276,10 @@ public class ProjectService {
      * @param name the name to search for
      * @param tagsString the tags to search for
      * @param restParams other parameters for paging and sorting
-     * @return a list of Projects which match the given name and are associated with the given tags, paged and sorted
+     * @return a page of Projects which match the given name and are associated with the given tags, paged and sorted
      * with the given RestParameters
      */
-    public List<Project> findProjects(String name, String tagsString, RestParameters restParams) {
+    public Page<Project> findProjects(String name, String tagsString, RestParameters restParams) {
         List<String> tags = restUtil.splitCommaSeparated(tagsString);
 
         PageRequest pageRequest = null;
@@ -286,7 +287,7 @@ public class ProjectService {
             pageRequest = restParams.buildPageRequest();
         }
 
-        List<Project> result;
+        Page<Project> result;
         if((name == null || name.length() == 0) && tags.size() == 0) {
             result = projectRepository.findByActiveIsTrue(pageRequest);
         } else if(name == null || name.length() == 0) {
@@ -306,10 +307,10 @@ public class ProjectService {
      * @param name the name to search for
      * @param tagsString the tags to search for
      * @param restParams other parameters for paging and sorting
-     * @return a list of Projects which match the given name and are associated with the given tags, paged and sorted
+     * @return a page of Projects which match the given name and are associated with the given tags, paged and sorted
      * with the given RestParameters
      */
-    public List<Project> findProjectsFromOrganization(Long orgId, String name, String tagsString,
+    public Page<Project> findProjectsFromOrganization(Long orgId, String name, String tagsString,
                                                                  RestParameters restParams) {
         List<String> tags = restUtil.splitCommaSeparated(tagsString);
 
@@ -318,7 +319,7 @@ public class ProjectService {
             pageRequest = restParams.buildPageRequest();
         }
 
-        List<Project> result;
+        Page<Project> result;
         if((name == null || name.length() == 0) && tags.size() == 0) {
             if(orgId != null) {
                 result = projectRepository.findByOrganization(orgId, pageRequest);

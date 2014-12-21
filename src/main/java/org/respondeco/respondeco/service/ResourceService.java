@@ -314,17 +314,12 @@ public class ResourceService {
 
         if(restParameters != null) {
             pageRequest = restParameters.buildPageRequest();
-            log.debug("TEST: " + pageRequest.toString());
         }
 
         List<ResourceOffer> entries;
 
         if(searchField.isEmpty() && isCommercial == null) {
             page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
-
-            log.debug("TOTALELEMENTS: " + page.getTotalElements());
-            log.debug("TOTALPAGES: " + page.getTotalPages());
-            log.debug("PAGETOSTRING: " + page.toString());
 
             entries = page.getContent();
         } else {

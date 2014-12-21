@@ -22,6 +22,7 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -239,7 +240,7 @@ public class ProjectController {
      *              +fieldname: same as fieldname,
      *              -fieldname: orders the responses by the fieldname descending
      *              example: order=-id,+name orders by id descending and name ascending
-     * @return a list of response DTOs matching the given criteria
+     * @return a ProjectPaginationResponseDTO
      */
     @ApiOperation(value = "Get projects", notes = "Get projects by name and tags, " +
         "or get all projects if the two paramters are not given")
@@ -248,7 +249,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
-    public List<ProjectResponseDTO> getByNameAndTags(
+    public ResponseEntity<ProjectPaginationResponseDTO> getByNameAndTags(
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
@@ -258,9 +259,13 @@ public class ProjectController {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
 
-        // load projects and filter out the initial projects every organization has
-        List<Project> projects = projectService.findProjects(filter, tags, restParameters).stream().filter(p -> "ip".equals(p.getName()) == false).collect(Collectors.toList());
-        return ProjectResponseDTO.fromEntities(projects, restParameters.getFields());
+        Page<Project> resultPage = projectService.findProjects(filter, tags, restParameters);
+
+        ProjectPaginationResponseDTO paginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
+
+        ResponseEntity<ProjectPaginationResponseDTO> responseEntity = new ResponseEntity(paginationResponseDTO, HttpStatus.OK);
+
+        return responseEntity;
     }
 
     /**
@@ -299,7 +304,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
-    public List<ProjectResponseDTO> getByOrganizationAndNameAndTags(
+    public ResponseEntity<ProjectPaginationResponseDTO> getByOrganizationAndNameAndTags(
             @PathVariable Long organizationId,
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String tags,
@@ -309,9 +314,14 @@ public class ProjectController {
             @RequestParam(required = false) String order) {
         log.debug("REST request to get projects for organization {}", organizationId);
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<Project> projects =  projectService
+        Page<Project> resultPage =  projectService
                 .findProjectsFromOrganization(organizationId, filter, tags, restParameters);
-        return ProjectResponseDTO.fromEntities(projects, restParameters.getFields());
+
+        ProjectPaginationResponseDTO projectPaginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
+
+        ResponseEntity<ProjectPaginationResponseDTO> responseEntity = new ResponseEntity<>(projectPaginationResponseDTO, HttpStatus.OK);
+
+        return responseEntity;
     }
 
     /**
