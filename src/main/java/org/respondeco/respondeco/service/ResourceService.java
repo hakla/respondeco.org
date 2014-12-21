@@ -307,7 +307,7 @@ public class ResourceService {
      * @param restParameters Rest Parameters to be set
      * @return List of active ResourceOffers filtered by set parameters. (searchField, isCommercial)
      */
-    public List<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
+    public Page<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
         Page page;
@@ -357,11 +357,9 @@ public class ResourceService {
             log.debug("TOTALELEMENTS: " + page.getTotalElements());
             log.debug("TOTALPAGES: " + page.getTotalPages());
             log.debug("PAGETOSTRING: " + page.toString());
-
-            entries = page.getContent();
         }
 
-        return entries;
+        return page;
     }
 
     /**

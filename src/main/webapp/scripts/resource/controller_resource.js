@@ -34,7 +34,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		      		$scope.resources = data;
 		      	});
 		  	} else {
-		    	$scope.resources = Resource.query({page: 1, pageSize: 5});
+		    	Resource.query({page: 0, pageSize: 5}, function(response) {
+		    		$scope.resources = response.resourceOffers;
+		    		$scope.numberOfPages = response.numberOfPages;
+		    	}, function(error) {
+		    		console.log(error);
+		    	});
 			}
 
 			if($location.path() === '/requests') {
@@ -196,7 +201,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		}
 
 		filter.page = 0;
-		filter.pageSize = 5;
+		filter.pageSize = 20;
 
 		Resource.query(filter, function(res) {
 				$scope.resources = res;
