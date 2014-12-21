@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.web.rest.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.springframework.data.domain.Page;
@@ -10,13 +9,13 @@ import java.util.List;
 /**
  * ResourceOfferPaginationResponseDTO
  * This Data Transfer Object is used to return a list of ResourceOfferResponseDTOs
- * plus additional information for pagination, namely the total number of pages.
+ * plus additional information for pagination, namely the total number of items.
  */
 @Data
 public class ResourceOfferPaginationResponseDTO {
 
     private List<ResourceOfferResponseDTO> resourceOffers;
-    private int numberOfPages;
+    private int totalItems;
 
     /**
      * Creates a new ResourceOfferPaginationResponseDTO from a given Page element which contains
@@ -32,7 +31,7 @@ public class ResourceOfferPaginationResponseDTO {
         List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(resourceOffers, fieldNames);
 
         dto.setResourceOffers(resourceOfferResponseDTOs);
-        dto.setNumberOfPages(page.getTotalPages());
+        dto.setTotalItems((int)page.getTotalElements());
 
         return dto;
     }

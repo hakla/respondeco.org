@@ -23,6 +23,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.orgId = null;
 	$scope.claim = {};
 
+	$scope.currentPage;
+
+	$scope.filter = {};
+
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
 	  		$scope.orgId = account.organizationId;
@@ -34,9 +38,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		      		$scope.resources = data;
 		      	});
 		  	} else {
-		    	Resource.query({page: 0, pageSize: 5}, function(response) {
+		    	Resource.query({page: 0, pageSize: 4}, function(response) {
 		    		$scope.resources = response.resourceOffers;
-		    		$scope.numberOfPages = response.numberOfPages;
+		    		$scope.totalItems = response.totalItems;
+
 		    	}, function(error) {
 		    		console.log(error);
 		    	});
@@ -55,6 +60,17 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			});
 		});
 	};
+
+	$scope.onPageChange = function() {
+		$scope.filter.page = $scope.currentPage-1;
+		$scope.filter.pageSize = 5;
+
+		Resource.query($scope.filter, function(response) {
+			$scope.resources = response.resourceOffers;
+    		$scope.totalItems = response.totalItems;
+		})
+
+	}
 
 	$scope.onUploadComplete = function(fileItem, response) {
     	$scope.resource.logoId = response.id;
@@ -192,19 +208,20 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
-		var filter = {
+		$scope.filter = {
 			name: $scope.resourceSearch.name
 		};
 
 		if ($scope.resourceSearch.isCommercial === false) {
-			filter.commercial = false;
+			$scope.filter.commercial = false;
 		}
 
-		filter.page = 0;
-		filter.pageSize = 20;
+		$scope.filter.page = 0;
+		$scope.filter.pageSize = 5;
 
-		Resource.query(filter, function(res) {
-				$scope.resources = res;
+		Resource.query($scope.filter, function(response) {
+				$scope.resources = response.resourceOffers;
+				$scope.totalItems = response.totalItems;
 			}, function(error) {
 				$scope.searchError = true;
 			});
