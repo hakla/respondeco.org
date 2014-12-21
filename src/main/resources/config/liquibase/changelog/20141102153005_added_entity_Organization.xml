@@ -37,7 +37,8 @@
             <column name="last_modified_date" type="timestamp"/>
             <column name="is_active" type="boolean"/>
             <column name="image_id" type="bigint" defaultValue="NULL"/>
+            <column name="verified" type="boolean" defaultValue="false"/>
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

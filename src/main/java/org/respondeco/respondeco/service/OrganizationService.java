@@ -38,6 +38,35 @@ public class OrganizationService {
     }
 
     /**
+     * register an organization account
+     * @param name name of the organization
+     * @param email email of the organization, used as login
+     * @param password the password for the account
+     * @param npo indicates if the organization is an npo
+     * @param langKey the default language of the account
+     * @return the created organization
+     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
+     */
+    public Organization registerOrganization(String name, String email, String password, Boolean npo, String langKey)
+        throws OrganizationAlreadyExistsException {
+        if(organizationRepository.findByName(name)!=null) {
+            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
+        }
+        User user = userService.createUserInformation(email.toLowerCase(),
+            password, null, null, null, email.toLowerCase(),
+            "UNSPECIFIED", null, langKey, null);
+        Organization organization = new Organization();
+        organization.setName(name);
+        organization.setEmail(email.toLowerCase());
+        organization.setIsNpo(npo);
+        organization.setOwner(user);
+        organizationRepository.save(organization);
+        user.setOrganization(organization);
+        userRepository.save(user);
+        return organization;
+    }
+
+    /**
      * creates a new organization with the given information
      *
      * @param name the name of the new organization

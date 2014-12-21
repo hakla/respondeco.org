@@ -203,11 +203,18 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
 
 
 respondecoApp.controller('RegisterController', function($scope, $translate, Register, $location, $routeParams) {
+    $scope.activation = false;
     $scope.success = null;
     $scope.error = null;
     $scope.doNotMatch = null;
     $scope.errorUserExists = null;
-    $scope.registerAccount = {};
+    $scope.registerAccount = {
+        orgname: null,
+        npo:null,
+        email: null,
+        password: null,
+        langKey: "de"
+    };
 
     if ($location.path() === '/activateInvitation') {
         $scope.activation = true;

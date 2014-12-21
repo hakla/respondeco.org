@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class UserDTO {
 
-    public static final String[] DEFAULT_FIELDS = {"id", "login", "title", "gender", "firstName", "lastName", "email",
-        "description", "langKey", "roles", "organizationId", "profilePicture"};
+    public static final List<String> DEFAULT_FIELDS = Arrays.asList("id", "login", "title", "gender",
+        "firstName", "lastName", "email", "description", "langKey", "roles", "organizationId", "profilePicture");
 
     public static UserDTO fromEntity(User user, List<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
-            fieldNames = Arrays.asList(DEFAULT_FIELDS);
+            fieldNames = DEFAULT_FIELDS;
         }
         UserDTO responseDTO = new UserDTO();
         if (fieldNames.contains("id")) {
@@ -61,18 +61,24 @@ public class UserDTO {
                     .map(authority -> authority.getName())
                         .collect(Collectors.toList()));
         }
+        if (fieldNames.contains("organization")) {
+            responseDTO.setOrganization(OrganizationResponseDTO.fromEntity(user.getOrganization(),
+                Arrays.asList("id", "name", "email", "isNpo", "ownerId")));
+        }
         if (fieldNames.contains("organizationId")) {
             responseDTO.setOrganizationId(user.getOrganization().getId());
         }
         if (fieldNames.contains("profilePicture")) {
-            responseDTO.setProfilePicture(ImageDTO.fromEntity(user.getProfilePicture(), null));
+            if(user.getProfilePicture() != null) {
+                responseDTO.setProfilePicture(ImageDTO.fromEntity(user.getProfilePicture(), null));
+            }
         }
         return responseDTO;
     }
 
     public static List<UserDTO> fromEntities(List<User> users, List<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
-            fieldNames = Arrays.asList(DEFAULT_FIELDS);
+            fieldNames = DEFAULT_FIELDS;
         }
         List<UserDTO> responseDTOs = new ArrayList<>();
         for(User user : users) {
@@ -92,6 +98,7 @@ public class UserDTO {
     private String description;
     private String langKey;
     private List<String> roles;
+    private OrganizationResponseDTO organization;
     private Long organizationId;
     private ImageDTO profilePicture;
 

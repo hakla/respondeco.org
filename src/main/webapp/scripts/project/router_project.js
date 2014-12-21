@@ -7,9 +7,9 @@ respondecoApp
                     templateUrl: 'views/projects_search.html',
                     controller: 'ProjectSearchController',
                     resolve: {
-                        resolvedProjects: ['Project', function(Project) {
+                        resolvedProjects: function(Project) {
                             return Project.query();
-                        }]
+                        }
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]

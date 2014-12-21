@@ -40,12 +40,14 @@
             "confirmpassword": "Neues Passwort bestätigen",
             "confirmpassword.placeholder": "Bestätigen Sie ihr neues Passwort",
             "email": "E-Mail Adresse",
-            "email.placeholder": "Ihre E-Mail Adresse",
+            "email.placeholder": "Offizielle E-Mail Adresse der Organisation",
             "description": "Beschreibung",
             "send": "Absenden",
             "cancel": "Abbrechen",
             "confirm": "Bestätigen",
-            "save": "Speichern"
+            "save": "Speichern",
+            "orgname": "Name der Organisation",
+            "orgname.placeholder": "Der Name Ihrer Organisation"
         },
 
         "messages": {
