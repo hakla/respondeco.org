@@ -81,6 +81,8 @@ public class ResourceController {
         if(name == null) name = "";
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+        log.debug(restParameters.toString());
+
         List<ResourceOffer> entries = resourceService.getAllOffers(name, commercial, restParameters);
 
         List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(entries, restParameters.getFields());
@@ -436,7 +438,7 @@ public class ResourceController {
             message = e.getMessage();
         }
         catch (Exception e){
-            message = String.format("Unexpected error. Trying to delete Resource Reqirement for ID: %d failed", resourceRequirementId);
+            message = String.format("Unexpected error. Trying to delete Resource Requirement for ID: %d failed", resourceRequirementId);
         }
         finally {
             if (message != null) {

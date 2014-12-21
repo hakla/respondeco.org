@@ -101,15 +101,12 @@ public class ProjectController {
         return responseEntity;
     }
 
-    /**
-     * POST  /rest/project -> Create a new project.
-=======
+     /**
      * POST  /rest/projects -> Creates a new project from the values sent in the request body.
      *
      * @param project the ProjectRequestDTO containing the values to create a new project
      * @return status CREATED with the newly created project as ProjectResponseDTO, or if the request was not successful,
      * an error response status and a potential error message
->>>>>>> develop
      */
     @ApiOperation(value = "Create a project", notes = "Create a new project")
     @RequestMapping(value = "/rest/projects",

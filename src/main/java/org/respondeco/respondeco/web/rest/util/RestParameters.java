@@ -46,7 +46,7 @@ public class RestParameters {
         if(pageSize == null) {
             this.pageSize = DEFAULT_PAGE_SIZE;
         } else {
-            this.pageSize = page;
+            this.pageSize = pageSize;
         }
         this.fields = restUtil.splitCommaSeparated(fields);
         buildOrders(order);
@@ -84,6 +84,16 @@ public class RestParameters {
 
     public PageRequest buildPageRequest() {
         return new PageRequest(page, pageSize, sort);
+    }
+
+    @Override
+    public String toString() {
+        return "RestParameters: {" +
+            " page: " + page +
+            " pageSize: " + pageSize +
+            " fields: " + fields +
+            " sort: " + sort +
+            "}";
     }
 
 }

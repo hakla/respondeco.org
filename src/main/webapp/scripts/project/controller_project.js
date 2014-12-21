@@ -93,6 +93,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             resourceRequirements: $scope.project.resourceRequirements
         };
 
+        console.log(project);
+
         Project[isNew ? 'save' : 'update'](project,
             function() {
                 $scope.projects = Project.query();

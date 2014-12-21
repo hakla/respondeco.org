@@ -117,7 +117,7 @@ public class ProjectService {
     }
 
     /**
-     *
+     * updates a project
      * @param id the id of the project to alter
      * @param name the possibly updated name of the project
      * @param purpose the possibly updated purpose of the project
