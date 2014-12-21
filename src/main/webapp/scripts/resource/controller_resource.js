@@ -25,7 +25,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.currentPage;
 
-	$scope.filter = {};
+	$scope.filter = {pageSize:20};
 
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
@@ -38,13 +38,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		      		$scope.resources = data;
 		      	});
 		  	} else {
-		    	Resource.query({page: 0, pageSize: 4}, function(response) {
-		    		$scope.resources = response.resourceOffers;
-		    		$scope.totalItems = response.totalItems;
-
-		    	}, function(error) {
-		    		console.log(error);
-		    	});
+		  		$scope.search();
 			}
 
 			if($location.path() === '/requests') {
@@ -216,6 +210,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			$scope.filter.commercial = false;
 		}
 
+		$scope.currentPage = 1;
 		$scope.filter.page = 0;
 		$scope.filter.pageSize = 5;
 
