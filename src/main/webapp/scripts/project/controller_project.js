@@ -515,17 +515,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
             return;
         }
-        Project.addPostingForProject({id:$routeParams.id},$scope.postingInformation),function() {
+        Project.addPostingForProject({id:$routeParams.id},
+            $scope.postingInformation,
+            function() {
             refreshPostings();
-        };
-    }
+        });
+    };
 
     $scope.deletePosting = function(id) {
         Project.deletePosting({id:$scope.project.id,
             pid:id},
             function() {
             refreshPostings();
-        })
-    }
+        });
+    };
 
 });

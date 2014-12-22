@@ -78,16 +78,18 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
             return;
         }
-        Organization.addPostingForOrganization({id:$routeParams.id},$scope.postingInformation),function() {
+        Organization.addPostingForOrganization({id:$routeParams.id},
+            $scope.postingInformation,
+            function() {
             refreshPostings();
-        };
-    }
+        });
+    };
 
     $scope.deletePosting = function(id) {
         Organization.deletePosting({id:$scope.organization.id,
             pid:id},
             function() {
                 refreshPostings();
-            })
-    }
+            });
+    };
 });
