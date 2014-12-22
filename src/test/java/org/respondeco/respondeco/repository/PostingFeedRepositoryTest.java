@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -137,22 +138,22 @@ public class PostingFeedRepositoryTest extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testGetPostingsForOrganization() {
-        List<Posting> postings = postingFeedRepository.getPostingsForOrganization(organizationAdmin.getId());
+        Page<Posting> postings = postingFeedRepository.getPostingsForOrganization(organizationAdmin.getId(), null);
 
         assertNotNull(postings);
 
-        assertTrue(postings.get(0).equals(posting1));
-        assertTrue(postings.get(1).equals(posting2));
+        assertTrue(postings.getContent().get(0).equals(posting1));
+        assertTrue(postings.getContent().get(1).equals(posting2));
     }
 
     @Test
     public void testGetPostingsForProjectInRightOrder() {
-        List<Posting> postings = postingFeedRepository.getPostingsForProject(project.getId());
+        Page<Posting> postings = postingFeedRepository.getPostingsForProject(project.getId(), null);
 
         assertNotNull(postings);
 
-        assertTrue(postings.get(1).equals(posting3));
-        assertTrue(postings.get(0).equals(posting4));
+        assertTrue(postings.getContent().get(1).equals(posting3));
+        assertTrue(postings.getContent().get(0).equals(posting4));
     }
 
 }

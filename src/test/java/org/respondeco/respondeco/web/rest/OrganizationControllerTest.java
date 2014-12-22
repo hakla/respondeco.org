@@ -578,7 +578,8 @@ public class OrganizationControllerTest {
 
     @Test
     public void testGetPostingForOrganization_NoSuchOrganization() throws Exception {
-        doThrow(NoSuchOrganizationException.class).when(postingFeedService).getPostingsForOrganization(anyLong());
+        doThrow(NoSuchOrganizationException.class).when(postingFeedService)
+            .getPostingsForOrganization(anyLong(), isA(RestParameters.class));
         restOrganizationMockMvc.perform(get("/app/rest/organizations/1/postings")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());

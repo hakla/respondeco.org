@@ -200,9 +200,9 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.getPostingsForOrganization(projectOrganization.getId());
+        postingFeedService.getPostingsForOrganization(projectOrganization.getId(), null);
 
-        verify(postingFeedRepositoryMock, times(1)).getPostingsForOrganization(projectOrganization.getId());
+        verify(postingFeedRepositoryMock, times(1)).getPostingsForOrganization(projectOrganization.getId(), null);
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -210,7 +210,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(null);
 
-        postingFeedService.getPostingsForOrganization(projectOrganization.getId());
+        postingFeedService.getPostingsForOrganization(projectOrganization.getId(), null);
     }
 
     @Test
@@ -218,9 +218,9 @@ public class PostingFeedServiceTest {
         when(projectRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(basicProject);
 
-        postingFeedService.getPostingsForProject(basicProject.getId());
+        postingFeedService.getPostingsForProject(basicProject.getId(), null);
 
-        verify(postingFeedRepositoryMock, times(1)).getPostingsForProject(basicProject.getId());
+        verify(postingFeedRepositoryMock, times(1)).getPostingsForProject(basicProject.getId(), null);
     }
 
     @Test(expected = NoSuchProjectException.class)
@@ -228,6 +228,6 @@ public class PostingFeedServiceTest {
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId()))
                 .thenReturn(null);
 
-        postingFeedService.getPostingsForProject(basicProject.getId());
+        postingFeedService.getPostingsForProject(basicProject.getId(), null);
     }
 }

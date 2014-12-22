@@ -3,6 +3,8 @@ package org.respondeco.respondeco.service;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -94,22 +96,22 @@ public class PostingFeedService {
         return postingRepository.save(posting);
     }
 
-    public List<Posting> getPostingsForOrganization(Long organizationId) throws
+    public Page<Posting> getPostingsForOrganization(Long organizationId, RestParameters restParameters) throws
             NoSuchOrganizationException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
         if(organization == null) {
             throw new NoSuchOrganizationException(organizationId);
         }
-        return postingFeedRepository.getPostingsForOrganization(organizationId);
+        return postingFeedRepository.getPostingsForOrganization(organizationId, restParameters.buildPageRequest());
     }
 
-    public List<Posting> getPostingsForProject(Long projectId) throws
+    public Page<Posting> getPostingsForProject(Long projectId, RestParameters restParameters) throws
             NoSuchProjectException {
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
         }
-        return postingFeedRepository.getPostingsForProject(projectId);
+        return postingFeedRepository.getPostingsForProject(projectId, restParameters.buildPageRequest());
     }
 
     public void deletePosting(Long postingId) throws PostingException {

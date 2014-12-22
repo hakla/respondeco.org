@@ -15,6 +15,7 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -552,18 +553,24 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<PostingDTO>> getPostings(@PathVariable Long id) {
-        ResponseEntity<List<PostingDTO>> responseEntity;
-
+    public ResponseEntity<?> getPostings(@PathVariable Long id,
+                                                        @RequestParam(required = false) Integer page,
+                                                        @RequestParam(required = false) Integer pageSize) {
+        RestParameters restParameters = new RestParameters(page, pageSize);
+        ResponseEntity<PostingPaginationResponseDTO> responseEntity;
+        PostingPaginationResponseDTO responseDTO = new PostingPaginationResponseDTO();
         List<PostingDTO> postings = new ArrayList<>();
         try {
-            for(Posting posting : postingFeedService.getPostingsForProject(id)){
+            Page<Posting> currentPage = postingFeedService.getPostingsForProject(id, restParameters);
+            for(Posting posting : currentPage.getContent()){
                 postings.add(new PostingDTO(posting));
             }
-            responseEntity = new ResponseEntity<List<PostingDTO>>(postings,HttpStatus.OK);
+            responseDTO.setTotalElements(currentPage.getTotalElements());
+            responseDTO.setPostings(postings);
+            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch (NoSuchProjectException e) {
             log.error("Could not get postings for project {}", id, e);
-            responseEntity = new ResponseEntity<List<PostingDTO>>(HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return responseEntity;
     }

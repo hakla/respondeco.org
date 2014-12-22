@@ -11,7 +11,7 @@
     </div>
     <div class="row spacer-top">
         <div class="col-md-3">
-            <h2 translate='organization.detail.heading' translate-values="{organization: '{{organization.name}}'}">{{organization.name}}</h2>
+            <h2>{{organization.name}}</h2>
             <p ng-show='organization.isNpo'>NGO</p>
             <uploaded-image name="organization.logo.id" class="organization-logo" />
         </div>
@@ -39,27 +39,30 @@
             <h3>PostingFeed</h3>
             <div class="well">
                 <ul>
-                    <li ng-repeat="posting in postings">
+                    <li ng-repeat="posting in postingPage.postings">
                         <h4>{{posting.author.login}} <small>postet: </small>{{posting.information}}<sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="isOwner()" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
                     </li>
                 </ul>
             </div>
-            <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
+            <a ng-click="showMorePostings()" translate="posting.showmore"
+               ng-show="postingPage.totalElements > postingShowCount">Show more</a>
+            <hr/>
+            <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                 <div class="form-group" ng-show="isOwner()">
                     <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
                            ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off"/>
-                    <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
-                    <div ng-show="form.postingInformation.$dirty && form.postingInformation.$invalid">
+                    <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
+                    <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
                         <p class="help-block"
-                           ng-show="form.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
+                           ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
                             Your Posting is required to be at least 5 characters
                         </p>
                         <p class="help-block"
-                           ng-show="form.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
+                           ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
                             Your Posting is required to be at max 100 characters
                         </p>
                         <p class="help-block"
-                           ng-show="form.postingInformation.$error.required" translate="global.messages.validate.posting.required">
+                           ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
                             Your Posting is required
                         </p>
                     </div>

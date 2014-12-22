@@ -616,6 +616,7 @@
         "openInvitations": "Offene Einladungen"
     },
     "posting": {
+        "showmore": "Mehr anzeigen",
         "information": {
             "placeholder": "Posting"
         }

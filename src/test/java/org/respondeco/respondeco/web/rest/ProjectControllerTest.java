@@ -576,7 +576,8 @@ public class ProjectControllerTest {
 
     @Test
     public void testGetPostingForProject_NoSuchProject() throws Exception {
-        doThrow(NoSuchProjectException.class).when(postingFeedService).getPostingsForProject(anyLong());
+        doThrow(NoSuchProjectException.class).when(postingFeedService)
+            .getPostingsForProject(anyLong(), isA(RestParameters.class));
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());

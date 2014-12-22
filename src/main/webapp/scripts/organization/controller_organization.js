@@ -1,12 +1,15 @@
 'use strict';
 
-respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User) {
+respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization,
+                                                            Organization, Account) {
     var isOwner = false;
     var user;
 
     $scope.organizations = resolvedOrganization;
 
-    $scope.postings = Organization.getPostingsByOrgId({id:$routeParams.id});
+    $scope.postingShowCount = 5;
+    $scope.postingShowIncrement = 5;
+    $scope.postingPage = Organization.getPostingsByOrgId({id:$routeParams.id, pageSize: $scope.postingShowCount})
     $scope.postingInformation = null;
 
     $scope.update = function(name) {
@@ -71,18 +74,20 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     //Posting
 
     var refreshPostings = function() {
-        $scope.postings = Organization.getPostingsByOrgId({id:$scope.organization.id})
+        $scope.postingPage = Organization
+            .getPostingsByOrgId({id:$scope.organization.id, pageSize: $scope.postingShowCount})
     };
 
     $scope.addPosting = function() {
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
             return;
         }
-        Organization.addPostingForOrganization({id:$routeParams.id},
-            $scope.postingInformation,
+        Organization.addPostingForOrganization({id:$routeParams.id}, $scope.postingInformation,
             function() {
-            refreshPostings();
-        });
+                refreshPostings();
+                $scope.postingInformation = null;
+                $scope.postingform.$setPristine();
+            });
     };
 
     $scope.deletePosting = function(id) {
@@ -92,4 +97,9 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                 refreshPostings();
             });
     };
+
+    $scope.showMorePostings = function() {
+        $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
+        refreshPostings();
+    }
 });

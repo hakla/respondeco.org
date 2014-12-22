@@ -12,6 +12,7 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -505,18 +506,27 @@ public class OrganizationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<PostingDTO>> getPostings(@PathVariable Long id) {
-        ResponseEntity<List<PostingDTO>> responseEntity;
+    public ResponseEntity<PostingPaginationResponseDTO> getPostings(@PathVariable Long id,
+                                                        @RequestParam(required = false) Integer page,
+                                                        @RequestParam(required = false) Integer pageSize) {
+        RestParameters restParameters = new RestParameters(page, pageSize);
+        ResponseEntity<PostingPaginationResponseDTO> responseEntity;
 
         List<PostingDTO> postings = new ArrayList<>();
+        PostingPaginationResponseDTO responseDTO = new PostingPaginationResponseDTO();
         try {
-             for(Posting posting : postingFeedService.getPostingsForOrganization(id)){
-                 postings.add(new PostingDTO(posting));
-             }
-            responseEntity = new ResponseEntity<List<PostingDTO>>(postings,HttpStatus.OK);
+            log.debug("getting postings for organization {}", id);
+            Page<Posting> currentPage = postingFeedService.getPostingsForOrganization(id, restParameters);
+            log.debug("got page {} with elements {}", id, currentPage.getContent());
+            for (Posting posting : currentPage.getContent()) {
+                postings.add(new PostingDTO(posting));
+            }
+            responseDTO.setTotalElements(currentPage.getTotalElements());
+            responseDTO.setPostings(postings);
+            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not get postings for organization {}", id, e);
-            responseEntity = new ResponseEntity<List<PostingDTO>>(HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return responseEntity;
     }

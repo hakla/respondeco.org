@@ -21,7 +21,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
-    $scope.postings = Project.getPostingsByProjectId({id:$routeParams.id});
+
+    $scope.postingShowCount = 5;
+    $scope.postingShowIncrement = 5;
+    $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
     $scope.postingInformation = null;
 
     // details mock
@@ -508,18 +511,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     //Posting
 
     var refreshPostings = function() {
-        $scope.postings = Project.getPostingsByProjectId({id:$scope.project.id})
+        $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
     };
 
     $scope.addPosting = function() {
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
             return;
         }
-        Project.addPostingForProject({id:$routeParams.id},
-            $scope.postingInformation,
+        Project.addPostingForProject({id:$routeParams.id}, $scope.postingInformation,
             function() {
-            refreshPostings();
-        });
+                refreshPostings();
+                $scope.postingInformation = null;
+                $scope.postingform.$setPristine();
+            });
     };
 
     $scope.deletePosting = function(id) {
@@ -529,5 +533,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             refreshPostings();
         });
     };
+
+    $scope.showMorePostings = function() {
+        $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
+        refreshPostings();
+    }
 
 });
