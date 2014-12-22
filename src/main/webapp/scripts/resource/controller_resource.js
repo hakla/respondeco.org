@@ -73,7 +73,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	//Claim Resource
 	$scope.updateProjects = function() {
-		$scope.projects = Project.getProjectsByOrgId({organizationId:$scope.orgId}, function() {
+		Project.getProjectsByOrgId({organizationId:$scope.orgId}, function(response) {
+			$scope.projects = response.projects;
+
 			$scope.projects.forEach(function(project, key) {
 				if (project.name === 'ip') {
 					project.name = $scope.organization.name;
