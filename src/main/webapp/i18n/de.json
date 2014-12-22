@@ -29,6 +29,7 @@
                 "register": "Registrierung"
             },
             "admin": "Administration",
+            "admin.verify": "Verifizierung",
             "language": "Sprache"
         },
         "form": {
@@ -509,6 +510,14 @@
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
             "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen"
+        },
+        "verify": {
+            "verify": "Verifizieren",
+            "unverify": "Verfizierung löschen",
+            "verification": "Verifizierung",
+            "verified": "Verifiziert",
+            "nonverified": "Nicht verifiziert",
+            "status": "Status"
         }
     },
     "resourcematch": {

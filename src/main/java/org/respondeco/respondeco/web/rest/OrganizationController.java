@@ -490,4 +490,19 @@ public class OrganizationController {
 
         return responseEntity;
     }
+
+    @RequestMapping(value = "/rest/organizations/{id}/verify",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    public ResponseEntity<?> verify(@PathVariable Long id, @RequestBody Boolean verified) {
+        ResponseEntity<?> responseEntity;
+        try {
+            Organization organization = organizationService.verify(id, verified);
+            responseEntity = new ResponseEntity<>(OrganizationResponseDTO.fromEntity(organization, null), HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseEntity;
+    }
 }

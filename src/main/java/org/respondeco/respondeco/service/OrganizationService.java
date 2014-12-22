@@ -304,7 +304,9 @@ public class OrganizationService {
         }
 
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUsersByOrganizationId(orgId);
+        List<User> members = userRepository.findUsersByOrganizationId(orgId);
+        members.remove(organization.getOwner());
+        return members;
     }
 
     /**
@@ -336,5 +338,15 @@ public class OrganizationService {
             return users;
         }
         return userRepository.findAll();
+    }
+
+    public Organization verify(Long id, Boolean value) throws NoSuchOrganizationException {
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
+        if(organization == null) {
+            throw new NoSuchOrganizationException(id);
+        }
+        organization.setVerified(value);
+        organizationRepository.save(organization);
+        return organization;
     }
 }
