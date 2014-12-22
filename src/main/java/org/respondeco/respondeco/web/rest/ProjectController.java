@@ -595,4 +595,28 @@ public class ProjectController {
         }
         return responseEntity;
     }
+
+    /**
+     * deletes posting by setting active flag false
+     * @param pid posting id to find in repository
+     * @param id project id for path completeness
+     * @return ok if posting has been deleted; bad request if not
+     */
+    @RequestMapping(value = "/rest/projects/{id}/postings/{pid}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> deletePostingForProject(
+            @PathVariable Long id,
+            @PathVariable Long pid) {
+        ResponseEntity<?> responseEntity;
+        try {
+            postingFeedService.deletePosting(pid);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (PostingException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);     }
+        return responseEntity;
+    }
 }

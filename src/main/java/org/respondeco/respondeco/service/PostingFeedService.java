@@ -111,4 +111,17 @@ public class PostingFeedService {
         }
         return postingFeedRepository.getPostingsForProject(projectId);
     }
+
+    public void deletePosting(Long postingId) throws PostingException {
+        Posting posting = postingRepository.findByIdAndActiveIsTrue(postingId);
+        User currentUser = userService.getUserWithAuthorities();
+        if(posting == null) {
+            throw new PostingException(".noSuchPosting", String.format("There is no such posting"));
+        }
+        if(posting.getAuthor().equals(currentUser) == false) {
+            throw new PostingException(".userIsNotAuthorOfPosting", String.format("You are not the author of this posting"));
+        }
+        posting.setActive(false);
+        postingRepository.save(posting);
+    }
 }

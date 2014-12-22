@@ -549,5 +549,27 @@ public class OrganizationController {
         return responseEntity;
     }
 
+    /**
+     * deletes posting by setting active flag false
+     * @param pid posting id to find in repository
+     * @param id organization id for path completeness
+     * @return ok if posting has been deleted; bad request if not
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/postings/{pid}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> deletePostingForOrganization(
+            @PathVariable Long id,
+            @PathVariable Long pid) {
+        ResponseEntity<?> responseEntity;
+        try {
+            postingFeedService.deletePosting(pid);
 
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (PostingException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);     }
+        return responseEntity;
+    }
 }

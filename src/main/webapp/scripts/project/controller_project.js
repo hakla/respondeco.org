@@ -22,6 +22,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
     $scope.postings = Project.getPostingsByProjectId({id:$routeParams.id});
+    $scope.postingInformation = null;
 
     // details mock
     $scope.status = {
@@ -505,4 +506,26 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     }
 
     //Posting
+
+    var refreshPostings = function() {
+        $scope.postings = Project.getPostingsByProjectId({id:$scope.project.id})
+    };
+
+    $scope.addPosting = function() {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+            return;
+        }
+        Project.addPostingForProject({id:$routeParams.id},$scope.postingInformation),function() {
+            refreshPostings();
+        };
+    }
+
+    $scope.deletePosting = function(id) {
+        Project.deletePosting({id:$scope.project.id,
+            pid:id},
+            function() {
+            refreshPostings();
+        })
+    }
+
 });

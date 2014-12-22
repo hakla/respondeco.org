@@ -5,13 +5,15 @@ respondecoApp.factory('Project', function($resource, $http) {
         'update': {method: 'PUT', url: 'app/rest/projects/:id'},
         'getProjectsByOrgId': {method: 'GET', isArray:true, url: 'app/rest/organizations/:organizationId/projects'},
         'getPostingsByProjectId': {method: 'GET', isArray:true, url: 'app/rest/projects/:id/postings'},
+        'addPostingForProject': {method: 'POST', url: '/app/rest/projects/:id/postings'},
         'getProjectRequirements' : {method: 'GET', isArray:true, url: 'app/rest/projects/:id/resourcerequirements'},
         'getResourceMatchesByProjectId' : {method: 'GET', isArray:true, url: 'app/rest/projects/:id/resourcematches'},
         'getAggregatedRating' : {method: 'GET', url: 'app/rest/projects/:pid/ratings'},
         'rateProject' : {method: 'POST', url: 'app/rest/projects/:pid/ratings'},
         'apply': { method: 'POST', url: '/app/rest/projects/apply' },
         'checkIfRatingPossible' : {method: 'GET', isArray: true, url: 'app/rest/projects/:pid/ratings'},
-        'editable' : {method: 'GET', url: 'app/rest/projects/:id/editable', ignoreAuthModule: true}
+        'editable' : {method: 'GET', url: 'app/rest/projects/:id/editable', ignoreAuthModule: true},
+        'deletePosting' : {method: 'DELETE', url: 'app/rest/projects/:id/postings/:pid'}
     });
 }).factory('ResourceRequirement', function($resource) {
     return $resource('app/rest/resourcerequirements', {})

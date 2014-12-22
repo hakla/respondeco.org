@@ -6,6 +6,9 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.organizations = resolvedOrganization;
 
+    $scope.postings = Organization.getPostingsByOrgId({id:$routeParams.id});
+    $scope.postingInformation = null;
+
     $scope.update = function(name) {
         $scope.organization = Organization.get({
             id: name
@@ -63,5 +66,28 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);
+    }
+
+    //Posting
+
+    var refreshPostings = function() {
+        $scope.postings = Organization.getPostingsByOrgId({id:$scope.organization.id})
+    };
+
+    $scope.addPosting = function() {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+            return;
+        }
+        Organization.addPostingForOrganization({id:$routeParams.id},$scope.postingInformation),function() {
+            refreshPostings();
+        };
+    }
+
+    $scope.deletePosting = function(id) {
+        Organization.deletePosting({id:$scope.organization.id,
+            pid:id},
+            function() {
+                refreshPostings();
+            })
     }
 });

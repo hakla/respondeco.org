@@ -15,13 +15,13 @@ public interface PostingFeedRepository extends JpaRepository<PostingFeed, Long> 
 
     @Query("SELECT p " +
             "FROM Organization o INNER JOIN o.postingFeed pf INNER JOIN pf.postings p " +
-            "WHERE o.id = :organizationid " +
+            "WHERE o.id = :organizationid AND p.active = true " +
             "ORDER BY p.createdDate ASC ")
     public List<Posting> getPostingsForOrganization(@Param("organizationid") Long id);
 
     @Query("SELECT p " +
             "FROM Project po INNER JOIN po.postingFeed pf INNER JOIN pf.postings p " +
-            "WHERE po.id = :projectid " +
+            "WHERE po.id = :projectid AND p.active = true " +
             "ORDER BY p.createdDate ASC ")
     public List<Posting> getPostingsForProject(@Param("projectid") Long id);
 }

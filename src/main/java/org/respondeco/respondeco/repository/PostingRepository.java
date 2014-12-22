@@ -11,5 +11,5 @@ import java.util.List;
  * Spring Data JPA repository for the Posting entity.
  */
 public interface PostingRepository extends JpaRepository<Posting, Long> {
-
+    public Posting findByIdAndActiveIsTrue(Long postingId);
 }
