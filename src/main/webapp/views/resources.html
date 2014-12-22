@@ -54,8 +54,8 @@
     </div>
 
 
-    <pagination direction-links="false" boundary-links="true" max-size="5" items-per-page="5" total-items="totalItems" ng-model="currentPage"
-        ng-change="onPageChange()"></pagination>
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage"
+        ng-change="onPageChange()" ng-show="totalItems>20"></pagination>
 
 </div>
 

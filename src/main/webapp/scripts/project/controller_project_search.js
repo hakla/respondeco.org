@@ -6,8 +6,7 @@
 respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project,
                                                                 ProjectNames, PropertyTagNames) {
 
-    $scope.filter = {};
-    $scope.pageSize = 20;
+    $scope.filter = {pageSize:20};
     $scope.currentPage = 1;
 
     $scope.project = {
@@ -25,7 +24,6 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
         $scope.filter.filter = $scope.project.name;
         $scope.filter.tags = $scope.project.tags;
         $scope.filter.page = $scope.currentPage-1;
-        $scope.filter.pageSize = $scope.pageSize;
 
         Project.query($scope.filter,function(data) {
             $scope.projects = data.projects;

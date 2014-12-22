@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <pagination direction-links="false" boundary-links="true" max-size="10" items-per-page="pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()"></pagination>
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
 
     <p> Es wurden {{totalItems}} Projekte gefunden! </p>
 </div>

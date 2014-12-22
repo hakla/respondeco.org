@@ -56,14 +56,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	};
 
 	$scope.onPageChange = function() {
-		$scope.filter.page = $scope.currentPage-1;
-		$scope.filter.pageSize = 5;
+		$scope.filter.page = $scope.currentPage-1;;
 
 		Resource.query($scope.filter, function(response) {
 			$scope.resources = response.resourceOffers;
     		$scope.totalItems = response.totalItems;
 		})
-
 	}
 
 	$scope.onUploadComplete = function(fileItem, response) {
@@ -214,7 +212,6 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 		$scope.currentPage = 1;
 		$scope.filter.page = 0;
-		$scope.filter.pageSize = 5;
 
 		Resource.query($scope.filter, function(response) {
 				$scope.resources = response.resourceOffers;

@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -46,6 +48,7 @@ public class ResourceOfferRepositoryTest extends AbstractTransactionalJUnit4Spri
     private Organization organization2;
     private ResourceOffer resourceOffer;
     private ResourceOffer resourceOffer2;
+    private PageRequest pageRequest;
 
     @Before
     public void setup() {
@@ -80,6 +83,9 @@ public class ResourceOfferRepositoryTest extends AbstractTransactionalJUnit4Spri
         resourceOffer2.setDescription("testDescription2");
         resourceOffer2.setOrganization(organization);
         resourceOfferRepository.save(resourceOffer2);
+
+        pageRequest = new PageRequest(0,20,null);
+
     }
 
     @Test
@@ -95,14 +101,15 @@ public class ResourceOfferRepositoryTest extends AbstractTransactionalJUnit4Spri
     @Test
     public void testFindByActiveIsTrue() {
 
-        List<ResourceOffer> resourceOffers = resourceOfferRepository.findByActiveIsTrue();
+        Page<ResourceOffer> resourceOffersPage = resourceOfferRepository.findByActiveIsTrue(pageRequest);
+        List<ResourceOffer> resourceOffers = resourceOffersPage.getContent();
 
         assertNotNull(resourceOffers);
         assertTrue(resourceOffers.contains(resourceOffer));
         assertTrue(resourceOffers.contains(resourceOffer2));
 
         resourceOffer2.setActive(false);
-        resourceOffers = resourceOfferRepository.findByActiveIsTrue();
+        resourceOffers = resourceOfferRepository.findByActiveIsTrue(pageRequest).getContent();
 
         assertNotNull(resourceOffers);
         assertTrue(resourceOffers.contains(resourceOffer));
