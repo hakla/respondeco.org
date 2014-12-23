@@ -170,7 +170,7 @@ public class OrganizationServiceTest {
 
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.updaterOrganizationInformation("testOrg2", "testDescription", "test@email.com", false, 1L);
+        organizationService.updateOrganizationInformation("testOrg2", "testDescription", "test@email.com", false, 1L);
 
         when(organizationRepositoryMock.findByName("testOrg2")).thenReturn(organization);
         Organization organization2 = organizationService.getOrganizationByName("testOrg2");
@@ -186,7 +186,7 @@ public class OrganizationServiceTest {
 
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.updaterOrganizationInformation("","testDescription","test@email.com",false, 1L);
+        organizationService.updateOrganizationInformation("", "testDescription", "test@email.com", false, 1L);
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -194,7 +194,7 @@ public class OrganizationServiceTest {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        organizationService.updaterOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+        organizationService.updateOrganizationInformation("testOrg1", "testDescription", "test@email.com", false, 1L);
     }
 
     @Test
@@ -223,7 +223,9 @@ public class OrganizationServiceTest {
     public void testDeleteMember() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+        Organization organization = organizationService
+            .createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+        organization.setVerified(true);
         defaultUser.setOrganization(organization);
         when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
         when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
@@ -260,7 +262,9 @@ public class OrganizationServiceTest {
     public void testDeleteMember_shouldThrowNotOwnerOrganizationException() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+        Organization organization = organizationService
+            .createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+        organization.setVerified(true);
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         defaultUser.setOrganization(organization);
         when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);

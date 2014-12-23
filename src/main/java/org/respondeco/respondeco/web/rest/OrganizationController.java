@@ -9,7 +9,6 @@ import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
-import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Organization.
@@ -184,12 +182,12 @@ public class OrganizationController {
         log.debug("REST request to update Organization : {}", organization);
         ResponseEntity<?> responseEntity;
         try {
-            organizationService.updaterOrganizationInformation(
-                    organization.getName(),
-                    organization.getDescription(),
-                    organization.getEmail(),
-                    organization.isNpo(),
-                    organization.getLogo());
+            organizationService.updateOrganizationInformation(
+                organization.getName(),
+                organization.getDescription(),
+                organization.getEmail(),
+                organization.isNpo(),
+                organization.getLogo());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not update Organization : {}", organization, e);
@@ -412,6 +410,9 @@ public class OrganizationController {
         } catch (NotOwnerOfOrganizationException e) {
             log.error("Could not delete Member : {}", userId, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (OrganizationNotVerifiedException e) {
+            log.error("Could not delete Member : {}", userId, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }
@@ -457,8 +458,8 @@ public class OrganizationController {
         ResponseEntity<?> responseEntity;
         try {
             ratingService.rateOrganization(id, ratingRequestDTO.getMatchid(),
-                    ratingRequestDTO.getRating(),
-                    ratingRequestDTO.getComment());
+                ratingRequestDTO.getRating(),
+                ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not grate organization {}", id, e);
@@ -502,6 +503,8 @@ public class OrganizationController {
             responseEntity = new ResponseEntity<>(OrganizationResponseDTO.fromEntity(organization, null), HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
+        } catch (OperationForbiddenException e) {
+            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }

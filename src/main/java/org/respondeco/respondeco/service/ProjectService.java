@@ -86,6 +86,9 @@ public class ProjectService {
         if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
+        if(currentUser.getOrganization().getVerified() == false) {
+            throw new OrganizationNotVerifiedException(currentUser.getOrganization().getId());
+        }
 
         Project newProject = new Project();
         newProject.setManager(currentUser);

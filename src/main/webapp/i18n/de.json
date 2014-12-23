@@ -509,7 +509,8 @@
         "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
-            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen"
+            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
+            "notverified": "Ihre Organisation wurde noch nicht validiert!"
         },
         "verify": {
             "verify": "Verifizieren",
