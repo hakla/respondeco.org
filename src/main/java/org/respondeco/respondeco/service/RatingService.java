@@ -7,6 +7,8 @@ import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.RatingRepository;
 import org.respondeco.respondeco.repository.ResourceMatchRepository;
 import org.respondeco.respondeco.service.exception.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Service
 public class RatingService {
+
+    private final Logger log = LoggerFactory.getLogger(RatingService.class);
 
     private RatingRepository ratingRepository;
 
@@ -59,7 +63,7 @@ public class RatingService {
             throw new ProjectRatingException(".notconcrete", "The project cannot be rated" +
                 " as it does not have a start date");
         }
-        if(project.getStartDate().isAfter(LocalDate.now())) {
+        if(project.getSuccessful() == false) {
             throw new ProjectRatingException(".notstarted", "The project has not started yet");
         }
         if(organization == null) {
@@ -121,7 +125,7 @@ public class RatingService {
             throw new SupporterRatingException(".notconcrete", "The project cannot be rated" +
                 " as it does not have a start date");
         }
-        if(project.getStartDate().isAfter(LocalDate.now())) {
+        if(project.getSuccessful() == false) {
             throw new SupporterRatingException(".notstarted", "The project has not started yet");
         }
         if(organization == null || organization.getId().equals(orgId) == false) {
@@ -165,7 +169,7 @@ public class RatingService {
         User currentUser = userService.getUserWithAuthorities();
         RatingPermission permission = new RatingPermission();
         permission.setAllowed(false);
-        if(currentUser.getOrganization() != null && project.getStartDate().isAfter(LocalDate.now()) == false) {
+        if(currentUser.getOrganization() != null && project.getSuccessful() == true) {
             //check if user organization and project organization are the same
             if (currentUser.getOrganization().equals(project.getOrganization()) == false) {
                 //check if user is owner of his organization
@@ -205,7 +209,8 @@ public class RatingService {
             permission = new RatingPermission();
             permission.setResourceMatch(match);
             permission.setAllowed(false);
-            if(match.getProject().getStartDate().isAfter(LocalDate.now()) == false) {
+            log.debug("match project: {}", match.getProject());
+            if(match.getProject().getSuccessful() == true) {
                 //if the user is project manager of the project which is connected to the match
                 if (match.getProject().getManager().equals(currentUser)) {
                     //if the match was accepted and has not been rated yet
