@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.service;
 
+import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
@@ -53,6 +54,13 @@ public class RatingService {
         Organization organization = user.getOrganization();
         if(project == null) {
             throw new NoSuchProjectException(String.format("Project doesn't exist"));
+        }
+        if(project.isConcrete() == false) {
+            throw new ProjectRatingException(".notconcrete", "The project cannot be rated" +
+                " as it does not have a start date");
+        }
+        if(project.getStartDate().isAfter(LocalDate.now())) {
+            throw new ProjectRatingException(".notstarted", "The project has not started yet");
         }
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization doesn't exist"));
@@ -109,6 +117,13 @@ public class RatingService {
         if(project == null) {
             throw new NoSuchProjectException(String.format("Project doesn't exist"));
         }
+        if(project.isConcrete() == false) {
+            throw new SupporterRatingException(".notconcrete", "The project cannot be rated" +
+                " as it does not have a start date");
+        }
+        if(project.getStartDate().isAfter(LocalDate.now())) {
+            throw new SupporterRatingException(".notstarted", "The project has not started yet");
+        }
         if(organization == null || organization.getId().equals(orgId) == false) {
             throw new NoSuchOrganizationException(String.format("Organization doesn't exist"));
         }
@@ -150,7 +165,7 @@ public class RatingService {
         User currentUser = userService.getUserWithAuthorities();
         RatingPermission permission = new RatingPermission();
         permission.setAllowed(false);
-        if(currentUser.getOrganization() != null) {
+        if(currentUser.getOrganization() != null && project.getStartDate().isAfter(LocalDate.now()) == false) {
             //check if user organization and project organization are the same
             if (currentUser.getOrganization().equals(project.getOrganization()) == false) {
                 //check if user is owner of his organization
@@ -190,11 +205,13 @@ public class RatingService {
             permission = new RatingPermission();
             permission.setResourceMatch(match);
             permission.setAllowed(false);
-            //if the user is project manager of the project which is connected to the match
-            if(match.getProject().getManager().equals(currentUser)) {
-                //if the match was accepted and has not been rated yet
-                if(match.getAccepted() && match.getSupporterRating() == null) {
-                    permission.setAllowed(true);
+            if(match.getProject().getStartDate().isAfter(LocalDate.now()) == false) {
+                //if the user is project manager of the project which is connected to the match
+                if (match.getProject().getManager().equals(currentUser)) {
+                    //if the match was accepted and has not been rated yet
+                    if (match.getAccepted() && match.getSupporterRating() == null) {
+                        permission.setAllowed(true);
+                    }
                 }
             }
             ratingPermissions.add(permission);
