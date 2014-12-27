@@ -11,7 +11,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
  	$scope.selectedTags = [];
  	$scope.searchTags = [];
 
-	$scope.resourceSearch = {name: null, isCommercial: null};
+	$scope.resourceSearch = {name: null, isFree: null};
 
 	$scope.resourceRequirements = [];
 	$scope.showRequirements = false;
@@ -206,8 +206,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.search = function() {
 		$scope.filter.name = $scope.resourceSearch.name;
 
-		if ($scope.resourceSearch.isCommercial === false) {
+		if ($scope.resourceSearch.isFree === true) {
 			$scope.filter.commercial = false;
+		} else {
+			$scope.filter.commercial = undefined;	
 		}
 
 		$scope.currentPage = 1;

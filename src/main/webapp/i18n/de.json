@@ -132,6 +132,7 @@
     "project": {
         "info": "Projekt Information",
         "title": "Projekte",
+        "logotext": "Projekt-Logo",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -506,6 +507,7 @@
         "ownresources": "Ressourcen anzeigen",
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
+        "newproject": "Neues Projekt anlegen",
         "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
@@ -553,7 +555,7 @@
         "available": "Verfügbar",
         "search": {
             "filter": "Name / Tags / Organisation",
-            "type": "Art der Ressource",
+            "type": "Filter",
             "request": "Ressource anfordern",
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"

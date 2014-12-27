@@ -30,9 +30,9 @@ describe('Resource Controller Tests ', function () {
             expect(ResourceService.getByOrgId).toHaveBeenCalled;
 
             AccountService.get.calls.mostRecent().args[1]({
-                account: {
-                    organizationId: 1
-                }
+                    organization: {
+                        id: 1
+                    }
             });
 
             ResourceService.getByOrgId.calls.mostRecent().args[1]({data: "test"});
@@ -58,7 +58,6 @@ describe('Resource Controller Tests ', function () {
             spyOn(AccountService, "get");
             spyOn(ResourceService, "query");
 
-
             location.path('requests');
             $scope.getAccount();
 
@@ -66,9 +65,9 @@ describe('Resource Controller Tests ', function () {
             expect(ResourceService.getByOrgId).toHaveBeenCalled;
 
              AccountService.get.calls.mostRecent().args[1]({
-                account: {
-                    organizationId: 1
-                }
+                    organization: {
+                        id: 1
+                    }
             });
         });
 
