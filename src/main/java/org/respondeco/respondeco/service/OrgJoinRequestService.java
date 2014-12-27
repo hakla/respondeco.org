@@ -38,7 +38,9 @@ public class OrgJoinRequestService {
         this.userRepository=userRepository;
         this.organizationRepository=organizationRepository;
     }
-    public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO) throws NoSuchOrganizationException, NoSuchUserException, AlreadyInvitedToOrganizationException {
+    public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO)
+        throws NoSuchOrganizationException, NoSuchUserException, AlreadyInvitedToOrganizationException,
+        OrganizationNotVerifiedException {
         User currentUser = userService.getUserWithAuthorities();
         User user = userRepository.findOne(userDTO.getId());
         Organization organization = organizationRepository.findOne(organizationDTO.getId());
@@ -47,6 +49,9 @@ public class OrgJoinRequestService {
         }
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
+        }
+        if(organization.getVerified() == false) {
+            throw new OrganizationNotVerifiedException(organization.getId());
         }
         if(organization.getOwner().equals(currentUser)==false) {
             throw new IllegalArgumentException(String.format("Current user %s is not owner of organization", currentUser));

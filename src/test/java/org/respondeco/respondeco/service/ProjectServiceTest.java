@@ -90,6 +90,7 @@ public class ProjectServiceTest {
         defaultOrganization = new Organization();
         defaultOrganization.setName("test org");
         defaultOrganization.setId(1L);
+        defaultOrganization.setVerified(true);
 
         defaultUser = new User();
         defaultUser.setId(1L);

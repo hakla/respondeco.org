@@ -8,14 +8,15 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
+import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
-import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
-import org.respondeco.respondeco.service.exception.NoSuchOrgJoinRequestException;
-import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.RegisterDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -68,6 +69,9 @@ public class AccountController {
     private UserService userService;
 
     @Inject
+    private OrganizationService organizationService;
+
+    @Inject
     private PersistentTokenRepository persistentTokenRepository;
 
     @Inject
@@ -83,48 +87,55 @@ public class AccountController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> registerAccount(@RequestBody UserDTO userDTO, HttpServletRequest request,
+    public ResponseEntity<?> registerAccount(@RequestBody RegisterDTO registerDTO, HttpServletRequest request,
                                              HttpServletResponse response) {
-        return Optional.ofNullable(userRepository.findByLogin(userDTO.getEmail()))
-            .map(user -> {
-                if (user.isActivated() == true) {
-                    return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-                } else if (user.getOrganization() != null) {
-                    // user was invited to join respondeco via an organization
-                    user.setActivated(true);
-                    user.setActivationKey(null);
-                    user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-                    userRepository.save(user);
+        ResponseEntity<?> responseEntity;
+        User user = userRepository.findByLogin(registerDTO.getEmail());
+        if(user != null) {
+            if (user.isActivated() == true) {
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            } else if (user.getOrganization() != null) {
+                // user was invited to join respondeco via an organization
+                user.setActivated(true);
+                user.setActivationKey(null);
+                user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+                userRepository.save(user);
 
-                    List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByUser(user);
+                List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByUser(user);
 
-                    for (OrgJoinRequest orgJoinRequest : orgJoinRequests) {
-                        try {
-                            if (orgJoinRequest.getOrganization().equals(user.getOrganization())) {
-                                orgJoinRequestService.acceptRequest(orgJoinRequest.getId(), user);
-                            } else {
-                                orgJoinRequestService.declineRequest(orgJoinRequest.getId());
-                            }
-                        } catch (NoSuchOrgJoinRequestException e) {
-                            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-                        } catch (NoSuchOrganizationException e) {
-                            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                for (OrgJoinRequest orgJoinRequest : orgJoinRequests) {
+                    try {
+                        if (orgJoinRequest.getOrganization().equals(user.getOrganization())) {
+                            orgJoinRequestService.acceptRequest(orgJoinRequest.getId(), user);
+                        } else {
+                            orgJoinRequestService.declineRequest(orgJoinRequest.getId());
                         }
+                    } catch (NoSuchOrgJoinRequestException e) {
+                        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                    } catch (NoSuchOrganizationException e) {
+                        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
                     }
-
-                    return new ResponseEntity<>(HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-            })
-            .orElseGet(() -> {
-                User user = userService.createUserInformation(userDTO.getEmail(), userDTO.getPassword(),
-                        userDTO.getTitle(), userDTO.getFirstName(), userDTO.getLastName(),
-                        userDTO.getEmail().toLowerCase(), userDTO.getGender(),userDTO.getDescription(), userDTO.getLangKey(), userDTO.getProfilePicture());
-                final Locale locale = Locale.forLanguageTag(user.getLangKey());
-                String content = createHtmlContentFromTemplate(user, locale, request, response, "activationEmail");
-                mailService.sendActivationEmail(user.getEmail(), content, locale);
-                return new ResponseEntity<>(HttpStatus.CREATED);});
+
+                responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            try {
+                Organization organization = organizationService.registerOrganization(registerDTO.getOrgname(),
+                    registerDTO.getEmail(), registerDTO.getPassword(), registerDTO.getNpo(), registerDTO.getLangKey());
+                final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
+                String content = createHtmlContentFromTemplate(organization.getOwner(), locale, request,
+                    response, "activationEmail");
+                mailService.sendActivationEmail(organization.getEmail(), content, locale);
+                responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+            } catch (OrganizationAlreadyExistsException e) {
+                responseEntity = ErrorHelper.buildErrorResponse(e);
+            }
+        }
+        return responseEntity;
+
     }
     /**
      * GET  /rest/activate -> activate the registered user.
@@ -161,32 +172,17 @@ public class AccountController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<UserDTO> getAccount() {
-        return Optional.ofNullable(userService.getUserWithAuthorities())
-            .map(user -> new ResponseEntity<>(
-                new UserDTO(
-                    user.getId(),
-                    user.getLogin(),
-                    null,
-                    user.getTitle(),
-                    user.getGender().name(),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getEmail(),
-                    user.getDescription(),
-                    user.getLangKey(),
-                    user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList()),
-                    user.getOrganization(),
-                    transformImage(user.getProfilePicture())),
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
-    }
-
-    private ImageDTO transformImage(Image profilePicture) {
-        if (profilePicture != null) {
-            return new ImageDTO(profilePicture.getId(), profilePicture.getName());
+        ResponseEntity<UserDTO> responseEntity;
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser != null) {
+            List<String> fields = Arrays.asList("id", "login", "title", "gender", "firstName", "lastName", "email",
+                "description", "langKey", "roles", "organization", "profilePicture");
+            UserDTO responseDTO = UserDTO.fromEntity(currentUser, fields);
+            responseEntity = new ResponseEntity<UserDTO>(responseDTO, HttpStatus.OK);
+        } else {
+            responseEntity = new ResponseEntity<UserDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return null;
+        return responseEntity;
     }
 
     /**

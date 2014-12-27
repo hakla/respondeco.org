@@ -36,5 +36,11 @@ respondecoApp
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
+                }).when('/admin/organization/verify', {
+                    templateUrl: 'views/organizations_verify.html',
+                    controller: 'OrganizationControllerVerify',
+                    access: {
+                        authorizedRoles: [USER_ROLES.admin]
+                    }
                 })
         });

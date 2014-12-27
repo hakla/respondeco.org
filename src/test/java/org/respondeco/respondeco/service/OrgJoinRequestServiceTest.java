@@ -81,6 +81,7 @@ public class OrgJoinRequestServiceTest {
         defaultOrganization.setName("testOrg");
         defaultOrganization.setId(1L);
         defaultOrganization.setOwner(orgOwner);
+        defaultOrganization.setVerified(true);
 
         orgOwner.setOrganization(defaultOrganization);
     }

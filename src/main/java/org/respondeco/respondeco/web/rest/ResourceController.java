@@ -198,7 +198,7 @@ public class ResourceController {
     @Timed
     @Valid
     public ResponseEntity<?> createResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO) throws Exception{
-        ResponseEntity<ResourceOfferDTO> result = null;
+        ResponseEntity<?> result = null;
         String message = null;
         try {
             ResourceOffer offer = this.resourceService.createOffer(
@@ -215,9 +215,8 @@ public class ResourceController {
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
-        } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d.",
-                resourceOfferDTO.getDescription(), resourceOfferDTO.getOrganizationId());
+        } catch (IllegalValueException e) {
+            result = ErrorHelper.buildErrorResponse(e);
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();
