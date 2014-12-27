@@ -6,7 +6,9 @@
 respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project,
                                                                 ProjectNames, PropertyTagNames) {
 
-    $scope.filter = {pageSize:20};
+    var PAGESIZE = 20;
+
+    $scope.filter = {pageSize:PAGESIZE};
     $scope.currentPage = 1;
 
     $scope.project = {

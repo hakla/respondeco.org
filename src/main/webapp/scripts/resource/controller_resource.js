@@ -2,6 +2,8 @@
 
 respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter) {
 
+	var PAGESIZE = 20;
+
 	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
 	$scope.organization = null;
@@ -25,7 +27,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.currentPage;
 
-	$scope.filter = {pageSize:20};
+	$scope.filter = {pageSize:PAGESIZE};
 
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
@@ -202,9 +204,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
-		$scope.filter = {
-			name: $scope.resourceSearch.name
-		};
+		$scope.filter.name = $scope.resourceSearch.name;
 
 		if ($scope.resourceSearch.isCommercial === false) {
 			$scope.filter.commercial = false;

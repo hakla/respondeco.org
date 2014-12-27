@@ -305,13 +305,15 @@ describe('Resource Controller Tests ', function () {
         it('should update the projects', function() {
             $scope.orgId = 1;
 
+            var response = {projects: [{name:'test'}, {name:'testproject2'}]};
+
             spyOn(ProjectService,"getProjectsByOrgId").and.returnValue([]);
 
             $scope.updateProjects();
 
             expect(ProjectService.getProjectsByOrgId).toHaveBeenCalledWith({organizationId:1}, jasmine.any(Function));
 
-            ProjectService.getProjectsByOrgId.calls.mostRecent().args[1]();
+            ProjectService.getProjectsByOrgId.calls.mostRecent().args[1](response);
         });
 
         it('should load the requests', function() {
