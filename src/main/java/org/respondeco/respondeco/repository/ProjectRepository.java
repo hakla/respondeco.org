@@ -6,6 +6,7 @@ import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +23,7 @@ import java.util.Set;
  */
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    public List<Project> findByActiveIsTrue(Pageable pageable);
+    public Page<Project> findByActiveIsTrue(Pageable pageable);
 
     public Project findByIdAndActiveIsTrue(Long id);
 
@@ -32,7 +33,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
             "WHERE (pt.name in :tags OR UPPER(p.name) LIKE UPPER(:name)) " +
             "AND p.active = 1")
-    public List<Project> findByNameAndTags(
+    public Page<Project> findByNameAndTags(
             @Param("name") String name,
             @Param("tags") Collection<String> tags, Pageable pageable);
 
@@ -41,7 +42,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "INNER JOIN p.organization o " +
             "WHERE (o.id = :orgId AND (pt.name in :tags OR UPPER(p.name) LIKE UPPER(:name))) " +
             "AND p.active = 1")
-    public List<Project> findByOrganizationAndNameAndTags(
+    public Page<Project> findByOrganizationAndNameAndTags(
             @Param("orgId") Long orgId,
             @Param("name")  String name,
             @Param("tags")  Collection<String> tags, Pageable pageable);
@@ -51,7 +52,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         "INNER JOIN p.organization o " +
         "WHERE o.id = :orgId " +
         "AND p.active = 1")
-    public List<Project> findByOrganization(
+    public Page<Project> findByOrganization(
         @Param("orgId") Long orgId, Pageable pageable);
 
 
@@ -59,7 +60,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "FROM Project p LEFT OUTER JOIN p.propertyTags pt " +
             "WHERE pt.name in :tags " +
             "AND p.active = 1")
-    public List<Project> findByTags(
+    public Page<Project> findByTags(
             @Param("tags") Collection<String> tags, Pageable pageable);
 
     @Query("SELECT DISTINCT p " +
@@ -67,7 +68,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "INNER JOIN p.organization o " +
             "WHERE (o.id = :orgId AND pt.name in :tags) " +
             "AND p.active = 1")
-    public List<Project> findByOrganizationAndTags(
+    public Page<Project> findByOrganizationAndTags(
             @Param("orgId") Long orgId,
             @Param("tags")  Collection<String> tags, Pageable pageable);
 

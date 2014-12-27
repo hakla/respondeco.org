@@ -4,9 +4,13 @@
 'use strict';
 
 respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project,
-                                                              resolvedProjects, ProjectNames, PropertyTagNames) {
+                                                                ProjectNames, PropertyTagNames) {
 
-    $scope.projects = resolvedProjects;
+    var PAGESIZE = 20;
+
+    $scope.filter = {pageSize:PAGESIZE};
+    $scope.currentPage = 1;
+
     $scope.project = {
         name: null,
         tags: null
@@ -18,11 +22,14 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
 
     $scope.search = function() {
         $scope.project.tags = $.map($scope.selectedTags, function(tag) {return tag.name}).join(","); //create comma separated list
-        Project.query({
-            filter: $scope.project.name,
-            tags: $scope.project.tags
-        }, function(data) {
-            $scope.projects = data;
+
+        $scope.filter.filter = $scope.project.name;
+        $scope.filter.tags = $scope.project.tags;
+        $scope.filter.page = $scope.currentPage-1;
+
+        Project.query($scope.filter,function(data) {
+            $scope.projects = data.projects;
+            $scope.totalItems = data.totalItems;
             if($scope.projects.length == 0) {
                 $scope.noProjects = "NOPROJECTS";
             } else {
@@ -33,6 +40,17 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
             $scope.searchError = "ERROR";
             $scope.noProjects = null;
         });
+    }
+
+    $scope.search();
+
+    $scope.searchButton = function() {
+        $scope.currentPage = 1;
+        $scope.search();
+    }
+
+    $scope.onPageChange = function() {
+        $scope.search();
     }
 
     $scope.getProjectNames = function(viewValue) {

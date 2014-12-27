@@ -21,6 +21,7 @@
 
     <div class="row col-md-12">
         <ul class="resources">
+            <p>Es wurden {{totalItems}} Ressourcen gefunden</p>
             <li class="resource row hover-toggle" ng-repeat="resource in resources">
                 <div class="col-md-1">
                     <uploaded-image name="resource.logo.id"></uploaded-image>
@@ -51,6 +52,11 @@
             </li>
         </ul>
     </div>
+
+
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage"
+        ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
+
 </div>
 
 <div class="modal fade modal-claim" id="claimResourceModal" tabindex="-1" role="dialog" aria-labelledby="resourceModalLabel"

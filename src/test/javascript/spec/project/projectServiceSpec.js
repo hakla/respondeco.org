@@ -26,7 +26,7 @@ describe('Project Service Tests ', function () {
         });
 
         it('should call backend with filter parameter when querying for projects by name', function() {
-            var returnData = [];
+            var returnData = {};
             //expectGET to make sure this is called once.
             httpBackend.expectGET('app/rest/projects?filter=test').respond(returnData);
 
@@ -37,7 +37,7 @@ describe('Project Service Tests ', function () {
         });
 
         it('should call the backend with tags parameter when querying for projects by tags', function(){
-            var returnData =[];
+            var returnData = {};
             httpBackend.expectGET('app/rest/projects?tags=test,foo,bar').respond(returnData);
 
             //WHEN
@@ -47,7 +47,7 @@ describe('Project Service Tests ', function () {
         });
 
         it('should call backend with filter and tags parameter when querying for projects by name and tags', function(){
-            var returnData = [];
+            var returnData = {};
             httpBackend.expectGET('app/rest/projects?filter=test&tags=test,foo,bar').respond(returnData);
 
             //WHEN

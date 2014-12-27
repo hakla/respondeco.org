@@ -8,6 +8,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestExecutionListeners;
@@ -88,14 +89,15 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         projectRepository.save(project);
         projectRepository.save(project2);
 
-        List<Project> projects = projectRepository.findByActiveIsTrue(null);
+        List<Project> projects = projectRepository.findByActiveIsTrue(null).getContent();
+
         assertTrue(projects.contains(project));
         assertTrue(projects.contains(project2));
 
         project.setActive(false);
         projectRepository.save(project);
 
-        projects = projectRepository.findByActiveIsTrue(null);
+        projects = projectRepository.findByActiveIsTrue(null).getContent();
         assertFalse(projects.contains(project));
         assertTrue(projects.contains(project2));
     }
@@ -124,7 +126,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
     @Transactional //to enable lazy initialization
     public void testFindByNameAndTags_shouldFindProjectByName() throws Exception {
         projectRepository.save(project);
-        List<Project> projects = projectRepository.findByNameAndTags("testproject", null, null);
+        List<Project> projects = projectRepository.findByNameAndTags("testproject", null, null).getContent();
         assertEquals(1, projects.size());
         System.out.println(projects.get(0));
         assertEquals("testproject", projects.get(0).getName());
@@ -150,7 +152,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         projectRepository.save(project);
         projectRepository.save(project2);
         projectRepository.save(project3);
-        List<Project> projects = projectRepository.findByNameAndTags("%xx%", null, null);
+        List<Project> projects = projectRepository.findByNameAndTags("%xx%", null, null).getContent();
         assertEquals(2, projects.size());
 
     }
@@ -193,7 +195,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         projectRepository.save(project3);
         projectRepository.flush();
 
-        List<Project> projects = projectRepository.findByNameAndTags(null, Arrays.asList(tag3.getName()), null);
+        List<Project> projects = projectRepository.findByNameAndTags(null, Arrays.asList(tag3.getName()), null).getContent();
         assertEquals(2, projects.size());
         assertTrue(projects.contains(project));
         assertTrue(projects.contains(project2));
@@ -237,7 +239,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         projectRepository.save(project3);
         projectRepository.flush();
 
-        List<Project> projects = projectRepository.findByNameAndTags("%xxxxx%", Arrays.asList(tag1.getName()), null);
+        List<Project> projects = projectRepository.findByNameAndTags("%xxxxx%", Arrays.asList(tag1.getName()), null).getContent();
         assertEquals(2, projects.size());
         assertTrue(projects.contains(project));
         assertTrue(projects.contains(project3));
@@ -273,7 +275,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         PageRequest request = new PageRequest(1, 5, new Sort(
                 new Sort.Order(Sort.Direction.ASC, "name")
         ));
-        List<Project> projects = projectRepository.findByNameAndTags("%xxxxx%", null, request);
+        List<Project> projects = projectRepository.findByNameAndTags("%xxxxx%", null, request).getContent();
         assertEquals(5, projects.size());
         for(int i=0;i<5;i++) {
             assertEquals(ascendingStrings.get(i+5), projects.get(i).getName());
@@ -318,7 +320,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         projectRepository.flush();
 
         List<Project> projects = projectRepository
-                .findByOrganizationAndNameAndTags(organization.getId(), "%project%", null, null);
+                .findByOrganizationAndNameAndTags(organization.getId(), "%project%", null, null).getContent();
         assertEquals(30, projects.size());
         for(int i=0;i<30;i++) {
             assertEquals(organization, projects.get(i).getOrganization());
