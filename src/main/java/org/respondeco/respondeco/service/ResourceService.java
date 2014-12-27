@@ -217,13 +217,21 @@ public class ResourceService {
      */
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, LocalDate startDate,
-                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price) {
+                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
+        throws NoSuchOrganizationException, OrganizationNotVerifiedException {
+        Organization organization = organizationRepository.findOne(organizationId);
+        if(organization == null) {
+            throw new NoSuchOrganizationException(organizationId);
+        }
+        if(organization.getVerified() == false) {
+            throw new OrganizationNotVerifiedException(organizationId);
+        }
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
         newOffer.setOriginalAmount(amount);
         newOffer.setDescription(description);
-        newOffer.setOrganization(organizationRepository.findOne(organizationId));
+        newOffer.setOrganization(organization);
         newOffer.setIsCommercial(isCommercial);
         newOffer.setPrice(price);
         newOffer.setStartDate(startDate);

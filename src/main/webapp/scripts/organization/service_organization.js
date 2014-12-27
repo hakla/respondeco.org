@@ -11,6 +11,7 @@ respondecoApp.factory('Organization', function ($resource) {
             'getResourceRequests' : {method: 'GET', url: 'app/rest/organizations/:id/resourcerequests', isArray:true },
             'rateOrganization' : {method: 'POST', url: 'app/rest/organizations/:id/ratings'},
             'getAggregatedRating' : {method: 'GET', url: 'app/rest/organizations/:id/ratings'},
-            'getResourceOffers': { method: 'GET', url: 'app/rest/organizations/:id/resourceoffers', isArray: true }
+            'getResourceOffers': { method: 'GET', url: 'app/rest/organizations/:id/resourceoffers', isArray: true },
+            'verify': { method: 'POST', url: 'app/rest/organizations/:id/verify' }
         });
     });

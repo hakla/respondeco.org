@@ -29,6 +29,7 @@
                 "register": "Registrierung"
             },
             "admin": "Administration",
+            "admin.verify": "Verifizierung",
             "language": "Sprache"
         },
         "form": {
@@ -40,12 +41,14 @@
             "confirmpassword": "Neues Passwort bestätigen",
             "confirmpassword.placeholder": "Bestätigen Sie ihr neues Passwort",
             "email": "E-Mail Adresse",
-            "email.placeholder": "Ihre E-Mail Adresse",
+            "email.placeholder": "Offizielle E-Mail Adresse der Organisation",
             "description": "Beschreibung",
             "send": "Absenden",
             "cancel": "Abbrechen",
             "confirm": "Bestätigen",
-            "save": "Speichern"
+            "save": "Speichern",
+            "orgname": "Name der Organisation",
+            "orgname.placeholder": "Der Name Ihrer Organisation"
         },
 
         "messages": {
@@ -506,7 +509,16 @@
         "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
-            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen"
+            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
+            "notverified": "Ihre Organisation wurde noch nicht validiert!"
+        },
+        "verify": {
+            "verify": "Verifizieren",
+            "unverify": "Verfizierung löschen",
+            "verification": "Verifizierung",
+            "verified": "Verifiziert",
+            "nonverified": "Nicht verifiziert",
+            "status": "Status"
         }
     },
     "resourcematch": {

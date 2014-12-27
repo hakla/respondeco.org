@@ -26,7 +26,7 @@ public class OrganizationResponseDTO {
     private static final Logger log = LoggerFactory.getLogger(OrganizationResponseDTO.class);
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
-            "id", "name", "description", "email", "isNpo", "owner", "spokesperson", "logo", "ratings", "projects");
+            "id", "name", "description", "email", "isNpo", "owner", "spokesperson", "logo", "projects", "verified");
 
     public static OrganizationResponseDTO fromEntity(Organization organization, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -50,6 +50,9 @@ public class OrganizationResponseDTO {
         if (fieldNames.contains("owner")) {
             responseDTO.setOwner(new UserDTO(organization.getOwner()));
         }
+        if (fieldNames.contains("ownerId")) {
+            responseDTO.setOwnerId(organization.getOwner().getId());
+        }
         if (fieldNames.contains("logo")) {
             if (organization.getLogo() != null) {
                 responseDTO.setLogo(new ImageDTO(organization.getLogo()));
@@ -68,6 +71,9 @@ public class OrganizationResponseDTO {
         if(fieldNames.contains("projects")) {
             responseDTO.setProjects(ProjectResponseDTO
                     .fromEntities(organization.getProjects(),null));
+        }
+        if (fieldNames.contains("verified")) {
+            responseDTO.setVerified(organization.getVerified());
         }
         return responseDTO;
     }
@@ -89,9 +95,11 @@ public class OrganizationResponseDTO {
     private String email;
     private Boolean isNpo;
     private UserDTO owner;
+    private Long ownerId;
     private List<ProjectResponseDTO> projects;
     private ImageDTO logo;
     private List<UserDTO> members;
     private Long spokesperson;
+    private Boolean verified;
 
 }
