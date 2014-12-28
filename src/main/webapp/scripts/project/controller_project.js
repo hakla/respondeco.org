@@ -22,6 +22,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
+    $scope.postingShowCount = 5;
+    $scope.postingShowIncrement = 5;
+    $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
+    $scope.postingInformation = null;
+
     // details mock
     $scope.status = {
         open1: true
@@ -90,7 +95,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
             }),
-            resourceRequirements: $scope.project.resourceRequirements
+            resourceRequirements: $scope.project.resourceRequirements,
+            postings: $scope.project.postings
         };
 
         console.log(project);
@@ -111,6 +117,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             id: id
         }, function() {
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
+            $scope.project.postings = $scope.project.postings || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
             if ($scope.project.concrete === true) {
@@ -501,6 +508,37 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.setOrgRatingError = function(error) {
         $("#orgRatingError").text(error);
+    }
+
+    //Posting
+
+    var refreshPostings = function() {
+        $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
+    };
+
+    $scope.addPosting = function() {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+            return;
+        }
+        Project.addPostingForProject({id:$routeParams.id}, $scope.postingInformation,
+            function() {
+                refreshPostings();
+                $scope.postingInformation = null;
+                $scope.postingform.$setPristine();
+            });
+    };
+
+    $scope.deletePosting = function(id) {
+        Project.deletePosting({id:$scope.project.id,
+            pid:id},
+            function() {
+            refreshPostings();
+        });
+    };
+
+    $scope.showMorePostings = function() {
+        $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
+        refreshPostings();
     }
 
 });

@@ -78,5 +78,35 @@ describe('Organization Service Tests ', function () {
             httpBackend.flush();
         });
 
+        it('should call backend to get all postings', function() {
+            var returnData = [];
+            httpBackend.expectGET('app/rest/organizations/1/postings').respond(returnData);
+
+            //WHEN
+            serviceTested.getPostingsByOrgId({id: 1});
+            //flush the backend to "execute" the request to do the expected GET assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to create a organization posting', function(){
+            var testPosting = "postingtest";
+            httpBackend.expectPOST('/app/rest/organizations/1/postings', testPosting).respond(200);
+
+            //WHEN
+            serviceTested.addPostingForOrganization({id: 1}, testPosting);
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to delete a  posting', function(){
+            httpBackend.expectDELETE('app/rest/organizations/1/postings/1').respond(200);
+
+            //WHEN
+            serviceTested.deletePosting({id: 1, pid:1});
+            //flush the backend to "execute" the request to do the expected DELETE assertion.
+            httpBackend.flush();
+        });
+
+
     });
 });

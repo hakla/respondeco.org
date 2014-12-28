@@ -43,11 +43,15 @@ public class ResourceOfferRepositoryTest extends AbstractTransactionalJUnit4Spri
     @Inject
     private ResourceOfferRepository resourceOfferRepository;
 
+    @Inject PostingFeedRepository postingFeedRepository;
+
     private User orgAdmin;
     private Organization organization;
     private Organization organization2;
     private ResourceOffer resourceOffer;
     private ResourceOffer resourceOffer2;
+    private PostingFeed postingFeed;
+    private PostingFeed postingFeed2;
     private PageRequest pageRequest;
 
     @Before
@@ -58,14 +62,22 @@ public class ResourceOfferRepositoryTest extends AbstractTransactionalJUnit4Spri
         orgAdmin.setGender(Gender.UNSPECIFIED);
         userRepository.save(orgAdmin);
 
+        postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+
+        postingFeed2 = new PostingFeed();
+        postingFeedRepository.save(postingFeed2);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(orgAdmin);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
 
         organization2 = new Organization();
         organization2.setName("testorg2");
         organization2.setOwner(orgAdmin);
+        organization2.setPostingFeed(postingFeed2);
         organizationRepository.save(organization2);
 
         resourceOffer = new ResourceOffer();

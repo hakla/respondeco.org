@@ -47,8 +47,12 @@
             "cancel": "Abbrechen",
             "confirm": "Bestätigen",
             "save": "Speichern",
+<<<<<<< HEAD
+            "postingInformation": "Posting"
+=======
             "orgname": "Name der Organisation",
             "orgname.placeholder": "Der Name Ihrer Organisation"
+>>>>>>> develop
         },
 
         "messages": {
@@ -79,6 +83,11 @@
                 },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
+                },
+                "posting": {
+                    "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten.",
+                    "maxlength": "Ihre Eingabe darf maximal 100 Zeichen enthalten.",
+                    "required": "Ihre Eingabe wird benötigt."
                 }
             }
         },
@@ -270,7 +279,8 @@
             "save": "Speichern",
             "cancel": "Abbrechen"
         },
-        "dateFormat": "dd.MM.yyyy"
+        "dateFormat": "dd.MM.yyyy",
+        "post": "Posten"
     },
     "settings": {
         "title": "Einstellungen für Benutzer [<b>{{username}}</b>]",
@@ -621,6 +631,12 @@
         "pending": "Ausstehende Einladungen",
         "accept": "Annehmen",
         "openInvitations": "Offene Einladungen"
+    },
+    "posting": {
+        "showmore": "Mehr anzeigen",
+        "information": {
+            "placeholder": "Posting"
+        }
     },
     "errors": {
         "title": "Fehlerseite!",

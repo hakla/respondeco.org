@@ -8,6 +8,8 @@
     <include file="classpath:config/liquibase/changelog/20141023165321_added_entity_ProfilePicture.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141025141300_modified_entity_User.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141102160417_added_entity_TextMessage.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141102153005_added_entity_PostingFeed.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141102153005_added_entity_Posting.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141102153005_added_entity_Organization.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141102154158_added_entity_Logo.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141110180827_added_entity_OrgJoinRequest.xml" relativeToChangelogFile="false"/>
@@ -23,8 +25,10 @@
     <include file="classpath:config/liquibase/changelog/20141126023848_added_entity_Image.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141207173500_added_entity_ResourceMatch.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141207173600_added_entity_Rating.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_PostingFeed.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141208154300_load_default_Organizations.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141208154500_load_default_Projects.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_Posting.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141208171000_load_default_PropertyTags.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141209154500_load_default_Ratings.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141209154500_load_default_Resources.xml" relativeToChangelogFile="false"/>

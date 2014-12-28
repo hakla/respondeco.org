@@ -120,5 +120,34 @@ describe('Project Service Tests ', function () {
             httpBackend.flush();
         });
 
+        it('should call backend to get all postings', function() {
+            var returnData = [];
+            httpBackend.expectGET('app/rest/projects/2/postings').respond(returnData);
+
+            //WHEN
+            serviceTested.getPostingsByProjectId({id: 2});
+            //flush the backend to "execute" the request to do the expected GET assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to create a project posting', function(){
+            var testPosting = "postingtest";
+            httpBackend.expectPOST('/app/rest/projects/2/postings', testPosting).respond(200);
+
+            //WHEN
+            serviceTested.addPostingForProject({id: 2}, testPosting);
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to delete a project posting', function(){
+            httpBackend.expectDELETE('app/rest/projects/2/postings/5').respond(200);
+
+            //WHEN
+            serviceTested.deletePosting({id: 2, pid:5});
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
     });
 });

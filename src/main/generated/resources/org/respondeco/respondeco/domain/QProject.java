@@ -51,6 +51,8 @@ public class QProject extends EntityPathBase<Project> {
 
     public final QOrganization organization;
 
+    public final QPostingFeed postingFeed;
+
     public final QImage projectLogo;
 
     public final ListPath<PropertyTag, QPropertyTag> propertyTags = this.<PropertyTag, QPropertyTag>createList("propertyTags", PropertyTag.class, QPropertyTag.class, PathInits.DIRECT2);
@@ -85,6 +87,7 @@ public class QProject extends EntityPathBase<Project> {
         super(type, metadata, inits);
         this.manager = inits.isInitialized("manager") ? new QUser(forProperty("manager"), inits.get("manager")) : null;
         this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization"), inits.get("organization")) : null;
+        this.postingFeed = inits.isInitialized("postingFeed") ? new QPostingFeed(forProperty("postingFeed")) : null;
         this.projectLogo = inits.isInitialized("projectLogo") ? new QImage(forProperty("projectLogo")) : null;
     }
 
