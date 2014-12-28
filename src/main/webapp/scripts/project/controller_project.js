@@ -22,6 +22,61 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
+    //google maps
+    $scope.location = {address: null};
+
+    $scope.map = { control: {}, center: { latitude: 47.453368, longitude: 16.415000 }, zoom: 12 };
+
+     $scope.marker = {
+      id: 0,
+      coords: {
+        latitude: 47.453368,
+        longitude: 16.415000
+      },
+      options: { draggable: true },
+      events: {
+        dragend: function (marker, eventName, args) {
+          var lat = marker.getPosition().lat();
+          var lon = marker.getPosition().lng();
+          console.log(lat);
+          console.log(lon);
+
+          $scope.marker.options = {
+            draggable: true,
+            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lon: ' + $scope.marker.coords.longitude,
+            labelAnchor: "100 0",
+            labelClass: "marker-labels"
+          };
+        }
+      }
+    };
+
+    $scope.placeToMarker = function(searchBox, id) {
+        var place = searchBox.getPlaces();
+        console.log(place);
+        if(!place || place == 'undefined' || place.length == 0) {
+            return;
+        }
+
+        console.log( place[0].geometry.location.lat(), place[0].geometry.location.lng());
+        $scope.map.control.refresh({latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()});
+
+        $scope.marker.coords = {latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()};
+    }
+   
+
+    var events = {
+        places_changed: function (searchBox) {
+            var id = 0;
+            $scope.placeToMarker(searchBox, id);
+        }
+    }
+
+  
+
+    $scope.searchbox = { template:'searchbox.tpl.html', events:events};
+
+
     // details mock
     $scope.status = {
         open1: true
@@ -90,7 +145,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
             }),
-            resourceRequirements: $scope.project.resourceRequirements
+            resourceRequirements: $scope.project.resourceRequirements,
+            projectLocation: {
+                address: 'Testadresse',
+                latitude: 22.22,
+                longitude: 23.22,
+                projectId: $scope.project.id
+            }
         };
 
         console.log(project);

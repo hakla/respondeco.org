@@ -10,11 +10,8 @@ import org.respondeco.respondeco.domain.RatingPermission;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
-import org.respondeco.respondeco.service.RatingService;
-import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -56,13 +53,16 @@ public class ProjectController {
     private ResourceService resourceService;
     private RatingService ratingService;
     private UserService userService;
+    private ProjectLocationService projectLocationService;
 
     @Inject
-    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService, UserService userService) {
+    public ProjectController(ProjectService projectService, ResourceService resourceService, RatingService ratingService, UserService userService,
+                             ProjectLocationService projectLocationService) {
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
         this.userService = userService;
+        this.projectLocationService = projectLocationService;
     }
 
     /**
@@ -127,6 +127,12 @@ public class ProjectController {
                 project.getPropertyTags(),
                 project.getResourceRequirements(),
                 project.getLogo() != null ? project.getLogo().getId() : null);
+
+            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
+
+            projectLocationService.createProjectLocation(newProject.getId(), projectLocationDTO.getAddress(),
+                projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+
             ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(newProject, null);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch(IllegalValueException e) {

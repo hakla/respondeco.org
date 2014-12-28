@@ -55,4 +55,7 @@ public class ProjectRequestDTO {
     private Long organizationId;
     private Long managerId;
 
+    @ApiModelProperty(value = "Location of the Project")
+    private ProjectLocationDTO projectLocation;
+
 }
