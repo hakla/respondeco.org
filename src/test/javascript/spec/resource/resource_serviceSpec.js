@@ -23,9 +23,8 @@ describe('Resource Service Tests ', function () {
 
         it('should call the backend when resource gets saved', function(){
             var returnData = { result: 'ok' };
-            var resource = { name: 'Resource', amount: '1', dateStart: 'Dec 6, 2014 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
-                company: 'Company' };
+            var resource = { name: 'Resource', amount: '1', dateStart: '2014-11-11',
+                dateEnd: '2014-11-11', isCommercial: 'true'};
             var organizationId = 1;
 
             httpBackend.expectPOST('app/rest/resourceoffers').respond(returnData);
@@ -36,24 +35,26 @@ describe('Resource Service Tests ', function () {
 
         it('should get resources from the backend', function() {
 
-            httpBackend.expectGET('app/rest/resourceoffers').respond([{
-                id: 0, name: 'TestResource', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
-                company: 'Company'
-            }, {
-                id: 1, name: 'TestResource2', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'false',
-                company: 'Company'
-            }, {
-                id: 2, name: 'TestResource3', amount: '7', dateStart: 'Dec 6, 2013 20:35:02',
-                dateEnd: 'Dec 6, 2013 20:35:02', isCommercial: 'true',
-                company: 'Company'
-            }]);
+            httpBackend.expectGET('app/rest/resourceoffers').respond(
+                {
+                    resourceOffers: [{
+                        id: 0, name: 'TestResource', amount: '7', dateStart: '2014-11-11',
+                        dateEnd: '2014-11-11', isCommercial: 'true'
+                    }, {
+                        id: 1, name: 'TestResource2', amount: '7', dateStart: '2014-11-11',
+                        dateEnd: '2014-11-11', isCommercial: 'false'
+                    }, {
+                        id: 2, name: 'TestResource3', amount: '7', dateStart: '2014-11-11',
+                        dateEnd: '2014-11-11', isCommercial: 'true'
+                    }],
+                    totalItems: 3
+                    
+                });
 
             var resources;
 
-            serviceTested.query(function (test) {
-                resources = test;
+            serviceTested.query(function (response) {
+                resources = response.resourceOffers;
             });
 
             expect(resources).toBeUndefined();

@@ -13,7 +13,8 @@ respondecoApp.factory('Project', function($resource, $http) {
         'apply': { method: 'POST', url: '/app/rest/projects/apply' },
         'checkIfRatingPossible' : {method: 'GET', isArray: true, url: 'app/rest/projects/:pid/ratings'},
         'editable' : {method: 'GET', url: 'app/rest/projects/:id/editable', ignoreAuthModule: true},
-        'deletePosting' : {method: 'DELETE', url: 'app/rest/projects/:id/postings/:pid'}
+        'deletePosting' : {method: 'DELETE', url: 'app/rest/projects/:id/postings/:pid'},
+        'query': {method: 'GET', url: 'app/rest/projects'}
     });
 }).factory('ResourceRequirement', function($resource) {
     return $resource('app/rest/resourcerequirements', {})

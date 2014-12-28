@@ -68,7 +68,8 @@ respondecoApp.controller('LogoutController', function($location, AuthenticationS
     AuthenticationSharedService.logout();
 });
 
-respondecoApp.controller('SettingsController', function($scope, Account, AuthenticationSharedService, OrgJoinRequest, Organization) {
+respondecoApp.controller('SettingsController', function($scope, $location, Account, AuthenticationSharedService,
+                                                        OrgJoinRequest, Organization) {
     $scope.onComplete = function(fileItem, response) {
         $scope.settingsAccount.profilePicture = response;
         $scope.profilePicture = response.id;
@@ -82,22 +83,27 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
 
     $scope.settingsAccount = {};
     Account.get(function(account) {
-        $scope.settingsAccount = account;
-
-        if ($scope.settingsAccount.organizationId != null) {
-            reloadOrganization($scope.settingsAccount.organizationId);
-        }
-
-        if ($scope.settingsAccount.firstName == null) {
-            $scope.fullName = $scope.settingsAccount.lastName;
-        } else if ($scope.settingsAccount.lastName == null) {
-            $scope.fullName = $scope.settingsAccount.firstName;
+        //account is an organization account, redirect to organization page
+        if(account.id === account.organization.ownerId) {
+            $location.path("/organization/" + account.organization.id);
         } else {
-            $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
-        }
+            $scope.settingsAccount = account;
 
-        if (account.profilePicture != null) {
-            $scope.profilePicture = account.profilePicture.id;
+            if ($scope.settingsAccount.organizationId != null) {
+                reloadOrganization($scope.settingsAccount.organizationId);
+            }
+
+            if ($scope.settingsAccount.firstName == null) {
+                $scope.fullName = $scope.settingsAccount.lastName;
+            } else if ($scope.settingsAccount.lastName == null) {
+                $scope.fullName = $scope.settingsAccount.firstName;
+            } else {
+                $scope.fullName = $scope.settingsAccount.firstName + " " + $scope.settingsAccount.lastName;
+            }
+
+            if (account.profilePicture != null) {
+                $scope.profilePicture = account.profilePicture.id;
+            }
         }
     });
 
@@ -203,11 +209,18 @@ respondecoApp.controller('SettingsController', function($scope, Account, Authent
 
 
 respondecoApp.controller('RegisterController', function($scope, $translate, Register, $location, $routeParams) {
+    $scope.activation = false;
     $scope.success = null;
     $scope.error = null;
     $scope.doNotMatch = null;
     $scope.errorUserExists = null;
-    $scope.registerAccount = {};
+    $scope.registerAccount = {
+        orgname: null,
+        npo:null,
+        email: null,
+        password: null,
+        langKey: "de"
+    };
 
     if ($location.path() === '/activateInvitation') {
         $scope.activation = true;

@@ -3,14 +3,16 @@
         {{ 'resource.title' | translate }}
     </h1>
 
-    <form name="searchForm" class="row" role="form" novalidate ng-submit="search()">
+    <form name="searchForm" class="row" role="form" novalidate>
         <div class="form-group col-md-9">
             <label translate="resource.search.filter">name / tags / organization</label>
             <input type="text" class="form-control" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
         </div>
         <div class="form-group col-md-3">
-            <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label>
-            <button class="btn btn-default" ng-model="resourceSearch.isCommercial" btn-checkbox btn-checkbox-true="false" btn-checkbox-false="true" translate="resource.search.free"></button>
+            <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label><br>
+            <button class="btn {{ resourceSearch.isFree ? 'btn-success' : 'btn-primary'}} btn-default" ng-model="resourceSearch.isFree" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+                 <span class="glyphicon {{ resourceSearch.isFree ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'resource.search.free' | translate}}
+            </button>
         </div>
         <div class="col-md-5">
             <button id="searchButton" type="button" class="btn btn-default " ng-click="search()">
@@ -21,6 +23,7 @@
 
     <div class="row col-md-12">
         <ul class="resources">
+            <p>Es wurden {{totalItems}} Ressourcen gefunden</p>
             <li class="resource row hover-toggle" ng-repeat="resource in resources">
                 <div class="col-md-1">
                     <uploaded-image name="resource.logo.id"></uploaded-image>
@@ -37,10 +40,10 @@
                 </div>
                 <h2 class="col-md-4">
                     {{ resource.name }}
-                    <span ng-hide="resource.amount == 1">({{ resource.amount }})</span>
+                    <span ng-hide="resource.amount == 1">({{ resource.amount }})</span><br>
                     <sup>
                         <small>
-                            {{ resource.startDate }} - {{ resource.endDate }}
+                            {{ resource.startDate | date }} - {{ resource.endDate | date }}
                         </small>
                     </sup>
                     <div class="organization">
@@ -51,6 +54,11 @@
             </li>
         </ul>
     </div>
+
+
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage"
+        ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
+
 </div>
 
 <div class="modal fade modal-claim" id="claimResourceModal" tabindex="-1" role="dialog" aria-labelledby="resourceModalLabel"

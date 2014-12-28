@@ -19,6 +19,8 @@ import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -94,6 +96,7 @@ public class ProjectServiceTest {
         defaultOrganization = new Organization();
         defaultOrganization.setName("test org");
         defaultOrganization.setId(1L);
+        defaultOrganization.setVerified(true);
 
         defaultUser = new User();
         defaultUser.setId(1L);
@@ -431,10 +434,13 @@ public class ProjectServiceTest {
         String name = "project";
         String tagsString = "tag2, tag3,   tag5,  ";
         List<String> tagsList = Arrays.asList("tag2", "tag3", "tag5");
-        when(projectRepositoryMock.findByNameAndTags(name, tagsList, null))
-                .thenReturn(Arrays.asList(basicProject, secondProject));
 
-        List<Project> projects = projectService.findProjects(name, tagsString, null);
+        Page<Project> page = new PageImpl<>(Arrays.asList(basicProject, secondProject));
+
+        when(projectRepositoryMock.findByNameAndTags(name, tagsList, null))
+                .thenReturn(page);
+
+        List<Project> projects = projectService.findProjects(name, tagsString, null).getContent();
 
         verify(projectRepositoryMock, times(1)).findByNameAndTags("%" + name + "%", tagsList, null);
     }
@@ -454,10 +460,10 @@ public class ProjectServiceTest {
         String tagsString = "tag2, tag3,   tag5,  ";
         List<String> tagsList = Arrays.asList("tag2", "tag3", "tag5");
         when(projectRepositoryMock.findByOrganizationAndNameAndTags(defaultOrganization.getId(), name, tagsList, null))
-                .thenReturn(Arrays.asList(basicProject, secondProject));
+                .thenReturn(new PageImpl<Project>(Arrays.asList(basicProject, secondProject)));
 
         List<Project> projects = projectService
-                .findProjectsFromOrganization(defaultOrganization.getId(), name, tagsString, null);
+                .findProjectsFromOrganization(defaultOrganization.getId(), name, tagsString, null).getContent();
 
         verify(projectRepositoryMock, times(1))
                 .findByOrganizationAndNameAndTags(defaultOrganization.getId(), "%" + name + "%", tagsList, null);

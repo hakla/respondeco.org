@@ -126,6 +126,7 @@ public class OrgJoinRequestControllerTest {
         organization.setEmail("test@email.com");
         organization.setOwner(defaultUser);
         organization.setIsNpo(false);
+        organization.setVerified(true);
         organizationRepository.save(organization);
         orgjoinrequestDTO = new OrgJoinRequestDTO();
         orgjoinrequestDTO.setOrganization(OrganizationResponseDTO.fromEntity(organization,null));

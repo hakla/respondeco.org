@@ -99,6 +99,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             postings: $scope.project.postings
         };
 
+        console.log(project);
+
         Project[isNew ? 'save' : 'update'](project,
             function() {
                 $scope.projects = Project.query();

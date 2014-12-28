@@ -1,0 +1,37 @@
+<div>
+
+    <h2 translate='organization.verify.verification'>Verify Organizations</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>E-mail</th>
+            <th>NPO</th>
+            <th translate="organization.verify.verification">verification</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="organization in organizations">
+                <td>
+                    {{organization.name}}
+                </td>
+                <td>
+                    {{organization.email}}
+                </td>
+                <td>
+                    <span class="label label-success" ng-show="organization.isNpo">NPO</span>
+                    <span class="label label-default" ng-show="!organization.isNpo">Commercial</span>
+                </td>
+                <td>
+                    <button class="btn btn-success" ng-show="!organizations[organization.id].verified"
+                            ng-click="verify(organization.id, true)"
+                            translate="organization.verify.verify">Verify</button>
+                    <button class="btn btn-danger" ng-show="organizations[organization.id].verified"
+                            ng-click="verify(organization.id, false)"
+                            translate="organization.verify.unverify">Un-Verify</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

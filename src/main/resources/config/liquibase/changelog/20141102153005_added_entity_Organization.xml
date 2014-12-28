@@ -38,6 +38,7 @@
             <column name="is_active" type="boolean"/>
             <column name="image_id" type="bigint" defaultValue="NULL"/>
             <column name="postingfeed_id" type="bigint"/>
+            <column name="verified" type="boolean" defaultValue="false"/>
         </createTable>
         <addForeignKeyConstraint
                 constraintName="fk_postingfeed_organization_id"
@@ -45,6 +46,5 @@
                 baseTableName="T_ORGANIZATION"
                 referencedColumnNames="id"
                 referencedTableName="T_POSTINGFEED"/>
-        
     </changeSet>
 </databaseChangeLog>

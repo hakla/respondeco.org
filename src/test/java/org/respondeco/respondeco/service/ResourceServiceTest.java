@@ -163,6 +163,7 @@ public class ResourceServiceTest {
         expOrg = new Organization();
         expOrg.setId(1L);
         expOrg.setOwner(loggedInUser);
+        expOrg.setVerified(true);
         loggedInUser.setOrganization(expOrg);
         when(this.userService.getUserWithAuthorities()).thenReturn(loggedInUser);
         when(this.organizationRepository.findOne(isA(longCl))).thenReturn(expOrg);

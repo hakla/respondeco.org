@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-6">
             <form name="searchform" role="form" novalidate
-                  class="ng-scope" ng-submit="search()">
+                  class="ng-scope" ng-submit="searchButton()">
 
                 <div class="form-group col-xs-6">
                     <label translate="project.name">Name</label>
@@ -44,4 +44,8 @@
                           ng-repeat="project in projects"></resp-project>
         </div>
     </div>
+
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
+
+    <p> Es wurden {{totalItems}} Projekte gefunden! </p>
 </div>

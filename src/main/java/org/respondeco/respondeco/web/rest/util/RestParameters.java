@@ -90,4 +90,14 @@ public class RestParameters {
         return new PageRequest(page, pageSize, sort);
     }
 
+    @Override
+    public String toString() {
+        return "RestParameters: {" +
+            " page: " + page +
+            " pageSize: " + pageSize +
+            " fields: " + fields +
+            " sort: " + sort +
+            "}";
+    }
+
 }

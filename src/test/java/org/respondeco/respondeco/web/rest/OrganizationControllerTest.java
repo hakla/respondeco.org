@@ -9,11 +9,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +26,9 @@ import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
+import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
@@ -336,7 +339,7 @@ public class OrganizationControllerTest {
 
         //do nothing but return immediately without errors
         doAnswer(voidInterceptor).when(organizationService)
-            .updaterOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+            .updateOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
 
         restOrganizationMockMvc.perform(put("/app/rest/organizations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -347,7 +350,7 @@ public class OrganizationControllerTest {
     @Test
     public void testUpdateOrganization_expectNOT_FOUND_cannotUpdateNonexistingOrganization() throws Exception {
         doThrow(NoSuchOrganizationException.class).when(organizationService)
-            .updaterOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+            .updateOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
 
         restOrganizationMockMvc.perform(put("/app/rest/organizations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -358,7 +361,7 @@ public class OrganizationControllerTest {
     @Test
     public void testUpdateOrganization_expectBAD_REQUEST_serviceThrowsIllegalArgumentException() throws Exception {
         doThrow(IllegalArgumentException.class).when(organizationService)
-            .updaterOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+            .updateOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
 
         restOrganizationMockMvc.perform(put("/app/rest/organizations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

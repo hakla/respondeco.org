@@ -29,6 +29,7 @@
                 "register": "Registrierung"
             },
             "admin": "Administration",
+            "admin.verify": "Verifizierung",
             "language": "Sprache"
         },
         "form": {
@@ -40,13 +41,18 @@
             "confirmpassword": "Neues Passwort bestätigen",
             "confirmpassword.placeholder": "Bestätigen Sie ihr neues Passwort",
             "email": "E-Mail Adresse",
-            "email.placeholder": "Ihre E-Mail Adresse",
+            "email.placeholder": "Offizielle E-Mail Adresse der Organisation",
             "description": "Beschreibung",
             "send": "Absenden",
             "cancel": "Abbrechen",
             "confirm": "Bestätigen",
             "save": "Speichern",
+<<<<<<< HEAD
             "postingInformation": "Posting"
+=======
+            "orgname": "Name der Organisation",
+            "orgname.placeholder": "Der Name Ihrer Organisation"
+>>>>>>> develop
         },
 
         "messages": {
@@ -135,6 +141,7 @@
     "project": {
         "info": "Projekt Information",
         "title": "Projekte",
+        "logotext": "Projekt-Logo",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -510,10 +517,20 @@
         "ownresources": "Ressourcen anzeigen",
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
+        "newproject": "Neues Projekt anlegen",
         "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
-            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen"
+            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
+            "notverified": "Ihre Organisation wurde noch nicht validiert!"
+        },
+        "verify": {
+            "verify": "Verifizieren",
+            "unverify": "Verfizierung löschen",
+            "verification": "Verifizierung",
+            "verified": "Verifiziert",
+            "nonverified": "Nicht verifiziert",
+            "status": "Status"
         }
     },
     "resourcematch": {
@@ -548,7 +565,7 @@
         "available": "Verfügbar",
         "search": {
             "filter": "Name / Tags / Organisation",
-            "type": "Art der Ressource",
+            "type": "Filter",
             "request": "Ressource anfordern",
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"

@@ -13,6 +13,7 @@ import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -101,18 +102,24 @@ public class OrgJoinRequestController {
                     responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
                 } catch (NoSuchOrganizationException e1) {
                     log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
-                    responseEntity = new ResponseEntity<>(e1.getMessage(), HttpStatus.BAD_REQUEST);
+                    responseEntity = ErrorHelper.buildErrorResponse(e);
                 } catch (NoSuchUserException e1) {
                     log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
-                    responseEntity = new ResponseEntity<>(e1.getMessage(), HttpStatus.BAD_REQUEST);
+                    responseEntity = ErrorHelper.buildErrorResponse(e);
+                } catch (OrganizationNotVerifiedException e1) {
+                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+                    responseEntity = ErrorHelper.buildErrorResponse(e);
                 }
             } else {
                 log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
-                responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                responseEntity = ErrorHelper.buildErrorResponse(e);
             }
         } catch (AlreadyInvitedToOrganizationException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
+        } catch (OrganizationNotVerifiedException e) {
+            log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }

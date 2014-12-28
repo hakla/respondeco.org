@@ -2,6 +2,7 @@ package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
+import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.slf4j.Logger;
@@ -43,6 +44,35 @@ public class OrganizationService {
         this.imageRepository = imageRepository;
         this.projectService = projectService;
         this.postingFeedRepository = postingFeedRepository;
+    }
+
+    /**
+     * register an organization account
+     * @param name name of the organization
+     * @param email email of the organization, used as login
+     * @param password the password for the account
+     * @param npo indicates if the organization is an npo
+     * @param langKey the default language of the account
+     * @return the created organization
+     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
+     */
+    public Organization registerOrganization(String name, String email, String password, Boolean npo, String langKey)
+        throws OrganizationAlreadyExistsException {
+        if(organizationRepository.findByName(name)!=null) {
+            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
+        }
+        User user = userService.createUserInformation(email.toLowerCase(),
+            password, null, null, null, email.toLowerCase(),
+            "UNSPECIFIED", null, langKey, null);
+        Organization organization = new Organization();
+        organization.setName(name);
+        organization.setEmail(email.toLowerCase());
+        organization.setIsNpo(npo);
+        organization.setOwner(user);
+        organizationRepository.save(organization);
+        user.setOrganization(organization);
+        userRepository.save(user);
+        return organization;
     }
 
     /**
@@ -182,15 +212,15 @@ public class OrganizationService {
      * @param logo an ImageDTO containing the id of the organization's logo
      * @throws NoSuchOrganizationException if the user is not the owner of any organization
      */
-    public void updaterOrganizationInformation(String name, String description, String email,
-                                               Boolean isNpo, ImageDTO logo) throws NoSuchOrganizationException {
+    public void updateOrganizationInformation(String name, String description, String email,
+                                              Boolean isNpo, ImageDTO logo) throws NoSuchOrganizationException {
         Long logoId = null;
 
         if (logo != null) {
             logoId = logo.getId();
         }
 
-        updaterOrganizationInformation(name, description, email, isNpo, logoId);
+        updateOrganizationInformation(name, description, email, isNpo, logoId);
     }
 
     /**
@@ -203,7 +233,7 @@ public class OrganizationService {
      * @param logoId
      * @throws NoSuchOrganizationException
      */
-    public void updaterOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchOrganizationException {
+    public void updateOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchOrganizationException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
@@ -250,7 +280,8 @@ public class OrganizationService {
      * @throws NoSuchOrganizationException if the given user does not belong to an organization
      * @throws NotOwnerOfOrganizationException if the current user is not the owner of the user's organization
      */
-    public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException, NotOwnerOfOrganizationException {
+    public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException,
+        NotOwnerOfOrganizationException, OrganizationNotVerifiedException {
         User user = userService.getUserWithAuthorities();
         User member = userRepository.findOne(userId);
 
@@ -260,10 +291,15 @@ public class OrganizationService {
         System.out.println(member);
         Organization organization = organizationRepository.findOne(member.getOrganization().getId());
         if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization %s does not exist", member.getOrganization().getId()));
+            throw new NoSuchOrganizationException(String.format("Organization %s does not exist",
+                member.getOrganization().getId()));
+        }
+        if(organization.getVerified() == false) {
+            throw new OrganizationNotVerifiedException(organization.getId());
         }
         if(organization.getOwner().equals(user) == false) {
-            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ", organization.getOwner()));
+            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ",
+                organization.getOwner()));
         }
         log.debug("Deleting member from organization", user.getLogin(), organization.getName());
         member.setOrganization(null);
@@ -285,7 +321,9 @@ public class OrganizationService {
         }
 
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUsersByOrganizationId(orgId);
+        List<User> members = userRepository.findUsersByOrganizationId(orgId);
+        members.remove(organization.getOwner());
+        return members;
     }
 
     /**
@@ -317,5 +355,29 @@ public class OrganizationService {
             return users;
         }
         return userRepository.findAll();
+    }
+
+    /**
+     * verify or un-verify an organization
+     * @param id the id of the organization
+     * @param value the value of the verified flag
+     * @return the updated organization
+     * @throws NoSuchOrganizationException if the organization with the given id could not be found
+     * @throws OperationForbiddenException if the current user is not administrator
+     */
+    public Organization verify(Long id, Boolean value) throws NoSuchOrganizationException, OperationForbiddenException {
+        User currentUser = userService.getUserWithAuthorities();
+        //if current user is not admin
+        if(currentUser.getAuthorities().stream().noneMatch(auth -> auth.getName().equals(AuthoritiesConstants.ADMIN))) {
+            throw new OperationForbiddenException(
+                String.format("Current user %s does not have administration authorities", currentUser.getLogin()));
+        }
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
+        if(organization == null) {
+            throw new NoSuchOrganizationException(id);
+        }
+        organization.setVerified(value);
+        organizationRepository.save(organization);
+        return organization;
     }
 }

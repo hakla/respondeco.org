@@ -45,40 +45,40 @@ describe('ProjectSearch Controller Tests ', function () {
         });
 
         it('should query projects by name and set the found projects on success', function () {
-            var projectList = [{id: 1, name: "test", purpose: "blub", tags: []}];
+            var response = {projects: [{id: 1, name: "test", purpose: "blub", tags: []}], totalItems:3};
             spyOn(ProjectService, "query");
             scope.project = {name: "test"};
             scope.search();
 
             expect(ProjectService.query).toHaveBeenCalledWith(
-                {filter: "test", tags: ""},
+                {pageSize:20, page:0, filter: "test", tags: ""},
                 jasmine.any(Function),
                 jasmine.any(Function));
 
             //Simulate call to success callback
-            ProjectService.query.calls.mostRecent().args[1](projectList);
+            ProjectService.query.calls.mostRecent().args[1](response);
             expect(scope.searchError).toBeNull();
             expect(scope.noProjects).toBeNull();
-            expect(scope.projects).toBe(projectList);
+            expect(scope.projects).toBe(response.projects);
         });
 
         it('should query projects by tags and set the found projects on success', function () {
-            var projectList = [{id: 1, name: "test", purpose: "blub", tags: []}];
+            var response = {projects: [{id: 1, name: "test", purpose: "blub", tags: []}], totalItems:3};
             spyOn(ProjectService, "query");
             scope.selectedTags = [{name: "test"}, {name: "foo"}, {name: "bar"}];
             scope.search();
 
             expect(ProjectService.query).toHaveBeenCalledWith(
-                {filter: null, tags: "test,foo,bar"},
+                {pageSize:20, page:0, filter: null, tags: "test,foo,bar"},
                 jasmine.any(Function),
                 jasmine.any(Function));
 
             //Simulate call to success callback
-            ProjectService.query.calls.mostRecent().args[1](projectList);
+            ProjectService.query.calls.mostRecent().args[1](response);
             expect(scope.searchError).toBeNull();
             expect(scope.noProjects).toBeNull();
             expect(scope.noProjects).toBeNull();
-            expect(scope.projects).toBe(projectList);
+            expect(scope.projects).toBe(response.projects);
         });
 
         it('should query projects and set searchError on failure', function () {
@@ -88,7 +88,7 @@ describe('ProjectSearch Controller Tests ', function () {
             scope.search();
 
             expect(ProjectService.query).toHaveBeenCalledWith(
-                {filter: "test", tags: "test"},
+                {page:0, pageSize:20, filter: "test", tags: "test"},
                 jasmine.any(Function),
                 jasmine.any(Function));
 
@@ -104,12 +104,12 @@ describe('ProjectSearch Controller Tests ', function () {
             scope.search();
 
             expect(ProjectService.query).toHaveBeenCalledWith(
-                {filter: null, tags: "test,foo,bar"},
+                {page:0, pageSize:20, filter: null, tags: "test,foo,bar"},
                 jasmine.any(Function),
                 jasmine.any(Function));
 
             //Simulate call to success callback
-            ProjectService.query.calls.mostRecent().args[1]([]);
+            ProjectService.query.calls.mostRecent().args[1]({projects:[], totalItems:0});
             expect(scope.searchError).toBeNull();
             expect(scope.noProjects).toBe("NOPROJECTS");
         });

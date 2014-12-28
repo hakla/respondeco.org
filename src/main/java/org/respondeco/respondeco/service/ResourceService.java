@@ -15,6 +15,7 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -216,13 +217,21 @@ public class ResourceService {
      */
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, LocalDate startDate,
-                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price) {
+                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
+        throws NoSuchOrganizationException, OrganizationNotVerifiedException {
+        Organization organization = organizationRepository.findOne(organizationId);
+        if(organization == null) {
+            throw new NoSuchOrganizationException(organizationId);
+        }
+        if(organization.getVerified() == false) {
+            throw new OrganizationNotVerifiedException(organizationId);
+        }
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);
         newOffer.setAmount(amount);
         newOffer.setOriginalAmount(amount);
         newOffer.setDescription(description);
-        newOffer.setOrganization(organizationRepository.findOne(organizationId));
+        newOffer.setOrganization(organization);
         newOffer.setIsCommercial(isCommercial);
         newOffer.setPrice(price);
         newOffer.setStartDate(startDate);
@@ -306,9 +315,11 @@ public class ResourceService {
      * @param restParameters Rest Parameters to be set
      * @return List of active ResourceOffers filtered by set parameters. (searchField, isCommercial)
      */
-    public List<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
+    public Page<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
 
         PageRequest pageRequest = null;
+        Page page;
+
         if(restParameters != null) {
             pageRequest = restParameters.buildPageRequest();
         }
@@ -316,7 +327,9 @@ public class ResourceService {
         List<ResourceOffer> entries;
 
         if(searchField.isEmpty() && isCommercial == null) {
-            entries = resourceOfferRepository.findByActiveIsTrue();
+            page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
+
+            entries = page.getContent();
         } else {
             //create dynamic query with help of querydsl
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
@@ -342,10 +355,14 @@ public class ResourceService {
             Predicate predicateAnyOf = ExpressionUtils.anyOf(resourceOfferNameLike, resourceOfferOrganizationLike, resourceOfferTagLike);
             Predicate where = ExpressionUtils.allOf(predicateAnyOf, resourceCommercial, isActive);
 
-            entries = resourceOfferRepository.findAll(where, pageRequest).getContent();
+            page = resourceOfferRepository.findAll(where, pageRequest);
+
+            log.debug("TOTALELEMENTS: " + page.getTotalElements());
+            log.debug("TOTALPAGES: " + page.getTotalPages());
+            log.debug("PAGETOSTRING: " + page.toString());
         }
 
-        return entries;
+        return page;
     }
 
     /**

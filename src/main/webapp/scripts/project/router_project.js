@@ -6,11 +6,6 @@ respondecoApp
                 .when('/projects', {
                     templateUrl: 'views/projects_search.html',
                     controller: 'ProjectSearchController',
-                    resolve: {
-                        resolvedProjects: ['Project', function(Project) {
-                            return Project.query();
-                        }]
-                    },
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }

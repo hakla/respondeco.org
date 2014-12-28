@@ -67,6 +67,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $location.path('requests');
     }
 
+    $scope.redirectToNewProject = function() {
+        $location.path('projects/edit/new');
+    }
+
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);
     }

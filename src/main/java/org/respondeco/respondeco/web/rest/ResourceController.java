@@ -19,6 +19,7 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +30,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,14 +63,14 @@ public class ResourceController {
      * @param pageSize size of the returned page
      * @param fields defines which fields will be returned
      * @param order defines the order of the returned fields
-     * @return
+     * @return ResponseEntity containing a ResourceOfferPaginationResponseDTO object
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourceoffers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ResourceOfferResponseDTO> getAllResourceOffers(
+    public ResponseEntity<ResourceOfferPaginationResponseDTO> getAllResourceOffers(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) Boolean commercial,
         @RequestParam(required = false) Integer page,
@@ -81,11 +83,14 @@ public class ResourceController {
         if(name == null) name = "";
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceOffer> entries = resourceService.getAllOffers(name, commercial, restParameters);
+        log.debug(restParameters.toString());
 
-        List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(entries, restParameters.getFields());
+        Page<ResourceOffer> resultPage = resourceService.getAllOffers(name, commercial, restParameters);
 
-        return resourceOfferResponseDTOs;
+        ResponseEntity<ResourceOfferPaginationResponseDTO> responseEntity =
+            new ResponseEntity<>(ResourceOfferPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields()), HttpStatus.OK);
+
+        return responseEntity;
     }
 
     /**
@@ -198,7 +203,7 @@ public class ResourceController {
     @Timed
     @Valid
     public ResponseEntity<?> createResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO) throws Exception{
-        ResponseEntity<ResourceOfferDTO> result = null;
+        ResponseEntity<?> result = null;
         String message = null;
         try {
             ResourceOffer offer = this.resourceService.createOffer(
@@ -215,9 +220,8 @@ public class ResourceController {
             );
             resourceOfferDTO.setId(offer.getId());
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
-        } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't save Resource Offer with description '%s' and Organisation Id: %d.",
-                resourceOfferDTO.getDescription(), resourceOfferDTO.getOrganizationId());
+        } catch (IllegalValueException e) {
+            result = ErrorHelper.buildErrorResponse(e);
         } finally {
             if (message != null) {
                 HttpHeaders headers = new HttpHeaders();
@@ -436,7 +440,7 @@ public class ResourceController {
             message = e.getMessage();
         }
         catch (Exception e){
-            message = String.format("Unexpected error. Trying to delete Resource Reqirement for ID: %d failed", resourceRequirementId);
+            message = String.format("Unexpected error. Trying to delete Resource Requirement for ID: %d failed", resourceRequirementId);
         }
         finally {
             if (message != null) {

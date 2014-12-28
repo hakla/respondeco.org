@@ -2,6 +2,8 @@
 
 respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter) {
 
+	var PAGESIZE = 20;
+
 	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
 	$scope.organization = null;
@@ -9,7 +11,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
  	$scope.selectedTags = [];
  	$scope.searchTags = [];
 
-	$scope.resourceSearch = {name: null, isCommercial: null};
+	$scope.resourceSearch = {name: null, isFree: null};
 
 	$scope.resourceRequirements = [];
 	$scope.showRequirements = false;
@@ -23,11 +25,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.orgId = null;
 	$scope.claim = {};
 
-	$scope.resources = Resource.query();
+	$scope.currentPage;
+
+	$scope.filter = {pageSize:PAGESIZE};
 
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
-	  		$scope.orgId = account.organizationId;
+	  		$scope.orgId = account.organization.id;
 
 	  		if($location.path() === '/ownresource') {
 		    	Resource.getByOrgId({
@@ -36,7 +40,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		      		$scope.resources = data;
 		      	});
 		  	} else {
-		    	$scope.resources = Resource.query();
+		  		$scope.search();
 			}
 
 			if($location.path() === '/requests') {
@@ -53,6 +57,15 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		});
 	};
 
+	$scope.onPageChange = function() {
+		$scope.filter.page = $scope.currentPage-1;;
+
+		Resource.query($scope.filter, function(response) {
+			$scope.resources = response.resourceOffers;
+    		$scope.totalItems = response.totalItems;
+		})
+	}
+
 	$scope.onUploadComplete = function(fileItem, response) {
     	$scope.resource.logoId = response.id;
     	$scope.logo = response;
@@ -60,7 +73,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	//Claim Resource
 	$scope.updateProjects = function() {
-		$scope.projects = Project.getProjectsByOrgId({organizationId:$scope.orgId}, function() {
+		Project.getProjectsByOrgId({organizationId:$scope.orgId}, function(response) {
+			$scope.projects = response.projects;
+
 			$scope.projects.forEach(function(project, key) {
 				if (project.name === 'ip') {
 					project.name = $scope.organization.name;
@@ -189,16 +204,20 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	}
 
 	$scope.search = function() {
-		var filter = {
-			name: $scope.resourceSearch.name
-		};
+		$scope.filter.name = $scope.resourceSearch.name;
 
-		if ($scope.resourceSearch.isCommercial === false) {
-			filter.commercial = false;
+		if ($scope.resourceSearch.isFree === true) {
+			$scope.filter.commercial = false;
+		} else {
+			$scope.filter.commercial = undefined;	
 		}
 
-		Resource.query(filter, function(res) {
-				$scope.resources = res;
+		$scope.currentPage = 1;
+		$scope.filter.page = 0;
+
+		Resource.query($scope.filter, function(response) {
+				$scope.resources = response.resourceOffers;
+				$scope.totalItems = response.totalItems;
 			}, function(error) {
 				$scope.searchError = true;
 			});
