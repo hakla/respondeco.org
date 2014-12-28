@@ -37,13 +37,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
       events: {
         dragend: function (marker, eventName, args) {
           var lat = marker.getPosition().lat();
-          var lon = marker.getPosition().lng();
+          var lng = marker.getPosition().lng();
           console.log(lat);
-          console.log(lon);
+          console.log(lng);
 
           $scope.marker.options = {
             draggable: true,
-            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lon: ' + $scope.marker.coords.longitude,
+            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lng: ' + $scope.marker.coords.longitude,
             labelAnchor: "100 0",
             labelClass: "marker-labels"
           };
@@ -62,6 +62,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.map.control.refresh({latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()});
 
         $scope.marker.coords = {latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()};
+        $scope.marker.address = place[0].formatted_address;
+
+        console.log($scope.marker);
     }
    
 
@@ -147,9 +150,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             }),
             resourceRequirements: $scope.project.resourceRequirements,
             projectLocation: {
-                address: 'Testadresse',
-                latitude: 22.22,
-                longitude: 23.22,
+                address: $scope.marker.address,
+                latitude: $scope.marker.coords.latitude,
+                longitude: $scope.marker.coords.longitude,
                 projectId: $scope.project.id
             }
         };

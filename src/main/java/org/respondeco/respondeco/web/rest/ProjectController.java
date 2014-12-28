@@ -4,11 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
 import javassist.bytecode.stackmap.BasicBlock;
-import org.respondeco.respondeco.domain.AggregatedRating;
-import org.respondeco.respondeco.domain.Project;
-import org.respondeco.respondeco.domain.RatingPermission;
-import org.respondeco.respondeco.domain.ResourceMatch;
-import org.respondeco.respondeco.domain.ResourceRequirement;
+import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -552,6 +548,19 @@ public class ProjectController {
         } catch (Exception e) {
 
         }
+    }
+
+    @RequestMapping(value = "/rest/locations",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<List<ProjectLocationResponseDTO>> getAllProjectLocations() {
+
+        List<ProjectLocation> projectLocations = projectLocationService.getAllLocations();
+
+        List<ProjectLocationResponseDTO> projectLocationResponseDTOs = ProjectLocationResponseDTO.fromEntities(projectLocations, null);
+
+        return new ResponseEntity<>(projectLocationResponseDTOs, HttpStatus.OK);
     }
 
 }
