@@ -36,3 +36,15 @@ respondecoApp
             })
     });
 
+respondecoApp
+    .config(function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
+        $routeProvider
+            .when('/projectsnearyou', {
+                templateUrl: 'views/projectsnearyou.html',
+                controller: 'ProjectLocationController',
+                access: {
+                    authorizedRoles: [USER_ROLES.all]
+                }
+            })
+    });
+

@@ -1,16 +1,29 @@
 package org.respondeco.respondeco.service;
 
+import com.mysema.query.jpa.JPASubQuery;
+import com.mysema.query.support.Expressions;
+import com.mysema.query.types.Predicate;
+import com.mysema.query.types.expr.NumberExpression;
+import com.mysema.query.types.path.NumberPath;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ProjectLocation;
+import org.respondeco.respondeco.domain.QProjectLocation;
 import org.respondeco.respondeco.repository.ProjectLocationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import scala.math.BigInt;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.mysema.query.types.expr.MathExpressions.*;
 
 /**
  * This service handles the logic for Project Location
@@ -108,6 +121,48 @@ public class ProjectLocationService {
         ProjectLocation projectLocation = projectLocationRepository.findByProjectId(projectId);
 
         return projectLocation;
+    }
+
+
+    public List<ProjectLocation> getNearProjects(double latitude, double longitude, double radius) {
+
+        /* //query dsl versuch
+        QProjectLocation qProjectLocation = QProjectLocation.projectLocation;
+
+        NumberPath<Double> lat = qProjectLocation.lat;
+        NumberPath<Double> lng = qProjectLocation.lng;
+        NumberPath<Double> distance = null;
+        NumberExpression<Double> formula =
+            (acos(cos(radians(Expressions.constant(48.2083)))
+                .multiply(cos(radians(lat))
+                    .multiply(cos(radians(lng).subtract(radians(Expressions.constant(16.3677)))
+                        .add(sin(radians(Expressions.constant(48.2083)))
+                            .multiply(sin(radians(lat))))))))
+                .multiply(Expressions.constant(6371)));
+
+        Predicate where = qProjectLocation.in(new JPASubQuery().from(qProjectLocation).where(formula.lt(5000)).list(qProjectLocation));
+        List<ProjectLocation> projectLocations = projectLocationRepository.findAll(where, new PageRequest(0,20)).getContent();
+
+*/
+
+
+        List<ProjectLocation> projectLocationList = new ArrayList<>();
+
+        List<Object[]> objectArrayList = projectLocationRepository.findNearProjects();
+        for(Object[] objArray : objectArrayList) {
+            ProjectLocation projectLocation = new ProjectLocation();
+            projectLocation.setId(((BigInteger)objArray[0]).longValue());
+            projectLocation.setLat((double)objArray[1]);
+            projectLocation.setLng((double) objArray[2]);
+            projectLocation.setAddress((String)objArray[3]);
+
+            Project project = projectRepository.findOne(((BigInteger) objArray[4]).longValue());
+            projectLocation.setProject(project);
+
+            projectLocationList.add(projectLocation);
+        }
+
+        return projectLocationList;
     }
 
 }
