@@ -84,7 +84,7 @@
 
              <div id="map_canvas">
                 <script type="text/ng-template" id="searchbox.tpl.html">
-                    <input style="width:300px" type="text" placeholder="Search Box" ng-model="location.address">
+                    <input style="width:300px" type="text" placeholder="Search Box" ng-model="searchbox">
                 </script>
                 <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" control="map.control">
                     <ui-gmap-search-box template="searchbox.template" events="searchbox.events"></ui-gmap-search-box>

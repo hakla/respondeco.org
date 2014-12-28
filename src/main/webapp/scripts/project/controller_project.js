@@ -23,7 +23,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceRequirementsWithMatches = [];
 
     //google maps
-    $scope.location = {address: null};
+    $scope.location = {searchbox: null};
 
     $scope.map = { control: {}, center: { latitude: 47.453368, longitude: 16.415000 }, zoom: 12 };
 
@@ -36,6 +36,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
       options: { draggable: true },
       events: {
         dragend: function (marker, eventName, args) {
+            console.log(marker);
           var lat = marker.getPosition().lat();
           var lng = marker.getPosition().lng();
 
@@ -65,18 +66,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         console.log($scope.marker);
     }
    
-
     var events = {
         places_changed: function (searchBox) {
             var id = 0;
+            console.log("places changed");
             $scope.placeToMarker(searchBox, id);
         }
     }
 
-  
-
     $scope.searchbox = { template:'searchbox.tpl.html', events:events};
-
 
     // details mock
     $scope.status = {
@@ -184,7 +182,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.project = Project.get({
             id: id
         }, function() {
-            console.log($scope.project);
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
@@ -198,9 +195,15 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 }
             }
 
-            //add google maps
+            //google maps
             if($scope.project.projectLocation !== 'undefined') {
-                $scope.staticMap = $scope.createStaticMapLink();
+                if($location.path().indexOf('edit') < 0) {
+                    $scope.staticMap = $scope.createStaticMapLink();
+                } else {
+                    $scope.map.control.refresh({latitude: $scope.project.projectLocation.latitude, longitude: $scope.project.projectLocation.longitude});
+                    $scope.marker.coords = {latitude: $scope.project.projectLocation.latitude, longitude: $scope.project.projectLocation.longitude};
+                    $scope.marker.address = $scope.project.projectLocation.address;
+                }
             }
             
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
@@ -355,10 +358,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.showResourceModal = function() {
         $('#addResource').modal('toggle');
-    }
-
-    if (isNew === false) {
-        $scope.update($routeParams.id);
     }
 
     //RATING
