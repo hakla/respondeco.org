@@ -62,7 +62,6 @@ public class ProjectController {
     }
 
     /**
-<<<<<<< HEAD
      * Organization that apply new resource to a project
      * @param projectApplyDTO data to apply
      * @return HTPP Status OK: no errors accure, BAD REQUEST: error accures
@@ -170,6 +169,11 @@ public class ProjectController {
                     project.getLogo() != null ? project.getLogo().getId() : null,
                     project.getPropertyTags(),
                     project.getResourceRequirements());
+
+            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
+            ProjectLocation location = projectLocationService.updateProjectLocation(projectLocationDTO.getProjectId(),
+                projectLocationDTO.getAddress(), projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+
             ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(updatedProject, null);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch(IllegalValueException e) {
@@ -352,6 +356,14 @@ public class ProjectController {
         if(project != null) {
             ProjectResponseDTO responseDTO = ProjectResponseDTO
                     .fromEntity(project, restParameters.getFields());
+
+            //project location
+            ProjectLocation projectLocation = projectLocationService.getProjectLocation(project.getId());
+            if(projectLocation != null) {
+                ProjectLocationResponseDTO dto = ProjectLocationResponseDTO.fromEntity(projectLocation, null);
+                responseDTO.setProjectLocation(dto);
+            }
+
             response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -562,5 +574,6 @@ public class ProjectController {
 
         return new ResponseEntity<>(projectLocationResponseDTOs, HttpStatus.OK);
     }
+
 
 }

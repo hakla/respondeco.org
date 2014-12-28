@@ -38,7 +38,7 @@ public class ProjectLocationResponseDTO {
             responseDTO.setId(projectLocation.getId());
         }
         if (fieldNames.contains("latitude")) {
-            responseDTO.setLatitute(projectLocation.getLat());
+            responseDTO.setLatitude(projectLocation.getLat());
         }
         if (fieldNames.contains("longitude")) {
             responseDTO.setLongitude(projectLocation.getLng());
@@ -76,7 +76,7 @@ public class ProjectLocationResponseDTO {
 
     private Long id;
     private String address;
-    private double latitute;
+    private double latitude;
     private double longitude;
     private ProjectResponseDTO project;
 }

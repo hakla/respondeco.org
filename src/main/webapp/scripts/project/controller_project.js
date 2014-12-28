@@ -38,8 +38,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         dragend: function (marker, eventName, args) {
           var lat = marker.getPosition().lat();
           var lng = marker.getPosition().lng();
-          console.log(lat);
-          console.log(lng);
 
           $scope.marker.options = {
             draggable: true,
@@ -170,10 +168,23 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $location.path("/projects/edit/" + $scope.project.id)
     }
 
+    $scope.createStaticMapLink = function() {
+        var lat = $scope.project.projectLocation.latitude;
+        var lng = $scope.project.projectLocation.longitude;
+        var zoom = 14;
+
+        var link = "https://maps.google.com/maps/api/staticmap?center=" + lat + "%2C" +
+        + lng +"&format=jpg&maptype=terrain&size=533x190&zoom=" + zoom + "&markers=" + lat + "%2C" +
+        lng;
+
+        return link;
+    }
+
     $scope.update = function(id) {
         $scope.project = Project.get({
             id: id
         }, function() {
+            console.log($scope.project);
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
@@ -187,6 +198,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 }
             }
 
+            //add google maps
+            if($scope.project.projectLocation !== 'undefined') {
+                $scope.staticMap = $scope.createStaticMapLink();
+            }
+            
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
@@ -240,7 +256,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         }, function() {
             $scope.editable = false;
         });
+
+        
     };
+
+
+
 
     var calculateCollected = function() {
         var reqs = $scope.resourceRequirementsWithMatches;

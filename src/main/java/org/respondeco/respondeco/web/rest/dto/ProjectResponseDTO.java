@@ -77,6 +77,7 @@ public class ProjectResponseDTO {
         if (fieldNames.contains("successful")) {
             responseDTO.setSuccessful(project.getSuccessful());
         }
+
         //TODO FIX
         /**
         if (fieldNames.contains("ratings")) {
@@ -118,5 +119,6 @@ public class ProjectResponseDTO {
     private ImageDTO logo;
     private List<RatingResponseDTO> ratings;
     private Boolean successful;
+    private ProjectLocationResponseDTO projectLocation;
 
 }
