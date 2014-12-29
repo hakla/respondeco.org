@@ -617,6 +617,14 @@
             "donate": "Spenden"
         }
     },
+    "nearProjects": {
+        "autoButton": "Meinen Standort bestimmen",
+        "viaMapButton": "Adresse manuell eingeben",
+        "noProjectsFound": "Es wurde keine Projekte in ihrer Umgebung gefunden",
+        "placeholder": {
+            "searchBox": "Adresse manuell eingeben"
+        }
+    },
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",
         "accept": "Annehmen",

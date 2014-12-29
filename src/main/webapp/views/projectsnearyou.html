@@ -1,6 +1,45 @@
 <div>
+	<div class="modal-header">
+		<h2> Projekte in meiner Nähe </h2>
+	</div>
+	
+	<div class="form-group col-md-12">
+		<button type="button" class="btn btn-default btn-success" ng-click="geolocate()">
+			{{'nearProjects.autoButton' | translate}}</button>
 
-	<img src="{{staticMap}}"></img>
+		<button type="button" class="btn btn-default btn-primary" ng-click="findNearProjects()">Projekte in meiner Nähe suchen</button>
+	</div>
 
-	<button type="button" class="btn btn-default btn-primary" ng-click="findProjectsNearMe()">Projekte in meiner Nähe</button>
+	<div class="col-md-12 alert alert-warning" ng-show="alertMessage!==undefined">
+        <strong>{{alertMessage}}</strong>
+    </div>
+	
+
+	<div class="form-group col-md-12" id="searchBoxParent">
+	  	<script type="text/ng-template" id="searchBox.template.html">
+	   		<input class="form-control" type="text" ng-model="address" placeholder="{{'nearProjects.placeholder.searchBox' | translate}}" required />
+	  	</script>
+	</div>
+
+	<div class="col-md-12">
+	<ui-gmap-google-map id="map-canvas" center="map.center" zoom="map.zoom" draggable="true" options="options" control="map.control">
+	    <ui-gmap-search-box template="searchBox.template" events="searchBox.events" parentdiv="searchBox.parentdiv"></ui-gmap-search-box>
+	    <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+  	</ui-gmap-google-map>
+  </div>
+
+  	<div class="col-md-12" ng-show="searchStarted">
+  		<h3>Gefundene Projekte</h3>
+  	</div>
+	<div class="row">
+        <div class="col-md-12">
+            <resp-project project="project" on-project-click="redirectToProject(project)"
+                          ng-repeat="project in projects"></resp-project>
+        </div>
+    	<div class="col-md-12 alert alert-warning" ng-show="noProjectsFound" translate="nearProjects.noProjectsFound">
+            <strong>There are no projects matching your criteria</strong>
+        </div>
+    </div>
+
+
 </div>

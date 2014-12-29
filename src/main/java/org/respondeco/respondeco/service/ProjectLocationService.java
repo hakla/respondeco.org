@@ -124,6 +124,14 @@ public class ProjectLocationService {
     }
 
 
+    /**
+     * Returns a List of ProjectLocations which are in a specific radius of the position given by
+     * latitude and longitude coordinates.
+     * @param latitude latitude
+     * @param longitude longitude
+     * @param radius radius in kilometres, defines the radius of found projects from the position given by latitude and longitude
+     * @return a List of ProjectLocations which represents projects near position given by latitude and longitude
+     */
     public List<ProjectLocation> getNearProjects(double latitude, double longitude, double radius) {
 
         /* //query dsl versuch
@@ -148,7 +156,7 @@ public class ProjectLocationService {
 
         List<ProjectLocation> projectLocationList = new ArrayList<>();
 
-        List<Object[]> objectArrayList = projectLocationRepository.findNearProjects();
+        List<Object[]> objectArrayList = projectLocationRepository.findNearProjects(latitude,longitude, radius);
         for(Object[] objArray : objectArrayList) {
             ProjectLocation projectLocation = new ProjectLocation();
             projectLocation.setId(((BigInteger)objArray[0]).longValue());

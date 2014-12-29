@@ -596,11 +596,7 @@ public class ProjectController {
     ) {
         log.debug("REST Request to get near projects");
 
-        double lat = 0.0;
-        double lng = 0.0;
-        double rad = 0.0;
-
-        List<ProjectLocation> projects = projectLocationService.getNearProjects(lat, lng, rad);
+        List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
 
         ResponseEntity<List<ProjectLocationResponseDTO>> responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
 

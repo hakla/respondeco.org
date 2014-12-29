@@ -16,12 +16,13 @@ public interface ProjectLocationRepository extends JpaRepository<ProjectLocation
 
     public List<ProjectLocation> findByActiveIsTrue();
 
-    @Query(value = "SELECT id, lat, lng, address, project_id, ( 6371 * acos( cos( radians(48.17) ) * cos( radians( lat ) ) " +
-        " * cos( radians( lng ) - radians(16.32) ) + sin( radians(48.17) ) * sin(radians(lat)) ) ) AS distance " +
+    @Query(value = "SELECT id, lat, lng, address, project_id, ( 6371 * acos( cos( radians(?1) ) * cos( radians( lat ) ) " +
+        " * cos( radians( lng ) - radians(?2) ) + sin( radians(?1) ) * sin(radians(lat)) ) ) AS distance " +
         "FROM T_Project_Location " +
-        "HAVING distance < 100 " +
+        "GROUP BY id, lat, lng, address, project_id " +
+        "HAVING distance < ?3 " +
         "ORDER BY distance " +
         "LIMIT 0,20",nativeQuery = true)
-    public List<Object[]> findNearProjects();
+    public List<Object[]> findNearProjects(double userLat, double userLng, double radius);
 
 }
