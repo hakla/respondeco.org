@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * ProjectLocationController
+ */
 respondecoApp.controller('ProjectLocationController', function ($scope, $location, Project) {
 
   	$scope.projects = [];
@@ -7,40 +10,47 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
   	$scope.showMap = false;
   	$scope.noProjectsFound = false;
   	$scope.searchStarted = false;
+    $scope.showSearchBox = false;
   	
-  	$scope.createMap = function() {
-	  	//google maps
-	    $scope.location = {searchbox: null};
+    //the places_changed function is called whenever a new place is entered
+    var searchBoxEvents = {
+        places_changed: function (searchBox) {
+            var id = 0;
+            $scope.placeToMarker(searchBox);
+        }
+    }
 
-	    $scope.map = { control: {}, center: { latitude: null, longitude: null }, zoom: 12 };
+    $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
+
+    /**
+     * $scope.createMap
+     *
+     * Initialize the map and the marker used for actual position
+     */
+  	$scope.createMap = function() {
+        //initial latlng coordinates belong to Austria (via googleplaces)
+	    $scope.map = { control: {}, center: { latitude: 47.516231, longitude: 14.550072 }, zoom: 7 };
 	    $scope.map.options = {scrollable:false};
 
-	     $scope.marker = {
-	      id: 0,
-	      coords: {
-	        latitude: 47.453368,
-	        longitude: 16.415000
-	      },
-	      options: { draggable: true },
-	      events: {
-	        dragend: function (marker, eventName, args) {
-	            console.log(marker);
-	          var lat = marker.getPosition().lat();
-	          var lng = marker.getPosition().lng();
+        $scope.marker = {
+            id: 0,
+            options: {
+                draggable: true
+            }
+        };
+  	}
 
-	          $scope.marker.options = {
-	            draggable: true,
-	            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lng: ' + $scope.marker.coords.longitude,
-	            labelAnchor: "100 0",
-	            labelClass: "marker-labels"
-	          };
-	        }
-	      }
-    };
-
-    $scope.placeToMarker = function(searchBox, id) {
+    /**
+     * $scope.placeToMarker
+     *
+     * @description This function is called whenever a new place is entered in the searchbox.
+     * Therefor the map position is set to the found place and the coordinates of the marker
+     * are also set.
+     * @param searchBox input field for search
+     */
+    $scope.placeToMarker = function(searchBox) {
         var place = searchBox.getPlaces();
-        console.log(place);
+
         if(!place || place == 'undefined' || place.length == 0) {
             return;
         }
@@ -50,76 +60,84 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
         $scope.marker.coords = {latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()};
         $scope.marker.address = place[0].formatted_address;
 
-        console.log($scope.marker);
-    }
-   
-   
-  	var events = {
-        places_changed: function (searchBox) {
-            var id = 0;
-            console.log("places changed");
-            $scope.placeToMarker(searchBox, id);
-        }
-    }
+        console.log($scope.marker.coords);
 
-    $scope.searchBox = { template:'searchBox.template.html', events:events, parentdiv: "searchBoxParent"};
-  	}
+        $scope.map.zoom = 14;
+    }
   	
   	
-   /**
-    * 
-    */
+    /**
+     * $scope.findNearProjects
+     *
+     * Sets the search parameters (latitude, longitude and radius) and sends a request to the
+     * Project Service to get near projects. Takes the response and creates a project array.
+     */
     $scope.findNearProjects = function() {
-    	var params = {
-    		latitude: $scope.marker.coords.latitude,
-    		longitude: $scope.marker.coords.longitude,
-    		radius: 200
-    	}
+        //search near projects in radius RADIUS km
+        var RADIUS = 100;
 
-    	Project.getNearProjects(params, function(projectLocations) {
-    		$scope.projects = [];
+        if($scope.marker.coords === undefined) {
+            $scope.alertMessage = "Bitte geben Sie zuerst ihren Standort ein!";
+        } else {
+            $scope.alertMessage = null;
 
-    		if(projectLocations.length == 0) {
-    			$scope.noProjectsFound = true;
-    		}
+            var params = {
+                latitude: $scope.marker.coords.latitude,
+                longitude: $scope.marker.coords.longitude,
+                radius: RADIUS
+            }
 
-    		projectLocations.forEach(function(element) {
-    			$scope.projects.push(element.project);
-    		})
+            Project.getNearProjects(params, function(projectLocations) {
+                $scope.projects = [];
 
-    		$scope.searchStarted = true;
-    	});
+                if(projectLocations.length == 0) {
+                    $scope.noProjectsFound = true;
+                }
+
+                projectLocations.forEach(function(element) {
+                    $scope.projects.push(element.project);
+                })
+
+                $scope.searchStarted = true;
+            });
+        }
+
+        
     }
 
+    /**
+     * $scope.geolocate
+     *
+     * Uses HTML5 to geolocate the user. If successful, sets the markers
+     * position to ther right latitude and longitude. Otherwise displays
+     * an error message to the user.
+     */
     $scope.geolocate = function() {
     	$scope.showAccept = true;
 
     	if (navigator.geolocation) {
 	    	navigator.geolocation.getCurrentPosition(function(position){
-	      		$scope.$apply(function(){
 	      			$scope.showAccept = false;
 	        		$scope.position = position;
 
 	        		var lat = $scope.position.coords.latitude;
 	        		var lng = $scope.position.coords.longitude;
 
-					$scope.showLocationOnMap(lat, $scope.position.coords.longitude);
+					$scope.showLocationOnMap(lat, lng);
 					$scope.marker.coords = {latitude: lat, longitude: lng }
-	        		$scope.showMap = true;
-	        	});
 	    	}, function(error) {
 	    		switch(error.code) {
 			        case error.PERMISSION_DENIED:
-			            $scope.alertMessage = "User denied the request for Geolocation."
+			            $scope.alertMessage = "nearProjects.error.PERMISSION_DENIED";
 			            break;
 			        case error.POSITION_UNAVAILABLE:
-			            $scope.alertMessage = "Location information is unavailable."
+			            $scope.alertMessage = "nearProjects.error.POSITION_UNAVAILABLE";
 			            break;
 			        case error.TIMEOUT:
-			            $scope.alertMessage = "The request to get user location timed out."
+			            $scope.alertMessage = "nearProjects.error.TIMEOUT";
 			            break;
 			        case error.UNKNOWN_ERROR:
-			            $scope.alertMessage = "An unknown error occurred."
+			            $scope.alertMessage = "nearProjects.error.UNKNOWN_ERROR";
 			            break;
 			    }
 	    	});
@@ -128,17 +146,38 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
     	}
     }
 
+    /**
+     * $scope.showLocationOnMap
+     * 
+     * Centers the map to the specific coordinates
+     * @param lat latitude
+     * @param lng longitude
+     */
     $scope.showLocationOnMap = function(lat, lng) {
-    	console.log(lat);
-    	console.log(lng);
     	$scope.map.control.refresh({latitude: lat, longitude: lng});
     	$scope.map.zoom = 15;
     }
 
-    $scope.createMap();
-
+    
+    /**
+     * $scope.redirctToProject
+     *
+     * Redirect to the project details for the given project
+     * @param project the project to be displayed
+     */
     $scope.redirectToProject = function(project) {
     	$location.path('/projects/'+project.id);
     }
 
+    /**
+     * $scope.enableAddress
+     *
+     * Sets showSearchBox to true
+     */
+    $scope.enableAddress = function() {
+        $scope.showSearchBox = true;
+    }
+
+    //init map and marker
+    $scope.createMap();
 });

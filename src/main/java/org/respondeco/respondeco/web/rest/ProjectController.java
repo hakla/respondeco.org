@@ -589,16 +589,20 @@ public class ProjectController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<ProjectLocationResponseDTO>> findProjectsNearMe(
-        @RequestParam(required = false) Double latitude,
-        @RequestParam(required = false) Double longitude,
-        @RequestParam(required = false) Double radius
-    ) {
-        log.debug("REST Request to get near projects");
+    public ResponseEntity<?> findProjectsNearMe(
+        @RequestParam(required = true) Double latitude,
+        @RequestParam(required = true) Double longitude,
+        @RequestParam(required = true) Double radius) {
+        log.debug("REST Request to get near projects: (latitude: " + latitude +" , longitude: " + longitude + "), radius: " + radius );
 
-        List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
+        ResponseEntity<?> responseEntity = null;
 
-        ResponseEntity<List<ProjectLocationResponseDTO>> responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
+        try{
+            List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
+            responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
+        } catch (NoSuchProjectException ex) {
+            //TODO
+        }
 
         return responseEntity;
     }

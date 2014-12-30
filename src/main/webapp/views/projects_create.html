@@ -39,6 +39,13 @@
                             <auto-complete source="getPropertyTagNames($query)" min-length="1"></auto-complete>
                         </tags-input>
                     </div>
+                    <div class="form-group" id="searchBoxParent">
+                        <label translate="project.createProject.location">Location</label>
+                        <script type="text/ng-template" id="searchBox.template.html">
+                            <input id="searchBox" class="form-control" ng-model="project.projectLocation.address" type="text" placeholder="{{'project.createProject.location.placeholder' | translate}}" required/>
+                        </script>
+                    </div>
+
                 </div>
                 <div class="col-md-5">
                     <div class="form-group">
@@ -81,13 +88,9 @@
                 </div>
             </div>
 
-
-             <div id="map_canvas">
-                <script type="text/ng-template" id="searchbox.tpl.html">
-                    <input style="width:300px" type="text" placeholder="Search Box" ng-model="searchbox">
-                </script>
+            <div id="map_canvas">
                 <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" control="map.control">
-                    <ui-gmap-search-box template="searchbox.template" events="searchbox.events"></ui-gmap-search-box>
+                    <ui-gmap-search-box template="searchBox.template" events="searchBox.events" parentdiv="searchBox.parentdiv"></ui-gmap-search-box>
                      <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
                 </ui-gmap-google-map>
             </div>

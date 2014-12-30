@@ -22,6 +22,7 @@ import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -96,6 +97,9 @@ public class ProjectControllerTest {
     private RatingService ratingServiceMock;
 
     @Mock
+    private ProjectLocationService projectLocationServiceMock;
+
+    @Mock
     private PropertyTagRepository propertyTagRepositoryMock;
 
     @Mock
@@ -122,7 +126,7 @@ public class ProjectControllerTest {
                 resourceServiceMock,
                 imageRepositoryMock,
                 resourceMatchRepository));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock, userServiceMock);
+        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock, userServiceMock, projectLocationServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -174,6 +178,8 @@ public class ProjectControllerTest {
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
+
+        doReturn(new ProjectLocation()).when(projectLocationServiceMock).createProjectLocation(any(),any(),any(),any());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -277,16 +283,16 @@ public class ProjectControllerTest {
         project2.setManager(orgMember);
         project2.setConcrete(false);
 
-        doReturn(Arrays.asList(project, project2)).when(projectServiceMock)
+        doReturn(new PageImpl(Arrays.asList(project, project2))).when(projectServiceMock)
                 .findProjects(isNull(String.class), isNull(String.class), isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/projects"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(project.getId().intValue()))
-                .andExpect(jsonPath("$[1].id").value(project2.getId().intValue()));
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.totalItems", is(2)))
+                .andExpect(jsonPath("$.projects[0].id").value(project.getId().intValue()))
+                .andExpect(jsonPath("$.projects[1].id").value(project2.getId().intValue()));
 
         verify(projectServiceMock, times(1))
                 .findProjects(isNull(String.class), isNull(String.class), isA(RestParameters.class));
@@ -302,17 +308,17 @@ public class ProjectControllerTest {
         project2.setManager(orgMember);
         project2.setConcrete(false);
 
-        doReturn(Arrays.asList(project, project2)).when(projectServiceMock)
+        doReturn(new PageImpl(Arrays.asList(project, project2))).when(projectServiceMock)
                 .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
                     isNull(String.class), isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/organizations/{id}/projects", defaultOrganization.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(project.getId().intValue()))
-                .andExpect(jsonPath("$[1].id").value(project2.getId().intValue()));
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.totalItems", is(2)))
+                .andExpect(jsonPath("$.projects.[0].id").value(project.getId().intValue()))
+                .andExpect(jsonPath("$.projects.[1].id").value(project2.getId().intValue()));
 
         verify(projectServiceMock, times(1))
                 .findProjectsFromOrganization(isA(Long.class), isNull(String.class),

@@ -22,17 +22,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
-    //google maps
-    $scope.location = {searchbox: null};
+    $scope.address = "hallo";
 
-    $scope.map = { control: {}, center: { latitude: 47.453368, longitude: 16.415000 }, zoom: 12 };
+    //initial latlng coordinates belong to Austria (via googleplaces)
+    $scope.map = { control: {}, center: { latitude: 47.516231, longitude: 14.550072 }, zoom: 7 };
 
-     $scope.marker = {
+    $scope.marker = {
       id: 0,
-      coords: {
-        latitude: 47.453368,
-        longitude: 16.415000
-      },
       options: { draggable: true },
       events: {
         dragend: function (marker, eventName, args) {
@@ -66,7 +62,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         console.log($scope.marker);
     }
    
-    var events = {
+    var searchBoxEvents = {
         places_changed: function (searchBox) {
             var id = 0;
             console.log("places changed");
@@ -74,7 +70,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         }
     }
 
-    $scope.searchbox = { template:'searchbox.tpl.html', events:events};
+    $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
 
     // details mock
     $scope.status = {
@@ -586,5 +582,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.setOrgRatingError = function(error) {
         $("#orgRatingError").text(error);
     }
+
+
 
 });

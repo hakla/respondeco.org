@@ -16,9 +16,10 @@ public interface ProjectLocationRepository extends JpaRepository<ProjectLocation
 
     public List<ProjectLocation> findByActiveIsTrue();
 
-    @Query(value = "SELECT id, lat, lng, address, project_id, ( 6371 * acos( cos( radians(?1) ) * cos( radians( lat ) ) " +
+    @Query(value = "SELECT id, lat, lng, address, project_id, is_active, ( 6371 * acos( cos( radians(?1) ) * cos( radians( lat ) ) " +
         " * cos( radians( lng ) - radians(?2) ) + sin( radians(?1) ) * sin(radians(lat)) ) ) AS distance " +
         "FROM T_Project_Location " +
+        "WHERE is_active = true " +
         "GROUP BY id, lat, lng, address, project_id " +
         "HAVING distance < ?3 " +
         "ORDER BY distance " +
