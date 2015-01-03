@@ -74,4 +74,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     public List<Project> findByStartDate(LocalDate date);
 
+    @Query ("SELECT p FROM Project p INNER JOIN p.FollowingUsers u" +
+            " WHERE u.id = :user_id AND p.id = :project_id AND u.active = 1 AND p.active = 1"
+    )
+    public Project findByUserAndProject(
+        @Param("user_id") Long user_id,
+        @Param("project_id") Long project_id
+    );
+
 }

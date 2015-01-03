@@ -26,7 +26,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@ToString(exclude = {"owner", "members", "logo", "projects"})
+@ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers"})
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -81,4 +81,12 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     public void addMember(User user) {
         members.add(user);
     }
+
+    @ManyToMany
+    @JoinTable(
+        name="T_USER_FOLLOW_ORGANIZATION",
+        joinColumns = {@JoinColumn(name = "ORGANIZATION_ID", referencedColumnName = "id")},
+        inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "id")}
+    )
+    private List<User> FollowingUsers;
 }

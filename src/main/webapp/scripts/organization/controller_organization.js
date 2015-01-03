@@ -75,6 +75,35 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $scope.update($routeParams.id);
     }
 
+    $scope.follow = function($event){
+        var button = $($event.target);
+        var attr = button.attr("type");
+        if(attr != "button"){
+            button = button.parent(":button");
+        }
+        Organization.follow({id: $scope.organization.id}, function (result) {
+            $scope.following = true;
+        });
+    };
+
+    $scope.unfollow = function($event){
+        var button = $($event.target);
+        var attr = button.attr("type");
+        if(attr != "button"){
+            button = button.parent(":button");
+        }
+        Organization.unfollow({id: $scope.organization.id}, function (result) {
+            $scope.following = false;
+        });
+    };
+
+    $scope.showUnfollow = function(){
+        return $scope.following == true && $scope.isOwner() == false;
+    };
+
+    $scope.showFollow = function() {
+        return $scope.following == false && $scope.isOwner() == false;
+    };
     //Posting
 
     var refreshPostings = function() {
@@ -105,5 +134,11 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.showMorePostings = function() {
         $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
         refreshPostings();
+    };
+
+    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined'){
+        Organization.followingState({id: $routeParams.id}, function(follow){
+            $scope.following = follow.state;
+        });
     }
 });

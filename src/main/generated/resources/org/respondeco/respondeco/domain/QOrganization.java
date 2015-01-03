@@ -37,6 +37,8 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public final StringPath email = createString("email");
 
+    public final ListPath<User, QUser> FollowingUsers = this.<User, QUser>createList("FollowingUsers", User.class, QUser.class, PathInits.DIRECT2);
+
     //inherited
     public final NumberPath<Long> id = _super.id;
 

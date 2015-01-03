@@ -380,4 +380,74 @@ public class OrganizationService {
         organizationRepository.save(organization);
         return organization;
     }
+
+    /**
+     * Get the current Following State of the Organization, instead of loading all Users manually.
+     * Returns TRUE: if user already follow the Organization
+     * @param organizationId of which we need the following state
+     * @return Boolean
+     */
+    public Boolean followingState(Long organizationId){
+
+        User currentUser = userService.getUserWithAuthorities();
+
+        return organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId) != null;
+    }
+
+    /**
+     * Allow user to mark the given Organization as followed. If this become true, all newsfeed from organization
+     * will be displayed in users dashboard
+     * @param organizationId (organization) that user would like to follow (add to subscripotion)
+     */
+    public void follow(Long organizationId) throws IllegalValueException{
+        User currentUser = userService.getUserWithAuthorities();
+
+        // check if organization already exists for the current user and given project id.
+        // if true, we will allow an duplicate entry that will cause primary key constraint.
+        // Better to throw an exception
+        if(organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId) != null){
+            throw new IllegalValueException("follow.organization.rejected.error", "Cannot follow an organization that already marked as followed");
+        }
+
+        Organization selected = organizationRepository.findOne(organizationId);
+
+        // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
+        // an exception if organization is deactivated
+        if(selected == null || selected.isActive() == false){
+            throw new IllegalValueException("follow.organization.rejected.notfound", String.format("Could not find Organization with ID: %d", organizationId));
+        }
+
+        // add new follower
+        List<Organization> followers = currentUser.getFollowOrganizations();
+        followers.add(selected);
+        userRepository.save(currentUser);
+    }
+
+    /**
+     * Remove user from follower List and stop propagate the news from sepcific organization
+     * @param organizationId (organization) to un-follow or remove newsfeed subscription
+     */
+    public void unfollow(Long organizationId) throws IllegalValueException{
+        User currentUser = userService.getUserWithAuthorities();
+
+        Organization selected = organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId);
+
+        // check if organization already exists for the current user and given org id.
+        // false means, that there is no organization exists or the current organization is deactivated
+        // Better to throw an exception
+        if(selected == null){
+            throw new IllegalValueException("follow.project.rejected.error", "Cannot unfollow an organization");
+        }
+
+        // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
+        // an exception if organization is deactivated
+        if(selected == null || selected.isActive() == false){
+            throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", organizationId));
+        }
+
+        // add new follower
+        List<Organization> followers = currentUser.getFollowOrganizations();
+        followers.remove(selected);
+        userRepository.save(currentUser);
+    }
 }

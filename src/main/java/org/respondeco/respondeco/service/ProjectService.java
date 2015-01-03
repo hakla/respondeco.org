@@ -442,4 +442,72 @@ public class ProjectService {
         });
     }
 
+    /**
+     * Get the current Following State of the Project, instead of loading all Users manually.
+     * Returns TRUE: if user already follow the Project
+     * @param projectId of which we need the following state
+     * @return Boolean
+     */
+    public Boolean followingState(Long projectId){
+
+        User currentUser = userService.getUserWithAuthorities();
+
+        return projectRepository.findByUserAndProject(currentUser.getId(), projectId) != null;
+    }
+
+    /**
+     * Allow user to mark the given project as followed. If this become true, all newsfeed from project
+     * will be displayed in users dashboard
+     * @param projectId (project) that user would like to follow (add to subscripotion).
+     */
+    public void follow(Long projectId) throws IllegalValueException{
+        User currentUser = userService.getUserWithAuthorities();
+
+        // check if project already exists for the current user and given project id.
+        // if true, we will allow an duplicate entry that will cause primary key constraint.
+        // Better to throw an exception
+        if(projectRepository.findByUserAndProject(currentUser.getId(), projectId) != null){
+            throw new IllegalValueException("follow.project.rejected.error", "Cannot follow an organization that already marked as followed");
+        }
+
+        Project selected = projectRepository.findOne(projectId);
+
+        // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
+        // an exception if project is deactivated
+        if(selected == null || selected.isActive() == false){
+            throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", projectId));
+        }
+
+        // add new follower over Projects Table and save it
+        List<Project> followers = currentUser.getFollowProjects();
+        followers.add(selected);
+        userRepository.save(currentUser);
+    }
+
+    /**
+     * Remove user from follower List and stop propagate the news from sepcific project
+     * @param projectId (project) to un-follow or remove newsfeed subscription
+     */
+    public void unfollow(Long projectId) throws IllegalValueException{
+        User currentUser = userService.getUserWithAuthorities();
+
+        Project selected = projectRepository.findByUserAndProject(currentUser.getId(), projectId);
+        // check if project already exists for the current user and given project id.
+        // false means, that there is no project exists or the current project is deactivated
+        // Better to throw an exception
+        if(selected == null){
+            throw new IllegalValueException("follow.project.rejected.error", "Cannot unfollow the project");
+        }
+
+        // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
+        // an exception if project is deactivated
+        if(selected == null || selected.isActive() == false){
+            throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", projectId));
+        }
+
+        // add new follower
+        List<Project> followers = currentUser.getFollowProjects();
+        followers.remove(selected);
+        userRepository.save(currentUser);
+    }
 }

@@ -28,7 +28,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@ToString(exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo"})
+@ToString(exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo", "FollowingUsers"})
 public class Project extends AbstractAuditingNamedEntity implements Serializable {
 
     @Column(name = "purpose")
@@ -81,5 +81,13 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @OneToOne
     @JoinColumn(name = "postingfeed_id")
     private PostingFeed postingFeed;
+
+    @ManyToMany
+    @JoinTable(
+        name="T_USER_FOLLOW_PROJECT",
+        joinColumns = {@JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")},
+        inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "id")}
+    )
+    private List<User> FollowingUsers;
 
 }
