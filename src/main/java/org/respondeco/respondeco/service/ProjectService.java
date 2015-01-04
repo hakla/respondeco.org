@@ -478,6 +478,13 @@ public class ProjectService {
             throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", projectId));
         }
 
+        /*
+        TODO: make it sense?
+        if(selected.getOrganization() == currentUser.getOrganization()){
+            throw new IllegalValueException("follow.project.rejected.ownererror", "Cannot follow own organization");
+        }
+        */
+
         // add new follower over Projects Table and save it
         List<Project> followers = currentUser.getFollowProjects();
         followers.add(selected);
@@ -492,12 +499,6 @@ public class ProjectService {
         User currentUser = userService.getUserWithAuthorities();
 
         Project selected = projectRepository.findByUserAndProject(currentUser.getId(), projectId);
-        // check if project already exists for the current user and given project id.
-        // false means, that there is no project exists or the current project is deactivated
-        // Better to throw an exception
-        if(selected == null){
-            throw new IllegalValueException("follow.project.rejected.error", "Cannot unfollow the project");
-        }
 
         // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
         // an exception if project is deactivated

@@ -567,7 +567,7 @@ public class ProjectController {
      * @return Error or OK Response Entity
      */
     @RequestMapping(value = "/rest/projects/{id}/follow",
-        method = RequestMethod.GET,
+        method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity follow(@PathVariable Long id) {
@@ -575,7 +575,7 @@ public class ProjectController {
 
         try {
             projectService.follow(id);
-            responseEntity = new ResponseEntity(HttpStatus.OK);
+            responseEntity = new ResponseEntity(HttpStatus.CREATED);
         }
         catch (IllegalValueException e){
             responseEntity = ErrorHelper.buildErrorResponse(e);
@@ -589,7 +589,7 @@ public class ProjectController {
      * @return Error or OK Response Entity
      */
     @RequestMapping(value = "/rest/projects/{id}/unfollow",
-        method = RequestMethod.GET,
+        method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity unfollow(@PathVariable Long id) {
@@ -686,7 +686,8 @@ public class ProjectController {
 
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (PostingException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);     }
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
         return responseEntity;
     }
 }

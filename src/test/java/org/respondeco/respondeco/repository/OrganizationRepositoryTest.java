@@ -19,6 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,6 +122,36 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
         Organization savedOrganization = organizationRepository.findByOwner(organization.getOwner());
 
         assertTrue(savedOrganization.getOwner().equals(orgAdmin));
+    }
+
+    /**
+     * Test save Org Follow and retrieve the data for assertion
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testfindByUserAndOrganization_General() throws Exception{
+        ArrayList<User> usrList = new ArrayList<>();
+        usrList.add(orgAdmin);
+        organization.setFollowingUsers(usrList);
+        organizationRepository.save(organization);
+        organizationRepository.flush();
+
+        Organization testObject = organizationRepository.findByUserAndOrganization(orgAdmin.getId(), organization.getId());
+        assertNotNull(testObject);
+        assertEquals(testObject.getFollowingUsers().get(0), orgAdmin);
+    }
+
+    /**
+     * No followers found
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testfindByUserAndProject_NoFollowers() throws Exception{
+
+        Organization testObject = organizationRepository.findByUserAndOrganization(orgAdmin.getId(), organization.getId());
+        assertNull(testObject);
     }
 
 

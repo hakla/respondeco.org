@@ -417,6 +417,17 @@ public class OrganizationService {
             throw new IllegalValueException("follow.organization.rejected.notfound", String.format("Could not find Organization with ID: %d", organizationId));
         }
 
+        /*
+
+        TODO: make it sense?
+        List<User> userInOrg = getUserByOrgId(selected.getId());
+
+        //if(selected.getOwner() == currentUser){
+        if(userInOrg.contains(currentUser) == false){
+            throw new IllegalValueException("follow.organization.rejected.ownererror", "Cannot follow own organization");
+        }
+        */
+
         // add new follower
         List<Organization> followers = currentUser.getFollowOrganizations();
         followers.add(selected);
@@ -431,13 +442,6 @@ public class OrganizationService {
         User currentUser = userService.getUserWithAuthorities();
 
         Organization selected = organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId);
-
-        // check if organization already exists for the current user and given org id.
-        // false means, that there is no organization exists or the current organization is deactivated
-        // Better to throw an exception
-        if(selected == null){
-            throw new IllegalValueException("follow.project.rejected.error", "Cannot unfollow an organization");
-        }
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated

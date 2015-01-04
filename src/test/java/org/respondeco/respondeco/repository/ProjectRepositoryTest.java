@@ -368,4 +368,33 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         }
     }
 
+    /**
+     * Test save Project Follow and retrieve the data for assertion
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testfindByUserAndProject_General() throws Exception{
+
+        project.setFollowingUsers(Arrays.asList(orgAdmin));
+        projectRepository.save(project);
+        projectRepository.flush();
+
+        Project testObject = projectRepository.findByUserAndProject(orgAdmin.getId(), project.getId());
+        assertNotNull(testObject);
+        assertEquals(testObject.getFollowingUsers().get(0), orgAdmin);
+    }
+
+    /**
+     * No followers found
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testfindByUserAndProject_NoFollowers() throws Exception{
+
+        Project testObject = projectRepository.findByUserAndProject(orgAdmin.getId(), project.getId());
+        assertNull(testObject);
+    }
+
 }

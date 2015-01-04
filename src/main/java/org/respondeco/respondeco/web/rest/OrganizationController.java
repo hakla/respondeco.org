@@ -516,7 +516,7 @@ public class OrganizationController {
      * @return Error or OK Response Entity
      */
     @RequestMapping(value = "/rest/organizations/{id}/follow",
-        method = RequestMethod.GET,
+        method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity follow(@PathVariable Long id) {
@@ -524,7 +524,7 @@ public class OrganizationController {
 
         try {
             organizationService.follow(id);
-            responseEntity = new ResponseEntity(HttpStatus.OK);
+            responseEntity = new ResponseEntity(HttpStatus.CREATED);
         }
         catch (IllegalValueException e){
             responseEntity = ErrorHelper.buildErrorResponse(e);
@@ -538,7 +538,7 @@ public class OrganizationController {
      * @return Error or OK Response Entity
      */
     @RequestMapping(value = "/rest/organizations/{id}/unfollow",
-        method = RequestMethod.GET,
+        method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity unfollow(@PathVariable Long id) {

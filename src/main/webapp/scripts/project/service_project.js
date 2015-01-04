@@ -13,8 +13,8 @@ respondecoApp.factory('Project', function($resource, $http) {
         'apply': { method: 'POST', url: '/app/rest/projects/apply' },
         'checkIfRatingPossible' : {method: 'GET', url: 'app/rest/projects/:pid/ratings'},
         'editable' : {method: 'GET', url: 'app/rest/projects/:id/editable', ignoreAuthModule: true},
-        'follow' : {method: 'GET', url: 'app/rest/projects/:id/follow'},
-        'unfollow' : {method: 'GET', url: 'app/rest/projects/:id/unfollow'},
+        'follow' : {method: 'POST', url: 'app/rest/projects/:id/follow'},
+        'unfollow' : {method: 'DELETE', url: 'app/rest/projects/:id/unfollow'},
         'followingState' : {method: 'GET', url: 'app/rest/projects/:id/followingstate'},
         'deletePosting' : {method: 'DELETE', url: 'app/rest/projects/:id/postings/:pid'},
         'query': {method: 'GET', url: 'app/rest/projects'}
