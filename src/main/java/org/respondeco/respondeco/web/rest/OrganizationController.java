@@ -11,6 +11,7 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +40,21 @@ public class OrganizationController {
     private UserService userService;
     private OrgJoinRequestService orgJoinRequestService;
     private RatingService ratingService;
+    private PostingFeedService postingFeedService;
 
     @Inject
     public OrganizationController (OrganizationService organizationService,
                                    UserService userService,
                                    ResourceService resourceService,
                                    OrgJoinRequestService orgJoinRequestService,
-                                   RatingService ratingService) {
+                                   RatingService ratingService,
+                                   PostingFeedService postingFeedService) {
         this.organizationService = organizationService;
         this.userService = userService;
         this.resourceService = resourceService;
         this.orgJoinRequestService = orgJoinRequestService;
         this.ratingService = ratingService;
+        this.postingFeedService = postingFeedService;
     }
 
     /**
@@ -492,6 +496,95 @@ public class OrganizationController {
         return responseEntity;
     }
 
+
+    /**
+     * gets the list of postings ordered by creation date for the specified organization
+     *
+     * @param id the id of the organization for which to get the postings
+     * @return response status OK and the Postings for the organization
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/postings",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<PostingPaginationResponseDTO> getPostings(@PathVariable Long id,
+                                                        @RequestParam(required = false) Integer page,
+                                                        @RequestParam(required = false) Integer pageSize) {
+        RestParameters restParameters = new RestParameters(page, pageSize);
+        ResponseEntity<PostingPaginationResponseDTO> responseEntity;
+
+        List<PostingDTO> postings = new ArrayList<>();
+        PostingPaginationResponseDTO responseDTO = new PostingPaginationResponseDTO();
+        try {
+            log.debug("getting postings for organization {}", id);
+            Page<Posting> currentPage = postingFeedService.getPostingsForOrganization(id, restParameters);
+            log.debug("got page {} with elements {}", id, currentPage.getContent());
+            for (Posting posting : currentPage.getContent()) {
+                postings.add(new PostingDTO(posting));
+            }
+            responseDTO.setTotalElements(currentPage.getTotalElements());
+            responseDTO.setPostings(postings);
+            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not get postings for organization {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * creates a post for the organization in the postingfeed
+     * @param information the string which contains the informaiton of the posting
+     * @param id the id of the organization for which to create the posting
+     * @return response status ok if posting has
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/postings",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> postingForOrganization(
+            @RequestBody String information,
+            @PathVariable Long id) {
+        ResponseEntity<?> responseEntity;
+        try {
+            postingFeedService.addPostingForOrganization(id,information);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not post for organization {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PostingFeedException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * deletes posting by setting active flag false
+     * @param pid posting id to find in repository
+     * @param id organization id for path completeness
+     * @return ok if posting has been deleted; bad request if not
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/postings/{pid}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> deletePostingForOrganization(
+            @PathVariable Long id,
+            @PathVariable Long pid) {
+        ResponseEntity<?> responseEntity;
+        try {
+            postingFeedService.deletePosting(pid);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        } catch (PostingException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e);     }
+        return responseEntity;
+    }
+
     @RequestMapping(value = "/rest/organizations/{id}/verify",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -508,4 +601,5 @@ public class OrganizationController {
         }
         return responseEntity;
     }
+
 }

@@ -10,10 +10,7 @@ import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.ImageRepository;
-import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
-import org.respondeco.respondeco.repository.OrganizationRepository;
-import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.OrganizationResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
@@ -57,6 +54,9 @@ public class OrgJoinRequestServiceTest {
     @Mock
     private ProjectService projectService;
 
+    @Mock
+    private PostingFeedRepository postingFeedRepository;
+
     private OrgJoinRequestService orgJoinRequestService;
 
     private User orgOwner;
@@ -66,8 +66,19 @@ public class OrgJoinRequestServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        orgJoinRequestService = new OrgJoinRequestService(orgJoinRequestRepositoryMock, userService, userRepositoryMock, organizationRepositoryMock);
-        organizationService = new OrganizationService(organizationRepositoryMock, userService, userRepositoryMock, imageRepositoryMock, projectService);
+        orgJoinRequestService = new OrgJoinRequestService(
+                orgJoinRequestRepositoryMock,
+                userService,
+                userRepositoryMock,
+                organizationRepositoryMock);
+
+        organizationService = new OrganizationService(
+                organizationRepositoryMock,
+                userService,
+                userRepositoryMock,
+                imageRepositoryMock,
+                projectService,
+                postingFeedRepository);
 
         defaultUser = new User();
         defaultUser.setId(2L);

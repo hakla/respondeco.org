@@ -48,6 +48,7 @@ public class ProjectLocationRepositoryTest extends AbstractTransactionalJUnit4Sp
     private Project project;
     private User user;
     private Organization organization;
+    private PostingFeed postingFeed;
 
     @Before
     public void setup() {
@@ -59,9 +60,13 @@ public class ProjectLocationRepositoryTest extends AbstractTransactionalJUnit4Sp
         user.setGender(Gender.MALE);
         userRepository.save(user);
 
+        postingFeed = new PostingFeed();
+        postingFeed.setId(1L);
+
         organization = new Organization();
         organization.setName("testorg");
         organization.setOwner(user);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
 
         project = new Project();
@@ -70,6 +75,7 @@ public class ProjectLocationRepositoryTest extends AbstractTransactionalJUnit4Sp
         project.setManager(user);
         project.setOrganization(organization);
         project.setCreatedBy("user");
+        project.setPostingFeed(postingFeed);
 
         projectRepository.save(project);
 

@@ -1,0 +1,8 @@
+id;information;author_id;postingfeed_id;created_date;is_active
+1;admin organization created;3;1;"2014-12-10";true
+2;user organization created;4;2;"2014-12-11";true
+3;anne organization created;5;3;"2014-12-12";true
+4;user project created;4;4;"2014-12-13";true
+5;admin project created;3;5;"2014-12-14";true
+6;anne project created;5;6;"2014-12-15";true
+

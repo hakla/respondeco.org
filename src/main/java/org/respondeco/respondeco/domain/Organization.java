@@ -69,8 +69,14 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @OneToMany(mappedBy = "organization")
     private List<Project> projects;
 
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "postingfeed_id")
+    private PostingFeed postingFeed;
+
     @Column(name = "verified")
     private Boolean verified = false;
+
 
     public void addMember(User user) {
         members.add(user);

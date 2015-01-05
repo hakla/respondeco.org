@@ -9,11 +9,8 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.*;
-import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.ResourceException;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
-import org.respondeco.respondeco.service.exception.NoSuchProjectException;
-import org.respondeco.respondeco.service.exception.ProjectRatingException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -40,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -102,6 +100,12 @@ public class ProjectControllerTest {
     @Mock
     private ResourceMatchRepository resourceMatchRepository;
 
+    @Mock
+    private PostingFeedRepository postingFeedRepository;
+
+    @Mock
+    private PostingFeedService postingFeedService;
+
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
     private ProjectRequestDTO projectRequestDTO;
@@ -110,6 +114,7 @@ public class ProjectControllerTest {
     private User orgAdmin;
     private User orgMember;
     private ProjectLocation projectLocation;
+    private PostingFeed postingFeed;
 
     private ArgumentCaptor<Object> voidInterceptor;
 
@@ -123,8 +128,16 @@ public class ProjectControllerTest {
                 propertyTagServiceMock,
                 resourceServiceMock,
                 imageRepositoryMock,
-                resourceMatchRepository));
-        ProjectController projectController = new ProjectController(projectServiceMock, resourceServiceMock, ratingServiceMock, userServiceMock, projectLocationServiceMock);
+                resourceMatchRepository,
+                postingFeedRepository));
+
+        ProjectController projectController = new ProjectController(
+                projectServiceMock,
+                resourceServiceMock,
+                ratingServiceMock,
+                userServiceMock,
+                postingFeedService,
+                projectLocationServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -148,6 +161,9 @@ public class ProjectControllerTest {
         orgMember.setId(200L);
         orgMember.setLogin("orgMember");
         orgMember.setOrganization(defaultOrganization);
+
+        postingFeed = new PostingFeed();
+        postingFeed.setId(1L);
 
         project = new Project();
         project.setId(100L);
@@ -573,10 +589,60 @@ public class ProjectControllerTest {
 
     @Test
     public void testGetNearProjects_expectBAD_REQUEST_serviceThrowsIllegalValueException() throws Exception {
-        doThrow(IllegalValueException.class).when(projectLocationServiceMock).getNearProjects(10.0,15.0,100);
+        doThrow(IllegalValueException.class).when(projectLocationServiceMock).getNearProjects(10.0, 15.0, 100);
 
         restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPostingForProject() throws Exception {
+        project.setPostingFeed(postingFeed);
+        doReturn(project).when(projectRepositoryMock).findByIdAndActiveIsTrue(project.getId());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes("posting1")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testPostingForProject_expectBAD_REQUEST_serviceThrowsPostingFeedException() throws Exception {
+        doThrow(PostingFeedException.class).when(postingFeedService).addPostingForProjects(anyLong(),anyString());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes("posting1")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPostingForProject_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
+        doThrow(NoSuchProjectException.class).when(postingFeedService).addPostingForProjects(anyLong(),anyString());
+
+        restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes("posting1")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetPostingForProject() throws Exception {
+        project.setPostingFeed(postingFeed);
+        doReturn(project).when(projectRepositoryMock).findByIdAndActiveIsTrue(project.getId());
+
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testGetPostingForProject_NoSuchProject() throws Exception {
+        doThrow(NoSuchProjectException.class).when(postingFeedService)
+            .getPostingsForProject(anyLong(), isA(RestParameters.class));
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId())
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound());
     }
 }

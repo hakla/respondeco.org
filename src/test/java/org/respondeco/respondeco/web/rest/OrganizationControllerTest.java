@@ -5,8 +5,10 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,6 +25,7 @@ import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
 import org.respondeco.respondeco.service.exception.NoSuchProjectException;
@@ -34,6 +37,7 @@ import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -89,6 +93,10 @@ public class OrganizationControllerTest {
     @Mock
     private RatingService ratingService;
 
+    @Mock
+    private PostingFeedService postingFeedService;
+
+
     private MockMvc restOrganizationMockMvc;
 
     private Organization org1;
@@ -97,6 +105,7 @@ public class OrganizationControllerTest {
     private User defaultUser;
     private Set<Authority> userAuthorities;
     private UserDTO defaultUserDTO;
+    private PostingFeed postingFeed;
 
     private ResourceOffer resOffer1;
     private ResourceOffer resOffer2;
@@ -124,6 +133,8 @@ public class OrganizationControllerTest {
     private OrgJoinRequest orgJoinRequest;
     private User inviteAbleUser;
 
+
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -134,7 +145,8 @@ public class OrganizationControllerTest {
                     userService,
                     resourceService,
                     orgJoinRequestService,
-                    ratingService);
+                    ratingService,
+                    postingFeedService);
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();
@@ -172,6 +184,9 @@ public class OrganizationControllerTest {
         organizationRequestDTO.setNpo(DEFAULT_NPO);
         organizationRequestDTO.setOwner(defaultUserDTO);
 
+        postingFeed = new PostingFeed();
+        postingFeed.setId(1L);
+
         defaultOrganization = new Organization();
         defaultOrganization.setId(1l);
         defaultOrganization.setName(DEFAULT_ORGNAME);
@@ -179,6 +194,7 @@ public class OrganizationControllerTest {
         defaultOrganization.setEmail(DEFAULT_EMAIL);
         defaultOrganization.setIsNpo(DEFAULT_NPO);
         defaultOrganization.setOwner(defaultUser);
+
 
         orgJoinRequest = new OrgJoinRequest();
         orgJoinRequest.setId(1L);
@@ -195,6 +211,7 @@ public class OrganizationControllerTest {
         org2.setId(200L);
         org2.setOwner(defaultUser);
         org2.setName("test2");
+
 
         resOffer1 = new ResourceOffer();
         resOffer1.setId(100L);
@@ -518,5 +535,56 @@ public class OrganizationControllerTest {
         restOrganizationMockMvc.perform(delete("/app/rest/organizations/{id}/members/{userId}", defaultOrganization.getId(), inviteAbleUser.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testPostingForOrganization() throws Exception {
+        defaultOrganization.setPostingFeed(postingFeed);
+
+        doReturn(defaultOrganization).when(organizationRepository).findByIdAndActiveIsTrue(defaultOrganization.getId());
+
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes("posting1")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testPostingForOrganization_expectBAD_REQUEST_serviceThrowsPostingFeedException() throws Exception {
+        doThrow(PostingFeedException.class).when(postingFeedService).addPostingForOrganization(anyLong(),anyString());
+
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes("posting1")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPostingForOrganization_expectNOT_FOUND_serviceThrowsNoSuchOrganizationException() throws Exception {
+        doThrow(NoSuchOrganizationException.class).when(postingFeedService).addPostingForOrganization(anyLong(),anyString());
+
+        restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes("posting1")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetPostingForOrganization() throws Exception {
+        defaultOrganization.setPostingFeed(postingFeed);
+        doReturn(defaultOrganization).when(organizationRepository).findByIdAndActiveIsTrue(defaultOrganization.getId());
+
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/postings"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testGetPostingForOrganization_NoSuchOrganization() throws Exception {
+        doThrow(NoSuchOrganizationException.class).when(postingFeedService)
+            .getPostingsForOrganization(anyLong(), isA(RestParameters.class));
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/postings")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound());
     }
 }

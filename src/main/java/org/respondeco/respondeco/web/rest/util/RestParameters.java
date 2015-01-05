@@ -2,6 +2,8 @@ package org.respondeco.respondeco.web.rest.util;
 
 import lombok.Data;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -14,8 +16,10 @@ import java.util.List;
 
 public class RestParameters {
 
-    public static Integer DEFAULT_PAGE = 0;
-    public static Integer DEFAULT_PAGE_SIZE = 20;
+    private final Logger log = LoggerFactory.getLogger(RestParameters.class);
+
+    public static final Integer DEFAULT_PAGE = 0;
+    public static final Integer DEFAULT_PAGE_SIZE = 20;
 
     @Getter
     private Integer page;

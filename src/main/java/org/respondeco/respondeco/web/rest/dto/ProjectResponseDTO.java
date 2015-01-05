@@ -25,7 +25,7 @@ public class ProjectResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
             "id", "name", "purpose", "concrete", "startDate", "endDate",
-            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings", "successful");
+            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings", "successful", "postings");
 
     public static ProjectResponseDTO fromEntity(Project project, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -78,6 +78,12 @@ public class ProjectResponseDTO {
             responseDTO.setSuccessful(project.getSuccessful());
         }
 
+        /*
+        if (fieldNames.contains("postings")) {
+            responseDTO.setPostings(PostingDTO
+                    .fromEntities(project.getPostingFeed_id().getPostings(), null));
+        }*/
+
         //TODO FIX
         /**
         if (fieldNames.contains("ratings")) {
@@ -120,5 +126,6 @@ public class ProjectResponseDTO {
     private List<RatingResponseDTO> ratings;
     private Boolean successful;
     private ProjectLocationResponseDTO projectLocation;
+    private List<PostingDTO> postings;
 
 }

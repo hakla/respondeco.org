@@ -29,13 +29,21 @@ public class OrganizationService {
 
     private ProjectService projectService;
 
+    private PostingFeedRepository postingFeedRepository;
+
     @Inject
-    public OrganizationService(OrganizationRepository organizationRepository, UserService userService, UserRepository userRepository, ImageRepository imageRepository, ProjectService projectService) {
+    public OrganizationService(OrganizationRepository organizationRepository,
+                               UserService userService,
+                               UserRepository userRepository,
+                               ImageRepository imageRepository,
+                               ProjectService projectService,
+                               PostingFeedRepository postingFeedRepository) {
         this.organizationRepository = organizationRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
         this.projectService = projectService;
+        this.postingFeedRepository = postingFeedRepository;
     }
 
     /**
@@ -105,7 +113,7 @@ public class OrganizationService {
      */
     public Organization createOrganizationInformation(String name, String description, String email,
                                                       Boolean isNpo, Long logoId)
-        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+            throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
@@ -127,7 +135,9 @@ public class OrganizationService {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
         newOrganization.setOwner(currentUser);
-
+        PostingFeed postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+        newOrganization.setPostingFeed(postingFeed);
         currentUser.setOrganization(organizationRepository.save(newOrganization));
         userRepository.save(currentUser);
 
