@@ -29,43 +29,35 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.marker = {
       id: 0,
-      options: { draggable: true },
-      events: {
-        dragend: function (marker, eventName, args) {
-            console.log(marker);
-          var lat = marker.getPosition().lat();
-          var lng = marker.getPosition().lng();
-
-          $scope.marker.options = {
-            draggable: true,
-            labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lng: ' + $scope.marker.coords.longitude,
-            labelAnchor: "100 0",
-            labelClass: "marker-labels"
-          };
-        }
-      }
+      options: { draggable: true }
     };
 
-    $scope.placeToMarker = function(searchBox, id) {
+     /**
+     * $scope.placeToMarker
+     *
+     * @description This function is called whenever a new place is entered in the searchbox.
+     * Therefor the map position is set to the found place and the coordinates of the marker
+     * are also set.
+     * @param searchBox input field for search
+     */
+    $scope.placeToMarker = function(searchBox) {
         var place = searchBox.getPlaces();
-        console.log(place);
+
         if(!place || place == 'undefined' || place.length == 0) {
             return;
         }
 
-        console.log( place[0].geometry.location.lat(), place[0].geometry.location.lng());
         $scope.map.control.refresh({latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()});
 
         $scope.marker.coords = {latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()};
         $scope.marker.address = place[0].formatted_address;
 
-        console.log($scope.marker);
+        $scope.map.zoom = 14;
     }
    
     var searchBoxEvents = {
         places_changed: function (searchBox) {
             var id = 0;
-            console.log("places changed");
             $scope.placeToMarker(searchBox, id);
         }
     }
@@ -140,16 +132,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
             }),
-            resourceRequirements: $scope.project.resourceRequirements,
-            projectLocation: {
+            resourceRequirements: $scope.project.resourceRequirements
+        };
+
+        if($scope.marker.coords.latitude !== 'undefined') {
+            project.projectLocation = {
                 address: $scope.marker.address,
                 latitude: $scope.marker.coords.latitude,
                 longitude: $scope.marker.coords.longitude,
-                projectId: $scope.project.id
-            }
-        };
-
-        console.log(project);
+                projectId: $scope.project.id}
+        }
 
         Project[isNew ? 'save' : 'update'](project,
             function() {

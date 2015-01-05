@@ -280,5 +280,38 @@ describe('Project Controller Tests ', function() {
             expect(scope.resourceOffers.length).toBe(2);
         });
 
+        it('should refresh the map to actual coordinates', function() {
+    
+            var searchBox = {
+                getPlaces: function() {
+                    var places = [{
+                        geometry: {
+                            location:{
+                                lat:function(){return 20.0;},
+                                lng:function(){return 40.0;} 
+                            }
+                        }
+                    }]; return places;}}
+
+            //create mocks
+            scope.map.control.refresh = function(obj) {}
+            spyOn(scope.map.control, 'refresh');
+
+            scope.placeToMarker(searchBox);
+
+            expect(scope.map.control.refresh).toHaveBeenCalledWith({latitude:20.0, longitude:40.0})
+        });
+
+        it('should create a static map', function() {
+            scope.project = {projectLocation: {latitude: null, longitude: null}};
+
+            scope.project.projectLocation.latitude = 20;
+            scope.project.projectLocation.longitude = 20;
+
+            var link = scope.createStaticMapLink();
+
+            expect(link).toEqual("https://maps.google.com/maps/api/staticmap?center=20%2C20&format=jpg&maptype=terrain&size=533x190&zoom=14&markers=20%2C20");
+        });
+
     });
 });

@@ -126,8 +126,10 @@ public class ProjectController {
 
             ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
 
-            projectLocationService.createProjectLocation(newProject.getId(), projectLocationDTO.getAddress(),
-                projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+            if(projectLocationDTO != null) {
+                projectLocationService.createProjectLocation(newProject.getId(), projectLocationDTO.getAddress(),
+                    projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+            }
 
             ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(newProject, null);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
@@ -172,8 +174,11 @@ public class ProjectController {
                     project.getResourceRequirements());
 
             ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
-            ProjectLocation location = projectLocationService.updateProjectLocation(projectLocationDTO.getProjectId(),
-                projectLocationDTO.getAddress(), projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+
+            if(projectLocationDTO != null) {
+                ProjectLocation location = projectLocationService.updateProjectLocation(projectLocationDTO.getProjectId(),
+                    projectLocationDTO.getAddress(), projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+            }
 
             ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(updatedProject, null);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
@@ -551,6 +556,7 @@ public class ProjectController {
         return responseEntity;
     }
 
+
     @RequestMapping(value = "/rest/projects/{id}/started",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -600,8 +606,11 @@ public class ProjectController {
         try{
             List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
             responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
-        } catch (NoSuchProjectException ex) {
-            //TODO
+        } catch (NoSuchProjectException e) {
+            log.debug("Can not find project for projectLocation");
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalValueException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         }
 
         return responseEntity;

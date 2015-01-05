@@ -4,6 +4,7 @@ import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ProjectLocation;
 import org.respondeco.respondeco.repository.ProjectLocationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,15 @@ public class ProjectLocationService {
      * @param longitude coordinates longitude
      * @return
      */
-    public ProjectLocation createProjectLocation(Long projectId, String address, double latitude, double longitude) {
+    public ProjectLocation createProjectLocation(Long projectId, String address, double latitude, double longitude)
+        throws NoSuchProjectException {
 
         ProjectLocation projectLocation = new ProjectLocation();
 
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        if(project == null) {
+            throw new NoSuchProjectException(projectId);
+        }
         projectLocation.setProject(project);
         projectLocation.setLat(latitude);
         projectLocation.setLng(longitude);
@@ -57,7 +62,7 @@ public class ProjectLocationService {
 
     /**
      * Returns all active ProjectLocations
-     * @return
+     * @return list of active ProjectLocations
      */
     public List<ProjectLocation> getAllLocations() {
         return projectLocationRepository.findByActiveIsTrue();
@@ -120,7 +125,11 @@ public class ProjectLocationService {
      * @return a List of ProjectLocations which represents projects near position given by latitude and longitude
      */
     public List<ProjectLocation> getNearProjects(double latitude, double longitude, double radius)
-        throws NoSuchProjectException {
+        throws IllegalValueException {
+
+        if(radius <= 0) {
+            throw new IllegalValueException("nearProjects.error.radius", "Der Radius muss größer als 0 sein");
+        }
 
         List<ProjectLocation> projectLocationList = new ArrayList<>();
 
@@ -130,7 +139,7 @@ public class ProjectLocationService {
             ProjectLocation projectLocation = new ProjectLocation();
             projectLocation.setId(((BigInteger)objArray[0]).longValue());
             projectLocation.setLat((double)objArray[1]);
-            projectLocation.setLng((double) objArray[2]);
+            projectLocation.setLng((double)objArray[2]);
             projectLocation.setAddress((String)objArray[3]);
 
             long projectId = ((BigInteger) objArray[4]).longValue();

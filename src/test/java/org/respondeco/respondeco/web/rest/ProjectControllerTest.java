@@ -16,10 +16,7 @@ import org.respondeco.respondeco.service.exception.NoSuchProjectException;
 import org.respondeco.respondeco.service.exception.ProjectRatingException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.ImageDTO;
-import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
-import org.respondeco.respondeco.web.rest.dto.ProjectRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
+import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.PageImpl;
@@ -112,6 +109,7 @@ public class ProjectControllerTest {
     private Organization defaultOrganization;
     private User orgAdmin;
     private User orgMember;
+    private ProjectLocation projectLocation;
 
     private ArgumentCaptor<Object> voidInterceptor;
 
@@ -159,6 +157,13 @@ public class ProjectControllerTest {
         project.setPurpose(DEFAULT_PURPOSE);
         project.setConcrete(false);
 
+        projectLocation = new ProjectLocation();
+        projectLocation.setId(1L);
+        projectLocation.setAddress("address");
+        projectLocation.setLat(10.0);
+        projectLocation.setLng(10.0);
+        projectLocation.setProject(project);
+
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);
         doReturn(new ArrayList<PropertyTag>()).when(propertyTagServiceMock).getOrCreateTags(anyObject());
 
@@ -179,7 +184,8 @@ public class ProjectControllerTest {
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
 
-        doReturn(new ProjectLocation()).when(projectLocationServiceMock).createProjectLocation(any(),any(),any(),any());
+        doReturn(projectLocation).when(projectLocationServiceMock).createProjectLocation(1L, projectLocation.getAddress(),
+            projectLocation.getLat(), projectLocation.getLng());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
@@ -522,5 +528,55 @@ public class ProjectControllerTest {
             .andExpect(status().isBadRequest());
 
         verify(ratingServiceMock, times(1)).rateProject(anyLong(), anyLong(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testGetAllLocations_expectOK_shouldReturnLocations() throws Exception {
+
+        doReturn(Arrays.asList(projectLocation)).when(projectLocationServiceMock).getAllLocations();
+
+        restProjectMockMvc.perform(get("/app/rest/locations")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[0].address").value(projectLocation.getAddress()))
+            .andExpect(jsonPath("$[0].latitude").value(projectLocation.getLat()))
+            .andExpect(jsonPath("$[0].longitude").value(projectLocation.getLng()))
+            .andExpect(jsonPath("$[0].project.id").value(project.getId().intValue()));
+
+        verify(projectLocationServiceMock, times(1)).getAllLocations();
+    }
+
+    @Test
+    public void testGetNearProjects_expectOK_shouldReturnNearProjects() throws Exception {
+
+        doReturn(Arrays.asList(projectLocation)).when(projectLocationServiceMock).getNearProjects(10.0,15.0,100);
+
+        restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[0].address").value(projectLocation.getAddress()))
+            .andExpect(jsonPath("$[0].latitude").value(projectLocation.getLat()))
+            .andExpect(jsonPath("$[0].longitude").value(projectLocation.getLng()))
+            .andExpect(jsonPath("$[0].project.id").value(project.getId().intValue()));
+    }
+
+    @Test
+    public void testGetNearProjects_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
+        doThrow(NoSuchProjectException.class).when(projectLocationServiceMock).getNearProjects(10.0,15.0,100);
+
+        restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetNearProjects_expectBAD_REQUEST_serviceThrowsIllegalValueException() throws Exception {
+        doThrow(IllegalValueException.class).when(projectLocationServiceMock).getNearProjects(10.0,15.0,100);
+
+        restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isBadRequest());
     }
 }

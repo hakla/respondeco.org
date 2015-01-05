@@ -630,7 +630,9 @@
             "PERMISSION_DENIED" : "Sie haben die automatische Ortung abgelehnt",
             "POSITION_UNAVAILABLE" : "Die automatische Ortung ist gerade nicht verfügbar",
             "TIMEOUT": "Zeitüberschreitung bei der Anfrage",
-            "UNKNOWN_ERROR": "Ein unbekannter Fehler ist aufgetreten"
+            "UNKNOWN_ERROR": "Ein unbekannter Fehler ist aufgetreten",
+            "radius": "Der Radius muss größer als 0 sein",
+            "geolocateNotSupported": "Ihr Browser unterstützt die automatische Ortung nicht!"
         }
     },
     "orgJoinRequest": {

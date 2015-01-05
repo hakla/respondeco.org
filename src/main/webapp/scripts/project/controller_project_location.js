@@ -60,8 +60,6 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
         $scope.marker.coords = {latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()};
         $scope.marker.address = place[0].formatted_address;
 
-        console.log($scope.marker.coords);
-
         $scope.map.zoom = 14;
     }
   	
@@ -73,6 +71,9 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
      * Project Service to get near projects. Takes the response and creates a project array.
      */
     $scope.findNearProjects = function() {
+        $scope.alertMessage = undefined;
+        $scope.noProjectsFound = false;
+
         //search near projects in radius RADIUS km
         var RADIUS = 100;
 
@@ -143,6 +144,7 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
 	    	});
     	} else {
     		//browser does not support geolocate
+            $scope.alertMessage = "nearProjects.error.geolocateNotSupported"
     	}
     }
 
