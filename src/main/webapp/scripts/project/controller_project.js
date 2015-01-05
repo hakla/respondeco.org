@@ -22,6 +22,46 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
+    //initial latlng coordinates belong to Austria (via googleplaces)
+    $scope.map = { control: {}, center: { latitude: 47.516231, longitude: 14.550072 }, zoom: 7 };
+
+    $scope.marker = {
+      id: 0,
+      options: { draggable: true }
+    };
+
+     /**
+     * $scope.placeToMarker
+     *
+     * @description This function is called whenever a new place is entered in the searchbox.
+     * Therefor the map position is set to the found place and the coordinates of the marker
+     * are also set.
+     * @param searchBox input field for search
+     */
+    $scope.placeToMarker = function(searchBox) {
+        var place = searchBox.getPlaces();
+
+        if(!place || place == 'undefined' || place.length == 0) {
+            return;
+        }
+
+        $scope.map.control.refresh({latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()});
+
+        $scope.marker.coords = {latitude: place[0].geometry.location.lat(), longitude: place[0].geometry.location.lng()};
+        $scope.marker.address = place[0].formatted_address;
+
+        $scope.map.zoom = 14;
+    }
+   
+    var searchBoxEvents = {
+        places_changed: function (searchBox) {
+            var id = 0;
+            $scope.placeToMarker(searchBox, id);
+        }
+    }
+
+    $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
+
     $scope.postingShowCount = 5;
     $scope.postingShowIncrement = 5;
     $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
@@ -99,7 +139,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             postings: $scope.project.postings
         };
 
-        console.log(project);
+        if($scope.marker.coords.latitude !== 'undefined') {
+            project.projectLocation = {
+                address: $scope.marker.address,
+                latitude: $scope.marker.coords.latitude,
+                longitude: $scope.marker.coords.longitude,
+                projectId: $scope.project.id}
+        }
 
         Project[isNew ? 'save' : 'update'](project,
             function() {
@@ -110,6 +156,18 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.edit = function() {
         $location.path("/projects/edit/" + $scope.project.id)
+    }
+
+    $scope.createStaticMapLink = function() {
+        var lat = $scope.project.projectLocation.latitude;
+        var lng = $scope.project.projectLocation.longitude;
+        var zoom = 14;
+
+        var link = "https://maps.google.com/maps/api/staticmap?center=" + lat + "%2C" +
+        + lng +"&format=jpg&maptype=terrain&size=533x190&zoom=" + zoom + "&markers=" + lat + "%2C" +
+        lng;
+
+        return link;
     }
 
     $scope.update = function(id) {
@@ -130,6 +188,17 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 }
             }
 
+            //google maps
+            if($scope.project.projectLocation !== 'undefined') {
+                if($location.path().indexOf('edit') < 0) {
+                    $scope.staticMap = $scope.createStaticMapLink();
+                } else {
+                    $scope.map.control.refresh({latitude: $scope.project.projectLocation.latitude, longitude: $scope.project.projectLocation.longitude});
+                    $scope.marker.coords = {latitude: $scope.project.projectLocation.latitude, longitude: $scope.project.projectLocation.longitude};
+                    $scope.marker.address = $scope.project.projectLocation.address;
+                }
+            }
+            
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
@@ -183,7 +252,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         }, function() {
             $scope.editable = false;
         });
+
+        
     };
+
+
+
 
     var calculateCollected = function() {
         var reqs = $scope.resourceRequirementsWithMatches;
@@ -277,10 +351,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.showResourceModal = function() {
         $('#addResource').modal('toggle');
-    }
-
-    if (isNew === false) {
-        $scope.update($routeParams.id);
     }
 
     //RATING

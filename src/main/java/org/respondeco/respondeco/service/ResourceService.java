@@ -324,12 +324,8 @@ public class ResourceService {
             pageRequest = restParameters.buildPageRequest();
         }
 
-        List<ResourceOffer> entries;
-
         if(searchField.isEmpty() && isCommercial == null) {
             page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
-
-            entries = page.getContent();
         } else {
             //create dynamic query with help of querydsl
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
@@ -359,7 +355,6 @@ public class ResourceService {
 
             log.debug("TOTALELEMENTS: " + page.getTotalElements());
             log.debug("TOTALPAGES: " + page.getTotalPages());
-            log.debug("PAGETOSTRING: " + page.toString());
         }
 
         return page;
