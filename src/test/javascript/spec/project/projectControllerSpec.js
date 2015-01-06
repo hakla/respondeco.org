@@ -279,6 +279,21 @@ describe('Project Controller Tests ', function() {
             expect(scope.ProjectApply.organization.owner.id).toBe(1);
             expect(scope.resourceOffers.length).toBe(2);
         });
+        /*
+        it('dhould get project follow state', function(){
+
+            //predefine some value(s) for test
+            scope.project.id = 1;
+            routeParams.id = scope.project.id;
+
+            spyOn(ProjectService, 'followingState');
+
+            expect(scope.followingState).toHaveBennCalled();
+
+
+
+        });
+        */
 
         it('should refresh the map to actual coordinates', function() {
     

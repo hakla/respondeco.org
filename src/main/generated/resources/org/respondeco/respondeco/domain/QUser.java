@@ -45,6 +45,10 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath firstName = createString("firstName");
 
+    public final ListPath<Organization, QOrganization> followOrganizations = this.<Organization, QOrganization>createList("followOrganizations", Organization.class, QOrganization.class, PathInits.DIRECT2);
+
+    public final ListPath<Project, QProject> followProjects = this.<Project, QProject>createList("followProjects", Project.class, QProject.class, PathInits.DIRECT2);
+
     public final EnumPath<Gender> gender = createEnum("gender", Gender.class);
 
     //inherited

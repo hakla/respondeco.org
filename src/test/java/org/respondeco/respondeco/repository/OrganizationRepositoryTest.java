@@ -5,10 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,7 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -121,6 +118,36 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
         Organization savedOrganization = organizationRepository.findByOwner(organization.getOwner());
 
         assertTrue(savedOrganization.getOwner().equals(orgAdmin));
+    }
+
+    /**
+     * Test save Org Follow and retrieve the data for assertion
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testfindByUserAndOrganization_General() throws Exception{
+        ArrayList<User> usrList = new ArrayList<>();
+        usrList.add(orgAdmin);
+        organization.setFollowingUsers(usrList);
+        organizationRepository.save(organization);
+        organizationRepository.flush();
+
+        Organization testObject = organizationRepository.findByUserIdAndOrganizationId(orgAdmin.getId(), organization.getId());
+        assertNotNull(testObject);
+        assertEquals(testObject.getFollowingUsers().get(0), orgAdmin);
+    }
+
+    /**
+     * No followers found
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testfindByUserAndProject_NoFollowers() throws Exception{
+
+        Organization testObject = organizationRepository.findByUserIdAndOrganizationId(orgAdmin.getId(), organization.getId());
+        assertNull(testObject);
     }
 
 

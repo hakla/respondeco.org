@@ -496,6 +496,65 @@ public class OrganizationController {
         return responseEntity;
     }
 
+    /**
+     * Get the Follow State for the current Organization given by ID
+     * @return Error or OK Response Entity {true/false} as result
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/followingstate",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity followingState(@PathVariable Long id) {
+        FollowStateDTO result = new FollowStateDTO();
+        result.setState(organizationService.followingState(id));
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
+
+
+    /**
+     * Allow user to subscribe a specific organization news
+     * @return Error or OK Response Entity
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/follow",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity follow(@PathVariable Long id) {
+        ResponseEntity responseEntity;
+
+        try {
+            organizationService.follow(id);
+            responseEntity = new ResponseEntity(HttpStatus.CREATED);
+        }
+        catch (IllegalValueException e){
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+
+        return responseEntity;
+    }
+
+    /**
+     * Allow user to un-subscribe a specific organization news
+     * @return Error or OK Response Entity
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/unfollow",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity unfollow(@PathVariable Long id) {
+        ResponseEntity responseEntity;
+
+        try {
+            organizationService.unfollow(id);
+            responseEntity = new ResponseEntity(HttpStatus.OK);
+        }
+        catch (IllegalValueException e){
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+
+        return responseEntity;
+    }
+
 
     /**
      * gets the list of postings ordered by creation date for the specified organization

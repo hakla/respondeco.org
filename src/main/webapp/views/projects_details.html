@@ -1,11 +1,21 @@
 <div class="row">
-    <div class="modal-header">
-        <div class="alert alert-danger ng-scope" ng-show="showError()">
-            <strong>{{ ProjectApply.error | translate }}</strong>
+    <div>
+        <div class="col-md-2">
+            <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
         </div>
-        <button class="btn btn-primary pull-right" ng-click='edit()' translate='general.edit' ng-show="editable">Edit</button>
-        <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
-        <h2 translate="project.details.title" translate-values="{project: '{{project.name}}'}">Project overview for {{project.name}}</h2>
+        <div class="text-right col-md-10">
+            <button type="button" ng-show="showFollow()" class="btn btn-success ng-hide" ng-click="follow()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span translate="follow.button" class="ng-scope">Folgen</span>
+            </button>
+            <button type="button" ng-show="showUnfollow()" class="btn btn-danger ng-hide" ng-click="unfollow()">
+                <span class="glyphicon glyphicon-minus"></span>
+                <span translate="follow.button" class="ng-scope">Folgen</span>
+            </button>
+            <button class="btn btn-primary" ng-click='edit()' translate='general.edit' ng-show="editable">Edit</button>
+        </div>
+        <div style="clear:both;"></div>
+        <h2 class="spacer-top" translate="project.details.title" translate-values="{project: '{{project.name}}'}">Project overview for {{project.name}}</h2>
     </div>
     <div class="modal-body">
         <div class="col-md-6">
@@ -189,7 +199,7 @@
                     <button id="resourceCancelButton" type="button" class="btn btn-link" data-dismiss="modal">
                         {{ 'resource.new.cancelbutton' | translate }}
                     </button>
-                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit($event, this)" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
+                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit($event)" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
                         <span class="glyphicon glyphicon-save"></span> {{ 'resource.new.savebutton' | translate }}
                     </button>
                 </div>

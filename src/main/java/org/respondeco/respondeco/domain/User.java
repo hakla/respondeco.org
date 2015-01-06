@@ -25,7 +25,7 @@ import java.util.Set;
 @Setter
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@ToString(exclude = {"persistentTokens", "authorities", "organization"}) // otherwise there will be errors in the log because authorities is lazy loaded
+@ToString(exclude = {"persistentTokens", "authorities", "organization", "UserFollowProjects", "UserFollowOrganizations"}) // otherwise there will be errors in the log because authorities is lazy loaded
 public class User extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -94,4 +94,22 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PersistentToken> persistentTokens = new HashSet<>();
+
+
+
+    @ManyToMany
+    @JoinTable(
+        name="T_USER_FOLLOW_PROJECT",
+        joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")},
+        inverseJoinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")}
+    )
+    private List<Project> followProjects;
+
+    @ManyToMany
+    @JoinTable(
+        name="T_USER_FOLLOW_ORGANIZATION",
+        joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")},
+        inverseJoinColumns = { @JoinColumn(name = "ORGANIZATION_ID", referencedColumnName = "id")}
+    )
+    private List<Organization> followOrganizations;
 }

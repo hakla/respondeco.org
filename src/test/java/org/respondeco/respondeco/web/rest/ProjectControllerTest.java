@@ -39,7 +39,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -98,13 +97,13 @@ public class ProjectControllerTest {
     private PropertyTagRepository propertyTagRepositoryMock;
 
     @Mock
-    private ResourceMatchRepository resourceMatchRepository;
+    private ResourceMatchRepository resourceMatchRepositoryMock;
 
     @Mock
-    private PostingFeedRepository postingFeedRepository;
+    private PostingFeedRepository postingFeedRepositoryMock;
 
     @Mock
-    private PostingFeedService postingFeedService;
+    private PostingFeedService postingFeedServiceMock;
 
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
@@ -128,15 +127,14 @@ public class ProjectControllerTest {
                 propertyTagServiceMock,
                 resourceServiceMock,
                 imageRepositoryMock,
-                resourceMatchRepository,
-                postingFeedRepository));
-
+                resourceMatchRepositoryMock,
+                postingFeedRepositoryMock));
         ProjectController projectController = new ProjectController(
                 projectServiceMock,
                 resourceServiceMock,
                 ratingServiceMock,
                 userServiceMock,
-                postingFeedService,
+                postingFeedServiceMock,
                 projectLocationServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
@@ -609,7 +607,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testPostingForProject_expectBAD_REQUEST_serviceThrowsPostingFeedException() throws Exception {
-        doThrow(PostingFeedException.class).when(postingFeedService).addPostingForProjects(anyLong(),anyString());
+        doThrow(PostingFeedException.class).when(postingFeedServiceMock).addPostingForProjects(anyLong(),anyString());
 
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -619,7 +617,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testPostingForProject_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
-        doThrow(NoSuchProjectException.class).when(postingFeedService).addPostingForProjects(anyLong(),anyString());
+        doThrow(NoSuchProjectException.class).when(postingFeedServiceMock).addPostingForProjects(anyLong(),anyString());
 
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -639,10 +637,76 @@ public class ProjectControllerTest {
 
     @Test
     public void testGetPostingForProject_NoSuchProject() throws Exception {
-        doThrow(NoSuchProjectException.class).when(postingFeedService)
+        doThrow(NoSuchProjectException.class).when(postingFeedServiceMock)
             .getPostingsForProject(anyLong(), isA(RestParameters.class));
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testFollowingState_TRUE() throws Exception{
+        Long id = 1L;
+        Boolean result = true;
+        doReturn(result)
+            .when(projectServiceMock).followingState(id);
+
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}/followingstate", id))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.state").value(result))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(projectServiceMock, times(1)).followingState(id);
+    }
+
+    @Test
+    public void testFollowingState_FALSE() throws Exception{
+        Long id = 1L;
+        Boolean result = false;
+        doReturn(result)
+            .when(projectServiceMock).followingState(id);
+
+        restProjectMockMvc.perform(get("/app/rest/projects/{id}/followingstate", id))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.state").value(result))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(projectServiceMock, times(1)).followingState(id);
+    }
+
+    @Test
+    public void testFollow_SUCCESS() throws Exception{
+        Long id = 1L;
+        doNothing().when(projectServiceMock).follow(id);
+        restProjectMockMvc.perform(post("/app/rest/projects/{id}/follow", id))
+            .andExpect(status().isCreated());
+        verify(projectServiceMock, times(1)).follow(id);
+    }
+
+
+    @Test
+    public void testFollow_FAIL() throws Exception{
+        Long id = 1L;
+        doThrow(IllegalValueException.class).when(projectServiceMock).follow(id);
+
+        restProjectMockMvc.perform(post("/app/rest/projects/{id}/follow", id))
+            .andExpect(status().isBadRequest());
+        verify(projectServiceMock, times(1)).follow(id);
+    }
+
+    @Test
+    public void testUnfollow_SUCCESS() throws Exception{
+        Long id = 1L;
+        doNothing().when(projectServiceMock).unfollow(id);
+        restProjectMockMvc.perform(delete("/app/rest/projects/{id}/unfollow", id))
+            .andExpect(status().isOk());
+        verify(projectServiceMock, times(1)).unfollow(id);
+    }
+
+    @Test
+    public void testUnfollow_FAIL() throws Exception{
+        Long id = 1L;
+        doThrow(IllegalValueException.class).when(projectServiceMock).unfollow(id);
+        restProjectMockMvc.perform(delete("/app/rest/projects/{id}/unfollow", id))
+            .andExpect(status().isBadRequest());
+        verify(projectServiceMock, times(1)).unfollow(id);
     }
 }

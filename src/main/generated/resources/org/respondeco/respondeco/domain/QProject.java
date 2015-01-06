@@ -35,6 +35,8 @@ public class QProject extends EntityPathBase<Project> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> createdDate = _super.createdDate;
 
+    public final ListPath<User, QUser> FollowingUsers = this.<User, QUser>createList("FollowingUsers", User.class, QUser.class, PathInits.DIRECT2);
+
     //inherited
     public final NumberPath<Long> id = _super.id;
 

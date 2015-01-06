@@ -564,7 +564,6 @@ public class ProjectController {
         return responseEntity;
     }
 
-
     @RequestMapping(value = "/rest/projects/{id}/started",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -577,6 +576,63 @@ public class ProjectController {
         }
     }
 
+    /**
+     * Get the Follow State for the current Project given by ID
+     * @return Error or OK Response Entity {true/false} as result
+     */
+    @RequestMapping(value = "/rest/projects/{id}/followingstate",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity followingState(@PathVariable Long id) {
+        FollowStateDTO result = new FollowStateDTO();
+        result.setState(projectService.followingState(id));
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
+
+    /**
+     * Allow user to subscribe a specific project news
+     * @return Error or OK Response Entity
+     */
+    @RequestMapping(value = "/rest/projects/{id}/follow",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity follow(@PathVariable Long id) {
+        ResponseEntity responseEntity;
+
+        try {
+            projectService.follow(id);
+            responseEntity = new ResponseEntity(HttpStatus.CREATED);
+        }
+        catch (IllegalValueException e){
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+
+        return responseEntity;
+    }
+
+    /**
+     * Allow user to un-subscribe a specific project news
+     * @return Error or OK Response Entity
+     */
+    @RequestMapping(value = "/rest/projects/{id}/unfollow",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity unfollow(@PathVariable Long id) {
+        ResponseEntity responseEntity;
+
+        try {
+            projectService.unfollow(id);
+            responseEntity = new ResponseEntity(HttpStatus.OK);
+        }
+        catch (IllegalValueException e){
+            responseEntity = ErrorHelper.buildErrorResponse(e);
+        }
+
+        return responseEntity;
+    }
     /**
      * Returns all Project Locations
      * @return ResponseEntity containing a List of ProjectLocationResponse DTOs

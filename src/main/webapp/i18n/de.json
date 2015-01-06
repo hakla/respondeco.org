@@ -657,5 +657,24 @@
         "title": "Fehlerseite!",
         "403": "Sie haben nicht die nötigen Berechtigungen diese Seite anzuzeigen."
     },
-    "footer": "&copy; by respondeco.org"
+    "footer": "&copy; by respondeco.org",
+    "follow": {
+        "button": "Folgen",
+        "project": {
+            "accepted": "Sie können nur dem Projekt folgen. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
+            "rejected": {
+                "ownererror": "Das Folgen eigene Projekte ist nicht erlaubt",
+                "error": "Das Folgen des aktuellen Projekt ist derzeit aus technischen Gründen nicht möglich",
+                "notfound": "Das ausgewählte Projekt existiert nicht mehr. Bitte wenden Sie sich an die Organisation des Projekts"
+            }
+        },
+        "organization": {
+            "accepted": "Sie können nun der Organisation folgen. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
+            "rejected": {
+                "ownererror": "Das Folgen eigener Organisation ist leider nicht möglich",
+                "error": "Das Folgen der aktuelle Organisation ist derzeit aus technischen Gründen nicht möglich",
+                "notfound": "Die ausgewählte Organisation existiert nicht mehr. Bitte wenden Sie sich an den Verwaltenden Benutzer der Organisation"
+            }
+        }
+    }
 }

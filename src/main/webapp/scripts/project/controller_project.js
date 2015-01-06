@@ -14,6 +14,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         propertyTags: [],
         resourceRequirements: []
     };
+
     $scope.projects = Project.query();
 
     $scope.collected = 0;
@@ -72,8 +73,18 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         open1: true
     };
 
+    $scope.followingState = function(){
+        Project.followingState({id: $routeParams.id}, function(follow){
+            $scope.following = follow.state;
+        });
+    };
+
     var searchText = null;
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+
+    if (isNew == false){
+        $scope.followingState();
+    }
 
     // project apply
 
@@ -83,7 +94,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         account: null,
         allowedToApply: false,
         selectedResourceOffer: null,
-        error: null
+        selectedRequirement: null
     };
 
     $scope.list_of_string = [];
@@ -464,8 +475,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.projectApply = function(resourceRequirement, $event) {
         $event.stopPropagation();
         $event.preventDefault();
-
-        $scope.selectedRequirement = resourceRequirement;
+        resourceRequirement.$target = $($event.target).closest("div.panel-heading");
+        $scope.ProjectApply.selectedRequirement = resourceRequirement;
 
         $('#apply').modal('toggle');
     };
@@ -474,49 +485,45 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         return $scope.ProjectApply.allowedToApply;
     };
 
-    $scope.showError = function(){
-        return $scope.ProjectApply.error;
-    }
-
     $scope.selectResourceOffer = function(offer, $event) {
         var $target = $($event.target);
 
-        $target.closest("ul").find(".selected").removeClass("selected");
+        var selected = $target.closest("ul").find(".selected");
+        selected.removeClass("selected");
 
         if ($target.is("li") === false) {
-            $target = $target.closest("li");
-        } else {
-            $target = $target;
+            selected = $target = $target.closest("li");
         }
+        offer.$target = selected;
 
         $target.addClass("selected");
         $scope.ProjectApply.selectedResourceOffer = offer;
     };
 
-    $scope.projectApplySubmit = function($event, modal) {
-        // submit projectApply request to backend
-        //
-        // Params
-        // $scope.project
-        // $scope.selectedRequirement
-        // organization
-        // selectedResourceOffer
-        var req = $scope.selectedRequirement;
+    $scope.projectApplySubmit = function($event) {
         var data = {
             resourceOfferId: $scope.ProjectApply.selectedResourceOffer.id,
-            resourceRequirementId: req.id,
+            resourceRequirementId: $scope.ProjectApply.selectedRequirement.id,
             organizationId: $scope.ProjectApply.organization.id,
             projectId: $scope.project.id
         }
+        // please do not remove this variable. some user operation can be faster than timeout.
+        // this cause an exception.
+        var reqTarget = $scope.ProjectApply.selectedRequirement.$target;
         Project.apply(data, function(data){
+            $scope.ProjectApply.selectedResourceOffer.$target.removeClass("selected");
+            $scope.ProjectApply.selectedResourceOffer = null;
+            $scope.ProjectApply.selectedRequirement = null;
             $scope.getOffers();
-            $scope.ProjectApply.error = null;
-
         }, function(error){
-            $scope.ProjectApply.error = error.data.key;
+            reqTarget.css("background-color", "#EBCCD1");
+            setTimeout(function(){ reqTarget.css("background-color", ""); }, 5000);
         });
     };
 
+    /**
+     * Get all resource offer from the organization the user currently in.
+     */
     $scope.getOffers = function() {
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
@@ -562,24 +569,43 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.currentOrgRatingComment = null;
         $scope.projectRatingError = null;
         $scope.orgRatingError = null;
-    }
+    };
 
     $scope.showOrgRatingModal = function() {
         $('#rateMatchModal').modal('show');
-    }
+    };
 
     $scope.hideOrgRatingModal = function() {
         $('#rateMatchModal').modal('hide');
-    }
+    };
 
     $scope.setProjectRatingError = function(error) {
         $("#projectRatingError").text(error);
-    }
+    };
 
     $scope.setOrgRatingError = function(error) {
         $("#orgRatingError").text(error);
-    }
+    };
 
+    $scope.follow = function(){
+        Project.follow({id: $scope.project.id}, null, function (result) {
+            $scope.following = true;
+        });
+    };
+
+    $scope.unfollow = function(){
+        Project.unfollow({id: $scope.project.id}, function (result) {
+            $scope.following = false;
+        });
+    };
+
+    $scope.showUnfollow = function(){
+        return $scope.following == true;// && $scope.editable == false;
+    };
+
+    $scope.showFollow = function() {
+        return $scope.following == false;// && $scope.editable == false;
+    };
     //Posting
 
     var refreshPostings = function() {
@@ -610,5 +636,4 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
         refreshPostings();
     }
-
 });
