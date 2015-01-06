@@ -136,7 +136,6 @@ public class ProjectControllerTest {
                 userServiceMock,
                 postingFeedServiceMock,
                 projectLocationServiceMock);
-            postingFeedServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
