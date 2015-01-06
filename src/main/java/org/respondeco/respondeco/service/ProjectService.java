@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.ProjectRepository;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -452,7 +449,7 @@ public class ProjectService {
 
         User currentUser = userService.getUserWithAuthorities();
 
-        return projectRepository.findByUserAndProject(currentUser.getId(), projectId) != null;
+        return projectRepository.findByUserIdAndProjectId(currentUser.getId(), projectId) != null;
     }
 
     /**
@@ -466,7 +463,7 @@ public class ProjectService {
         // check if project already exists for the current user and given project id.
         // if true, we will allow an duplicate entry that will cause primary key constraint.
         // Better to throw an exception
-        if(projectRepository.findByUserAndProject(currentUser.getId(), projectId) != null){
+        if(projectRepository.findByUserIdAndProjectId(currentUser.getId(), projectId) != null){
             throw new IllegalValueException("follow.project.rejected.error", "Cannot follow an organization that already marked as followed");
         }
 
@@ -498,7 +495,7 @@ public class ProjectService {
     public void unfollow(Long projectId) throws IllegalValueException{
         User currentUser = userService.getUserWithAuthorities();
 
-        Project selected = projectRepository.findByUserAndProject(currentUser.getId(), projectId);
+        Project selected = projectRepository.findByUserIdAndProjectId(currentUser.getId(), projectId);
 
         // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
         // an exception if project is deactivated

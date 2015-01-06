@@ -75,34 +75,24 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $scope.update($routeParams.id);
     }
 
-    $scope.follow = function($event){
-        var button = $($event.target);
-        var attr = button.attr("type");
-        if(attr != "button"){
-            button = button.parent(":button");
-        }
-        Organization.follow({id: $scope.organization.id}, function (result) {
+    $scope.follow = function(){
+        Organization.follow({id: $scope.organization.id}, null, function (result) {
             $scope.following = true;
         });
     };
 
-    $scope.unfollow = function($event){
-        var button = $($event.target);
-        var attr = button.attr("type");
-        if(attr != "button"){
-            button = button.parent(":button");
-        }
+    $scope.unfollow = function(){
         Organization.unfollow({id: $scope.organization.id}, function (result) {
             $scope.following = false;
         });
     };
 
     $scope.showUnfollow = function(){
-        return $scope.following == true && $scope.isOwner() == false;
+        return $scope.following == true;// && $scope.isOwner() == false;
     };
 
     $scope.showFollow = function() {
-        return $scope.following == false && $scope.isOwner() == false;
+        return $scope.following == false;// && $scope.isOwner() == false;
     };
     //Posting
 

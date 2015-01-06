@@ -33,13 +33,17 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         open1: true
     };
 
+    $scope.followingState = function(){
+        Project.followingState({id: $routeParams.id}, function(follow){
+            $scope.following = follow.state;
+        });
+    };
+
     var searchText = null;
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
     if (isNew == false){
-        Project.followingState({id: $routeParams.id}, function(follow){
-            $scope.following = follow.state;
-        });
+        $scope.followingState();
     }
 
     // project apply
@@ -513,34 +517,24 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $("#orgRatingError").text(error);
     };
 
-    $scope.follow = function($event){
-        var button = $($event.target);
-        var attr = button.attr("type");
-        if(attr != "button"){
-            button = button.parent(":button");
-        }
-        Project.follow({id: $scope.project.id}, function (result) {
+    $scope.follow = function(){
+        Project.follow({id: $scope.project.id}, null, function (result) {
             $scope.following = true;
         });
     };
 
-    $scope.unfollow = function($event){
-        var button = $($event.target);
-        var attr = button.attr("type");
-        if(attr != "button"){
-            button = button.parent(":button");
-        }
+    $scope.unfollow = function(){
         Project.unfollow({id: $scope.project.id}, function (result) {
             $scope.following = false;
         });
     };
 
     $scope.showUnfollow = function(){
-        return $scope.following == true && $scope.editable == false;
+        return $scope.following == true;// && $scope.editable == false;
     };
 
     $scope.showFollow = function() {
-        return $scope.following == false && $scope.editable == false;
+        return $scope.following == false;// && $scope.editable == false;
     };
     //Posting
 

@@ -391,7 +391,7 @@ public class OrganizationService {
 
         User currentUser = userService.getUserWithAuthorities();
 
-        return organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId) != null;
+        return organizationRepository.findByUserIdAndOrganizationId(currentUser.getId(), organizationId) != null;
     }
 
     /**
@@ -405,7 +405,7 @@ public class OrganizationService {
         // check if organization already exists for the current user and given project id.
         // if true, we will allow an duplicate entry that will cause primary key constraint.
         // Better to throw an exception
-        if(organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId) != null){
+        if(organizationRepository.findByUserIdAndOrganizationId(currentUser.getId(), organizationId) != null){
             throw new IllegalValueException("follow.organization.rejected.error", "Cannot follow an organization that already marked as followed");
         }
 
@@ -441,7 +441,7 @@ public class OrganizationService {
     public void unfollow(Long organizationId) throws IllegalValueException{
         User currentUser = userService.getUserWithAuthorities();
 
-        Organization selected = organizationRepository.findByUserAndOrganization(currentUser.getId(), organizationId);
+        Organization selected = organizationRepository.findByUserIdAndOrganizationId(currentUser.getId(), organizationId);
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated

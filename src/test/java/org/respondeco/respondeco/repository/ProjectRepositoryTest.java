@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.repository;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +7,6 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestExecutionListeners;
@@ -380,7 +378,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
         projectRepository.save(project);
         projectRepository.flush();
 
-        Project testObject = projectRepository.findByUserAndProject(orgAdmin.getId(), project.getId());
+        Project testObject = projectRepository.findByUserIdAndProjectId(orgAdmin.getId(), project.getId());
         assertNotNull(testObject);
         assertEquals(testObject.getFollowingUsers().get(0), orgAdmin);
     }
@@ -393,7 +391,7 @@ public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringCont
     @Transactional
     public void testfindByUserAndProject_NoFollowers() throws Exception{
 
-        Project testObject = projectRepository.findByUserAndProject(orgAdmin.getId(), project.getId());
+        Project testObject = projectRepository.findByUserIdAndProjectId(orgAdmin.getId(), project.getId());
         assertNull(testObject);
     }
 

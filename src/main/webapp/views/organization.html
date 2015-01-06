@@ -4,11 +4,11 @@
             <button class="btn btn-default" ng-click="redirectToOverview()" translate="organization.backToOverview"></button>
         </div>
         <div class="text-right col-md-10">
-            <button type="button" ng-show='showFollow() == true' class="btn btn-success ng-hide" ng-click="follow($event)">
+            <button type="button" ng-show='showFollow() == true' class="btn btn-success ng-hide" ng-click="follow()">
                 <span class="glyphicon glyphicon-plus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>
-            <button type="button" ng-show='showUnfollow()' class="btn btn-danger ng-hide" ng-click="unfollow($event)">
+            <button type="button" ng-show='showUnfollow()' class="btn btn-danger ng-hide" ng-click="unfollow()">
                 <span class="glyphicon glyphicon-minus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>

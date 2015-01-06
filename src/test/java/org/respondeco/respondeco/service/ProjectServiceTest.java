@@ -471,11 +471,11 @@ public class ProjectServiceTest {
     @Test
     public void testFollowingState_TRUE() throws Exception{
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        doReturn(basicProject).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
         Boolean testObject = projectService.followingState(basicProject.getId());
 
-        verify(projectRepositoryMock, times(1)).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
 
         assertTrue(testObject);
@@ -484,11 +484,11 @@ public class ProjectServiceTest {
     @Test
     public void testFollowingState_FALSE() throws Exception{
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        doReturn(null).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(null).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
         Boolean testObject = projectService.followingState(basicProject.getId());
 
-        verify(projectRepositoryMock, times(1)).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         assertFalse(testObject);
     }
@@ -503,7 +503,7 @@ public class ProjectServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(null).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         doReturn(basicProject).when(projectRepositoryMock).findOne(basicProject.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
@@ -511,7 +511,7 @@ public class ProjectServiceTest {
         projectService.follow(basicProject.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(projectRepositoryMock, times(1)).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         verify(projectRepositoryMock, times(1)).findOne(basicProject.getId());
     }
 
@@ -521,7 +521,7 @@ public class ProjectServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(basicProject).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
         projectService.follow(basicProject.getId());
     }
@@ -532,7 +532,7 @@ public class ProjectServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(null).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         // this trigger our Exception for Project NULL Value
         doReturn(null).when(projectRepositoryMock).findOne(basicProject.getId());
         //ignore
@@ -550,7 +550,7 @@ public class ProjectServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(null).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         // this trigger our Exception for Project NULL Value
         doReturn(basicProject).when(projectRepositoryMock).findOne(basicProject.getId());
 
@@ -566,7 +566,7 @@ public class ProjectServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(basicProject).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         doReturn(basicProject).when(projectRepositoryMock).findOne(basicProject.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
@@ -574,7 +574,7 @@ public class ProjectServiceTest {
         projectService.unfollow(basicProject.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(projectRepositoryMock, times(1)).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -595,7 +595,7 @@ public class ProjectServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(basicProject).when(projectRepositoryMock).findByUserAndProject(defaultUser.getId(), basicProject.getId());
+        doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
         projectService.unfollow(basicProject.getId());
     }
