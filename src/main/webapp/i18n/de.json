@@ -148,7 +148,9 @@
             "purpose.placeholder": "Ziel des Projekts",
             "startDate.placeholder": "Start des Projekts",
             "endDate.placeholder": "Ende des Projekts",
-            "tag.placeholder": "Property Tags des Projekts"
+            "tag.placeholder": "Property Tags des Projekts",
+            "location": "Adresse",
+            "location.placeholder": "Adresse eingeben"
         },
         "details": {
             "title": "Projektübersicht für \"{{project}}\"",
@@ -622,6 +624,22 @@
         "offer": {
             "title": "Ressource auswählen",
             "donate": "Spenden"
+        }
+    },
+    "nearProjects": {
+        "autoButton": "Meinen Standort bestimmen",
+        "manualButton": "Adresse manuell eingeben",
+        "noProjectsFound": "Es wurden keine Projekte in ihrer Umgebung gefunden",
+        "placeholder": {
+            "searchBox": "Adresse manuell eingeben"
+        },
+        "error": {
+            "PERMISSION_DENIED" : "Sie haben die automatische Ortung abgelehnt",
+            "POSITION_UNAVAILABLE" : "Die automatische Ortung ist gerade nicht verfügbar",
+            "TIMEOUT": "Zeitüberschreitung bei der Anfrage",
+            "UNKNOWN_ERROR": "Ein unbekannter Fehler ist aufgetreten",
+            "radius": "Der Radius muss größer als 0 sein",
+            "geolocateNotSupported": "Ihr Browser unterstützt die automatische Ortung nicht!"
         }
     },
     "orgJoinRequest": {

@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import scala.Console;
@@ -32,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @Transactional
@@ -1041,5 +1044,53 @@ public class ResourceServiceTest {
 
         assertTrue(match.getOrganization().getId().equals(1L));
     }
+
+    @Test
+    public void testGetAllOffers_shouldReturnFindByActiveIsTrue() throws Exception {
+        doAnswer(invocation -> {
+            List<ResourceOffer> resourceOffers = new ArrayList<>();
+            ResourceOffer offer = new ResourceOffer();
+            offer.setId(1L);
+            offer.setName("resource");
+            resourceOffers.add(offer);
+            offer.setId(2L);
+            offer.setName("resource2");
+            resourceOffers.add(offer);
+
+            Page page = new PageImpl(resourceOffers);
+
+            return page;
+        }).when(resourceOfferRepositoryMock).findByActiveIsTrue(any(PageRequest.class));
+
+        Page<ResourceOffer> page = resourceService.getAllOffers("",null,new RestParameters(0,5));
+        assertEquals(page.getTotalPages(), 1);
+        assertEquals(page.getTotalElements(), 2);
+        assertEquals(page.getContent().size(), 2);
+    }
+
+    @Test
+    public void testGetAllOffers_shouldReturnAllResourcesWithFilter() throws Exception {
+        doAnswer(invocation -> {
+            List<ResourceOffer> resourceOffers = new ArrayList<>();
+            ResourceOffer offer = new ResourceOffer();
+            offer.setId(1L);
+            offer.setName("resource");
+            resourceOffers.add(offer);
+            offer.setId(2L);
+            offer.setName("resource2");
+            resourceOffers.add(offer);
+
+            Page page = new PageImpl(resourceOffers);
+
+            return page;
+        }).when(resourceOfferRepositoryMock).findAll(any(Predicate.class), any(PageRequest.class));
+
+        Page<ResourceOffer> page = resourceService.getAllOffers("resource",true,new RestParameters(0,5));
+        assertEquals(page.getTotalPages(), 1);
+        assertEquals(page.getTotalElements(), 2);
+        assertEquals(page.getContent().size(), 2);
+    }
+
+
 
 }

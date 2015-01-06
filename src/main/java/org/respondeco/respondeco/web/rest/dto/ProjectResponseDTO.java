@@ -76,11 +76,14 @@ public class ProjectResponseDTO {
         }
         if (fieldNames.contains("successful")) {
             responseDTO.setSuccessful(project.getSuccessful());
-        }/*
+        }
+
+        /*
         if (fieldNames.contains("postings")) {
             responseDTO.setPostings(PostingDTO
                     .fromEntities(project.getPostingFeed_id().getPostings(), null));
         }*/
+
         //TODO FIX
         /**
         if (fieldNames.contains("ratings")) {
@@ -122,6 +125,7 @@ public class ProjectResponseDTO {
     private ImageDTO logo;
     private List<RatingResponseDTO> ratings;
     private Boolean successful;
+    private ProjectLocationResponseDTO projectLocation;
     private List<PostingDTO> postings;
 
 }

@@ -28,6 +28,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +51,7 @@ public class ProjectController {
     private ResourceService resourceService;
     private RatingService ratingService;
     private UserService userService;
+    private ProjectLocationService projectLocationService;
     private PostingFeedService postingFeedService;
 
     @Inject
@@ -57,16 +59,18 @@ public class ProjectController {
                              ResourceService resourceService,
                              RatingService ratingService,
                              UserService userService,
-                             PostingFeedService postingFeedService) {
+                             PostingFeedService postingFeedService,
+                            ProjectLocationService projectLocationService) {
+
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
         this.userService = userService;
+        this.projectLocationService = projectLocationService;
         this.postingFeedService = postingFeedService;
     }
 
     /**
-<<<<<<< HEAD
      * Organization that apply new resource to a project
      * @param projectApplyDTO data to apply
      * @return HTPP Status OK: no errors accure, BAD REQUEST: error accures
@@ -127,6 +131,14 @@ public class ProjectController {
                 project.getPropertyTags(),
                 project.getResourceRequirements(),
                 project.getLogo() != null ? project.getLogo().getId() : null);
+
+            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
+
+            if(projectLocationDTO != null) {
+                projectLocationService.createProjectLocation(newProject.getId(), projectLocationDTO.getAddress(),
+                    projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+            }
+
             ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(newProject, null);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch(IllegalValueException e) {
@@ -160,14 +172,22 @@ public class ProjectController {
         ResponseEntity<?> responseEntity;
         try {
             Project updatedProject = projectService.update(
-                project.getId(),
-                project.getName(),
-                project.getPurpose(),
-                project.getConcrete(),
-                project.getStartDate(),
-                project.getLogo() != null ? project.getLogo().getId() : null,
-                project.getPropertyTags(),
-                project.getResourceRequirements());
+                    project.getId(),
+                    project.getName(),
+                    project.getPurpose(),
+                    project.getConcrete(),
+                    project.getStartDate(),
+                    project.getLogo() != null ? project.getLogo().getId() : null,
+                    project.getPropertyTags(),
+                    project.getResourceRequirements());
+
+            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
+
+            if(projectLocationDTO != null) {
+                ProjectLocation location = projectLocationService.updateProjectLocation(projectLocationDTO.getProjectId(),
+                    projectLocationDTO.getAddress(), projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
+            }
+
             ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(updatedProject, null);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch(IllegalValueException e) {
@@ -350,6 +370,14 @@ public class ProjectController {
         if(project != null) {
             ProjectResponseDTO responseDTO = ProjectResponseDTO
                     .fromEntity(project, restParameters.getFields());
+
+            //project location
+            ProjectLocation projectLocation = projectLocationService.getProjectLocation(project.getId());
+            if(projectLocation != null) {
+                ProjectLocationResponseDTO dto = ProjectLocationResponseDTO.fromEntity(projectLocation, null);
+                responseDTO.setProjectLocation(dto);
+            }
+
             response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -605,6 +633,54 @@ public class ProjectController {
 
         return responseEntity;
     }
+    /**
+     * Returns all Project Locations
+     * @return ResponseEntity containing a List of ProjectLocationResponse DTOs
+     */
+    @RequestMapping(value = "/rest/locations",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<List<ProjectLocationResponseDTO>> getAllProjectLocations() {
+
+        List<ProjectLocation> projectLocations = projectLocationService.getAllLocations();
+
+        List<ProjectLocationResponseDTO> projectLocationResponseDTOs = ProjectLocationResponseDTO.fromEntities(projectLocations, null);
+
+        return new ResponseEntity<>(projectLocationResponseDTOs, HttpStatus.OK);
+    }
+
+
+    /**
+     * Return projects which are in a specific radius from the given coordinates
+     * @return ResponseEntity which contains a list of ProjectLocationResponseDTOs
+     */
+    @RequestMapping(value = "/rest/nearprojects",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> findProjectsNearMe(
+        @RequestParam(required = true) Double latitude,
+        @RequestParam(required = true) Double longitude,
+        @RequestParam(required = true) Double radius) {
+        log.debug("REST Request to get near projects: (latitude: " + latitude +" , longitude: " + longitude + "), radius: " + radius );
+
+        ResponseEntity<?> responseEntity = null;
+
+        try{
+            List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
+            responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
+        } catch (NoSuchProjectException e) {
+            log.debug("Can not find project for projectLocation");
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalValueException e) {
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        }
+
+        return responseEntity;
+    }
+
+
     /**
      * gents the list of postings ordered by creation date for the specified project
      *
