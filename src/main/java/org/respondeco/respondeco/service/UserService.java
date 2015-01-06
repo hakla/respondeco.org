@@ -3,18 +3,16 @@ package org.respondeco.respondeco.service;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.SecurityUtils;
-import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
 import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
-import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +47,9 @@ public class UserService {
 
     @Inject
     private ImageRepository imageRepository;
+
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
 
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
@@ -207,5 +208,40 @@ public class UserService {
 
     public User findUserByLogin(String loginName) {
         return userRepository.findByLogin(loginName);
+    }
+
+    public Page<Posting> getNewsfeed(RestParameters restParameters) {
+
+        User user = getUserWithAuthorities();
+
+        List<PostingFeed> newsfeedPostingFeeds = new ArrayList<PostingFeed>();
+
+        List<Organization> organizations = user.getFollowOrganizations();
+        if(organizations != null) {
+            for(Organization organization : user.getFollowOrganizations()) {
+                newsfeedPostingFeeds.add(organization.getPostingFeed());
+            }
+        }
+
+        List<Project> projects = user.getFollowProjects();
+        if(projects != null) {
+            for(Project project : user.getFollowProjects()) {
+                newsfeedPostingFeeds.add(project.getPostingFeed());
+            }
+        }
+
+        List<Posting> newsFeedPostings = new ArrayList<Posting>();
+        if(newsfeedPostingFeeds.isEmpty() != true) {
+            for(PostingFeed postingFeed : newsfeedPostingFeeds) {
+                for(Posting posting : postingFeed.getPostings()) {
+                    newsFeedPostings.add(posting);
+                }
+            }
+        }
+
+        PostingFeed newsFeed = new PostingFeed();
+        newsFeed.setPostings(newsFeedPostings);
+        postingFeedRepository.save(newsFeed);
+        return postingFeedRepository.getPostings(newsFeed.getId(),restParameters.buildPageRequest());
     }
 }
