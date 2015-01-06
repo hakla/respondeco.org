@@ -108,5 +108,31 @@ describe('Organization Service Tests ', function () {
         });
 
 
+        it('should call Organization backend to create a follow entry', function(){
+            httpBackend.expectPOST('app/rest/organizations/1/follow').respond(201);
+            //WHEN
+            serviceTested.follow({id:1}, null);
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call Organization backend to delete follow entry', function(){
+            httpBackend.expectDELETE('app/rest/organizations/1/unfollow').respond(200);
+            //WHEN
+            serviceTested.unfollow({id:1});
+            //flush the backend to "execute" the request to do the expected POST assertion.
+            httpBackend.flush();
+        });
+
+        it('should call backend to get Organization following state', function() {
+            var returnData = {"state": true};
+            httpBackend.expectGET('app/rest/organizations/1/followingstate').respond(returnData);
+
+            //WHEN
+            serviceTested.followingState({id: 1}, null);
+            //flush the backend to "execute" the request to do the expected GET assertion.
+            httpBackend.flush();
+        });
+
     });
 });

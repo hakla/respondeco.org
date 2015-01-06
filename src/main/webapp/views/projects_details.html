@@ -4,11 +4,11 @@
             <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
         </div>
         <div class="text-right col-md-10">
-            <button type="button" ng-show="showFollow()" class="btn btn-success ng-hide" ng-click="follow()">
+            <button type="button" ng-show="showFollow()" name="follow_button" class="btn btn-success ng-hide" ng-click="follow()">
                 <span class="glyphicon glyphicon-plus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>
-            <button type="button" ng-show="showUnfollow()" class="btn btn-danger ng-hide" ng-click="unfollow()">
+            <button type="button" ng-show="showUnfollow()" name="unfollow_button" class="btn btn-danger ng-hide" ng-click="unfollow()">
                 <span class="glyphicon glyphicon-minus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>

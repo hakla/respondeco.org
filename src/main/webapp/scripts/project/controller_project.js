@@ -53,7 +53,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
         $scope.map.zoom = 14;
     }
-   
+
     var searchBoxEvents = {
         places_changed: function (searchBox) {
             var id = 0;
@@ -209,7 +209,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                     $scope.marker.address = $scope.project.projectLocation.address;
                 }
             }
-            
+
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
@@ -264,7 +264,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             $scope.editable = false;
         });
 
-        
+
     };
 
 
@@ -588,13 +588,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     $scope.follow = function(){
-        Project.follow({id: $scope.project.id}, null, function (result) {
+        Project.follow({id: $scope.project.id}, null, function () {
             $scope.following = true;
         });
     };
 
     $scope.unfollow = function(){
-        Project.unfollow({id: $scope.project.id}, function (result) {
+        Project.unfollow({id: $scope.project.id}, function () {
             $scope.following = false;
         });
     };

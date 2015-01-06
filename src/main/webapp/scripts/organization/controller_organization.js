@@ -126,9 +126,14 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         refreshPostings();
     };
 
-    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined'){
+    $scope.followingState = function(){
         Organization.followingState({id: $routeParams.id}, function(follow){
             $scope.following = follow.state;
         });
+
+    }
+
+    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined'){
+        $scope.followingState();
     }
 });

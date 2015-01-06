@@ -10,6 +10,13 @@ var ProjectSearchPage = function() {
     this.navigate = function() {
         browser.get("http://localhost:9000/#/projects");
         browser.waitForAngular();
-    }
+    };
+    this.navigateToProject1 = function(){
+        browser.get("http://localhost:9000/#/projects/1");
+        browser.waitForAngular();
+    };
+
+    this.follow = element(by.name("follow_button"));
+    this.unfollow = element(by.name("unfollow_button"));
 };
 module.exports = new ProjectSearchPage();

@@ -32,4 +32,30 @@ describe('e2e: project search', function() {
         browser.waitForAngular();
         expect(browser.getLocationAbsUrl()).toMatch('/projects/[0-9]+');
     });
+
+    it('should click follow button', function(){
+        expect(searchProjectsPage.follow.isDisplayed()).toBe(true);
+        expect(searchProjectsPage.unfollow.isDisplayed()).toBe(false);
+        browser.waitForAngular();
+
+        var actions = protractor.getInstance().actions();
+        actions.mouseMove(searchProjectsPage.follow);
+        actions.click();
+        browser.waitForAngular();
+        excpect(searchProjectsPage.follow.isDisplayed()).toBe(false);
+        excpect(searchProjectsPage.unfollow.isDisplayed()).toBe(true);
+    });
+
+    it('should click unfollow button', function(){
+        expect(searchProjectsPage.follow.isDisplayed()).toBe(false);
+        expect(searchProjectsPage.unfollow.isDisplayed()).toBe(true);
+        browser.waitForAngular();
+
+        var actions = protractor.getInstance().actions();
+        actions.mouseMove(searchProjectsPage.unfollow);
+        actions.click();
+        browser.waitForAngular();
+        excpect(searchProjectsPage.follow.isDisplayed()).toBe(true);
+        excpect(searchProjectsPage.unfollow.isDisplayed()).toBe(false);
+    });
 });
