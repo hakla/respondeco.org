@@ -3,19 +3,19 @@
         {{ 'resource.title' | translate }}
     </h1>
 
-    <form name="searchForm" class="row" role="form" novalidate>
+    <form name="searchForm" class="row" role="form" ng-submit="search()" novalidate>
         <div class="form-group col-md-9">
             <label translate="resource.search.filter">name / tags / organization</label>
             <input type="text" class="form-control" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
         </div>
         <div class="form-group col-md-3">
             <label translate="resource.search.type" tooltip="{{ 'resource.search.tooltip.type' | translate }}">Type of resource</label><br>
-            <button class="btn {{ resourceSearch.isFree ? 'btn-success' : 'btn-primary'}} btn-default" ng-model="resourceSearch.isFree" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+            <button type="button" class="btn {{ resourceSearch.isFree ? 'btn-success' : 'btn-primary'}} btn-default" ng-model="resourceSearch.isFree" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
                  <span class="glyphicon {{ resourceSearch.isFree ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'resource.search.free' | translate}}
             </button>
         </div>
         <div class="col-md-5">
-            <button id="searchButton" type="button" class="btn btn-default " ng-click="search()">
+            <button id="searchButton" type="submit" class="btn btn-default">
                 {{'resource.searchbutton' | translate}}
             </button>
         </div>
