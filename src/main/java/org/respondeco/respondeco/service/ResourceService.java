@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import com.mysema.query.types.*;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
@@ -67,17 +66,17 @@ public class ResourceService {
         this.resourceMatchRepository = resourceMatchRepository;
     }
 
-    private void ensureUserIsPartOfOrganisation(Project project) throws ResourceException {
+    private void ensureUserIsPartOfOrganisation(Project project) throws ResourceNotFoundException {
         User user = userService.getUserWithAuthorities();
         if (project.getOrganization().getOwner() != user){
-            throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);
+            throw new ResourceNotFoundException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()));
         }
     }
 
-    private void ensureUserIsPartOfOrganisation(Organization organization) throws ResourceException {
+    private void ensureUserIsPartOfOrganisation(Organization organization) throws ResourceNotFoundException {
         User user = userService.getUserWithAuthorities();
         if (organization.getOwner() != user){
-            throw new ResourceException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()), EnumResourceException.USER_NOT_AUTHORIZED);
+            throw new ResourceNotFoundException(String.format("Current user %s is not a part of Organisation or do not have enough rights for the operation", user.getLogin()));
         }
     }
 
@@ -90,12 +89,12 @@ public class ResourceService {
      * @param isEssential true if requirement is essential for the project, false otherwise
      * @param resourceTags defined tags for the resource requirement
      * @return saved ResourceRequirement created resource requirement
-     * @throws ResourceException if the resource can't be found
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource can't be found
      * @throws NoSuchProjectException if project of the resource can't be found
      */
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, NoSuchProjectException {
+        throws ResourceNotFoundException, NoSuchProjectException {
         ResourceRequirement newRequirement = null;
 
         Project project = projectRepository.findOne(projectId);
@@ -116,9 +115,9 @@ public class ResourceService {
             newRequirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
             resourceRequirementRepository.save(newRequirement);
         } else {
-            throw new ResourceException(
+            throw new ResourceNotFoundException(
                 String.format("Requirement with description '%s' for the Project %d already exists",
-                    description, project.getId()), EnumResourceException.ALREADY_EXISTS);
+                    description, project.getId()));
         }
 
         return newRequirement;
@@ -134,13 +133,13 @@ public class ResourceService {
      * @param isEssential true if resource is essential for the project, false otherwise
      * @param resourceTags tags of the resource
      * @return updated Resource requirement
-     * @throws ResourceException if resource requirement can't be found
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource requirement can't be found
      * @throws OperationForbiddenException if operation is forbidden
      * @throws NoSuchProjectException if project of the resource requirement can't be found
      */
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceException, OperationForbiddenException, NoSuchProjectException {
+        throws ResourceNotFoundException, OperationForbiddenException, NoSuchProjectException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
 
         Project project = projectRepository.findOne(projectId);
@@ -160,8 +159,7 @@ public class ResourceService {
             resourceRequirementRepository.save(requirement);
 
         } else {
-            throw new ResourceException(String.format("No resource requirement found for the id: %d", id),
-                EnumResourceException.NOT_FOUND);
+            throw new ResourceNotFoundException(String.format("No resource requirement found for the id: %d", id));
         }
 
         return requirement;
@@ -170,15 +168,15 @@ public class ResourceService {
     /**
      * Delete the resource requirement with id
      * @param id id of the resource requirement
-     * @throws ResourceException if the resource requirement can't be found
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource requirement can't be found
      */
-    public void deleteRequirement(Long id) throws ResourceException {
+    public void deleteRequirement(Long id) throws ResourceNotFoundException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
             ensureUserIsPartOfOrganisation(requirement.getProject());
             resourceRequirementRepository.delete(id);
         } else {
-            throw new ResourceException(String.format("No resource requirement found for the id: %d", id), EnumResourceException.NOT_FOUND);
+            throw new ResourceNotFoundException(String.format("No resource requirement found for the id: %d", id));
         }
     }
 
@@ -260,14 +258,14 @@ public class ResourceService {
      * @param logoId id of the resource logo
      * @param price
      * @return updated Resource Offer
-     * @throws ResourceException if resource offer with id can't be found
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource offer with id can't be found
      * @throws ResourceTagException
      * @throws ResourceJoinTagException
      */
     public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount,
                                      String description, Boolean isCommercial,
                                      LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
-        throws ResourceException, ResourceTagException, ResourceJoinTagException {
+        throws IllegalValueException {
         ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
 
         if (offer != null) {
@@ -287,8 +285,7 @@ public class ResourceService {
             this.resourceOfferRepository.save(offer);
         }
         else{
-            throw new ResourceException(String.format("Offer with Id: %d do not exists", offerId),
-                EnumResourceException.NOT_FOUND);
+            throw new ResourceNotFoundException(String.format("No resource offer found for the id: %d", offerId));
         }
 
         return offer;
@@ -297,14 +294,14 @@ public class ResourceService {
     /**
      * Delete ResourceOffer
      * @param offerId id of resourceOffer
-     * @throws ResourceException if offer can't be found
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if offer can't be found
      */
-    public void deleteOffer(Long offerId) throws ResourceException{
+    public void deleteOffer(Long offerId) throws IllegalValueException {
         if (this.resourceOfferRepository.findOne(offerId) != null) {
             this.resourceOfferRepository.delete(offerId);
         }
         else{
-            throw new ResourceException(String.format("Offer with Id: %d not found", offerId), EnumResourceException.NOT_FOUND);
+            throw new ResourceNotFoundException(String.format("No resource offer found for the id: %d", offerId));
         }
     }
 
@@ -570,7 +567,7 @@ public class ResourceService {
      * @return ResourceMatch Entity
      */
     public ResourceMatch createProjectApplyOffer(Long offerId, Long requirementId,
-                                                 Long organizationId, Long projectId) throws ResourceException, IllegalValueException {
+                                                 Long organizationId, Long projectId) throws ResourceNotFoundException, IllegalValueException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 

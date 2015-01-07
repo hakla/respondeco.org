@@ -416,7 +416,7 @@ public class ResourceServiceTest {
         verify(resourceOfferRepositoryMock, times(1)).save(isA(offerCl));
     }
 
-    @Test(expected = ResourceException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void testUpdateOffer_Fail() throws Exception {
         this.prepareUser();
         List<String> tags = this.prepareCreateOffer();

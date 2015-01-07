@@ -313,9 +313,7 @@ describe('Project Controller Tests ', function() {
 
             expect(ProjectService.follow).toHaveBeenCalledWith({id: scope.project.id}, null, jasmine.any(Function));
             //simulate callback
-            ProjectService.follow.calls.mostRecent().args[2](function(){
-                scope.following = true;
-            });
+            ProjectService.follow.calls.mostRecent().args[2]();
             expect(scope.following).toBe(true);
         });
 
@@ -330,9 +328,7 @@ describe('Project Controller Tests ', function() {
 
             expect(ProjectService.unfollow).toHaveBeenCalledWith({id: scope.project.id}, jasmine.any(Function));
             //simulate callback
-            ProjectService.unfollow.calls.mostRecent().args[1](function(){
-                scope.following = false;
-            });
+            ProjectService.unfollow.calls.mostRecent().args[1]();
             expect(scope.following).toBe(false);
         });
 

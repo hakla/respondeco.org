@@ -145,7 +145,7 @@ public class OrganizationService {
             projectService.create("ip", "", false, null, null, null, null);
         } catch (OperationForbiddenException e) {
             e.printStackTrace();
-        } catch (ResourceException e) {
+        } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalValueException e) {
             e.printStackTrace();

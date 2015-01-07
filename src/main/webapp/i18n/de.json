@@ -624,6 +624,10 @@
         "offer": {
             "title": "Ressource auswählen",
             "donate": "Spenden"
+        },
+        "errors": {
+            "notfound": "Die angegeben Resource exisitiert nicht",
+            "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Opration konnte nicht ausgeführt werden"
         }
     },
     "nearProjects": {
