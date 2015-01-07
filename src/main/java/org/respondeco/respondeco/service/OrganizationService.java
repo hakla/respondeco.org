@@ -69,6 +69,9 @@ public class OrganizationService {
         organization.setEmail(email.toLowerCase());
         organization.setIsNpo(npo);
         organization.setOwner(user);
+        PostingFeed postingFeed = new PostingFeed();
+        postingFeedRepository.save(postingFeed);
+        organization.setPostingFeed(postingFeed);
         organizationRepository.save(organization);
         user.setOrganization(organization);
         userRepository.save(user);

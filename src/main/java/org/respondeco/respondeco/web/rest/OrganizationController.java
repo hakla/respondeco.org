@@ -361,7 +361,6 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
     ResponseEntity<List<UserDTO>> getMembers(@PathVariable Long id) {
         log.debug("REST request to get Users by OrgId : {}", id);
         ResponseEntity<List<UserDTO>> responseEntity;
@@ -484,7 +483,6 @@ public class OrganizationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
         ResponseEntity<?> responseEntity;
 
@@ -566,7 +564,6 @@ public class OrganizationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<PostingPaginationResponseDTO> getPostings(@PathVariable Long id,
                                                         @RequestParam(required = false) Integer page,
                                                         @RequestParam(required = false) Integer pageSize) {

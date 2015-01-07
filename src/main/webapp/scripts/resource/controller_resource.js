@@ -51,9 +51,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 				$scope.update(id);
 			}
 
-			$scope.organization = Organization.get({id: account.organizationId}, function(organization) {
-				$scope.organization = organization;
-			});
+			if (account.organization != null) {
+				$scope.organization = account.organization;
+			}
 		});
 	};
 

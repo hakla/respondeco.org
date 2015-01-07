@@ -33,7 +33,8 @@ respondecoApp.factory('Activate', function ($resource) {
 
 respondecoApp.factory('Account', function ($resource) {
         return $resource('app/rest/account', {}, {
-            'leaveOrganization': { method: 'POST', url: 'app/rest/account/leaveorganization' }
+            'leaveOrganization': { method: 'POST', url: 'app/rest/account/leaveorganization' },
+            'getNewsfeed' : { method: 'GET', url: 'app/rest/account/newsfeed' }
         });
     });
 
@@ -66,7 +67,7 @@ respondecoApp.factory('Session', function () {
         return this;
     });
 
-respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http, authService, Session, Account) {
+respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http, authService, Session, Account, USER_ROLES) {
         return {
             login: function (param) {
                 var data ="j_username=" + encodeURIComponent(param.username) +"&j_password=" + encodeURIComponent(param.password) +"&_spring_security_remember_me=" + param.rememberMe +"&submit=Login";
@@ -112,6 +113,10 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                 });
             },
             isAuthorized: function (authorizedRoles) {
+                if (authorizedRoles == null) {
+                    authorizedRoles = [USER_ROLES.user];
+                }
+
                 if (!angular.isArray(authorizedRoles)) {
                     if (authorizedRoles == '*') {
                         return true;

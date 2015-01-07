@@ -3,18 +3,17 @@ package org.respondeco.respondeco.service;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.SecurityUtils;
-import org.respondeco.respondeco.service.exception.NoSuchOrganizationException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
 import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
-import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +48,9 @@ public class UserService {
 
     @Inject
     private ImageRepository imageRepository;
+
+    @Inject
+    private PostingFeedRepository postingFeedRepository;
 
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
@@ -207,5 +209,50 @@ public class UserService {
 
     public User findUserByLogin(String loginName) {
         return userRepository.findByLogin(loginName);
+    }
+
+    public Page<Posting> getNewsfeed(RestParameters restParameters) {
+        // get the signed in user
+        User user = getUserWithAuthorities();
+
+        PageRequest pageable = restParameters.buildPageRequest();
+
+        Page<Posting> posts;
+
+        List<Long> organizationIds = new ArrayList<>();
+        List<Long> projectIds = new ArrayList<>();
+
+        // get all organizations the user currently follows
+        List<Organization> organizations = user.getFollowOrganizations();
+        if(organizations != null) {
+
+            // and collect the ids of the organizations
+            for (Organization organization : organizations) {
+                organizationIds.add(organization.getId());
+            }
+        }
+
+        // get all projects the user currently follows
+        List<Project> projects = user.getFollowProjects();
+        if(projects != null) {
+
+            // and collect the ids of the projects
+            for(Project project : projects) {
+                projectIds.add(project.getId());
+            }
+        }
+
+        if (organizationIds.size() == 0) {
+            // get all postings for a given set of projectIds
+            posts = postingFeedRepository.getPostingsForProjects(projectIds, pageable);
+        } else if (projectIds.size() == 0) {
+            // get all postings for a given set of organizationIds
+            posts = postingFeedRepository.getPostingsForOrganizations(organizationIds, pageable);
+        } else {
+            // get all postings for the given sets of organizationIds and projectIds
+            posts = postingFeedRepository.getPostingsForOrganizationsAndProjects(organizationIds, projectIds, pageable);
+        }
+
+        return posts;
     }
 }

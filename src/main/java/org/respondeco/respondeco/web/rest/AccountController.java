@@ -11,15 +11,14 @@ import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.web.rest.dto.ImageDTO;
-import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.RegisterDTO;
-import org.respondeco.respondeco.web.rest.dto.UserDTO;
+import org.respondeco.respondeco.web.rest.dto.*;
 import org.apache.commons.lang.StringUtils;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -315,5 +314,33 @@ public class AccountController {
         }
 
         return entity;
+    }
+
+    /**
+     * gents the list of postings ordered by creation date for the specified project
+     *
+     * @param id the id of the project for which to get the postings
+     * @return response status OK and the Postings for the project
+     */
+    @RequestMapping(value = "/rest/account/newsfeed",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity<?> getNewsFeed(@RequestParam(required = false) Integer page,
+                                         @RequestParam(required = false) Integer pageSize) {
+        RestParameters restParameters = new RestParameters(page, pageSize);
+        ResponseEntity<PostingPaginationResponseDTO> responseEntity;
+        PostingPaginationResponseDTO responseDTO = new PostingPaginationResponseDTO();
+        List<PostingDTO> postings = new ArrayList<>();
+
+        Page<Posting> currentPage = userService.getNewsfeed(restParameters);
+        for(Posting posting : currentPage.getContent()){
+            postings.add(new PostingDTO(posting));
+        }
+        responseDTO.setTotalElements(currentPage.getTotalElements());
+        responseDTO.setPostings(postings);
+        responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return responseEntity;
     }
 }

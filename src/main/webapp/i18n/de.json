@@ -26,7 +26,8 @@
                 "login": "Anmelden",
                 "logout": "Abmelden",
                 "apidocs": "API",
-                "register": "Registrierung"
+                "register": "Registrierung",
+                "newsfeed": "Newsfeed"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",
@@ -654,8 +655,11 @@
     "posting": {
         "showmore": "Mehr anzeigen",
         "information": {
-            "placeholder": "Posting"
+            "placeholder": "Was gibt's neues?"
         }
+    },
+    "postingfeed": {
+        "title": "Neuigkeiten"
     },
     "errors": {
         "title": "Fehlerseite!",

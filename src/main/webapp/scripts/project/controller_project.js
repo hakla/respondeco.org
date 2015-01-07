@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, $location, $routeParams, $sce, $translate,
-                                                       Account, $modal) {
+                                                       Account, $modal, AuthenticationSharedService) {
 
     $scope.project = {
         id: null,
@@ -28,7 +28,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.marker = {
       id: 0,
-      options: { draggable: true }
+      options: { draggable: true },
+      coords: {latitude: null, longitude: null}
     };
 
      /**
@@ -150,7 +151,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             postings: $scope.project.postings
         };
 
-        if($scope.marker.coords.latitude !== 'undefined') {
+        if($scope.marker.coords.latitude !== null) {
             project.projectLocation = {
                 address: $scope.marker.address,
                 latitude: $scope.marker.coords.latitude,
@@ -200,7 +201,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             }
 
             //google maps
-            if($scope.project.projectLocation !== 'undefined') {
+            if(typeof $scope.project.projectLocation !== 'undefined') {
                 if($location.path().indexOf('edit') < 0) {
                     $scope.staticMap = $scope.createStaticMapLink();
                 } else {
