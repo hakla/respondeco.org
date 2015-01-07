@@ -11,6 +11,7 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -211,37 +212,47 @@ public class UserService {
     }
 
     public Page<Posting> getNewsfeed(RestParameters restParameters) {
-
+        // get the signed in user
         User user = getUserWithAuthorities();
 
-        List<PostingFeed> newsfeedPostingFeeds = new ArrayList<PostingFeed>();
+        PageRequest pageable = restParameters.buildPageRequest();
 
+        Page<Posting> posts;
+
+        List<Long> organizationIds = new ArrayList<>();
+        List<Long> projectIds = new ArrayList<>();
+
+        // get all organizations the user currently follows
         List<Organization> organizations = user.getFollowOrganizations();
         if(organizations != null) {
-            for(Organization organization : user.getFollowOrganizations()) {
-                newsfeedPostingFeeds.add(organization.getPostingFeed());
+
+            // and collect the ids of the organizations
+            for (Organization organization : organizations) {
+                organizationIds.add(organization.getId());
             }
         }
 
+        // get all projects the user currently follows
         List<Project> projects = user.getFollowProjects();
         if(projects != null) {
-            for(Project project : user.getFollowProjects()) {
-                newsfeedPostingFeeds.add(project.getPostingFeed());
+
+            // and collect the ids of the projects
+            for(Project project : projects) {
+                projectIds.add(project.getId());
             }
         }
 
-        List<Posting> newsFeedPostings = new ArrayList<Posting>();
-        if(newsfeedPostingFeeds.isEmpty() != true) {
-            for(PostingFeed postingFeed : newsfeedPostingFeeds) {
-                for(Posting posting : postingFeed.getPostings()) {
-                    newsFeedPostings.add(posting);
-                }
-            }
+        if (organizationIds.size() == 0) {
+            // get all postings for a given set of projectIds
+            posts = postingFeedRepository.getPostingsForProjects(projectIds, pageable);
+        } else if (projectIds.size() == 0) {
+            // get all postings for a given set of organizationIds
+            posts = postingFeedRepository.getPostingsForOrganizations(organizationIds, pageable);
+        } else {
+            // get all postings for the given sets of organizationIds and projectIds
+            posts = postingFeedRepository.getPostingsForOrganizationsAndProjects(organizationIds, projectIds, pageable);
         }
 
-        PostingFeed newsFeed = new PostingFeed();
-        newsFeed.setPostings(newsFeedPostings);
-        newsFeed = postingFeedRepository.save(newsFeed);
-        return postingFeedRepository.getPostings(newsFeed.getId(),restParameters.buildPageRequest());
+        return posts;
     }
 }
