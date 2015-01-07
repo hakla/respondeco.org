@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, $location, $routeParams, $sce, $translate,
-                                                       Account, $modal) {
+                                                       Account, $modal, AuthenticationSharedService) {
 
     $scope.project = {
         id: null,
@@ -201,7 +201,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             }
 
             //google maps
-            if($scope.project.projectLocation !== 'undefined') {
+            if(typeof $scope.project.projectLocation !== 'undefined') {
                 if($location.path().indexOf('edit') < 0) {
                     $scope.staticMap = $scope.createStaticMapLink();
                 } else {

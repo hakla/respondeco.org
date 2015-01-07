@@ -131,7 +131,7 @@ respondecoApp
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
                     Session.invalidate();
                     $rootScope.authenticated = false;
-                    var allowedRoutes = ["/", "", "/register", "/activate", "/login", "/activateInvitation", "/organization", "/projects"];
+                    var allowedRoutes = ["/", "", "/register", "/activate", "/login", "/activateInvitation", "/organization", "/projects", "/organization/\d+"];
                     if (allowedRoutes.indexOf($location.path()) === -1) {
                         var redirect = $location.path();
                         $location.path('/login').search('redirect', redirect).replace();

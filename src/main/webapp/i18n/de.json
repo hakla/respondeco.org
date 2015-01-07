@@ -651,8 +651,11 @@
     "posting": {
         "showmore": "Mehr anzeigen",
         "information": {
-            "placeholder": "Posting"
+            "placeholder": "Was gibt's neues?"
         }
+    },
+    "postingfeed": {
+        "title": "Neuigkeiten"
     },
     "errors": {
         "title": "Fehlerseite!",

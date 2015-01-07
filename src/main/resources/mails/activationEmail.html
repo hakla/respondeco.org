@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title th:text="#{email.activation.title}">respondeco Registrierung</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    </head>
-    <body>
-        <p th:text="#{email.activation.greeting(${user.login})}">
-            Hi
-        </p>
-        <p th:text="#{email.activation.text1}">
-            Ihr respondeco.org Account wurde erfolgreich erstellt, um die Registrierung abzuschließen klicken Sie bitte auf den Aktivierungslink.
-        </p>
-        <p>
-            <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}"
-               th:text="|${user.login}|">Aktivierungslink</a>
-        </p>
-        <p>
-            <span th:text="#{email.activation.text2}">lg</span>
-            <br/>
-            <em th:text="#{email.signature}">respondeco</em>
-        </p>
-    </body>
+<head>
+    <title th:text="#{email.activation.title}">respondeco Registrierung</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="#{email.activation.greeting(${user.login})}">
+    Hi
+</p>
+<p th:text="#{email.activation.text1}">
+    Ihr respondeco.org Account wurde erfolgreich erstellt, um die Registrierung abzuschließen klicken Sie bitte auf den Aktivierungslink.
+</p>
+<p>
+    <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}">Aktivierungslink</a>
+</p>
+<p>
+    <span th:text="#{email.activation.text2}">lg</span>
+    <br/>
+    <em th:text="#{email.signature}">respondeco</em>
+</p>
+</body>
 </html>

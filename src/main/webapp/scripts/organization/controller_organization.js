@@ -1,7 +1,7 @@
 'use strict';
 
 respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization,
-                                                            Organization, Account) {
+                                                            Organization, Account, AuthenticationSharedService) {
     var isOwner = false;
     var user;
 
@@ -126,7 +126,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         refreshPostings();
     };
 
-    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined'){
+    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
         Organization.followingState({id: $routeParams.id}, function(follow){
             $scope.following = follow.state;
         });

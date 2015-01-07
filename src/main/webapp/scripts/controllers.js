@@ -38,7 +38,7 @@ respondecoApp.controller('LanguageController', function($scope, $translate, Lang
     });
 });
 
-respondecoApp.controller('MenuController', function($rootScope, TextMessage, AuthenticationSharedService) {
+respondecoApp.controller('MenuController', function($rootScope, TextMessage, AuthenticationSharedService, USER_ROLES) {
     var refresh = function() {
         TextMessage.countNewMessages(function(amount) {
             $rootScope.newMessages = amount[0];
@@ -85,9 +85,10 @@ respondecoApp.controller('SettingsController', function($scope, $location, Accou
     Account.get(function(account) {
         //account is an organization account, redirect to organization page
         if(account.id === account.organization.ownerId) {
-            $location.path("/organization/" + account.organization.id);
+            // $location.path("/organization/" + account.organization.id);
         } else {
             $scope.settingsAccount = account;
+            $scope.organization = account.organization;
 
             if ($scope.settingsAccount.organizationId != null) {
                 reloadOrganization($scope.settingsAccount.organizationId);

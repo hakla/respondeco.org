@@ -19,64 +19,65 @@
         </div>
     </div>
     <div class="row spacer-top">
-        <div class="col-md-3">
-            <h2>{{organization.name}}</h2>
-            <p ng-show='organization.isNpo'>NGO</p>
-            <uploaded-image name="organization.logo.id" class="organization-logo" />
-        </div>
-        <div class="col-md-5">
-            <h2></h2>
-            <dl class="dl-horizontal">
-                <dt>
-                    <span translate='organization.responsiblePerson'>Responsible person</span>:</dt>
-                <dd>{{ organization.owner | formatUser }}</dd>
-                <dt>
-                    <span translate='organization.contact'>Contact</span>:</dt>
-                <dd></dd>
-                <dt>
-                    <span translate='organization.email'>E-Mail</span>:</dt>
-                <dd>{{ organization.email }}</dd>
-                <dt>
-                    <span translate='organization.description'>Description</span>:</dt>
-                <dd>{{ organization.description }}</dd>
-            </dl>
-        </div>
         <div class="col-md-4">
-            <organization-members />
-        </div>
-        <div class="col-md-5 newsfeed">
-            <h3>PostingFeed</h3>
-            <div class="well">
-                <ul>
-                    <li ng-repeat="posting in postingPage.postings">
-                        <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="isOwner()" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
-                    </li>
-                </ul>
+            <div class="col-xs-12">
+                <h2>{{organization.name}}</h2>
+                <p ng-show='organization.isNpo'>NGO</p>
+                <uploaded-image name="organization.logo.id" class="organization-logo" />
             </div>
-            <a ng-click="showMorePostings()" translate="posting.showmore"
-               ng-show="postingPage.totalElements > postingShowCount">Show more</a>
-            <hr/>
+            <div class="col-xs-12">
+                <h2></h2>
+                <dl class="dl-horizontal">
+                    <dt>
+                        <span translate='organization.responsiblePerson'>Responsible person</span>:</dt>
+                    <dd>{{ organization.owner | formatUser }}</dd>
+                    <dt>
+                        <span translate='organization.contact'>Contact</span>:</dt>
+                    <dd></dd>
+                    <dt>
+                        <span translate='organization.email'>E-Mail</span>:</dt>
+                    <dd>{{ organization.email }}</dd>
+                    <dt>
+                        <span translate='organization.description'>Description</span>:</dt>
+                    <dd>{{ organization.description }}</dd>
+                </dl>
+            </div>
+            <div class="col-xs-12">
+                <organization-members />
+            </div>
+        </div>
+        <div class="col-md-8 newsfeed">
+            <h3 translate="postingfeed.title">News</h3>
             <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                 <div class="form-group" ng-show="isOwner()">
-                    <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
-                           ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off"/>
-                    <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
+                    <div class="input-group">
+                        <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}" ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off" />
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
+                        </div>
+                    </div>
                     <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
-                        <p class="help-block"
-                           ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
+                        <p class="help-block" ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
                             Your Posting is required to be at least 5 characters
                         </p>
-                        <p class="help-block"
-                           ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
+                        <p class="help-block" ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
                             Your Posting is required to be at max 100 characters
                         </p>
-                        <p class="help-block"
-                           ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
+                        <p class="help-block" ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
                             Your Posting is required
                         </p>
                     </div>
                 </div>
             </form>
+            <div class="well">
+                <ul>
+                    <li ng-repeat="posting in postingPage.postings">
+                            <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="isOwner()" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+                        </li>
+                </ul>
+            </div>
+            <a ng-click="showMorePostings()" translate="posting.showmore" ng-show="postingPage.totalElements > postingShowCount">Show more</a>
+            <hr/>
         </div>
     </div>
 </div>

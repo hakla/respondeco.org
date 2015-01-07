@@ -148,9 +148,9 @@
                 </div>
                 <div class="col-md-3 member" ng-hide="edit.account || organization == null">
                     <h4>Member by</h4>
+                    <button type="button" class="btn btn-link pull-right" ng-click="leaveOrganization()" translate="settings.leave">Leave</button>
                     <h3>
                       {{ organization.name }}
-                      <button type="button" class="btn btn-link pull-right" ng-click="leaveOrganization()" translate="settings.leave">Leave</button>
                     </h3>
                     <uploaded-image name="organization.logo.id" class="organization-logo"></uploaded-image>
                 </div>

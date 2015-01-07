@@ -440,7 +440,6 @@ public class ProjectController {
      * @param id Project id
      * @return List of ResourceMatches wrapped into DTO
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{id}/resourcematches",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -502,7 +501,6 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id,
                                                  @RequestParam(required = false) String permission,
                                                  @RequestParam(required = false) List<Long> matches) {
@@ -691,7 +689,6 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> getPostings(@PathVariable Long id,
                                                         @RequestParam(required = false) Integer page,
                                                         @RequestParam(required = false) Integer pageSize) {
