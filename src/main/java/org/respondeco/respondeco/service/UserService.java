@@ -241,7 +241,7 @@ public class UserService {
 
         PostingFeed newsFeed = new PostingFeed();
         newsFeed.setPostings(newsFeedPostings);
-        postingFeedRepository.save(newsFeed);
+        newsFeed = postingFeedRepository.save(newsFeed);
         return postingFeedRepository.getPostings(newsFeed.getId(),restParameters.buildPageRequest());
     }
 }

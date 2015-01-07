@@ -327,8 +327,7 @@ public class AccountController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> getNewsFeed(@PathVariable Long id,
-                                         @RequestParam(required = false) Integer page,
+    public ResponseEntity<?> getNewsFeed(@RequestParam(required = false) Integer page,
                                          @RequestParam(required = false) Integer pageSize) {
         RestParameters restParameters = new RestParameters(page, pageSize);
         ResponseEntity<PostingPaginationResponseDTO> responseEntity;

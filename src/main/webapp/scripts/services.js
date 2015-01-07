@@ -33,7 +33,8 @@ respondecoApp.factory('Activate', function ($resource) {
 
 respondecoApp.factory('Account', function ($resource) {
         return $resource('app/rest/account', {}, {
-            'leaveOrganization': { method: 'POST', url: 'app/rest/account/leaveorganization' }
+            'leaveOrganization': { method: 'POST', url: 'app/rest/account/leaveorganization' },
+            'getNewsfeed' : { method: 'GET', url: 'app/rest/account/newsfeed' }
         });
     });
 

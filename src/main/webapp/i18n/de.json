@@ -26,7 +26,8 @@
                 "login": "Anmelden",
                 "logout": "Abmelden",
                 "apidocs": "API",
-                "register": "Registrierung"
+                "register": "Registrierung",
+                "newsfeed": "Newsfeed"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",

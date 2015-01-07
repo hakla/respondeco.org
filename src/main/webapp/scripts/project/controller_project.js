@@ -28,7 +28,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.marker = {
       id: 0,
-      options: { draggable: true }
+      options: { draggable: true },
+      coords: {latitude: null, longitude: null}
     };
 
      /**
@@ -150,7 +151,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             postings: $scope.project.postings
         };
 
-        if($scope.marker.coords.latitude !== 'undefined') {
+        if($scope.marker.coords.latitude !== null) {
             project.projectLocation = {
                 address: $scope.marker.address,
                 latitude: $scope.marker.coords.latitude,
