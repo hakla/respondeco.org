@@ -300,6 +300,8 @@ describe('Project Controller Tests ', function() {
             //simulate json result
             ProjectService.followingState.calls.mostRecent().args[1]({state: true});
             expect(scope.following).toBe(true);
+            expect(scope.showFollow()).toBe(false);
+            expect(scope.showUnfollow()).toBe(true);
         });
 
         it('should add poject as followed by current user', function(){
@@ -315,6 +317,8 @@ describe('Project Controller Tests ', function() {
             //simulate callback
             ProjectService.follow.calls.mostRecent().args[2]();
             expect(scope.following).toBe(true);
+            expect(scope.showFollow()).toBe(false);
+            expect(scope.showUnfollow()).toBe(true);
         });
 
         it('should remove project from following list of current user', function(){
@@ -330,6 +334,8 @@ describe('Project Controller Tests ', function() {
             //simulate callback
             ProjectService.unfollow.calls.mostRecent().args[1]();
             expect(scope.following).toBe(false);
+            expect(scope.showFollow()).toBe(true);
+            expect(scope.showUnfollow()).toBe(false);
         });
 
         it('should refresh the map to actual coordinates', function() {

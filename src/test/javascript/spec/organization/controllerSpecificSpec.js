@@ -84,6 +84,8 @@ describe('Controllers Tests ', function () {
             //simulate json result
             OrganizationService.followingState.calls.mostRecent().args[1]({state: true});
             expect($scope.following).toBe(true);
+            expect($scope.showFollow()).toBe(false);
+            expect($scope.showUnfollow()).toBe(true);
         });
 
         it('should add organization as followed by current user', function(){
@@ -97,10 +99,10 @@ describe('Controllers Tests ', function () {
 
             expect(OrganizationService.follow).toHaveBeenCalledWith({id: $scope.organization.id}, null, jasmine.any(Function));
             //simulate callback
-            OrganizationService.follow.calls.mostRecent().args[2](function(){
-                $scope.following = true;
-            });
+            OrganizationService.follow.calls.mostRecent().args[2]();
             expect($scope.following).toBe(true);
+            expect($scope.showFollow()).toBe(false);
+            expect($scope.showUnfollow()).toBe(true);
         });
 
         it('should remove organization from following list of current user', function(){
@@ -114,10 +116,10 @@ describe('Controllers Tests ', function () {
 
             expect(OrganizationService.unfollow).toHaveBeenCalledWith({id: $scope.organization.id}, jasmine.any(Function));
             //simulate callback
-            OrganizationService.unfollow.calls.mostRecent().args[1](function(){
-                $scope.following = false;
-            });
+            OrganizationService.unfollow.calls.mostRecent().args[1]();
             expect($scope.following).toBe(false);
+            expect($scope.showFollow()).toBe(true);
+            expect($scope.showUnfollow()).toBe(false);
         });
     });
 });
