@@ -26,4 +26,10 @@ public interface PostingFeedRepository extends JpaRepository<PostingFeed, Long> 
             "WHERE po.id = :projectid AND p.active = true " +
             "ORDER BY p.createdDate DESC ")
     public Page<Posting> getPostingsForProject(@Param("projectid") Long id, Pageable pageable);
+
+    @Query("SELECT p " +
+            "FROM PostingFeed pf INNER JOIN pf.postings p " +
+            "WHERE pf.id = :postingfeedid AND p.active = true " +
+            "ORDER BY p.createdDate DESC ")
+    public Page<Posting> getPostings(@Param("postingfeedid") Long id, Pageable pageable);
 }
