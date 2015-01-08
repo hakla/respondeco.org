@@ -11,6 +11,7 @@ describe('Project Controller Tests ', function() {
             ResourceRequirementService, AccountService, sce, OrganizationService, translate;
         var fakeDeferred;
         var emptyProject;
+        var existingProject;
 
         beforeEach(inject(function($rootScope, $controller, $location, $q, $sce, $routeParams, ProjectNames,
                                    PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate) {
@@ -26,6 +27,7 @@ describe('Project Controller Tests ', function() {
             AccountService = Account;
             OrganizationService = Organization;
             sce = $sce;
+
             fakeDeferred = {
                 $promise: {
                     then: function(object) {}
@@ -41,6 +43,10 @@ describe('Project Controller Tests ', function() {
                 logo: null,
                 propertyTags: [],
                 resourceRequirements: []
+            };
+
+            existingProject = {
+                id: 1
             };
 
             $controller('ProjectController', {
@@ -279,31 +285,68 @@ describe('Project Controller Tests ', function() {
             expect(scope.ProjectApply.organization.owner.id).toBe(1);
             expect(scope.resourceOffers.length).toBe(2);
         });
-        /*
-        it('dhould get project follow state', function(){
+
+        it('should get project follow state', function(){
 
             //predefine some value(s) for test
-            scope.project.id = 1;
+            scope.project = existingProject;
             routeParams.id = scope.project.id;
 
             spyOn(ProjectService, 'followingState');
 
-            expect(scope.followingState).toHaveBennCalled();
+            scope.followingState();
 
-
-
+            expect(ProjectService.followingState).toHaveBeenCalledWith({id: scope.project.id}, jasmine.any(Function));
+            //simulate json result
+            ProjectService.followingState.calls.mostRecent().args[1]({state: true});
+            expect(scope.following).toBe(true);
+            expect(scope.showFollow()).toBe(false);
+            expect(scope.showUnfollow()).toBe(true);
         });
-        */
+
+        it('should add poject as followed by current user', function(){
+            //predefine some value(s) for test
+            scope.project = existingProject;
+            routeParams.id = scope.project.id;
+
+            spyOn(ProjectService, "follow");
+
+            scope.follow();
+
+            expect(ProjectService.follow).toHaveBeenCalledWith({id: scope.project.id}, null, jasmine.any(Function));
+            //simulate callback
+            ProjectService.follow.calls.mostRecent().args[2]();
+            expect(scope.following).toBe(true);
+            expect(scope.showFollow()).toBe(false);
+            expect(scope.showUnfollow()).toBe(true);
+        });
+
+        it('should remove project from following list of current user', function(){
+            //predefine some value(s) for test
+            scope.project = existingProject;
+            routeParams.id = scope.project.id;
+
+            spyOn(ProjectService, "unfollow");
+
+            scope.unfollow();
+
+            expect(ProjectService.unfollow).toHaveBeenCalledWith({id: scope.project.id}, jasmine.any(Function));
+            //simulate callback
+            ProjectService.unfollow.calls.mostRecent().args[1]();
+            expect(scope.following).toBe(false);
+            expect(scope.showFollow()).toBe(true);
+            expect(scope.showUnfollow()).toBe(false);
+        });
 
         it('should refresh the map to actual coordinates', function() {
-    
+
             var searchBox = {
                 getPlaces: function() {
                     var places = [{
                         geometry: {
                             location:{
                                 lat:function(){return 20.0;},
-                                lng:function(){return 40.0;} 
+                                lng:function(){return 40.0;}
                             }
                         }
                     }]; return places;}}

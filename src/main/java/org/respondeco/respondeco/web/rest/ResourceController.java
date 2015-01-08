@@ -7,8 +7,6 @@ import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.exception.GeneralResourceException;
-import org.respondeco.respondeco.service.exception.ResourceException;
-import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
@@ -30,7 +28,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +75,7 @@ public class ResourceController {
         @RequestParam(required = false) String fields,
         @RequestParam(required = false) String order) {
 
-        log.debug("REST request to get all resource offers");
+        log.debug("REST request to get all resource offers: {}", name, commercial, page, pageSize, fields, order);
 
         if(name == null) name = "";
 
@@ -146,12 +143,12 @@ public class ResourceController {
         } catch (MatchAlreadyExistsException e) {
             log.error("Could not claim resource offer : {}", resourceMatchRequestDTO, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        }catch (OperationForbiddenException e) {
+            log.error("Could not create match for claiming offer: User is not Authorized : {}", resourceMatchRequestDTO, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (IllegalValueException e) {
             log.error("Could not create match for claiming offer : {}", resourceMatchRequestDTO, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (OperationForbiddenException e) {
-            log.error("Could not create match for claiming offer: User is not Authorized : {}", resourceMatchRequestDTO, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return responseEntity;
@@ -178,12 +175,12 @@ public class ResourceController {
         try{
             resourceService.answerResourceRequest(id, resourceMatchRequestDTO.isAccepted() );
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
+        }catch (OperationForbiddenException e) {
+            log.error("Operation forbidden: ", e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch(IllegalValueException ex) {
             log.error("Could not set isAccepted for resourceMatch with id " + id);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (OperationForbiddenException e) {
-            log.error("Operation forbidden: ", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return responseEntity;
@@ -204,7 +201,6 @@ public class ResourceController {
     @Valid
     public ResponseEntity<?> createResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO) throws Exception{
         ResponseEntity<?> result = null;
-        String message = null;
         try {
             ResourceOffer offer = this.resourceService.createOffer(
                 resourceOfferDTO.getName(),
@@ -222,13 +218,7 @@ public class ResourceController {
             result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
         } catch (IllegalValueException e) {
             result = ErrorHelper.buildErrorResponse(e);
-        } finally {
-            if (message != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("errorMessage", message);
-                result = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-                log.debug(message);
-            }
+            log.error("Fail to create new Resource offer: {}", e);
         }
         return result;
     }
@@ -246,7 +236,6 @@ public class ResourceController {
     @Timed
     @Valid
     public ResponseEntity<?> updateResourceOffer(@PathVariable Long id, @RequestBody ResourceOfferDTO resourceOfferDTO) {
-        String message = null;
         ResponseEntity<?> result = null;
         try {
             this.resourceService.updateOffer(
@@ -263,17 +252,9 @@ public class ResourceController {
                 resourceOfferDTO.getPrice()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (GeneralResourceException e){
-            message = e.getMessage();
-        } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't update Resource Offer with %d", resourceOfferDTO.getId());
-        } finally {
-            if (message != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("errorMessage", message);
-                result = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-                log.debug(message);
-            }
+        } catch (IllegalValueException e){
+            result = ErrorHelper.buildErrorResponse(e);
+            log.error("Could not update resource offer : {}", e);
         }
         return result;
     }
@@ -289,25 +270,15 @@ public class ResourceController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> deleteResourceOffer(@PathVariable Long id) {
-        log.debug("REST request to delete resourceOffer : {}", id);
+        log.debug("REST request to delete resource offer : {}", id);
         String message = null;
         ResponseEntity<?> result = null;
         try{
             this.resourceService.deleteOffer(id);
             result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (GeneralResourceException e){
-            message = e.getMessage();
-        }
-        catch (Exception e){
-            message = String.format("Unexpected error. Trying to delete Resource Reqirement for ID: %d failed", id);
-        }
-        finally {
-            if (message != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("errorMessage", message);
-                result = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-                log.debug(message);
-            }
+        } catch (IllegalValueException e){
+            result = ErrorHelper.buildErrorResponse(e);
+            log.error("Could not delete resource offer : {}", e);
         }
         return result;
     }
@@ -329,8 +300,6 @@ public class ResourceController {
         if(resourceRequirements.isEmpty() == false) {
             ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
         }
-
-
         return response;
     }
 
@@ -348,8 +317,7 @@ public class ResourceController {
     @Timed
     public ResponseEntity<?> createResourceRequirement(@RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) throws Exception {
         ResourceRequirement requirement = null;
-        ResponseEntity<ResourceRequirementRequestDTO> result = null;
-        String message = null;
+        ResponseEntity<?> result = null;
         try {
             requirement = this.resourceService.createRequirement(
                 resourceRequirementRequestDTO.getName(),
@@ -362,18 +330,9 @@ public class ResourceController {
             resourceRequirementRequestDTO.setId(requirement.getId());
             result = new ResponseEntity<>(resourceRequirementRequestDTO, HttpStatus.CREATED);
 
-        } catch (GeneralResourceException e){
-            message = e.getMessage();
-        } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't save Resource Requirement with description '%s' and Project id: %d",
-                resourceRequirementRequestDTO.getDescription(), resourceRequirementRequestDTO.getProjectId());
-        } finally {
-            if (message != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("errorMessage", message);
-                result = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-                log.debug(message);
-            }
+        } catch (IllegalValueException e){
+            result = ErrorHelper.buildErrorResponse(e);
+            log.error("Could not create resource requirement : {}", e);
         }
         return result;
     }
@@ -390,7 +349,6 @@ public class ResourceController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> updateResourceRequirement(@PathVariable Long resourceRequirementId, @RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) {
-        String message = null;
         ResponseEntity<?> result = null;
         try {
             this.resourceService.updateRequirement(
@@ -403,17 +361,9 @@ public class ResourceController {
                 resourceRequirementRequestDTO.getResourceTags()
             );
             result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (GeneralResourceException e){
-            message = e.getMessage();
-        } catch (Exception e) {
-            message = String.format("Unexpected error. Couldn't update Resource Requirement with %d", resourceRequirementRequestDTO.getId());
-        } finally {
-            if (message != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("errorMessage", message);
-                result = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-                log.debug(message);
-            }
+        } catch (IllegalValueException e){
+            result = ErrorHelper.buildErrorResponse(e);
+            log.error("Could not update resource requirement : {}", e);
         }
         return result;
     }
@@ -430,25 +380,14 @@ public class ResourceController {
     @Timed
     public ResponseEntity<?> deleteResourceRequirement(@PathVariable Long resourceRequirementId) {
         log.debug("REST request to delete resourceOffer : {}");
-        String message = null;
         ResponseEntity<?> result = null;
         try{
             this.resourceService.deleteRequirement(resourceRequirementId);
             result = new ResponseEntity<>(HttpStatus.OK);
         }
-        catch (GeneralResourceException e){
-            message = e.getMessage();
-        }
-        catch (Exception e){
-            message = String.format("Unexpected error. Trying to delete Resource Requirement for ID: %d failed", resourceRequirementId);
-        }
-        finally {
-            if (message != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("errorMessage", message);
-                result = new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
-                log.debug(message);
-            }
+        catch (IllegalValueException e){
+            result = ErrorHelper.buildErrorResponse(e);
+            log.error("Could not delete resource requirement : {}", e);
         }
         return result;
     }

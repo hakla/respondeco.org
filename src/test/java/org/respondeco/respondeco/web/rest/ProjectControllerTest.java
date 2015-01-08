@@ -403,8 +403,7 @@ public class ProjectControllerTest {
 
         when(resourceServiceMock
             .createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
-                expected.getOrganizationId(), expected.getProjectId())).thenThrow(new ResourceException("User not authorized",
-                EnumResourceException.USER_NOT_AUTHORIZED));
+                expected.getOrganizationId(), expected.getProjectId())).thenThrow(new ResourceNotFoundException(""));
 
         restProjectMockMvc.perform(post("/app//rest/projects/apply")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

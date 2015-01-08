@@ -73,7 +73,7 @@ public class ProjectService {
      * @param imageId the id of the image associated with the project
      * @return the newly created project
      * @throws OperationForbiddenException if the current user does not belong to an organization
-     * @throws ResourceException if a resource requirement could not be created,
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if a resource requirement could not be created,
      * {@see ResourceService#createRequirement(String,BigDecimal,String,Project,Boolean,List<String>)}
      * @throws IllegalValueException if the given parameters are inconsistent, e.g. the project is concrete, but start
      * or end date are not given
@@ -81,7 +81,7 @@ public class ProjectService {
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           List<String> propertyTags,
                           List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
-        throws OperationForbiddenException, ResourceException, IllegalValueException {
+        throws OperationForbiddenException, ResourceNotFoundException, IllegalValueException {
         sanityCheckDate(isConcrete, startDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
@@ -136,14 +136,14 @@ public class ProjectService {
      * @return the updated project
      * @throws OperationForbiddenException if the user's organization and the project's organization do not match or
      * the user is neither the manager of the project nor the owner of the project's organization
-     * @throws ResourceException if a resource requirement could not be created or updated, {@see ResourceService}
+     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if a resource requirement could not be created or updated, {@see ResourceService}
      * @throws IllegalValueException if no id was given or the project with the given id could not be found,
      * or if the given parameters are inconsistent, e.g. the project is concrete, but start or end date are not given
      */
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         Long imageId, List<String> propertyTags,
                         List<ResourceRequirementRequestDTO> resourceRequirements)
-        throws OperationForbiddenException, ResourceException, IllegalValueException {
+        throws OperationForbiddenException, ResourceNotFoundException, IllegalValueException {
 
         sanityCheckDate(isConcrete, startDate);
         if(id == null) {
