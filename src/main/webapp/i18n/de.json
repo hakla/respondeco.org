@@ -108,12 +108,13 @@
                 "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
             },
             "error": {
-                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden: ",
-                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden.",
-                "usernotfound": "<strong>Es ist ein Fehler aufgetreten!</strong> Der angegebene Empfänger existiert nicht.",
-                "receiverlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
-                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
-                "receivercurrentuser": "<strong>Es ist ein Fehler aufgetreten!</strong> Sie können sich selbst keine Nachricht schicken."
+                "delete": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gelöscht werden: ",
+                "send": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gesendet werden.",
+                "usernotfound": "Es ist ein Fehler aufgetreten! Der angegebene Empfänger existiert nicht.",
+                "receiverlength": "Es ist ein Fehler aufgetreten! Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
+                "contentlength": "Es ist ein Fehler aufgetreten! Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
+                "receivercurrentuser": "Es ist ein Fehler aufgetreten! Sie können sich selbst keine Nachricht schicken.",
+                "notreceiver": "Sie haben keine Berechtigung diese Nachricht zu löschen!"
             },
             "validate": {
                 "receiver": {

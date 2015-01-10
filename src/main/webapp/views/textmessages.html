@@ -22,16 +22,11 @@
             </div>
             <div class="alert alert-danger" ng-show="deleteerror">
                 <strong translate="global.textmessages.error.delete">Message could not be deleted:</strong>
-                {{ deleteerrorMsg }}
+                {{ deleteerrorMessage }}
             </div>
             <div class="alert alert-success" ng-show="sendsuccess"
                  translate="global.textmessages.success.send">
                 <strong>Message sent successfully.</strong>
-            </div>
-            <div class="alert alert-danger" ng-show="senderror"
-                 translate="global.textmessages.error.send">
-                <strong>An error has occured!</strong>
-                Message could not be sent.
             </div>
             <div class="alert alert-danger" ng-show="senderrorUserNotFound"
                  translate="global.textmessages.error.usernotfound">
@@ -48,10 +43,10 @@
                 <strong>An error has occured!</strong>
                 Message could not be sent.
             </div>
-            <div class="alert alert-danger" ng-show="senderrorReceiverCurrentUser"
-                 translate="global.textmessages.error.receivercurrentuser">
+            <div class="alert alert-danger" ng-show="senderrorGeneral"
+                 translate="global.textmessages.error.general">
                 <strong>An error has occured!</strong>
-                You cannot send a message to yourself!
+                Message could not be sent.
             </div>
             <div ng-show="reply-form.content.$dirty && reply-form.content.$invalid">
                 <p class="help-block" ng-show="reply-form.content.$error.minlength"
@@ -124,7 +119,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <textarea name="content" class="fullwidth form-control"
-                                          ng-model="textMessageToSend.content"
+                                          ng-model="replyContent"
                                           required ng-minlength="1" maxlength="2048" ng-maxlength="2048"></textarea>
                                 <div ng-show="replyform.content.$dirty && replyform.content.$invalid">
                                     <p class="help-block"
@@ -196,12 +191,15 @@
                         <div class="alert alert-danger" ng-show="senderrorUserNotFound"
                              translate="global.textmessages.error.usernotfound">
                             <strong>An error has occured!</strong>
-                            Message could not be sent.
+                            Message could not be sent, the user was not found.
                         </div>
-                        <div class="alert alert-danger" ng-show="senderrorReceiverCurrentUser"
-                             translate="global.textmessages.error.receivercurrentuser">
+                        <div class="alert alert-danger" ng-show="senderror">
+                            {{ senderrorMessage }}
+                        </div>
+                        <div class="alert alert-danger" ng-show="senderrorGeneral"
+                             translate="global.textmessages.error.send">
                             <strong>An error has occured!</strong>
-                            You cannot send a message to yourself!
+                            Message could not be sent.
                         </div>
 
                     </div>

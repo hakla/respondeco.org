@@ -1,11 +1,12 @@
 'use strict';
 
-respondecoApp.controller('TextMessageController', function ($scope, TextMessage, User, $rootScope) {
+respondecoApp.controller('TextMessageController', function ($scope, TextMessage, User, $rootScope, $translate) {
 
         $scope.textMessageToSend = {
-            receiver: "",
+            receiver: null,
             content: ""
         };
+        $scope.replyContent = null;
         $scope.viewedTextMessage = null;
         $scope.textMessages = TextMessage.query();
         $scope.toDelete = null;
@@ -15,12 +16,12 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
         $scope.senderrorUserNotFound = null;
         $scope.senderrorReceiverLength = null;
         $scope.senderrorContentLength = null;
-        $scope.senderrorReceiverCurrentUser = null;
-        $scope.senderrorMsg = null;
+        $scope.sendErrorGeneral = null;
+        $scope.senderrorMessage = null;
 
         $scope.deletesuccess = null;
         $scope.deleteerror = null;
-        $scope.deleteerrorMsg = null;
+        $scope.deleteerrorMessage = null;
 
         $scope.getUsernames = function(partialName) {
             return User.getByName({filter: partialName, fields: "id,login", order: "+login"}).$promise.then(
@@ -40,16 +41,23 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                     $scope.hideNewMessageModal();
                     $scope.clear();
                     $scope.senderror = null;
+                    $scope.senderrorMessage = null;
                     $scope.sendsuccess = "SUCCESS";
                 },
                 function (error) {
-                    if($scope.textMessageToSend.receiver.length > 0 && $scope.textMessageToSend.content.length > 0) {
+                    console.log("start");
+                    if($scope.textMessageToSend.receiver != null && $scope.textMessageToSend.content.length > 0) {
+                        console.log("404 check");
                         if(error.status == 404) {
                             $scope.senderrorUserNotFound = "ERROR";
                         } else if(error.status == 400) {
-                            $scope.senderrorReceiverCurrentUser = "ERROR";
-                        } else {
                             $scope.senderror = "ERROR";
+                            $translate(error.data.key).then(function(translated) {
+                                $scope.senderrorMessage = translated;
+                            });
+                            console.log("blabla");
+                        } else {
+                            $scope.senderrorGeneral = "ERROR";
                         }
                     }
                     if($scope.textMessageToSend.receiver.length == 0) {
@@ -58,7 +66,6 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                     if($scope.textMessageToSend.content.length == 0) {
                         $scope.senderrorContentLength = "ERROR";
                     }
-                    $scope.senderrorMsg = error.data.error;
                     $scope.sendsuccess = null;
                 });
         };
@@ -70,17 +77,23 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                     $scope.textMessages = TextMessage.query();
                     $scope.viewedTextMessage = null;
                     $scope.deleteerror = null;
+                    $scope.deleteerrorMessage = null;
                     $scope.deletesuccess = "SUCCESS";
                 },
                 function (error) {
                     $scope.clear();
                     $scope.deleteerror = "ERROR";
-                    $scope.deleteerrorMsg = error.data.error;
                     $scope.deletesuccess = null;
+                    if(error.status == 400) {
+                        $translate(error.data.key).then(function (translated) {
+                            $scope.deleteerrorMessage = translated;
+                        });
+                    }
                 });
         };
 
         $scope.reply = function (receiver) {
+            $scope.textMessageToSend.content = $scope.replyContent;
             $scope.textMessageToSend.receiver = receiver;
             $scope.create();
         }
@@ -94,6 +107,7 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
             $scope.senderrorReceiverLength = null;
             $scope.senderrorContentLength = null;
             $scope.senderrorReceiverCurrentUser = null;
+            $scope.senderrorGeneral = null;
             $scope.deletesuccess = null;
             $scope.deleteerror = null;
             $scope.sendform.$setPristine();
