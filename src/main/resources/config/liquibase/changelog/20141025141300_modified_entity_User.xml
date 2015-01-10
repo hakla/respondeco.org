@@ -16,7 +16,9 @@
             <column name="gender" type="varchar(20)" defaultValue="UNSPECIFIED"/>
             <column name="description" type="varchar(2048)" defaultValue="NULL"/>
             <column name="organization_id" type="bigint" defaultValue="NULL"/>
-            <column name="is_active" type="boolean" defaultValue="true"/>
+            <column name="is_active" type="boolean" defaultValueBoolean="false" valueBoolean="false">
+                <constraints nullable="false" />
+            </column>
             <column name="imageId" type="bigint" defaultValue="NULL"/>
         </addColumn>
     </changeSet>

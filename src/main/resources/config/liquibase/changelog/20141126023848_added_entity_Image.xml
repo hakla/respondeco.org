@@ -15,7 +15,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="data" type="blob"/>
+            <column name="data" type="longblob"/>
             <column name="name" type="varchar(255)"/>
             <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>

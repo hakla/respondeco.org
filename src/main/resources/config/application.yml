@@ -6,7 +6,7 @@ security.basic.enabled: false
 endpoints.jolokia.enabled: false
 
 # security configuration (this key should be unique for your application, and kept secret)
-jhipster.security.rememberme.key: respondeco
+jhipster.security.rememberme.key: MQ8IHVswyyPQrYnkxU7fGofljuQPjn8n
 
 async:
     corePoolSize: 2
@@ -14,16 +14,6 @@ async:
     queueCapacity: 10000
 
 spring:
-    mail:
-        host: localhost
-        port: 25
-        user:
-        password:
-        protocol: smtp
-        tls: false
-        auth: false
-        from: respondeco@localhost
-
     messageSource:
         cacheSeconds: 1
 

@@ -393,7 +393,6 @@ public class ProjectController {
      * @param id project id
      * @return list of ResourceRequirements wrapped into DTO
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{id}/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -540,7 +539,7 @@ public class ProjectController {
     @RequestMapping(value = "/rest/projects/{id}/started",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     public void isStarted(@PathVariable Long id) {
         try {
             projectService.checkProjectsToStart();
