@@ -101,6 +101,11 @@
                         </p>
                     </div>
                 </div>
+                <div class="form-group">
+                    <button type="button" class="btn {{ registerAccount.npo ? 'btn-success' : 'btn-primary'}}" ng-model="registerAccount.npo" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false" ng-disabled="isNew() == false">
+                        <span class="glyphicon {{ registerAccount.npo ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'organization.isNPO' | translate}}
+                    </button>
+                </div>
 
                 <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="register.form.button">Register</button>
             </form>
