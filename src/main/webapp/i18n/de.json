@@ -27,7 +27,8 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung",
-                "newsfeed": "Newsfeed"
+                "newsfeed": "Newsfeed",
+                "resourcerequestapply": "Ressourcen-Anfragen"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",
@@ -544,11 +545,17 @@
             }
         }
     },
-    "resourcerequest": {
-        "title":"Ressourcen-Anfragen für ihre Angebote",
+    "resourcemessages": {
+        "request": {
+            "title": "Ressourcen-Anfragen für ihre Angebote",
+            "text": "Das Project <a ng-click=\"redirectToProject(request.project.id)\"> {{request.project.name}} </a> mit der Ressourcenanforderung {{request.resourceRequirement.name}}interessiert sich für ihre Ressource {{request.resourceOffer.name}}."
+        },
+        "apply": {
+            "title": "Ressourcen-Angebot für ihren Projekt",
+            "text": "Die Organisation <a ng-click=\"redirectToOrganization(item.organization.id)\"> {{item.organization.name}} </a> möchte für die Anforderungsressource {{item.resourceRequirement.name}}, die eigene Ressource {{item.resourceOffer.name}} bereitstellen."
+        },
         "acceptButton": "Annehmen",
-        "declineButton": "Ablehnen",
-        "backButton": "Zurück zur Organisation"
+        "declineButton": "Ablehnen"
     },
     "resource": {
         "title":"Ressourcen",

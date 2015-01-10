@@ -1,0 +1,22 @@
+<div>
+
+    <h1> {{ 'resourcerequest.title' | translate }} [{{organization.name}}]
+        <button class="btn btn-link pull-right"
+                ng-click="redirectToOrganization()">
+            {{ 'resourcerequest.backButton' | translate }}
+        </button>
+    </h1>
+
+    <div id="content">
+        <ul id="tabs" class="nav nav-tabs" style="border: none;">
+            <li ng-repeat="tab in tabs"
+                ng-class="{active:isActiveTab(tab.url)}"
+                ng-click="onClickTab(tab)"><a data-toggle="tab">{{tab.title}}</a></li>
+        </ul>
+        <div id="my-tab-content">
+            <div ng-class="tab-pane {active:isActiveTab(tab.url)}">
+                <div ng-include="currentTab"></div>
+            </div>
+        </div>
+    </div>
+</div>

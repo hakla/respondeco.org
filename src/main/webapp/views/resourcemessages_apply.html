@@ -1,0 +1,10 @@
+<table class="table">
+    <tr ng-repeat="item in applies">
+        <td translate="resourcemessages.apply.text"></td>
+
+        <td>
+            <button ng-click="acceptApply(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.acceptButton" style="margin-left:5px;">accept</button>
+            <button ng-click="declineApply(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.declineButton">decline</button>
+        </td>
+    </tr>
+</table>

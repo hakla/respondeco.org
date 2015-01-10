@@ -1,0 +1,11 @@
+<table class="table">
+    <tr ng-repeat="request in requests">
+        <td translate="resourcemessages.request.text">Die  Project <a ng-click="redirectToProject(request.project.id)"> {{request.project.name}} </a> mit der Ressourcenanforderung {{request.resourceRequirement.name}}
+            interessiert sich für ihre Ressource {{request.resourceOffer.name}}.</td>
+
+        <td>
+            <button ng-click="acceptRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcemessages.acceptButton" style="margin-left:5px;">accept</button>
+            <button ng-click="declineRequest(request)" class="btn btn-default pull-right" type="button" translate="resourcemessages.declineButton">decline</button>
+        </td>
+    </tr>
+</table>

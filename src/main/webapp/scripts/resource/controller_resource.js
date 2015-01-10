@@ -3,6 +3,25 @@
 respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter) {
 
 	var PAGESIZE = 20;
+    $('#tabs').tab();
+
+    $scope.tabs = [{
+        title: 'Apply',
+        url: 'views/resourcemessages_apply.html'
+    }, {
+        title: 'Request',
+        url: 'views/resourcemessages_request.html'
+    }];
+
+    $scope.currentTab = $scope.tabs[0].url;
+
+    $scope.onClickTab = function (tab) {
+        $scope.currentTab = tab.url;
+    }
+
+    $scope.isActiveTab = function(tabUrl) {
+        return tabUrl == $scope.currentTab;
+    }
 
 	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
@@ -17,6 +36,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.showRequirements = false;
 
 	$scope.requests = [];
+    $scope.applies = [];
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
@@ -43,7 +63,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		  		$scope.search();
 			}
 
-			if($location.path() === '/requests') {
+			if($location.path() === '/resourcemessages') {
 				$scope.loadRequests();
 			}
 
@@ -168,6 +188,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.loadRequests = function() {
 		Organization.getResourceRequests({id:$scope.orgId}, function(data) {
 			$scope.requests = data;
+            $scope.applies = data.splice(1);
 		}, function() {
 			console.log("error");
 		});
@@ -209,7 +230,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		if ($scope.resourceSearch.isFree === true) {
 			$scope.filter.commercial = false;
 		} else {
-			$scope.filter.commercial = undefined;	
+			$scope.filter.commercial = undefined;
 		}
 
 		$scope.currentPage = 1;
