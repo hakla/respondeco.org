@@ -43,6 +43,11 @@ spring:
         cache: false
         viewNames: error
 
+    social:
+        facebook:
+            appId: 801386343241847
+            appSecret: 0ee624ec572168e2c8af19e4fd870cab
+
 metrics:
     jmx.enabled: true
     graphite:
