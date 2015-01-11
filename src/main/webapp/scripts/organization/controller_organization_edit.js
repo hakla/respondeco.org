@@ -33,6 +33,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         // get the current logged in user and set the organization owner to it
         Account.get(null, function(account) {
             $scope.organization.owner = account.login;
+            $scope.organization.email = account.email;
         });
     }
 
@@ -193,6 +194,12 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         $scope.update(id);
 
         // the name of an organization cannot be changed after creation --> show a tooltip
-        $scope.tooltip_notChangeable = "global.notChangeable";
+        $scope.tooltip_notChangeable = "global.tooltip.not-changeable";
+    } else {
+        // the name of an organization cannot be changed after creation --> show a tooltip
+        $scope.tooltip_notChangeable = "global.tooltip.not-changeable-init";
     }
+
+    // the name of an organization cannot be changed after creation --> show a tooltip
+    $scope.tooltip_notChangeable_email = "global.tooltip.not-changeable-email";
 });

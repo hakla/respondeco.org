@@ -30,6 +30,10 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
 
         $location.path("/organization/" + org);
     };
+
+    $scope.isOrganizationUser = function()  {
+        return $rootScope._account.invited === false;
+    };
 });
 
 respondecoApp.controller('AdminController', function($scope) {});

@@ -114,6 +114,10 @@ respondecoApp
                 var checkInitialConditions = function() {
                     var account = $rootScope._account;
 
+                    if (account == null) {
+                        return;
+                    }
+
                     if (account.invited === false && account.organization == null) {
                         if ($rootScope.globalAlerts.indexOf(regMessage) < 0) {
                             $rootScope.globalAlerts.push(regMessage);

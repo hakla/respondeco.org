@@ -100,14 +100,14 @@
                                         <span translate="global.menu.account.newsfeed">Newsfeed</span>
                                     </a>
                                 </li>
-                                <li ng-switch-when="true">
+                                <li ng-switch-when="true" ng-hide="isOrganizationUser()">
                                     <a href="#/settings">
                                         <span class="glyphicon glyphicon-wrench"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.settings">Settings</span>
                                     </a>
                                 </li>
-                                <li ng-switch-when="true">
+                                <li ng-switch-when="true" ng-show="isOrganizationUser()">
                                     <a ng-click="redirectToOwnOrganization()">
                                         <span class="glyphicon glyphicon-briefcase"></span>
                                         &#xA0;
