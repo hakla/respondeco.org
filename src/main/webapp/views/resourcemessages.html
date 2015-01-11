@@ -14,7 +14,7 @@
                 ng-click="onClickTab(tab)"><a data-toggle="tab">{{tab.title}}</a></li>
         </ul>
         <div id="my-tab-content">
-            <div ng-class="tab-pane {active:isActiveTab(tab.url)}">
+            <div class="tab-pane" ng-class="{active:isActiveTab(tab.url)}">
                 <div ng-include="currentTab"></div>
             </div>
         </div>

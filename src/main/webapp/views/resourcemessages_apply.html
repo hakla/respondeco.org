@@ -1,10 +1,10 @@
 <table class="table">
     <tr ng-repeat="item in applies">
-        <td translate="resourcemessages.apply.text"></td>
-
-        <td>
-            <button ng-click="acceptApply(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.acceptButton" style="margin-left:5px;">accept</button>
-            <button ng-click="declineApply(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.declineButton">decline</button>
+        <td ng-bind-html-unsafe="{{'resourcemessages.apply.text' | translate:'{id: item.organization.id, Name: item.organization.name, RequirementName: item.resourceRequirement.name, OfferName: item.resourceOffer.name}'}}">
+        </td>
+        <td style="min-width:200px;">
+            <button ng-click="acceptResource(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.acceptButton" style="margin-left:5px;">accept</button>
+            <button ng-click="declineResource(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.declineButton">decline</button>
         </td>
     </tr>
 </table>

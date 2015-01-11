@@ -548,7 +548,8 @@ public class ResourceService {
     @Transactional(readOnly=true)
     public List<ResourceMatch> getResourceRequestsForOrganization(Long organizationId, RestParameters restParameters) {
         PageRequest pageRequest = restParameters.buildPageRequest();
-
+/*
+        TODO: Do not work! some other options?
         QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
         BooleanExpression resourceMatchOrganization = resourceMatch.resourceRequirement.project.organization.id.eq(organizationId);
         BooleanExpression resourceMatchAccepted = resourceMatch.accepted.isNull();
@@ -558,8 +559,8 @@ public class ResourceService {
 
         Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization, activeOrganization, activeProject, activeResource);
         List<ResourceMatch> requests = resourceMatchRepository.findAll(where, pageRequest).getContent();
-
-        //List<ResourceMatch> requests = resourceMatchRepository.findByOrganizationId(organizationId);
+*/
+        List<ResourceMatch> requests = resourceMatchRepository.findByOrganizationId(organizationId);
 
         return requests;
     }

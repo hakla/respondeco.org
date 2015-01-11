@@ -1,10 +1,10 @@
-id;accepted;project_id;organization_id;resource_requirement_id;resource_offer_id;project_rating_id;supporter_rating_id;is_active;amount
-1;true;1;2;10;5;1;5;true;5
-2;true;1;3;9;7;2;6;true;5
-3;true;1;3;11;3;null;null;true;2
-4;true;2;1;13;2;null;7;true;4
-5;true;2;3;12;7;null;null;true;50
-6;true;3;2;14;4;null;null;true;4
-7;true;3;2;15;5;null;null;true;2
-8;true;3;1;15;2;null;null;true;8
+id;accepted;project_id;organization_id;resource_requirement_id;resource_offer_id;project_rating_id;supporter_rating_id;is_active;amount;match_direction
+1;true;1;2;10;5;1;5;true;5;ORGANIZATION_OFFERED
+2;true;1;3;9;7;2;6;true;5;ORGANIZATION_OFFERED
+3;true;1;3;11;3;null;null;true;2;ORGANIZATION_CLAIMED
+4;true;2;1;13;2;null;7;true;4;ORGANIZATION_CLAIMED
+5;true;2;3;12;7;null;null;true;50;ORGANIZATION_OFFERED
+6;true;3;2;14;4;null;null;true;4;ORGANIZATION_CLAIMED
+7;true;3;2;15;5;null;null;true;2;ORGANIZATION_CLAIMED
+8;true;3;1;15;2;null;null;true;8;ORGANIZATION_OFFERED
 

@@ -548,11 +548,11 @@
     "resourcemessages": {
         "request": {
             "title": "Ressourcen-Anfragen für ihre Angebote",
-            "text": "Das Project <a ng-click=\"redirectToProject(request.project.id)\"> {{request.project.name}} </a> mit der Ressourcenanforderung {{request.resourceRequirement.name}}interessiert sich für ihre Ressource {{request.resourceOffer.name}}."
+            "text": "Das Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> mit der Ressourcenanforderung {{RequirementName}} interessiert sich für ihre Ressource {{OfferName}}."
         },
         "apply": {
             "title": "Ressourcen-Angebot für ihren Projekt",
-            "text": "Die Organisation <a ng-click=\"redirectToOrganization(item.organization.id)\"> {{item.organization.name}} </a> möchte für die Anforderungsressource {{item.resourceRequirement.name}}, die eigene Ressource {{item.resourceOffer.name}} bereitstellen."
+            "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource {{RequirementName}}, die eigene Ressource {{OfferName}} bereitstellen."
         },
         "acceptButton": "Annehmen",
         "declineButton": "Ablehnen"

@@ -5,6 +5,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	var PAGESIZE = 20;
     $('#tabs').tab();
 
+    $scope.toTrusted = function(html){
+
+    };
+
     $scope.tabs = [{
         title: 'Apply',
         url: 'views/resourcemessages_apply.html'
@@ -173,14 +177,14 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('projects/'+id);
 	}
 
-	$scope.acceptRequest = function(request) {
-		Resource.updateRequest({id:request.matchId},{accepted:true}, function() {
+	$scope.acceptResource = function(request) {
+		Resource.updateResource({id:request.matchId},{accepted:true}, function() {
 			$scope.loadRequests();
 		});
-	}
+	};
 
-	$scope.declineRequest = function(request) {
-		Resource.updateRequest({id:request.matchId},{accepted:false}, function() {
+	$scope.declineResource = function(request) {
+		Resource.updateResource({id:request.matchId},{accepted:false}, function() {
 			$scope.loadRequests();
 		});
 	}
