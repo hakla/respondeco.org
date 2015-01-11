@@ -1,7 +1,11 @@
 package org.respondeco.respondeco.service;
 
+import com.mysema.query.types.ExpressionUtils;
+import com.mysema.query.types.Predicate;
+import com.mysema.query.types.expr.BooleanExpression;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.QProject;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.*;
@@ -279,68 +283,69 @@ public class ProjectService {
 
     /**
      * Find projects by name and tags
-     * @param name the name to search for
-     * @param tagsString the tags to search for
-     * @param restParams other parameters for paging and sorting
+     * @param searchText the text to search for in project names and tags
+     * @param restParameters other parameters for paging and sorting
      * @return a page of Projects which match the given name and are associated with the given tags, paged and sorted
      * with the given RestParameters
      */
-    public Page<Project> findProjects(String name, String tagsString, RestParameters restParams) {
-        List<String> tags = restUtil.splitCommaSeparated(tagsString);
-
+    public Page<Project> findProjects(String searchText, RestParameters restParameters) {
         PageRequest pageRequest = null;
-        if(restParams != null) {
-            pageRequest = restParams.buildPageRequest();
+        Page page;
+
+        if(restParameters != null) {
+            pageRequest = restParameters.buildPageRequest();
         }
 
-        Page<Project> result;
-        if((name == null || name.length() == 0) && tags.size() == 0) {
-            result = projectRepository.findByActiveIsTrue(pageRequest);
-        } else if(name == null || name.length() == 0) {
-            result = projectRepository.findByTags(tags, pageRequest);
+        if(searchText == null || searchText.isEmpty()) {
+            page = projectRepository.findByActiveIsTrue(pageRequest);
         } else {
-            //add wildcards to the name
-            name = "%" + name + "%";
-            result = projectRepository.findByNameAndTags(name, tags, pageRequest);
+            QProject project = QProject.project;
+            BooleanExpression projectNameLike = project.name.containsIgnoreCase(searchText);
+            BooleanExpression projectTagLike = project.propertyTags.any().name.containsIgnoreCase(searchText);
+            BooleanExpression isActive = project.active.isTrue();
+
+            Predicate nameOrTags = ExpressionUtils.anyOf(projectNameLike, projectTagLike);
+            Predicate query = ExpressionUtils.allOf(nameOrTags, isActive);
+
+            page = projectRepository.findAll(query, pageRequest);
         }
 
-        return result;
+        return page;
     }
 
     /**
      * Find projects by organization, name and tags
      * @param orgId projects will be searched for based on their organization
-     * @param name the name to search for
-     * @param tagsString the tags to search for
-     * @param restParams other parameters for paging and sorting
+     * @param searchText the text to search for in name and tags of the project
+     * @param restParameters other parameters for paging and sorting
      * @return a page of Projects which match the given name and are associated with the given tags, paged and sorted
      * with the given RestParameters
      */
-    public Page<Project> findProjectsFromOrganization(Long orgId, String name, String tagsString,
-                                                                 RestParameters restParams) {
-        List<String> tags = restUtil.splitCommaSeparated(tagsString);
-
+    public Page<Project> findProjectsFromOrganization(Long orgId, String searchText, RestParameters restParameters) {
         PageRequest pageRequest = null;
-        if(restParams != null) {
-            pageRequest = restParams.buildPageRequest();
+        Page page;
+
+        if(restParameters != null) {
+            pageRequest = restParameters.buildPageRequest();
         }
 
-        Page<Project> result;
-        if((name == null || name.length() == 0) && tags.size() == 0) {
-            if(orgId != null) {
-                result = projectRepository.findByOrganization(orgId, pageRequest);
-            } else {
-                result = projectRepository.findByActiveIsTrue(pageRequest);
-            }
-        } else if(name == null || name.length() == 0) {
-            result = projectRepository.findByOrganizationAndTags(orgId, tags, pageRequest);
+        QProject project = QProject.project;
+        BooleanExpression projectOrgEquals = project.organization.id.eq(orgId);
+        BooleanExpression isActive = project.active.isTrue();
+        if(searchText == null || searchText.isEmpty()) {
+            Predicate query = ExpressionUtils.allOf(projectOrgEquals, isActive);
+            page = projectRepository.findAll(query, pageRequest);
         } else {
-            //add wildcards to the name
-            name = "%" + name + "%";
-            result = projectRepository.findByOrganizationAndNameAndTags(orgId, name, tags, pageRequest);
+            BooleanExpression projectNameLike = project.name.containsIgnoreCase(searchText);
+            BooleanExpression projectTagLike = project.propertyTags.any().name.containsIgnoreCase(searchText);
+
+            Predicate nameOrTags = ExpressionUtils.anyOf(projectNameLike, projectTagLike);
+            Predicate query = ExpressionUtils.allOf(projectOrgEquals, nameOrTags, isActive);
+
+            page = projectRepository.findAll(query, pageRequest);
         }
 
-        return result;
+        return page;
 
     }
 

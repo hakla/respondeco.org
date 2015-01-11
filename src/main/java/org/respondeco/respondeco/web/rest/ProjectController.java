@@ -224,8 +224,6 @@ public class ProjectController {
      *
      * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
      *               will be returned
-     * @param tags optional parameter, if not null or empty, projects which have one or more of these tags
-     *             associated with them will be returned
      * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
      *             pageSize, dafault is 1 (first page)
      * @param pageSize optional parameter indicating the size of the pages of projects to be returned
@@ -249,7 +247,6 @@ public class ProjectController {
     @PermitAll
     public ResponseEntity<ProjectPaginationResponseDTO> getByNameAndTags(
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
@@ -257,7 +254,7 @@ public class ProjectController {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
 
-        Page<Project> resultPage = projectService.findProjects(filter, tags, restParameters);
+        Page<Project> resultPage = projectService.findProjects(filter, restParameters);
 
         ProjectPaginationResponseDTO paginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
 
@@ -280,8 +277,6 @@ public class ProjectController {
      * @param organizationId REST path variable indicating the organization of which to query the projects
      * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
      *               will be returned
-     * @param tags optional parameter, if not null or empty, projects which have one or more of these tags
-     *             associated with them will be returned
      * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
      *             pageSize, dafault is 1 (first page)
      * @param pageSize optional parameter indicating the size of the pages of projects to be returned
@@ -305,7 +300,6 @@ public class ProjectController {
     public ResponseEntity<ProjectPaginationResponseDTO> getByOrganizationAndNameAndTags(
             @PathVariable Long organizationId,
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
@@ -313,7 +307,7 @@ public class ProjectController {
         log.debug("REST request to get projects for organization {}", organizationId);
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         Page<Project> resultPage =  projectService
-                .findProjectsFromOrganization(organizationId, filter, tags, restParameters);
+                .findProjectsFromOrganization(organizationId, filter, restParameters);
 
         ProjectPaginationResponseDTO projectPaginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
 
