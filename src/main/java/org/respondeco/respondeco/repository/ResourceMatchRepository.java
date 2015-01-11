@@ -35,4 +35,10 @@ public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Lo
 
     public List<ResourceMatch> findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
         ResourceOffer resourceOffer, ResourceRequirement resourceRequirement, Organization organization, Project project);
+
+
+    @Query("SELECT m FROM ResourceMatch m " +
+            "WHERE m.active = true AND m.resourceRequirement.project.active = true AND m.resourceRequirement.active = true AND " +
+            "m.resourceRequirement.project.organization.id = :organizationId AND m.resourceRequirement.project.organization.active = true")
+    public List<ResourceMatch> findByOrganizationId(@Param("organizationId") Long organizationId);
 }

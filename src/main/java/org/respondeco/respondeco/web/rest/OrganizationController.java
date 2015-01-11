@@ -306,6 +306,7 @@ public class OrganizationController {
             resourceDTO.setResourceOffer(resourceOfferDTO);
             resourceDTO.setResourceRequirement(resourceRequirementResponseDTO);
             resourceDTO.setMatchId(match.getId());
+            resourceDTO.setMatchDirection(match.getMatchDirection().toString());
 
             responseEntity.getBody().add(resourceDTO);
         }

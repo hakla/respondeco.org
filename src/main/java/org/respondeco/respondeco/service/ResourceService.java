@@ -1,7 +1,10 @@
 package org.respondeco.respondeco.service;
 
+import com.mysema.query.jpa.JPASubQuery;
+import com.mysema.query.types.CollectionExpression;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
+import com.mysema.query.types.Visitor;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -546,12 +550,16 @@ public class ResourceService {
         PageRequest pageRequest = restParameters.buildPageRequest();
 
         QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
-        BooleanExpression resourceMatchOrganization = resourceMatch.organization.id.eq(organizationId);
+        BooleanExpression resourceMatchOrganization = resourceMatch.resourceRequirement.project.organization.id.eq(organizationId);
         BooleanExpression resourceMatchAccepted = resourceMatch.accepted.isNull();
+        BooleanExpression activeResource = resourceMatch.resourceRequirement.active.eq(true);
+        BooleanExpression activeProject = resourceMatch.resourceRequirement.project.active.eq(true);
+        BooleanExpression activeOrganization = resourceMatch.resourceRequirement.project.organization.active.eq(true);
 
-        Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization);
-
+        Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization, activeOrganization, activeProject, activeResource);
         List<ResourceMatch> requests = resourceMatchRepository.findAll(where, pageRequest).getContent();
+
+        //List<ResourceMatch> requests = resourceMatchRepository.findByOrganizationId(organizationId);
 
         return requests;
     }

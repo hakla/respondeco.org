@@ -187,8 +187,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.loadRequests = function() {
 		Organization.getResourceRequests({id:$scope.orgId}, function(data) {
-			$scope.requests = data;
-            $scope.applies = data.splice(1);
+            for(var i = 0;i < data.length;i++){
+                if(data[i].matchDirection == "ORGANIZATION_OFFERED"){
+                    $scope.applies.push(data[i]);
+                } else{
+                    $scope.requests.push(data[i]);
+                }
+            }
 		}, function() {
 			console.log("error");
 		});
