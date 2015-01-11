@@ -16,6 +16,7 @@
                 "main": "Zugang",
                 "messages": "Nachrichten",
                 "settings": "Einstellungen",
+                "social-networks": "Verbundene Netzwerke",
                 "password": "Passwort",
                 "sessions": "Sitzungen",
                 "tracker": "User tracker",
@@ -686,5 +687,9 @@
                 "notfound": "Die ausgewählte Organisation existiert nicht mehr. Bitte wenden Sie sich an den Verwaltenden Benutzer der Organisation"
             }
         }
+    },
+    "social-networks": {
+        "heading": "Verbunde soziale Netzwerke",
+        "connect": "Verbinden"
     }
 }
