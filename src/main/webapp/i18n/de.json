@@ -570,7 +570,8 @@
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
             },
-            "free": "Nur Gratisangebote suchen"
+            "free": "Nur Gratisangebote suchen",
+            "empty": "Es gibt keine Ressourcen die Ihren Suchkriterien entsprechen!"
         },
         "claim": {
             "title": "Ressource anfordern",
@@ -628,7 +629,8 @@
         },
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",
-            "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Opration konnte nicht ausgeführt werden"
+            "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
+            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!"
         }
     },
     "nearProjects": {

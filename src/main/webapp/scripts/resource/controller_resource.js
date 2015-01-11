@@ -29,6 +29,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.filter = {pageSize:PAGESIZE};
 
+	$scope.totalItems = 0;
+
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
 	  		$scope.orgId = account.organization.id;
@@ -217,6 +219,12 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 		Resource.query($scope.filter, function(response) {
 				$scope.resources = response.resourceOffers;
+				if($scope.resources.length == 0) {
+					$scope.noResourcesFound = true;
+				} else {
+					$scope.noResourcesFound = false;
+				}
+
 				$scope.totalItems = response.totalItems;
 			}, function(error) {
 				$scope.searchError = true;
