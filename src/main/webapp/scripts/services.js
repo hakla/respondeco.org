@@ -81,12 +81,22 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                         if (data.login != "anonymousUser") {
                             Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
                             $rootScope.account = Session;
+                            $rootScope._account = data;
                             authService.loginConfirmed(data);
                         }
                     });
                 }).error(function (data, status, headers, config) {
                     $rootScope.authenticationError = true;
                     Session.invalidate();
+                });
+            },
+            refresh: function() {
+                Account.get(function(data) {
+                    if (data.login != "anonymousUser") {
+                        Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+                        $rootScope.account = Session;
+                        $rootScope._account = data;
+                    }
                 });
             },
             valid: function (authorizedRoles) {
@@ -99,6 +109,7 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                             if (data.login != "anonymousUser") {
                                 Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
                                 $rootScope.account = Session;
+                                $rootScope._account = data;
                                 $rootScope.authenticated = true;
                             }
                         });
@@ -141,6 +152,7 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                 $rootScope.authenticationError = false;
                 $rootScope.authenticated = false;
                 $rootScope.account = null;
+                $rootScope._account = null;
 
                 $http.get('app/logout');
                 Session.invalidate();

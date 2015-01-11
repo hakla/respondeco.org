@@ -95,7 +95,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PersistentToken> persistentTokens = new HashSet<>();
 
-
+    @NotNull
+    @Column(name = "invited")
+    private boolean invited;
 
     @ManyToMany
     @JoinTable(

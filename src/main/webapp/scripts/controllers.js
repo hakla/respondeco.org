@@ -20,6 +20,16 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
     $rootScope.closeAlert = function(index) {
         $rootScope.globalAlerts.splice(index, 1);
     };
+
+    $scope.redirectToOwnOrganization = function() {
+        var org = 'edit/new';
+
+        if ($rootScope._account != null && $rootScope._account.organization != null) {
+            org = $rootScope._account.organization.id;
+        }
+
+        $location.path("/organization/" + org);
+    };
 });
 
 respondecoApp.controller('AdminController', function($scope) {});
@@ -38,7 +48,7 @@ respondecoApp.controller('LanguageController', function($scope, $translate, Lang
     });
 });
 
-respondecoApp.controller('MenuController', function($rootScope, TextMessage, AuthenticationSharedService, USER_ROLES) {
+respondecoApp.controller('MenuController', function($rootScope, TextMessage) {
     var refresh = function() {
         TextMessage.countNewMessages(function(amount) {
             $rootScope.newMessages = amount[0];
@@ -62,6 +72,8 @@ respondecoApp.controller('LoginController', function($scope, $location, Authenti
             rememberMe: $scope.rememberMe
         });
     }
+
+    $scope.$on("")
 });
 
 respondecoApp.controller('LogoutController', function($location, AuthenticationSharedService) {

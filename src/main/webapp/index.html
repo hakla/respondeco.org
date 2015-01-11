@@ -108,6 +108,13 @@
                                     </a>
                                 </li>
                                 <li ng-switch-when="true">
+                                    <a ng-click="redirectToOwnOrganization()">
+                                        <span class="glyphicon glyphicon-briefcase"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.organization">My organization</span>
+                                    </a>
+                                </li>
+                                <li ng-switch-when="true">
                                     <a href="#/password">
                                         <span class="glyphicon glyphicon-lock"></span>
                                         &#xA0;
@@ -189,7 +196,7 @@
             </div>
         </nav>
         <div class="container error-container">
-            <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+            <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
         </div>
         <div ng-class="main() ? '' : 'container'">
             <div ng-class="main() ? '' : 'well'" ng-view></div>

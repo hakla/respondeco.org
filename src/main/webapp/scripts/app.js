@@ -105,19 +105,57 @@ respondecoApp
             tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
 
         })
-        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES) {
+        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $sce) {
+                var regMessage = {
+                    type: 'info',
+                    msg: 'Um die Registrierung abzuschließen erstelle eine Organisation! <a><strong class="pull-right" ng-click="redirectToOwnOrganization()">Zur Erstellung</strong></a>'
+                };
+
+                var checkInitialConditions = function() {
+                    var account = $rootScope._account;
+
+                    if (account.invited === false && account.organization == null) {
+                        if ($rootScope.globalAlerts.indexOf(regMessage) < 0) {
+                            $rootScope.globalAlerts.push(regMessage);
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                };
+
+                var regMessageOrganization = {
+                    type: 'info',
+                    msg: 'Um die Registrierung abzuschließen erstelle eine Organisation!'
+                };
+
                 $rootScope.$on('$routeChangeStart', function (event, next) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
                     if (next.access != undefined) {
                         AuthenticationSharedService.valid(next.access.authorizedRoles);
                     }
+
+                    $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessageOrganization), 1);
+
+                    // If the user navigates to another site than the the organization/edit/new site
+                    if (next.$$route.originalPath !== "/organization/edit/:id" || next.pathParams.id !== "new") {
+                        checkInitialConditions();
+                    } else {
+                        $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessage), 1);
+                        $rootScope.globalAlerts.push(regMessageOrganization);
+                    }
                 });
 
                 // Call when the the client is confirmed
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
-                    if ($location.path() === "/login") {
+                    var account = $rootScope._account;
+
+                    if (checkInitialConditions()) {
+                        $location.path('/organization/edit/new');
+                    } else if ($location.path() === "/login") {
                         var search = $location.search();
                         if (search.redirect !== undefined) {
                             $location.path(search.redirect).search('redirect', null).replace();
