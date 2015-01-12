@@ -144,7 +144,7 @@ respondecoApp
                     $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessageOrganization), 1);
 
                     // If the user navigates to another site than the the organization/edit/new site
-                    if (next.$$route.originalPath !== "/organization/edit/:id" || next.pathParams.id !== "new") {
+                    if (next.$$route.originalPath != null && next.$$route.originalPath !== "/organization/edit/:id" || next.pathParams.id !== "new") {
                         checkInitialConditions();
                     } else {
                         $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessage), 1);

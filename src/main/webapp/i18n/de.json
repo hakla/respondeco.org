@@ -558,7 +558,7 @@
         "backButton": "Zurück zur Organisation"
     },
     "resource": {
-        "title":"Ressourcen",
+        "title": "Marktplatz",
         "name": "Name",
         "company": "Unternehmen",
         "amount": "Anzahl",
@@ -612,7 +612,7 @@
             "description" : "Beschreibung der Ressource",
             "amount" : "Menge der Ressource",
             "tags": "Tags der Ressource",
-            "search": "Suchkriterien eingeben",
+            "search": "Name / Tags / Organisation",
             "price": "Preis der Ressource",
             "startDate": "Verfügbar ab",
             "endDate": "Verfügbar bis"

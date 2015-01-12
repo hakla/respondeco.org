@@ -1,43 +1,37 @@
-<div class="project">
-    <div class="row">
-        <div class="col-sm-12">
-            <form name="searchform" role="form" novalidate
-                  class="ng-scope" ng-submit="searchButton()">
-
-                <div class="form-group col-xs-12">
-                    <label translate="project.searchtext">Name/Tag</label>
-                    <input type="text" class="form-control" placeholder="{{'project.searchtext.placeholder' | translate}}"
-                           ng-model="searchText"/>
-                </div>
-                <div class="form-group col-xs-3">
+<div class="project clearfix">
+    <div class="col-md-12">
+        <h1>Projekte</h1>
+        
+        <form name="searchform" role="form" novalidate class="ng-scope form-search" ng-submit="searchButton()">
+            <div class="input-group form-group">
+                <input type="text" class="form-control" placeholder="{{'project.searchtext.placeholder' | translate}}" ng-model="searchText" />
+                <span class="input-group-btn">
                     <button id="searchButton" type="submit" class="btn btn-primary">Suchen</button>
+                </span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger" ng-show="searchError" translate="project.error.searcherror">
+                        <strong>Server could not be reached, something went wrong</strong>
+                    </div>
                 </div>
-            </form>
+                <div class="col-md-12">
+                    <div class="alert alert-warning" ng-show="noProjects" translate="project.search.empty">
+                        <strong>There are no projects matching your criteria</strong>
+                    </div>
+                </div>
+            </div>
 
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-danger" ng-show="searchError" translate="project.error.searcherror">
-                <strong>Server could not be reached, something went wrong</strong>
+            <p ng-show="totalItems>0">{{totalItems}} Projekte gefunden! </p>
+        </form>
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <resp-project project="project" on-project-click="redirectToProject(project)" ng-repeat="project in projects"></resp-project>
             </div>
         </div>
-        <div class="col-md-12">
-            <div class="alert alert-warning" ng-show="noProjects" translate="project.search.empty">
-                <strong>There are no projects matching your criteria</strong>
-            </div>
-        </div>
+        
+        <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
     </div>
-
-    <div class="row">
-        <div class="col-sm-12">
-            <resp-project project="project" on-project-click="redirectToProject(project)"
-                          ng-repeat="project in projects"></resp-project>
-        </div>
-    </div>
-
-    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
-
-    <p> Es wurden {{totalItems}} Projekte gefunden! </p>
 </div>

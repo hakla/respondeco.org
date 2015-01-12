@@ -8252,7 +8252,7 @@ uploaded-image div, [uploaded-image] div {
 ul.resources {
   list-style-type: none;
   padding-left: 0;
-  margin: 80px 0 50px 0;
+  margin-bottom: 50px;
 }
 /* line 364, ../../scss/main.scss */
 ul.resources li {
@@ -8396,4 +8396,9 @@ h3 {
 /* line 501, ../../scss/main.scss */
 h4 {
   font-size: 18px;
+}
+
+/* line 505, ../../scss/main.scss */
+.form-search {
+  margin: 50px 0;
 }

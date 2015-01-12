@@ -345,10 +345,6 @@ uploaded-image, [uploaded-image] {
 }
 
 .resource-search-container {
-    form {
-        margin-top: 50px;
-    }
-
     uploaded-image {
         height: 70px;
         display: block;
@@ -359,7 +355,7 @@ uploaded-image, [uploaded-image] {
 ul.resources {
     list-style-type: none;
     padding-left: 0;
-    margin: 80px 0 50px 0;
+    margin-bottom: 50px;
 
     li {
         margin-bottom: 60px;
@@ -500,4 +496,8 @@ h3 {
 
 h4 {
     font-size: 18px;
+}
+
+.form-search {
+    margin: 50px 0;
 }
