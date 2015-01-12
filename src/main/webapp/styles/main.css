@@ -8377,3 +8377,23 @@ ul.resources li .organization i {
 .angular-google-map-container {
   height: 400px;
 }
+
+/* line 489, ../../scss/main.scss */
+h1 {
+  font-size: 28px;
+}
+
+/* line 493, ../../scss/main.scss */
+h2 {
+  font-size: 24px;
+}
+
+/* line 497, ../../scss/main.scss */
+h3 {
+  font-size: 20px;
+}
+
+/* line 501, ../../scss/main.scss */
+h4 {
+  font-size: 18px;
+}

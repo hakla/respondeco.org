@@ -20,25 +20,6 @@
             </div>
 
             <form ng-show="!success" name="form" role="form" novalidate ng-submit="register()" show-validation>
-                <div class="form-group" ng-show="activation == false">
-                    <label translate="global.form.orgname">Name of your organization</label>
-                    <input type="text" class="form-control" name="orgname" placeholder="{{'global.form.orgname.placeholder' | translate}}"
-                           ng-model="registerAccount.orgname" ng-minlength=3 ng-maxlength=100 required>
-                    <div ng-show="form.orgname.$dirty && form.orgname.$invalid">
-                        <p class="help-block"
-                           ng-show="form.orgname.$error.required" translate="global.messages.validate.orgname.required">
-                            Your organization name is required.
-                        </p>
-                        <p class="help-block"
-                           ng-show="form.orgname.$error.minlength" translate="global.messages.validate.orgname.minlength">
-                            Your organization name is required to be at least 3 characters
-                        </p>
-                        <p class="help-block"
-                           ng-show="form.orgname.$error.maxlength" translate="global.messages.validate.orgname.maxlength">
-                            Your organization name cannot be longer than 100 characters
-                        </p>
-                    </div>
-                </div>
                 <div class="form-group">
                     <label translate="global.form.email">E-mail</label>
                     <input type="email" class="form-control" name="email" placeholder="{{'global.form.email.placeholder' | translate}}"
