@@ -546,16 +546,22 @@
         }
     },
     "resourcemessages": {
+        "title": "Verwalten Sie die Resourcen Anfragen und Spenden für [{{OrganizationName}}]",
         "request": {
             "title": "Ressourcen-Anfragen für ihre Angebote",
-            "text": "Das Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> mit der Ressourcenanforderung {{RequirementName}} interessiert sich für ihre Ressource {{OfferName}}."
+            "text": "Das Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> mit der Ressourcenanforderung <span class='underline'>{{RequirementName}}</span> interessiert sich für ihre Ressource <span class='underline'>{{OfferName}}</span>.",
+            "tabtitle": "Anfragen"
         },
         "apply": {
             "title": "Ressourcen-Angebot für ihren Projekt",
-            "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource {{RequirementName}}, die eigene Ressource {{OfferName}} bereitstellen."
+            "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource <span class='underline'>{{RequirementName}}</span>, die Ressource <span class='underline'>{{OfferName}}</span> bereitstellen.",
+            "tabtitle": "Spenden"
         },
+        "olddata": "Alte Anfragen/Spenden",
         "acceptButton": "Annehmen",
-        "declineButton": "Ablehnen"
+        "declineButton": "Ablehnen",
+        "acceptedButton": "Angenohmen",
+        "declinedButton": "Abgelehnt"
     },
     "resource": {
         "title":"Ressourcen",

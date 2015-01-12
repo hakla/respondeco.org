@@ -1,9 +1,6 @@
 <table class="table">
     <tr ng-repeat="item in requests">
-        <td>
-            {{'resourcemessages.request.text' | translate: '{id: item.project.id, Name: item.project.name, RequirementName: item.resourceRequirement.name, OfferName: item.resourceOffer.name}'}}
-
-        </td>
+        <td ng-bind-html="item.text"></td>
         <td style="min-width:200px;">
             <button ng-click="acceptResource(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.acceptButton" style="margin-left:5px;">accept</button>
             <button ng-click="declineResource(item)" class="btn btn-default pull-right" type="button" translate="resourcemessages.declineButton">decline</button>

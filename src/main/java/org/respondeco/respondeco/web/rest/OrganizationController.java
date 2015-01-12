@@ -286,15 +286,16 @@ public class OrganizationController {
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) String fields,
-        @RequestParam(required = false) String order) {
+        @RequestParam(required = false) String order){
 
         log.debug("REST request to get all resource claim requests for organization with id " + id);
-        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        List<ResourceMatchResponseDTO> list = new ArrayList<>();
+        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceMatch> resourceClaims = resourceService.getResourceRequestsForOrganization(id, restParameters);
+        List<ResourceMatch> resourceInQueue = resourceService.getResourcesForOrganization(id, restParameters);
 
-        for(ResourceMatch match : resourceClaims) {
+        for(ResourceMatch match : resourceInQueue) {
             ResourceMatchResponseDTO resourceDTO = new ResourceMatchResponseDTO();
 
             OrganizationResponseDTO organizationDTO = OrganizationResponseDTO.fromEntity(match.getOrganization(), null);
@@ -307,8 +308,10 @@ public class OrganizationController {
             resourceDTO.setResourceRequirement(resourceRequirementResponseDTO);
             resourceDTO.setMatchId(match.getId());
             resourceDTO.setMatchDirection(match.getMatchDirection().toString());
+            resourceDTO.setOrganization(organizationDTO);
+            resourceDTO.setAccepted(match.getAccepted());
 
-            responseEntity.getBody().add(resourceDTO);
+            list.add(resourceDTO);
         }
 
         return responseEntity;

@@ -1,31 +1,9 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter, $sce) {
 
 	var PAGESIZE = 20;
-    $('#tabs').tab();
-
-    $scope.toTrusted = function(html){
-
-    };
-
-    $scope.tabs = [{
-        title: 'Apply',
-        url: 'views/resourcemessages_apply.html'
-    }, {
-        title: 'Request',
-        url: 'views/resourcemessages_request.html'
-    }];
-
-    $scope.currentTab = $scope.tabs[0].url;
-
-    $scope.onClickTab = function (tab) {
-        $scope.currentTab = tab.url;
-    }
-
-    $scope.isActiveTab = function(tabUrl) {
-        return tabUrl == $scope.currentTab;
-    }
+    var $translate = $filter('translate');
 
 	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
@@ -41,6 +19,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.requests = [];
     $scope.applies = [];
+    $scope.oldResourceMessages = [];
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
@@ -68,7 +47,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 			}
 
 			if($location.path() === '/resourcemessages') {
-				$scope.loadRequests();
+				$scope.loadResourceData();
 			}
 
 			if($scope.isNew === false && $scope.isOverview === false) {
@@ -177,31 +156,58 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('projects/'+id);
 	}
 
-	$scope.acceptResource = function(request) {
-		Resource.updateResource({id:request.matchId},{accepted:true}, function() {
-			$scope.loadRequests();
+	$scope.acceptResource = function(data) {
+		Resource.updateResource({id:data.matchId},{accepted:true}, function() {
+            $scope.loadResourceData();
 		});
 	};
 
-	$scope.declineResource = function(request) {
-		Resource.updateResource({id:request.matchId},{accepted:false}, function() {
-			$scope.loadRequests();
+	$scope.declineResource = function(data) {
+		Resource.updateResource({id:data.matchId},{accepted:false}, function() {
+            $scope.loadResourceData();
 		});
-	}
-
-	$scope.loadRequests = function() {
-		Organization.getResourceRequests({id:$scope.orgId}, function(data) {
-            for(var i = 0;i < data.length;i++){
-                if(data[i].matchDirection == "ORGANIZATION_OFFERED"){
+	};
+    /**
+     * get the right list for the resource match data
+     * @param data
+     */
+    function parseResources(data){
+        for(var i = 0;i < data.length;i++){
+            var translateData = {
+                RequirementName: data[i].resourceRequirement.name,
+                OfferName: data[i].resourceOffer.name
+            };
+            if(data[i].matchDirection == "ORGANIZATION_OFFERED"){
+                translateData.id = data[i].organization.id;
+                translateData.Name = data[i].organization.name;
+                //manually translate the data and use html save wrapper. Do not forget: HTML should have ng-bind-html tag
+                data[i].text = $sce.trustAsHtml($translate("resourcemessages.apply.text", translateData));
+                if(data[i].accepted != null){
+                    $scope.oldResourceMessages.push(data[i]);
+                }else {
                     $scope.applies.push(data[i]);
-                } else{
+                }
+            } else{
+                translateData.id = data[i].project.id;
+                translateData.Name = data[i].project.name;
+                data[i].text = $sce.trustAsHtml($translate("resourcemessages.request.text", translateData));
+                if(data[i].accepted != null){
+                    $scope.oldResourceMessages.push(data[i]);
+                }else {
                     $scope.requests.push(data[i]);
                 }
             }
-		}, function() {
-			console.log("error");
-		});
-	}
+        }
+    }
+
+    $scope.loadResourceData = function(){
+        Organization.getResourceRequests({id:$scope.orgId}, function(data) {
+            $scope.requests.length = 0;
+            $scope.applies.length = 0;
+            $scope.oldResourceMessages.length = 0;
+            parseResources(data);
+        });
+    };
 
 	$scope.redirectToOrganization = function() {
 		$location.path('organization/' + $scope.orgId);
@@ -305,5 +311,32 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
     };
 
 	$scope.getAccount();
+
+
+    // tabs for resource apply/claim/old data
+
+    $('#tabs').tab();
+
+    $scope.tabs = [{
+        title: $translate('resourcemessages.apply.tabtitle'),
+        url: 'views/resourcemessages_apply.html'
+    }, {
+        title: $translate('resourcemessages.request.tabtitle'),
+        url: 'views/resourcemessages_request.html'
+    },{
+        title: $translate('resourcemessages.olddata'),
+        url: 'views/resourcemessages_old.html'
+    }];
+
+    $scope.currentTab = $scope.tabs[0].url;
+
+    $scope.onClickTab = function (tab) {
+        $scope.loadResourceData();
+        $scope.currentTab = tab.url;
+    }
+
+    $scope.isActiveTab = function(tabUrl) {
+        return tabUrl == $scope.currentTab;
+    }
 
 });

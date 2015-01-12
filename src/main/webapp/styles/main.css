@@ -8051,6 +8051,11 @@ img {
 }
 
 /* line 160, ../../scss/main.scss */
+.underline {
+  text-decoration: underline;
+}
+
+/* line 164, ../../scss/main.scss */
 .my-drop-zone {
   text-align: center;
   border: none;
@@ -8058,7 +8063,7 @@ img {
   font-size: 4em;
   position: relative;
 }
-/* line 167, ../../scss/main.scss */
+/* line 171, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover {
   position: absolute;
   top: 0px;
@@ -8074,33 +8079,33 @@ img {
   transition: .25s ease opacity;
   cursor: pointer;
 }
-/* line 182, ../../scss/main.scss */
+/* line 186, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover:hover {
   opacity: 1;
 }
-/* line 186, ../../scss/main.scss */
+/* line 190, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover i {
   cursor: pointer;
 }
-/* line 190, ../../scss/main.scss */
+/* line 194, ../../scss/main.scss */
 .my-drop-zone .file-upload-hover .progress-striped {
   position: absolute;
   left: 10%;
   width: 80%;
 }
 
-/* line 198, ../../scss/main.scss */
+/* line 202, ../../scss/main.scss */
 .nv-file-over {
   border: dotted 3px red;
 }
 
 /* Default class applied to drop zones on over */
-/* line 204, ../../scss/main.scss */
+/* line 208, ../../scss/main.scss */
 .another-file-over-class {
   border: dotted 3px green;
 }
 
-/* line 208, ../../scss/main.scss */
+/* line 212, ../../scss/main.scss */
 canvas {
   background-color: #f3f3f3;
   -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
@@ -8110,16 +8115,16 @@ canvas {
   width: 100%;
 }
 
-/* line 218, ../../scss/main.scss */
+/* line 222, ../../scss/main.scss */
 .modal-content .project-item {
   height: 200px;
 }
-/* line 221, ../../scss/main.scss */
+/* line 225, ../../scss/main.scss */
 .modal-content .project-item uploaded-image {
   height: 145px;
 }
 
-/* line 227, ../../scss/main.scss */
+/* line 231, ../../scss/main.scss */
 .project-item {
   list-style-type: none;
   display: inline-block;
@@ -8129,48 +8134,48 @@ canvas {
   border-radius: 2px;
   height: 300px;
 }
-/* line 236, ../../scss/main.scss */
+/* line 240, ../../scss/main.scss */
 .project-item img {
   height: 200px;
   width: 100%;
 }
-/* line 241, ../../scss/main.scss */
+/* line 245, ../../scss/main.scss */
 .project-item h2 {
   margin-top: 0;
 }
-/* line 244, ../../scss/main.scss */
+/* line 248, ../../scss/main.scss */
 .project-item h2 a {
   color: #333;
   font-size: 18px;
 }
 
-/* line 253, ../../scss/main.scss */
+/* line 257, ../../scss/main.scss */
 tags-input .tags .tag-item {
   background: #EFEFEF;
   border-radius: 1px;
   color: #333;
   padding: 0 8px;
 }
-/* line 260, ../../scss/main.scss */
+/* line 264, ../../scss/main.scss */
 tags-input .tags .tag-item.selected {
   background: #ACACAC;
 }
-/* line 266, ../../scss/main.scss */
+/* line 270, ../../scss/main.scss */
 tags-input .host {
   margin: 0;
 }
 
-/* line 272, ../../scss/main.scss */
+/* line 276, ../../scss/main.scss */
 .organization-logo uploaded-image div {
   background-position-x: 0;
 }
 
-/* line 277, ../../scss/main.scss */
+/* line 281, ../../scss/main.scss */
 uploaded-image, [uploaded-image] {
   height: 200px;
   display: block;
 }
-/* line 281, ../../scss/main.scss */
+/* line 285, ../../scss/main.scss */
 uploaded-image div, [uploaded-image] div {
   height: 100%;
   width: 100%;
@@ -8179,7 +8184,7 @@ uploaded-image div, [uploaded-image] div {
   background-size: contain;
 }
 
-/* line 290, ../../scss/main.scss */
+/* line 294, ../../scss/main.scss */
 .project-logo {
   width: 100px;
   height: 100px;
@@ -8187,149 +8192,149 @@ uploaded-image div, [uploaded-image] div {
   min-height: 100px;
 }
 
-/* line 297, ../../scss/main.scss */
+/* line 301, ../../scss/main.scss */
 .tags-container .tags {
   cursor: default;
   user-select: none;
 }
-/* line 301, ../../scss/main.scss */
+/* line 305, ../../scss/main.scss */
 .tags-container .tags .remove-button {
   display: none;
 }
-/* line 305, ../../scss/main.scss */
+/* line 309, ../../scss/main.scss */
 .tags-container .tags input {
   display: none;
 }
 
-/* line 310, ../../scss/main.scss */
+/* line 314, ../../scss/main.scss */
 .rating-container {
   text-align: center;
   margin: 50px 0;
 }
 
-/* line 319, ../../scss/main.scss */
+/* line 323, ../../scss/main.scss */
 .panel-body ul {
   padding: 0;
 }
-/* line 322, ../../scss/main.scss */
+/* line 326, ../../scss/main.scss */
 .panel-body ul li {
   height: 100px;
   list-style-type: none;
 }
-/* line 326, ../../scss/main.scss */
+/* line 330, ../../scss/main.scss */
 .panel-body ul li div {
   box-sizing: border-box;
   padding-top: 27.5px;
 }
-/* line 331, ../../scss/main.scss */
+/* line 335, ../../scss/main.scss */
 .panel-body ul li img {
   height: 75px;
 }
 
-/* line 338, ../../scss/main.scss */
+/* line 342, ../../scss/main.scss */
 .newsfeed ul {
   padding: 0;
 }
-/* line 341, ../../scss/main.scss */
+/* line 345, ../../scss/main.scss */
 .newsfeed ul li {
   list-style-type: none;
 }
 
-/* line 348, ../../scss/main.scss */
+/* line 352, ../../scss/main.scss */
 .resource-search-container form {
   margin-top: 50px;
 }
-/* line 352, ../../scss/main.scss */
+/* line 356, ../../scss/main.scss */
 .resource-search-container uploaded-image {
   height: 70px;
   display: block;
   width: 100%;
 }
 
-/* line 359, ../../scss/main.scss */
+/* line 363, ../../scss/main.scss */
 ul.resources {
   list-style-type: none;
   padding-left: 0;
   margin: 80px 0 50px 0;
 }
-/* line 364, ../../scss/main.scss */
+/* line 368, ../../scss/main.scss */
 ul.resources li {
   margin-bottom: 60px;
 }
-/* line 367, ../../scss/main.scss */
+/* line 371, ../../scss/main.scss */
 ul.resources li img {
   height: 64px;
   width: 64px;
 }
-/* line 372, ../../scss/main.scss */
+/* line 376, ../../scss/main.scss */
 ul.resources li h2 {
   position: relative;
   margin-top: 0;
   margin-bottom: 0;
 }
-/* line 378, ../../scss/main.scss */
+/* line 382, ../../scss/main.scss */
 ul.resources li .rating {
   margin-top: 4px;
 }
-/* line 382, ../../scss/main.scss */
+/* line 386, ../../scss/main.scss */
 ul.resources li .amount {
   font-size: 20px;
 }
-/* line 387, ../../scss/main.scss */
+/* line 391, ../../scss/main.scss */
 ul.resources li .organization .organization-name {
   font-size: 20px;
   margin-right: 12px;
 }
-/* line 392, ../../scss/main.scss */
+/* line 396, ../../scss/main.scss */
 ul.resources li .organization i {
   font-size: 12px;
 }
 
-/* line 399, ../../scss/main.scss */
+/* line 403, ../../scss/main.scss */
 .on-hover {
   opacity: 0;
   transition: .2s ease opacity;
 }
 
-/* line 405, ../../scss/main.scss */
+/* line 409, ../../scss/main.scss */
 .hover-toggle:hover .on-hover {
   opacity: 1;
 }
 
-/* line 412, ../../scss/main.scss */
+/* line 416, ../../scss/main.scss */
 .modal-apply dl.dl-horizontal dt, .modal-claim dl.dl-horizontal dt {
   width: 200px;
   text-align: left;
 }
-/* line 418, ../../scss/main.scss */
+/* line 422, ../../scss/main.scss */
 .modal-apply h4, .modal-claim h4 {
   margin: 20px 0 10px 0;
 }
-/* line 422, ../../scss/main.scss */
+/* line 426, ../../scss/main.scss */
 .modal-apply ul.resources, .modal-claim ul.resources {
   margin: 30px 0 0 0;
 }
-/* line 426, ../../scss/main.scss */
+/* line 430, ../../scss/main.scss */
 .modal-apply li.resource, .modal-claim li.resource {
   padding: 10px 0;
   margin-bottom: 20px;
 }
-/* line 431, ../../scss/main.scss */
+/* line 435, ../../scss/main.scss */
 .modal-apply li.resource.selected, .modal-claim li.resource.selected {
   background: #D3D3D3;
 }
 
-/* line 437, ../../scss/main.scss */
+/* line 441, ../../scss/main.scss */
 .modal .project-item {
   width: 25%;
   margin: 0 1.25%;
 }
-/* line 442, ../../scss/main.scss */
+/* line 446, ../../scss/main.scss */
 .modal .project-item h2 a {
   font-size: 14px;
 }
 
-/* line 449, ../../scss/main.scss */
+/* line 453, ../../scss/main.scss */
 .approved {
   position: absolute;
   height: 100px;
@@ -8337,12 +8342,12 @@ ul.resources li .organization i {
   top: -140px;
 }
 
-/* line 456, ../../scss/main.scss */
+/* line 460, ../../scss/main.scss */
 .dropdown-toggle {
   border-radius: 0 !important;
 }
 
-/* line 461, ../../scss/main.scss */
+/* line 465, ../../scss/main.scss */
 .dropdown .badge {
   background-color: #C40000;
   top: -1px;
@@ -8350,28 +8355,28 @@ ul.resources li .organization i {
   left: 12px;
 }
 
-/* line 469, ../../scss/main.scss */
+/* line 473, ../../scss/main.scss */
 .highlight, .highlight td {
   background-color: #FFF37B !important;
 }
 
-/* line 473, ../../scss/main.scss */
+/* line 477, ../../scss/main.scss */
 .error-container {
   width: 80%;
   max-width: 800px;
   margin: 10px auto 0 auto;
 }
-/* line 478, ../../scss/main.scss */
+/* line 482, ../../scss/main.scss */
 .error-container .alert {
   border-radius: 0;
 }
 
-/* line 483, ../../scss/main.scss */
+/* line 487, ../../scss/main.scss */
 .spacer-top {
   margin-top: 16px;
 }
 
-/* line 487, ../../scss/main.scss */
+/* line 491, ../../scss/main.scss */
 .angular-google-map-container {
   height: 400px;
 }

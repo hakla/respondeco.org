@@ -1,11 +1,6 @@
 <div>
 
-    <h1> {{ 'resourcerequest.title' | translate }} [{{organization.name}}]
-        <button class="btn btn-link pull-right"
-                ng-click="redirectToOrganization()">
-            {{ 'resourcerequest.backButton' | translate }}
-        </button>
-    </h1>
+    <h1>{{ 'resourcemessages.title' | translate: {OrganizationName:organization.name} }}</h1>
 
     <div id="content">
         <ul id="tabs" class="nav nav-tabs" style="border: none;">
