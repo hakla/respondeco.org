@@ -52,19 +52,14 @@ public class SocialMediaController {
     public ResponseEntity<?> connectFacebook(){
 
         ResponseEntity<?> responseEntity = new ResponseEntity<Object>(HttpStatus.OK);
-        FacebookConnectionFactory connectionFactory = new FacebookConnectionFactory("801386343241847","0ee624ec572168e2c8af19e4fd870cab");
-        OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
-        OAuth2Parameters params = new OAuth2Parameters();
-        params.setRedirectUri("http://localhost:9000/#/social-networks");
-        params.setScope("publish_actions");
 
-        String authorizeUrl = oauthOperations.buildAuthorizeUrl(params);
+        String authorizeUrl = socialMediaService.createFacebookAuthorizationURL();
         //angular needs a wrapper for strings
         StringDTO url = new StringDTO();
         url.setString(authorizeUrl);
 
         responseEntity = new ResponseEntity<>(url, HttpStatus.OK);
-        log.debug("AUTHORIZEURL: " + authorizeUrl);
+        log.debug("Facebook AuthorizationURL: " + authorizeUrl);
 
         return responseEntity;
     }
@@ -79,18 +74,12 @@ public class SocialMediaController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createConnection(@RequestParam String code) {
-       // log.debug("TESTTT "+ code.getString());
-
-        ResponseEntity<?> responseEntity = new ResponseEntity<Object>(HttpStatus.OK);
-        FacebookConnectionFactory connectionFactory = new FacebookConnectionFactory("801386343241847","0ee624ec572168e2c8af19e4fd870cab");
-        OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
+    public ResponseEntity<?> createFacebookConnection(@RequestBody StringDTO code) {
+        log.debug("REST request for creating a new facebook Connection with code: "+ code.getString());
 
 
-        AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, "http://localhost:9000/#/social-networks", null);
-        Connection<Facebook> connection = connectionFactory.createConnection(accessGrant);
+        Connection<Facebook> connection = socialMediaService.createFacebookConnection(code.getString());
 
-        System.out.println("DISPLAYNAME: " + connection.getApi().feedOperations().updateStatus("hallo ich bin gerade auf respondeco.org"));
 
         return new ResponseEntity<Connection<Facebook>>(connection, HttpStatus.OK);
     }

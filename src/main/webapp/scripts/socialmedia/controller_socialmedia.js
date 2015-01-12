@@ -18,9 +18,9 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 		console.log(url);
 		console.log("CODE");
 		console.log($scope.code.string);
-		//SocialMedia.connectFacebookCreate($scope.code, function(response) {
-		//	console.log(response);
-		//});
+		SocialMedia.connectFacebookCreate($scope.code, function(response) {
+			console.log(response);
+		});
 
 	}
 

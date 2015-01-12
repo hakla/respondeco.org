@@ -47,6 +47,7 @@ spring:
         facebook:
             appId: 801386343241847
             appSecret: 0ee624ec572168e2c8af19e4fd870cab
+            redirectUrl: http://localhost:9000/#/social-networks
 
 metrics:
     jmx.enabled: true
