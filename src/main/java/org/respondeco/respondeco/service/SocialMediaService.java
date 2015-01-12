@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
@@ -67,7 +68,23 @@ public class SocialMediaService {
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(accessGrant);
         log.debug("FacebookConnection: " + connection.toString());
 
-        connection.getApi().feedOperations().updateStatus("hallo ich bin gerade auf respondeco.org");
+
+
+        //connection.getApi().feedOperations().updateStatus("hallo ich bin gerade auf respondeco.org");
+
+        ConnectionData connectionData = connection.createData();
+        log.debug("CONNECTION: ");
+        log.debug("ACCESSTOKEN: "+connectionData.getAccessToken());
+        log.debug("PROVIDERID: " + connectionData.getProviderId());
+        log.debug("PROVIDERUSERID: "+connectionData.getProviderUserId());
+        log.debug("SECRET: "+connectionData.getRefreshToken());
+        log.debug("EXPIRATIONTIME: " + connectionData.getExpireTime());
+
+        ConnectionData newConnectionData = new ConnectionData(null,null,null
+            ,null,null, connectionData.getAccessToken(), null, null, null);
+
+        Connection<Facebook> newConn = facebookConnectionFactory.createConnection(newConnectionData);
+        newConn.getApi().feedOperations().updateStatus("YO TEST");
 
         return connection;
     }
