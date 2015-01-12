@@ -83,12 +83,6 @@ respondecoApp
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 })
-                .when('/social-networks', {
-                    templateUrl: 'views/social-networks.html',
-                    access: {
-                        authorizedRoles: [USER_ROLES.user]
-                    }
-                })
                 .otherwise({
                     templateUrl: 'views/main.html',
                     controller: 'MainController',
