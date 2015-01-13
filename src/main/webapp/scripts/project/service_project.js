@@ -16,7 +16,7 @@ respondecoApp.factory('Project', function($resource, $http) {
         'getNearProjects': {method: 'GET', isArray:true, url: 'app/rest/nearprojects'},
         'follow' : {method: 'POST', url: 'app/rest/projects/:id/follow'},
         'unfollow' : {method: 'DELETE', url: 'app/rest/projects/:id/unfollow'},
-        'followingState' : {method: 'GET', url: 'app/rest/projects/:id/followingstate'},
+        'followingState' : {method: 'GET', url: 'app/rest/projects/:id/followingstate', ignoreAuthModule: true},
         'deletePosting' : {method: 'DELETE', url: 'app/rest/projects/:id/postings/:pid'},
         'query': {method: 'GET', url: 'app/rest/projects'}
     });

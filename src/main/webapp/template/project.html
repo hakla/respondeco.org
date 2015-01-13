@@ -1,11 +1,16 @@
-<div class="project-item col-md-3" ng-click="projectClicked(project, $event)">
-    <a>
-        <uploaded-image name="project.logo.id" />
-    </a>
-    <h2>
-        <a>{{project.name}}</a>
-    </h2>
-    <div ng-hide="tags == false">
-      <span>Tags:</span><span ng-repeat="tag in project.propertyTags">{{ tag.name }},</span>
+<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+  <div class="project-item" ng-click="projectClicked(project, $event)">
+    <uploaded-image name="project.logo.id"></uploaded-image>
+    <div class="content">
+      <h2>
+          {{project.name}}
+      </h2>
+      <div ng-hide="tags == false">
+        <p>
+          <strong translate="project.tags">Tags</strong>
+        </p>
+        <span class="badge" ng-repeat="tag in project.propertyTags">{{ tag.name }}</span>
+      </div>
     </div>
+  </div>
 </div>

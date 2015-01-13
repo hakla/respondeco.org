@@ -8,12 +8,11 @@
         <p th:text="#{email.activation.greeting(${user.login})}">
             Hi
         </p>
-        <p th:text="#{email.activation.text1}">
+        <p th:text="#{email.invitation.text1}">
             Sie wurden eingeladen respondeco beizutreten! Um die Registrierung abzuschließen klicken Sie bitte auf den Aktivierungslink.
         </p>
         <p>
-            <a th:href="@{|${baseUrl}/#/activateInvitation?key=${user.activationKey}&amp;email=${user.login}|}"
-               th:text="|${user.login}|">Aktivierungslink</a>
+            <a th:href="@{|${baseUrl}/#/activateInvitation?key=${user.activationKey}&amp;email=${user.login}|}">Aktivierungslink</a>
         </p>
         <p>
             <span th:text="#{email.activation.text2}">lg</span>

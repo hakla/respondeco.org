@@ -12,6 +12,7 @@
     color: #f8f8f8;
     background: url(../images/intro-bg.jpg) no-repeat center center;
     background-size: cover;
+    height: 100%;
 }
 
 .intro-message {

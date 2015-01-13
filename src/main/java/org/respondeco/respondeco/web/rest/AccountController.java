@@ -121,20 +121,18 @@ public class AccountController {
                 responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            try {
-                Organization organization = organizationService.registerOrganization(registerDTO.getOrgname(),
-                    registerDTO.getEmail(), registerDTO.getPassword(), registerDTO.getNpo(), registerDTO.getLangKey());
-                final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
-                String content = createHtmlContentFromTemplate(organization.getOwner(), locale, request,
-                    response, "activationEmail");
-                mailService.sendActivationEmail(organization.getEmail(), content, locale);
-                responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-            } catch (OrganizationAlreadyExistsException e) {
-                responseEntity = ErrorHelper.buildErrorResponse(e);
-            }
-        }
-        return responseEntity;
+            user = userService.createUserInformation(registerDTO.getEmail().toLowerCase(),
+                registerDTO.getPassword(), null, null, null, registerDTO.getEmail().toLowerCase(),
+                "UNSPECIFIED", null, registerDTO.getLangKey(), null);
 
+            final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
+            String content = createHtmlContentFromTemplate(user, locale, request,
+                response, "activationEmail");
+            mailService.sendActivationEmail(registerDTO.getEmail(), content, locale);
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        }
+
+        return responseEntity;
     }
     /**
      * GET  /rest/activate -> activate the registered user.
@@ -175,7 +173,7 @@ public class AccountController {
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser != null) {
             List<String> fields = Arrays.asList("id", "login", "title", "gender", "firstName", "lastName", "email",
-                "description", "langKey", "roles", "organization", "profilePicture");
+                "description", "langKey", "roles", "organization", "profilePicture", "invited");
             UserDTO responseDTO = UserDTO.fromEntity(currentUser, fields);
             responseEntity = new ResponseEntity<UserDTO>(responseDTO, HttpStatus.OK);
         } else {

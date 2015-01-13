@@ -14,6 +14,22 @@ body {
     border-radius: 0;
 }
 
+.container-landing-page {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+
+    /* height of the navbar (50px height + 1px border-bottom) */
+    margin-top: -51px;
+
+    [ng-view] {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+    }
+}
+
 [ng-view].well {
     margin-top: 10px;
 }
@@ -84,6 +100,10 @@ ul#strength {
  ************************/
 .navbar {
     margin-bottom: 0;
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
 }
 
 /************************
@@ -126,27 +146,10 @@ img {
 
 .organization {
     .organization-item {
-        list-style-type: none;
-        display: inline-block;
-        height: 255px;
-        margin: 25px 75px 25px 0;
-        padding: 10px;
-        background-color: #FFF;
-        border: 1px solid #e3e3e3;
-        border-radius: 2px;
-
-        uploaded-image {
-            display: block;
-            width: 200px;
-        }
+        min-height: inherit;
 
         h2 {
-            margin-top: 0;
-
-            a {
-                color: #333;
-                font-size: 18px;
-            }
+            margin: 10px 0;
         }
     }
 }
@@ -230,25 +233,34 @@ canvas {
 
 .project-item {
     list-style-type: none;
-    display: inline-block;
-    padding: 10px;
     background-color: #FFF;
     border: 1px solid #e3e3e3;
     border-radius: 2px;
-    height: 300px;
+    min-height: 300px;
+
+    .content {
+        padding: 10px;
+    }
 
     img {
         height: 200px;
         width: 100%;
     }
 
-    h2 {
-        margin-top: 0;
-
-        a {
-            color: #333;
-            font-size: 18px;
+    uploaded-image {
+        div {
+            background-size: cover;
         }
+    }
+
+    h2 {
+        margin: 5px 0 20px 0;
+        font-size: 18px;
+    }
+
+    .badge {
+        white-space: inherit;
+        margin: 1px;
     }
 }
 
@@ -349,10 +361,6 @@ uploaded-image, [uploaded-image] {
 }
 
 .resource-search-container {
-    form {
-        margin-top: 50px;
-    }
-
     uploaded-image {
         height: 70px;
         display: block;
@@ -363,7 +371,7 @@ uploaded-image, [uploaded-image] {
 ul.resources {
     list-style-type: none;
     padding-left: 0;
-    margin: 80px 0 50px 0;
+    margin-bottom: 50px;
 
     li {
         margin-bottom: 60px;
@@ -477,10 +485,11 @@ ul.resources {
 .error-container {
     width: 80%;
     max-width: 800px;
-    margin: 10px auto 0 auto;
+    margin: 0 auto;
 
     .alert {
         border-radius: 0;
+        margin: 10px 0;
     }
 }
 
@@ -489,3 +498,24 @@ ul.resources {
 }
 
 .angular-google-map-container { height: 400px; }
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 50px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+h4 {
+    font-size: 18px;
+}
+
+.form-search {
+    margin-bottom: 50px;
+}

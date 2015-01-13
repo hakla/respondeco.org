@@ -1,16 +1,25 @@
-<div class="organization">
-
-    <h2 translate='global.menu.organization'>Organizations</h2>
-
-    <div class="table-responsive">
-        <ul>
-            <li class="organization-item" ng-repeat="organization in organizations">
-                <a ng-click="redirectToOrganization(organization.id)">
+<div class="organization clearfix">
+    <div class="col-xs-12">
+        <h1 translate='global.menu.organization'>Organizations</h1>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat-start="organization in organizations">
+                <div class="project-item organization-item" ng-click="redirectToOrganization(organization.id)">
                     <uploaded-image name="organization.logo.id"></uploaded-image>
-                </a>
-                <h2><a ng-click="redirectToOrganization(organization.id)">{{organization.name}}</a>
-                </h2>
-            </li>
-        </ul>
+                    <div class="content">
+                        <h2>{{organization.name}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="visible-xs clearfix"></div>
+            <div class="visible-xs spacer-top"></div>
+            <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
+            <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
+            <div class="visible-md clearfix" ng-if="$index % 3 == 2"></div>
+            <div class="visible-md spacer-top" ng-if="$index % 3 == 2"></div>
+            <div class="visible-lg clearfix" ng-if="$index % 4 == 3"></div>
+            <div class="visible-lg spacer-top" ng-if="$index % 4 == 3"></div>
+            <div ng-repeat-end></div>
+        </div>
     </div>
 </div>

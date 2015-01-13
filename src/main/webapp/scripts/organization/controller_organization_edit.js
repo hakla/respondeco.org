@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('OrganizationControllerEdit', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest, TextMessage) {
+respondecoApp.controller('OrganizationControllerEdit', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest, TextMessage, AuthenticationSharedService, $rootScope) {
 
     var id = $routeParams.id;
     var isNew = id === 'new';
@@ -33,6 +33,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         // get the current logged in user and set the organization owner to it
         Account.get(null, function(account) {
             $scope.organization.owner = account.login;
+            $scope.organization.email = account.email;
         });
     }
 
@@ -52,6 +53,12 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         Organization[isNew ? 'save' : 'update'](organization,
             function() {
                 $scope.clear();
+
+                // Set global organization, otherwise on routeChange the "Create an organization" dialog would be shown
+                $rootScope._account.organization = {};
+
+                // Refresh the account of the currently logged in user
+                AuthenticationSharedService.refresh();
             },
             function(resp) {
                 console.error(resp.data.message);
@@ -95,7 +102,13 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
                 id: id
             },
             function() {
-                $scope.clear();
+                $location.path('organization');
+
+                // Set global organization, otherwise on routeChange the "Create an organization" dialog would be shown
+                $rootScope._account.organization = null;
+
+                // Refresh the account of the currently logged in user
+                AuthenticationSharedService.refresh();
             });
     };
 
@@ -181,6 +194,12 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         $scope.update(id);
 
         // the name of an organization cannot be changed after creation --> show a tooltip
-        $scope.tooltip_notChangeable = "global.notChangeable";
+        $scope.tooltip_notChangeable = "global.tooltip.not-changeable";
+    } else {
+        // the name of an organization cannot be changed after creation --> show a tooltip
+        $scope.tooltip_notChangeable = "global.tooltip.not-changeable-init";
     }
+
+    // the name of an organization cannot be changed after creation --> show a tooltip
+    $scope.tooltip_notChangeable_email = "global.tooltip.not-changeable-email";
 });
