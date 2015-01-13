@@ -3,8 +3,9 @@ package org.respondeco.respondeco.service;
 import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.SocialMediaRepository;
+import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
+import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.respondeco.respondeco.web.rest.SocialMediaController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -12,8 +13,6 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.api.plus.moments.Moment;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
@@ -22,7 +21,6 @@ import org.springframework.social.oauth1.OAuthToken;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
-import org.springframework.social.oauth2.OAuth2Template;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
@@ -93,7 +91,12 @@ public class SocialMediaService {
      * @param code code is created after the user grants permission for our app to use his facebook account.
      *             this code is then used to exchange it for the users access token from facebook
      */
-    public Connection<Facebook> createFacebookConnection(String code) {
+    public SocialMediaConnection createFacebookConnection(String code) throws OperationForbiddenException{
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
         OAuth2Operations oauthOperations = facebookConnectionFactory.getOAuthOperations();
 
         //change code for AccessGrant Token
@@ -101,55 +104,47 @@ public class SocialMediaService {
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(accessGrant);
         log.debug("FacebookConnection: " + connection.toString());
 
-
-
-        //connection.getApi().feedOperations().updateStatus("hallo ich bin gerade auf respondeco.org");
-
         ConnectionData connectionData = connection.createData();
-        log.debug("CONNECTION: ");
-        log.debug("ACCESSTOKEN: "+connectionData.getAccessToken());
-        log.debug("PROVIDERID: " + connectionData.getProviderId());
-        log.debug("PROVIDERUSERID: "+connectionData.getProviderUserId());
-        log.debug("SECRET: "+connectionData.getRefreshToken());
-        log.debug("EXPIRATIONTIME: " + connectionData.getExpireTime());
 
-        ConnectionData newConnectionData = new ConnectionData(null,null,null
-            ,null,null, connectionData.getAccessToken(), null, null, null);
+        SocialMediaConnection socialMediaConnection = new SocialMediaConnection();
+        socialMediaConnection.setProvider("facebook");
+        socialMediaConnection.setToken(connectionData.getAccessToken());
+        socialMediaConnection.setUser(user);
+        socialMediaConnection = socialMediaRepository.save(socialMediaConnection);
 
-        Connection<Facebook> newConn = facebookConnectionFactory.createConnection(newConnectionData);
-        newConn.getApi().feedOperations().updateStatus("YO TEST");
-
-        return connection;
+        return socialMediaConnection;
     }
 
 
     /**
-     * Create Authorization URL for the client to allow access for respondeco
-     * @return AuthorizationURL as String
-     *
-    public String createGoogleAuthorizationURL() {
-        OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-        OAuth2Parameters params = new OAuth2Parameters();
-        params.setRedirectUri(env.getProperty("spring.social.google.redirectUrl"));
-        params.setScope("https://www.googleapis.com/auth/plus.login");
+     * Creates a new post on facebook on behalf of the user if
+     * his account is connected to facebook.
+     * @param post
+     * @throws OperationForbiddenException
+     */
+    public String createFacebookPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException {
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
 
-        String authorizationURL = oauthOperations.buildAuthenticateUrl(params);
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
+        if(socialMediaConnection == null) {
+            throw new NoSuchSocialMediaConnectionException("no connection found for user with id: " + user.getId());
+        }
 
-        return authorizationURL;
+        //create connection with help of socialMediaConnection
+        ConnectionData connectionData = new ConnectionData(null,null,null
+            ,null,null, socialMediaConnection.getToken(), null, null, null);
+
+        Connection<Facebook> connection = facebookConnectionFactory.createConnection(connectionData);
+        String status = connection.getApi().feedOperations().updateStatus(post);
+
+        return status;
     }
 
 
-    public Connection<Google> createGoogleConnection(String code) {
 
-        OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-        AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, env.getProperty("spring.social.google.redirectUrl"), null);
-        Connection<Google> connection = googleConnectionFactory.createConnection(accessGrant);
-
-        connection.getApi().plusOperations().
-
-
-    }
-    */
 
     /**
      * Creates the Authorization URL for the user if he wants to connect his respondeco account
@@ -175,9 +170,22 @@ public class SocialMediaService {
      * @param oauthVerifier used to verify the token
      * @return Returns a twitter connection, therefor our app can interact with the api on behalf of the user
      */
-    public Connection<Twitter> createTwitterConnection(String token, String oauthVerifier)
-        throws OperationForbiddenException{
+    public SocialMediaConnection createTwitterConnection(String token, String oauthVerifier)
+        throws OperationForbiddenException, ConnectionAlreadyExistsException{
 
+        //check if user is logged in
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
+        //check if connection already exists
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
+        if(socialMediaConnection != null) {
+            throw new ConnectionAlreadyExistsException("connection for user " + user.getId() + " with twitter already exists");
+        }
+
+        //if no connection exists -> create new connection with oauth1
         OAuthToken requestToken = new OAuthToken(token,null);
         OAuth1Operations oauthOperations = twitterConnectionFactory.getOAuthOperations();
         OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
@@ -185,18 +193,12 @@ public class SocialMediaService {
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(accessToken);
 
-        //persist connection
-        User user = userService.getUserWithAuthorities();
-        if(user == null) {
-            throw new OperationForbiddenException("no current user found");
-        }
-
-        SocialMediaConnection socialMediaConnection = new SocialMediaConnection();
+        socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("twitter");
         socialMediaConnection.setToken(accessToken.getValue());
         socialMediaConnection.setSecret(accessToken.getSecret());
         socialMediaConnection.setUser(user);
-        socialMediaRepository.save(socialMediaConnection);
+        socialMediaConnection = socialMediaRepository.save(socialMediaConnection);
 
         //try to post
         //SocialMediaConnection c = socialMediaRepository.getOne(0L);
@@ -207,16 +209,18 @@ public class SocialMediaService {
 
         //newCon.getApi().timelineOperations().updateStatus("asdfasdf");
 
-        return connection;
+        return socialMediaConnection;
     }
 
 
     /**
-     *
-     * @return
-     * @throws OperationForbiddenException
+     * Creates a new Tweet on Twitter if the user account is connected with Twitter.
+     * @param post message to post.
+     * @return created Tweet object.
+     * @throws OperationForbiddenException if user is not logged in.
+     * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
      */
-    public String createTwitterPost() throws OperationForbiddenException {
+     public Tweet createTwitterPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException {
         User user = userService.getUserWithAuthorities();
 
         if(user == null) {
@@ -225,16 +229,16 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
         if(socialMediaConnection == null) {
-
+            throw new NoSuchSocialMediaConnectionException("no connection found for user with id: " + user.getId());
         }
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(new ConnectionData(
             socialMediaConnection.getProvider(), null, null, null, null, socialMediaConnection.getToken(), socialMediaConnection.getSecret(), null, null)
         );
 
-        Tweet tweet = connection.getApi().timelineOperations().updateStatus("ADASFASFASD");
+        Tweet tweet = connection.getApi().timelineOperations().updateStatus(post);
 
-        return tweet.getText();
+        return tweet;
     }
 
 
@@ -254,5 +258,32 @@ public class SocialMediaService {
         return connections;
     }
 
+    /**
+     * Create Authorization URL for the client to allow access for respondeco
+     * @return AuthorizationURL as String
+     *
+    public String createGoogleAuthorizationURL() {
+    OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+    OAuth2Parameters params = new OAuth2Parameters();
+    params.setRedirectUri(env.getProperty("spring.social.google.redirectUrl"));
+    params.setScope("https://www.googleapis.com/auth/plus.login");
+
+    String authorizationURL = oauthOperations.buildAuthenticateUrl(params);
+
+    return authorizationURL;
+    }
+
+
+    public Connection<Google> createGoogleConnection(String code) {
+
+    OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+    AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, env.getProperty("spring.social.google.redirectUrl"), null);
+    Connection<Google> connection = googleConnectionFactory.createConnection(accessGrant);
+
+    connection.getApi().plusOperations().
+
+
+    }
+     */
 
 }

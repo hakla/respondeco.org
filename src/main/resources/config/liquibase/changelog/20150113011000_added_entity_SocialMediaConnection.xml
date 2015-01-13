@@ -15,10 +15,10 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>	
-            <column name="user_id" type="bigint"/>
-			<column name="provider" type="varchar(50)"/>
+            <column name="user_id" type="bigint not null"/>
+			<column name="provider" type="varchar(50) not null"/>
             <column name="token" type="varchar(255) not null"/>
-			<column name="secret" type="varchar(255) not null"/>
+			<column name="secret" type="varchar(255)"/>
 
              <column name="created_by" type="varchar(50)" defaultValue="system">
                 <constraints nullable="false"/>

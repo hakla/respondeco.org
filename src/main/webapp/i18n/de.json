@@ -695,9 +695,14 @@
             }
         }
     },
-    "socialMedia": {
+    "socialmedia": {
         "heading": "Verbunde soziale Netzwerke",
         "connect": "Verbinden",
-        "disconnect": "Verbindung löschen"
+        "disconnect": "Verbindung löschen",
+        "error": {
+            "twitter": {
+                "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!"
+            }
+        }
     }
 }

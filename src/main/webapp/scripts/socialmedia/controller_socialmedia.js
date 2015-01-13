@@ -3,21 +3,35 @@
 respondecoApp.controller('SocialMediaController', function($scope, $location, $routeParams, $window, Resource, Account, SocialMedia) {
 
 	$scope.code = {string: null}
+	$scope.post = {string: null}
 
 	$scope.twitterConnected = false;
+	$scope.facebookConnected = false;
 
+	/**
+	 *	Gets all active connection for the currently logged in user
+	 *	and if the connection for the specific provider exists, it
+	 *	sets the connected variable for the appropriate provider to true.	
+	 */
 	$scope.getConnections = function() {
 		SocialMedia.getConnections(function(response) {
 			response.forEach(function(connection) {
 				if(connection.provider === 'twitter') {
 					$scope.twitterConnected = true;
+				} else if(connection.provider === 'facebook') {
+					$scope.facebookConnected = true;
 				}
+
 			});
 		});
 	};
 
+	/**
+	 *	Calls connectFacebook from the SocialMedia service and redirects
+	 *	the user to facebook, where he can grant permission for
+	 *	respondeco.
+	 */
 	$scope.connectFacebook = function() {
-		console.log("click");
 		SocialMedia.connectFacebook(function(redirectURL) {
 			console.log(redirectURL.string);
 			$window.location.href = redirectURL.string;
@@ -31,6 +45,11 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 		})
 	};
 
+	/**
+	 *	Calls connectTwitter from the SocialMedia service and redirects
+	 *	the user to Twitter, where he can grant permission for
+	 *	respondeco.
+	 */
 	$scope.connectTwitter = function() {
 		SocialMedia.connectTwitter(function(redirectURL) {
 			console.log(redirectURL.string);
@@ -38,35 +57,78 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 		})
 	};
 
+	/**
+	 * Disconnects the users account from Twitter
+	 */
 	$scope.disconnectTwitter = function() {
 		//TODO
 		$scope.twitterConnected = false;
 	}
 
-	if($location.absUrl().indexOf('?code') > 0) {
-		var url = $location.absUrl();
-		$scope.code.string = url.substring(url.indexOf('?code')+6, url.length-17)
-		console.log(url);
-		console.log("CODE");
-		console.log($scope.code.string);
-		SocialMedia.connectFacebookCreate($scope.code, function(response) {
+
+	/**
+	 * Creates a new twitter post on behalf of the user
+	 */
+	$scope.createTwitterPost = function(post) {
+		$scope.post.string = post;
+		SocialMedia.createTwitterPost($scope.post, function(response) {
 			console.log(response);
-		});
+		})
 	};
 
-
-	if(Respondeco.Helpers.Url.param("oauth_token") !== undefined) {
-		var token = Respondeco.Helpers.Url.param("oauth_token");
-		var verifier = Respondeco.Helpers.Url.param("oauth_verifier");
-
-		var request = {token: token, verifier: verifier};
-
-		SocialMedia.createTwitterConnection(request, function(response) {
+	/**
+	 * Creates a new facebook post on behalf of the user
+	 */
+	$scope.createFacebookPost = function() {
+		var post = 'Ich habe meinen Facebook-Account gerade mit Respondeco.org verbunden!' ;
+		SocialMedia.createFacebookPost({string: post}, function(response) {
 			console.log(response);
-		});
+		})
+	}
+
+	/**
+	 * Used for authorization via OAuth. Therefor the controller checks if
+	 * the url contains a parameter which will be sent to the server for
+	 * OAuth. Part of OAuth dance.
+	 */
+	$scope.checkForRedirectParams = function() {
+
+		// used for facebook after user grants permission and facebook redirects
+		if(Respondeco.Helpers.Url.param("code") !== undefined) {
+			var url = $location.absUrl();
+			$scope.code.string = Respondeco.Helpers.Url.param("code");
+			SocialMedia.connectFacebookCreate($scope.code, function(response) {
+				console.log(response);
+
+				$scope.shareConnectionModal();
+			});
+		};
+
+		// used for twitter after user grants permission and twitter redirects
+		if(Respondeco.Helpers.Url.param("oauth_token") !== undefined) {
+			var token = Respondeco.Helpers.Url.param("oauth_token");
+			var verifier = Respondeco.Helpers.Url.param("oauth_verifier");
+
+			var request = {token: token, verifier: verifier};
+
+			SocialMedia.createTwitterConnection(request, function(response) {
+				console.log(response);
+
+				//update connections
+				$scope.getConnections();
+
+				$location.search( 'oauth_token', null );
+				$scope.shareConnectionModal();
+
+			});
+		};
 	};
+	
+	$scope.shareConnectionModal = function() {
+        $('#shareConnectionModal').modal('show');
+    }
 
-
+	$scope.checkForRedirectParams();
 	$scope.getConnections();
 
 });

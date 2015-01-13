@@ -7,6 +7,8 @@ respondecoApp.factory('SocialMedia', function ($resource) {
 		'connectFacebookCreate' : {method: 'POST', url: 'app/rest/connect/facebook/createconnection'},
 		'connectGoogle' : {method: 'GET', url: 'app/rest/connect/google'},
 		'connectTwitter' : {method: 'GET', url: 'app/rest/connect/twitter'},
-		'createTwitterConnection' : {method: 'POST', url: 'app/rest/connect/twitter/createconnection'}
+		'createTwitterConnection' : {method: 'POST', url: 'app/rest/connect/twitter/createconnection'},
+		'createTwitterPost' : {method: 'POST', url: 'app/rest/socialmedia/twitter/post'},
+		'createFacebookPost' : {method: 'POST', url: 'app/rest/socialmedia/facebook/post'}
 	});
 });
