@@ -92,7 +92,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		});
 	};
 
-	$scope.selectProject = function(project, $event) {
+	$scope.selectProject = function(project) {
 		if (project.initialProject == null || project.initialProject === false) {
 			$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
 				$scope.showRequirements = true;
@@ -167,45 +167,51 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
             $scope.loadResourceData();
 		});
 	};
-    /**
-     * get the right list for the resource match data
-     * @param data
-     */
-    function parseResources(data){
-        for(var i = 0;i < data.length;i++){
-            var translateData = {
-                RequirementName: data[i].resourceRequirement.name,
-                OfferName: data[i].resourceOffer.name
-            };
-            if(data[i].matchDirection == "ORGANIZATION_OFFERED"){
-                translateData.id = data[i].organization.id;
-                translateData.Name = data[i].organization.name;
-                //manually translate the data and use html save wrapper. Do not forget: HTML should have ng-bind-html tag
-                data[i].text = $sce.trustAsHtml($translate("resourcemessages.apply.text", translateData));
-                if(data[i].accepted != null){
-                    $scope.oldResourceMessages.push(data[i]);
-                }else {
-                    $scope.applies.push(data[i]);
-                }
-            } else{
-                translateData.id = data[i].project.id;
-                translateData.Name = data[i].project.name;
-                data[i].text = $sce.trustAsHtml($translate("resourcemessages.request.text", translateData));
-                if(data[i].accepted != null){
-                    $scope.oldResourceMessages.push(data[i]);
-                }else {
-                    $scope.requests.push(data[i]);
-                }
-            }
-        }
-    }
 
+    /**
+     * Load all resource requests that belongs to the organization
+     * Applies and Claims!
+     */
     $scope.loadResourceData = function(){
         Organization.getResourceRequests({id:$scope.orgId}, function(data) {
             $scope.requests.length = 0;
             $scope.applies.length = 0;
             $scope.oldResourceMessages.length = 0;
-            parseResources(data);
+            var locKey = null,
+                translateData = null,
+                id = null,
+                Name = null;
+            for(var i = 0;i < data.length;i++){
+                if(data[i].matchDirection == "ORGANIZATION_OFFERED"){
+                    id = data[i].organization.id;
+                    Name = data[i].organization.name;
+                    locKey = "resourcemessages.apply.text";
+                    //if accepted is true or false, the claim or apply has been already answered
+                    if(data[i].accepted != null){
+                        $scope.oldResourceMessages.push(data[i]);
+                    }else {
+                        $scope.applies.push(data[i]);
+                    }
+                } else{
+                    id = data[i].project.id;
+                    Name = data[i].project.name;
+                    locKey = "resourcemessages.request.text";
+                    //if accepted is true or false, the claim or apply has been already answered
+                    if(data[i].accepted != null){
+                        $scope.oldResourceMessages.push(data[i]);
+                    }else {
+                        $scope.requests.push(data[i]);
+                    }
+                }
+                translateData = {
+                    RequirementName: data[i].resourceRequirement.name,
+                    OfferName: data[i].resourceOffer.name,
+                    id: id,
+                    Name: Name
+                };
+                //manually translate the data and use html save wrapper. Do not forget: HTML should have ng-bind-html tag
+                data[i].text = $sce.trustAsHtml($translate(locKey, translateData));
+            }
         });
     };
 
@@ -315,7 +321,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
     // tabs for resource apply/claim/old data
 
-    $('#tabs').tab();
+    $scope.loadTabs = function(){
+        var t = $("#tabs");
+        if(t && t.tab) {
+            t.tab();
+        }
+    }
+    $scope.loadTabs();
 
     $scope.tabs = [{
         title: $translate('resourcemessages.apply.tabtitle'),
