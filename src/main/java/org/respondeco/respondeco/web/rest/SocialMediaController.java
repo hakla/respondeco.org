@@ -4,8 +4,10 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import com.codahale.metrics.annotation.Timed;
+import org.jadira.usertype.dateandtime.joda.columnmapper.StringColumnDateTimeZoneWithOffsetMapper;
 import org.respondeco.respondeco.service.SocialMediaService;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
+import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
+import org.springframework.social.twitter.api.Twitter;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -51,12 +54,11 @@ public class SocialMediaController {
     @Timed
     public ResponseEntity<?> connectFacebook(){
 
-        ResponseEntity<?> responseEntity = new ResponseEntity<Object>(HttpStatus.OK);
+        ResponseEntity<?> responseEntity;
 
         String authorizeUrl = socialMediaService.createFacebookAuthorizationURL();
         //angular needs a wrapper for strings
-        StringDTO url = new StringDTO();
-        url.setString(authorizeUrl);
+        StringDTO url = new StringDTO(authorizeUrl);
 
         responseEntity = new ResponseEntity<>(url, HttpStatus.OK);
         log.debug("Facebook AuthorizationURL: " + authorizeUrl);
@@ -82,6 +84,44 @@ public class SocialMediaController {
 
 
         return new ResponseEntity<Connection<Facebook>>(connection, HttpStatus.OK);
+    }
+
+    /*
+    @RequestMapping(value="/rest/connect/google",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<StringDTO> connectTwitter() {
+
+        String authorizationURL = socialMediaService.createGoogleAuthorizationURL();
+
+        StringDTO url = new StringDTO(authorizationURL);
+
+        return new ResponseEntity<>(url, HttpStatus.OK);
+    }*/
+
+    @RequestMapping(value="/rest/connect/twitter",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> connectTwitter() {
+
+        String url = socialMediaService.createTwitterAuthorizationURL();
+        StringDTO urlDTO = new StringDTO(url);
+
+        return new ResponseEntity<Object>(urlDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/rest/connect/twitter/createconnection",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Connection<Twitter>> createTwitterConnection(@RequestBody TwitterConnectionDTO twitterConnectionDTO) {
+
+        String token = twitterConnectionDTO.getToken();
+        String verifier = twitterConnectionDTO.getVerifier();
+        Connection<Twitter> connection = socialMediaService.createTwitterConnection(token, verifier);
+
+        return new ResponseEntity<Connection<Twitter>>(connection, HttpStatus.CREATED);
     }
 
 

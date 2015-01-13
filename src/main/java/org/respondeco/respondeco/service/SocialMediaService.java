@@ -7,9 +7,19 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.google.api.plus.moments.Moment;
+import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.social.oauth1.AuthorizedRequestToken;
+import org.springframework.social.oauth1.OAuth1Operations;
+import org.springframework.social.oauth1.OAuth1Parameters;
+import org.springframework.social.oauth1.OAuthToken;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
+import org.springframework.social.oauth2.OAuth2Template;
+import org.springframework.social.twitter.api.Twitter;
+import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -25,6 +35,8 @@ public class SocialMediaService {
     private Environment env;
 
     private FacebookConnectionFactory facebookConnectionFactory;
+    private TwitterConnectionFactory twitterConnectionFactory;
+    private GoogleConnectionFactory googleConnectionFactory;
 
     @Inject
     public SocialMediaService(Environment env){
@@ -32,6 +44,14 @@ public class SocialMediaService {
 
         facebookConnectionFactory = new FacebookConnectionFactory(env.getProperty("spring.social.facebook.appId"),
             env.getProperty("spring.social.facebook.appSecret"));
+
+        twitterConnectionFactory = new TwitterConnectionFactory(env.getProperty("spring.social.twitter.appId"),
+            env.getProperty("spring.social.twitter.appSecret"));
+
+        googleConnectionFactory = new GoogleConnectionFactory(env.getProperty("spring.social.google.clientId"),
+            env.getProperty("spring.social.google.clientSecret"));
+
+
 
     }
 
@@ -85,6 +105,67 @@ public class SocialMediaService {
 
         Connection<Facebook> newConn = facebookConnectionFactory.createConnection(newConnectionData);
         newConn.getApi().feedOperations().updateStatus("YO TEST");
+
+        return connection;
+    }
+
+
+    /**
+     * Create Authorization URL for the client to allow access for respondeco
+     * @return AuthorizationURL as String
+     *
+    public String createGoogleAuthorizationURL() {
+        OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+        OAuth2Parameters params = new OAuth2Parameters();
+        params.setRedirectUri(env.getProperty("spring.social.google.redirectUrl"));
+        params.setScope("https://www.googleapis.com/auth/plus.login");
+
+        String authorizationURL = oauthOperations.buildAuthenticateUrl(params);
+
+        return authorizationURL;
+    }
+
+
+    public Connection<Google> createGoogleConnection(String code) {
+
+        OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+        AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, env.getProperty("spring.social.google.redirectUrl"), null);
+        Connection<Google> connection = googleConnectionFactory.createConnection(accessGrant);
+
+        connection.getApi().plusOperations().
+
+
+    }
+    */
+
+    /**
+     * Creates the Authorization URL for the user if he wants to connect his respondeco account
+     * with his Twitter account
+     * @return Authorization URL as String
+     */
+    public String createTwitterAuthorizationURL() {
+        log.debug("Creating Twitter Authorization URL");
+
+        OAuth1Operations oauthOperations = twitterConnectionFactory.getOAuthOperations();
+        OAuthToken requestToken = oauthOperations.fetchRequestToken(env.getProperty("spring.social.twitter.redirectUrl"), null);
+        String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+
+        log.debug("Secret:" +requestToken.getSecret());
+        log.debug("AuthorizeURL: " + authorizeUrl);
+
+        return authorizeUrl;
+    }
+
+    public Connection<Twitter> createTwitterConnection(String token, String oauthVerifier) {
+
+        OAuthToken requestToken = new OAuthToken(token,null);
+        OAuth1Operations oauthOperations = twitterConnectionFactory.getOAuthOperations();
+        OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
+            new AuthorizedRequestToken(requestToken, oauthVerifier),null);
+
+        Connection<Twitter> connection = twitterConnectionFactory.createConnection(accessToken);
+
+        connection.getApi().timelineOperations().updateStatus("test");
 
         return connection;
     }
