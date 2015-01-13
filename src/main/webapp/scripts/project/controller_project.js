@@ -532,30 +532,32 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.getOffers = function() {
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
-            Organization.get({
-                id: acc.organization.id
-            }, function (org) {
-                $scope.ProjectApply.organization = org;
-                if (org != null && org.owner.id === acc.id &&
-                    $scope.project.organizationId != org.id) {
-                    // owner
-                    $scope.ProjectApply.allowedToApply = true;
-                    Organization.getResourceOffers({
-                        id: org.id
-                    }, function (offers) {
-                        var arr = [];
-                        for (var i = 0, len = offers.length; i < len; i++) {
-                            if (offers[i].amount > 0) {
-                                arr.push(offers[i]);
+            if (acc.organization != null) {
+                Organization.get({
+                    id: acc.organization.id
+                }, function (org) {
+                    $scope.ProjectApply.organization = org;
+                    if (org != null && org.owner.id === acc.id &&
+                        $scope.project.organizationId != org.id) {
+                        // owner
+                        $scope.ProjectApply.allowedToApply = true;
+                        Organization.getResourceOffers({
+                            id: org.id
+                        }, function (offers) {
+                            var arr = [];
+                            for (var i = 0, len = offers.length; i < len; i++) {
+                                if (offers[i].amount > 0) {
+                                    arr.push(offers[i]);
+                                }
                             }
-                        }
-                        $scope.resourceOffers = arr;
-                        if(arr.length == 0){
-                            $scope.ProjectApply.allowedToApply = false;
-                        }
-                    });
-                }
-            });
+                            $scope.resourceOffers = arr;
+                            if(arr.length == 0){
+                                $scope.ProjectApply.allowedToApply = false;
+                            }
+                        });
+                    }
+                });
+            }
         });
     }
 
