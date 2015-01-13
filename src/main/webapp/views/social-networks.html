@@ -69,7 +69,8 @@
                     d.getElementsByTagName('head')[0].appendChild(js)
                 }(document));
                 </script>
-                <button class="btn btn-default" translate="socialmedia.connect">Connect</button>
+                <button class="btn btn-default" ng-show="xingConnected==false" ng-click="connectXing()" translate="socialmedia.connect">Connect</button>
+                <button class="btn btn-default btn-danger" ng-show="xingConnected" ng-click="disconnectXing()" translate="socialmedia.disconnect">Disconnect</button>
             </div>
         </div>
     </div>

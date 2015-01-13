@@ -24,6 +24,8 @@ import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
+import org.springframework.social.xing.api.Xing;
+import org.springframework.social.xing.connect.XingConnectionFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -46,6 +48,7 @@ public class SocialMediaService {
     private FacebookConnectionFactory facebookConnectionFactory;
     private TwitterConnectionFactory twitterConnectionFactory;
     private GoogleConnectionFactory googleConnectionFactory;
+    private XingConnectionFactory xingConnectionFactory;
 
     @Inject
     public SocialMediaService(Environment env, SocialMediaRepository socialMediaRepository, UserService userService){
@@ -62,7 +65,8 @@ public class SocialMediaService {
         googleConnectionFactory = new GoogleConnectionFactory(env.getProperty("spring.social.google.clientId"),
             env.getProperty("spring.social.google.clientSecret"));
 
-
+        xingConnectionFactory = new XingConnectionFactory(env.getProperty("spring.social.xing.appId"),
+            env.getProperty("spring.social.xing.appSecret"));
 
     }
 
@@ -240,6 +244,110 @@ public class SocialMediaService {
 
         return tweet;
     }
+
+    /**
+     * Creates a Xing Connection with help of the token and oauthVerifier from the user.
+     * @param token user token which is used to create the connection to the users xing account
+     * @param oauthVerifier used to verify the token
+     * @return Returns a xing connection, therefor our app can interact with the api on behalf of the user
+     */
+    public SocialMediaConnection createXingConnection(String token, String oauthVerifier)
+        throws OperationForbiddenException, ConnectionAlreadyExistsException{
+
+        //check if user is logged in
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
+        //check if connection already exists
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "xing");
+        if(socialMediaConnection != null) {
+            throw new ConnectionAlreadyExistsException("connection for user " + user.getId() + " with twitter already exists");
+        }
+
+        //if no connection exists -> create new connection with oauth1
+        OAuthToken requestToken = new OAuthToken(token,null);
+        OAuth1Operations oauthOperations = xingConnectionFactory.getOAuthOperations();
+
+        log.debug("XINGTOKEN: " + token);
+        log.debug("XINGVERIFIER: " + oauthVerifier);
+
+        OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
+            new AuthorizedRequestToken(requestToken, oauthVerifier),null);
+
+        Connection<Xing> connection = xingConnectionFactory.createConnection(accessToken);
+
+        socialMediaConnection = new SocialMediaConnection();
+        socialMediaConnection.setProvider("xing");
+        socialMediaConnection.setToken(accessToken.getValue());
+        socialMediaConnection.setSecret(accessToken.getSecret());
+        socialMediaConnection.setUser(user);
+        socialMediaConnection = socialMediaRepository.save(socialMediaConnection);
+
+        return socialMediaConnection;
+    }
+
+
+    /**
+     * Creates a new post on Xing if the user account is connected with Xing.
+     * @param post message to post.
+     * @return created !TODO object.
+     * @throws OperationForbiddenException if user is not logged in.
+     * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
+     */
+    public String createXingPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException {
+        User user = userService.getUserWithAuthorities();
+
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
+        if(socialMediaConnection == null) {
+            throw new NoSuchSocialMediaConnectionException("no connection found for user with id: " + user.getId());
+        }
+
+        Connection<Xing> connection = xingConnectionFactory.createConnection(new ConnectionData(
+                socialMediaConnection.getProvider(), null, null, null, null, socialMediaConnection.getToken(), socialMediaConnection.getSecret(), null, null)
+        );
+
+        String createdPost = connection.getApi().profileOperations().getUserProfile().getFirstName();
+
+        return createdPost;
+    }
+
+
+
+    /**
+     * Creates the Authorization URL for the user if he wants to connect his respondeco account
+     * with his Xing account
+     * @return Authorization URL as String
+     */
+    public String createXingAuthorizationURL() {
+        log.debug("Creating Xing Authorization URL");
+
+        OAuth1Operations oauthOperations = xingConnectionFactory.getOAuthOperations();
+        OAuthToken requestToken = oauthOperations.fetchRequestToken(env.getProperty("spring.social.xing.redirectUrl"), null);
+        String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+
+        log.debug("Secret:" +requestToken.getSecret());
+        log.debug("AuthorizeURL: " + authorizeUrl);
+
+        return authorizeUrl;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**

@@ -57,9 +57,9 @@ spring:
             clientSecret: 1Mi2Txcku-nmKED7ubcx0STk
             redirectUrl: http://www.127.0.0.1.xip.io:9000/
         xing:
-            appId: 1ada221f6d3d47f43dfd
-            appSecret: 78a9212d00183ea87b5840c83770947f79f95e51
-            redirectUrl: http://localhost:9000/#/social-networks
+            appId: 1c6265031c4231dcc2a9
+            appSecret: d7295bf7275a7e2f40fe604b15f0044eedfe102a
+            redirectUrl: http://127.0.0.1:9000/#/social-networks
 
 metrics:
     jmx.enabled: true

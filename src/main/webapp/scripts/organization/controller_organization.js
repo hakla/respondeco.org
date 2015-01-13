@@ -1,7 +1,7 @@
 'use strict';
 
 respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization,
-                                                            Organization, Account, AuthenticationSharedService) {
+                                                            Organization, Account, SocialMedia, AuthenticationSharedService) {
     var isOwner = false;
     var user;
 
@@ -11,6 +11,9 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.postingShowIncrement = 5;
     $scope.postingPage = Organization.getPostingsByOrgId({id:$routeParams.id, pageSize: $scope.postingShowCount})
     $scope.postingInformation = null;
+
+    $scope.twitterConnected = false;
+    $scope.facebookConnected = false;
 
     $scope.update = function(name) {
         $scope.organization = Organization.get({
@@ -27,6 +30,20 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                 isOwner = user !== undefined && user.login === $scope.organization.owner.login;
             });
 
+            $scope.getConnections();
+
+        });
+    };
+
+    $scope.getConnections = function() {
+        SocialMedia.getConnections(function(response) {
+            response.forEach(function(connection) {
+                if(connection.provider === 'twitter') {
+                    $scope.twitterConnected = true;
+                } else if(connection.provider === 'facebook') {
+                    $scope.facebookConnected = true;
+                }
+            })
         });
     };
 
@@ -126,6 +143,14 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                 $scope.postingInformation = null;
                 $scope.postingform.$setPristine();
             });
+
+        if($scope.postOnTwitter === true) {
+            SocialMedia.createTwitterPost({string: $scope.postingInformation});
+        }
+
+        if($scope.postOnFacebook === true) {
+            SocialMedia.createFacebookPost({string: $scope.postingInformation});
+        }
     };
 
     $scope.deletePosting = function(id) {

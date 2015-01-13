@@ -214,6 +214,90 @@ public class SocialMediaController {
 
 
 
+    /**
+     * POST  /rest/connect/xing
+     * Post request to get the authorization URL for account connection with xing.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value="/rest/connect/xing",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> connectXing() {
+
+        String url = socialMediaService.createXingAuthorizationURL();
+        StringDTO urlDTO = new StringDTO(url);
+
+        return new ResponseEntity<Object>(urlDTO, HttpStatus.OK);
+    }
+
+    /**
+     * POST /rest/connect/xing/createconnection
+     * Connects a user account with twitter
+     * @param twitterConnectionDTO contains the authorization token and a verifier for the token
+     * @return responseentity with HttpStatus.CREATED if the connection was successfully created or
+     *         an appropriate error if the creation of the connection was not successful
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value="/rest/connect/xing/createconnection",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> createXingConnection(@RequestBody TwitterConnectionDTO twitterConnectionDTO) {
+        ResponseEntity<?> responseEntity;
+
+        String token = twitterConnectionDTO.getToken();
+        String verifier = twitterConnectionDTO.getVerifier();
+        try{
+            SocialMediaConnection socialMediaConnection = socialMediaService.createXingConnection(token, verifier);
+            SocialMediaConnectionResponseDTO dto = SocialMediaConnectionResponseDTO.fromEntity(socialMediaConnection, null);
+
+            responseEntity = new ResponseEntity<>(dto, HttpStatus.CREATED);
+        } catch(OperationForbiddenException e) {
+            log.error("cannot create connection for user, because user is not logged in: " + e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch(ConnectionAlreadyExistsException e) {
+            log.error("connection between user and twitter already exists: " + e);
+            responseEntity = ErrorHelper.buildErrorResponse("socialmedia.error.twitter.connectionexists", "connection already exists");
+        }
+
+        return responseEntity;
+    }
+
+    /**
+     * POST /rest/socialmedia/twitter/post
+     * Posts a tweet on twitter if the users account is connected with twitter
+     * @param post StringDTO containing the post as string
+     * @return responseentity containing the created tweet.
+
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value="/rest/socialmedia/twitter/post",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity postTweet(@RequestBody StringDTO post) {
+        ResponseEntity<Tweet> responseEntity;
+
+        try{
+            Tweet tweet = socialMediaService.createTwitterPost(post.getString());
+            responseEntity = new ResponseEntity<Tweet>(tweet, HttpStatus.CREATED);
+        } catch (OperationForbiddenException e) {
+            log.error("operation forbidden: " + e);
+            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch (NoSuchSocialMediaConnectionException e) {
+            log.error("could not find SocialMediaConnection: " + e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
+    }
+
+
+
+
+     */
+
+
 
 
 

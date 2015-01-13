@@ -48,6 +48,11 @@
         </div>
         <div class="col-md-8 newsfeed">
             <h3 translate="postingfeed.title">News</h3>
+            <div ng-show="isOwner()">
+                <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
+                <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
+            </div>
+
             <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                 <div class="form-group" ng-show="isOwner()">
                     <div class="input-group">
