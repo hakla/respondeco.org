@@ -84,6 +84,10 @@
                     "minlength": "Ihre E-Mail Adresse muss mindestens 5 Zeichen lang sein",
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
                 },
+                "name": {
+                    "minlength": "Der Name Ihrer Organisation muss mindestens 1 Zeichen lang sein",
+                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 50 Zeichen sein"
+                },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
                 },

@@ -105,13 +105,13 @@ respondecoApp
             tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
 
         })
-        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $sce) {
+        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $sce, $route) {
                 var regMessage = {
                     type: 'info',
                     msg: 'Um die Registrierung abzuschließen erstelle eine Organisation! <a><strong class="pull-right" ng-click="redirectToOwnOrganization()">Zur Erstellung</strong></a>'
                 };
 
-                var checkInitialConditions = function() {
+                var checkInitialConditions = function(showMessage) {
                     var account = $rootScope._account;
 
                     if (account == null) {
@@ -119,7 +119,7 @@ respondecoApp
                     }
 
                     if (account.invited === false && account.organization == null) {
-                        if ($rootScope.globalAlerts.indexOf(regMessage) < 0) {
+                        if (showMessage !== false && $rootScope.globalAlerts.indexOf(regMessage) < 0) {
                             $rootScope.globalAlerts.push(regMessage);
                         }
 
@@ -143,12 +143,33 @@ respondecoApp
 
                     $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessageOrganization), 1);
 
+                    var route = next.$$route != null ? next.$$route.originalPath : null;
+
+                    if (route != null) {
+                        // If the user navigates to another site than the the organization/edit/new site
+                        if (route === "/organization/edit/:id" && next.pathParams.id === "new" || route === "/organization/edit/new") {
+                            if (checkInitialConditions(false)) {
+                                $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessage), 1);
+                                $rootScope.globalAlerts.push(regMessageOrganization);
+                            }
+                        } else {
+                            checkInitialConditions();
+                        }
+                    }
+                });
+
+
+                $rootScope.$on('event:authenticated', function(data) {
+                    var route = $route.current.originalPath;
+
                     // If the user navigates to another site than the the organization/edit/new site
-                    if (next.$$route.originalPath != null && next.$$route.originalPath !== "/organization/edit/:id" || next.pathParams.id !== "new") {
-                        checkInitialConditions();
+                    if (route === "/organization/edit/:id" && $route.current.pathParams.id === "new") {
+                        if (checkInitialConditions(false)) {
+                            $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessage), 1);
+                            $rootScope.globalAlerts.push(regMessageOrganization);
+                        }
                     } else {
-                        $rootScope.globalAlerts.splice($rootScope.globalAlerts.indexOf(regMessage), 1);
-                        $rootScope.globalAlerts.push(regMessageOrganization);
+                        checkInitialConditions();
                     }
                 });
 

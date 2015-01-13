@@ -198,7 +198,7 @@
         <div class="container error-container">
             <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
         </div>
-        <div ng-class="main() ? '' : 'container'">
+        <div ng-class="main() ? 'container-landing-page' : 'container'">
             <div ng-class="main() ? '' : 'well'" ng-view></div>
 
             <div ng-hide="main()" class="footer">

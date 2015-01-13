@@ -33,7 +33,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
-	  		$scope.orgId = account.organization.id;
+				if (account.organization != null) {
+	  			$scope.orgId = account.organization.id;
+	  		}
 
 	  		if($location.path() === '/ownresource') {
 		    	Resource.getByOrgId({

@@ -533,7 +533,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
             Organization.get({
-                id: acc.organizationId
+                id: acc.organization.id
             }, function (org) {
                 $scope.ProjectApply.organization = org;
                 if (org != null && org.owner.id === acc.id &&

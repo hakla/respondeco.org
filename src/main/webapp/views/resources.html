@@ -1,11 +1,9 @@
 <div class="clearfix resource-search-container">
-    <h1 class="col-xs-12">
-        {{ 'resource.title' | translate }}
-    </h1>
+    <div class="clearfix">
+        <h1 class="col-xs-12">{{ 'resource.title' | translate }}</h1>
+    </div>
 
-    <div class="clearfix"></div>
-
-    <form name="searchForm" class="row form-search" role="form" ng-submit="search()" novalidate>
+    <form name="searchForm" class="form-search clearfix" role="form" ng-submit="search()" novalidate>
         <div class="col-xs-9">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />

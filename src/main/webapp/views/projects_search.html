@@ -27,9 +27,16 @@
         </form>
         
         <div class="row">
-            <div class="col-sm-12">
-                <resp-project project="project" on-project-click="redirectToProject(project)" ng-repeat="project in projects"></resp-project>
-            </div>
+            <resp-project project="project" on-project-click="redirectToProject(project)" ng-repeat-start="project in projects"></resp-project>
+            <div class="visible-xs clearfix"></div>
+            <div class="visible-xs spacer-top"></div>
+            <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
+            <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
+            <div class="visible-md clearfix" ng-if="$index % 3 == 2"></div>
+            <div class="visible-md spacer-top" ng-if="$index % 3 == 2"></div>
+            <div class="visible-lg clearfix" ng-if="$index % 4 == 3"></div>
+            <div class="visible-lg spacer-top" ng-if="$index % 4 == 3"></div>
+            <div ng-repeat-end></div>
         </div>
         
         <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
