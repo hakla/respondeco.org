@@ -1,5 +1,5 @@
 <div>
-    <h1 translate="social-networks.heading">Connected social networks</h1>
+    <h1 translate="socialMedia.heading">Connected social networks</h1>
     <div class="row">
         <div class="col-md-3 col-xs-12 text-center disabled">
             <h2>Facebook</h2>
@@ -7,7 +7,7 @@
                 <img src="images/sn/facebook.png" alt="Facebook">
             </div>
             <div class="spacer-top">
-                <button class="btn btn-default" ng-click="connectFacebook()" translate="social-networks.connect">Connect</button>
+                <button class="btn btn-default" ng-click="connectFacebook()" translate="socialMedia.connect">Connect</button>
             </div>
         </div>
         <div class="col-md-3 col-xs-12 text-center disabled">
@@ -16,7 +16,7 @@
                 <img src="images/sn/googleplus.png" alt="Google+">
             </div>
             <div class="spacer-top">
-                <button class="btn btn-default" ng-click="connectGoogle()" translate="social-networks.connect">Connect</button>
+                <button class="btn btn-default" ng-click="connectGoogle()" translate="socialMedia.connect">Connect</button>
             </div>
         </div>
         <div class="col-md-3 col-xs-12 text-center disabled">
@@ -25,7 +25,8 @@
                 <img src="images/sn/twitter.png" alt="Twitter">
             </div>
             <div class="spacer-top">
-                <button class="btn btn-default" ng-click="connectTwitter()" translate="social-networks.connect">Connect</button>
+                <button class="btn btn-default" ng-show="twitterConnected==false" ng-click="connectTwitter()" translate="socialMedia.connect">Connect</button>
+                <button class="btn btn-default btn-danger" ng-show="twitterConnected" ng-click="disconnectTwitter()" translate="socialMedia.disconnect">Disconnect</button>
             </div>
         </div>
         <div class="col-md-3 col-xs-12 text-center disabled">
@@ -65,7 +66,7 @@
                     d.getElementsByTagName('head')[0].appendChild(js)
                 }(document));
                 </script>
-                <button class="btn btn-default" translate="social-networks.connect">Connect</button>
+                <button class="btn btn-default" translate="socialMedia.connect">Connect</button>
             </div>
         </div>
     </div>

@@ -1,5 +1,10 @@
 package org.respondeco.respondeco.service;
 
+import org.respondeco.respondeco.domain.SocialMediaConnection;
+import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.SocialMediaRepository;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.web.rest.SocialMediaController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -18,11 +23,13 @@ import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.oauth2.OAuth2Template;
+import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Created by Benjamin Fraller on 12.01.2015.
@@ -33,14 +40,20 @@ public class SocialMediaService {
     private final Logger log = LoggerFactory.getLogger(SocialMediaService.class);
 
     private Environment env;
+    private SocialMediaRepository socialMediaRepository;
+
+    private UserService userService;
+
 
     private FacebookConnectionFactory facebookConnectionFactory;
     private TwitterConnectionFactory twitterConnectionFactory;
     private GoogleConnectionFactory googleConnectionFactory;
 
     @Inject
-    public SocialMediaService(Environment env){
+    public SocialMediaService(Environment env, SocialMediaRepository socialMediaRepository, UserService userService){
         this.env = env;
+        this.socialMediaRepository = socialMediaRepository;
+        this.userService = userService;
 
         facebookConnectionFactory = new FacebookConnectionFactory(env.getProperty("spring.social.facebook.appId"),
             env.getProperty("spring.social.facebook.appSecret"));
@@ -156,7 +169,14 @@ public class SocialMediaService {
         return authorizeUrl;
     }
 
-    public Connection<Twitter> createTwitterConnection(String token, String oauthVerifier) {
+    /**
+     * Creates a Twitter Connection with help of the token and oauthVerifier from the user.
+     * @param token user token which is used to create the connection to the users twitter account
+     * @param oauthVerifier used to verify the token
+     * @return Returns a twitter connection, therefor our app can interact with the api on behalf of the user
+     */
+    public Connection<Twitter> createTwitterConnection(String token, String oauthVerifier)
+        throws OperationForbiddenException{
 
         OAuthToken requestToken = new OAuthToken(token,null);
         OAuth1Operations oauthOperations = twitterConnectionFactory.getOAuthOperations();
@@ -165,9 +185,74 @@ public class SocialMediaService {
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(accessToken);
 
-        connection.getApi().timelineOperations().updateStatus("test");
+        //persist connection
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
+        SocialMediaConnection socialMediaConnection = new SocialMediaConnection();
+        socialMediaConnection.setProvider("twitter");
+        socialMediaConnection.setToken(accessToken.getValue());
+        socialMediaConnection.setSecret(accessToken.getSecret());
+        socialMediaConnection.setUser(user);
+        socialMediaRepository.save(socialMediaConnection);
+
+        //try to post
+        //SocialMediaConnection c = socialMediaRepository.getOne(0L);
+        //Connection<Twitter> newCon = twitterConnectionFactory.createConnection(new ConnectionData(
+        //    c.getProvider(), null, null, null, null, c.getToken(), null, null, null)
+        //);
+
+
+        //newCon.getApi().timelineOperations().updateStatus("asdfasdf");
 
         return connection;
     }
+
+
+    /**
+     *
+     * @return
+     * @throws OperationForbiddenException
+     */
+    public String createTwitterPost() throws OperationForbiddenException {
+        User user = userService.getUserWithAuthorities();
+
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
+        if(socialMediaConnection == null) {
+
+        }
+
+        Connection<Twitter> connection = twitterConnectionFactory.createConnection(new ConnectionData(
+            socialMediaConnection.getProvider(), null, null, null, null, socialMediaConnection.getToken(), socialMediaConnection.getSecret(), null, null)
+        );
+
+        Tweet tweet = connection.getApi().timelineOperations().updateStatus("ADASFASFASD");
+
+        return tweet.getText();
+    }
+
+
+    /**
+     * Returns a List of social media connection for the current user
+     * @return List of social medie aconnections
+     * @throws OperationForbiddenException if user is not logged in
+     */
+    public List<SocialMediaConnection> getConnectionsForUser() throws OperationForbiddenException {
+
+        User user = userService.getUserWithAuthorities();
+        if(user == null) {
+            throw new OperationForbiddenException("no current user found");
+        }
+        List<SocialMediaConnection> connections = socialMediaRepository.findByUser(user);
+
+        return connections;
+    }
+
 
 }

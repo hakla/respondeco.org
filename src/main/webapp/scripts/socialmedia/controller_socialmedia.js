@@ -4,6 +4,18 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 
 	$scope.code = {string: null}
 
+	$scope.twitterConnected = false;
+
+	$scope.getConnections = function() {
+		SocialMedia.getConnections(function(response) {
+			response.forEach(function(connection) {
+				if(connection.provider === 'twitter') {
+					$scope.twitterConnected = true;
+				}
+			});
+		});
+	};
+
 	$scope.connectFacebook = function() {
 		console.log("click");
 		SocialMedia.connectFacebook(function(redirectURL) {
@@ -17,12 +29,18 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 			console.log(redirectURL.string);
 			$window.location.href = redirectURL.string;
 		})
-	}
+	};
 
 	$scope.connectTwitter = function() {
 		SocialMedia.connectTwitter(function(redirectURL) {
 			console.log(redirectURL.string);
+			$window.location.href = redirectURL.string;
 		})
+	};
+
+	$scope.disconnectTwitter = function() {
+		//TODO
+		$scope.twitterConnected = false;
 	}
 
 	if($location.absUrl().indexOf('?code') > 0) {
@@ -34,22 +52,21 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 		SocialMedia.connectFacebookCreate($scope.code, function(response) {
 			console.log(response);
 		});
-	}
+	};
 
 
 	if(Respondeco.Helpers.Url.param("oauth_token") !== undefined) {
-
-
 		var token = Respondeco.Helpers.Url.param("oauth_token");
 		var verifier = Respondeco.Helpers.Url.param("oauth_verifier");
 
-		
 		var request = {token: token, verifier: verifier};
 
 		SocialMedia.createTwitterConnection(request, function(response) {
 			console.log(response);
 		});
+	};
 
-	}
+
+	$scope.getConnections();
 
 });

@@ -2,6 +2,7 @@
 
 respondecoApp.factory('SocialMedia', function ($resource) {
 	return $resource('app/rest/connect/', {}, {
+		'getConnections' : {method: 'GET', isArray:true, url: 'app/rest/connections'},
 		'connectFacebook' : { method: 'GET', url: 'app/rest/connect/facebook'},
 		'connectFacebookCreate' : {method: 'POST', url: 'app/rest/connect/facebook/createconnection'},
 		'connectGoogle' : {method: 'GET', url: 'app/rest/connect/google'},

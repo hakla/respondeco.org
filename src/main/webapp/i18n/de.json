@@ -695,8 +695,9 @@
             }
         }
     },
-    "social-networks": {
+    "socialMedia": {
         "heading": "Verbunde soziale Netzwerke",
-        "connect": "Verbinden"
+        "connect": "Verbinden",
+        "disconnect": "Verbindung löschen"
     }
 }
