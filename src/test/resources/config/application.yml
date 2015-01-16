@@ -13,6 +13,19 @@ async:
 
 spring:
     
+    social:
+        facebook:
+            appId: 801386343241847
+            appSecret: 0ee624ec572168e2c8af19e4fd870cab
+            redirectUrl: http://localhost:9000/#/social-networks
+        twitter:
+            appId: TXfo29nDCKaU0HmajtEwMhP80
+            appSecret: FAvwa7Kjjih9zPWZaDxpfiqQ4ZZ2JfaOi1vXQgtTe4CCUnDeJ6
+            redirectUrl: http://127.0.0.1:9000/#/social-networks
+        xing:
+            appId: 1c6265031c4231dcc2a9
+            appSecret: d7295bf7275a7e2f40fe604b15f0044eedfe102a
+            redirectUrl: http://127.0.0.1:9000/#/social-networks
     
     datasource:
         dataSourceClassName: org.h2.jdbcx.JdbcDataSource

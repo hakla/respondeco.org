@@ -53,30 +53,24 @@ public class SocialMediaService {
 
     private UserService userService;
 
-
     private FacebookConnectionFactory facebookConnectionFactory;
     private TwitterConnectionFactory twitterConnectionFactory;
-    private GoogleConnectionFactory googleConnectionFactory;
     private XingConnectionFactory xingConnectionFactory;
 
     @Inject
-    public SocialMediaService(Environment env, SocialMediaRepository socialMediaRepository, UserService userService){
+    public SocialMediaService(Environment env,
+                              SocialMediaRepository socialMediaRepository,
+                              UserService userService,
+                              FacebookConnectionFactory facebookConnectionFactory,
+                              TwitterConnectionFactory twitterConnectionFactory,
+                              XingConnectionFactory xingConnectionFactory){
         this.env = env;
         this.socialMediaRepository = socialMediaRepository;
         this.userService = userService;
 
-        facebookConnectionFactory = new FacebookConnectionFactory(env.getProperty("spring.social.facebook.appId"),
-            env.getProperty("spring.social.facebook.appSecret"));
-
-        twitterConnectionFactory = new TwitterConnectionFactory(env.getProperty("spring.social.twitter.appId"),
-            env.getProperty("spring.social.twitter.appSecret"));
-
-        googleConnectionFactory = new GoogleConnectionFactory(env.getProperty("spring.social.google.clientId"),
-            env.getProperty("spring.social.google.clientSecret"));
-
-        xingConnectionFactory = new XingConnectionFactory(env.getProperty("spring.social.xing.appId"),
-            env.getProperty("spring.social.xing.appSecret"));
-
+        this.facebookConnectionFactory = facebookConnectionFactory;
+        this.twitterConnectionFactory = twitterConnectionFactory;
+        this.xingConnectionFactory = xingConnectionFactory;
     }
 
 

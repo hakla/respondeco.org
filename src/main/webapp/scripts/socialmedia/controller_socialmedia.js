@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $routeParams, $window, $route, Resource, Account, SocialMedia) {
+respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $window, SocialMedia) {
 
 	$scope.code = {string: null}
 	$scope.post = {string: null}
@@ -48,7 +48,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 */
 	$scope.connectTwitter = function() {
 		SocialMedia.connectTwitter(function(redirectURL) {
-			console.log(redirectURL.string);
 			$window.location.href = redirectURL.string;
 		})
 	};
@@ -60,7 +59,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 */
 	$scope.connectXing = function() {
 		SocialMedia.connectXing(function(redirectURL) {
-			console.log(redirectURL.string);
 			$window.location.href = redirectURL.string;
 		});
 	};

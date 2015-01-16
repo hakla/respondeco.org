@@ -1,5 +1,7 @@
 package org.respondeco.respondeco.config;
 
+import org.springframework.boot.bind.RelaxedPropertyResolver;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -8,8 +10,11 @@ import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
+import org.springframework.social.twitter.connect.TwitterConnectionFactory;
+import org.springframework.social.xing.connect.XingConnectionFactory;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.util.Collections;
 
@@ -20,14 +25,26 @@ public class SocialConfig {
     private Environment environment;
 
     @Bean
-    public ConnectionFactoryLocator connectionFactoryLocator() {
-        ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
-
-        registry.addConnectionFactory(new FacebookConnectionFactory(
+    public FacebookConnectionFactory facebookConnectionFactory() {
+        return new FacebookConnectionFactory(
             environment.getProperty("spring.social.facebook.appId"),
-            environment.getProperty("spring.social.facebook.appSecret")));
+            environment.getProperty("spring.social.facebook.appSecret"));
+    }
 
-        return registry;
+    @Bean
+    public TwitterConnectionFactory twitterConnectionFactory() {
+        return new TwitterConnectionFactory(
+           environment.getProperty("spring.social.twitter.appId"),
+           environment.getProperty("spring.social.twitter.appSecret")
+        );
+    }
+
+    @Bean
+    public XingConnectionFactory xingConnectionFactory() {
+        return new XingConnectionFactory(
+            environment.getProperty("spring.social.xing.appId"),
+            environment.getProperty("spring.social.xing.appSecret")
+        );
     }
 
 
