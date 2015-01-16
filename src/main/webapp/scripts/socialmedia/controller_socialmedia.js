@@ -5,6 +5,7 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	$scope.code = {string: null}
 	$scope.post = {string: null}
 
+	$scope.loading = false;
 	$scope.twitterConnected = false;
 	$scope.facebookConnected = false;
 	$scope.xingConnected = false;
@@ -12,7 +13,7 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	/**
 	 *	Gets all active connection for the currently logged in user
 	 *	and if the connection for the specific provider exists, it
-	 *	sets the connected variable for the appropriate provider to true.	
+	 *	sets the connected variable for the appropriate provider to true.
 	 */
 	$scope.getConnections = function() {
 		SocialMedia.getConnections(function(response) {
@@ -34,6 +35,7 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 *	respondeco.
 	 */
 	$scope.connectFacebook = function() {
+		$scope.loading = true;
 		SocialMedia.connectFacebook(function(redirectURL) {
 			$window.location.href = redirectURL.string;
 		});
@@ -68,10 +70,9 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 * Disconnects the users account from Facebook
 	 */ 
 	 $scope.disconnectFacebook = function() {
+	 	$scope.loading = true;
 	 	SocialMedia.disconnectFacebook(function(response) {
-	 		console.log(response);
-
-
+	 		$scope.loading = false;
 	 		$scope.facebookConnected = false
 	 		$scope.addAlert('info','Die Verbindung zwischen ihrem Account und Facebook wurde erfolgreich aufgehoben');
 	 	}, function(response) {
@@ -114,7 +115,7 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		if(Respondeco.Helpers.Url.param("code") !== undefined && $scope.facebookConnected == false) {
 			$scope.code.string = Respondeco.Helpers.Url.param("code");
 			SocialMedia.createFacebookConnection($scope.code, function() {
-				$window.location.href = "/#/social-networks";
+				$scope.clearURL();
 				$scope.getConnections();
 			});
 
@@ -138,15 +139,21 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 				});
 			} else {
 				SocialMedia.createTwitterConnection(request, function(response) {
-					$window.location.href = "/#/social-networks";
+					$scope.clearURL();
 
 					//update connections
 					$scope.getConnections();
 				}, function() {
-					$window.location.href = "/#/social-networks";
+					$scope.clearURL();
 				});
 			}
 		};
+
+		//error case
+		if(Respondeco.Helpers.Url.param("error") !== undefined ||
+				Respondeco.Helpers.Url.param("denied") !== undefined) {
+			$scope.clearURL();
+		}
 	};
 	
 	
@@ -157,6 +164,12 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		$rootScope.globalAlerts.push({type:type, msg:message, timeout:3});
 	}
 
+	/**
+	 * Clears the url from parameters after callback
+	 */
+	$scope.clearURL = function() {
+		$window.location.href = "/#/social-networks";
+	}
 
 	$scope.getConnections();
 	$scope.checkForRedirectParams();
