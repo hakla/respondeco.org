@@ -16,7 +16,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 */
 	$scope.getConnections = function() {
 		SocialMedia.getConnections(function(response) {
-			console.log(response);
 			response.forEach(function(connection) {
 				if(connection.provider === 'twitter') {
 					$scope.twitterConnected = true;
@@ -115,9 +114,10 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		if(Respondeco.Helpers.Url.param("code") !== undefined && $scope.facebookConnected == false) {
 			$scope.code.string = Respondeco.Helpers.Url.param("code");
 			SocialMedia.createFacebookConnection($scope.code, function() {
+				$window.location.href = "/#/social-networks";
 				$scope.getConnections();
 			});
-			$window.location.href = "/#/social-networks";
+
 		};
 
 		// used for twitter after user grants permission and twitter redirects
