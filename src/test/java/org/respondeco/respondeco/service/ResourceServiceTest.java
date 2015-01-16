@@ -1037,7 +1037,7 @@ public class ResourceServiceTest {
             return page;
         }).when(resourceMatchRepositoryMock).findAll(any(Predicate.class), any(PageRequest.class));
 
-        List<ResourceMatch> resourceMatches = resourceService.getResourceRequestsForOrganization(1L, new RestParameters(1,20));
+        List<ResourceMatch> resourceMatches = resourceService.getResourcesForOrganization(1L, new RestParameters(1, 20));
         ResourceMatch match = resourceMatches.get(0);
 
         verify(resourceMatchRepositoryMock, times(1)).findAll(any(Predicate.class), any(PageRequest.class));

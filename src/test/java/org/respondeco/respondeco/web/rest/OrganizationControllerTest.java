@@ -390,7 +390,7 @@ public class OrganizationControllerTest {
     @Test
     public void testGetResourceRequests_expectOK_shouldReturnAllResourceRequests() throws Exception {
         doReturn(Arrays.asList(match1, match2)).when(resourceServiceMock)
-            .getResourceRequestsForOrganization(anyLong(), isA(RestParameters.class));
+            .getResourcesForOrganization(anyLong(), isA(RestParameters.class));
 
         // Delete Organization
         restOrganizationMockMvc.perform(get("/app/rest/organizations/2/resourcerequests"))

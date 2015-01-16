@@ -27,8 +27,8 @@ respondecoApp
                 access: {
                     authorizedRoles: [USER_ROLES.all]
                 }
-            }).when('/requests', {
-                templateUrl: '/views/resourcerequests.html',
+            }).when('/resourcemessages', {
+                templateUrl: '/views/resourcemessages.html',
                 controller: 'ResourceController',
                 access: {
                     authorizedRoles: [USER_ROLES.all]

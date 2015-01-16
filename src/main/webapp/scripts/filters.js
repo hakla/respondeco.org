@@ -9,7 +9,7 @@ angular.module('respondecoAppFilters', []).filter('logo', function() {
 }).filter('formatUser', function() {
   return function(user) {
     var name = "";
- 
+
     if (user != null) {
       if (user.lastName != undefined && user.firstName != undefined) {
         name = user.firstName + " " + user.lastName + " (" + user.login + ")";

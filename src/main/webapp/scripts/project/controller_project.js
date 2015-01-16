@@ -95,7 +95,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.ProjectApply =
     {
-        organization: null,
         account: null,
         allowedToApply: false,
         selectedResourceOffer: null,
@@ -509,7 +508,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         var data = {
             resourceOfferId: $scope.ProjectApply.selectedResourceOffer.id,
             resourceRequirementId: $scope.ProjectApply.selectedRequirement.id,
-            organizationId: $scope.ProjectApply.organization.id,
+            organizationId: $scope.ProjectApply.account.organization.id,
             projectId: $scope.project.id
         }
         // please do not remove this variable. some user operation can be faster than timeout.
@@ -530,33 +529,35 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
      * Get all resource offer from the organization the user currently in.
      */
     $scope.getOffers = function() {
+        //first of all we need the account information!
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
-            if (acc.organization != null) {
-                Organization.get({
-                    id: acc.organization.id
-                }, function (org) {
-                    $scope.ProjectApply.organization = org;
-                    if (org != null && org.owner.id === acc.id &&
-                        $scope.project.organizationId != org.id) {
-                        // owner
-                        $scope.ProjectApply.allowedToApply = true;
-                        Organization.getResourceOffers({
-                            id: org.id
-                        }, function (offers) {
-                            var arr = [];
-                            for (var i = 0, len = offers.length; i < len; i++) {
-                                if (offers[i].amount > 0) {
-                                    arr.push(offers[i]);
-                                }
-                            }
-                            $scope.resourceOffers = arr;
-                            if(arr.length == 0){
-                                $scope.ProjectApply.allowedToApply = false;
-                            }
-                        });
+            //since organization is a part of an account, we do not need to load organization over the rest
+            if(
+                $scope.ProjectApply.account.organization &&
+                $scope.project.organizationId != $scope.ProjectApply.account.organization.id
+            ){
+                //get available resource
+                $scope.ProjectApply.allowedToApply = true;
+                Organization.getResourceOffers({
+                    id: $scope.ProjectApply.account.organization.id
+                }, null, function (offers) {
+                    var arr = [];
+                    //and remove those who have no amount.
+                    for (var i = 0, len = offers.length; i < len; i++) {
+                        if (offers[i].amount > 0) {
+                            arr.push(offers[i]);
+                        }
+                    }
+                    $scope.resourceOffers = arr;
+                    //if array is empty, the current account do not have any resources to apply
+                    if(arr.length == 0){
+                        $scope.ProjectApply.allowedToApply = false;
                     }
                 });
+            }
+            else{
+                $scope.ProjectApply.allowedToApply = false;
             }
         });
     }
