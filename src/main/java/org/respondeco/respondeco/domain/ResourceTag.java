@@ -3,6 +3,7 @@ package org.respondeco.respondeco.domain;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.respondeco.respondeco.matching.MatchingTag;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +19,7 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class ResourceTag extends AbstractAuditingEntity implements Serializable {
+public class ResourceTag extends AbstractAuditingEntity implements Serializable, MatchingTag {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
