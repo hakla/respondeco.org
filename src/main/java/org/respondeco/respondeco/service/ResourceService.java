@@ -1,8 +1,14 @@
 package org.respondeco.respondeco.service;
 
+import com.mysema.query.jpa.JPASubQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.CollectionExpression;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
+import com.mysema.query.types.Visitor;
 import com.mysema.query.types.expr.BooleanExpression;
+import com.mysema.query.types.expr.CollectionOperation;
+import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.domain.QResourceMatch;
@@ -19,10 +25,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
 /**
  * Created by Roman Kern on 15.11.14.
  * Definition for
@@ -489,8 +498,14 @@ public class ResourceService {
             throw new NoSuchProjectException("can't find project for match with matchId " + resourceMatchId);
         }
 
-        // check if user is owner of the organization that owns the resource offer
-        checkAuthoritiesForResourceMatch(organization);
+        User user = userService.getUserWithAuthorities();
+
+        //check if user authorized to change data
+        if(resourceMatch.getMatchDirection() == MatchDirection.ORGANIZATION_CLAIMED) {
+            checkAuthoritiesForResourceMatch(organization);
+        }else{
+            ensureUserIsPartOfOrganisation(project);
+        }
 
         // set the accepted flag
         resourceMatch.setAccepted(accept);
@@ -537,24 +552,39 @@ public class ResourceService {
 
 
     /**
-     * Get Resource Requests for specific Organization with given id. (Claim Resource)
+     * Get Resources for specific Organization with given id. (Claim/Apply Resource)
      * @param organizationId Organization id
-     * @return List of ResourceMatches representing open resource requests
+     * @param restParameters creates pageable from this variable
+     * @return List of ResourceMatches representing open resource claims/applies
      */
     @Transactional(readOnly=true)
-    public List<ResourceMatch> getResourceRequestsForOrganization(Long organizationId, RestParameters restParameters) {
+    public List<ResourceMatch> getResourcesForOrganization(Long organizationId, RestParameters restParameters) {
         PageRequest pageRequest = restParameters.buildPageRequest();
 
+        /// first of all, we have here organization that offered a resource for projects.
         QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
-        BooleanExpression resourceMatchOrganization = resourceMatch.organization.id.eq(organizationId);
-        BooleanExpression resourceMatchAccepted = resourceMatch.accepted.isNull();
+        Collection<Long> projects = projectRepository.findByOrganizationId(organizationId);
+        BooleanExpression exp1 = resourceMatch.project.id.in(projects);
+        BooleanExpression exp2 = resourceMatch.active.isTrue();
+        BooleanExpression exp3 = resourceMatch.matchDirection.eq(MatchDirection.ORGANIZATION_OFFERED);
 
-        Predicate where = ExpressionUtils.allOf(resourceMatchAccepted, resourceMatchOrganization);
+        Predicate where = ExpressionUtils.allOf(exp1, exp2, exp3);
+        List<ResourceMatch> first = resourceMatchRepository.findAll(where, pageRequest).getContent();
 
-        List<ResourceMatch> requests = resourceMatchRepository.findAll(where, pageRequest).getContent();
+        //and here we have a Project that claim the resource from organization
+        exp1 = resourceMatch.organization.id.eq(organizationId);
+        exp3 = resourceMatch.matchDirection.eq(MatchDirection.ORGANIZATION_CLAIMED);
+        where = ExpressionUtils.allOf(exp1, exp2, exp3);
+        //we need to join both list
+        List<ResourceMatch> second = resourceMatchRepository.findAll(where, pageRequest).getContent();
+        ArrayList result = new ArrayList<ResourceMatch>();
+        result.addAll(first);
+        result.addAll(second);
+        //List<ResourceMatch> result = resourceMatchRepository.findByOrganizationId(organizationId);
 
-        return requests;
+        return result;
     }
+
     // endregion
 
     /**

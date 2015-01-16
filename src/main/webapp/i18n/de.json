@@ -28,7 +28,8 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung",
-                "newsfeed": "Newsfeed"
+                "newsfeed": "Newsfeed",
+                "resourcerequestapply": "Ressourcen-Anfragen"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",
@@ -84,6 +85,10 @@
                     "invalid": "Ihre E-Mail Adresse ist ungültig.",
                     "minlength": "Ihre E-Mail Adresse muss mindestens 5 Zeichen lang sein",
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
+                },
+                "name": {
+                    "minlength": "Der Name Ihrer Organisation muss mindestens 1 Zeichen lang sein",
+                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 50 Zeichen sein"
                 },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
@@ -552,14 +557,26 @@
             }
         }
     },
-    "resourcerequest": {
-        "title":"Ressourcen-Anfragen für ihre Angebote",
+    "resourcemessages": {
+        "title": "Verwalten Sie die Resourcen Anfragen und Spenden für [{{OrganizationName}}]",
+        "request": {
+            "title": "Ressourcen-Anfragen für ihre Angebote",
+            "text": "Das Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> mit der Ressourcenanforderung <span class='underline'>{{RequirementName}}</span> interessiert sich für ihre Ressource <span class='underline'>{{OfferName}}</span>.",
+            "tabtitle": "Anfragen"
+        },
+        "apply": {
+            "title": "Ressourcen-Angebot für ihren Projekt",
+            "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource <span class='underline'>{{RequirementName}}</span>, die Ressource <span class='underline'>{{OfferName}}</span> bereitstellen.",
+            "tabtitle": "Spenden"
+        },
+        "olddata": "Alte Anfragen/Spenden",
         "acceptButton": "Annehmen",
         "declineButton": "Ablehnen",
-        "backButton": "Zurück zur Organisation"
+        "acceptedButton": "Angenohmen",
+        "declinedButton": "Abgelehnt"
     },
     "resource": {
-        "title":"Ressourcen",
+        "title": "Marktplatz",
         "name": "Name",
         "company": "Unternehmen",
         "amount": "Anzahl",
@@ -613,7 +630,7 @@
             "description" : "Beschreibung der Ressource",
             "amount" : "Menge der Ressource",
             "tags": "Tags der Ressource",
-            "search": "Suchkriterien eingeben",
+            "search": "Name / Tags / Organisation",
             "price": "Preis der Ressource",
             "startDate": "Verfügbar ab",
             "endDate": "Verfügbar bis"

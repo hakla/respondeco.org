@@ -80,10 +80,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $location.path('ownresource');
     };
 
-    $scope.redirectToRequests = function() {
-        $location.path('requests');
-    }
-
     $scope.redirectToNewProject = function() {
         $location.path('projects/edit/new');
     }

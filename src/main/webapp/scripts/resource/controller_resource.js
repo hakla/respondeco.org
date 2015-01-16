@@ -1,8 +1,9 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter) {
+respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter, $sce) {
 
 	var PAGESIZE = 20;
+    var $translate = $filter('translate');
 
 	$scope.resource = {resourceTags: [], isCommercial: false};
 	$scope.projects = [];
@@ -17,6 +18,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 	$scope.showRequirements = false;
 
 	$scope.requests = [];
+    $scope.applies = [];
+    $scope.oldResourceMessages = [];
 
 	var id = $routeParams.id;
 	$scope.isNew = id === 'new';
@@ -33,7 +36,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
 	$scope.getAccount = function() {
 		Account.get(null, function(account) {
-	  		$scope.orgId = account.organization.id;
+				if (account.organization != null) {
+	  			$scope.orgId = account.organization.id;
+	  		}
 
 	  		if($location.path() === '/ownresource') {
 		    	Resource.getByOrgId({
@@ -45,8 +50,8 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		  		$scope.search();
 			}
 
-			if($location.path() === '/requests') {
-				$scope.loadRequests();
+			if($location.path() === '/resourcemessages') {
+				$scope.loadResourceData();
 			}
 
 			if($scope.isNew === false && $scope.isOverview === false) {
@@ -91,7 +96,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		});
 	};
 
-	$scope.selectProject = function(project, $event) {
+	$scope.selectProject = function(project) {
 		if (project.initialProject == null || project.initialProject === false) {
 			$scope.resourceRequirements = Project.getProjectRequirements({id:project.id}, function() {
 				$scope.showRequirements = true;
@@ -155,25 +160,64 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		$location.path('projects/'+id);
 	}
 
-	$scope.acceptRequest = function(request) {
-		Resource.updateRequest({id:request.matchId},{accepted:true}, function() {
-			$scope.loadRequests();
+	$scope.acceptResource = function(data) {
+		Resource.updateResource({id:data.matchId},{accepted:true}, function() {
+            $scope.loadResourceData();
 		});
-	}
+	};
 
-	$scope.declineRequest = function(request) {
-		Resource.updateRequest({id:request.matchId},{accepted:false}, function() {
-			$scope.loadRequests();
+	$scope.declineResource = function(data) {
+		Resource.updateResource({id:data.matchId},{accepted:false}, function() {
+            $scope.loadResourceData();
 		});
-	}
+	};
 
-	$scope.loadRequests = function() {
-		Organization.getResourceRequests({id:$scope.orgId}, function(data) {
-			$scope.requests = data;
-		}, function() {
-			console.log("error");
-		});
-	}
+    /**
+     * Load all resource requests that belongs to the organization
+     * Applies and Claims!
+     */
+    $scope.loadResourceData = function(){
+        Organization.getResourceRequests({id:$scope.orgId}, function(data) {
+            $scope.requests.length = 0;
+            $scope.applies.length = 0;
+            $scope.oldResourceMessages.length = 0;
+            var locKey = null,
+                translateData = null,
+                id = null,
+                Name = null;
+            for(var i = 0;i < data.length;i++){
+                if(data[i].matchDirection == "ORGANIZATION_OFFERED"){
+                    id = data[i].organization.id;
+                    Name = data[i].organization.name;
+                    locKey = "resourcemessages.apply.text";
+                    //if accepted is true or false, the claim or apply has been already answered
+                    if(data[i].accepted != null){
+                        $scope.oldResourceMessages.push(data[i]);
+                    }else {
+                        $scope.applies.push(data[i]);
+                    }
+                } else{
+                    id = data[i].project.id;
+                    Name = data[i].project.name;
+                    locKey = "resourcemessages.request.text";
+                    //if accepted is true or false, the claim or apply has been already answered
+                    if(data[i].accepted != null){
+                        $scope.oldResourceMessages.push(data[i]);
+                    }else {
+                        $scope.requests.push(data[i]);
+                    }
+                }
+                translateData = {
+                    RequirementName: data[i].resourceRequirement.name,
+                    OfferName: data[i].resourceOffer.name,
+                    id: id,
+                    Name: Name
+                };
+                //manually translate the data and use html save wrapper. Do not forget: HTML should have ng-bind-html tag
+                data[i].text = $sce.trustAsHtml($translate(locKey, translateData));
+            }
+        });
+    };
 
 	$scope.redirectToOrganization = function() {
 		$location.path('organization/' + $scope.orgId);
@@ -211,7 +255,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 		if ($scope.resourceSearch.isFree === true) {
 			$scope.filter.commercial = false;
 		} else {
-			$scope.filter.commercial = undefined;	
+			$scope.filter.commercial = undefined;
 		}
 
 		$scope.currentPage = 1;
@@ -283,5 +327,38 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
     };
 
 	$scope.getAccount();
+
+
+    // tabs for resource apply/claim/old data
+
+    $scope.loadTabs = function(){
+        var t = $("#tabs");
+        if(t && t.tab) {
+            t.tab();
+        }
+    }
+    $scope.loadTabs();
+
+    $scope.tabs = [{
+        title: $translate('resourcemessages.apply.tabtitle'),
+        url: 'views/resourcemessages_apply.html'
+    }, {
+        title: $translate('resourcemessages.request.tabtitle'),
+        url: 'views/resourcemessages_request.html'
+    },{
+        title: $translate('resourcemessages.olddata'),
+        url: 'views/resourcemessages_old.html'
+    }];
+
+    $scope.currentTab = $scope.tabs[0].url;
+
+    $scope.onClickTab = function (tab) {
+        $scope.loadResourceData();
+        $scope.currentTab = tab.url;
+    }
+
+    $scope.isActiveTab = function(tabUrl) {
+        return tabUrl == $scope.currentTab;
+    }
 
 });

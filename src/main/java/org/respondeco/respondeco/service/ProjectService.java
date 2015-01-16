@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -290,7 +291,7 @@ public class ProjectService {
      */
     public Page<Project> findProjects(String searchText, RestParameters restParameters) {
         PageRequest pageRequest = null;
-        Page page;
+        Page<Project> page;
 
         if(restParameters != null) {
             pageRequest = restParameters.buildPageRequest();
@@ -309,6 +310,26 @@ public class ProjectService {
 
             page = projectRepository.findAll(query, pageRequest);
         }
+
+        page.forEach(p -> {
+            // order tags ascending by length
+            p.getPropertyTags().sort(new Comparator<PropertyTag>() {
+                @Override
+                public int compare(PropertyTag o1, PropertyTag o2) {
+                    int l1 = o1.getName().length();
+                    int l2 = o2.getName().length();
+                    int order = 0;
+
+                    if (l1 > l2) {
+                        order = -1;
+                    } else if (l1 < l2) {
+                        order = 1;
+                    }
+
+                    return order;
+                }
+            });
+        });
 
         return page;
     }

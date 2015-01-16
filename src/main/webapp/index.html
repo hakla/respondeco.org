@@ -101,6 +101,14 @@
                                     </a>
                                 </li>
                                 <li ng-switch-when="true" ng-hide="isOrganizationUser()">
+                                <li ng-switch-when="true">
+                                    <a href="#/resourcemessages">
+                                        <span class="glyphicon glyphicon-envelope"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.resourcerequestapply">Resource-Requests</span>
+                                    </a>
+                                </li>
+                                <li ng-switch-when="true">
                                     <a href="#/settings">
                                         <span class="glyphicon glyphicon-wrench"></span>
                                         &#xA0;
@@ -205,7 +213,7 @@
         <div class="container error-container">
             <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
         </div>
-        <div ng-class="main() ? '' : 'container'">
+        <div ng-class="main() ? 'container-landing-page' : 'container'">
             <div ng-class="main() ? '' : 'well'" ng-view></div>
 
             <div ng-hide="main()" class="footer">

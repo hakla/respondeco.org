@@ -14,7 +14,7 @@ respondecoApp.factory('Organization', function ($resource) {
             'getResourceOffers': { method: 'GET', url: 'app/rest/organizations/:id/resourceoffers', isArray: true },
             'follow' : {method: 'POST', url: 'app/rest/organizations/:id/follow'},
             'unfollow' : {method: 'DELETE', url: 'app/rest/organizations/:id/unfollow'},
-            'followingState' : {method: 'GET', url: 'app/rest/organizations/:id/followingstate'},
+            'followingState' : {method: 'GET', url: 'app/rest/organizations/:id/followingstate', ignoreAuthModule: true},
             'getPostingsByOrgId': {method: 'GET', url: 'app/rest/organizations/:id/postings'},
             'addPostingForOrganization': {method: 'POST', url: '/app/rest/organizations/:id/postings'},
             'deletePosting' : {method: 'DELETE', url: 'app/rest/organizations/:id/postings/:pid'},

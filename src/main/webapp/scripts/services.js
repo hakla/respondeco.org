@@ -111,6 +111,8 @@ respondecoApp.factory('AuthenticationSharedService', function ($rootScope, $http
                                 $rootScope.account = Session;
                                 $rootScope._account = data;
                                 $rootScope.authenticated = true;
+
+                                $rootScope.$broadcast('event:authenticated', data);
                             }
                         });
                     }
