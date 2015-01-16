@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('SocialMediaController', function($scope, $location, $routeParams, $window, Resource, Account, SocialMedia) {
+respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $routeParams, $window, $route, Resource, Account, SocialMedia) {
 
 	$scope.code = {string: null}
 	$scope.post = {string: null}
@@ -16,6 +16,7 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 	 */
 	$scope.getConnections = function() {
 		SocialMedia.getConnections(function(response) {
+			console.log(response);
 			response.forEach(function(connection) {
 				if(connection.provider === 'twitter') {
 					$scope.twitterConnected = true;
@@ -37,13 +38,6 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 		SocialMedia.connectFacebook(function(redirectURL) {
 			$window.location.href = redirectURL.string;
 		});
-	};
-
-	$scope.connectGoogle = function() {
-		SocialMedia.connectGoogle(function(redirectURL) {
-			console.log(redirectURL.string);
-			$window.location.href = redirectURL.string;
-		})
 	};
 
 	/**
@@ -71,34 +65,32 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 	};
 
 
+	/**
+	 * Disconnects the users account from Facebook
+	 */ 
+	 $scope.disconnectFacebook = function() {
+	 	SocialMedia.disconnectFacebook(function(response) {
+	 		console.log(response);
 
+
+	 		$scope.facebookConnected = false
+	 		$scope.addAlert('info','Die Verbindung zwischen ihrem Account und Facebook wurde erfolgreich aufgehoben');
+	 	}, function(response) {
+	 		console.log(response);
+	 	});
+
+
+	 }
 
 	/**
 	 * Disconnects the users account from Twitter
 	 */
 	$scope.disconnectTwitter = function() {
-		//TODO
-		$scope.twitterConnected = false;
-	};
-
-
-	/**
-	 * Creates a new twitter post on behalf of the user
-	 */
-	$scope.createTwitterPost = function(post) {
-		$scope.post.string = post;
-		SocialMedia.createTwitterPost($scope.post, function(response) {
-			console.log(response);
-		});
-	};
-
-	/**
-	 * Creates a new facebook post on behalf of the user
-	 */
-	$scope.createFacebookPost = function() {
-		var post = 'Ich habe meinen Facebook-Account gerade mit Respondeco.org verbunden!' ;
-		SocialMedia.createFacebookPost({string: post}, function(response) {
-			console.log(response);
+		SocialMedia.disconnectTwitter(function(response) {
+			$scope.twitterConnected = false;
+			$scope.addAlert('info','Die Verbindung zwischen ihrem Respondeco-Account und Twitter wurde aufgehoben. '+
+				'\nUm den Vorgang abzuschließen gehen Sie bitte auf <a href="https://twitter.com/settings/applications">'+
+				'https://twitter.com/settings/applications</a> und widerrufen Sie den Zugriff für Respondeco!');
 		});
 	};
 
@@ -120,25 +112,20 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 	$scope.checkForRedirectParams = function() {
 
 		// used for facebook after user grants permission and facebook redirects
-		if(Respondeco.Helpers.Url.param("code") !== undefined) {
+		if(Respondeco.Helpers.Url.param("code") !== undefined && $scope.facebookConnected == false) {
 			$scope.code.string = Respondeco.Helpers.Url.param("code");
-			SocialMedia.createFacebookConnection($scope.code, function(response) {
-				console.log(response);
-
+			SocialMedia.createFacebookConnection($scope.code, function() {
 				$scope.getConnections();
-				$scope.shareConnectionModal();
 			});
+			$window.location.href = "/#/social-networks";
 		};
 
 		// used for twitter after user grants permission and twitter redirects
-		if(Respondeco.Helpers.Url.param("oauth_token") !== undefined) {
+		if(Respondeco.Helpers.Url.param("oauth_token") !== undefined && $scope.twitterConnected == false) {
 			
 			var token = Respondeco.Helpers.Url.param("oauth_token");
 			var verifier = Respondeco.Helpers.Url.param("oauth_verifier");
 			var request = {token: token, verifier: verifier};
-
-			console.log(token);
-			console.log(verifier);
 
 			//if oauth verifier length is 4 it's a redirect from xing
 			if(verifier.length == 4) {
@@ -148,31 +135,29 @@ respondecoApp.controller('SocialMediaController', function($scope, $location, $r
 
 					//update connections
 					$scope.getConnections();
-
-					$location.search( 'oauth_token', null );
-					$scope.shareConnectionModal();
-
 				});
 			} else {
 				SocialMedia.createTwitterConnection(request, function(response) {
-					console.log(response);
+					$window.location.href = "/#/social-networks";
 
 					//update connections
 					$scope.getConnections();
-
-					$location.search( 'oauth_token', null );
-					$scope.shareConnectionModal();
-
+				}, function() {
+					$window.location.href = "/#/social-networks";
 				});
 			}
 		};
 	};
 	
-	$scope.shareConnectionModal = function() {
-        $('#shareConnectionModal').modal('show');
-    };
+	
+	/**
+	 * Used to add global alert messages to the actual site
+	 */
+	$scope.addAlert = function(type, message) {
+		$rootScope.globalAlerts.push({type:type, msg:message, timeout:3});
+	}
 
-	$scope.checkForRedirectParams();
+
 	$scope.getConnections();
-
+	$scope.checkForRedirectParams();
 });

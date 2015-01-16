@@ -1,7 +1,7 @@
 <div>
     <h1 translate="socialmedia.heading">Connected social networks</h1>
     <div class="row">
-        <div class="col-md-3 col-xs-12 text-center disabled">
+        <div class="col-md-4 col-xs-12 text-center disabled">
             <h2>Facebook</h2>
             <div class="row">
                 <img src="images/sn/facebook.png" alt="Facebook">
@@ -9,30 +9,18 @@
             <div class="spacer-top">
                 <button class="btn btn-default" ng-show="facebookConnected==false" ng-click="connectFacebook()" translate="socialmedia.connect">Connect</button>
                 <button class="btn btn-default btn-danger" ng-show="facebookConnected" ng-click="disconnectFacebook()" translate="socialmedia.disconnect">Disconnect</button>
-                <button class="btn" ng-click="createFacebookPost('hallo facebook')">post</button>
             </div>
         </div>
-        <div class="col-md-3 col-xs-12 text-center disabled">
-            <h2>Google+</h2>
-            <div class="row">
-                <img src="images/sn/googleplus.png" alt="Google+">
-            </div>
-            <div class="spacer-top">
-                <button class="btn btn-default" ng-click="connectGoogle()" translate="socialmedia.connect">Connect</button>
-            </div>
-        </div>
-        <div class="col-md-3 col-xs-12 text-center disabled">
+        <div class="col-md-4 col-xs-12 text-center disabled">
             <h2>Twitter</h2>
-            <div class="row">
-                <img src="images/sn/twitter.png" alt="Twitter">
+            <div class="row"><img src="images/sn/twitter.png" alt="Twitter">
             </div>
             <div class="spacer-top">
                 <button class="btn btn-default" ng-show="twitterConnected==false" ng-click="connectTwitter()" translate="socialmedia.connect">Connect</button>
                 <button class="btn btn-default btn-danger" ng-show="twitterConnected" ng-click="disconnectTwitter()" translate="socialmedia.disconnect">Disconnect</button>
-                <button class="btn" ng-click="createTwitterPost('asdfasdf')">post</button>
             </div>
         </div>
-        <div class="col-md-3 col-xs-12 text-center disabled">
+        <div class="col-md-4 col-xs-12 text-center disabled">
             <h2>Xing</h2>
             <div class="row">
                 <img src="images/sn/xing.png" alt="Xing">
@@ -74,38 +62,4 @@
             </div>
         </div>
     </div>
-
-     <div class="modal fade" id="shareConnectionModal" tabindex="-1" role="dialog" aria-labelledby="shareConnectionModal"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="sendform" role="form" novalidate show-validation
-                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                      ng-submit="createFacebookPost()">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myTextMessageLabel"
-                            translate="global.textmessages.createmessage">Create a TextMessage</h4>
-                    </div>
-                    <div class="modal-body">
-
-                        <p> Wollen Sie die Verbindung mit ihrem Account teilen? </p>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                            <span class="glyphicon glyphicon-ban-circle"></span>
-                            <span translate="global.form.cancel">Cancel</span>
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span>
-                            <span translate="global.form.send">Teilen</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>

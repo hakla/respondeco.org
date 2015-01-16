@@ -2,6 +2,7 @@ package org.respondeco.respondeco.web.rest;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.print.attribute.standard.Media;
 import javax.transaction.Transactional;
 
 import com.codahale.metrics.annotation.Timed;
@@ -26,6 +27,7 @@ import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -128,6 +130,36 @@ public class SocialMediaController {
         return responseEntity;
     }
 
+    /**
+     * DELETE /rest/socialmedia/facebook/disconnect.
+     * @return responseentity containing the deleted socialmediaconnection.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value="/rest/socialmedia/{provider}/disconnect",
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<?> disconnectFacebook(@PathVariable String provider) {
+        ResponseEntity<?> responseEntity;
+
+        try {
+            SocialMediaConnection socialMediaConnection = null;
+            if(provider.equals("facebook")) {
+                socialMediaConnection = socialMediaService.disconnectFacebook();
+            } else if(provider.equals("twitter")) {
+                socialMediaConnection = socialMediaService.disconnectTwitter();
+            }
+
+            SocialMediaConnectionResponseDTO dto = SocialMediaConnectionResponseDTO.fromEntity(socialMediaConnection, null);
+
+            responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
+
+        } catch (NoSuchSocialMediaConnectionException e) {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
+    }
 
     /**
      * POST  /rest/connect/twitter
@@ -206,13 +238,6 @@ public class SocialMediaController {
 
         return responseEntity;
     }
-
-
-
-
-
-
-
 
     /**
      * POST  /rest/connect/xing

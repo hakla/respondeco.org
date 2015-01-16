@@ -9,9 +9,12 @@ import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
@@ -23,12 +26,18 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
+import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.social.xing.api.Xing;
+import org.springframework.social.xing.api.impl.XingTemplate;
 import org.springframework.social.xing.connect.XingConnectionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -106,9 +115,9 @@ public class SocialMediaService {
         //change code for AccessGrant Token
         AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, env.getProperty("spring.social.facebook.redirectUrl"), null);
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(accessGrant);
-        log.debug("FacebookConnection: " + connection.toString());
 
         ConnectionData connectionData = connection.createData();
+        log.debug("PROFILEURL:"+connection.getProfileUrl());
 
         SocialMediaConnection socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("facebook");
@@ -142,11 +151,34 @@ public class SocialMediaService {
             ,null,null, socialMediaConnection.getToken(), null, null, null);
 
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(connectionData);
+
         String status = connection.getApi().feedOperations().updateStatus(post);
 
         return status;
     }
 
+    /**
+     * Disconnects the logged in users account from facebook if his account was already connected
+     * with facebook. Also sends a REST Request to the facebook graph api to revoke the permissions
+     * for the respondeco app. Otherwise it throws an NoSuchMediaConnectionException.
+     * @return the deleted connection from the db.
+     * @throws NoSuchSocialMediaConnectionException if users account is not connected with facebook.
+     */
+    public SocialMediaConnection disconnectFacebook() throws NoSuchSocialMediaConnectionException {
+        User user = userService.getUserWithAuthorities();
+
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
+        if(socialMediaConnection == null) {
+            throw new NoSuchSocialMediaConnectionException("user is not connected with facebook");
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("https://graph.facebook.com/me/permissions?access_token=" + socialMediaConnection.getToken());
+
+        socialMediaRepository.delete(socialMediaConnection);
+
+        return socialMediaConnection;
+    }
 
 
 
@@ -196,6 +228,7 @@ public class SocialMediaService {
             new AuthorizedRequestToken(requestToken, oauthVerifier),null);
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(accessToken);
+        log.debug("TWITTERURL:"+connection.getProfileUrl());
 
         socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("twitter");
@@ -203,15 +236,6 @@ public class SocialMediaService {
         socialMediaConnection.setSecret(accessToken.getSecret());
         socialMediaConnection.setUser(user);
         socialMediaConnection = socialMediaRepository.save(socialMediaConnection);
-
-        //try to post
-        //SocialMediaConnection c = socialMediaRepository.getOne(0L);
-        //Connection<Twitter> newCon = twitterConnectionFactory.createConnection(new ConnectionData(
-        //    c.getProvider(), null, null, null, null, c.getToken(), null, null, null)
-        //);
-
-
-        //newCon.getApi().timelineOperations().updateStatus("asdfasdf");
 
         return socialMediaConnection;
     }
@@ -244,6 +268,26 @@ public class SocialMediaService {
 
         return tweet;
     }
+
+    /**
+     * Disconnects the logged in users account from twitter if his account was already connected with
+     * twitter. Otherwise it throws an NoSuchMediaConnectionException.
+     * @return the deleted connection from the db.
+     * @throws NoSuchSocialMediaConnectionException if users account is not connected with facebook.
+     */
+    public SocialMediaConnection disconnectTwitter() throws NoSuchSocialMediaConnectionException {
+        User user = userService.getUserWithAuthorities();
+
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
+        if(socialMediaConnection == null) {
+            throw new NoSuchSocialMediaConnectionException("user is not connected with twitter");
+        }
+
+        socialMediaRepository.delete(socialMediaConnection);
+
+        return socialMediaConnection;
+    }
+
 
     /**
      * Creates a Xing Connection with help of the token and oauthVerifier from the user.
@@ -292,7 +336,7 @@ public class SocialMediaService {
     /**
      * Creates a new post on Xing if the user account is connected with Xing.
      * @param post message to post.
-     * @return created !TODO object.
+     * @return created Post as String
      * @throws OperationForbiddenException if user is not logged in.
      * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
      */
