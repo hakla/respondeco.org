@@ -41,7 +41,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Benjamin Fraller on 12.01.2015.
+ * Service-class for SocialMedia
+ *
+ * Handles creation of authorization urls, creation of connections and persisting them into db, and creation
+ * of posts for facebook, twitter and xing.
  */
 @Service
 public class SocialMediaService {
@@ -111,7 +114,6 @@ public class SocialMediaService {
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(accessGrant);
 
         ConnectionData connectionData = connection.createData();
-        log.debug("PROFILEURL:"+connection.getProfileUrl());
 
         SocialMediaConnection socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("facebook");
@@ -222,7 +224,6 @@ public class SocialMediaService {
             new AuthorizedRequestToken(requestToken, oauthVerifier),null);
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(accessToken);
-        log.debug("TWITTERURL:"+connection.getProfileUrl());
 
         socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("twitter");
@@ -282,6 +283,23 @@ public class SocialMediaService {
         return socialMediaConnection;
     }
 
+    /**
+     * Creates the Authorization URL for the user if he wants to connect his respondeco account
+     * with his Xing account
+     * @return Authorization URL as String
+     */
+    public String createXingAuthorizationURL() {
+        log.debug("Creating Xing Authorization URL");
+
+        OAuth1Operations oauthOperations = xingConnectionFactory.getOAuthOperations();
+        OAuthToken requestToken = oauthOperations.fetchRequestToken(env.getProperty("spring.social.xing.redirectUrl"), null);
+        String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+
+        log.debug("Secret:" +requestToken.getSecret());
+        log.debug("AuthorizeURL: " + authorizeUrl);
+
+        return authorizeUrl;
+    }
 
     /**
      * Creates a Xing Connection with help of the token and oauthVerifier from the user.
@@ -355,39 +373,6 @@ public class SocialMediaService {
         return createdPost;
     }
 
-
-
-    /**
-     * Creates the Authorization URL for the user if he wants to connect his respondeco account
-     * with his Xing account
-     * @return Authorization URL as String
-     */
-    public String createXingAuthorizationURL() {
-        log.debug("Creating Xing Authorization URL");
-
-        OAuth1Operations oauthOperations = xingConnectionFactory.getOAuthOperations();
-        OAuthToken requestToken = oauthOperations.fetchRequestToken(env.getProperty("spring.social.xing.redirectUrl"), null);
-        String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
-
-        log.debug("Secret:" +requestToken.getSecret());
-        log.debug("AuthorizeURL: " + authorizeUrl);
-
-        return authorizeUrl;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Returns a List of social media connection for the current user
      * @return List of social medie aconnections
@@ -404,32 +389,5 @@ public class SocialMediaService {
         return connections;
     }
 
-    /**
-     * Create Authorization URL for the client to allow access for respondeco
-     * @return AuthorizationURL as String
-     *
-    public String createGoogleAuthorizationURL() {
-    OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-    OAuth2Parameters params = new OAuth2Parameters();
-    params.setRedirectUri(env.getProperty("spring.social.google.redirectUrl"));
-    params.setScope("https://www.googleapis.com/auth/plus.login");
-
-    String authorizationURL = oauthOperations.buildAuthenticateUrl(params);
-
-    return authorizationURL;
-    }
-
-
-    public Connection<Google> createGoogleConnection(String code) {
-
-    OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-    AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, env.getProperty("spring.social.google.redirectUrl"), null);
-    Connection<Google> connection = googleConnectionFactory.createConnection(accessGrant);
-
-    connection.getApi().plusOperations().
-
-
-    }
-     */
 
 }
