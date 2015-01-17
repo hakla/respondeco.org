@@ -63,18 +63,15 @@
 
             <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                 <div class="form-group" ng-show="isOwner()">
-                    <div class="input-group">
-                        <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}" ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off" />
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
-                        </div>
-                    </div>
+                    <textarea class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
+                          ng-minlength="5" ng-maxlength="2048" ng-model="postingInformation" required autocomplete="off" />
+                    <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
                     <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
                         <p class="help-block" ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
                             Your Posting is required to be at least 5 characters
                         </p>
                         <p class="help-block" ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
-                            Your Posting is required to be at max 100 characters
+                            Your Posting is required to be at max 2048 characters
                         </p>
                         <p class="help-block" ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
                             Your Posting is required

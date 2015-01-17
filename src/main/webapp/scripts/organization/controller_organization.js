@@ -143,7 +143,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     };
 
     $scope.addPosting = function() {
-        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
         Organization.addPostingForOrganization({id:$routeParams.id}, $scope.postingInformation,
