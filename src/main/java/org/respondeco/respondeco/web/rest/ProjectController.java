@@ -698,9 +698,9 @@ public class ProjectController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            postingFeedService.addPostingForProjects(id, information);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            Posting createdPosting = postingFeedService.addPostingForProjects(id, information);
+            PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
+            responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
         } catch (NoSuchProjectException e) {
             log.error("Could not post for project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);

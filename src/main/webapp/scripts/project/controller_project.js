@@ -64,11 +64,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
 
-    $scope.postingShowCount = 5;
-    $scope.postingShowIncrement = 5;
-    $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
-    $scope.postingInformation = null;
-
     // details mock
     $scope.status = {
         open1: true
@@ -150,8 +145,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
             }),
-            resourceRequirements: $scope.project.resourceRequirements,
-            postings: $scope.project.postings
+            resourceRequirements: $scope.project.resourceRequirements
         };
 
         if($scope.marker.coords.latitude !== null) {
@@ -190,7 +184,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             id: id
         }, function() {
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
-            $scope.project.postings = $scope.project.postings || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
             if ($scope.project.concrete === true) {
@@ -630,11 +623,45 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     //Posting for project
+    $scope.postingPage = -1;
+    $scope.postingPageSize = 5;
+    $scope.postingInformation = null;
+    $scope.postingsTotal = null;
+    $scope.postings = [];
 
     //function to refresh postings for the project in the scope; get postings in the given pagesize
     var refreshPostings = function() {
-        $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
+        Project.getPostingsByProjectId({
+            id: $routeParams.id,
+            page: $scope.postingPage,
+            pageSize: $scope.postingPageSize },
+            function(data) {
+                $scope.postingsTotal = data.totalElements;
+                $scope.postings = $scope.postings.concat(data.postings);
+                console.log("TOTAL POSTINGS: " + $scope.postingsTotal);
+                console.log("POSTINGS: " + $scope.postings.length);
+        });
     };
+
+    var resetPostings = function() {
+        $scope.postingPage = -1;
+        $scope.postingsTotal = null;
+        $scope.postings = [];
+        $scope.showMorePostings();
+    }
+
+    $scope.canShowMorePostings = function() {
+        return $scope.postings.length < $scope.postingsTotal;
+    };
+
+    //shows more postings by incrementing the postingCount (default 5 + 5)
+    $scope.showMorePostings = function() {
+        $scope.postingPage = $scope.postingPage + 1;
+        refreshPostings();
+    };
+
+    //show first page of postings
+    $scope.showMorePostings();
 
     //method to add postings for the project in the scope; lenght of posting has to be at least 5 char and
     // at max 100 chars long; refreshing postings after adding
@@ -643,8 +670,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             return;
         }
         Project.addPostingForProject({id:$routeParams.id}, $scope.postingInformation,
-            function() {
-                refreshPostings();
+            function(newPosting) {
+                //add new posting and cut array down to current number of shown postings
+                $scope.postings.unshift(newPosting);
+                $scope.postingsTotal = $scope.postingsTotal + 1;
+                $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
                 $scope.postingInformation = null;
                 $scope.postingform.$setPristine();
             });
@@ -659,9 +689,4 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         });
     };
 
-    //shows more postings by incrementing the postingCount (default 5 + 5)
-    $scope.showMorePostings = function() {
-        $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
-        refreshPostings();
-    }
 });
