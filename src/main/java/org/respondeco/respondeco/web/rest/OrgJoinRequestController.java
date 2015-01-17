@@ -57,7 +57,12 @@ public class OrgJoinRequestController {
     }
 
     /**
-     * POST  /rest/orgjoinrequests -> Create a new orgjoinrequest.
+     * POST method to create orgjoinrequest
+     * @param orgjoinrequest orgjoinrequestdto with the given informations to create an orgjoinrequest
+     * @param request is used for the activation email if user doesn't exist
+     * @param response is used for the activation email if user doesn't exist
+     * @return OK if orgjoinrequest has been created; BAD_REQUEST if organization doesn't exist, user is already
+     * invited or organization is not verified
      */
     @RequestMapping(value = "/rest/orgjoinrequests",
             method = RequestMethod.POST,
@@ -125,7 +130,8 @@ public class OrgJoinRequestController {
     }
 
     /**
-     * GET  /rest/orgjoinrequests -> get all the orgjoinrequests.
+     * GET method to get all orgjoinrequests existing
+     * @return a list of orgjoinrequestdtos created out of the found orgjoinrequests in the service
      */
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     @RequestMapping(value = "/rest/orgjoinrequests",
@@ -144,7 +150,10 @@ public class OrgJoinRequestController {
     }
 
     /**
-     * DELETE  /rest/orgjoinrequests/:id -> accept user and delete the "id" orgjoinrequest.
+     * POST method to accept the orgjoinrequest
+     * @param id the id of the orgjoinrequest to be accepted
+     * @return OK if the orgjoinrequest hast been accepted; NOT_FOUND if the orgjoinrequest doesn't exist or
+     * the organization doesn't eist
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/accept",
@@ -168,7 +177,10 @@ public class OrgJoinRequestController {
     }
 
     /**
-     * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
+     * POST method to decline the orgjoinrequest
+     * @param id the id of the orgjoinrequest to be declined
+     * @return OK if the orgjoinrequest hast been declined; NOT_FOUND if the orgjoinrequest doesn't exist or
+     * the organization doesn't eist
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/decline",
@@ -193,7 +205,10 @@ public class OrgJoinRequestController {
     }
 
     /**
-     * DELETE  /rest/orgjoinrequests/:id -> decline user and delete the "id" orgjoinrequest.
+     * DELETE method to delete the orgjoinreuest
+     * @param id the id of the orgjoinrequest to be deleted
+     * @return OK if the orgjoinrequest hast been deleted; NOT_FOUND if the orgjoinrequest doesn't exist,
+     * FORBIDDEN if the user is not owner of the organization or BAD_REQUEST if the organization doesn'T exist
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/orgjoinrequests/{id}",

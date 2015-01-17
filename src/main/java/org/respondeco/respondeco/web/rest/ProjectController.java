@@ -648,10 +648,12 @@ public class ProjectController {
 
 
     /**
-     * gents the list of postings ordered by creation date for the specified project
+     * GET gets the postings of the given project as a page of postings defined by page and pagesize
      *
-     * @param id the id of the project for which to get the postings
-     * @return response status OK and the Postings for the project
+     * @param id given id of the project
+     * @param page the page which is used for the pagerequest (0 by default)
+     * @param pageSize the pagesize (elements of the page) used for the pagerequest
+     * @return OK and PostingPaginationResponseDTO with found postings; NOT_FOUND if project doesn't exist
      */
     @RequestMapping(value = "/rest/projects/{id}/postings",
             method = RequestMethod.GET,
@@ -680,10 +682,11 @@ public class ProjectController {
     }
 
     /**
-     * creates a post for the organization in the postingfeed
-     * @param information the string which contains the informaiton of the posting
-     * @param id the id of the organization for which to create the posting
-     * @return response status ok if posting has
+     * creates a post for the project in the postingfeed
+     * @param information the string which contains the information of the posting
+     * @param id the id of the project for which to create the posting
+     * @return response status OK if no exception has been thrown; NOT_FOUND if the project doesn't exist;
+     * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
      */
     @RequestMapping(value = "/rest/projects/{id}/postings",
             method = RequestMethod.POST,

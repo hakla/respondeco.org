@@ -559,10 +559,12 @@ public class OrganizationController {
 
 
     /**
-     * gets the list of postings ordered by creation date for the specified organization
+     * GET gets the postings of the given organization as a page of postings defined by page and pagesize
      *
-     * @param id the id of the organization for which to get the postings
-     * @return response status OK and the Postings for the organization
+     * @param id given id of the organization
+     * @param page the page which is used for the pagerequest (0 by default)
+     * @param pageSize the pagesize (elements of the page) used for the pagerequest
+     * @return OK and PostingPaginationResponseDTO with found postings; NOT_FOUND if organization doesn't exist
      */
     @RequestMapping(value = "/rest/organizations/{id}/postings",
             method = RequestMethod.GET,
@@ -595,9 +597,10 @@ public class OrganizationController {
 
     /**
      * creates a post for the organization in the postingfeed
-     * @param information the string which contains the informaiton of the posting
+     * @param information the string which contains the information of the posting
      * @param id the id of the organization for which to create the posting
-     * @return response status ok if posting has
+     * @return response status OK if no exception has been thrown; NOT_FOUND if the organization doesn't exist;
+     * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
      */
     @RequestMapping(value = "/rest/organizations/{id}/postings",
             method = RequestMethod.POST,
