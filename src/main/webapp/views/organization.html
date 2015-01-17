@@ -44,6 +44,15 @@
             <div class="col-xs-12">
                 <organization-members />
             </div>
+            <div class="rating-container">
+                <div class="row">
+                    <div id="rating">
+                        <span>Aktuelle Bewertung: </span>
+                        <rating max="5" readonly="!canRate" on-leave="overStar = null"
+                                ng-model="shownRating"></rating>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-8 newsfeed">
             <h3 translate="postingfeed.title">News</h3>
