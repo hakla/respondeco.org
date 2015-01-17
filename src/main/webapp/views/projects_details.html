@@ -80,13 +80,13 @@
                 <h3>PostingFeed</h3>
                 <div class="well">
                     <ul>
-                        <li ng-repeat="posting in postingPage.postings">
+                        <li ng-repeat="posting in postings">
                             <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
                         </li>
                     </ul>
                 </div>
                 <a ng-click="showMorePostings()" translate="posting.showmore"
-                   ng-show="postingPage.totalElements > postingShowCount">Show more</a>
+                   ng-show="canShowMorePostings()">Show more</a>
                 <hr/>
                 <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                     <div class="form-group" ng-show="editable">

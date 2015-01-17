@@ -7,11 +7,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.organizations = resolvedOrganization;
 
-    $scope.postingShowCount = 5;
-    $scope.postingShowIncrement = 5;
-    $scope.postingPage = Organization.getPostingsByOrgId({id:$routeParams.id, pageSize: $scope.postingShowCount})
-    $scope.postingInformation = null;
-
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;
 
@@ -135,20 +130,58 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.showFollow = function() {
         return $scope.following == false;// && $scope.isOwner() == false;
     };
+
     //Posting
 
+    //Posting for project
+    $scope.postingPage = -1;
+    $scope.postingPageSize = 5;
+    $scope.postingInformation = null;
+    $scope.postingsTotal = null;
+    $scope.postings = [];
+
+    //function to refresh postings for the organization in the scope; get postings in the given pagesize
     var refreshPostings = function() {
-        $scope.postingPage = Organization
-            .getPostingsByOrgId({id:$scope.organization.id, pageSize: $scope.postingShowCount})
+        Organization.getPostingsByOrgId({
+                id: $routeParams.id,
+                page: $scope.postingPage,
+                pageSize: $scope.postingPageSize },
+            function(data) {
+                $scope.postingsTotal = data.totalElements;
+                $scope.postings = $scope.postings.concat(data.postings);
+            });
     };
+
+    var resetPostings = function() {
+        $scope.postingPage = -1;
+        $scope.postingsTotal = null;
+        $scope.postings = [];
+        $scope.showMorePostings();
+    }
+
+    $scope.canShowMorePostings = function() {
+        return $scope.postings.length < $scope.postingsTotal;
+    };
+
+    //shows more postings by incrementing the postingCount (default 5 + 5)
+    $scope.showMorePostings = function() {
+        $scope.postingPage = $scope.postingPage + 1;
+        refreshPostings();
+    };
+
+    //show first page of postings
+    $scope.showMorePostings();
 
     $scope.addPosting = function() {
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
         Organization.addPostingForOrganization({id:$routeParams.id}, $scope.postingInformation,
-            function() {
-                refreshPostings();
+            function(newPosting) {
+                //add new posting and cut array down to current number of shown postings
+                $scope.postings.unshift(newPosting);
+                $scope.postingsTotal = $scope.postingsTotal + 1;
+                $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
                 $scope.postingInformation = null;
                 $scope.postingform.$setPristine();
             });
@@ -168,11 +201,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
             function() {
                 refreshPostings();
             });
-    };
-
-    $scope.showMorePostings = function() {
-        $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
-        refreshPostings();
     };
 
     /**

@@ -612,9 +612,9 @@ public class OrganizationController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            postingFeedService.addPostingForOrganization(id,information);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            Posting createdPosting = postingFeedService.addPostingForOrganization(id,information);
+            PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
+            responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not post for organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);

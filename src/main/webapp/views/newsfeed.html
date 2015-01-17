@@ -2,12 +2,11 @@
     <h3>Newsfeed</h3>
     <div class="well">
         <ul>
-            <li ng-repeat="posting in postingPage.postings">
-                <h4>{{posting.author.organization.name}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small>
-                </sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+            <li ng-repeat="posting in news">
+                <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
             </li>
         </ul>
     </div>
-    <a ng-click="showMorePostings()" translate="posting.showmore"
-       ng-show="postingPage.totalElements > postingShowCount">Show more</a>
+    <a ng-click="showMoreNews()" translate="posting.showmore"
+       ng-show="canShowMoreNews()">Show more</a>
 </div>

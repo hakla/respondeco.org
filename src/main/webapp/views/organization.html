@@ -81,12 +81,13 @@
             </form>
             <div class="well">
                 <ul>
-                    <li ng-repeat="posting in postingPage.postings">
+                    <li ng-repeat="posting in postings">
                             <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="isOwner()" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
                         </li>
                 </ul>
             </div>
-            <a ng-click="showMorePostings()" translate="posting.showmore" ng-show="postingPage.totalElements > postingShowCount">Show more</a>
+            <a ng-click="showMorePostings()" translate="posting.showmore"
+               ng-show="canShowMorePostings()">Show more</a>
             <hr/>
         </div>
     </div>
