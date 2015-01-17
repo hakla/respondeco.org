@@ -142,8 +142,8 @@ public class PostingFeedRepositoryTest extends AbstractTransactionalJUnit4Spring
 
         assertNotNull(postings);
 
-        assertTrue(postings.getContent().get(0).equals(posting1));
-        assertTrue(postings.getContent().get(1).equals(posting2));
+        assertTrue(postings.getContent().get(1).equals(posting1));
+        assertTrue(postings.getContent().get(0).equals(posting2));
     }
 
     @Test
@@ -152,8 +152,8 @@ public class PostingFeedRepositoryTest extends AbstractTransactionalJUnit4Spring
 
         assertNotNull(postings);
 
-        assertTrue(postings.getContent().get(1).equals(posting3));
-        assertTrue(postings.getContent().get(0).equals(posting4));
+        assertTrue(postings.getContent().get(0).equals(posting3));
+        assertTrue(postings.getContent().get(1).equals(posting4));
     }
 
 }

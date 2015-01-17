@@ -48,6 +48,22 @@ public class RatingService {
         this.projectService = projectService;
     }
 
+    /**
+     * mehtod to rate a project; successfully if the project does exist, the match does exist, project is concrete and
+     * has been started already, user is owner of organization which has resource exchange with the project and
+     * the match has not been used for rating this/a project already
+     * @param projectId the given id of the project which should be rated
+     * @param matchId the given id of the resourcematch which has to exist and has to include the project and is unrated
+     * @param ratingValue integer value for rating
+     * @param comment string for commentary of rating
+     * @throws NoSuchResourceMatchException resource match doesn't exist in repository
+     * @throws NoSuchOrganizationException organization doesn't exist (user is not a member of an organization)
+     * @throws NoSuchProjectException project doesn't exist in the repository
+     * @throws ProjectRatingException project hasn't been started yet, project is not concrete, match hasn't been
+     * accepted yet (no resource exchange so far), user is not owner of organization, organization doesn't match
+     * the organization from the resourcematch, the project doesn't match the resourcematch, the match has already
+     * been rated
+     */
     public void rateProject(Long projectId, Long matchId, Integer ratingValue, String comment)
             throws NoSuchResourceMatchException,
             NoSuchOrganizationException,
@@ -106,6 +122,24 @@ public class RatingService {
         ratingRepository.save(rating);
     }
 
+    /**
+     * mehtod to rate an organization; successfully if the organization does exist, the match does exist,
+     * project is concrete and has been started already, user is manager of project which has resource exchange
+     * with the organization, user is not owner of the organization which has to be rated and the match has not been
+     * used for rating this/a organization already
+     * @param orgId the given id of the organization which should be rated
+     * @param matchId the given id of the resourcematch which has to exist and has to include the project and is unrated
+     * @param ratingValue integer value for rating
+     * @param comment string for commentary of rating
+     * @throws NoSuchResourceMatchException resource match doesn't exist in repository
+     * @throws NoSuchOrganizationException organization doesn't exist (user is not a member of an organization)
+     * @throws NoSuchProjectException project of the resourcematch doesn't exist in the repository
+     * @throws SupporterRatingException project hasn't been started yet, project is not concrete, match hasn't been
+     * accepted yet (no resource exchange so far), user is not manager of project,
+     * user is owner of organization, organization doesn't match
+     * the organization from the resourcematch, the project doesn't match the resourcematch, the match has already
+     * been rated
+     */
     public void rateOrganization(Long orgId, Long matchId, Integer ratingValue, String comment)
             throws NoSuchResourceMatchException,
             NoSuchProjectException,
@@ -224,6 +258,13 @@ public class RatingService {
         return ratingPermissions;
     }
 
+    /**
+     * method to get an aggregated rating for project which uses the object array from the repository to
+     * create a new aggregated rating object (first array value is the count of rating;
+     * second array value is the average rating value)
+     * @param projectId the given id of the project
+     * @return the created aggregated rating object
+     */
     public AggregatedRating getAggregatedRatingByProject(Long projectId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByProject(projectId);
         if(objectArray[0][1] == null) {
@@ -235,6 +276,13 @@ public class RatingService {
         return aggregatedRating;
     }
 
+    /**
+     * method to get an aggregated rating for organization which uses the object array from the repository to
+     * create a new aggregated rating object (first array value is the count of rating;
+     * second array value is the average rating value)
+     * @param organizationId the given id of the organization
+     * @return the created aggregated rating object
+     */
     public AggregatedRating getAggregatedRatingByOrganization(Long organizationId) {
         Object[][] objectArray = resourceMatchRepository.getAggregatedRatingByOrganization(organizationId);
         if(objectArray[0][1] == null) {

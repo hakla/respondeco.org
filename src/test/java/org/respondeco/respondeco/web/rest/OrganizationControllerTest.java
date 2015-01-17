@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.h2.mvstore.Page;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -564,16 +565,6 @@ public class OrganizationControllerTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes("posting1")))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testGetPostingForOrganization() throws Exception {
-        defaultOrganization.setPostingFeed(postingFeed);
-        doReturn(defaultOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(defaultOrganization.getId());
-
-        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/postings"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

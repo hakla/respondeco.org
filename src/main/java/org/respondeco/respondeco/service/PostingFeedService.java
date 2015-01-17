@@ -42,6 +42,15 @@ public class PostingFeedService {
 
     }
 
+    /**
+     * method to add a posting to the postingfeed of the given project
+     * @param projectId the id of the project for which the posting should be added
+     * @param information information of the posting
+     * @return returns the added posting
+     * @throws NoSuchProjectException is thrown if project doesn't exist
+     * @throws PostingFeedException is thrown if user is not manager, information of posting is empty or
+     * project doesn't have a postingfeed
+     */
     public Posting addPostingForProjects(Long projectId, String information) throws
             NoSuchProjectException,
             PostingFeedException {
@@ -69,6 +78,15 @@ public class PostingFeedService {
         return postingRepository.save(posting);
     }
 
+    /**
+     * method to add a posting to the postingfeed of the given organization
+     * @param organizationId the id of the organization for which the posting should be added
+     * @param information information of the posting
+     * @return returns the added posting
+     * @throws NoSuchOrganizationException is thrown if organization doesn't exist
+     * @throws PostingFeedException is thrown if user is not owner, information of posting is empty or
+     * organization doesn't have a postingfeed
+     */
     public Posting addPostingForOrganization(Long organizationId, String information) throws
             NoSuchOrganizationException,
             PostingFeedException {
@@ -96,6 +114,13 @@ public class PostingFeedService {
         return postingRepository.save(posting);
     }
 
+    /**
+     * method to return a page of postings for the given organization; page settings are defined by the restParameters
+     * @param organizationId the given id of the organization for which the postings are searched
+     * @param restParameters restParameters from the controller define the page settings
+     * @return returns a page of postings for the given organization
+     * @throws NoSuchOrganizationException is thrown if the organization doesn't exist
+     */
     public Page<Posting> getPostingsForOrganization(Long organizationId, RestParameters restParameters) throws
             NoSuchOrganizationException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
@@ -105,6 +130,13 @@ public class PostingFeedService {
         return postingFeedRepository.getPostingsForOrganization(organizationId, restParameters.buildPageRequest());
     }
 
+    /**
+     * method to return a page of postings for the given project; page settings are defined by the restParameters
+     * @param projectId the given id of the project for which the postings are searched
+     * @param restParameters restParameters from the controller define the page settings
+     * @return returns a page of postings for the given project
+     * @throws NoSuchProjectException is thrown if the project doesn't exist
+     */
     public Page<Posting> getPostingsForProject(Long projectId, RestParameters restParameters) throws
             NoSuchProjectException {
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
@@ -114,6 +146,11 @@ public class PostingFeedService {
         return postingFeedRepository.getPostingsForProject(projectId, restParameters.buildPageRequest());
     }
 
+    /**
+     * method to delete (setting active flag false) a posting with the given id
+     * @param postingId the given id of the posting to be deleted
+     * @throws PostingException is thrown if the posting doesn't exist or the user is not the author of the posting
+     */
     public void deletePosting(Long postingId) throws PostingException {
         Posting posting = postingRepository.findByIdAndActiveIsTrue(postingId);
         User currentUser = userService.getUserWithAuthorities();

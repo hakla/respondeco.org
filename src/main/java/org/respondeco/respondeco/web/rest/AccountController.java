@@ -317,10 +317,10 @@ public class AccountController {
     }
 
     /**
-     * gents the list of postings ordered by creation date for the specified project
-     *
-     * @param id the id of the project for which to get the postings
-     * @return response status OK and the Postings for the project
+     * method to get the newsfeed of the current account; newsfeed is defined by the followed projects/organizations
+     * @param page the given page used to create the pagerequest (0 by default)
+     * @param pageSize the given pagesize (elements of the page;20 by default) used to create the pagerequest
+     * @return returns OK and a PostingPaginationResponseDTO with found postings
      */
     @RequestMapping(value = "/rest/account/newsfeed",
             method = RequestMethod.GET,

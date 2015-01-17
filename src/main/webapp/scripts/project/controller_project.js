@@ -607,12 +607,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.showFollow = function() {
         return $scope.following == false;// && $scope.editable == false;
     };
-    //Posting
 
+    //Posting for project
+
+    //function to refresh postings for the project in the scope; get postings in the given pagesize
     var refreshPostings = function() {
         $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
     };
 
+    //method to add postings for the project in the scope; lenght of posting has to be at least 5 char and
+    // at max 100 chars long; refreshing postings after adding
     $scope.addPosting = function() {
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
             return;
@@ -625,6 +629,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             });
     };
 
+    //delete posting and refresh after deletion
     $scope.deletePosting = function(id) {
         Project.deletePosting({id:$scope.project.id,
             pid:id},
@@ -633,6 +638,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         });
     };
 
+    //shows more postings by incrementing the postingCount (default 5 + 5)
     $scope.showMorePostings = function() {
         $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
         refreshPostings();
