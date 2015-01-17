@@ -79,10 +79,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     var searchText = null;
-    var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+    $scope.isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
     //allow execute follow state only if project ID is set!
-    if (isNew == false){
+    if ($scope.isNew == false){
         $scope.followingState();
     }
 
@@ -156,7 +156,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 projectId: $scope.project.id}
         }
 
-        Project[isNew ? 'save' : 'update'](project,
+        Project[$scope.isNew ? 'save' : 'update'](project,
             function() {
                 $scope.projects = Project.query();
                 $scope.clear();
@@ -165,7 +165,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.edit = function() {
         $location.path("/projects/edit/" + $scope.project.id)
-    }
+    };
 
     $scope.createStaticMapLink = function() {
         var lat = $scope.project.projectLocation.latitude;
@@ -177,7 +177,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         lng;
 
         return link;
-    }
+    };
 
     $scope.update = function(id) {
         $scope.project = Project.get({
@@ -294,12 +294,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.collectedEssential = Math.round($scope.collectedEssential);
     };
 
-    $scope.delete = function(id) {
+    $scope.delete = function() {
         Project.delete({
-                id: id
+                id: $routeParams.id
             },
             function() {
-                $scope.projects = Project.query();
                 $location.path('/projects');
             });
     };
@@ -557,7 +556,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.getOffers();
 
-    if (isNew === false) {
+    if ($scope.isNew === false) {
         $scope.update($routeParams.id);
     }
 

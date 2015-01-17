@@ -57,7 +57,8 @@
             "save": "Speichern",
             "postingInformation": "Posting",
             "orgname": "Name der Organisation",
-            "orgname.placeholder": "Der Name Ihrer Organisation"
+            "orgname.placeholder": "Der Name Ihrer Organisation",
+            "delete": "Löschen"
         },
 
         "messages": {

@@ -67,6 +67,7 @@
                                         <td translate="resource.requirement.amount">amount</td>
                                         <td translate="resource.requirement.isEssential">is essential</td>
                                         </td>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr data-toggle="modal" ng-repeat="r in project.resourceRequirements">
@@ -78,7 +79,7 @@
                                         </td>
                                         <td><a id="desd" ng-click="editRequirement($index)">edit</a>
                                         </td>
-                                        <td><a id="test" ng-click="removeRequirement($index)"><span class="glyphicon glyphicon-remove-circle"></a>
+                                        <td><a id="test" ng-click="removeRequirement($index)"><span class="glyphicon glyphicon-remove-circle"/></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -97,6 +98,7 @@
 
         </div>
         <div class="modal-footer">
+            <resp-confirm-delete class="pull-left" ng-hide="isNew" on-confirm=delete()></resp-confirm-delete>
             <button id="cancelButton" type="button" class="btn btn-link" data-dismiss="modal" translate="global.form.cancel" ng-click="clear()" />
             <button id="saveButton" type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
                 <span class="glyphicon glyphicon-save"></span> {{'global.form.save' | translate}}
