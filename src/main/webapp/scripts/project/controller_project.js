@@ -638,8 +638,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             function(data) {
                 $scope.postingsTotal = data.totalElements;
                 $scope.postings = $scope.postings.concat(data.postings);
-                console.log("TOTAL POSTINGS: " + $scope.postingsTotal);
-                console.log("POSTINGS: " + $scope.postings.length);
         });
     };
 
