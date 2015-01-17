@@ -3,17 +3,11 @@
     <div class="well">
         <ul>
             <li ng-repeat="posting in postingPage.postings">
-                <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+                <h4>{{posting.author.organization.name}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small>
+                </sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
             </li>
         </ul>
     </div>
     <a ng-click="showMorePostings()" translate="posting.showmore"
        ng-show="postingPage.totalElements > postingShowCount">Show more</a>
-    <hr/>
-    <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
-        <div class="form-group" ng-show="editable">
-            <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
-                   ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off"/>
-        </div>
-    </form>
 </div>
