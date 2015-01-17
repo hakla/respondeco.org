@@ -53,14 +53,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.marker.address = place[0].formatted_address;
 
         $scope.map.zoom = 14;
-    }
+    };
 
     var searchBoxEvents = {
         places_changed: function (searchBox) {
             var id = 0;
             $scope.placeToMarker(searchBox, id);
         }
-    }
+    };
 
     $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
 
@@ -292,7 +292,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
         $scope.collected = Math.round($scope.collected);
         $scope.collectedEssential = Math.round($scope.collectedEssential);
-    }
+    };
 
     $scope.delete = function(id) {
         Project.delete({
@@ -325,7 +325,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resource = {
         resourceTags: [],
         isEssential: false
-    }
+    };
     $scope.selectedResourceTags = [];
 
     $scope.createRequirement = function() {
@@ -335,7 +335,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         if (edit == false) {
             $scope.project.resourceRequirements.push(resource);
         }
-    }
+    };
 
     $scope.clearRequirement = function() {
         $scope.resource = {
@@ -348,7 +348,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.removeRequirement = function(index) {
         $scope.project.resourceRequirements.splice(index, 1);
-    }
+    };
 
     $scope.editRequirement = function(index) {
         edit = true;
@@ -359,7 +359,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.showResourceModal = function() {
         $('#addResource').modal('toggle');
-    }
+    };
 
     //RATING
     $scope.canRate = false;
@@ -392,24 +392,24 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 $scope.canRate = permissions[0].allowed;
                 $scope.ratedMatch = permissions[0].matchid;
             });
-    }
+    };
     $scope.refreshProjectRating();
 
     $scope.refreshOrganizationRating = function(orgid) {
         Organization.getAggregatedRating({id: orgid}, function(rating) {
             $scope.organizationRatings[orgid] = {rating: rating.rating, count: rating.count};
         });
-    }
+    };
 
     $scope.showRating = function() {
         if($scope.canRate) {
             $scope.isRating = true;
         }
-    }
+    };
 
     $scope.hideRating = function() {
         $scope.isRating = false;
-    }
+    };
 
     $scope.rateProject = function() {
         if($scope.project != null) {
@@ -434,7 +434,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 });
 
         }
-    }
+    };
 
     $scope.rateMatch = function(id) {
         if(!$scope.matchRatingPermissions[id]) {
@@ -444,7 +444,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         var match = $scope.resourceMatches[id];
         $scope.currentOrgRating = $scope.organizationRatings[match.organization.id].rating;
         $scope.showOrgRatingModal();
-    }
+    };
 
     $scope.rateOrganization = function() {
         var matchid = $scope.currentMatchId;
@@ -467,7 +467,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 }
 
             });
-    }
+    };
 
     $scope.projectApply = function(resourceRequirement, $event) {
         $event.stopPropagation();
@@ -503,7 +503,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             resourceRequirementId: $scope.ProjectApply.selectedRequirement.id,
             organizationId: $scope.ProjectApply.account.organization.id,
             projectId: $scope.project.id
-        }
+        };
         // please do not remove this variable. some user operation can be faster than timeout.
         // this cause an exception.
         var reqTarget = $scope.ProjectApply.selectedRequirement.$target;
@@ -553,7 +553,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 $scope.ProjectApply.allowedToApply = false;
             }
         });
-    }
+    };
 
     $scope.getOffers();
 
@@ -662,9 +662,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.showMorePostings();
 
     //method to add postings for the project in the scope; lenght of posting has to be at least 5 char and
-    // at max 100 chars long; refreshing postings after adding
+    // at max 2048 chars long; refreshing postings after adding
     $scope.addPosting = function() {
-        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
         Project.addPostingForProject({id:$routeParams.id}, $scope.postingInformation,

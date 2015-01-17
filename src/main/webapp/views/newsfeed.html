@@ -9,11 +9,4 @@
     </div>
     <a ng-click="showMoreNews()" translate="posting.showmore"
        ng-show="canShowMoreNews()">Show more</a>
-    <hr/>
-    <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
-        <div class="form-group" ng-show="editable">
-            <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
-                   ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off"/>
-        </div>
-    </form>
 </div>

@@ -87,15 +87,15 @@
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
                 },
                 "name": {
-                    "minlength": "Der Name Ihrer Organisation muss mindestens 1 Zeichen lang sein",
-                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 50 Zeichen sein"
+                    "minlength": "Der Name Ihrer Organisation muss mindestens 3 Zeichen lang sein",
+                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 255 Zeichen sein"
                 },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
                 },
                 "posting": {
                     "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten.",
-                    "maxlength": "Ihre Eingabe darf maximal 100 Zeichen enthalten.",
+                    "maxlength": "Ihre Eingabe darf maximal 2048 Zeichen enthalten.",
                     "required": "Ihre Eingabe wird benötigt."
                 }
             }
@@ -119,12 +119,13 @@
                 "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
             },
             "error": {
-                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden: ",
-                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden.",
-                "usernotfound": "<strong>Es ist ein Fehler aufgetreten!</strong> Der angegebene Empfänger existiert nicht.",
-                "receiverlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
-                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
-                "receivercurrentuser": "<strong>Es ist ein Fehler aufgetreten!</strong> Sie können sich selbst keine Nachricht schicken."
+                "delete": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gelöscht werden: ",
+                "send": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gesendet werden.",
+                "usernotfound": "Es ist ein Fehler aufgetreten! Der angegebene Empfänger existiert nicht.",
+                "receiverlength": "Es ist ein Fehler aufgetreten! Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
+                "contentlength": "Es ist ein Fehler aufgetreten! Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
+                "receivercurrentuser": "Es ist ein Fehler aufgetreten! Sie können sich selbst keine Nachricht schicken.",
+                "notreceiver": "Sie haben keine Berechtigung diese Nachricht zu löschen!"
             },
             "validate": {
                 "receiver": {

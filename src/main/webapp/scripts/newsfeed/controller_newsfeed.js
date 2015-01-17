@@ -1,7 +1,7 @@
 'use strict';
 
 respondecoApp.controller('NewsfeedController', function($scope, $location, $routeParams, Account) {
-    
+
     $scope.newsPage = -1;
     $scope.newsPageSize = 20;
     $scope.newsTotal = null;

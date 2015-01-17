@@ -33,7 +33,7 @@ public class PostingDTO {
             responseDTO.setInformation(posting.getInformation());
         }
         if (fieldNames.contains("author")) {
-            responseDTO.setAuthor(UserDTO.fromEntity(posting.getAuthor(),Arrays.asList("id","login")));
+            responseDTO.setAuthor(UserDTO.fromEntity(posting.getAuthor(),Arrays.asList("id","login","organization")));
         }
         if (fieldNames.contains("postingfeed")) {
             responseDTO.setPostingFeed_id(posting.getPostingfeed().getId());
@@ -69,7 +69,7 @@ public class PostingDTO {
     public PostingDTO(Long id, String information, User author, PostingFeed postingFeed, Date createdDate) {
         this.id = id;
         this.information = information;
-        this.author = UserDTO.fromEntity(author,Arrays.asList("id","login"));
+        this.author = UserDTO.fromEntity(author,Arrays.asList("id","login","organization"));
         this.postingFeed_id = postingFeed.getId();
         this.createdDate = createdDate;
     }
@@ -77,7 +77,7 @@ public class PostingDTO {
     public PostingDTO(Posting posting) {
         this.id = posting.getId();
         this.information = posting.getInformation();
-        this.author = UserDTO.fromEntity(posting.getAuthor(),Arrays.asList("id","login"));
+        this.author = UserDTO.fromEntity(posting.getAuthor(),Arrays.asList("id","login","organization"));
         this.postingFeed_id = posting.getPostingfeed().getId();
         this.createdDate = posting.getCreatedDate().toDate();
     }

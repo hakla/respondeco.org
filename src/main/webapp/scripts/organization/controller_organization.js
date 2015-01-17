@@ -10,6 +10,9 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;
 
+    $scope.shownRating = 0;
+    $scope.ratingCount = 0;
+
     $scope.update = function(name) {
         $scope.organization = Organization.get({
             id: name
@@ -41,6 +44,16 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
             })
         });
     };
+
+    $scope.refreshOrganizationRating = function() {
+        //get new aggregated rating
+        Organization.getAggregatedRating({id: $routeParams.id},
+            function(rating) {
+                $scope.shownRating = rating.rating;
+                $scope.ratingCount = rating.count;
+            });
+    };
+    $scope.refreshOrganizationRating();
 
     $scope.delete = function(id) {
         id = id || $scope.organization.id;
@@ -77,7 +90,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.redirectToNewProject = function() {
         $location.path('projects/edit/new');
-    }
+    };
 
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);
@@ -160,7 +173,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     $scope.showMorePostings();
 
     $scope.addPosting = function() {
-        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
         Organization.addPostingForOrganization({id:$routeParams.id}, $scope.postingInformation,

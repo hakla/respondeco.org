@@ -60,7 +60,7 @@
                     </sup>
                     <div class="organization">
                         <span class="organization-name">{{ resource.organization.name }}</span>
-                        <rating class="on-hover" ng-model="resource.rating" max="5" readonly="true"></rating>
+                        <resp-rating class="on-hover" can-rate="false" organization="resource.organization.id"></resp-rating>
                     </div>
                 </h2>
             </li>
