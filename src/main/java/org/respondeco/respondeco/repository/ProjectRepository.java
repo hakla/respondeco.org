@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Temporal;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import javax.persistence.TemporalType;
@@ -21,7 +22,7 @@ import java.util.Set;
 /**
  * Spring Data JPA repository for the Project entity.
  */
-public interface ProjectRepository extends JpaRepository<Project, Long> {
+public interface ProjectRepository extends JpaRepository<Project, Long>, QueryDslPredicateExecutor {
 
     public Page<Project> findByActiveIsTrue(Pageable pageable);
 
@@ -81,5 +82,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         @Param("user_id") Long user_id,
         @Param("project_id") Long project_id
     );
+
+    @Query("SELECT p.id FROM Project p WHERE p.organization.id = :organizationId AND p.active = 1 AND p.organization.active = 1")
+    public List<Long> findByOrganizationId(@Param("organizationId") Long organizationId);
 
 }

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class UserDTO {
 
     public static final List<String> DEFAULT_FIELDS = Arrays.asList("id", "login", "title", "gender",
-        "firstName", "lastName", "email", "description", "langKey", "roles", "organizationId", "profilePicture");
+        "firstName", "lastName", "email", "description", "langKey", "roles", "organizationId", "profilePicture", "invited");
 
     public static UserDTO fromEntity(User user, List<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -75,6 +75,9 @@ public class UserDTO {
                 responseDTO.setProfilePicture(ImageDTO.fromEntity(user.getProfilePicture(), null));
             }
         }
+        if (fieldNames.contains("invited")) {
+            responseDTO.setInvited(user.isInvited());
+        }
         return responseDTO;
     }
 
@@ -103,6 +106,7 @@ public class UserDTO {
     private OrganizationResponseDTO organization;
     private Long organizationId;
     private ImageDTO profilePicture;
+    private Boolean invited;
 
     public UserDTO() {
     }

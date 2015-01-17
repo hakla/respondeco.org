@@ -4,24 +4,27 @@ describe('Resource Controller Tests ', function () {
     beforeEach(module('respondecoApp'));
 
     describe('ResourceController', function () {
-        var $scope, ResourceService, ProjectService, createController, AccountService, OrganizationService, location;
+        var $scope, ResourceService, ProjectService, createController, AccountService, OrganizationService, location,
+            filter, sce;
 
-        beforeEach(inject(function($rootScope, $controller, $location, $routeParams, Resource, Account, Project, Organization) {
+        beforeEach(inject(function($rootScope, $controller, $location, $routeParams, Resource, Account, Project, Organization, $filter, $sce) {
             $scope = $rootScope.$new();
             location = $location;
             ResourceService = Resource;
             AccountService = Account;
             ProjectService = Project;
             OrganizationService = Organization;
+            filter = $filter;
+            sce = $sce;
 
-            $controller('ResourceController', {$scope: $scope, $routeParams: $routeParams, $location: location,
-                    Resource: ResourceService, Account: AccountService, Project:ProjectService, Organization: OrganizationService});
+            $controller('ResourceController', {$scope: $scope, $location: location, $routeParams: $routeParams,
+                Resource: ResourceService, Account: AccountService, Organization: OrganizationService,
+                Project:ProjectService, $filter: filter, $sce: sce});
         }));
 
         it('should get Account', function() {
             spyOn(AccountService, "get");
             spyOn(ResourceService, "getByOrgId");
-            spyOn(OrganizationService, "get");
 
             location.path('ownresource');
             $scope.getAccount();
@@ -30,27 +33,17 @@ describe('Resource Controller Tests ', function () {
             expect(ResourceService.getByOrgId).toHaveBeenCalled;
 
             AccountService.get.calls.mostRecent().args[1]({
-                    organization: {
-                        id: 1
-                    }
-            });
-
-            ResourceService.getByOrgId.calls.mostRecent().args[1]({data: "test"});
-
-            expect($scope.resources).toEqual({data: "test"});
-
-            expect(OrganizationService.get).toHaveBeenCalled();
-            OrganizationService.get.calls.mostRecent().args[1]({
                 organization: {
-                    id: 1,
-                    name: "test"
+                    id: 1, name:"test"
                 }
             });
+
+            ResourceService.getByOrgId.calls.mostRecent().args[1]("TestData");
+
+            expect($scope.resources).toEqual("TestData");
 
             expect($scope.organization).toEqual( {
-                organization: {
-                    id:1, name:"test"
-                }
+                id:1, name:"test"
             });
         });
 
@@ -143,26 +136,26 @@ describe('Resource Controller Tests ', function () {
             expect(location.path()).toEqual('/projects/1');
         })
 
-        it('should accept the request', function() {
-            spyOn(ResourceService, "updateRequest");
+        it('should accept the claim/apply', function() {
+            spyOn(ResourceService, "updateResource");
 
             var request = {matchId:1}
-            $scope.acceptRequest(request);
+            $scope.acceptResource(request);
 
-            expect(ResourceService.updateRequest).toHaveBeenCalled();
+            expect(ResourceService.updateResource).toHaveBeenCalled();
 
-            ResourceService.updateRequest.calls.mostRecent().args[2]();
+            ResourceService.updateResource.calls.mostRecent().args[2]();
         });
 
         it('should decline the request', function() {
-            spyOn(ResourceService, "updateRequest");
+            spyOn(ResourceService, "updateResource");
 
             var request = {matchId:1};
-            $scope.declineRequest(request);
+            $scope.declineResource(request);
 
-            expect(ResourceService.updateRequest).toHaveBeenCalled();
+            expect(ResourceService.updateResource).toHaveBeenCalled();
 
-            ResourceService.updateRequest.calls.mostRecent().args[2]();
+            ResourceService.updateResource.calls.mostRecent().args[2]();
         });
 
         it('should create a new resource',function() {
@@ -315,26 +308,16 @@ describe('Resource Controller Tests ', function () {
             ProjectService.getProjectsByOrgId.calls.mostRecent().args[1](response);
         });
 
-        it('should load the requests', function() {
+        it('should load the resource data', function() {
             $scope.orgId = 1;
             spyOn(OrganizationService, "getResourceRequests");
 
-            $scope.loadRequests();
-            expect(OrganizationService.getResourceRequests).toHaveBeenCalledWith({id:1}, jasmine.any(Function), jasmine.any(Function));
-            OrganizationService.getResourceRequests.calls.mostRecent().args[1](
-                [{
-                    data: {
-                        message: "test"
-                    }
-                }],
-                [{
-                    data: {
-                        message: "testzwei"
-                    }
-                }]);
-
-
-            OrganizationService.getResourceRequests.calls.mostRecent().args[2]();
+            $scope.loadResourceData();
+            expect(OrganizationService.getResourceRequests).toHaveBeenCalledWith({id:1}, jasmine.any(Function));
+            OrganizationService.getResourceRequests.calls.mostRecent().args[1]([]);
+            expect($scope.applies.length).toBe(0);
+            expect($scope.oldResourceMessages.length).toBe(0);
+            expect($scope.requests.length).toBe(0);
         });
 
         it('should redirect to own Organzation',function() {
@@ -397,6 +380,23 @@ describe('Resource Controller Tests ', function () {
 
             expect($scope.resource.logoId).toEqual(1);
             expect($scope.logo).toEqual({data: 'test', id:1});
+        });
+
+        it('should change tab control to switch between apply/request/old data', function(){
+
+            spyOn($scope,"loadResourceData");
+            var tab = {url: "test"};
+            $scope.onClickTab(tab);
+            expect($scope.currentTab).toBe(tab.url);
+        });
+
+        it('should set tab control to active or not if we switch between apply/request/old data', function(){
+
+            spyOn($scope,"loadResourceData");
+            var tab = {url: "test"};
+            $scope.currentTab = tab.url;
+            var result = $scope.isActiveTab(tab.url);
+            expect(result).toBe(true);
         });
     });
 

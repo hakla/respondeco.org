@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.service;
 
+import com.mysema.query.types.Predicate;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -436,12 +438,12 @@ public class ProjectServiceTest {
 
         Page<Project> page = new PageImpl<>(Arrays.asList(basicProject, secondProject));
 
-        when(projectRepositoryMock.findByNameAndTags(name, tagsList, null))
+        when(projectRepositoryMock.findAll(any(Predicate.class), any(Pageable.class)))
                 .thenReturn(page);
 
-        List<Project> projects = projectService.findProjects(name, tagsString, null).getContent();
+        List<Project> projects = projectService.findProjects(name, null).getContent();
 
-        verify(projectRepositoryMock, times(1)).findByNameAndTags("%" + name + "%", tagsList, null);
+        verify(projectRepositoryMock, times(1)).findAll(any(Predicate.class), any(Pageable.class));
     }
 
     @Test
@@ -456,16 +458,14 @@ public class ProjectServiceTest {
         secondProject.setOrganization(defaultOrganization);
 
         String name = "project";
-        String tagsString = "tag2, tag3,   tag5,  ";
-        List<String> tagsList = Arrays.asList("tag2", "tag3", "tag5");
-        when(projectRepositoryMock.findByOrganizationAndNameAndTags(defaultOrganization.getId(), name, tagsList, null))
-                .thenReturn(new PageImpl<Project>(Arrays.asList(basicProject, secondProject)));
+        when(projectRepositoryMock.findAll(any(Predicate.class), any(Pageable.class)))
+            .thenReturn(new PageImpl<Project>(Arrays.asList(basicProject, secondProject)));
 
         List<Project> projects = projectService
-                .findProjectsFromOrganization(defaultOrganization.getId(), name, tagsString, null).getContent();
+                .findProjectsFromOrganization(defaultOrganization.getId(), name, null).getContent();
 
         verify(projectRepositoryMock, times(1))
-                .findByOrganizationAndNameAndTags(defaultOrganization.getId(), "%" + name + "%", tagsList, null);
+                .findAll(any(Predicate.class), any(Pageable.class));
     }
 
     @Test

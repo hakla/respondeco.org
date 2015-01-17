@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
+import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
@@ -16,6 +18,7 @@ import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
@@ -30,6 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -150,15 +154,24 @@ public class ProjectControllerTest {
         defaultOrganization.setId(100L);
         defaultOrganization.setName("testorg");
 
+        HashSet<Authority> userAuthorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setName(AuthoritiesConstants.USER);
+        userAuthorities.add(authority);
+
         orgAdmin = new User();
         orgAdmin.setId(100L);
         orgAdmin.setLogin("orgAdmin");
+        orgAdmin.setGender(Gender.UNSPECIFIED);
         orgAdmin.setOrganization(defaultOrganization);
+        orgAdmin.setAuthorities(userAuthorities);
 
         orgMember = new User();
         orgMember.setId(200L);
         orgMember.setLogin("orgMember");
+        orgMember.setGender(Gender.UNSPECIFIED);
         orgMember.setOrganization(defaultOrganization);
+        orgMember.setAuthorities(userAuthorities);
 
         postingFeed = new PostingFeed();
         postingFeed.setId(1L);
@@ -304,7 +317,7 @@ public class ProjectControllerTest {
         project2.setConcrete(false);
 
         doReturn(new PageImpl(Arrays.asList(project, project2))).when(projectServiceMock)
-                .findProjects(isNull(String.class), isNull(String.class), isA(RestParameters.class));
+                .findProjects(isNull(String.class), isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/projects"))
                 .andExpect(status().isOk())
@@ -315,7 +328,7 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.projects[1].id").value(project2.getId().intValue()));
 
         verify(projectServiceMock, times(1))
-                .findProjects(isNull(String.class), isNull(String.class), isA(RestParameters.class));
+                .findProjects(isNull(String.class), isA(RestParameters.class));
     }
 
     @Test
@@ -330,7 +343,7 @@ public class ProjectControllerTest {
 
         doReturn(new PageImpl(Arrays.asList(project, project2))).when(projectServiceMock)
                 .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
-                    isNull(String.class), isA(RestParameters.class));
+                    isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/organizations/{id}/projects", defaultOrganization.getId()))
                 .andExpect(status().isOk())
@@ -342,7 +355,7 @@ public class ProjectControllerTest {
 
         verify(projectServiceMock, times(1))
                 .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
-                    isNull(String.class), isA(RestParameters.class));
+                    isA(RestParameters.class));
     }
 
     @Test
@@ -403,8 +416,7 @@ public class ProjectControllerTest {
 
         when(resourceServiceMock
             .createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
-                expected.getOrganizationId(), expected.getProjectId())).thenThrow(new ResourceException("User not authorized",
-                EnumResourceException.USER_NOT_AUTHORIZED));
+                expected.getOrganizationId(), expected.getProjectId())).thenThrow(new ResourceNotFoundException(""));
 
         restProjectMockMvc.perform(post("/app//rest/projects/apply")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -628,11 +640,21 @@ public class ProjectControllerTest {
     @Test
     public void testGetPostingForProject() throws Exception {
         project.setPostingFeed(postingFeed);
-        doReturn(project).when(projectRepositoryMock).findByIdAndActiveIsTrue(project.getId());
+        Posting posting = new Posting();
+        posting.setId(100L);
+        posting.setInformation("test posting");
+        posting.setAuthor(orgAdmin);
+        posting.setPostingfeed(postingFeed);
+        posting.setCreatedDate(DateTime.now());
+        Page<Posting> postingPage = new PageImpl<Posting>(Arrays.asList(posting));
+        doReturn(postingPage).when(postingFeedServiceMock)
+            .getPostingsForProject(any(Long.class), any(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(postingFeedServiceMock, times(1)).getPostingsForProject(any(Long.class), any(RestParameters.class));
     }
 
     @Test

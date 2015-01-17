@@ -12,8 +12,7 @@
                 <span class="glyphicon glyphicon-minus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>
-            <button class="btn btn-primary btn-success" ng-click='redirectToNewProject()' translate='organization.newproject'>Create New Project</button>
-            <button class="btn btn-primary btn-success" ng-click='redirectToRequests()' translate='organization.requests' ng-show='isOwner()'>Resource Requests</button>
+            <button class="btn btn-primary btn-success" ng-click='redirectToNewProject()' translate='organization.newproject' ng-show='isOwner()'>Create New Project</button>
             <button class="btn btn-primary btn-success" ng-click='redirectToOwnResources()' translate='organization.ownresources' ng-show='isOwner()'>Own Resources</button>
             <button class="btn btn-primary" ng-click='redirectToEdit()' translate='general.edit' ng-show='isOwner()'>Edit</button>
         </div>
@@ -48,6 +47,11 @@
         </div>
         <div class="col-md-8 newsfeed">
             <h3 translate="postingfeed.title">News</h3>
+            <div ng-show="isOwner()">
+                <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
+                <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
+            </div>
+
             <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                 <div class="form-group" ng-show="isOwner()">
                     <div class="input-group">

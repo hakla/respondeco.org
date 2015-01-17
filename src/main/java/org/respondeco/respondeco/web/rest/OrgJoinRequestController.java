@@ -88,7 +88,7 @@ public class OrgJoinRequestController {
             // if the user doesn't exist the owner can send an invitation to the user
             if ("sendInvitation".matches(user.getLogin())) {
                 // create a new user with the specified email
-                User newUser = userService.createUserInformation(user.getEmail(), "tochange", null, null, null, user.getEmail(), null, null, null, null);
+                User newUser = userService.createUserInformation(user.getEmail(), "tochange", null, null, null, user.getEmail(), null, null, null, null, true);
 
                 // set the organization for the user
                 userService.setOrganization(newUser, orgjoinrequest.getOrganization().getId());

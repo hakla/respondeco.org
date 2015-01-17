@@ -149,15 +149,15 @@ describe('Project Service Tests ', function () {
             httpBackend.flush();
         });
 
-        it('should call backend to create a follow entry', function(){
-            httpBackend.expectedPOST('app/rest/projects/1/follow').respond(201);
+        it('should call project backend to create a follow entry', function(){
+            httpBackend.expectPOST('app/rest/projects/1/follow').respond(201);
             //WHEN
-            serviceTested.follow({id:1});
+            serviceTested.follow({id:1}, null);
             //flush the backend to "execute" the request to do the expected POST assertion.
             httpBackend.flush();
         });
 
-        it('should call backend to delete follow entry', function(){
+        it('should call project backend to delete follow entry', function(){
             httpBackend.expectDELETE('app/rest/projects/1/unfollow').respond(200);
             //WHEN
             serviceTested.unfollow({id:1});

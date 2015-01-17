@@ -54,6 +54,8 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
+    public final BooleanPath invited = createBoolean("invited");
+
     public final StringPath langKey = createString("langKey");
 
     //inherited

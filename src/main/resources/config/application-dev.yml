@@ -13,10 +13,10 @@ spring:
         password:
 
     jpa:
-        database-platform: org.hibernate.dialect.H2Dialect
-        database: H2
+        database-platform: org.hibernate.dialect.MySQLInnoDBDialect
+        database: MYSQL
         openInView: false
-        show_sql: true
+        show_sql: false
         generate-ddl: false
         hibernate:
             ddl-auto: none
@@ -24,16 +24,42 @@ spring:
         properties:
             hibernate.cache.use_second_level_cache: true
             hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: true
+            hibernate.generate_statistics: false
             hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
 
     mail:
-        baseUrl: http://localhost:8080
+        baseUrl: http://test.respondeco.org
+        host: mail.respondeco.org
+        port: 587
+        user: system@respondeco.org
+        password: KPfe1mm99Nre443X
+        protocol: smtp
+        tls: true
+        auth: true
+        from: system@respondeco.org
 
     thymeleaf:
         mode: XHTML
         cache: false
         viewNames: error
+
+    social:
+        facebook:
+            appId: 801386343241847
+            appSecret: 0ee624ec572168e2c8af19e4fd870cab
+            redirectUrl: http://localhost:9000/#/social-networks
+        twitter:
+            appId: TXfo29nDCKaU0HmajtEwMhP80
+            appSecret: FAvwa7Kjjih9zPWZaDxpfiqQ4ZZ2JfaOi1vXQgtTe4CCUnDeJ6
+            redirectUrl: http://127.0.0.1:9000/#/social-networks
+        google:
+            clientId: 923257303731-7gbt2bdt8mmsun13u1nac35t1tlsopuv.apps.googleusercontent.com
+            clientSecret: 1Mi2Txcku-nmKED7ubcx0STk
+            redirectUrl: http://www.127.0.0.1.xip.io:9000/
+        xing:
+            appId: 1c6265031c4231dcc2a9
+            appSecret: d7295bf7275a7e2f40fe604b15f0044eedfe102a
+            redirectUrl: http://127.0.0.1:9000/#/social-networks
 
 metrics:
     jmx.enabled: true

@@ -3,10 +3,9 @@
         "title": "respondeco",
         "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
         "backbutton": "Zurück",
-        "notChangeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
         "menu": {
             "home": "Startseite",
-            "organization": "Organisation",
+            "organization": "Organisationen",
             "projects": "Projekte",
             "resource": "Marktplatz",
             "entities": {
@@ -16,6 +15,8 @@
                 "main": "Zugang",
                 "messages": "Nachrichten",
                 "settings": "Einstellungen",
+                "social-networks": "Verbundene Netzwerke",
+                "organization": "Meine Organisation",
                 "password": "Passwort",
                 "sessions": "Sitzungen",
                 "tracker": "User tracker",
@@ -27,11 +28,17 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung",
-                "newsfeed": "Newsfeed"
+                "newsfeed": "Newsfeed",
+                "resourcerequestapply": "Ressourcen-Anfragen"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",
             "language": "Sprache"
+        },
+        "tooltip": {
+            "not-changeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
+            "not-changeable-init": "Diese Einstellung kann nachträglich nicht mehr geändert werden.",
+            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org)."
         },
         "form": {
             "title": "Titel",
@@ -78,6 +85,10 @@
                     "invalid": "Ihre E-Mail Adresse ist ungültig.",
                     "minlength": "Ihre E-Mail Adresse muss mindestens 5 Zeichen lang sein",
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
+                },
+                "name": {
+                    "minlength": "Der Name Ihrer Organisation muss mindestens 1 Zeichen lang sein",
+                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 50 Zeichen sein"
                 },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
@@ -154,7 +165,7 @@
             "location.placeholder": "Adresse eingeben"
         },
         "details": {
-            "title": "Projektübersicht für \"{{project}}\"",
+            "title": "{{project}}",
             "purpose": "Projektziel",
             "delete": "Löschen"
         },
@@ -177,6 +188,8 @@
         "tags.placeholder": "Tags",
         "search.empty": "Es gibt keine Projekte die Ihren Suchkriterien entsprechen!",
         "started": "Dieses Projekt ist schon am Laufen. Kommen Sie später wieder um Neuigkeiten zu sehen",
+        "searchtext": "Name/Tag",
+        "searchtext.placeholder": "Name/Tag",
         "error": {
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
             "notvalidmanager": "Der Manager konnte nicht gesetzt werden, neuer Manager gehört nicht Ihrer Organisation an",
@@ -544,14 +557,26 @@
             }
         }
     },
-    "resourcerequest": {
-        "title":"Ressourcen-Anfragen für ihre Angebote",
+    "resourcemessages": {
+        "title": "Verwalten Sie die Resourcen Anfragen und Spenden für [{{OrganizationName}}]",
+        "request": {
+            "title": "Ressourcen-Anfragen für ihre Angebote",
+            "text": "Das Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> mit der Ressourcenanforderung <span class='underline'>{{RequirementName}}</span> interessiert sich für ihre Ressource <span class='underline'>{{OfferName}}</span>.",
+            "tabtitle": "Anfragen"
+        },
+        "apply": {
+            "title": "Ressourcen-Angebot für ihren Projekt",
+            "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource <span class='underline'>{{RequirementName}}</span>, die Ressource <span class='underline'>{{OfferName}}</span> bereitstellen.",
+            "tabtitle": "Spenden"
+        },
+        "olddata": "Alte Anfragen/Spenden",
         "acceptButton": "Annehmen",
         "declineButton": "Ablehnen",
-        "backButton": "Zurück zur Organisation"
+        "acceptedButton": "Angenohmen",
+        "declinedButton": "Abgelehnt"
     },
     "resource": {
-        "title":"Ressourcen",
+        "title": "Marktplatz",
         "name": "Name",
         "company": "Unternehmen",
         "amount": "Anzahl",
@@ -570,7 +595,8 @@
             "tooltip": {
                 "type": "Wenn ausgewählt wird nur nach dem ausgewählten Typ gesucht"
             },
-            "free": "Nur Gratisangebote suchen"
+            "free": "Nur Gratisangebote suchen",
+            "empty": "Es gibt keine Ressourcen die Ihren Suchkriterien entsprechen!"
         },
         "claim": {
             "title": "Ressource anfordern",
@@ -604,7 +630,7 @@
             "description" : "Beschreibung der Ressource",
             "amount" : "Menge der Ressource",
             "tags": "Tags der Ressource",
-            "search": "Suchkriterien eingeben",
+            "search": "Name / Tags / Organisation",
             "price": "Preis der Ressource",
             "startDate": "Verfügbar ab",
             "endDate": "Verfügbar bis"
@@ -625,6 +651,11 @@
         "offer": {
             "title": "Ressource auswählen",
             "donate": "Spenden"
+        },
+        "errors": {
+            "notfound": "Die angegeben Resource exisitiert nicht",
+            "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
+            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!"
         }
     },
     "nearProjects": {
@@ -678,6 +709,16 @@
                 "ownererror": "Das Folgen eigener Organisation ist leider nicht möglich",
                 "error": "Das Folgen der aktuelle Organisation ist derzeit aus technischen Gründen nicht möglich",
                 "notfound": "Die ausgewählte Organisation existiert nicht mehr. Bitte wenden Sie sich an den Verwaltenden Benutzer der Organisation"
+            }
+        }
+    },
+    "socialmedia": {
+        "heading": "Verbunde soziale Netzwerke",
+        "connect": "Verbinden",
+        "disconnect": "Verbindung löschen",
+        "error": {
+            "twitter": {
+                "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!"
             }
         }
     }

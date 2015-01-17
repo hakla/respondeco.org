@@ -1,0 +1,66 @@
+<div>
+    <h1 translate="socialmedia.heading">Connected social networks</h1>
+    <div class="row">
+        <div class="col-md-4 col-xs-12 text-center disabled">
+            <h2>Facebook</h2>
+            <div class="row">
+                <img src="images/sn/facebook.png" alt="Facebook">
+            </div>
+            <div class="spacer-top">
+                <button class="btn btn-default" ng-show="facebookConnected==false && loading == false" ng-click="connectFacebook()" translate="socialmedia.connect">Connect</button>
+                <button class="btn btn-default btn-danger" ng-show="facebookConnected && loading == false" ng-click="disconnectFacebook()" translate="socialmedia.disconnect">Disconnect</button>
+                <button ng-show="loading" class="btn btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12 text-center disabled">
+            <h2>Twitter</h2>
+            <div class="row"><img src="images/sn/twitter.png" alt="Twitter">
+            </div>
+            <div class="spacer-top">
+                <button class="btn btn-default" ng-show="twitterConnected==false" ng-click="connectTwitter()" translate="socialmedia.connect">Connect</button>
+                <button class="btn btn-default btn-danger" ng-show="twitterConnected" ng-click="disconnectTwitter()" translate="socialmedia.disconnect">Disconnect</button>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12 text-center disabled">
+            <h2>Xing</h2>
+            <div class="row">
+                <img src="images/sn/xing.png" alt="Xing">
+            </div>
+            <div class="spacer-top">
+                <script type="xing/login">
+                    { "consumer_key": "1ada221f6d3d47f43dfd" }
+                </script>
+                <script>
+                // This function is called by the plugin after
+                // the login flow is completed.
+                function onXingAuthLogin(response) {
+                    var output;
+
+                    console.log(response);
+
+                    if (response.user) {
+                        output = 'Successful login for ' + response.user.display_name;
+                    } else if (response.error) {
+                        output = 'Error: ' + response.error;
+                    }
+
+                    document.getElementById('output').innerHTML = output;
+                }
+                </script>
+
+                <script>
+                (function(d) {
+                    var js, id = 'lwx';
+                    if (d.getElementById(id)) return;
+                    js = d.createElement('script');
+                    js.id = id;
+                    js.src = "https://www.xing-share.com/plugins/login.js";
+                    d.getElementsByTagName('head')[0].appendChild(js)
+                }(document));
+                </script>
+                <button class="btn btn-default" ng-show="xingConnected==false" ng-click="connectXing()" translate="socialmedia.connect">Connect</button>
+                <button class="btn btn-default btn-danger" ng-show="xingConnected" ng-click="disconnectXing()" translate="socialmedia.disconnect">Disconnect</button>
+            </div>
+        </div>
+    </div>
+</div>

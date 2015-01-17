@@ -34,7 +34,7 @@ respondecoApp
                         }]
                     },
                     access: {
-                        authorizedRoles: [USER_ROLES.all]
+                        authorizedRoles: [USER_ROLES.user]
                     }
                 }).when('/admin/organization/verify', {
                     templateUrl: 'views/organizations_verify.html',

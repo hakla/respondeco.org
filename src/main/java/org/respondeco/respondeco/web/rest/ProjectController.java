@@ -1,13 +1,10 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.ApiOperation;
-import javassist.bytecode.stackmap.BasicBlock;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
-import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -16,7 +13,6 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Project.
@@ -95,7 +88,7 @@ public class ProjectController {
             log.debug("Resource Match: {}", resourceMatch);
 
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (ResourceException e) {
+        } catch (ResourceNotFoundException e) {
             log.error("Could not save Project apply: {}", projectApplyDTO, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch (IllegalValueException e){
@@ -143,13 +136,7 @@ public class ProjectController {
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        } catch(OperationForbiddenException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (ResourceException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }
@@ -192,13 +179,7 @@ public class ProjectController {
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch(IllegalValueException e) {
             log.error("Could not save Project : {}", project, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        } catch(OperationForbiddenException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (ResourceException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }
@@ -226,9 +207,6 @@ public class ProjectController {
         } catch(IllegalValueException e) {
             log.error("Could not set manager of project {} to {}", id, newManagerId, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        } catch(OperationForbiddenException e) {
-            log.error("Could not set manager of project {} to {}", id, newManagerId, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }
@@ -246,8 +224,6 @@ public class ProjectController {
      *
      * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
      *               will be returned
-     * @param tags optional parameter, if not null or empty, projects which have one or more of these tags
-     *             associated with them will be returned
      * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
      *             pageSize, dafault is 1 (first page)
      * @param pageSize optional parameter indicating the size of the pages of projects to be returned
@@ -271,7 +247,6 @@ public class ProjectController {
     @PermitAll
     public ResponseEntity<ProjectPaginationResponseDTO> getByNameAndTags(
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
@@ -279,7 +254,7 @@ public class ProjectController {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
 
-        Page<Project> resultPage = projectService.findProjects(filter, tags, restParameters);
+        Page<Project> resultPage = projectService.findProjects(filter, restParameters);
 
         ProjectPaginationResponseDTO paginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
 
@@ -302,8 +277,6 @@ public class ProjectController {
      * @param organizationId REST path variable indicating the organization of which to query the projects
      * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
      *               will be returned
-     * @param tags optional parameter, if not null or empty, projects which have one or more of these tags
-     *             associated with them will be returned
      * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
      *             pageSize, dafault is 1 (first page)
      * @param pageSize optional parameter indicating the size of the pages of projects to be returned
@@ -327,7 +300,6 @@ public class ProjectController {
     public ResponseEntity<ProjectPaginationResponseDTO> getByOrganizationAndNameAndTags(
             @PathVariable Long organizationId,
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String tags,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
@@ -335,7 +307,7 @@ public class ProjectController {
         log.debug("REST request to get projects for organization {}", organizationId);
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         Page<Project> resultPage =  projectService
-                .findProjectsFromOrganization(organizationId, filter, tags, restParameters);
+                .findProjectsFromOrganization(organizationId, filter, restParameters);
 
         ProjectPaginationResponseDTO projectPaginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
 
@@ -406,9 +378,6 @@ public class ProjectController {
         } catch(IllegalValueException e) {
             log.error("Could not delete project {}", id, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        } catch(OperationForbiddenException e) {
-            log.error("Could not delete project {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return responseEntity;
     }
@@ -418,7 +387,6 @@ public class ProjectController {
      * @param id project id
      * @return list of ResourceRequirements wrapped into DTO
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/projects/{id}/resourcerequirements",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -565,7 +533,7 @@ public class ProjectController {
     @RequestMapping(value = "/rest/projects/{id}/started",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.USER)
+    @PermitAll
     public void isStarted(@PathVariable Long id) {
         try {
             projectService.checkProjectsToStart();

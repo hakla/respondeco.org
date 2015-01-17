@@ -54,7 +54,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
         $scope.map.zoom = 14;
     }
-   
+
     var searchBoxEvents = {
         places_changed: function (searchBox) {
             var id = 0;
@@ -74,6 +74,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         open1: true
     };
 
+    /**
+     * Resolve the follow state for the current project of logged in user
+     */
     $scope.followingState = function(){
         Project.followingState({id: $routeParams.id}, function(follow){
             $scope.following = follow.state;
@@ -83,6 +86,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     var searchText = null;
     var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
+    //allow execute follow state only if project ID is set!
     if (isNew == false){
         $scope.followingState();
     }
@@ -91,7 +95,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.ProjectApply =
     {
-        organization: null,
         account: null,
         allowedToApply: false,
         selectedResourceOffer: null,
@@ -210,7 +213,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                     $scope.marker.address = $scope.project.projectLocation.address;
                 }
             }
-            
+
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
             Project.getResourceMatchesByProjectId({id:id}, function(matches) {
@@ -265,7 +268,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             $scope.editable = false;
         });
 
-        
+
     };
 
 
@@ -505,7 +508,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         var data = {
             resourceOfferId: $scope.ProjectApply.selectedResourceOffer.id,
             resourceRequirementId: $scope.ProjectApply.selectedRequirement.id,
-            organizationId: $scope.ProjectApply.organization.id,
+            organizationId: $scope.ProjectApply.account.organization.id,
             projectId: $scope.project.id
         }
         // please do not remove this variable. some user operation can be faster than timeout.
@@ -526,32 +529,36 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
      * Get all resource offer from the organization the user currently in.
      */
     $scope.getOffers = function() {
+        //first of all we need the account information!
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
-            Organization.get({
-                id: acc.organizationId
-            }, function (org) {
-                $scope.ProjectApply.organization = org;
-                if (org != null && org.owner.id === acc.id &&
-                    $scope.project.organizationId != org.id) {
-                    // owner
-                    $scope.ProjectApply.allowedToApply = true;
-                    Organization.getResourceOffers({
-                        id: org.id
-                    }, function (offers) {
-                        var arr = [];
-                        for (var i = 0, len = offers.length; i < len; i++) {
-                            if (offers[i].amount > 0) {
-                                arr.push(offers[i]);
-                            }
+            //since organization is a part of an account, we do not need to load organization over the rest
+            if(
+                $scope.ProjectApply.account.organization &&
+                $scope.project.organizationId != $scope.ProjectApply.account.organization.id
+            ){
+                //get available resource
+                $scope.ProjectApply.allowedToApply = true;
+                Organization.getResourceOffers({
+                    id: $scope.ProjectApply.account.organization.id
+                }, null, function (offers) {
+                    var arr = [];
+                    //and remove those who have no amount.
+                    for (var i = 0, len = offers.length; i < len; i++) {
+                        if (offers[i].amount > 0) {
+                            arr.push(offers[i]);
                         }
-                        $scope.resourceOffers = arr;
-                        if(arr.length == 0){
-                            $scope.ProjectApply.allowedToApply = false;
-                        }
-                    });
-                }
-            });
+                    }
+                    $scope.resourceOffers = arr;
+                    //if array is empty, the current account do not have any resources to apply
+                    if(arr.length == 0){
+                        $scope.ProjectApply.allowedToApply = false;
+                    }
+                });
+            }
+            else{
+                $scope.ProjectApply.allowedToApply = false;
+            }
         });
     }
 
@@ -588,22 +595,36 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $("#orgRatingError").text(error);
     };
 
+    /**
+     * Button Event. Try to follow the current Project Newsfeed
+     */
     $scope.follow = function(){
-        Project.follow({id: $scope.project.id}, null, function (result) {
+        Project.follow({id: $scope.project.id}, null, function () {
             $scope.following = true;
         });
     };
 
+    /**
+     * Button Event. Try to un-follow the current Project Newsfeed
+     */
     $scope.unfollow = function(){
-        Project.unfollow({id: $scope.project.id}, function (result) {
+        Project.unfollow({id: $scope.project.id}, function () {
             $scope.following = false;
         });
     };
 
+    /**
+     * show or hide the Un-Follow Button. Show only if the current project is being followed by user
+     * @returns {boolean} true => show, else hide
+     */
     $scope.showUnfollow = function(){
         return $scope.following == true;// && $scope.editable == false;
     };
 
+    /**
+     * show or hide the Follow Button. Show only if the current project is not being followed by user
+     * @returns {boolean} true => show, else hide
+     */
     $scope.showFollow = function() {
         return $scope.following == false;// && $scope.editable == false;
     };

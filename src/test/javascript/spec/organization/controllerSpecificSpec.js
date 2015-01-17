@@ -10,6 +10,8 @@ describe('Controllers Tests ', function () {
         var OrganizationService;
         var AccountService;
         var UserService;
+        var existingOrganization;
+        var routeParams;
 
         beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Organization, User, Account) {
             $scope = $rootScope.$new();
@@ -17,9 +19,13 @@ describe('Controllers Tests ', function () {
             OrganizationService = Organization;
             AccountService = Account;
             UserService = User;
+            routeParams = $routeParams;
+
+            existingOrganization = {id: 1};
+
             spyOn(AccountService, 'get');
             $routeParams.id = 1;
-            $controller('OrganizationController', {$scope: $scope, $location: $location, $routeParams: $routeParams, resolvedOrganization: [1], 
+            $controller('OrganizationController', {$scope: $scope, $location: $location, $routeParams: $routeParams, resolvedOrganization: [1],
                 Organization: Organization, Account: Account, User: User});
         }));
 
@@ -62,6 +68,58 @@ describe('Controllers Tests ', function () {
                 id: 1
             };
             $scope.delete(1);
+        });
+
+        it('should get organization follow state', function(){
+
+            //predefine some value(s) for test
+            $scope.organization = existingOrganization;
+            routeParams.id = $scope.organization.id;
+
+            spyOn(OrganizationService, 'followingState');
+
+            $scope.followingState();
+
+            expect(OrganizationService.followingState).toHaveBeenCalledWith({id: $scope.organization.id}, jasmine.any(Function));
+            //simulate json result
+            OrganizationService.followingState.calls.mostRecent().args[1]({state: true});
+            expect($scope.following).toBe(true);
+            expect($scope.showFollow()).toBe(false);
+            expect($scope.showUnfollow()).toBe(true);
+        });
+
+        it('should add organization as followed by current user', function(){
+            //predefine some value(s) for test
+            $scope.organization = existingOrganization;
+            routeParams.id = $scope.organization.id;
+
+            spyOn(OrganizationService, "follow");
+
+            $scope.follow();
+
+            expect(OrganizationService.follow).toHaveBeenCalledWith({id: $scope.organization.id}, null, jasmine.any(Function));
+            //simulate callback
+            OrganizationService.follow.calls.mostRecent().args[2]();
+            expect($scope.following).toBe(true);
+            expect($scope.showFollow()).toBe(false);
+            expect($scope.showUnfollow()).toBe(true);
+        });
+
+        it('should remove organization from following list of current user', function(){
+            //predefine some value(s) for test
+            $scope.organization = existingOrganization;
+            routeParams.id = $scope.organization.id;
+
+            spyOn(OrganizationService, "unfollow");
+
+            $scope.unfollow();
+
+            expect(OrganizationService.unfollow).toHaveBeenCalledWith({id: $scope.organization.id}, jasmine.any(Function));
+            //simulate callback
+            OrganizationService.unfollow.calls.mostRecent().args[1]();
+            expect($scope.following).toBe(false);
+            expect($scope.showFollow()).toBe(true);
+            expect($scope.showUnfollow()).toBe(false);
         });
     });
 });

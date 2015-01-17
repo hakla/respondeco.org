@@ -67,14 +67,18 @@ public class UserService {
     }
 
     public User createUserInformation(String login, String password, String title, String firstName, String lastName,
-                                      String email, String gender, String description, String langKey, ImageDTO profilePicture) {
+                                       String email, String gender, String description, String langKey, ImageDTO profilePicture) {
+        return createUserInformation(login, password, title, firstName, lastName, email, gender, description, langKey, profilePicture, false);
+    }
+
+    public User createUserInformation(String login, String password, String title, String firstName, String lastName,
+                                      String email, String gender, String description, String langKey, ImageDTO profilePicture, Boolean invited) {
         User newUser = new User();
         Authority authority = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(login);
         newUser.setOrganization(null);
-        // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setTitle(title);
         if(gender == null) {
@@ -98,6 +102,8 @@ public class UserService {
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         authorities.add(authority);
         newUser.setAuthorities(authorities);
+        // user can be invited by an organization
+        newUser.setInvited(invited);
         userRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
