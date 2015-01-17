@@ -637,9 +637,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     //method to add postings for the project in the scope; lenght of posting has to be at least 5 char and
-    // at max 100 chars long; refreshing postings after adding
+    // at max 2048 chars long; refreshing postings after adding
     $scope.addPosting = function() {
-        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
         Project.addPostingForProject({id:$routeParams.id}, $scope.postingInformation,
