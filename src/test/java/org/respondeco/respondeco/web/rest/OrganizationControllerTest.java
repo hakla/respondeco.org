@@ -370,20 +370,20 @@ public class OrganizationControllerTest {
     @Test
     public void testDeleteOrganization_expectOK_shouldDeleteOrganization() throws Exception {
         //do nothing but return immediately without errors
-        doAnswer(voidInterceptor).when(organizationServiceMock).deleteOrganizationInformation();
+        doAnswer(voidInterceptor).when(organizationServiceMock).deleteOrganizationInformation(1L);
 
         // Delete Organization
-        restOrganizationMockMvc.perform(delete("/app/rest/organizations")
+        restOrganizationMockMvc.perform(delete("/app/rest/organizations/1")
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
     }
 
     @Test
     public void testDeleteOrganization_expectNOT_FOUND_cannotDeleteNonexistingOrganization() throws Exception {
-        doThrow(NoSuchOrganizationException.class).when(organizationServiceMock).deleteOrganizationInformation();
+        doThrow(NoSuchOrganizationException.class).when(organizationServiceMock).deleteOrganizationInformation(1L);
 
         // Delete Organization
-        restOrganizationMockMvc.perform(delete("/app/rest/organizations")
+        restOrganizationMockMvc.perform(delete("/app/rest/organizations/1")
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isNotFound());
     }
