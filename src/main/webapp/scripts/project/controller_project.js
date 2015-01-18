@@ -468,6 +468,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             });
     };
 
+    /**
+     * Mark selected resource, user would like to apply in current project
+     * @param resourceRequirement selected requirement
+     * @param $event fired event
+     */
     $scope.projectApply = function(resourceRequirement, $event) {
         $event.stopPropagation();
         $event.preventDefault();
@@ -686,4 +691,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         });
     };
 
+    /**
+     * set expanded to true or false for CSS manipulation
+     * @param resource to expand or close
+     * @param $event that was fired
+     */
+    $scope.expandResource = function(resource, $event){
+        var index = $scope.project.resourceRequirements.indexOf(resource);
+        for(var i = 0; i < $scope.project.resourceRequirements.length; i++){
+            if(i != index) {
+                $scope.project.resourceRequirements[i].expanded = false;
+            }else{
+                $scope.project.resourceRequirements[i].expanded = true;
+            }
+        }
+    };
 });

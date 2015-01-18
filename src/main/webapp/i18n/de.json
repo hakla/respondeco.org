@@ -170,7 +170,11 @@
         "details": {
             "title": "{{project}}",
             "purpose": "Projektziel",
-            "delete": "Löschen"
+            "delete": "Löschen",
+            "estimatedaysuntilstart": "{{days}} verbleibende Tage",
+            "resourcecollected": "{{percentage}}% Ressourcen gesammelt",
+            "resourceneeded": "{{essential}}% der notwendigen Ressourcen gesammelt",
+            "details": "Detailansicht"
         },
         "categories": {
             "title": "Kategorien",
@@ -653,7 +657,9 @@
         },
         "offer": {
             "title": "Ressource auswählen",
-            "donate": "Spenden"
+            "donate": "Spenden",
+            "resourceselected": "Ausgewählte Ressource: ",
+            "resourceneeded": "Noch benötigte Anzahl: "
         },
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",

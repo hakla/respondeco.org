@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="newsfeed">
-                <h3>PostingFeed</h3>
+                <h3>{{ 'postingfeed.title' | translate }}</h3>
                 <div class="well">
                     <ul>
                         <li ng-repeat="posting in postings">
@@ -117,29 +117,29 @@
             <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
             <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong>{{remainingDays}} Tage verbleiben</strong>
+                <strong>{{ 'project.details.estimatedaysuntilstart' | translate:'{days: remainingDays}' }}</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
             <div class="resources">
-                <strong>{{collected}}% Ressourcen gesammelt</strong>
+                <strong>{{ 'project.details.resourcecollected' | translate:'{percentage: collected}' }}</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
-                <strong>{{collectedEssential}}% der notwendigen Ressourcen gesammelt</strong>
+                <strong>{{ 'project.details.resourceneeded' | translate:'{essential: collectedEssential}' }}</strong>
                 <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
-                <h2>Details</h2>
+                <h2>{{ 'project.details.details' | translate}}</h2>
                 <accordion close-others="true">
                     <accordion-group ng-open="requirement.id" ng-repeat="requirement in project.resourceRequirements">
                         <accordion-heading>
-                            <div class="row hover-toggle">
-                                <div class="col-md-8">{{requirement.name}}</div>
-                                <div class="col-md-2 on-hover">
+                            <div class="row hover-toggle" ng-click="expandResource(requirement, $event)">
+                                <div class="col-md-6">{{requirement.name}}</div>
+                                <div class="col-md-3 on-hover">
                                     <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()&&(requirement.sum<requirement.originalAmount)" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3" style="text-align: right;">
                                     <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
                                     <span ng-show="requirement.sum == undefined">0</span>/{{requirement.originalAmount}}
-                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
+                                    <i class="glyphicon" ng-class="{'glyphicon-chevron-down': requirement.expanded, 'glyphicon-chevron-right': !requirement.expanded}"></i>
                                 </div>
                             </div>
                         </accordion-heading>
@@ -176,17 +176,17 @@
                 <div class="modal-body">
                     <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                         <dl class="dl-horizontal">
-                            <dt>Ausgewählte Ressource:</dt>
-                            <dd>{{ selectedRequirement.name }}</dd>
-                            <dt>Noch benötigte Anzahl</dt>
-                            <dd>{{ selectedRequirement.amount }}</dd>
+                            <dt translate="resource.offer.resourceselected"></dt>
+                            <dd>{{ ProjectApply.selectedRequirement.name }}</dd>
+                            <dt translate="resource.offer.resourceneeded"></dt>
+                            <dd>{{ ProjectApply.selectedRequirement.amount }}</dd>
                         </dl>
                         <ul class="resources">
                             <li ng-click="selectResourceOffer(offer, $event)" class="resource row" ng-repeat="offer in resourceOffers">
                                 <div class="col-md-2">
                                     <img src="" alt="">
                                 </div>
-                                <div class="pull-right col-md-6">
+                                <div class="pull-right col-md-6 offerdesc">
                                     {{ offer.description }}
                                 </div>
                                 <h2 class="col-md-4">
