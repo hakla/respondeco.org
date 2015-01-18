@@ -281,7 +281,7 @@ public class ResourceService {
             ensureUserIsPartOfOrganisation(organizationRepository.findOne(organisationId));
 
             offer.setName(name);
-            offer.setOriginalAmount(amount);
+            offer.setAmount(amount);
             offer.setDescription(description);
             offer.setIsCommercial(isCommercial);
             offer.setPrice(price);

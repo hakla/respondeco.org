@@ -134,7 +134,7 @@
                             <div class="row hover-toggle">
                                 <div class="col-md-8">{{requirement.name}}</div>
                                 <div class="col-md-2 on-hover">
-                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()&&(requirement.sum<requirement.originalAmount)" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
                                 </div>
                                 <div class="col-md-2">
                                     <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
