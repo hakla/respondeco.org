@@ -90,7 +90,9 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-{{deleteType}} pull-left" ng-click='delete()' ng-hide='isNew()'>{{ deleteMessage | translate }}</button>
+            <div tooltip="{{ tooltip_not-deleteable | translate }}">
+                <button type="button" class="btn btn-danger pull-left" required disabled>{{ deleteMessage | translate }}</button>
+            </div>
             <button type="button" class="btn btn-link" data-dismiss="modal" translate="global.form.cancel" ng-click="clear()" />
             <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
                 <span class="glyphicon glyphicon-save"></span> {{'global.form.save' | translate}}

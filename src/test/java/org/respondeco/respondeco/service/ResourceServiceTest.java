@@ -138,7 +138,7 @@ public class ResourceServiceTest {
         resourceTags.add(expResourceTag);
 
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
-        when(resourceOfferRepositoryMock.findByName(expOffer.getName(), null)).thenReturn(resourceOffers);
+        when(resourceOfferRepositoryMock.findByNameAndActiveIsTrue(expOffer.getName(), null)).thenReturn(resourceOffers);
         //Assign all variables to new Resource Requirement Objekt and execute Save
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -205,8 +205,8 @@ public class ResourceServiceTest {
         //endregion
 
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
-        when(resourceRequirementRepositoryMock.findByNameAndProject(expectedReq.getName(),
-            expectedReq.getProject())).thenReturn(resourceReqs);
+        when(resourceRequirementRepositoryMock.findByNameAndProjectAndActiveIsTrue(expectedReq.getName(),
+                expectedReq.getProject())).thenReturn(resourceReqs);
         //Assign all variables to new Resource Requirement Objekt and execute Save
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -379,13 +379,13 @@ public class ResourceServiceTest {
                 }
             }
             return internalItems;
-        }).when(resourceRequirementRepositoryMock).findByProjectId(isA(longCl));
+        }).when(resourceRequirementRepositoryMock).findByProjectIdAndActiveIsTrue(isA(longCl));
         int listSize = 1;
         List<ResourceRequirement> expectedItem = this.resourceService.getAllRequirements(projectID);
         assertEquals(expectedItem.size(), listSize);
         assertEquals(expectedItem.get(0).getProject().getId(), projectID);
         assertEquals(expectedItem.get(0).getId(), expectedRequirementID);
-        verify(this.resourceRequirementRepositoryMock, times(1)).findByProjectId(isA(longCl));
+        verify(this.resourceRequirementRepositoryMock, times(1)).findByProjectIdAndActiveIsTrue(isA(longCl));
     }
 
     @Test

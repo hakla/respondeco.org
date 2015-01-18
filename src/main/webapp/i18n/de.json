@@ -38,7 +38,8 @@
         "tooltip": {
             "not-changeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
             "not-changeable-init": "Diese Einstellung kann nachträglich nicht mehr geändert werden.",
-            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org)."
+            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
+            "not-deleteable": "Die Organisation kann nur vom Administrator gelöscht werden. Bitte wenden Sie sich an den Support (support@respondeco.org)."
         },
         "form": {
             "title": "Titel",

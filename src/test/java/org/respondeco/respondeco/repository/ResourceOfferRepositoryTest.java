@@ -130,7 +130,7 @@ public class ResourceOfferRepositoryTest extends AbstractTransactionalJUnit4Spri
     @Test
     public void testFindByName() {
 
-        List<ResourceOffer> resourceOffers = resourceOfferRepository.findByName(resourceOffer.getName(),null);
+        List<ResourceOffer> resourceOffers = resourceOfferRepository.findByNameAndActiveIsTrue(resourceOffer.getName(), null);
 
         assertNotNull(resourceOffers);
         assertTrue(resourceOffers.contains(resourceOffer));
