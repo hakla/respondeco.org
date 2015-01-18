@@ -377,6 +377,7 @@ public class SocialMediaService {
         OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.xing.com/v1/users/me/share/link?");
 
         String uri = env.getProperty("spring.social.xing.postBaseUrl") + url;
+        log.debug("URI: " + uri);
 
         request.addBodyParameter("uri", uri);
         request.addBodyParameter("text", post);
@@ -385,6 +386,26 @@ public class SocialMediaService {
         Response response = request.send();
 
         return response.getBody();
+    }
+
+
+    /**
+     * Disconnects the logged in users account from xing if his account was already connected with
+     * xing. Otherwise it throws an NoSuchMediaConnectionException.
+     * @return the deleted connection from the db.
+     * @throws NoSuchSocialMediaConnectionException if users account is not connected with facebook.
+     */
+    public SocialMediaConnection disconnectXing() throws NoSuchSocialMediaConnectionException {
+        User user = userService.getUserWithAuthorities();
+
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProviderAndActiveIsTrue(user, "xing");
+        if(socialMediaConnection == null) {
+            throw new NoSuchSocialMediaConnectionException("user is not connected with xing");
+        }
+
+        socialMediaRepository.delete(socialMediaConnection);
+
+        return socialMediaConnection;
     }
 
     /**

@@ -92,6 +92,19 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		});
 	};
 
+
+	/**
+	 * Disconnects the users account from Xing
+	 */
+	$scope.disconnectXing = function() {
+		SocialMedia.disconnectXing(function(response) {
+			$scope.xingConnected = false;
+			$scope.addAlert('info', 'Die Verbindung zwischen ihrem Respondeco-Account und Xing wurde aufgehoben. ' +
+					'\nUm den Vorgang abzuschließen gehen Sie bitte auf <a href="https://www.xing.com/app/settings?op=privacy">' +
+					'https://www.xing.com/app/settings</a> und widerrufen Sie den Zugriff für Respondeco!');
+		});
+	}
+
 	/**
 	 * Creates a new xing post on behalf of the user
 	 */

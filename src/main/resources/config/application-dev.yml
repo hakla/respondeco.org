@@ -56,7 +56,7 @@ spring:
             appId: b453d9fa070612aba6f6
             appSecret: 9a8bc2effdd97dbdfdd1cc45a10d4cc61d9eb509
             redirectUrl: http://127.0.0.1:9000/#/social-networks
-            postBaseUrl: test.respondeco.org/
+            postBaseUrl: test.respondeco.org/#
 
 metrics:
     jmx.enabled: true

@@ -144,6 +144,8 @@ public class SocialMediaController {
                 socialMediaConnection = socialMediaService.disconnectFacebook();
             } else if(provider.equals("twitter")) {
                 socialMediaConnection = socialMediaService.disconnectTwitter();
+            } else if(provider.equals("xing")) {
+                socialMediaConnection = socialMediaService.disconnectXing();
             }
 
             SocialMediaConnectionResponseDTO dto = SocialMediaConnectionResponseDTO.fromEntity(socialMediaConnection, null);
@@ -223,7 +225,7 @@ public class SocialMediaController {
 
         try{
             Tweet tweet = socialMediaService.createTwitterPost(post.getString());
-            responseEntity = new ResponseEntity<Tweet>(tweet, HttpStatus.CREATED);
+            responseEntity = new ResponseEntity<>(tweet, HttpStatus.CREATED);
         } catch (OperationForbiddenException e) {
             log.error("operation forbidden: " + e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
