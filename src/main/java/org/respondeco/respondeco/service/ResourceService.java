@@ -1,21 +1,14 @@
 package org.respondeco.respondeco.service;
 
-import com.mysema.query.jpa.JPASubQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.CollectionExpression;
 import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
-import com.mysema.query.types.Visitor;
 import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.expr.CollectionOperation;
-import org.hibernate.jpa.internal.EntityManagerImpl;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.domain.QResourceMatch;
 import org.respondeco.respondeco.domain.QResourceOffer;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
@@ -25,9 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,13 +97,13 @@ public class ResourceService {
         throws ResourceNotFoundException, NoSuchProjectException {
         ResourceRequirement newRequirement = null;
 
-        Project project = projectRepository.findOne(projectId);
+        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
         }
 
         ensureUserIsPartOfOrganisation(project);
-        List<ResourceRequirement> entries = resourceRequirementRepository.findByNameAndProject(name, project);
+        List<ResourceRequirement> entries = resourceRequirementRepository.findByNameAndProjectAndActiveIsTrue(name, project);
         if (entries == null || entries.isEmpty() == true) {
             newRequirement = new ResourceRequirement();
             newRequirement.setName(name);
@@ -149,9 +140,9 @@ public class ResourceService {
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
         throws ResourceNotFoundException, OperationForbiddenException, NoSuchProjectException {
-        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
+        ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
 
-        Project project = projectRepository.findOne(projectId);
+        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
             throw new NoSuchProjectException(projectId);
         }
@@ -180,10 +171,11 @@ public class ResourceService {
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource requirement can't be found
      */
     public void deleteRequirement(Long id) throws ResourceNotFoundException {
-        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
+        ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
         if (requirement != null) {
             ensureUserIsPartOfOrganisation(requirement.getProject());
-            resourceRequirementRepository.delete(id);
+            requirement.setActive(false);
+            resourceRequirementRepository.save(requirement);
         } else {
             throw new ResourceNotFoundException(String.format("No resource requirement found for the id: %d", id));
         }
@@ -194,7 +186,7 @@ public class ResourceService {
      * @return list or resource requirements
      */
     public List<ResourceRequirement> getAllRequirements() {
-        return resourceRequirementRepository.findAll();
+        return resourceRequirementRepository.findByActiveIsTrue();
     }
 
     /**
@@ -203,7 +195,7 @@ public class ResourceService {
      * @return List of ResourceRequirements
      */
     public List<ResourceRequirement> getAllRequirements(Long projectId) {
-        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectId(projectId);
+        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectIdAndActiveIsTrue(projectId);
 
         return entries;
     }
@@ -226,7 +218,7 @@ public class ResourceService {
                                      Boolean isCommercial, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
         throws NoSuchOrganizationException, OrganizationNotVerifiedException {
-        Organization organization = organizationRepository.findOne(organizationId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
         if(organization == null) {
             throw new NoSuchOrganizationException(organizationId);
         }
@@ -275,10 +267,10 @@ public class ResourceService {
                                      String description, Boolean isCommercial,
                                      LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
         throws IllegalValueException {
-        ResourceOffer offer = this.resourceOfferRepository.findOne(offerId);
+        ResourceOffer offer = this.resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
 
         if (offer != null) {
-            ensureUserIsPartOfOrganisation(organizationRepository.findOne(organisationId));
+            ensureUserIsPartOfOrganisation(organizationRepository.findByIdAndActiveIsTrue(organisationId));
 
             offer.setName(name);
             offer.setAmount(amount);
@@ -306,7 +298,7 @@ public class ResourceService {
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if offer can't be found
      */
     public void deleteOffer(Long offerId) throws IllegalValueException {
-        if (this.resourceOfferRepository.findOne(offerId) != null) {
+        if (this.resourceOfferRepository.findByIdAndActiveIsTrue(offerId) != null) {
             this.resourceOfferRepository.delete(offerId);
         }
         else{
@@ -362,7 +354,6 @@ public class ResourceService {
             log.debug("TOTALELEMENTS: " + page.getTotalElements());
             log.debug("TOTALPAGES: " + page.getTotalPages());
         }
-
         return page;
     }
 
@@ -404,7 +395,7 @@ public class ResourceService {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
-        ResourceOffer resourceOffer = resourceOfferRepository.findOne(resourceOfferId);
+        ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(resourceOfferId);
         if(resourceOffer == null) {
             throw new IllegalValueException("no resourceoffer with id {} found", resourceOfferId.toString());
         }
@@ -418,7 +409,7 @@ public class ResourceService {
         //check for authorization
         //checkAuthoritiesForResourceMatch(organization);
 
-        ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
+        ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(resourceRequirementId);
         if(resourceRequirement == null) {
             throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirementId.toString());
         }
@@ -602,10 +593,10 @@ public class ResourceService {
         ResourceMatch resourceMatch = new ResourceMatch();
 
         // get the linked property partners
-        ResourceOffer resourceOffer = resourceOfferRepository.findOne(offerId);
-        ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(requirementId);
-        Organization organization = organizationRepository.findOne(organizationId);
-        Project project = projectRepository.findOne(projectId);
+        ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
+        ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(requirementId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
 
         List<ResourceMatch> hasData = resourceMatchRepository.
             findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(resourceOffer,

@@ -105,7 +105,7 @@ public class ResourceRequirementRepositoryTest extends AbstractTransactionalJUni
     @Test
     public void testFindByNameAndProject() {
 
-        List<ResourceRequirement> resourceRequirements = resourceRequirementRepository.findByNameAndProject(resourceRequirement.getName(),project);
+        List<ResourceRequirement> resourceRequirements = resourceRequirementRepository.findByNameAndProjectAndActiveIsTrue(resourceRequirement.getName(), project);
 
         assertNotNull(resourceRequirements);
         assertTrue(resourceRequirements.contains(resourceRequirement));
@@ -115,13 +115,13 @@ public class ResourceRequirementRepositoryTest extends AbstractTransactionalJUni
     @Test
     public void testFindByProjectId() {
 
-        List<ResourceRequirement> resourceRequirements = resourceRequirementRepository.findByProjectId(project.getId());
+        List<ResourceRequirement> resourceRequirements = resourceRequirementRepository.findByProjectIdAndActiveIsTrue(project.getId());
         assertNotNull(resourceRequirements);
         assertTrue(resourceRequirements.contains(resourceRequirement));
         assertTrue(resourceRequirements.contains(resourceRequirement2));
 
         resourceRequirement2.setProject(project2);
-        resourceRequirements = resourceRequirementRepository.findByProjectId(project.getId());
+        resourceRequirements = resourceRequirementRepository.findByProjectIdAndActiveIsTrue(project.getId());
 
         assertNotNull(resourceRequirements);
         assertTrue(resourceRequirements.contains(resourceRequirement));

@@ -48,6 +48,12 @@ public class OrganizationServiceTest {
     @Mock
     private PostingFeedRepository postingFeedRepositoryMock;
 
+    @Mock
+    private ProjectRepository projectRepositoryMock;
+
+    @Mock
+    private ResourceOfferRepository resourceOfferRepositoryMock;
+
     private OrganizationService organizationService;
 
     private User defaultUser;
@@ -63,7 +69,9 @@ public class OrganizationServiceTest {
             userRepositoryMock,
             imageRepositoryMock,
             projectServiceMock,
-            postingFeedRepositoryMock);
+                projectRepositoryMock,
+            postingFeedRepositoryMock,
+            resourceOfferRepositoryMock);
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testUser");
@@ -220,7 +228,7 @@ public class OrganizationServiceTest {
 
         when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
 
-        organizationService.deleteOrganizationInformation();
+        organizationService.deleteOrganizationInformation(organization.getId());
 
         verify(organizationRepositoryMock, times(1)).delete(organization);
     }
@@ -230,7 +238,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
 
-        organizationService.deleteOrganizationInformation();
+        organizationService.deleteOrganizationInformation(anyLong());
     }
 
     @Test

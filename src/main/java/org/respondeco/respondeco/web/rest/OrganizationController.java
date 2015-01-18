@@ -210,16 +210,16 @@ public class OrganizationController {
      * @return response status OK if the organization was deleted successfully, or NOT FOUND if the user is not
      * the owner of an existing organization
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations",
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RequestMapping(value = "/rest/organizations/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> delete(){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         log.debug("REST request to delete Organization : {}");
         ResponseEntity<?> responseEntity;
         try {
-            organizationService.deleteOrganizationInformation();
+            organizationService.deleteOrganizationInformation(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not delete Organization : {}", e);
