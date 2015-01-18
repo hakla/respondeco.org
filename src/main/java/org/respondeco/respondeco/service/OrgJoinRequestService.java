@@ -53,8 +53,8 @@ public class OrgJoinRequestService {
         throws NoSuchOrganizationException, NoSuchUserException, AlreadyInvitedToOrganizationException,
         OrganizationNotVerifiedException {
         User currentUser = userService.getUserWithAuthorities();
-        User user = userRepository.findOne(userDTO.getId());
-        Organization organization = organizationRepository.findOne(organizationDTO.getId());
+        User user = userRepository.findByIdAndActiveIsTrue(userDTO.getId());
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationDTO.getId());
         if(user == null) {
             throw new NoSuchUserException(String.format("User does not exist"));
         }
@@ -89,7 +89,7 @@ public class OrgJoinRequestService {
      * @throws NoSuchOrganizationException organization doesn't exist
      */
     public List<OrgJoinRequest> getOrgJoinRequestByOrganization(Long id) throws NoSuchOrganizationException{
-        Organization organization = organizationRepository.findOne(id);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
 
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist", id));
@@ -163,7 +163,7 @@ public class OrgJoinRequestService {
         if(user.equals(orgJoinRequest.getUser())==false) {
             throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser()));
         }
-        Organization organization = organizationRepository.findOne(orgJoinRequest.getOrganization().getId());
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgJoinRequest.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }

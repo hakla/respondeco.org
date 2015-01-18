@@ -14,6 +14,8 @@ import java.util.List;
 @Transactional
 public interface ResourceRequirementRepository extends JpaRepository<ResourceRequirement, Long> {
 
-    List<ResourceRequirement> findByNameAndProject(String name, Project project);
-    List<ResourceRequirement> findByProjectId(Long projectId);
+    List<ResourceRequirement> findByNameAndProjectAndActiveIsTrue(String name, Project project);
+    List<ResourceRequirement> findByProjectIdAndActiveIsTrue(Long projectId);
+    ResourceRequirement findByIdAndActiveIsTrue(Long id);
+    List<ResourceRequirement> findByActiveIsTrue();
 }

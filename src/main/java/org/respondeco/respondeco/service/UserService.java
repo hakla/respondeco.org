@@ -209,7 +209,7 @@ public class UserService {
     }
 
     public void setOrganization(User user, Long id) {
-        user.setOrganization(organizationRepository.findOne(id));
+        user.setOrganization(organizationRepository.findByIdAndActiveIsTrue(id));
         userRepository.save(user);
     }
 
