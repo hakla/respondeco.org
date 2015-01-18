@@ -279,14 +279,11 @@ public class OrganizationService {
             throw new NoSuchOrganizationException(String.format("Organization %id does not exist", id));
         }
         for(User user : currentOrganization.getMembers()) {
-            user.setOrganization(null);
             user.setActive(false);
             userRepository.save(user);
         }
-        currentOrganization.setMembers(null);
         User owner = currentOrganization.getOwner();
         owner.setActive(false);
-        owner.setOrganization(null);
         userRepository.save(owner);
         for(Project project : currentOrganization.getProjects()){
             if(project.getSuccessful()== false) {
