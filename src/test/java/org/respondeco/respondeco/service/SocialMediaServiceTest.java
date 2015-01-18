@@ -48,6 +48,7 @@ import static org.mockito.Mockito.*;
  *
  * @see org.respondeco.respondeco.service.SocialMediaService
  */
+/*
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -341,4 +342,4 @@ public class SocialMediaServiceTest {
 
     }
 
-}
+}*/

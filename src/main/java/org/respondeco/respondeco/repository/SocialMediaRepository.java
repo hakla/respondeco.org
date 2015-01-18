@@ -13,5 +13,9 @@ public interface SocialMediaRepository extends JpaRepository<SocialMediaConnecti
 
     public SocialMediaConnection findByUserAndProvider(User user, String provider);
 
-    public List<SocialMediaConnection> findByUser(User user);
+    public List<SocialMediaConnection> findByUserAndActiveIsTrue(User user);
+
+    public SocialMediaConnection findByUserAndProviderAndActiveIsTrue(User user, String provider);
+
+    public SocialMediaConnection findByUserAndProviderAndActiveIsFalse(User user, String provider);
 }

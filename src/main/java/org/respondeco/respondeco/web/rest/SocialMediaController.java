@@ -12,10 +12,7 @@ import org.respondeco.respondeco.service.SocialMediaService;
 import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
 import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.respondeco.respondeco.web.rest.dto.ErrorResponseDTO;
-import org.respondeco.respondeco.web.rest.dto.SocialMediaConnectionResponseDTO;
-import org.respondeco.respondeco.web.rest.dto.StringDTO;
-import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
+import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -287,6 +284,44 @@ public class SocialMediaController {
 
         return responseEntity;
     }
+
+
+    /**
+     * POST /rest/socialmedia/xing/post
+     * @param xingPostDTO xingPostDTO containing two strings, one for the post message and one for the urlPath
+     *                    for which the link is posted on the xing wall. The urlPath gets appended to the baseUrl
+     *                    which is defined in the application.yml under spring.social.xing.postBaseUrl
+     * @return returns a ResponseEntity containing the created post information and a HttpStatus.
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value="/rest/socialmedia/xing/post",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity createXingPost(@RequestBody XingPostDTO xingPostDTO) {
+        ResponseEntity<StringDTO> responseEntity;
+
+        String post = xingPostDTO.getPost();
+        String url = xingPostDTO.getUrlPath();
+
+        if(post.isEmpty()) {
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            try{
+                String createdPost = socialMediaService.createXingPost(url, post);
+                responseEntity = new ResponseEntity<>(new StringDTO(createdPost), HttpStatus.CREATED);
+            } catch (OperationForbiddenException e) {
+                log.error("operation forbidden: " + e);
+                responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (NoSuchSocialMediaConnectionException e) {
+                log.error("could not find SocialMediaConnection: " + e);
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        return responseEntity;
+    }
+
 
     /**
      * Returns all Connections of the currently logged in user or

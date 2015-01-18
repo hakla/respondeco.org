@@ -76,7 +76,7 @@ public class SocialMediaRepositoryTest extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void testFindByUser() {
-        List<SocialMediaConnection> connections = socialMediaRepository.findByUser(user);
+        List<SocialMediaConnection> connections = socialMediaRepository.findByUserAndActiveIsTrue(user);
 
         assertEquals(connections.size(), 2);
         assertEquals(connections.get(0).getProvider(), "facebook");
