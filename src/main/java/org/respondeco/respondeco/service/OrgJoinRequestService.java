@@ -53,7 +53,7 @@ public class OrgJoinRequestService {
         throws NoSuchOrganizationException, NoSuchUserException, AlreadyInvitedToOrganizationException,
         OrganizationNotVerifiedException {
         User currentUser = userService.getUserWithAuthorities();
-        User user = userRepository.findOne(userDTO.getId());
+        User user = userRepository.findByIdAndActiveIsTrue(userDTO.getId());
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationDTO.getId());
         if(user == null) {
             throw new NoSuchUserException(String.format("User does not exist"));

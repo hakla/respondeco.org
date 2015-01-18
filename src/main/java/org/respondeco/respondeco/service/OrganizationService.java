@@ -280,10 +280,12 @@ public class OrganizationService {
         }
         for(User user : currentOrganization.getMembers()) {
             user.setOrganization(null);
+            user.setActive(false);
             userRepository.save(user);
         }
         currentOrganization.setMembers(null);
         User owner = currentOrganization.getOwner();
+        owner.setActive(false);
         owner.setOrganization(null);
         userRepository.save(owner);
         for(Project project : currentOrganization.getProjects()){
@@ -314,7 +316,7 @@ public class OrganizationService {
     public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException,
         NotOwnerOfOrganizationException, OrganizationNotVerifiedException {
         User user = userService.getUserWithAuthorities();
-        User member = userRepository.findOne(userId);
+        User member = userRepository.findByIdAndActiveIsTrue(userId);
 
         if(member == null) {
             throw new NoSuchUserException(String.format("User %s does not exist", userId));
