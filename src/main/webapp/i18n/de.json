@@ -8,6 +8,7 @@
             "organization": "Organisationen",
             "projects": "Projekte",
             "resource": "Marktplatz",
+            "resourcemanagement": "Ressourcen Verwaltung",
             "entities": {
                 "main": "Entities"
             },
@@ -28,8 +29,7 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung",
-                "newsfeed": "Newsfeed",
-                "resourcerequestapply": "Ressourcen-Anfragen"
+                "newsfeed": "Newsfeed"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",
@@ -174,7 +174,9 @@
             "estimatedaysuntilstart": "{{days}} verbleibende Tage",
             "resourcecollected": "{{percentage}}% Ressourcen gesammelt",
             "resourceneeded": "{{essential}}% der notwendigen Ressourcen gesammelt",
-            "details": "Detailansicht"
+            "details": "Detailansicht",
+            "applysuccess": "Ihre Spende ({{apply}}) wurde erfolgreich weitergeleitet.",
+            "applyrestricted": "Aktuelle Ressource benötigt keine weiteren Spenden"
         },
         "categories": {
             "title": "Kategorien",
@@ -576,7 +578,7 @@
             "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource <span class='underline'>{{RequirementName}}</span>, die Ressource <span class='underline'>{{OfferName}}</span> bereitstellen.",
             "tabtitle": "Spenden"
         },
-        "olddata": "Alte Anfragen/Spenden",
+        "olddata": "Historie",
         "acceptButton": "Annehmen",
         "declineButton": "Ablehnen",
         "acceptedButton": "Angenohmen",

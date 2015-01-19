@@ -129,25 +129,24 @@
             <div class="resource-requirements">
                 <h2>{{ 'project.details.details' | translate}}</h2>
                 <accordion close-others="true">
-                    <accordion-group ng-open="requirement.id" ng-repeat="requirement in project.resourceRequirements">
+                    <accordion-group ng-open="item.id" ng-repeat="item in project.resourceRequirements">
                         <accordion-heading>
-                            <div class="row hover-toggle" ng-click="expandResource(requirement, $event)">
-                                <div class="col-md-6">{{requirement.name}}</div>
-                                <div class="col-md-3 on-hover">
-                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()&&(requirement.sum<requirement.originalAmount)" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                            <div class="row hover-toggle" ng-click="expandResource(item, $event)">
+                                <div class="col-md-6">{{item.name}}</div>
+                                <div class="col-md-2" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}">
+                                    <button class="btn btn-primary" ng-show="isAllowedToApply()" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
                                 </div>
-                                <div class="col-md-3" style="text-align: right;">
-                                    <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
-                                    <span ng-show="requirement.sum == undefined">0</span>/{{requirement.originalAmount}}
-                                    <i class="glyphicon" ng-class="{'glyphicon-chevron-down': requirement.expanded, 'glyphicon-chevron-right': !requirement.expanded}"></i>
+                                <div class="col-md-4" style="text-align: right;">
+                                    <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
+                                    <i class="glyphicon" ng-class="{'glyphicon-chevron-down': item.expanded, 'glyphicon-chevron-right': !item.expanded}"></i>
                                 </div>
                             </div>
                         </accordion-heading>
                         <ul>
-                            <li ng-repeat="match in requirement.matches">
+                            <li ng-repeat="match in item.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
-                                <div class="col-md-4 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.originalAmount}}</div>
+                                <div class="col-md-6 strong">{{match.organization.name}}</div>
+                                <div class="col-md-4 pull-right">{{match.amount}}/{{item.originalAmount}}</div>
                                 <div class="col-md-4">
                                     <rating max="5" on-leave="overStar = null"
                                             readonly="!matchRatingPermissions[match.matchId]"

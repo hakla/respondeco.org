@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, $location, $routeParams, $sce, $translate,
-                                                       Account, $modal, AuthenticationSharedService) {
+                                                       Account, $modal, AuthenticationSharedService, $rootScope) {
 
     $scope.project = {
         id: null,
@@ -512,6 +512,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         // this cause an exception.
         var reqTarget = $scope.ProjectApply.selectedRequirement.$target;
         Project.apply(data, function(data){
+            $translate("project.details.applysuccess", {apply: $scope.ProjectApply.selectedResourceOffer.name}).
+                then(function(translated) {
+                    $rootScope.globalAlerts.push({type: 'info', msg: translated});
+            });
             $scope.ProjectApply.selectedResourceOffer.$target.removeClass("selected");
             $scope.ProjectApply.selectedResourceOffer = null;
             $scope.ProjectApply.selectedRequirement = null;
@@ -699,10 +703,11 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.expandResource = function(resource, $event){
         var index = $scope.project.resourceRequirements.indexOf(resource);
         for(var i = 0; i < $scope.project.resourceRequirements.length; i++){
+            var item = $scope.project.resourceRequirements[i];
             if(i != index) {
-                $scope.project.resourceRequirements[i].expanded = false;
+                item.expanded = false;
             }else{
-                $scope.project.resourceRequirements[i].expanded = true;
+                item.expanded = !item.expanded;
             }
         }
     };
