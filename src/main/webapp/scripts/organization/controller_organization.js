@@ -9,6 +9,7 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;
+    $scope.xingConnected = false;
 
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
@@ -40,6 +41,8 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
                     $scope.twitterConnected = true;
                 } else if(connection.provider === 'facebook') {
                     $scope.facebookConnected = true;
+                } else if(connection.provider === 'xing') {
+                    $scope.xingConnected = true;
                 }
             })
         });
@@ -192,6 +195,11 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
         if($scope.postOnFacebook === true) {
             SocialMedia.createFacebookPost({string: $scope.postingInformation});
+        }
+
+        if($scope.postOnXing === true) {
+            var urlPath = $location.url();
+            SocialMedia.createXingPost({urlPath: urlPath, post: $scope.postingInformation});
         }
     };
 

@@ -36,6 +36,7 @@ import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -50,9 +51,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Test class for the OrganizationController REST controller.
@@ -111,6 +110,7 @@ public class OrganizationControllerTest {
     private ResourceMatch match2;
     private OrgJoinRequest joinRequest1;
     private OrgJoinRequest joinRequest2;
+    private Posting posting;
 
     private ArgumentCaptor<Object> voidInterceptor;
 
@@ -130,6 +130,7 @@ public class OrganizationControllerTest {
     private Organization defaultOrganization;
     private OrgJoinRequest orgJoinRequest;
     private User inviteAbleUser;
+
 
 
 
@@ -246,6 +247,12 @@ public class OrganizationControllerTest {
         joinRequest2.setId(200L);
         joinRequest2.setUser(defaultUser);
         joinRequest2.setOrganization(org1);
+
+        posting = new Posting();
+        posting.setId(1L);
+        posting.setAuthor(defaultUser);
+        posting.setInformation("information");
+        posting.setPostingfeed(postingFeed);
 
         voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);
 
@@ -565,6 +572,21 @@ public class OrganizationControllerTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes("posting1")))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetPostingForOrganization() throws Exception {
+        List<Posting> postingList = new ArrayList<>();
+        postingList.add(posting);
+
+        PageImpl<Posting> page = new PageImpl<Posting>(postingList);
+
+        defaultOrganization.setPostingFeed(postingFeed);
+        doReturn(page).when(postingFeedServiceMock).getPostingsForOrganization(anyLong(), any(RestParameters.class));
+
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/postings"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

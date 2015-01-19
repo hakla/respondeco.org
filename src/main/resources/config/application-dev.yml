@@ -52,14 +52,11 @@ spring:
             appId: TXfo29nDCKaU0HmajtEwMhP80
             appSecret: FAvwa7Kjjih9zPWZaDxpfiqQ4ZZ2JfaOi1vXQgtTe4CCUnDeJ6
             redirectUrl: http://127.0.0.1:9000/#/social-networks
-        google:
-            clientId: 923257303731-7gbt2bdt8mmsun13u1nac35t1tlsopuv.apps.googleusercontent.com
-            clientSecret: 1Mi2Txcku-nmKED7ubcx0STk
-            redirectUrl: http://www.127.0.0.1.xip.io:9000/
         xing:
-            appId: 1c6265031c4231dcc2a9
-            appSecret: d7295bf7275a7e2f40fe604b15f0044eedfe102a
+            appId: b453d9fa070612aba6f6
+            appSecret: 9a8bc2effdd97dbdfdd1cc45a10d4cc61d9eb509
             redirectUrl: http://127.0.0.1:9000/#/social-networks
+            postBaseUrl: test.respondeco.org/#
 
 metrics:
     jmx.enabled: true
