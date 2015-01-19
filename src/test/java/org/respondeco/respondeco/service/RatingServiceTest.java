@@ -122,9 +122,11 @@ public class RatingServiceTest {
         basicProject.setId(1L);
         basicProject.setName("testProject");
         basicProject.setPurpose("testPurpose");
-        basicProject.setConcrete(false);
+        basicProject.setConcrete(true);
         basicProject.setManager(defaultUser);
         basicProject.setOrganization(projectOrganization);
+        basicProject.setSuccessful(true);
+
 
         defaultMatch = new ResourceMatch();
         defaultMatch.setId(1L);
@@ -363,5 +365,37 @@ public class RatingServiceTest {
         assertNotNull(objectArray[0][1]);
         verify(resourceMatchRepositoryMock, times(1)).getAggregatedRatingByOrganization(defaultOrganization.getId());
 
+    }
+
+    @Test
+    public void testCheckPermissionForProject() throws NoSuchProjectException {
+        when(projectService.findProjectById(basicProject.getId())).thenReturn(basicProject);
+        when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
+
+        ratingService.checkPermissionForProject(basicProject.getId());
+
+        verify(resourceMatchRepositoryMock, times(1)).findByProjectAndOrganization(basicProject,defaultOrganization);
+    }
+
+    @Test
+    public void testCheckPermissionForMatches() throws NoSuchResourceMatchException {
+        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
+        when(resourceMatchRepositoryMock.findOne(defaultMatch.getId())).thenReturn(defaultMatch);
+
+        List<Long> matchList = new ArrayList<>();
+        matchList.add(defaultMatch.getId());
+
+        assertNotNull(ratingService.checkPermissionsForMatches(matchList));
+    }
+
+    @Test(expected = NoSuchResourceMatchException.class)
+    public void testCheckPermissionForMatches_NoSuchResourceMatch() throws NoSuchResourceMatchException {
+        when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
+        when(resourceMatchRepositoryMock.findOne(defaultMatch.getId())).thenReturn(null);
+
+        List<Long> matchList = new ArrayList<>();
+        matchList.add(defaultMatch.getId());
+
+        ratingService.checkPermissionsForMatches(matchList);
     }
 }

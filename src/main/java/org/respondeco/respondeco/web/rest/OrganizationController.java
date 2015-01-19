@@ -210,16 +210,16 @@ public class OrganizationController {
      * @return response status OK if the organization was deleted successfully, or NOT FOUND if the user is not
      * the owner of an existing organization
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations",
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RequestMapping(value = "/rest/organizations/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> delete(){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         log.debug("REST request to delete Organization : {}");
         ResponseEntity<?> responseEntity;
         try {
-            organizationService.deleteOrganizationInformation();
+            organizationService.deleteOrganizationInformation(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not delete Organization : {}", e);
@@ -559,10 +559,12 @@ public class OrganizationController {
 
 
     /**
-     * gets the list of postings ordered by creation date for the specified organization
+     * GET gets the postings of the given organization as a page of postings defined by page and pagesize
      *
-     * @param id the id of the organization for which to get the postings
-     * @return response status OK and the Postings for the organization
+     * @param id given id of the organization
+     * @param page the page which is used for the pagerequest (0 by default)
+     * @param pageSize the pagesize (elements of the page) used for the pagerequest
+     * @return OK and PostingPaginationResponseDTO with found postings; NOT_FOUND if organization doesn't exist
      */
     @RequestMapping(value = "/rest/organizations/{id}/postings",
             method = RequestMethod.GET,
@@ -595,9 +597,10 @@ public class OrganizationController {
 
     /**
      * creates a post for the organization in the postingfeed
-     * @param information the string which contains the informaiton of the posting
+     * @param information the string which contains the information of the posting
      * @param id the id of the organization for which to create the posting
-     * @return response status ok if posting has
+     * @return response status OK if no exception has been thrown; NOT_FOUND if the organization doesn't exist;
+     * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
      */
     @RequestMapping(value = "/rest/organizations/{id}/postings",
             method = RequestMethod.POST,
@@ -609,9 +612,9 @@ public class OrganizationController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            postingFeedService.addPostingForOrganization(id,information);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            Posting createdPosting = postingFeedService.addPostingForOrganization(id,information);
+            PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
+            responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not post for organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);

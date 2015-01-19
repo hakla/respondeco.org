@@ -9,6 +9,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -49,6 +50,7 @@ public class PostingFeedServiceTest {
     private Organization projectOrganization;
     private PostingFeed postingFeedProject;
     private PostingFeed postingFeedOrganization;
+    private Posting posting1;
 
     @Before
     public void setup() throws Exception {
@@ -88,6 +90,12 @@ public class PostingFeedServiceTest {
         basicProject.setManager(projectManager);
         basicProject.setOrganization(projectOrganization);
         basicProject.setPostingFeed(postingFeedProject);
+
+        posting1 = new Posting();
+        posting1.setId(1L);
+        posting1.setAuthor(projectManager);
+        posting1.setInformation("testPosting");
+
 
     }
 
@@ -199,10 +207,10 @@ public class PostingFeedServiceTest {
     public void testGetPostingsForOrganization() throws NoSuchOrganizationException {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
+        RestParameters restParameters = new RestParameters(null, null, null, null);
+        postingFeedService.getPostingsForOrganization(projectOrganization.getId(), restParameters);
 
-        postingFeedService.getPostingsForOrganization(projectOrganization.getId(), null);
-
-        verify(postingFeedRepositoryMock, times(1)).getPostingsForOrganization(projectOrganization.getId(), null);
+        verify(postingFeedRepositoryMock, times(1)).getPostingsForOrganization(projectOrganization.getId(), restParameters.buildPageRequest());
     }
 
     @Test(expected = NoSuchOrganizationException.class)
@@ -217,10 +225,10 @@ public class PostingFeedServiceTest {
     public void testGetPostingsForProject() throws NoSuchProjectException {
         when(projectRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(basicProject);
+        RestParameters restParameters = new RestParameters(null, null, null, null);
+        postingFeedService.getPostingsForProject(basicProject.getId(), restParameters);
 
-        postingFeedService.getPostingsForProject(basicProject.getId(), null);
-
-        verify(postingFeedRepositoryMock, times(1)).getPostingsForProject(basicProject.getId(), null);
+        verify(postingFeedRepositoryMock, times(1)).getPostingsForProject(basicProject.getId(), restParameters.buildPageRequest());
     }
 
     @Test(expected = NoSuchProjectException.class)
@@ -229,5 +237,37 @@ public class PostingFeedServiceTest {
                 .thenReturn(null);
 
         postingFeedService.getPostingsForProject(basicProject.getId(), null);
+    }
+
+    @Test
+    public void testDeletePosting() throws PostingException {
+        posting1.setPostingfeed(postingFeedProject);
+        postingRepositoryMock.save(posting1);
+        when(userService.getUserWithAuthorities()).thenReturn(projectManager);
+        when(postingRepositoryMock.findByIdAndActiveIsTrue(posting1.getId())).thenReturn(posting1);
+
+        postingFeedService.deletePosting(posting1.getId());
+
+        verify(postingRepositoryMock, times(1)).findByIdAndActiveIsTrue(posting1.getId());
+    }
+
+    @Test(expected = PostingException.class)
+    public void testDeletePosting_NoSuchPosting() throws PostingException {
+        posting1.setPostingfeed(postingFeedProject);
+        postingRepositoryMock.save(posting1);
+        when(userService.getUserWithAuthorities()).thenReturn(projectManager);
+        when(postingRepositoryMock.findByIdAndActiveIsTrue(posting1.getId())).thenReturn(null);
+
+        postingFeedService.deletePosting(posting1.getId());
+    }
+
+    @Test(expected = PostingException.class)
+    public void testDeletePosting_NotAuthorOfOrganization() throws PostingException {
+        posting1.setPostingfeed(postingFeedProject);
+        postingRepositoryMock.save(posting1);
+        when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
+        when(postingRepositoryMock.findByIdAndActiveIsTrue(posting1.getId())).thenReturn(posting1);
+
+        postingFeedService.deletePosting(posting1.getId());
     }
 }

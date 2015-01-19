@@ -35,7 +35,8 @@
             "confirmpassword.placeholder": "Confirm the new password",
             "email": "E-mail",
             "email.placeholder": "Your e-mail",
-            "description": "Description"
+            "description": "Description",
+            "delete": "Delete"
         },
         "messages": {
             "info": {

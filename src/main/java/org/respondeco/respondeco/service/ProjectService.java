@@ -160,7 +160,7 @@ public class ProjectService {
         if(organization == null) {
             throw new NoSuchOrganizationException("current user does not belong to an organization");
         }
-        Project project = projectRepository.findOne(id);
+        Project project = projectRepository.findByIdAndActiveIsTrue(id);
         if(project == null) {
             //no project found
             throw new NoSuchProjectException(id);
@@ -224,7 +224,7 @@ public class ProjectService {
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);
         }
-        Project project = projectRepository.findOne(id);
+        Project project = projectRepository.findByIdAndActiveIsTrue(id);
         if(project == null) {
             throw new NoSuchProjectException(id);
         }
@@ -254,7 +254,7 @@ public class ProjectService {
      * @throws NoSuchProjectException if the project with the given id could not be found
      */
     public Project delete(Long id) throws OperationForbiddenException, NoSuchProjectException {
-        Project project = projectRepository.findOne(id);
+        Project project = projectRepository.findByIdAndActiveIsTrue(id);
         if(project == null) {
             throw new NoSuchProjectException(id);
         }
@@ -493,7 +493,7 @@ public class ProjectService {
             throw new IllegalValueException("follow.project.rejected.error", "Cannot follow an organization that already marked as followed");
         }
 
-        Project selected = projectRepository.findOne(projectId);
+        Project selected = projectRepository.findByIdAndActiveIsTrue(projectId);
 
         // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
         // an exception if project is deactivated

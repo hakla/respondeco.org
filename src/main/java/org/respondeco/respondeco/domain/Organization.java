@@ -30,8 +30,8 @@ import java.util.List;
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
-    @Size(min = 0, max = 50)
-    @Column(length = 50)
+    @Size(min = 3, max = 255)
+    @Column(length = 255)
     private String name;
 
     @Column(length = 2048)

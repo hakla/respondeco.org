@@ -38,7 +38,8 @@
         "tooltip": {
             "not-changeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
             "not-changeable-init": "Diese Einstellung kann nachträglich nicht mehr geändert werden.",
-            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org)."
+            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
+            "not-deleteable": "Die Organisation kann nur vom Administrator gelöscht werden. Bitte wenden Sie sich an den Support (support@respondeco.org)."
         },
         "form": {
             "title": "Titel",
@@ -57,7 +58,8 @@
             "save": "Speichern",
             "postingInformation": "Posting",
             "orgname": "Name der Organisation",
-            "orgname.placeholder": "Der Name Ihrer Organisation"
+            "orgname.placeholder": "Der Name Ihrer Organisation",
+            "delete": "Löschen"
         },
 
         "messages": {
@@ -87,15 +89,15 @@
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
                 },
                 "name": {
-                    "minlength": "Der Name Ihrer Organisation muss mindestens 1 Zeichen lang sein",
-                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 50 Zeichen sein"
+                    "minlength": "Der Name Ihrer Organisation muss mindestens 3 Zeichen lang sein",
+                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 255 Zeichen sein"
                 },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
                 },
                 "posting": {
                     "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten.",
-                    "maxlength": "Ihre Eingabe darf maximal 100 Zeichen enthalten.",
+                    "maxlength": "Ihre Eingabe darf maximal 2048 Zeichen enthalten.",
                     "required": "Ihre Eingabe wird benötigt."
                 }
             }
@@ -119,12 +121,13 @@
                 "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
             },
             "error": {
-                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden: ",
-                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden.",
-                "usernotfound": "<strong>Es ist ein Fehler aufgetreten!</strong> Der angegebene Empfänger existiert nicht.",
-                "receiverlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
-                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
-                "receivercurrentuser": "<strong>Es ist ein Fehler aufgetreten!</strong> Sie können sich selbst keine Nachricht schicken."
+                "delete": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gelöscht werden: ",
+                "send": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gesendet werden.",
+                "usernotfound": "Es ist ein Fehler aufgetreten! Der angegebene Empfänger existiert nicht.",
+                "receiverlength": "Es ist ein Fehler aufgetreten! Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
+                "contentlength": "Es ist ein Fehler aufgetreten! Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
+                "receivercurrentuser": "Es ist ein Fehler aufgetreten! Sie können sich selbst keine Nachricht schicken.",
+                "notreceiver": "Sie haben keine Berechtigung diese Nachricht zu löschen!"
             },
             "validate": {
                 "receiver": {

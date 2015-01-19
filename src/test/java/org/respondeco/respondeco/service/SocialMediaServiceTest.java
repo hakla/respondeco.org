@@ -33,7 +33,6 @@ import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
-import org.springframework.social.xing.api.Xing;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -85,7 +84,6 @@ public class SocialMediaServiceTest {
     private OAuth1Operations oAuth1Operations;
     private Connection<Twitter> twitterConnection;
 
-    private Connection<Xing> xingConnection;
     private SocialMediaConnection xingSocialMediaConnection;
 
     private User user;
@@ -140,10 +138,6 @@ public class SocialMediaServiceTest {
         doReturn(accessToken).when(oAuth1Operations).exchangeForAccessToken(any(AuthorizedRequestToken.class), any());
 
         twitterConnection = (Connection<Twitter>)mock(Connection.class);
-
-        //mocks for xing
-        xingConnection = (Connection<Xing>)mock(Connection.class);
-
     }
 
     @Test
@@ -207,19 +201,6 @@ public class SocialMediaServiceTest {
 
         verify(socialMediaRepositoryMock, times(1)).findByUserAndProvider(user,"facebook");
         assertEquals(status, "post");
-    }
-
-    //@Test
-    public void testDisconnectFacebook_shouldDisconnectFacebook() throws Exception {
-        doReturn(user).when(userServiceMock).getUserWithAuthorities();
-
-        doReturn(facebookSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProvider(user,"facebook");
-
-        socialMediaService.disconnectFacebook();
-
-        verify(socialMediaRepositoryMock, times(1)).delete(any(SocialMediaConnection.class));
-
-
     }
 
     @Test

@@ -6,6 +6,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
     var isNew = id === 'new';
     var organization = {};
 
+
     $scope.logo = null;
     $scope.organization = {
         npo: false,
