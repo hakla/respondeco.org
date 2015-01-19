@@ -340,11 +340,9 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateXingConnection_expectCreated() throws Exception {
-        TwitterConnectionDTO dto = new TwitterConnectionDTO();
-        dto.setToken("token");
-        dto.setVerifier("verifier");
+        StringDTO dto = new StringDTO("verifier");
 
-        doReturn(xingConnection).when(socialMediaServiceMock).createXingConnection(anyString(), anyString());
+        doReturn(xingConnection).when(socialMediaServiceMock).createXingConnection(anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/connect/xing/createconnection")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -357,11 +355,9 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateXingConnection_throwsOperationForbiddenException() throws Exception {
-        TwitterConnectionDTO dto = new TwitterConnectionDTO();
-        dto.setToken("token");
-        dto.setVerifier("verifier");
+        StringDTO dto = new StringDTO("verifier");
 
-        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createXingConnection(anyString(),anyString());
+        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createXingConnection(anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/connect/xing/createconnection")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -371,11 +367,9 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateXingConnection_throwsConnectionAlreadyExistsException() throws Exception {
-        TwitterConnectionDTO dto = new TwitterConnectionDTO();
-        dto.setToken("token");
-        dto.setVerifier("verifier");
+        StringDTO dto = new StringDTO("verifier");
 
-        doThrow(ConnectionAlreadyExistsException.class).when(socialMediaServiceMock).createXingConnection(anyString(),anyString());
+        doThrow(ConnectionAlreadyExistsException.class).when(socialMediaServiceMock).createXingConnection(anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/connect/xing/createconnection")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

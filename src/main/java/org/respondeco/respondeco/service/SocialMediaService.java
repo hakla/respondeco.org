@@ -74,10 +74,11 @@ public class SocialMediaService {
      * @return Authorization URL as String
      */
     public String createFacebookAuthorizationURL() {
-        log.debug("Creating Facebook Authorization URL");
         OAuth2Operations oauthOperations = facebookConnectionFactory.getOAuthOperations();
         OAuth2Parameters params = new OAuth2Parameters();
         params.setRedirectUri(env.getProperty("spring.social.facebook.redirectUrl"));
+
+        log.debug("property: " + env.getProperty("spring.social.facebook.redirectUrl"));
         params.setScope("publish_actions");
 
         String authorizationUrl = oauthOperations.buildAuthorizeUrl(params);
@@ -302,7 +303,6 @@ public class SocialMediaService {
 
         socialMediaRepository.save(socialMediaConnection);
 
-
         String url = xingService.getAuthorizationUrl(requestToken);
 
         return url;
@@ -310,11 +310,10 @@ public class SocialMediaService {
 
     /**
      * Creates a Xing Connection with help of the token and oauthVerifier from the user.
-     * @param token user token which is used to create the connection to the users xing account
      * @param oauthVerifier used to verify the token
      * @return Returns a xing connection, therefor our app can interact with the api on behalf of the user
      */
-    public SocialMediaConnection createXingConnection(String token, String oauthVerifier)
+    public SocialMediaConnection createXingConnection(String oauthVerifier)
         throws OperationForbiddenException, ConnectionAlreadyExistsException{
 
         //check if user is logged in
@@ -328,13 +327,6 @@ public class SocialMediaService {
         if(socialMediaConnection != null) {
             throw new ConnectionAlreadyExistsException("connection for user " + user.getId() + " with twitter already exists");
         }
-
-        //if no connection exists -> create new connection with oauth1
-        //OAuthToken requestToken = new OAuthToken(token,null);
-        //OAuth1Operations oauthOperations = xingConnectionFactory.getOAuthOperations();
-
-        log.debug("XINGTOKEN: " + token);
-        log.debug("XINGVERIFIER: " + oauthVerifier);
 
         //Get saved token -> token from getAuthorizeURL gets saved in db, therefor isActive is set to false
         //because the connection is not established yet

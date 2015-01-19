@@ -258,7 +258,7 @@ public class SocialMediaController {
     /**
      * POST /rest/connect/xing/createconnection
      * Connects a user account with xing
-     * @param twitterConnectionDTO contains the authorization token and a verifier for the token
+     * @param verifier contains the verifier for the requesttoken
      * @return responseentity with HttpStatus.CREATED if the connection was successfully created or
      *         an appropriate error if the creation of the connection was not successful
      */
@@ -267,13 +267,11 @@ public class SocialMediaController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createXingConnection(@RequestBody TwitterConnectionDTO twitterConnectionDTO) {
+    public ResponseEntity<?> createXingConnection(@RequestBody StringDTO verifier) {
         ResponseEntity<?> responseEntity;
 
-        String token = twitterConnectionDTO.getToken();
-        String verifier = twitterConnectionDTO.getVerifier();
         try{
-            SocialMediaConnection socialMediaConnection = socialMediaService.createXingConnection(token, verifier);
+            SocialMediaConnection socialMediaConnection = socialMediaService.createXingConnection(verifier.getString());
             SocialMediaConnectionResponseDTO dto = SocialMediaConnectionResponseDTO.fromEntity(socialMediaConnection, null);
 
             responseEntity = new ResponseEntity<>(dto, HttpStatus.CREATED);

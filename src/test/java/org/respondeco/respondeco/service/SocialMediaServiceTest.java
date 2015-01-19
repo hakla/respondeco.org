@@ -1,7 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import com.wordnik.swagger.model.OAuth;
-import com.wordnik.swagger.model.Operation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,26 +12,30 @@ import org.respondeco.respondeco.repository.SocialMediaRepository;
 import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
 import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.scribe.model.Token;
+import org.scribe.model.Verifier;
+import org.scribe.oauth.OAuthService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.core.env.Environment;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.FeedOperations;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
+import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuthToken;
-import org.springframework.social.oauth2.*;
+import org.springframework.social.oauth2.AccessGrant;
+import org.springframework.social.oauth2.OAuth2Operations;
+import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.social.xing.api.Xing;
-import org.springframework.social.xing.connect.XingConnectionFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,6 @@ import static org.mockito.Mockito.*;
  *
  * @see org.respondeco.respondeco.service.SocialMediaService
  */
-/*
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -70,7 +71,7 @@ public class SocialMediaServiceTest {
     private TwitterConnectionFactory twitterConnectionFactoryMock;
 
     @Mock
-    private XingConnectionFactory xingConnectionFactoryMock;
+    private OAuthService xingServiceMock;
 
 
     private SocialMediaService socialMediaService;
@@ -93,7 +94,7 @@ public class SocialMediaServiceTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.socialMediaService = new SocialMediaService(environmentMock, socialMediaRepositoryMock, userServiceMock,
-            facebookConnectionFactoryMock, twitterConnectionFactoryMock, xingConnectionFactoryMock);
+            facebookConnectionFactoryMock, twitterConnectionFactoryMock, xingServiceMock);
 
         user = new User();
         user.setId(1L);
@@ -131,9 +132,6 @@ public class SocialMediaServiceTest {
 
         facebookConnection = (Connection<Facebook>)mock(Connection.class);
         doReturn(connectionData).when(facebookConnection).createData();
-        //doReturn().when(facebookConnection).getApi();
-
-          //  .feedOperations().updateStatus("post")).thenReturn("post");
 
         OAuthToken accessToken = new OAuthToken("accesstoken","secret");
 
@@ -150,7 +148,14 @@ public class SocialMediaServiceTest {
 
     @Test
     public void testCreateFacebookAuthorizationURL_shouldCreateURL() throws Exception {
+        String expectedUrl = "www.authorizeurl.com";
+        doReturn(oAuth2Operations).when(facebookConnectionFactoryMock).getOAuthOperations();
 
+        doReturn("redirect.url").when(environmentMock).getProperty("spring.social.facebook.redirectUrl");
+        doReturn(expectedUrl).when(oAuth2Operations).buildAuthorizeUrl(any(OAuth2Parameters.class));
+
+        String url = socialMediaService.createFacebookAuthorizationURL();
+        assertEquals(expectedUrl, url);
     }
 
     @Test
@@ -182,12 +187,21 @@ public class SocialMediaServiceTest {
         socialMediaService.createFacebookConnection("code");
     }
 
-    //@Test
+    @Test
     public void testCreateFacebookPost_shouldCreateFacebookPost() throws Exception {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
 
         doReturn(facebookSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProvider(user, "facebook");
         doReturn(facebookConnection).when(facebookConnectionFactoryMock).createConnection(any(ConnectionData.class));
+
+        //mock connection.getApi().feedOperations().updateStatus(post);
+        Facebook facebook = mock(Facebook.class);
+        FeedOperations feedOperations = mock(FeedOperations.class);
+        String post = "post";
+
+        doReturn(facebook).when(facebookConnection).getApi();
+        doReturn(feedOperations).when(facebook).feedOperations();
+        doReturn(post).when(feedOperations).updateStatus("post");
 
         String status = socialMediaService.createFacebookPost("post");
 
@@ -206,6 +220,19 @@ public class SocialMediaServiceTest {
         verify(socialMediaRepositoryMock, times(1)).delete(any(SocialMediaConnection.class));
 
 
+    }
+
+    @Test
+    public void testCreateTwitterAuthorizationURL_shouldCreateURL() throws Exception {
+        String expectedUrl = "www.authorizeurl.fake";
+
+        doReturn(oAuth1Operations).when(twitterConnectionFactoryMock).getOAuthOperations();
+        doReturn(new OAuthToken("token", null)).when(oAuth1Operations).fetchRequestToken(anyString(), any());
+        doReturn(expectedUrl).when(oAuth1Operations).buildAuthorizeUrl("token", OAuth1Parameters.NONE);
+
+        String url = socialMediaService.createTwitterAuthorizationURL();
+
+        assertEquals(expectedUrl, url);
     }
 
     @Test
@@ -296,12 +323,12 @@ public class SocialMediaServiceTest {
             connections.add(twitterSocialMediaConnection);
 
             return connections;
-        }).when(socialMediaRepositoryMock).findByUser(user);
+        }).when(socialMediaRepositoryMock).findByUserAndActiveIsTrue(user);
 
 
         List<SocialMediaConnection> connections = socialMediaService.getConnectionsForUser();
 
-        verify(socialMediaRepositoryMock, times(1)).findByUser(user);
+        verify(socialMediaRepositoryMock, times(1)).findByUserAndActiveIsTrue(user);
         assertEquals(connections.get(0).getProvider(), "facebook");
         assertEquals(connections.get(0).getUser().getId().longValue(), 1L);
         assertEquals(connections.get(1).getProvider(), "twitter");
@@ -311,35 +338,73 @@ public class SocialMediaServiceTest {
     @Test
     public void testCreateXingConnection_shouldCreateXingConnection() throws Exception {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
-        doReturn(null).when(socialMediaRepositoryMock).findByUserAndProvider(user,"xing");
 
-        doReturn(oAuth1Operations).when(xingConnectionFactoryMock).getOAuthOperations();
-        doReturn(xingConnection).when(xingConnectionFactoryMock).createConnection(any(OAuthToken.class));
+        //mock temp saved token from authorize url step (needed for access token)
+        SocialMediaConnection temp = new SocialMediaConnection();
+        temp.setToken("token");
+        temp.setSecret("secret");
+        temp.setProvider("xing");
+        temp.setUser(user);
+
+        doReturn(temp).when(socialMediaRepositoryMock).findByUserAndProviderAndActiveIsFalse(user, "xing");
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
-            SocialMediaConnection socialMediaConnections = (SocialMediaConnection)args[0];
+            SocialMediaConnection socialMediaConnections = (SocialMediaConnection) args[0];
 
             return socialMediaConnections;
         }).when(socialMediaRepositoryMock).save(any(SocialMediaConnection.class));
 
-        SocialMediaConnection socialMediaConnection = socialMediaService.createXingConnection("token", "verifier");
+        Token accessToken = new Token("accesstoken", "verifier");
+        doReturn(accessToken).when(xingServiceMock).getAccessToken(any(Token.class), any(Verifier.class));
+
+        SocialMediaConnection socialMediaConnection = socialMediaService.createXingConnection("verifier");
 
         verify(socialMediaRepositoryMock, times(1)).save(any(SocialMediaConnection.class));
         assertEquals(socialMediaConnection.getProvider(), "xing");
         assertEquals(socialMediaConnection.getUser().getId().longValue(), 1L);
+        assertEquals(socialMediaConnection.isActive(), true);
+        assertEquals(socialMediaConnection.getToken(), "accesstoken");
+        assertEquals(socialMediaConnection.getSecret(), "verifier");
     }
 
-    //@Test
+    @Test(expected = NoSuchSocialMediaConnectionException.class)
     public void testCreateXingPost_shouldCreateXingPost() throws Exception {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
-        doReturn(xingSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProvider(user,"xing");
+        doReturn(null).when(socialMediaRepositoryMock).findByUserAndProviderAndActiveIsTrue(user,"xing");
 
-        doReturn(xingConnection).when(xingConnectionFactoryMock).createConnection(any(ConnectionData.class));
-
-        Xing xing = mock(Xing.class);
-
-
+        socialMediaService.createXingPost("url", "post");
     }
 
-}*/
+    @Test
+    public void testCreateXingAuthorizationURL_shouldCreateAuthorizationURL() throws Exception {
+        doReturn(user).when(userServiceMock).getUserWithAuthorities();
+
+        Token requestToken = new Token("token", "secret");
+        doReturn(requestToken).when(xingServiceMock).getRequestToken();
+
+        doReturn(xingSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProviderAndActiveIsFalse(user, "xing");
+
+        doReturn("authorizationurl").when(xingServiceMock).getAuthorizationUrl(requestToken);
+
+        String url = socialMediaService.createXingAuthorizationURL();
+
+        //saving token for next authorization step (for getting the accesstoken)
+        verify(socialMediaRepositoryMock, times(1)).save(any(SocialMediaConnection.class));
+        assertEquals(url, "authorizationurl");
+    }
+
+    @Test
+    public void testDisconnectXing_shouldDisconnectXing() throws Exception {
+        doReturn(user).when(userServiceMock).getUserWithAuthorities();
+
+        doReturn(xingSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProviderAndActiveIsTrue(user, "xing");
+
+        SocialMediaConnection connection = socialMediaService.disconnectXing();
+
+        verify(socialMediaRepositoryMock, times(1)).delete(any(SocialMediaConnection.class));
+        assertEquals(connection.getId().longValue(), 3L);
+        assertEquals(connection.getProvider(), "xing");
+
+    }
+}

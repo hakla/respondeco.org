@@ -142,7 +142,8 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 			//if oauth verifier length is 4 it's a redirect from xing
 			if(verifier.length == 4) {
 				console.log("calling create Xing connection")
-				SocialMedia.createXingConnection(request, function(response) {
+				//we only need the verifier here, because the token gets persisted from getAuthorizationURL step
+				SocialMedia.createXingConnection({verifier: verifier}, function(response) {
 					console.log(response);
 
 					//update connections
