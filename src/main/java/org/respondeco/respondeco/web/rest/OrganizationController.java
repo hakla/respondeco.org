@@ -123,15 +123,17 @@ public class OrganizationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<OrganizationResponseDTO> getAll(
+    public ResponseEntity<OrganizationPaginationResponseDTO> getAll(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) String order) {
         log.debug("REST request to get organizations");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<Organization> organizations = organizationService.getOrganizations();
-        return OrganizationResponseDTO.fromEntities(organizations, restParameters.getFields());
+        Page<Organization> organizations = organizationService.getOrganizations(restParameters);
+        OrganizationPaginationResponseDTO response =
+            OrganizationPaginationResponseDTO.createFromPage(organizations, restParameters.getFields());
+        return new ResponseEntity<OrganizationPaginationResponseDTO>(response, HttpStatus.OK);
     }
 
     /**

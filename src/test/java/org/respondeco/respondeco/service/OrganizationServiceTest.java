@@ -11,6 +11,9 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -170,19 +173,20 @@ public class OrganizationServiceTest {
     public void testGetOrganizations() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-
-        Organization organization1 = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+        Organization organization1 = organizationService
+            .createOrganizationInformation("testOrg1", "testDescription", "test@email.com", false, 1L);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
+        Organization organization2 = organizationService
+            .createOrganizationInformation("testOrg2", "testDescription", "test@email.com", false, 1L);
 
-        Organization organization2 = organizationService.createOrganizationInformation("testOrg2","testDescription","test@email.com",false, 1L);
+        Page<Organization> orgPage = new PageImpl<Organization>(Arrays.asList(organization1,organization2));
+        when(organizationRepositoryMock.findByActiveIsTrue(any(Pageable.class))).thenReturn(orgPage);
 
-        when(organizationRepositoryMock.findByActiveIsTrue()).thenReturn(Arrays.asList(organization1,organization2));
+        Page<Organization> organizationPage = organizationService.getOrganizations(null);
 
-        List<Organization> organizationList = organizationService.getOrganizations();
-
-        assertTrue(organizationList.size()==2);
-        verify(organizationRepositoryMock, times(1)).findByActiveIsTrue();
+        assertEquals(organizationPage.getTotalElements(), 2L);
+        verify(organizationRepositoryMock, times(1)).findByActiveIsTrue(any(Pageable.class));
     }
 
     @Test

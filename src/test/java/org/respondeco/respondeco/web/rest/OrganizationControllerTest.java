@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.h2.mvstore.Page;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,9 @@ import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -289,16 +291,16 @@ public class OrganizationControllerTest {
 
     @Test
     public void testGetAllOrganizations_expectOK_shouldReturnAllOrganizations() throws Exception {
-        doReturn(Arrays.asList(org1, org2)).when(organizationServiceMock).getOrganizations();
+        Page<Organization> orgPage = new PageImpl<Organization>(Arrays.asList(org1, org2));
+        doReturn(orgPage).when(organizationServiceMock).getOrganizations(any(RestParameters.class));
 
         // Read All Organization
         restOrganizationMockMvc.perform(get("/app/rest/organizations"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[0].name").value(org1.getName()))
-            .andExpect(jsonPath("$[1].name").value(org2.getName()));
+            .andExpect(jsonPath("$.totalItems").value(2))
+            .andExpect(jsonPath("$.organizations[0].name").value(org1.getName()))
+            .andExpect(jsonPath("$.organizations[1].name").value(org2.getName()));
     }
 
     @Test
