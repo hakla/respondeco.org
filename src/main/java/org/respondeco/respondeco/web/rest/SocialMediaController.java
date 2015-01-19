@@ -108,7 +108,7 @@ public class SocialMediaController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity createFacebookPost(@RequestBody StringDTO post) {
-        ResponseEntity<StringDTO> responseEntity;
+        ResponseEntity responseEntity;
 
         try{
             String createdPost = socialMediaService.createFacebookPost(post.getString());
@@ -119,6 +119,9 @@ public class SocialMediaController {
         } catch (NoSuchSocialMediaConnectionException ex) {
             log.error("could not find SocialMediaConnection: " + ex);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SocialMediaPermissionRevokedException e) {
+            log.error("Social media permission for facebook got revoked: " + e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         }
 
         return responseEntity;
@@ -220,7 +223,7 @@ public class SocialMediaController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity createTwitterPost(@RequestBody StringDTO post) {
-        ResponseEntity<Tweet> responseEntity;
+        ResponseEntity responseEntity;
 
         try{
             Tweet tweet = socialMediaService.createTwitterPost(post.getString());
@@ -231,6 +234,12 @@ public class SocialMediaController {
         } catch (NoSuchSocialMediaConnectionException e) {
             log.error("could not find SocialMediaConnection: " + e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SocialMediaPermissionRevokedException e) {
+            log.error("Social media permission for twitter got revoked: " + e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+        } catch (SocialMediaApiConnectionException e) {
+            log.error("Twitter API Error: " + e);
+            responseEntity = ErrorHelper.buildErrorResponse("spring.social.error.twitter.apiconnection", "twitter api error occured");
         }
 
         return responseEntity;
