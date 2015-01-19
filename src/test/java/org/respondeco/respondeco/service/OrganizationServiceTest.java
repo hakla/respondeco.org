@@ -69,7 +69,7 @@ public class OrganizationServiceTest {
             userRepositoryMock,
             imageRepositoryMock,
             projectServiceMock,
-                projectRepositoryMock,
+            projectRepositoryMock,
             postingFeedRepositoryMock,
             resourceOfferRepositoryMock);
         defaultUser = new User();
@@ -159,7 +159,7 @@ public class OrganizationServiceTest {
 
         Organization organization = organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, 1L);
 
-        when(organizationRepositoryMock.findOne(organization.getId())).thenReturn(organization);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
 
         Organization organization2 = organizationService.getOrganization(organization.getId());
 
@@ -249,8 +249,8 @@ public class OrganizationServiceTest {
             .createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         organization.setVerified(true);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
+        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
         organizationService.deleteMember(defaultUser.getId());
 
         verify(userRepositoryMock, times(1)).save(defaultUser);
@@ -262,8 +262,8 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
+        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
         organizationService.deleteMember(100L);
 
     }
@@ -274,8 +274,8 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(null);
+        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(null);
         organizationService.deleteMember(defaultUser.getId());
 
     }
@@ -289,8 +289,8 @@ public class OrganizationServiceTest {
         organization.setVerified(true);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
+        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
         organizationService.deleteMember(defaultUser.getId());
 
     }
@@ -303,7 +303,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
-        when(organizationRepositoryMock.findOne(organization.getId())).thenReturn(organization);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
         defaultUser.setOrganization(organization);
         user3.setOrganization(organization);
         when(userRepositoryMock.findUsersByOrganizationId(organization.getId())).thenReturn(Arrays.asList(defaultUser, user3));
@@ -316,7 +316,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
-        when(organizationRepositoryMock.findOne(organization.getId())).thenReturn(null);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(null);
         organizationService.getUserByOrgId(organization.getId());
     }
 
@@ -328,7 +328,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
-        when(organizationRepositoryMock.getOne(organization.getId())).thenReturn(organization);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
         when(userRepositoryMock.findInvitableUsers()).thenReturn(Arrays.asList(defaultUser,user3));
         List<User> users = organizationService.findInvitableUsersByOrgId(organization.getId());
         assertTrue(users.size()==2);
@@ -372,7 +372,7 @@ public class OrganizationServiceTest {
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
         doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
-        doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
@@ -380,7 +380,7 @@ public class OrganizationServiceTest {
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(organizationRepositoryMock, times(1)).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
-        verify(organizationRepositoryMock, times(1)).findOne(testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findByIdAndActiveIsTrue(testOrganization.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -402,7 +402,7 @@ public class OrganizationServiceTest {
         // we need here returns null, else we won't be able to add new follower
         doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
         // this trigger our Exception for Project NULL Value
-        doReturn(null).when(organizationRepositoryMock).findOne(testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
@@ -420,7 +420,7 @@ public class OrganizationServiceTest {
         // we need here returns null, else we won't be able to add new follower
         doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
         // this trigger our Exception for Project NULL Value
-        doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
 
         organizationService.follow(testOrganization.getId());
     }
@@ -435,7 +435,7 @@ public class OrganizationServiceTest {
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
         doReturn(testOrganization).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
-        doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
