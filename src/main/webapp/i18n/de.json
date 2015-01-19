@@ -724,7 +724,9 @@
                 "connectionexists": "Ihr Account ist bereits mit Facebook verbunden!"
             },
             "twitter": {
-                "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!"
+                "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!",
+                "permissionrevoked": "Der Post auf Twitter konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Twitter wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
+                "apiconnection": "Es konnte keine Verbindung mit Twitter hergestellt werden. Bitte versuchen Sie es später nochmal!"
             },
             "xing": {
                 "connectionexists": "Ihr Account ist bereits mit Xing verbunden!",

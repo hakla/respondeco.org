@@ -9,6 +9,7 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.social.ApiException;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
@@ -24,6 +25,7 @@ import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
@@ -240,8 +242,11 @@ public class SocialMediaService {
      * @throws OperationForbiddenException if user is not logged in.
      * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
      */
-     public Tweet createTwitterPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException {
+    public Tweet createTwitterPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException,
+        SocialMediaPermissionRevokedException, SocialMediaApiConnectionException {
+
         User user = userService.getUserWithAuthorities();
+
 
         if(user == null) {
             throw new OperationForbiddenException("no current user found");
@@ -256,7 +261,16 @@ public class SocialMediaService {
             socialMediaConnection.getProvider(), null, null, null, null, socialMediaConnection.getToken(), socialMediaConnection.getSecret(), null, null)
         );
 
-        Tweet tweet = connection.getApi().timelineOperations().updateStatus(post);
+
+        Tweet tweet = null;
+
+        try{
+            tweet = connection.getApi().timelineOperations().updateStatus(post);
+        } catch (ResourceAccessException e) {
+            throw new SocialMediaPermissionRevokedException("socialmedia.error.twitter.permissionrevoked", "permissions for twitter got revoked");
+        } catch (ApiException e) {
+            throw new SocialMediaApiConnectionException("an error occured during communication with Twitter API");
+        }
 
         return tweet;
     }
