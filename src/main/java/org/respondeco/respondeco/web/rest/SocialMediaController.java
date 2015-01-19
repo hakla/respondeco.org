@@ -1,10 +1,5 @@
 package org.respondeco.respondeco.web.rest;
 
-import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
-import javax.print.attribute.standard.Media;
-import javax.transaction.Transactional;
-
 import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
@@ -12,20 +7,22 @@ import org.respondeco.respondeco.service.SocialMediaService;
 import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
 import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.respondeco.respondeco.web.rest.dto.*;
+import org.respondeco.respondeco.web.rest.dto.SocialMediaConnectionResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.StringDTO;
+import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
+import org.respondeco.respondeco.web.rest.dto.XingPostDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -81,9 +78,9 @@ public class SocialMediaController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<SocialMediaConnectionResponseDTO> createFacebookConnection(@RequestBody StringDTO code) {
+    public ResponseEntity createFacebookConnection(@RequestBody StringDTO code) {
         log.debug("REST request for creating a new facebook Connection with code: "+ code.getString());
-        ResponseEntity<SocialMediaConnectionResponseDTO> responseEntity;
+        ResponseEntity responseEntity;
 
         try {
             SocialMediaConnection connection = socialMediaService.createFacebookConnection(code.getString());
@@ -93,6 +90,9 @@ public class SocialMediaController {
         } catch (OperationForbiddenException e) {
             log.error("operation forbidden because no user is logged in: " + e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch(ConnectionAlreadyExistsException e) {
+            log.error("connection between user and twitter already exists: " + e);
+            responseEntity = ErrorHelper.buildErrorResponse("socialmedia.error.facebook.connectionexists", "connection already exists");
         }
 
         return responseEntity;
@@ -136,7 +136,7 @@ public class SocialMediaController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> disconnectFacebook(@PathVariable String provider) {
-        ResponseEntity<?> responseEntity;
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         try {
             SocialMediaConnection socialMediaConnection = null;
@@ -148,9 +148,10 @@ public class SocialMediaController {
                 socialMediaConnection = socialMediaService.disconnectXing();
             }
 
-            SocialMediaConnectionResponseDTO dto = SocialMediaConnectionResponseDTO.fromEntity(socialMediaConnection, null);
-
-            responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
+            if(socialMediaConnection != null) {
+                SocialMediaConnectionResponseDTO dto = SocialMediaConnectionResponseDTO.fromEntity(socialMediaConnection, null);
+                responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
+            }
 
         } catch (NoSuchSocialMediaConnectionException e) {
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -256,7 +257,7 @@ public class SocialMediaController {
 
     /**
      * POST /rest/connect/xing/createconnection
-     * Connects a user account with twitter
+     * Connects a user account with xing
      * @param twitterConnectionDTO contains the authorization token and a verifier for the token
      * @return responseentity with HttpStatus.CREATED if the connection was successfully created or
      *         an appropriate error if the creation of the connection was not successful
@@ -281,7 +282,7 @@ public class SocialMediaController {
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch(ConnectionAlreadyExistsException e) {
             log.error("connection between user and xing already exists: " + e);
-            responseEntity = ErrorHelper.buildErrorResponse("socialmedia.error.twitter.connectionexists", "connection already exists");
+            responseEntity = ErrorHelper.buildErrorResponse("socialmedia.error.xing.connectionexists", "connection already exists");
         }
 
         return responseEntity;

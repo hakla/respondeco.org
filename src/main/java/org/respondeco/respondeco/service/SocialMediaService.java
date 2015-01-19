@@ -6,8 +6,6 @@ import org.respondeco.respondeco.repository.SocialMediaRepository;
 import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
 import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.XingApi;
 import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
@@ -59,21 +57,15 @@ public class SocialMediaService {
                               SocialMediaRepository socialMediaRepository,
                               UserService userService,
                               FacebookConnectionFactory facebookConnectionFactory,
-                              TwitterConnectionFactory twitterConnectionFactory){
+                              TwitterConnectionFactory twitterConnectionFactory,
+                              OAuthService xingService){
         this.env = env;
         this.socialMediaRepository = socialMediaRepository;
         this.userService = userService;
 
         this.facebookConnectionFactory = facebookConnectionFactory;
         this.twitterConnectionFactory = twitterConnectionFactory;
-
-        xingService =  new ServiceBuilder()
-            .provider(XingApi.class)
-            .apiKey(env.getProperty("spring.social.xing.appId"))
-            .apiSecret(env.getProperty("spring.social.xing.appSecret"))
-            .callback(env.getProperty("spring.social.xing.redirectUrl"))
-            .build();
-
+        this.xingService = xingService;
     }
 
 
@@ -101,10 +93,17 @@ public class SocialMediaService {
      * @param code code is created after the user grants permission for our app to use his facebook account.
      *             this code is then used to exchange it for the users access token from facebook
      */
-    public SocialMediaConnection createFacebookConnection(String code) throws OperationForbiddenException{
+    public SocialMediaConnection createFacebookConnection(String code)
+        throws OperationForbiddenException, ConnectionAlreadyExistsException {
         User user = userService.getUserWithAuthorities();
         if(user == null) {
             throw new OperationForbiddenException("no current user found");
+        }
+
+        //check if connection already exists
+        SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
+        if(socialMediaConnection != null) {
+            throw new ConnectionAlreadyExistsException("connection for user " + user.getId() + " with facebook already exists");
         }
 
         OAuth2Operations oauthOperations = facebookConnectionFactory.getOAuthOperations();
@@ -115,7 +114,7 @@ public class SocialMediaService {
 
         ConnectionData connectionData = connection.createData();
 
-        SocialMediaConnection socialMediaConnection = new SocialMediaConnection();
+        socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("facebook");
         socialMediaConnection.setToken(connectionData.getAccessToken());
         socialMediaConnection.setUser(user);
@@ -337,7 +336,8 @@ public class SocialMediaService {
         log.debug("XINGTOKEN: " + token);
         log.debug("XINGVERIFIER: " + oauthVerifier);
 
-        //Get saved token
+        //Get saved token -> token from getAuthorizeURL gets saved in db, therefor isActive is set to false
+        //because the connection is not established yet
         socialMediaConnection = socialMediaRepository.findByUserAndProviderAndActiveIsFalse(user, "xing");
 
         Token requestToken = new Token(socialMediaConnection.getToken(), socialMediaConnection.getSecret());
@@ -347,7 +347,6 @@ public class SocialMediaService {
         socialMediaConnection.setSecret(accessToken.getSecret());
         socialMediaConnection.setActive(true);
         socialMediaConnection = socialMediaRepository.save(socialMediaConnection);
-
 
         return socialMediaConnection;
     }

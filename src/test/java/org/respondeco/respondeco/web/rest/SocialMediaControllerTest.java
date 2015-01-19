@@ -15,16 +15,15 @@ import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsExcept
 import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.SocialMediaConnectionResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
 import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
+import org.respondeco.respondeco.web.rest.dto.XingPostDTO;
+import org.scribe.oauth.OAuthService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.core.env.Environment;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
-import org.springframework.social.facebook.connect.FacebookOAuth2Template;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
-import org.springframework.social.xing.connect.XingConnectionFactory;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -38,14 +37,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.spy;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,14 +48,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see org.respondeco.respondeco.web.rest.SocialMediaController
  */
-/*@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 public class SocialMediaControllerTest {
-
 
 
     @Mock
@@ -80,12 +73,15 @@ public class SocialMediaControllerTest {
     private TwitterConnectionFactory twitterConnectionFactoryMock;
 
     @Mock
-    private XingConnectionFactory xingConnectionFactoryMock;
+    private OAuthService xingService;
 
     private SocialMediaService socialMediaServiceMock;
     private MockMvc restSocialMediaMockMvc;
 
-    private SocialMediaConnection socialMediaConnection;
+    private SocialMediaConnection facebookConnection;
+    private SocialMediaConnection twitterConnection;
+    private SocialMediaConnection xingConnection;
+
     private User user;
 
     @Before
@@ -98,7 +94,7 @@ public class SocialMediaControllerTest {
             userServiceMock,
             facebookConnectionFactoryMock,
             twitterConnectionFactoryMock,
-            xingConnectionFactoryMock
+            xingService
         ));
 
         SocialMediaController socialMediaController = new SocialMediaController(socialMediaServiceMock);
@@ -110,11 +106,25 @@ public class SocialMediaControllerTest {
         user.setFirstName("firstname");
         user.setLastName("lastname");
 
-        socialMediaConnection = new SocialMediaConnection();
-        socialMediaConnection.setId(1L);
-        socialMediaConnection.setProvider("facebook");
-        socialMediaConnection.setToken("asdfasdfasdf");
-        socialMediaConnection.setUser(user);
+        facebookConnection = new SocialMediaConnection();
+        facebookConnection.setId(1L);
+        facebookConnection.setProvider("facebook");
+        facebookConnection.setToken("token");
+        facebookConnection.setUser(user);
+
+        twitterConnection = new SocialMediaConnection();
+        twitterConnection.setId(2L);
+        twitterConnection.setProvider("twitter");
+        twitterConnection.setToken("token");
+        twitterConnection.setSecret("secret");
+        twitterConnection.setUser(user);
+
+        xingConnection = new SocialMediaConnection();
+        xingConnection.setId(3L);
+        xingConnection.setProvider("xing");
+        xingConnection.setToken("token");
+        xingConnection.setSecret("secret");
+        xingConnection.setUser(user);
     }
 
     @Test
@@ -131,7 +141,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateFacebookConnection_expectCreated() throws Exception {
-        doReturn(socialMediaConnection).when(socialMediaServiceMock).createFacebookConnection(anyString());
+        doReturn(facebookConnection).when(socialMediaServiceMock).createFacebookConnection(anyString());
         StringDTO code = new StringDTO("codefromusergrantspermission");
 
         restSocialMediaMockMvc.perform(post("/app/rest/connect/facebook/createconnection")
@@ -153,6 +163,18 @@ public class SocialMediaControllerTest {
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(code)))
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testCreateFacebookConnection_throwsConnectionAlreadyExistsException() throws Exception {
+        doThrow(ConnectionAlreadyExistsException.class).when(socialMediaServiceMock).createFacebookConnection(anyString());
+        StringDTO code = new StringDTO("codefromusergrantspermission");
+
+
+        restSocialMediaMockMvc.perform(post("/app/rest/connect/facebook/createconnection")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(code)))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -191,7 +213,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testDisconnectFacebook_expectOK() throws Exception {
-        doReturn(socialMediaConnection).when(socialMediaServiceMock).disconnectFacebook();
+        doReturn(facebookConnection).when(socialMediaServiceMock).disconnectFacebook();
 
         restSocialMediaMockMvc.perform(delete("/app/rest/socialmedia/facebook/disconnect")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -200,7 +222,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testDisconnectTwitter_expectOk() throws Exception {
-        doReturn(socialMediaConnection).when(socialMediaServiceMock).disconnectTwitter();
+        doReturn(twitterConnection).when(socialMediaServiceMock).disconnectTwitter();
 
         restSocialMediaMockMvc.perform(delete("/app/rest/socialmedia/twitter/disconnect")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -227,7 +249,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateTwitterConnection_expectCreated() throws Exception {
-        doReturn(socialMediaConnection).when(socialMediaServiceMock).createTwitterConnection(anyString(), anyString());
+        doReturn(twitterConnection).when(socialMediaServiceMock).createTwitterConnection(anyString(), anyString());
 
         TwitterConnectionDTO dto = new TwitterConnectionDTO();
         dto.setToken("token");
@@ -237,9 +259,9 @@ public class SocialMediaControllerTest {
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.id").value(2))
             .andExpect(jsonPath("$.userId").value(1))
-            .andExpect(jsonPath("$.provider").value("facebook"));
+            .andExpect(jsonPath("$.provider").value("twitter"));
     }
 
     @Test
@@ -287,7 +309,6 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateTwitterPost_throwsOperationForbiddenException() throws Exception {
-
         doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createTwitterPost(anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/twitter/post")
@@ -298,7 +319,6 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateTwitterPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
-
         doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createTwitterPost(anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/twitter/post")
@@ -324,14 +344,13 @@ public class SocialMediaControllerTest {
         dto.setToken("token");
         dto.setVerifier("verifier");
 
-        socialMediaConnection.setProvider("xing");
-        doReturn(socialMediaConnection).when(socialMediaServiceMock).createXingConnection(anyString(), anyString());
+        doReturn(xingConnection).when(socialMediaServiceMock).createXingConnection(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/connect/xing/createconnection")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(dto)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.id").value(3))
             .andExpect(jsonPath("$.userId").value(1))
             .andExpect(jsonPath("$.provider").value("xing"));
     }
@@ -365,9 +384,55 @@ public class SocialMediaControllerTest {
     }
 
     @Test
+    public void testCreateXingPost_expectCreated() throws Exception {
+        XingPostDTO dto = new XingPostDTO();
+        dto.setPost("post");
+        dto.setUrlPath("/organization/1");
+
+        doReturn("post").when(socialMediaServiceMock).createXingPost(dto.getUrlPath(), dto.getPost());
+
+        restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/xing/post")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.string").value("post"));
+    }
+
+    @Test
+    public void testCreateXingPost_throwsOperationForbiddenException() throws Exception {
+        XingPostDTO dto = new XingPostDTO();
+        dto.setPost("post");
+        dto.setUrlPath("/organization/1");
+
+        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createXingPost(dto.getUrlPath(), dto.getPost());
+
+        restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/xing/post")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testCreateXingPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
+        XingPostDTO dto = new XingPostDTO();
+        dto.setPost("post");
+        dto.setUrlPath("/organization/1");
+
+        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock)
+            .createXingPost(dto.getUrlPath(), dto.getPost());
+
+        restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/xing/post")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dto)))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testGetConnections_expectOk() throws Exception {
         List<SocialMediaConnection> connections = new ArrayList<>();
-        connections.add(socialMediaConnection);
+        connections.add(facebookConnection);
+        connections.add(twitterConnection);
+        connections.add(xingConnection);
 
         doReturn(connections).when(socialMediaServiceMock).getConnectionsForUser();
 
@@ -375,7 +440,18 @@ public class SocialMediaControllerTest {
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$[0].id").value(1));
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[1].id").value(2))
+            .andExpect(jsonPath("$[2].id").value(3));
+    }
+
+    @Test
+    public void testDisconnectXing_expectOk() throws Exception {
+        doReturn(xingConnection).when(socialMediaServiceMock).disconnectXing();
+
+        restSocialMediaMockMvc.perform(delete("/app/rest/socialmedia/xing/disconnect")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -388,4 +464,4 @@ public class SocialMediaControllerTest {
     }
 
 }
-*/
+

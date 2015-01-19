@@ -1,5 +1,8 @@
 package org.respondeco.respondeco.config;
 
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.builder.api.XingApi;
+import org.scribe.oauth.OAuthService;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -40,11 +43,13 @@ public class SocialConfig {
     }
 
     @Bean
-    public XingConnectionFactory xingConnectionFactory() {
-        return new XingConnectionFactory(
-            environment.getProperty("spring.social.xing.appId"),
-            environment.getProperty("spring.social.xing.appSecret")
-        );
+    public OAuthService xingServiceBuilder() {
+        return new ServiceBuilder()
+            .provider(XingApi.class)
+            .apiKey(environment.getProperty("spring.social.xing.appId"))
+            .apiSecret(environment.getProperty("spring.social.xing.appSecret"))
+            .callback(environment.getProperty("spring.social.xing.redirectUrl"))
+            .build();
     }
 
 

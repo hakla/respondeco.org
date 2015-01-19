@@ -717,8 +717,14 @@
         "connect": "Verbinden",
         "disconnect": "Verbindung löschen",
         "error": {
+            "facebook": {
+                "connectionexists": "Ihr Account ist bereits mit Facebook verbunden!"
+            },
             "twitter": {
                 "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!"
+            },
+            "xing": {
+                "connectionexists": "Ihr Account ist bereits mit Xing verbunden!"
             }
         }
     }
