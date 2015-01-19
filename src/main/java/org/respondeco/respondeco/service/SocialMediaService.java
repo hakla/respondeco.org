@@ -132,7 +132,9 @@ public class SocialMediaService {
      * @param post
      * @throws OperationForbiddenException
      */
-    public String createFacebookPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException {
+    public String createFacebookPost(String post) throws OperationForbiddenException,
+        NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException {
+
         User user = userService.getUserWithAuthorities();
         if(user == null) {
             throw new OperationForbiddenException("no current user found");
@@ -149,7 +151,13 @@ public class SocialMediaService {
 
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(connectionData);
 
-        String status = connection.getApi().feedOperations().updateStatus(post);
+        String status = null;
+
+        try{
+            status = connection.getApi().feedOperations().updateStatus(post);
+        } catch (ResourceAccessException e) {
+            throw new SocialMediaPermissionRevokedException("socialmedia.error.facebook.apiconnection", "permissions for facebook got revoked");
+        }
 
         return status;
     }
@@ -220,9 +228,7 @@ public class SocialMediaService {
 
         OAuth1Operations oauthOperations = twitterConnectionFactory.getOAuthOperations();
         OAuthToken accessToken = oauthOperations.exchangeForAccessToken(
-            new AuthorizedRequestToken(requestToken, oauthVerifier),null);
-
-        Connection<Twitter> connection = twitterConnectionFactory.createConnection(accessToken);
+            new AuthorizedRequestToken(requestToken, oauthVerifier), null);
 
         socialMediaConnection = new SocialMediaConnection();
         socialMediaConnection.setProvider("twitter");

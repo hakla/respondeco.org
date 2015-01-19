@@ -108,7 +108,7 @@ public class SocialMediaController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity createFacebookPost(@RequestBody StringDTO post) {
-        ResponseEntity<StringDTO> responseEntity;
+        ResponseEntity responseEntity;
 
         try{
             String createdPost = socialMediaService.createFacebookPost(post.getString());
@@ -119,6 +119,9 @@ public class SocialMediaController {
         } catch (NoSuchSocialMediaConnectionException ex) {
             log.error("could not find SocialMediaConnection: " + ex);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (SocialMediaPermissionRevokedException e) {
+            log.error("Social media permission for facebook got revoked: " + e);
+            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         }
 
         return responseEntity;

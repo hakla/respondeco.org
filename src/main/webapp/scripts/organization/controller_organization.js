@@ -34,6 +34,11 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         });
     };
 
+    /**
+     *  Gets all active connection for the currently logged in user
+     *  and if the connection for the specific provider exists, it
+     *  sets the connected variable for the appropriate provider to true.
+     */
     $scope.getConnections = function() {
         SocialMedia.getConnections(function(response) {
             response.forEach(function(connection) {

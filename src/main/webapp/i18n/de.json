@@ -721,17 +721,19 @@
         "disconnect": "Verbindung löschen",
         "error": {
             "facebook": {
-                "connectionexists": "Ihr Account ist bereits mit Facebook verbunden!"
+                "connectionexists": "Ihr Account ist bereits mit Facebook verbunden!",
+                "permissionrevoked": "Der Post auf Facebook konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Facebook wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
+                "apiconnection": "Unser Server konnte keine Verbindung mit Facebook herstellen. Bitte versuchen Sie es später nochmal!"
             },
             "twitter": {
                 "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!",
                 "permissionrevoked": "Der Post auf Twitter konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Twitter wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
-                "apiconnection": "Es konnte keine Verbindung mit Twitter hergestellt werden. Bitte versuchen Sie es später nochmal!"
+                "apiconnection": "Unser Server konnte keine Verbindung mit Twitter herstellen. Bitte versuchen Sie es später nochmal!"
             },
             "xing": {
                 "connectionexists": "Ihr Account ist bereits mit Xing verbunden!",
                 "permissionrevoked": "Der Post auf Xing konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Xing wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
-                "apiconnection": "Es konnte keine Verbindung mit Xing hergestellt werden. Bitte versuchen Sie es später nochmal!"
+                "apiconnection": "Unser Server konnte keine Verbindung mit Xing herstellen. Bitte versuchen Sie es später nochmal!"
             }
         }
     }

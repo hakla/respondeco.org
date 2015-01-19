@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, $location, $routeParams, $sce, $translate,
-                                                       Account, $modal, AuthenticationSharedService) {
+                                                       Account, $modal, AuthenticationSharedService, SocialMedia) {
 
     $scope.project = {
         id: null,
@@ -23,6 +23,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
+    $scope.twitterConnected = false;
+    $scope.facebookConnected = false;
+    $scope.xingConnected = false;
+
     //initial latlng coordinates belong to Austria (via googleplaces)
     $scope.map = { control: {}, center: { latitude: 47.516231, longitude: 14.550072 }, zoom: 7 };
 
@@ -32,7 +36,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
       coords: {latitude: null, longitude: null}
     };
 
-     /**
+    /**
      * $scope.placeToMarker
      *
      * @description This function is called whenever a new place is entered in the searchbox.
@@ -67,6 +71,25 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     // details mock
     $scope.status = {
         open1: true
+    };
+
+    /**
+     *  Gets all active connection for the currently logged in user
+     *  and if the connection for the specific provider exists, it
+     *  sets the connected variable for the appropriate provider to true.
+     */
+    $scope.getConnections = function() {
+        SocialMedia.getConnections(function(response) {
+            response.forEach(function(connection) {
+                if(connection.provider === 'twitter') {
+                    $scope.twitterConnected = true;
+                } else if(connection.provider === 'facebook') {
+                    $scope.facebookConnected = true;
+                } else if(connection.provider === 'xing') {
+                    $scope.xingConnected = true;
+                }
+            })
+        });
     };
 
     /**
@@ -257,6 +280,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             id: id
         }, function() {
             $scope.editable = true;
+            $scope.getConnections();
         }, function() {
             $scope.editable = false;
         });
@@ -675,6 +699,21 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 $scope.postingInformation = null;
                 $scope.postingform.$setPristine();
             });
+
+        //post on social media
+        if($scope.postOnTwitter === true) {
+            SocialMedia.createTwitterPost({string: $scope.postingInformation});
+        }
+
+        if($scope.postOnFacebook === true) {
+            SocialMedia.createFacebookPost({string: $scope.postingInformation});
+        }
+
+        if($scope.postOnXing === true) {
+            var urlPath = $location.url();
+            SocialMedia.createXingPost({urlPath: urlPath, post: $scope.postingInformation});
+        }
+
     };
 
     //delete posting and refresh after deletion
