@@ -23,11 +23,7 @@ describe('SocialMedia Controller Tests ', function () {
 
             expect(SocialMediaService.getConnections).toHaveBeenCalled();
 
-            SocialMediaService.get.calls.mostRecent().args[1](
-
-                !TODO
-
-            });
+            SocialMediaService.get.calls.mostRecent().args[1]();
 
             expect($scope.twitterConnected).toBe(true);
             expect($scope.facebookConnected).toBe(true);

@@ -4,9 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.SocialMediaService;
-import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
-import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.SocialMediaConnectionResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
 import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
@@ -300,7 +298,7 @@ public class SocialMediaController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity createXingPost(@RequestBody XingPostDTO xingPostDTO) {
-        ResponseEntity<StringDTO> responseEntity;
+        ResponseEntity responseEntity;
 
         String post = xingPostDTO.getPost();
         String url = xingPostDTO.getUrlPath();
@@ -317,6 +315,12 @@ public class SocialMediaController {
             } catch (NoSuchSocialMediaConnectionException e) {
                 log.error("could not find SocialMediaConnection: " + e);
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } catch (SocialMediaPermissionRevokedException e) {
+                log.error("Social media permission for xing got revoked: " + e);
+                responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+            } catch (SocialMediaApiConnectionException e) {
+                log.error("XING API Error: " + e);
+                responseEntity = ErrorHelper.buildErrorResponse("spring.social.error.xing.apiconnection", "xing api error occured");
             }
         }
 

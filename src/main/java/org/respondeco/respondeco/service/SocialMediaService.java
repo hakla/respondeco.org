@@ -3,9 +3,7 @@ package org.respondeco.respondeco.service;
 import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.SocialMediaRepository;
-import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
-import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.service.exception.*;
 import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
@@ -29,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
+import javax.xml.ws.http.HTTPException;
 import java.util.List;
 
 /**
@@ -351,7 +350,9 @@ public class SocialMediaService {
      * @throws OperationForbiddenException if user is not logged in.
      * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
      */
-    public String createXingPost(String url, String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException {
+    public String createXingPost(String url, String post) throws OperationForbiddenException,
+        NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException , SocialMediaApiConnectionException {
+
         User user = userService.getUserWithAuthorities();
 
         if(user == null) {
@@ -376,7 +377,17 @@ public class SocialMediaService {
         xingService.signRequest(accessToken, request);
         Response response = request.send();
 
-        return response.getBody();
+        //handle rest errors
+        //user deleted permission
+        if(response.getCode() == 401) {
+            socialMediaRepository.delete(socialMediaConnection);
+            throw new SocialMediaPermissionRevokedException("socialmedia.error.xing.permissionrevoked", "permissions for xing got revoked");
+        } else if(response.isSuccessful() == false) {
+            throw new SocialMediaApiConnectionException("an error occured during communication with Xing API: "
+                    + response.getCode());
+        }
+
+        return response.getMessage();
     }
 
 

@@ -5,8 +5,6 @@ import org.respondeco.respondeco.service.exception.enumException.EnumResourceJoi
 /**
  * Created by Roman Kern on 23.11.14.
  * General exception for handling Resource and Tag Join Entries
- * @see org.respondeco.respondeco.domain.ResourceOfferJoinResourceTag
- * @see org.respondeco.respondeco.domain.ResourceRequirementJoinResourceTag
  */
 public class ResourceJoinTagException extends GeneralResourceException {
 

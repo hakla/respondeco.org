@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $window, SocialMedia) {
+respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $filter, $window, SocialMedia) {
 
 	$scope.code = {string: null}
 	$scope.post = {string: null}
@@ -38,6 +38,8 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		$scope.loading = true;
 		SocialMedia.connectFacebook(function(redirectURL) {
 			$window.location.href = redirectURL.string;
+		}, function() {
+			$scope.addAlert('danger', "Facebook konnte nicht verbunden werden!");
 		});
 	};
 
@@ -49,6 +51,8 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	$scope.connectTwitter = function() {
 		SocialMedia.connectTwitter(function(redirectURL) {
 			$window.location.href = redirectURL.string;
+		}, function() {
+			$scope.addAlert('danger', "Twitter konnte nicht verbunden werden!");
 		})
 	};
 
@@ -60,6 +64,8 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	$scope.connectXing = function() {
 		SocialMedia.connectXing(function(redirectURL) {
 			$window.location.href = redirectURL.string;
+		}, function() {
+			$scope.addAlert('danger', "Xing konnte nicht verbunden werden");
 		});
 	};
 
@@ -122,43 +128,48 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 */
 	$scope.checkForRedirectParams = function() {
 
+		var url = $location.absUrl();
+
+		//used for xing callback after user grants permission for respondeco using his xing account
+		//parse last 4 digits 
+		var verifier = parseInt(url.substring(url.length-4));
+
+		if(isNaN(verifier) === false && $scope.xingConnected === false) {
+			console.log("calling create Xing connection")
+				//we only need the verifier here, because the token gets persisted from getAuthorizationURL step
+				SocialMedia.createXingConnection({string: verifier}, function(response) {
+					$scope.clearURL();
+					$scope.getConnections();
+				}, function() {
+					$scope.clearURL();
+				});
+		}
+
 		// used for facebook after user grants permission and facebook redirects
-		if(Respondeco.Helpers.Url.param("code") !== undefined && $scope.facebookConnected == false) {
+		if(Respondeco.Helpers.Url.param("code") !== undefined && $scope.facebookConnected === false) {
 			$scope.code.string = Respondeco.Helpers.Url.param("code");
 			SocialMedia.createFacebookConnection($scope.code, function() {
 				$scope.clearURL();
 				$scope.getConnections();
+			}, function() {
+				$scope.clearURL();
 			});
 
 		};
 
 		// used for twitter after user grants permission and twitter redirects
-		if(Respondeco.Helpers.Url.param("oauth_token") !== undefined && $scope.twitterConnected == false) {
+		if(Respondeco.Helpers.Url.param("oauth_token") !== undefined && $scope.twitterConnected === false) {
 			
 			var token = Respondeco.Helpers.Url.param("oauth_token");
 			var verifier = Respondeco.Helpers.Url.param("oauth_verifier");
 			var request = {token: token, verifier: verifier};
 
-			//if oauth verifier length is 4 it's a redirect from xing
-			if(verifier.length == 4) {
-				console.log("calling create Xing connection")
-				//we only need the verifier here, because the token gets persisted from getAuthorizationURL step
-				SocialMedia.createXingConnection({verifier: verifier}, function(response) {
-					console.log(response);
-
-					//update connections
-					$scope.getConnections();
-				});
-			} else {
-				SocialMedia.createTwitterConnection(request, function(response) {
-					$scope.clearURL();
-
-					//update connections
-					$scope.getConnections();
-				}, function() {
-					$scope.clearURL();
-				});
-			}
+			SocialMedia.createTwitterConnection(request, function(response) {
+				$scope.clearURL();
+				$scope.getConnections();
+			}, function() {
+				$scope.clearURL();
+			});
 		};
 
 		//error case
