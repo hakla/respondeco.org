@@ -14,6 +14,7 @@ import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
@@ -88,13 +89,13 @@ public class TextMessageServiceTest {
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsNull() throws Exception {
         UserDTO user = new UserDTO();
         textMessageService.createTextMessage(user.getId(), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseContentIsEmpty() throws Exception {
         UserDTO user = new UserDTO();
         String content = "";
@@ -171,13 +172,13 @@ public class TextMessageServiceTest {
         assertFalse(savedMessage.isActive());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testDeleteTextMessage_shouldThrowExceptionBecauseMessageDoesNotExist() throws Exception {
         when(textMessageRepositoryMock.findOne(1L)).thenReturn(null);
         textMessageService.deleteTextMessage(1L);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testDeleteTextMessage_shouldThrowExceptionBecauseCurrentUserIsNotReceiver() throws Exception {
         User currentUser = new User();
         currentUser.setId(1L);

@@ -6,8 +6,11 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -206,10 +209,14 @@ public class OrganizationService {
      * @return a list of all active organizations
      */
     @Transactional(readOnly = true)
-    public List<Organization> getOrganizations() {
+    public Page<Organization> getOrganizations(RestParameters restParameters) {
         log.debug("getOrganizations() called");
+        Pageable pageable = null;
+        if(restParameters != null) {
+            pageable = restParameters.buildPageRequest();
+        }
 
-        List<Organization> organizations = organizationRepository.findByActiveIsTrue();
+        Page<Organization> organizations = organizationRepository.findByActiveIsTrue(pageable);
 
         return organizations;
     }
@@ -276,25 +283,31 @@ public class OrganizationService {
     public void deleteOrganizationInformation(Long id) throws NoSuchOrganizationException {
         Organization currentOrganization = organizationRepository.findByIdAndActiveIsTrue(id);
         if(currentOrganization==null) {
-            throw new NoSuchOrganizationException(String.format("Organization %id does not exist", id));
+            throw new NoSuchOrganizationException(String.format("Organization %d does not exist", id));
         }
-        for(User user : currentOrganization.getMembers()) {
-            user.setActive(false);
-            userRepository.save(user);
+        if(currentOrganization.getMembers() != null) {
+            for (User user : currentOrganization.getMembers()) {
+                user.setActive(false);
+                userRepository.save(user);
+            }
         }
         User owner = currentOrganization.getOwner();
         owner.setActive(false);
         userRepository.save(owner);
-        for(Project project : currentOrganization.getProjects()){
-            if(project.getSuccessful()== false) {
-                project.setActive(false);
-                projectRepository.save(project);
+        if(currentOrganization.getProjects() != null) {
+            for (Project project : currentOrganization.getProjects()) {
+                if (project.getSuccessful() == false) {
+                    project.setActive(false);
+                    projectRepository.save(project);
+                }
             }
         }
-        for(ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
-            if(resourceOffer.getResourceMatches()==null) {
-                resourceOffer.setActive(false);
-                resourceOfferRepository.save(resourceOffer);
+        if(currentOrganization.getResourceOffers() != null) {
+            for (ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
+                if (resourceOffer.getResourceMatches() == null) {
+                    resourceOffer.setActive(false);
+                    resourceOfferRepository.save(resourceOffer);
+                }
             }
         }
 
