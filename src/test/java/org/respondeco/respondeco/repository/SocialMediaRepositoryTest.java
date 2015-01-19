@@ -63,6 +63,14 @@ public class SocialMediaRepositoryTest extends AbstractTransactionalJUnit4Spring
         socialMediaConnection.setProvider("twitter");
         socialMediaConnection.setUser(user);
         socialMediaRepository.save(socialMediaConnection);
+
+        socialMediaConnection = new SocialMediaConnection();
+        socialMediaConnection.setToken("token");
+        socialMediaConnection.setSecret("secret");
+        socialMediaConnection.setProvider("xing");
+        socialMediaConnection.setUser(user);
+        socialMediaConnection.setActive(false);
+        socialMediaRepository.save(socialMediaConnection);
     }
 
 
@@ -81,6 +89,20 @@ public class SocialMediaRepositoryTest extends AbstractTransactionalJUnit4Spring
         assertEquals(connections.size(), 2);
         assertEquals(connections.get(0).getProvider(), "facebook");
         assertEquals(connections.get(1).getProvider(), "twitter");
+    }
+
+    @Test
+    public void testFindByUserAndProviderAndActive_shouldReturnConnection() {
+        socialMediaConnection.setActive(false);
+        SocialMediaConnection connection = socialMediaRepository.findByUserAndProviderAndActiveIsFalse(user, "xing");
+        assertEquals(connection.getProvider(), "xing");
+    }
+
+    @Test
+    public void testFindByUserAndProviderAndActiveIsTrue_shouldNotFindInactveConnection() {
+        socialMediaConnection.setActive(false);
+        SocialMediaConnection connection = socialMediaRepository.findByUserAndProviderAndActiveIsTrue(user, "xing");
+        assertEquals(connection, null);
     }
 
 
