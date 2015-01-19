@@ -283,25 +283,31 @@ public class OrganizationService {
     public void deleteOrganizationInformation(Long id) throws NoSuchOrganizationException {
         Organization currentOrganization = organizationRepository.findByIdAndActiveIsTrue(id);
         if(currentOrganization==null) {
-            throw new NoSuchOrganizationException(String.format("Organization %id does not exist", id));
+            throw new NoSuchOrganizationException(String.format("Organization %d does not exist", id));
         }
-        for(User user : currentOrganization.getMembers()) {
-            user.setActive(false);
-            userRepository.save(user);
+        if(currentOrganization.getMembers() != null) {
+            for (User user : currentOrganization.getMembers()) {
+                user.setActive(false);
+                userRepository.save(user);
+            }
         }
         User owner = currentOrganization.getOwner();
         owner.setActive(false);
         userRepository.save(owner);
-        for(Project project : currentOrganization.getProjects()){
-            if(project.getSuccessful()== false) {
-                project.setActive(false);
-                projectRepository.save(project);
+        if(currentOrganization.getProjects() != null) {
+            for (Project project : currentOrganization.getProjects()) {
+                if (project.getSuccessful() == false) {
+                    project.setActive(false);
+                    projectRepository.save(project);
+                }
             }
         }
-        for(ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
-            if(resourceOffer.getResourceMatches()==null) {
-                resourceOffer.setActive(false);
-                resourceOfferRepository.save(resourceOffer);
+        if(currentOrganization.getResourceOffers() != null) {
+            for (ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
+                if (resourceOffer.getResourceMatches() == null) {
+                    resourceOffer.setActive(false);
+                    resourceOfferRepository.save(resourceOffer);
+                }
             }
         }
 

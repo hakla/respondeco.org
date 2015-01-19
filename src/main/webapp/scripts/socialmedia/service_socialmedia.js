@@ -14,5 +14,6 @@ respondecoApp.factory('SocialMedia', function ($resource) {
 		'connectXing' : {method: 'GET', url: 'app/rest/connect/xing'},
 		'createXingConnection' : {method: 'POST', url: 'app/rest/connect/xing/createconnection'},
 		'createXingPost' : {method: 'POST', url: 'app/rest/socialmedia/xing/post'},
+		'disconnectXing' : {method: 'DELETE', url: 'app/rest/socialmedia/xing/disconnect'}
 	});
 });
