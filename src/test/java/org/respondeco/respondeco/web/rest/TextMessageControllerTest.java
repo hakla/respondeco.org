@@ -26,6 +26,7 @@ import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -128,7 +129,9 @@ public class TextMessageControllerTest {
         textMessageRequestDTO.setReceiver(new UserDTO(sender));
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
-        doThrow(IllegalArgumentException.class).when(textMessageServiceMock).createTextMessage(anyLong(), anyString());
+        IllegalValueException illegalValueException = new IllegalValueException(
+            "test.illegalvalue", "Test IllegalValueException");
+        doThrow(illegalValueException).when(textMessageServiceMock).createTextMessage(anyLong(), anyString());
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")
@@ -207,7 +210,9 @@ public class TextMessageControllerTest {
      */
     @Test
     public void testDELETE_expectBAD_REQUEST_cannotDeleteForeignMessages() throws Exception {
-        doThrow(IllegalArgumentException.class).when(textMessageServiceMock).deleteTextMessage(100L);
+        IllegalValueException illegalValueException = new IllegalValueException(
+            "test.notreceiver", "Current user is not authorized to delete this message.");
+        doThrow(illegalValueException).when(textMessageServiceMock).deleteTextMessage(100L);
 
         restTextMessageMockMvc.perform(delete("/app/rest/textmessages/{id}", 100L))
                 .andExpect(status().isBadRequest());

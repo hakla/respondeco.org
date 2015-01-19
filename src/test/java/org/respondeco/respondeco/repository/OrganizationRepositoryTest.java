@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -76,16 +77,16 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
         organization2.setPostingFeed(postingFeed);
         organizationRepository.save(organization2);
 
-        List<Organization> organizations = organizationRepository.findByActiveIsTrue();
-        assertTrue(organizations.contains(organization));
-        assertTrue(organizations.contains(organization2));
+        Page<Organization> organizations = organizationRepository.findByActiveIsTrue(null);
+        assertTrue(organizations.getContent().contains(organization));
+        assertTrue(organizations.getContent().contains(organization2));
 
         organization.setActive(false);
         organizationRepository.save(organization);
 
-        organizations = organizationRepository.findByActiveIsTrue();
-        assertFalse(organizations.contains(organization));
-        assertTrue(organizations.contains(organization2));
+        organizations = organizationRepository.findByActiveIsTrue(null);
+        assertFalse(organizations.getContent().contains(organization));
+        assertTrue(organizations.getContent().contains(organization2));
     }
 
     @Test

@@ -16,7 +16,7 @@ import java.util.List;
 public class ProjectPaginationResponseDTO {
 
     private List<ProjectResponseDTO> projects;
-    private int totalItems;
+    private Long totalItems;
 
     /**
      * Creates a new ProjectPaginationResponseDTO from a retrieved page element from the repository.
@@ -27,7 +27,7 @@ public class ProjectPaginationResponseDTO {
      */
     public static ProjectPaginationResponseDTO createFromPage(Page page, List<String> fieldNames) {
         ProjectPaginationResponseDTO dto = new ProjectPaginationResponseDTO();
-        dto.setTotalItems((int)page.getTotalElements());
+        dto.setTotalItems(page.getTotalElements());
 
         List<Project> projects = page.getContent();
         dto.setProjects(ProjectResponseDTO.fromEntities(projects, fieldNames));
