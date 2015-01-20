@@ -627,13 +627,14 @@
             "tags": "Tags",
             "description": "Description",
             "amount":"Amount",
-            "commercial":"Comercial",
+            "commercial":"Commercial",
             "startDate": "Available from",
             "endDate":"Available to",
             "savebutton":"Save",
             "cancelbutton":"Cancel",
             "error": "Resouce could not be created!",
             "error.amount": "Amount has to be at least 1",
+            "error.startDate": "Available from has to be earlier than available to date.",
             "price": "Price"
         },
         "edit": {

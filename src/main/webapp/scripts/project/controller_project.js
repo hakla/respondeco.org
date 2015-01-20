@@ -347,7 +347,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     var edit = false;
     $scope.resource = {
         resourceTags: [],
-        isEssential: false
+        isEssential: false,
+        originalAmount: null
     };
     $scope.selectedResourceTags = [];
 
@@ -363,7 +364,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.clearRequirement = function() {
         $scope.resource = {
             resourceTags: [],
-            isEssential: false
+            isEssential: false,
+            originalAmount: null
         };
         $scope.selectedResourceTags = [];
         edit = false;

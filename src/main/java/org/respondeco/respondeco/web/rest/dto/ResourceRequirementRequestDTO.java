@@ -24,7 +24,7 @@ public class ResourceRequirementRequestDTO {
     @ApiModelProperty(value = "Name of the resource requirement", required = true)
     private String name;
     @ApiModelProperty(value = "amount of existing resource requirements",required =  true)
-    private BigDecimal amount;
+    private BigDecimal originalAmount;
     @ApiModelProperty(value = "Description of the requirement", required = true)
     private String description;
     @ApiModelProperty(value = "ID of the project that created this requirement", required = true)
@@ -39,7 +39,7 @@ public class ResourceRequirementRequestDTO {
     public ResourceRequirementRequestDTO(ResourceRequirement requirement){
         this.setId(requirement.getId());
         this.setName(requirement.getName());
-        this.setAmount(requirement.getAmount());
+        this.setOriginalAmount(requirement.getOriginalAmount());
         this.setDescription(requirement.getDescription());
         this.setProjectId(requirement.getProject().getId());
         this.setIsEssential(requirement.getIsEssential());

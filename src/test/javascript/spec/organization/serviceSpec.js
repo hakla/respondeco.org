@@ -14,14 +14,12 @@ describe('Organization Service Tests ', function () {
         beforeEach(inject(function($httpBackend, Organization) {
             serviceTested = Organization;
             httpBackend = $httpBackend;
-            //Request on app init
-            httpBackend.expectGET('i18n/de.json').respond(200, '');
+
+            TestHelper.initHttpBackend(httpBackend);
         }));
-        //make sure no expectations were missed in your tests.
-        //(e.g. expectGET or expectPOST)
+
         afterEach(function() {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
+            TestHelper.flushHttpBackend(httpBackend);
         });
 
         it('should call backend when querying an organization', function(){
@@ -34,8 +32,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.save(textMessage);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend when querying organization', function(){
@@ -45,7 +41,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.query();
-            httpBackend.flush();
         });
 
         it('should call backend when deleting an organization', function(){
@@ -55,7 +50,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.delete(1);
-            httpBackend.flush();
         });
 
         it('should call backend for aggregated organization rating', function(){
@@ -64,8 +58,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.getAggregatedRating({id: 2});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to create an organization rating', function(){
@@ -74,8 +66,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.rateOrganization({id: 2}, testRating);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to get all postings', function() {
@@ -84,8 +74,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.getPostingsByOrgId({id: 1});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to create a organization posting', function(){
@@ -94,8 +82,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.addPostingForOrganization({id: 1}, testPosting);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to delete a  posting', function(){
@@ -103,8 +89,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.deletePosting({id: 1, pid:1});
-            //flush the backend to "execute" the request to do the expected DELETE assertion.
-            httpBackend.flush();
         });
 
 
@@ -112,16 +96,12 @@ describe('Organization Service Tests ', function () {
             httpBackend.expectPOST('app/rest/organizations/1/follow').respond(201);
             //WHEN
             serviceTested.follow({id:1}, null);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call Organization backend to delete follow entry', function(){
             httpBackend.expectDELETE('app/rest/organizations/1/unfollow').respond(200);
             //WHEN
             serviceTested.unfollow({id:1});
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to get Organization following state', function() {
@@ -130,8 +110,6 @@ describe('Organization Service Tests ', function () {
 
             //WHEN
             serviceTested.followingState({id: 1}, null);
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
     });

@@ -86,7 +86,7 @@ public class ProjectService {
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           List<String> propertyTags,
                           List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
-        throws OperationForbiddenException, ResourceNotFoundException, IllegalValueException {
+        throws IllegalValueException {
         sanityCheckDate(isConcrete, startDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
@@ -117,7 +117,8 @@ public class ProjectService {
         List<ResourceRequirement> requirements = new ArrayList<>();
         if(resourceRequirements != null) {
             for(ResourceRequirementRequestDTO req : resourceRequirements) {
-                requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(), req.getDescription(), newProject.getId(),
+                requirements.add(resourceService.createRequirement(req.getName(), req.getOriginalAmount(),
+                    req.getDescription(), newProject.getId(),
                     req.getIsEssential(), req.getResourceTags()));
             }
         }
@@ -148,7 +149,7 @@ public class ProjectService {
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         Long imageId, List<String> propertyTags,
                         List<ResourceRequirementRequestDTO> resourceRequirements)
-        throws OperationForbiddenException, ResourceNotFoundException, IllegalValueException {
+        throws IllegalValueException {
 
         sanityCheckDate(isConcrete, startDate);
         if(id == null) {
@@ -194,10 +195,10 @@ public class ProjectService {
             for(ResourceRequirementRequestDTO req : resourceRequirements) {
                 //if requirement is new: create, else: update
                 if(req.getId() == null) {
-                    requirements.add(resourceService.createRequirement(req.getName(), req.getAmount(),
+                    requirements.add(resourceService.createRequirement(req.getName(), req.getOriginalAmount(),
                         req.getDescription(), project.getId(), req.getIsEssential(), req.getResourceTags()));
                 } else {
-                    requirements.add(resourceService.updateRequirement(req.getId(), req.getName(), req.getAmount(),
+                    requirements.add(resourceService.updateRequirement(req.getId(), req.getName(), req.getOriginalAmount(),
                         req.getDescription(), project.getId(), req.getIsEssential(), req.getResourceTags()));
                 }
             }
@@ -218,8 +219,7 @@ public class ProjectService {
      * @throws OperationForbiddenException if the current user is neither the manager of the project nor the owner
      * of the project's organization
      */
-    public Project setManager(Long id, Long newManagerId) throws IllegalValueException,
-        OperationForbiddenException {
+    public Project setManager(Long id, Long newManagerId) throws IllegalValueException {
         User newManager = userRepository.findByIdAndActiveIsTrue(newManagerId);
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);
