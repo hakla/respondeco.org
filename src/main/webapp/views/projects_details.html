@@ -136,10 +136,10 @@
                 <accordion close-others="true">
                     <accordion-group ng-open="item.id" ng-repeat="item in project.resourceRequirements">
                         <accordion-heading>
-                            <div class="row hover-toggle" ng-click="expandResource(item, $event)">
+                            <div style="height: 30px; line-height: 30px;" class="row hover-toggle" ng-click="expandResource(item, $event)">
                                 <div class="col-md-6">{{item.name}}</div>
                                 <div class="col-md-2" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}">
-                                    <button class="btn btn-primary" ng-show="isAllowedToApply()" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                                    <button class="btn btn-primary" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
                                 </div>
                                 <div class="col-md-4" style="text-align: right;">
                                     <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
