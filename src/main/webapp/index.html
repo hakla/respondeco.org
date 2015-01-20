@@ -35,7 +35,6 @@
         <!--[if lt IE 10]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div class="ribbon-development"></div>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
@@ -78,9 +77,10 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
                                 <span>
                                     <span class="glyphicon glyphicon-user"></span>
-                                    <span class="hidden-tablet" translate="global.menu.account.main">
+                                    <span ng-switch-when="false" class="hidden-tablet" translate="global.menu.account.main">
                                         Account
                                     </span>
+                                    <span ng-switch-when="true" class="hidden-tablet">{{ username }}</span>
                                     <b class="caret"></b>
                                 </span>
                             </a>

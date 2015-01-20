@@ -3,6 +3,12 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.matching.MatchingEntity;
+import org.respondeco.respondeco.matching.MatchingImpl;
+import org.respondeco.respondeco.matching.MatchingTag;
+import org.respondeco.respondeco.repository.ProjectRepository;
+import org.respondeco.respondeco.repository.PropertyTagRepository;
+import org.respondeco.respondeco.repository.ResourceTagRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -24,9 +30,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * REST controller for managing Project.
@@ -733,5 +739,67 @@ public class ProjectController {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
+    }
+
+    @Inject
+    ProjectRepository projectRepository;
+
+    @Inject
+    PropertyTagRepository propertyTagRepository;
+
+    @Inject
+    ResourceTagRepository resourceTagRepository;
+
+    @RequestMapping(value = "/rest/projects/test")
+    public void test() {
+        if (userService.getUserWithAuthorities().getOrganization() != null) {
+            Set<MatchingTag> matchingTags = new HashSet<>();
+            Set<MatchingEntity> matchingEntities = new HashSet<>();
+
+//            // collect project tags
+//            matchingTags.addAll(propertyTagRepository.findAll());
+//
+//            // collect resource tags
+//            matchingTags.addAll(resourceTagRepository.findAll());
+
+            Long orgId = userService.getUserWithAuthorities().getOrganization().getId();
+            List<Project> projects = projectService.findProjectsFromOrganization(orgId, null, new RestParameters(0, 10000)).getContent();
+
+            // add all projects of the organization to the matchingEntities
+            matchingEntities.addAll(projects);
+
+            // add all resource offers of the organization
+            matchingEntities.addAll(resourceService.getAllOffers(orgId));
+
+            // add all resource requests of all projects of the organization
+            matchingEntities.addAll(
+                projects
+                    .stream()
+                    .map(p -> resourceService.getAllRequirements(p.getId()))
+                    .reduce(new ArrayList<ResourceRequirement>(), (a, b) -> {
+                        a.addAll(b);
+                        return a;
+                    })
+            );
+
+            matchingEntities.forEach(p -> {
+                matchingTags.addAll(p.getTags());
+            });
+
+            // filter duplicates by lower case name
+            TreeSet<MatchingTag> collect = matchingTags.stream().distinct().collect(Collectors.toCollection(TreeSet::new));
+
+            MatchingImpl matching = new MatchingImpl();
+            matching.setEntities(matchingEntities);
+            matching.setTags(matchingTags);
+            matching.setAPriori(1);
+            matching.evaluate(new MatchingTag() {
+                @Override
+                public String getName() {
+                    return "Photovoltaik";
+                }
+            });
+
+        }
     }
 }

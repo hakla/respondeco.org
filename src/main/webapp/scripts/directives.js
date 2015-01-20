@@ -297,5 +297,28 @@ angular.module('respondecoApp')
                 });
             }
         }
-    });
+    }).directive('respOrganization', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/organization.html',
+            scope: {
+                value: '@'
+            },
+            controller: function($scope, $location, Organization) {
+                $scope.redirectToOrganization = function(id) {
+                    $location.path("/organization/" + id);
+                };
 
+                $scope.$watch('value', function(value) {
+                    if (value != '') {
+                        Organization.get({
+                            id: value
+                        }, function(org) {
+                            $scope.organization = org;
+                        })
+                    }
+                });
+            }
+        };
+    });

@@ -32,6 +32,14 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
     };
 
     $scope.isOrganizationUser = function()  {
+        var account = $rootScope._account;
+
+        if (account.invited) {
+            $rootScope.username = account.login;
+        } else {
+            $rootScope.username = account.organization.name;
+        }
+
         return $rootScope._account.invited === false;
     };
 });

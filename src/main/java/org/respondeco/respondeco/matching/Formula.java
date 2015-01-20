@@ -46,12 +46,9 @@ public class Formula implements FormulaParameter {
 
     @Override
     public double evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
-        double result = 0;
-        double _1 = p1.evaluate(t, V, N_E, N_T, aPriori, count);
+        double result = p1.evaluate(t, V, N_E, N_T, aPriori, count);
 
-        if (p2 == null) {
-            result = _1;
-        } else {
+        if (p2 != null) {
             double _2 = p2.evaluate(t, V, N_E, N_T, aPriori, count);
 
             switch (connector) {

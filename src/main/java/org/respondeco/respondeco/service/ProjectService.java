@@ -6,6 +6,7 @@ import com.mysema.query.types.expr.BooleanExpression;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.domain.QProject;
+import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.*;
@@ -17,12 +18,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -533,5 +536,9 @@ public class ProjectService {
         List<Project> followers = currentUser.getFollowProjects();
         followers.remove(selected);
         userRepository.save(currentUser);
+    }
+
+    public Collection<? extends MatchingEntity> getProjectsByOrganizationId(Long orgId) {
+        return projectRepository.findByOrganization(orgId, null).getContent();
     }
 }
