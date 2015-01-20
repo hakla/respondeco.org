@@ -391,7 +391,7 @@ public class ResourceService {
      * @throws MatchAlreadyExistsException
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
-        throws IllegalValueException, MatchAlreadyExistsException, OperationForbiddenException {
+        throws IllegalValueException, MatchAlreadyExistsException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
@@ -471,7 +471,7 @@ public class ResourceService {
      * @return accepted or declined ResourceMatch
      */
     public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept)
-        throws IllegalValueException, OperationForbiddenException{
+        throws IllegalValueException {
 
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);
 
@@ -588,7 +588,7 @@ public class ResourceService {
      * @return ResourceMatch Entity
      */
     public ResourceMatch createProjectApplyOffer(Long offerId, Long requirementId,
-                                                 Long organizationId, Long projectId) throws ResourceNotFoundException, IllegalValueException {
+                                                 Long organizationId, Long projectId) throws IllegalValueException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
