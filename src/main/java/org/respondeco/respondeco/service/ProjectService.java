@@ -86,7 +86,7 @@ public class ProjectService {
     public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
                           List<String> propertyTags,
                           List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
-        throws OperationForbiddenException, ResourceNotFoundException, IllegalValueException {
+        throws IllegalValueException {
         sanityCheckDate(isConcrete, startDate);
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
@@ -149,7 +149,7 @@ public class ProjectService {
     public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
                         Long imageId, List<String> propertyTags,
                         List<ResourceRequirementRequestDTO> resourceRequirements)
-        throws OperationForbiddenException, ResourceNotFoundException, IllegalValueException {
+        throws IllegalValueException {
 
         sanityCheckDate(isConcrete, startDate);
         if(id == null) {
@@ -219,8 +219,7 @@ public class ProjectService {
      * @throws OperationForbiddenException if the current user is neither the manager of the project nor the owner
      * of the project's organization
      */
-    public Project setManager(Long id, Long newManagerId) throws IllegalValueException,
-        OperationForbiddenException {
+    public Project setManager(Long id, Long newManagerId) throws IllegalValueException {
         User newManager = userRepository.findByIdAndActiveIsTrue(newManagerId);
         if(newManager == null) {
             throw new NoSuchUserException("no such user: " + id);

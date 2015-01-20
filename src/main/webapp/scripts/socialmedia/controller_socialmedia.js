@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $filter, $window, SocialMedia) {
+respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $location, $window, SocialMedia) {
 
 	$scope.code = {string: null}
 	$scope.post = {string: null}
@@ -75,12 +75,12 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 */ 
 	 $scope.disconnectFacebook = function() {
 	 	$scope.loading = true;
-	 	SocialMedia.disconnectFacebook(function(response) {
+	 	SocialMedia.disconnectFacebook(function() {
 	 		$scope.loading = false;
 	 		$scope.facebookConnected = false
 	 		$scope.addAlert('info','Die Verbindung zwischen ihrem Account und Facebook wurde erfolgreich aufgehoben');
-	 	}, function(response) {
-	 		console.log(response);
+	 	}, function() {
+	 		$scope.addAlert('danger', "Die Verbindung konnte nicht getrennt werden! Der Server ist zurzeit nicht erreichbar");
 	 	});
 
 
@@ -90,7 +90,7 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 * Disconnects the users account from Twitter
 	 */
 	$scope.disconnectTwitter = function() {
-		SocialMedia.disconnectTwitter(function(response) {
+		SocialMedia.disconnectTwitter(function() {
 			$scope.twitterConnected = false;
 			$scope.addAlert('info','Die Verbindung zwischen ihrem Respondeco-Account und Twitter wurde aufgehoben. '+
 				'\nUm den Vorgang abzuschließen gehen Sie bitte auf <a href="https://twitter.com/settings/applications">'+
@@ -103,7 +103,7 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 * Disconnects the users account from Xing
 	 */
 	$scope.disconnectXing = function() {
-		SocialMedia.disconnectXing(function(response) {
+		SocialMedia.disconnectXing(function() {
 			$scope.xingConnected = false;
 			$scope.addAlert('info', 'Die Verbindung zwischen ihrem Respondeco-Account und Xing wurde aufgehoben. ' +
 					'\nUm den Vorgang abzuschließen gehen Sie bitte auf <a href="https://www.xing.com/app/settings?op=privacy">' +
@@ -112,14 +112,41 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	}
 
 	/**
-	 * Creates a new xing post on behalf of the user
+	 * This function is used for getting the URL Parameters after returning from socialmedia platforms
 	 */
-	$scope.createXingPost = function() {
-		var post = 'Ich habe meinen Xing-Account gerade mit Respondeco.org verbunden!' ;
-		SocialMedia.createXingPost({string: post}, function(response) {
-			console.log(response);
+	$scope.getUrlParameter = (function() {
+		// Contains all query parameters
+		var params = {};
+
+		// Split search parameters by & and iterate over all query parts (x=y)
+		$.each($window.document.location.search.substring(1).split(/[&]/), function() {
+			// Split query part by =
+			var param = this.split("=");
+
+			// query part 0 == key
+			// query part 1 == value
+			params[param[0]] = param[1];
 		});
-	};
+
+		return {
+			param: function(name) {
+				// if no parameter was defined return the params object
+				if (name === undefined) {
+					return params;
+				}
+
+				// if the parameter *name* isset then return it
+				if (params[name] !== undefined) {
+					return params[name];
+				}
+
+				// otherwise return undefined
+				return undefined;
+			}
+		}
+	})();
+
+
 
 	/**
 	 * Used for authorization via OAuth. Therefor the controller checks if
@@ -135,7 +162,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		var verifier = parseInt(url.substring(url.length-4));
 
 		if(isNaN(verifier) === false && $scope.xingConnected === false) {
-			console.log("calling create Xing connection")
 				//we only need the verifier here, because the token gets persisted from getAuthorizationURL step
 				SocialMedia.createXingConnection({string: verifier}, function(response) {
 					$scope.clearURL();
@@ -146,8 +172,8 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		}
 
 		// used for facebook after user grants permission and facebook redirects
-		if(Respondeco.Helpers.Url.param("code") !== undefined && $scope.facebookConnected === false) {
-			$scope.code.string = Respondeco.Helpers.Url.param("code");
+		if($scope.getUrlParameter.param("code") !== undefined && $scope.facebookConnected === false) {
+			$scope.code.string = $scope.getUrlParameter.param("code");
 			SocialMedia.createFacebookConnection($scope.code, function() {
 				$scope.clearURL();
 				$scope.getConnections();
@@ -158,10 +184,10 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		};
 
 		// used for twitter after user grants permission and twitter redirects
-		if(Respondeco.Helpers.Url.param("oauth_token") !== undefined && $scope.twitterConnected === false) {
+		if($scope.getUrlParameter.param("oauth_token") !== undefined && $scope.twitterConnected === false) {
 			
-			var token = Respondeco.Helpers.Url.param("oauth_token");
-			var verifier = Respondeco.Helpers.Url.param("oauth_verifier");
+			var token = $scope.getUrlParameter.param("oauth_token");
+			var verifier = $scope.getUrlParameter.param("oauth_verifier");
 			var request = {token: token, verifier: verifier};
 
 			SocialMedia.createTwitterConnection(request, function(response) {
@@ -173,13 +199,15 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 		};
 
 		//error case
-		if(Respondeco.Helpers.Url.param("error") !== undefined ||
-				Respondeco.Helpers.Url.param("denied") !== undefined) {
+		if($scope.getUrlParameter.param("error") !== undefined ||
+				$scope.getUrlParameter.param("denied") !== undefined) {
 			$scope.clearURL();
 		}
 	};
 	
 	
+
+
 	/**
 	 * Used to add global alert messages to the actual site
 	 */

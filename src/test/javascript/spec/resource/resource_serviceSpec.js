@@ -13,12 +13,23 @@ describe('Resource Service Tests ', function () {
             httpBackend = $httpBackend;
             //Request on app init
             httpBackend.expectGET('i18n/de.json').respond(200, '');
+            
+
+
+            
         }));
         //make sure no expectations were missed in your tests.
         //(e.g. expectGET or expectPOST)
         afterEach(function() {
+            httpBackend.expectGET('views/main.html').respond(200,'');
+            httpBackend.when('GET', 'protected/authentication_check.gif').andCallThrough();
+
+            
             httpBackend.verifyNoOutstandingExpectation();
             httpBackend.verifyNoOutstandingRequest();
+                        
+
+            
         });
 
         it('should call the backend when resource gets saved', function(){
