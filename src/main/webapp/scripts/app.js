@@ -106,6 +106,7 @@ respondecoApp
 
         })
         .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $sce, $route) {
+                $rootScope.globalAlerts = $rootScope.globalAlerts || [];
                 var regMessage = {
                     type: 'info',
                     msg: 'Um die Registrierung abzuschließen erstelle eine Organisation! <a><strong class="pull-right" ng-click="redirectToOwnOrganization()">Zur Erstellung</strong></a>'
