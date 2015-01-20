@@ -1,5 +1,5 @@
 <div>
-    <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" ng-submit="create()">
+    <form name="form" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
         <div class="modal-header clearfix row">
             <div class="col-md-3">
@@ -100,7 +100,7 @@
         <div class="modal-footer">
             <resp-confirm-delete class="pull-left" ng-hide="isNew" on-confirm=delete()></resp-confirm-delete>
             <button id="cancelButton" type="button" class="btn btn-link" data-dismiss="modal" translate="global.form.cancel" ng-click="clear()" />
-            <button id="saveButton" type="button" ng-disabled="form.$invalid" class="btn btn-primary">
+            <button id="saveButton" type="button" ng-click="create()" ng-disabled="form.$invalid" class="btn btn-primary">
                 <span class="glyphicon glyphicon-save"></span> {{'global.form.save' | translate}}
             </button>
         </div>

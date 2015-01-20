@@ -635,6 +635,7 @@
             "cancelbutton":"Abbrechen",
             "error": "Ressource konnte nicht erstellt werden!",
             "error.amount": "Eine Ressource muss mindestens einmal vorhanden sein",
+            "error.startDate": "Das Startdatum muss vor dem Enddatum liegen",
             "price": "Preis"
         },
         "edit": {
