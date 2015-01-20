@@ -10,7 +10,7 @@
     <!--
         Modified type of fields in Organization/Project
     -->
-    <changeSet id="201501111224200" author="Klaus Harrer">
+    <changeSet id="20150120233100" author="Klaus Harrer">
         <modifyDataType columnName="description"
                         newDataType="varchar(2048)"
                         tableName="T_ORGANIZATION"/>
