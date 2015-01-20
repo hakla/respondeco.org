@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="newsfeed">
-                <h3>PostingFeed</h3>
+                <h3>{{ 'postingfeed.title' | translate }}</h3>
                 <div class="well">
                     <ul>
                         <li ng-repeat="posting in postings">
@@ -132,27 +132,26 @@
                 <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
-                <h2>Details</h2>
+                <h2>{{ 'project.details.details' | translate}}</h2>
                 <accordion close-others="true">
-                    <accordion-group ng-open="requirement.id" ng-repeat="requirement in project.resourceRequirements">
+                    <accordion-group ng-open="item.id" ng-repeat="item in project.resourceRequirements">
                         <accordion-heading>
-                            <div class="row hover-toggle">
-                                <div class="col-md-8">{{requirement.name}}</div>
-                                <div class="col-md-2 on-hover">
-                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()&&(requirement.sum<requirement.originalAmount)" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                            <div style="height: 30px; line-height: 30px;" class="row hover-toggle" ng-click="expandResource(item, $event)">
+                                <div class="col-md-6">{{item.name}}</div>
+                                <div class="col-md-2" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}">
+                                    <button class="btn btn-primary" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
                                 </div>
-                                <div class="col-md-2">
-                                    <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
-                                    <span ng-show="requirement.sum == undefined">0</span>/{{requirement.originalAmount}}
-                                    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open1, 'glyphicon-chevron-right': !status.open1}"></i>
+                                <div class="col-md-4" style="text-align: right;">
+                                    <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
+                                    <i class="glyphicon" ng-class="{'glyphicon-chevron-down': item.expanded, 'glyphicon-chevron-right': !item.expanded}"></i>
                                 </div>
                             </div>
                         </accordion-heading>
                         <ul>
-                            <li ng-repeat="match in requirement.matches">
+                            <li ng-repeat="match in item.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
-                                <div class="col-md-4 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4 pull-right">{{match.amount}}/{{requirement.originalAmount}}</div>
+                                <div class="col-md-6 strong">{{match.organization.name}}</div>
+                                <div class="col-md-4 pull-right">{{match.amount}}/{{item.originalAmount}}</div>
                                 <div class="col-md-4">
                                     <rating max="5" on-leave="overStar = null"
                                             readonly="!matchRatingPermissions[match.matchId]"
@@ -182,16 +181,16 @@
                     <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                         <dl class="dl-horizontal">
                             <dt>{{ 'resource.chosen' | translate }}</dt>
-                            <dd>{{ selectedRequirement.name }}</dd>
+                            <dd>{{ ProjectApply.selectedRequirement.name }}</dd>
                             <dt>{{ 'resource.stillneeded' | translate }}</dt>
-                            <dd>{{ selectedRequirement.amount }}</dd>
+                            <dd>{{ ProjectApply.selectedRequirement.amount }}</dd>
                         </dl>
                         <ul class="resources">
                             <li ng-click="selectResourceOffer(offer, $event)" class="resource row" ng-repeat="offer in resourceOffers">
                                 <div class="col-md-2">
                                     <img src="" alt="">
                                 </div>
-                                <div class="pull-right col-md-6">
+                                <div class="pull-right col-md-6 offerdesc">
                                     {{ offer.description }}
                                 </div>
                                 <h2 class="col-md-4">
