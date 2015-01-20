@@ -119,7 +119,7 @@
 
         </div>
         <div class="col-md-6">
-            <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
+            <img src="/images/approved.png" alt="approved" class="approved" ng-show="project.successful" />
             <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
                 <strong>{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
