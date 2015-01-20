@@ -8,7 +8,7 @@ describe('Project Controller Tests ', function() {
 
     describe('ProjectController', function() {
         var scope, location, routeParams, ProjectNamesService, PropertyTagsNamesService, ProjectService,
-            ResourceRequirementService, AccountService, sce, OrganizationService, translate;
+            ResourceRequirementService, AccountService, sce, OrganizationService, translate, rootScope;
         var fakeDeferred;
         var emptyProject;
         var existingProject;
@@ -27,6 +27,7 @@ describe('Project Controller Tests ', function() {
             AccountService = Account;
             OrganizationService = Organization;
             sce = $sce;
+            rootScope = $rootScope;
 
             fakeDeferred = {
                 $promise: {
@@ -51,16 +52,17 @@ describe('Project Controller Tests ', function() {
 
             $controller('ProjectController', {
                 $scope: scope,
+                Project: ProjectService,
+                Organization: OrganizationService,
+                ResourceRequirement: ResourceRequirementService,
+                PropertyTagNames: PropertyTagsNamesService,
                 $location: location,
                 $routeParams: routeParams,
-                $translate: translate,
-                Project: ProjectService,
-                ProjectNames: ProjectNamesService,
-                PropertyTagNames: PropertyTagsNamesService,
-                ResourceRequirement: ResourceRequirementService,
                 $sce: sce,
+                $translate: translate,
+                ProjectNames: ProjectNamesService,
                 Account: AccountService,
-                Organization: OrganizationService
+                $rootScope: rootScope
             });
 
             scope.showOrgRatingModal = function() {}
