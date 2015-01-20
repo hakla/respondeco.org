@@ -6,22 +6,21 @@
 describe('TextMessage Service Tests ', function () {
 
     beforeEach(module('respondecoApp'));
+    beforeEach(angular.mock.module('ngMockE2E'));
 
     describe('TextMessage', function () {
-        var serviceTested,
-            httpBackend;
+        var serviceTested
+        var httpBackend;
 
         beforeEach(inject(function($httpBackend, TextMessage) {
             serviceTested = TextMessage;
             httpBackend = $httpBackend;
-            //Request on app init
-            httpBackend.expectGET('i18n/de.json').respond(200, '');
+
+            TestHelper.initHttpBackend(httpBackend);
         }));
-        //make sure no expectations were missed in your tests.
-        //(e.g. expectGET or expectPOST)
+
         afterEach(function() {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
+            TestHelper.flushHttpBackend(httpBackend);
         });
 
         it('should call backend when saving a text message', function(){
@@ -34,8 +33,6 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.save(textMessage);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend when querying textmessages', function(){
@@ -45,7 +42,6 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.query();
-            httpBackend.flush();
         });
 
         it('should call backend when deleting a textmessage', function(){
@@ -55,7 +51,6 @@ describe('TextMessage Service Tests ', function () {
 
             //WHEN
             serviceTested.delete(1);
-            httpBackend.flush();
         });
 
     });

@@ -11,26 +11,9 @@ describe('Resource Service Tests ', function () {
         beforeEach(inject(function($httpBackend, Resource) {
             serviceTested = Resource;
             httpBackend = $httpBackend;
-            //Request on app init
-            httpBackend.expectGET('i18n/de.json').respond(200, '');
-            
 
-
-            
+            TestHelper.initHttpBackend(httpBackend);
         }));
-        //make sure no expectations were missed in your tests.
-        //(e.g. expectGET or expectPOST)
-        afterEach(function() {
-            httpBackend.expectGET('views/main.html').respond(200,'');
-            httpBackend.when('GET', 'protected/authentication_check.gif').andCallThrough();
-
-            
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
-                        
-
-            
-        });
 
         it('should call the backend when resource gets saved', function(){
             var returnData = { result: 'ok' };
@@ -41,7 +24,7 @@ describe('Resource Service Tests ', function () {
             httpBackend.expectPOST('app/rest/resourceoffers').respond(returnData);
             serviceTested.save(resource);
 
-            httpBackend.flush();
+            TestHelper.flushHttpBackend(httpBackend);
         });
 
         it('should get resources from the backend', function() {
@@ -69,7 +52,7 @@ describe('Resource Service Tests ', function () {
             });
 
             expect(resources).toBeUndefined();
-            httpBackend.flush();
+            TestHelper.flushHttpBackend(httpBackend);
             expect(resources).toBeDefined();
         });
     });

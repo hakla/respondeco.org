@@ -13,15 +13,11 @@ describe('Services Tests ', function () {
             serviceTested = AuthenticationSharedService;
             httpBackend = $httpBackend;
             authServiceSpied = authService;
-            //Request on app init
-            httpBackend.expectGET('i18n/de.json').respond(200, '');
+
+            TestHelper.initHttpBackend(httpBackend);
         }));
         //make sure no expectations were missed in your tests.
         //(e.g. expectGET or expectPOST)
-        afterEach(function() {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
-        });
 
         it('should call backend on logout then call authService.loginCancelled', function(){
             //GIVEN
@@ -36,7 +32,7 @@ describe('Services Tests ', function () {
              //WHEN
             serviceTested.logout();
             //flush the backend to "execute" the request to do the expectedGET assertion.
-            httpBackend.flush();
+            TestHelper.flushHttpBackend(httpBackend);
 
             //THEN
             expect(authServiceSpied.loginCancelled).toHaveBeenCalled();

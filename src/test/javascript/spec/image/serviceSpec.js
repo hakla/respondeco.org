@@ -14,14 +14,12 @@ describe('Image Service Tests ', function () {
         beforeEach(inject(function($httpBackend, Image) {
             serviceTested = Image;
             httpBackend = $httpBackend;
-            //Request on app init
-            httpBackend.expectGET('i18n/de.json').respond(200, '');
+
+            TestHelper.initHttpBackend(httpBackend);
         }));
-        //make sure no expectations were missed in your tests.
-        //(e.g. expectGET or expectPOST)
+
         afterEach(function() {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
+            TestHelper.flushHttpBackend(httpBackend);
         });
 
         it('should call backend when querying an organization', function(){
@@ -34,8 +32,6 @@ describe('Image Service Tests ', function () {
 
             //WHEN
             serviceTested.save(textMessage);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
     });

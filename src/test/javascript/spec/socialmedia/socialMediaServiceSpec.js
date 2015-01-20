@@ -11,13 +11,17 @@ describe('SocialMedia Service Tests ', function () {
         beforeEach(inject(function($httpBackend, SocialMedia) {
             serviceTested = SocialMedia;
             httpBackend = $httpBackend;
+
+            TestHelper.initHttpBackend(httpBackend);
         }));
         //make sure no expectations were missed in your tests.
         //(e.g. expectGET or expectPOST)
+        
+
         afterEach(function() {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
+            TestHelper.flushHttpBackend(httpBackend);
         });
+
 
         it('should call backend for all connections of the currently logged in user', function() {
             var returnData = {};
@@ -25,7 +29,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectGET('app/rest/connections').respond(returnData);
 
             serviceTested.getConnections();
-            httpBackend.flush();
         });
 
         it('should call backend to start connecting the user with facebook', function() {
@@ -34,7 +37,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectGET('app/rest/connect/facebook').respond(returnData);
 
             serviceTested.connectFacebook();
-            httpBackend.flush();
         });
 
         it('should call backend to create the facebook connection', function() {
@@ -43,7 +45,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectPOST('app/rest/connect/facebook/createconnection').respond(returnData);
 
             serviceTested.createFacebookConnection();
-            httpBackend.flush();
         });
 
         it('should call backend to create a new facebook post', function() {
@@ -52,7 +53,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectPOST('app/rest/socialmedia/facebook/post').respond(returnData);
 
             serviceTested.createFacebookPost();
-            httpBackend.flush();
         });
 
         it('should call backend to disconnect the users account from facebook', function() {
@@ -60,8 +60,7 @@ describe('SocialMedia Service Tests ', function () {
             
             httpBackend.expectDELETE('app/rest/socialmedia/facebook/disconnect').respond(returnData);
 
-            serviceTested.deleteFacebook();
-            httpBackend.flush();
+            serviceTested.disconnectFacebook();
         });
 
         it('should call backend to start connecting the user with twitter', function() {
@@ -70,7 +69,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectGET('app/rest/connect/twitter').respond(returnData);
 
             serviceTested.connectTwitter();
-            httpBackend.flush();
         });
 
         it('should call backend to create the twitter connection', function() {
@@ -79,7 +77,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectPOST('app/rest/connect/twitter/createconnection').respond(returnData);
 
             serviceTested.createTwitterConnection();
-            httpBackend.flush();
         });
 
         it('should call backend to create a new twitter post', function() {
@@ -88,7 +85,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectPOST('app/rest/socialmedia/twitter/post').respond(returnData);
 
             serviceTested.createTwitterPost();
-            httpBackend.flush();
         });
 
         it('should call backend to disconnect the users account from twitter', function() {
@@ -96,8 +92,7 @@ describe('SocialMedia Service Tests ', function () {
             
             httpBackend.expectDELETE('app/rest/socialmedia/twitter/disconnect').respond(returnData);
 
-            serviceTested.deleteTwitter();
-            httpBackend.flush();
+            serviceTested.disconnectTwitter();
         });
 
          it('should call backend to start connecting the user with xing', function() {
@@ -106,7 +101,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectGET('app/rest/connect/xing').respond(returnData);
 
             serviceTested.connectXing();
-            httpBackend.flush();
         });
 
         it('should call backend to create the xing connection', function() {
@@ -115,7 +109,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectPOST('app/rest/connect/xing/createconnection').respond(returnData);
 
             serviceTested.createXingConnection();
-            httpBackend.flush();
         });
 
         it('should call backend to create a new xing post', function() {
@@ -124,7 +117,6 @@ describe('SocialMedia Service Tests ', function () {
             httpBackend.expectPOST('app/rest/socialmedia/xing/post').respond(returnData);
 
             serviceTested.createXingPost();
-            httpBackend.flush();
         });
 
         it('should call backend to disconnect the users account from xing', function() {
@@ -132,8 +124,7 @@ describe('SocialMedia Service Tests ', function () {
             
             httpBackend.expectDELETE('app/rest/socialmedia/xing/disconnect').respond(returnData);
 
-            serviceTested.deleteXing();
-            httpBackend.flush();
+            serviceTested.disconnectXing();
         });
 
 
