@@ -322,7 +322,7 @@ public class ResourceController {
         try {
             requirement = this.resourceService.createRequirement(
                 resourceRequirementRequestDTO.getName(),
-                resourceRequirementRequestDTO.getAmount(),
+                resourceRequirementRequestDTO.getOriginalAmount(),
                 resourceRequirementRequestDTO.getDescription(),
                 resourceRequirementRequestDTO.getProjectId(),
                 resourceRequirementRequestDTO.getIsEssential(),
@@ -355,7 +355,7 @@ public class ResourceController {
             this.resourceService.updateRequirement(
                 resourceRequirementRequestDTO.getId(),
                 resourceRequirementRequestDTO.getName(),
-                resourceRequirementRequestDTO.getAmount(),
+                resourceRequirementRequestDTO.getOriginalAmount(),
                 resourceRequirementRequestDTO.getDescription(),
                 resourceRequirementRequestDTO.getProjectId(),
                 resourceRequirementRequestDTO.getIsEssential(),

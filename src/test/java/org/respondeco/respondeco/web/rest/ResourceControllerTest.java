@@ -172,11 +172,11 @@ public class ResourceControllerTest {
         reset(resourceService);
         ResourceRequirementRequestDTO dto = new ResourceRequirementRequestDTO(resourceRequirement);
         if(operation == 0) {
-            doReturn(resourceRequirement).when(resourceService).createRequirement(dto.getName(), dto.getAmount(),
+            doReturn(resourceRequirement).when(resourceService).createRequirement(dto.getName(), dto.getOriginalAmount(),
                 dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         } else if (operation == 1) {
             doReturn(resourceRequirement).when(resourceService).updateRequirement(dto.getId(),
-                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
+                dto.getName(), dto.getOriginalAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         }else if (operation == 2){
             doNothing().when(resourceService).deleteRequirement(dto.getId());
         }else if(operation == 3){
@@ -201,11 +201,11 @@ public class ResourceControllerTest {
     }
     private void verifyRequirement(Integer operation, ResourceRequirementRequestDTO dto) throws Exception{
         if(operation == 0){
-            verify(resourceService, times(1)).createRequirement(dto.getName(), dto.getAmount(),
+            verify(resourceService, times(1)).createRequirement(dto.getName(), dto.getOriginalAmount(),
                 dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         }else if (operation == 1){
             verify(resourceService, times(1)).updateRequirement(dto.getId(),
-                dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
+                dto.getName(), dto.getOriginalAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(), dto.getResourceTags());
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteRequirement(dto.getId());
         }else if (operation == 3){
@@ -331,7 +331,7 @@ public class ResourceControllerTest {
     public void testCreateRequirement_FAILED() throws Exception{
         ResourceRequirementRequestDTO dto = this.bindRequirementDTOMockData(0);
         doThrow(new ResourceNotFoundException("")).when(resourceService).createRequirement(
-            dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
+            dto.getName(), dto.getOriginalAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
             dto.getResourceTags());
         restMockMvc.perform(post("/app/rest/resourcerequirements")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -355,7 +355,7 @@ public class ResourceControllerTest {
     public void testUpdateRequirement_FAILED() throws Exception{
         ResourceRequirementRequestDTO dto = this.bindRequirementDTOMockData(1);
         doThrow(new ResourceNotFoundException("")).when(resourceService).updateRequirement(
-            dto.getId(), dto.getName(), dto.getAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
+            dto.getId(), dto.getName(), dto.getOriginalAmount(), dto.getDescription(), dto.getProjectId(), dto.getIsEssential(),
             dto.getResourceTags());
         restMockMvc.perform(put("/app/rest/resourcerequirements/{resourceRequirementId}", resourceRequirement.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

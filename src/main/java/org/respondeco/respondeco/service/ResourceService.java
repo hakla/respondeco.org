@@ -139,7 +139,7 @@ public class ResourceService {
      */
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceNotFoundException, OperationForbiddenException, NoSuchProjectException {
+        throws ResourceNotFoundException, OperationForbiddenException, NoSuchProjectException, IllegalValueException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
 
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
@@ -151,11 +151,24 @@ public class ResourceService {
         }
         if (requirement != null) {
             ensureUserIsPartOfOrganisation(requirement.getProject());
+            BigDecimal matchSum = new BigDecimal(0);
+            if(requirement.getResourceMatches() != null) {
+                for (ResourceMatch match : requirement.getResourceMatches()) {
+                    matchSum = matchSum.add(match.getAmount());
+                }
+            }
+            log.debug("MATCH SUM = " + matchSum);
             requirement.setName(name);
-            requirement.setOriginalAmount(amount);
             requirement.setDescription(description);
             requirement.setIsEssential(isEssential);
             requirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
+
+            if(amount.subtract(matchSum).longValue() < 0L) {
+                throw new IllegalValueException("resource.errors.update.negative",
+                    "New amount is too low, a higher amount of resources was alredy donated");
+            }
+            requirement.setAmount(amount.subtract(matchSum));
+            requirement.setOriginalAmount(amount);
             resourceRequirementRepository.save(requirement);
 
         } else {

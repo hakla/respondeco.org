@@ -670,7 +670,8 @@
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",
             "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
-            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!"
+            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
+            "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden"
         }
     },
     "nearProjects": {
