@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, $location, $routeParams, $sce, $translate,
-                                                       Account, $modal, AuthenticationSharedService, SocialMedia) {
+                                                       Account, SocialMedia, $rootScope) {
 
     $scope.project = {
         id: null,
