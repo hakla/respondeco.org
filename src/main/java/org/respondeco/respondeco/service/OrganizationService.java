@@ -375,7 +375,7 @@ public class OrganizationService {
      * @return a list of users which can be invited by the given organization
      */
     public List<User> findInvitableUsersByOrgId(Long orgId) {
-        Organization organization = organizationRepository.getOne(orgId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
 
         // if there is no organization than all users should be returned
         if(organization != null) {

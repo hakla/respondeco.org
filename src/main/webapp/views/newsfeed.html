@@ -3,7 +3,7 @@
     <div class="well">
         <ul>
             <li ng-repeat="posting in news">
-                <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+                <h4>{{posting.author.login}} <small>{{ 'organization.posted' | translate }}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
             </li>
         </ul>
     </div>
