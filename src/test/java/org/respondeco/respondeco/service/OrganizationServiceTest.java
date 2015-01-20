@@ -76,7 +76,7 @@ public class OrganizationServiceTest {
             userRepositoryMock,
             imageRepositoryMock,
             projectServiceMock,
-                projectRepositoryMock,
+            projectRepositoryMock,
             postingFeedRepositoryMock,
             resourceOfferRepositoryMock);
         defaultUser = new User();
@@ -340,7 +340,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
-        when(organizationRepositoryMock.getOne(organization.getId())).thenReturn(organization);
+        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
         when(userRepositoryMock.findInvitableUsers()).thenReturn(Arrays.asList(defaultUser,user3));
         List<User> users = organizationService.findInvitableUsersByOrgId(organization.getId());
         assertTrue(users.size()==2);

@@ -96,9 +96,9 @@
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
                 },
                 "posting": {
-                    "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten.",
-                    "maxlength": "Ihre Eingabe darf maximal 2048 Zeichen enthalten.",
-                    "required": "Ihre Eingabe wird benötigt."
+                    "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten",
+                    "maxlength": "Ihre Eingabe darf maximal 2048 Zeichen enthalten",
+                    "required": "Ihre Eingabe wird benötigt"
                 }
             }
         },
@@ -154,6 +154,11 @@
         "info": "Projekt Information",
         "title": "Projekte",
         "logotext": "Projekt-Logo",
+        "found": "gefundene Projekte",
+        "remainingdays": "Tage verbleibend",
+        "posted": "postet: ",
+        "rating": "Aktuelle Bewertung:",
+        "found": "gefundene Projekte",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -185,7 +190,7 @@
         "startDate": "Start-Datum",
         "endDate": "End-Datum",
         "tags": "Tags",
-        "resource": "Ressoucen",
+        "resource": "Ressourcen",
         "logo": "ProjectLogo",
         "name.placeholder": "Projektname",
         "tags.placeholder": "Tags",
@@ -212,6 +217,7 @@
         "notnow": "Später bewerten",
         "yourrating": "Ihre Bewertung: ",
         "yourcomment": "Kommentar",
+        "actual": "Akutelle Bewertung:",
         "match": {
             "dorate": "Bewerten Sie die Interaktion"
         },
@@ -228,7 +234,6 @@
             "notsameproject": "Das gesendete Projekt stimmt nicht mit dem gesendeten Match überein"
         }
     },
-
     "main": {
         "title": "Willkommen bei respondeco!",
         "find": "Projekte finden",
@@ -534,11 +539,13 @@
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
         "newproject": "Neues Projekt anlegen",
-        "error": {
+        "rating": "Aktuelle Bewertung:",
+        "posted": "postet: ",
+            "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
             "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
-            "notverified": "Ihre Organisation wurde noch nicht validiert!"
+            "notverified": "Ihre Organisation wurde noch nicht verifiziert!"
         },
         "verify": {
             "verify": "Verifizieren",
@@ -590,7 +597,12 @@
         "searchbutton":"Suchen",
         "organization": "Organisation",
         "tags": "Tags",
+        "found": "Ressourcen gefunden",
         "available": "Verfügbar",
+        "stillneeded": "Noch benötigte Anzahl",
+        "chosen": "Ausgewählte Ressource:",
+        "collected": "% der Resourcen gesammelt",
+        "essentialcollected": "% der notwendigen Ressourcen gesammelt",
         "search": {
             "filter": "Name / Tags / Organisation",
             "type": "Filter",
@@ -658,7 +670,8 @@
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",
             "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
-            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!"
+            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
+            "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden"
         }
     },
     "nearProjects": {
@@ -684,6 +697,7 @@
     },
     "posting": {
         "showmore": "Mehr anzeigen",
+        "posted": "postet: ",
         "information": {
             "placeholder": "Was gibt's neues?"
         }
@@ -699,17 +713,17 @@
     "follow": {
         "button": "Folgen",
         "project": {
-            "accepted": "Sie können nur dem Projekt folgen. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
+            "accepted": "Sie folgen nun dem Projekt. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
             "rejected": {
-                "ownererror": "Das Folgen eigene Projekte ist nicht erlaubt",
+                "ownererror": "Das Folgen des eigenen Projekts ist nicht erlaubt",
                 "error": "Das Folgen des aktuellen Projekt ist derzeit aus technischen Gründen nicht möglich",
                 "notfound": "Das ausgewählte Projekt existiert nicht mehr. Bitte wenden Sie sich an die Organisation des Projekts"
             }
         },
         "organization": {
-            "accepted": "Sie können nun der Organisation folgen. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
+            "accepted": "Sie folgen nun der Organisation. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
             "rejected": {
-                "ownererror": "Das Folgen eigener Organisation ist leider nicht möglich",
+                "ownererror": "Das Folgen der eigenen Organisation ist nicht möglich",
                 "error": "Das Folgen der aktuelle Organisation ist derzeit aus technischen Gründen nicht möglich",
                 "notfound": "Die ausgewählte Organisation existiert nicht mehr. Bitte wenden Sie sich an den Verwaltenden Benutzer der Organisation"
             }

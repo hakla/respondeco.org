@@ -2,14 +2,21 @@
     "global": {
         "title": "respondeco",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
+        "backbutton": "Back",
         "menu": {
             "home": "Home",
+            "organization": "Organizations",
+            "projects": "Projects",
+            "resource": "Marketplace",
             "entities": {
                 "main": "Entities"
             },
             "account": {
                 "main": "Account",
+                "messages": "Messages",
                 "settings": "Settings",
+                "social-networks": "Connected Networks",
+                "organization": "My Organization",
                 "password": "Password",
                 "sessions": "Sessions",
                 "tracker": "User tracker",
@@ -20,10 +27,19 @@
                 "login": "Authenticate",
                 "logout": "Log out",
                 "apidocs": "API",
-                "register": "Register"
+                "register": "Register",
+                "newsfeed": "Newsfeed",
+                "resourcerequestapply": "Ressource-Requests"
             },
             "admin": "Administration",
+            "admin.verify": "Verification",
             "language": "Language"
+        },
+        "tooltip": {
+            "not-changeable": "This setting can not be changed anymore. If you want to change this setting please contact our support (support@respondeco.org).",
+            "not-changeable-init": "This setting can not be changed anymore.",
+            "not-changeable-email": "The E-Mail of the organization has been defined in the registration. If you want to change this setting please contact our support (support@respondeco.org).",
+            "not-deleteable": "The organization can only be deleted by the administrator. Please contact our support (support@respondeco.org)."
         },
         "form": {
             "title": "Title",
@@ -36,7 +52,14 @@
             "email": "E-mail",
             "email.placeholder": "Your e-mail",
             "description": "Description",
-            "delete": "Delete"
+            "send": "Send",
+            "cancel": "Cancel",
+            "confirm": "Confirm",
+            "save": "Save",
+            "postingInformation": "Posting",
+            "orgname": "Name of organization",
+            "orgname.placeholder": "The name of your organization",
+            "delete": "DEL"
         },
         "messages": {
             "info": {
@@ -63,12 +86,157 @@
                     "invalid": "Your e-mail is invalid.",
                     "minlength": "Your e-mail is required to be at least 5 characters",
                     "maxlength": "Your e-mail cannot be longer than 50 characters"
+                },
+                "name": {
+                    "minlength": "The name of your organization has to be at least 3 letters long",
+                    "maxlength": "The name of your organization can only have 255 letters at max"
+                },
+                "description": {
+                    "maxlength": "Your description can only have 2048 letters at max"
+                },
+                "posting": {
+                    "minlength": "Your posting has to be at least 5 letters long",
+                    "maxlength": "Your posting can only have 2048 letters at max",
+                    "required": "Your input is needed"
                 }
             }
+        },
+        "textmessages": {
+            "title": "Messages",
+            "createmessage": "New Message",
+            "sender": "Sender",
+            "date": "Date",
+            "receiver": "Receiver",
+            "content": "Content",
+            "reply": "Reply",
+            "delete": "Delete",
+            "confirmdelete": "<strong>Do you really want to delete this message?</strong>",
+            "view": "View",
+            "from": "From",
+            "atdate": "on",
+            "refresh": "Refresh",
+            "success": {
+                "delete": "<strong>Your message was deleted successfully.</strong>",
+                "send": "<strong>Your message was sent successfully.</strong>"
+            },
+            "error": {
+                "delete": "An error has been occured! Your message could not be deleted: ",
+                "send": "An error has been occured! Your message could not be sent.",
+                "usernotfound": "An error has been occured! The receiver has not been found.",
+                "receiverlength": "An error has been occured! The name of the receiver has to be at least 1 letter long.",
+                "contentlength": "An error has been occured! The content has to be at least 1 letter long.",
+                "receivercurrentuser": "An error has been occured! You can not send a message to yourself.",
+                "notreceiver": "You have no permission to delete this message!"
+            },
+            "validate": {
+                "receiver": {
+                    "minlength": "The name of the receiver has to be at least 1 letter long."
+                },
+                "content": {
+                    "minlength": "The content has to be at least 1 letter long."
+                }
+            }
+        },
+        "textmessage": {
+            "title": "Message from "
+        },
+        "error": {
+            "server.unreachable": "The server could not be reached."
+        }
+    },
+    "user": {
+        "error": {
+            "nosuchuser": "The user doesn't exist"
+        }
+    },
+    "project": {
+        "info": "Project information",
+        "title": "Projects",
+        "logotext": "Project-logo",
+        "found": "projects found",
+        "remainingdays": "days remaining",
+        "posted": "posted: ",
+        "rating": "Actual Rating:",
+        "found": "projects found",
+        "createProject": {
+            "title": "Create a new project",
+            "tag":"Add tag",
+            "resource": "Add resource",
+            "logo": "Add logo",
+            "name.placeholder": "Name of project",
+            "purpose.placeholder": "Purpose of project",
+            "startDate.placeholder": "StartDate of project",
+            "endDate.placeholder": "EndDate of project",
+            "tag.placeholder": "Property tag of project",
+            "location": "Address",
+            "location.placeholder": "Enter address"
+        },
+        "details": {
+            "title": "{{project}}",
+            "purpose": "Purpose of project",
+            "delete": "Delete"
+        },
+        "categories": {
+            "title": "Categories",
+            "cat1": "Categorie1",
+            "cat2": "Categorie2"
+        },
+        "search": "Search",
+        "id": "Project-ID",
+        "name": "Name",
+        "purpose": "Purpose",
+        "concrete": "Concrete project",
+        "startDate": "Start-Date",
+        "endDate": "End-Date",
+        "tags": "Tags",
+        "resource": "Resources",
+        "logo": "ProjectLogo",
+        "name.placeholder": "Name of project",
+        "tags.placeholder": "Tags",
+        "search.empty": "There are no projects respective to your input!",
+        "started": "The project has been started already. Come back later to see news",
+        "searchtext": "Name/Tag",
+        "searchtext.placeholder": "Name/Tag",
+        "error": {
+            "searcherror": "The information could not be read from the server!",
+            "notvalidmanager": "The manager could not be sent. The manager is not a member of your organization",
+            "nosuchproject": "There exists no project for the given ID",
+            "nosuchuser": "The manager doesn't exist",
+            "startdate.null": "There has to be a start date if the project is concrete",
+            "enddate.null": "There has to be a end date if the project is concrete",
+            "enddate.beforenow": "The end date can not be in the past",
+            "enddate.beforestart": "The end date can not be before start date",
+            "idnull": "The project could not be saved because the id is missing",
+            "null": "There has to be a start date if the project is concrete"
+        }
+    },
+    "rating": {
+        "placeholder": "Your opinion...",
+        "ratenow": "Rate now",
+        "notnow": "Rate later",
+        "yourrating": "Your rating: ",
+        "yourcomment": "Commentary",
+        "actual": "Actual rating:",
+        "match": {
+            "dorate": "Rate the interaction"
+        },
+        "success": "Successfully rated!",
+        "error": {
+            "general": "An error has occured.",
+            "cannotrateown": "You can not rate your own organization.",
+            "notmanagerofproject": "You are not the manager of the project.",
+            "notaccepted": "The transaction has not been accepted yet",
+            "project.alreadyrated": "This project has been rated already.",
+            "org.alreadyrated": "This organization has been rated already.",
+            "notowneroforganization": "Only the owner is allowed to rate.",
+            "notsameorganization": "Your organization is not allowed to rate this transaction.",
+            "notsameproject": "The sent project does not fit the sent match."
         }
     },
     "main": {
         "title": "Welcome, Java Hipster!",
+        "find": "Find projects",
+        "collect": "Collect resources",
         "subtitle": "This is your homepage",
         "logged": {
             "message": "You are logged in as user \"{{username}}\"."
@@ -124,6 +292,16 @@
             }
         }
     },
+    "general": {
+        "edit": "Edit",
+        "back": "Back",
+        "button": {
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "dateFormat": "dd.MM.yyyy",
+        "post": "Post"
+    },
     "settings": {
         "title": "User settings for [<b>{{username}}</b>]",
         "form": {
@@ -132,11 +310,20 @@
             "firstname": "First Name",
             "firstname.placeholder": "Your first name",
             "lastname": "Last Name",
-            "lastname.placeholder": "Your last name",
+            "lastname.placeholder": "Your last name"
+        },
+        "account": {
+            "info_heading": "Account information",
+            "profile_img_edit": "New Profile-picture",
+            "title": "Titel",
+            "name": "Name",
             "gender": "Gender",
+            "email": "E-Mail",
             "description": "Description",
-            "description.placeholder": "A description of yourself",
-            "button": "Save"
+            "gender": "Gender",
+            "button.save": "Save",
+            "button.delete": "Delete account"
+
         },
         "messages": {
             "error": "<strong>An error has occured!</strong> Settings could not be saved.",
@@ -153,7 +340,8 @@
                     "maxlength": "Your last name cannot be longer than 50 characters"
                 }
             }
-        }
+        },
+        "leave": "Leave"
     },
     "password": {
         "title": "Password for [<b>{{username}}</b>]",
@@ -321,9 +509,240 @@
         }
 
     },
+    "organization": {
+        "new": "Create new organization",
+        "name": "Name",
+        "name.placeholder": "Name of organization",
+        "description": "Description",
+        "description.placeholder": "Description of organization",
+        "edit": "{{ organization }} edit",
+        "title": "Title of organization",
+        "email": "E-Mail",
+        "responsiblePerson": "Responsible person",
+        "contact": "Contacting person",
+        "isNPO": "Non-profit-organization",
+        "members": "Members",
+        "detail.heading": "{{ organization }}",
+        "delete": "Delete",
+        "delete.sure": "Delete irrevocable",
+        "back": "Back",
+        "members": "Members",
+        "invite": "Invite member",
+        "invite.username": "Inviteable user",
+        "action.invite": "Invite",
+        "accept": "Accept invitation",
+        "decline": "Decline invitation",
+        "header.info": "Information about organization",
+        "header.logo": "Logo",
+        "ownresources": "Show resources",
+        "requests": "Resource requests",
+        "backToOverview": "Back to overview",
+        "newproject": "Create a new porject",
+        "rating": "Actual rating:",
+        "posted": "posted: ",
+        "error": {
+            "nosuchorganization": "There does not exist a organization with given id",
+            "alreadyExists": "You can only be owner of one organization",
+            "alreadyInOrganization": "You are already in an organization, therefore you can not create a new one",
+            "notverified": "Your organization is not verified yet!"
+        },
+        "verify": {
+            "verify": "Verification",
+            "unverify": "Delete verification",
+            "verification": "Verification",
+            "verified": "Verified",
+            "nonverified": "Not verified",
+            "status": "Status"
+        }
+    },
+    "resourcematch": {
+        "error": {
+            "nosuchmatch": "There exists no such resource match",
+            "projectapply": {
+                "requestfulfilled": "The requirement of this project is already fullfilled",
+                "offerdepleted": "This resource can not be offered anymore",
+                "ownproject": "You can not offer your own project",
+                "offeralreadyexists": "The offer already exists"
+            }
+        }
+    },
+    "resourcemessages": {
+        "title": "Manage resource requirements and offers for [{{OrganizationName}}]",
+        "request": {
+            "title": "Resource requirements for your offers",
+            "text": "The Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> with requirement <span class='underline'>{{RequirementName}}</span> is interested in your resource <span class='underline'>{{OfferName}}</span>.",
+            "tabtitle": "Requirements"
+        },
+        "apply": {
+            "title": "Resource requirements for your project",
+            "text": "The organization <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> wants to offer  <span class='underline'>{{OfferName}}</span> for your requirement <span class='underline'>{{RequirementName}}</span>.",
+            "tabtitle": "Offer"
+        },
+        "olddata": "Old offers",
+        "acceptButton": "Accept",
+        "declineButton": "Decline",
+        "acceptedButton": "Accepted",
+        "declinedButton": "Declined"
+    },
+    "resource": {
+        "title": "Marketplace",
+        "name": "Name",
+        "company": "Company",
+        "amount": "Amount",
+        "startDate": "Available from",
+        "endDate": "Available to",
+        "commercial":"Comercial",
+        "newbutton":"Create new resource",
+        "searchbutton":"Search",
+        "organization": "Organization",
+        "tags": "Tags",
+        "available": "Available",
+        "found": "resources found",
+        "stillneeded": "Still needed resources:",
+        "chosen": "Chosen resource:",
+        "collected": "% of resources collected",
+        "essentialcollected": "% of essential resources collected",
+        "search": {
+            "filter": "Name / Tags / Organization",
+            "type": "Filter",
+            "request": "Request resource",
+            "tooltip": {
+                "type": "There will be only searched for chosen type"
+            },
+            "free": "Search only for free offers",
+            "empty": "No results for search criterias!"
+        },
+        "claim": {
+            "title": "Claim resource",
+            "chooseproject": "For which project do you want to claim the resource?",
+            "chooserequirement": "For which requirement do you want to use the resource?",
+            "error": {
+                "matchexists": "The offer has already been chosen",
+                "ownresource": "You can't claim your own resource"
+            }
+        },
+        "new": {
+            "title": "Create new resource",
+            "name": "Name",
+            "tags": "Tags",
+            "description": "Description",
+            "amount":"Amount",
+            "commercial":"Comercial",
+            "startDate": "Available from",
+            "endDate":"Available to",
+            "savebutton":"Save",
+            "cancelbutton":"Cancel",
+            "error": "Resouce could not be created!",
+            "error.amount": "Amount has to be at least 1",
+            "price": "Price"
+        },
+        "edit": {
+            "title": "Edit resource"
+        },
+        "placeholder": {
+            "name": "Name of resource",
+            "description" : "Description of resource",
+            "amount" : "Amount of resource",
+            "tags": "Tags of resource",
+            "search": "Name / Tags / Organization",
+            "price": "Price of resource",
+            "startDate": "Availabe from",
+            "endDate": "Availabe to"
+        },
+        "own": {
+            "title": "Resource of",
+            "editbutton": "Edit",
+            "delete": "Delete",
+            "confirmDelete": "Delete irrevocable"
+        },
+        "requirement": {
+            "title": "Add Resourcerequirement",
+            "isEssential": "Essential",
+            "tableheader": "Resource needed",
+            "name": "Name",
+            "amount": "Amount"
+        },
+        "offer": {
+            "title": "Choose resource",
+            "donate": "Donate"
+        },
+        "errors": {
+            "notfound": "The resource doesn't exist",
+            "general": "Ups, an error has occured. Your actual operation could not be performed",
+            "searcherror": "Data could not be read from server!"
+        }
+    },
+    "nearProjects": {
+        "autoButton": "Define my location",
+        "manualButton": "Enter address manually",
+        "noProjectsFound": "There are no projects near your location",
+        "placeholder": {
+            "searchBox": "Enter address manually"
+        },
+        "error": {
+            "PERMISSION_DENIED" : "Geolocation has been declined",
+            "POSITION_UNAVAILABLE" : "Geolocation is currently unavailable",
+            "TIMEOUT": "Request timeout",
+            "UNKNOWN_ERROR": "An unknown error has been occured",
+            "radius": "The radius has to be greater than 0",
+            "geolocateNotSupported": "Your browser does not support geolocation!"
+        }
+    },
+    "orgJoinRequest": {
+        "pending": "Pending Invitations",
+        "accept": "Accept",
+        "openInvitations": "Open Invitations"
+    },
+    "posting": {
+        "showmore": "Show more",
+        "posted": "posted: ",
+        "information": {
+            "placeholder": "What's new?"
+        }
+    },
+    "postingfeed": {
+        "title": "News"
+    },
     "errors": {
         "title": "Error page!",
         "403": "You are not authorized to access the page."
     },
-    "footer": "This is your footer"
+    "footer": "&copy; by respondeco.org",
+    "follow": {
+        "button": "Follow",
+        "project": {
+            "accepted": "Following accepted. All news are shown in the newsfeed",
+            "rejected": {
+                "ownererror": "You can not follow your own project",
+                "error": "Due to technical issues, following is currently not possible",
+                "notfound": "The chosen project does not exist anymore. Please contact the organization of the project"
+            }
+        },
+        "organization": {
+            "accepted": "Following accepted. All news are shown in the newsfeed",
+            "rejected": {
+                "ownererror": "You can not follow your own organization",
+                "error": "Due to technical issues, following is currently not possible",
+                "notfound": "The chosen organization does not exist anymore. Please contact the owner of the organization"
+            }
+        }
+    },
+    "socialmedia": {
+        "heading": "Connected social networks",
+        "connect": "Connect",
+        "disconnect": "Disconnect",
+        "error": {
+            "facebook": {
+                "connectionexists": "Your account is already connected to facebook!"
+            },
+            "twitter": {
+                "connectionexists": "Your account is already connected to twitter!"
+            },
+            "xing": {
+                "connectionexists": "Your account is already connected to xing!",
+                "permissionrevoked": "Post for xing could not be created due to permission error. Please try again",
+                "apiconnection": "Connection could not be established. Please try again!"
+            }
+        }
+    }
 }

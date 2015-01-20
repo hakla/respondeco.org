@@ -35,7 +35,7 @@
             <div class="rating-container">
                 <div class="row">
                     <div id="rating" class="col-md-12">
-                        <span>Aktuelle Bewertung: </span>
+                        <span>{{ 'project.rating' | translate }}</span>
                         <rating max="5" readonly="!canRate" on-leave="overStar = null"
                                 ng-click="showRating()" ng-model="shownRating"></rating>
                     </div>
@@ -81,7 +81,7 @@
                 <div class="well">
                     <ul>
                         <li ng-repeat="posting in postings">
-                            <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+                            <h4>{{posting.author.login}} <small translate="posting.posted">{{ 'project.posted' | translate}}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
                         </li>
                     </ul>
                 </div>
@@ -119,16 +119,16 @@
 
         </div>
         <div class="col-md-6">
-            <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
+            <img src="/images/approved.png" alt="approved" class="approved" ng-show="project.successful" />
             <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong>{{remainingDays}} Tage verbleiben</strong>
+                <strong>{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
             <div class="resources">
-                <strong>{{collected}}% Ressourcen gesammelt</strong>
+                <strong>{{collected}}{{ 'resource.collected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
-                <strong>{{collectedEssential}}% der notwendigen Ressourcen gesammelt</strong>
+                <strong>{{collectedEssential}}{{ 'resource.essentialcollected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
@@ -181,9 +181,9 @@
                 <div class="modal-body">
                     <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                         <dl class="dl-horizontal">
-                            <dt>Ausgewählte Ressource:</dt>
+                            <dt>{{ 'resource.chosen' | translate }}</dt>
                             <dd>{{ selectedRequirement.name }}</dd>
-                            <dt>Noch benötigte Anzahl</dt>
+                            <dt>{{ 'resource.stillneeded' | translate }}</dt>
                             <dd>{{ selectedRequirement.amount }}</dd>
                         </dl>
                         <ul class="resources">
