@@ -5,12 +5,13 @@ spring:
     profiles: dev
 
     datasource:
-        dataSourceClassName: org.h2.jdbcx.JdbcDataSource
-        url: jdbc:h2:mem:jhipster
-        databaseName:
-        serverName:
-        username:
+        dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+        url: jdbc:mysql://localhost:3306/respondeco_algorithm
+        databaseName: respondeco
+        serverName: localhost
+        username: root
         password:
+        cachePrepStmts: true
 
     jpa:
         database-platform: org.hibernate.dialect.MySQLInnoDBDialect
