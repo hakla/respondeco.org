@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.h2.mvstore.Page;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +36,8 @@ import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -50,9 +52,7 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Test class for the OrganizationController REST controller.
@@ -111,6 +111,7 @@ public class OrganizationControllerTest {
     private ResourceMatch match2;
     private OrgJoinRequest joinRequest1;
     private OrgJoinRequest joinRequest2;
+    private Posting posting;
 
     private ArgumentCaptor<Object> voidInterceptor;
 
@@ -130,6 +131,7 @@ public class OrganizationControllerTest {
     private Organization defaultOrganization;
     private OrgJoinRequest orgJoinRequest;
     private User inviteAbleUser;
+
 
 
 
@@ -231,12 +233,14 @@ public class OrganizationControllerTest {
         match1.setResourceOffer(resOffer1);
         match1.setOrganization(org1);
         match1.setProject(project);
+        match1.setMatchDirection(MatchDirection.ORGANIZATION_CLAIMED);
         match2 = new ResourceMatch();
         match2.setId(200L);
         match2.setResourceRequirement(new ResourceRequirement());
         match2.setResourceOffer(resOffer2);
         match2.setOrganization(org1);
         match2.setProject(project);
+        match2.setMatchDirection(MatchDirection.ORGANIZATION_OFFERED);
 
         joinRequest1 = new OrgJoinRequest();
         joinRequest1.setId(100L);
@@ -246,6 +250,12 @@ public class OrganizationControllerTest {
         joinRequest2.setId(200L);
         joinRequest2.setUser(defaultUser);
         joinRequest2.setOrganization(org1);
+
+        posting = new Posting();
+        posting.setId(1L);
+        posting.setAuthor(defaultUser);
+        posting.setInformation("information");
+        posting.setPostingfeed(postingFeed);
 
         voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);
 
@@ -289,16 +299,16 @@ public class OrganizationControllerTest {
 
     @Test
     public void testGetAllOrganizations_expectOK_shouldReturnAllOrganizations() throws Exception {
-        doReturn(Arrays.asList(org1, org2)).when(organizationServiceMock).getOrganizations();
+        Page<Organization> orgPage = new PageImpl<Organization>(Arrays.asList(org1, org2));
+        doReturn(orgPage).when(organizationServiceMock).getOrganizations(any(RestParameters.class));
 
         // Read All Organization
         restOrganizationMockMvc.perform(get("/app/rest/organizations"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[0].name").value(org1.getName()))
-            .andExpect(jsonPath("$[1].name").value(org2.getName()));
+            .andExpect(jsonPath("$.totalItems").value(2))
+            .andExpect(jsonPath("$.organizations[0].name").value(org1.getName()))
+            .andExpect(jsonPath("$.organizations[1].name").value(org2.getName()));
     }
 
     @Test
@@ -537,9 +547,14 @@ public class OrganizationControllerTest {
 
     @Test
     public void testPostingForOrganization() throws Exception {
-        defaultOrganization.setPostingFeed(postingFeed);
+        Posting posting = new Posting();
+        posting.setId(100L);
+        posting.setAuthor(defaultUser);
+        posting.setPostingfeed(postingFeed);
+        posting.setInformation("posting1");
+        posting.setCreatedDate(DateTime.now());
 
-        doReturn(defaultOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(defaultOrganization.getId());
+        doReturn(posting).when(postingFeedServiceMock).addPostingForOrganization(any(Long.class), any(String.class));
 
         restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -565,6 +580,21 @@ public class OrganizationControllerTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes("posting1")))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetPostingForOrganization() throws Exception {
+        List<Posting> postingList = new ArrayList<>();
+        postingList.add(posting);
+
+        PageImpl<Posting> page = new PageImpl<Posting>(postingList);
+
+        defaultOrganization.setPostingFeed(postingFeed);
+        doReturn(page).when(postingFeedServiceMock).getPostingsForOrganization(anyLong(), any(RestParameters.class));
+
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/postings"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

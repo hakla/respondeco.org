@@ -8,13 +8,14 @@ describe('Project Controller Tests ', function() {
 
     describe('ProjectController', function() {
         var scope, location, routeParams, ProjectNamesService, PropertyTagsNamesService, ProjectService,
-            ResourceRequirementService, AccountService, sce, OrganizationService, translate, rootScope;
+            ResourceRequirementService, AccountService, sce, OrganizationService, translate, SocialMediaService,
+            rootScope;
         var fakeDeferred;
         var emptyProject;
         var existingProject;
 
         beforeEach(inject(function($rootScope, $controller, $location, $q, $sce, $routeParams, ProjectNames,
-                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate) {
+                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate, SocialMedia) {
             scope = $rootScope.$new();
             location = $location;
             translate = $translate;
@@ -26,6 +27,7 @@ describe('Project Controller Tests ', function() {
             routeParams = $routeParams;
             AccountService = Account;
             OrganizationService = Organization;
+            SocialMediaService = SocialMedia;
             sce = $sce;
             rootScope = $rootScope;
 
@@ -62,6 +64,7 @@ describe('Project Controller Tests ', function() {
                 $translate: translate,
                 ProjectNames: ProjectNamesService,
                 Account: AccountService,
+                SocialMedia: SocialMediaService
                 $rootScope: rootScope
             });
 

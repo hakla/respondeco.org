@@ -608,8 +608,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testPostingForProject() throws Exception {
-        project.setPostingFeed(postingFeed);
-        doReturn(project).when(projectRepositoryMock).findByIdAndActiveIsTrue(project.getId());
+        Posting posting = new Posting();
+        posting.setId(100L);
+        posting.setAuthor(orgAdmin);
+        posting.setPostingfeed(postingFeed);
+        posting.setInformation("posting1");
+        posting.setCreatedDate(DateTime.now());
+        doReturn(posting).when(postingFeedServiceMock).addPostingForProjects(any(Long.class), any(String.class));
 
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)

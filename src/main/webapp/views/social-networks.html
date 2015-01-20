@@ -27,37 +27,6 @@
                 <img src="images/sn/xing.png" alt="Xing">
             </div>
             <div class="spacer-top">
-                <script type="xing/login">
-                    { "consumer_key": "1ada221f6d3d47f43dfd" }
-                </script>
-                <script>
-                // This function is called by the plugin after
-                // the login flow is completed.
-                function onXingAuthLogin(response) {
-                    var output;
-
-                    console.log(response);
-
-                    if (response.user) {
-                        output = 'Successful login for ' + response.user.display_name;
-                    } else if (response.error) {
-                        output = 'Error: ' + response.error;
-                    }
-
-                    document.getElementById('output').innerHTML = output;
-                }
-                </script>
-
-                <script>
-                (function(d) {
-                    var js, id = 'lwx';
-                    if (d.getElementById(id)) return;
-                    js = d.createElement('script');
-                    js.id = id;
-                    js.src = "https://www.xing-share.com/plugins/login.js";
-                    d.getElementsByTagName('head')[0].appendChild(js)
-                }(document));
-                </script>
                 <button class="btn btn-default" ng-show="xingConnected==false" ng-click="connectXing()" translate="socialmedia.connect">Connect</button>
                 <button class="btn btn-default btn-danger" ng-show="xingConnected" ng-click="disconnectXing()" translate="socialmedia.disconnect">Disconnect</button>
             </div>

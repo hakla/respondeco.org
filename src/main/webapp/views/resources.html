@@ -20,7 +20,7 @@
             </button>
         </div>
 
-        <p ng-show="totalItems>0" class="col-md-12">{{totalItems}} Ressourcen gefunden</p>
+        <p ng-show="totalItems>0" class="col-md-12">{{totalItems}} {{ 'resource.found' | translate }}</p>
 
         <div class="col-md-12">
             <div class="alert alert-danger" ng-show="searchError" translate="resource.error.searcherror">

@@ -35,7 +35,7 @@
             <div class="rating-container">
                 <div class="row">
                     <div id="rating" class="col-md-12">
-                        <span>Aktuelle Bewertung: </span>
+                        <span>{{ 'project.rating' | translate }}</span>
                         <rating max="5" readonly="!canRate" on-leave="overStar = null"
                                 ng-click="showRating()" ng-model="shownRating"></rating>
                     </div>
@@ -81,7 +81,7 @@
                 <div class="well">
                     <ul>
                         <li ng-repeat="posting in postings">
-                            <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+                            <h4>{{posting.author.login}} <small translate="posting.posted">{{ 'project.posted' | translate}}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
                         </li>
                     </ul>
                 </div>
@@ -90,6 +90,11 @@
                 <hr/>
                 <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                     <div class="form-group" ng-show="editable">
+                        <div ng-show="editable">
+                            <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
+                            <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
+                            <label ng-show="xingConnected"><input type="checkbox" ng-model="postOnXing"/>Auf Xing posten</label>
+                        </div>
                         <textarea class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
                                ng-minlength="5" ng-maxlength="2048" ng-model="postingInformation" required autocomplete="off"/>
                         <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
@@ -117,13 +122,13 @@
             <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
             <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong>{{ 'project.details.estimatedaysuntilstart' | translate:'{days: remainingDays}' }}</strong>
+                <strong>{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
             <div class="resources">
-                <strong>{{ 'project.details.resourcecollected' | translate:'{percentage: collected}' }}</strong>
+                <strong>{{collected}}{{ 'resource.collected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
-                <strong>{{ 'project.details.resourceneeded' | translate:'{essential: collectedEssential}' }}</strong>
+                <strong>{{collectedEssential}}{{ 'resource.essentialcollected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
@@ -175,9 +180,9 @@
                 <div class="modal-body">
                     <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                         <dl class="dl-horizontal">
-                            <dt translate="resource.offer.resourceselected"></dt>
+                            <dt>{{ 'resource.chosen' | translate }}</dt>
                             <dd>{{ ProjectApply.selectedRequirement.name }}</dd>
-                            <dt translate="resource.offer.resourceneeded"></dt>
+                            <dt>{{ 'resource.stillneeded' | translate }}</dt>
                             <dd>{{ ProjectApply.selectedRequirement.amount }}</dd>
                         </dl>
                         <ul class="resources">

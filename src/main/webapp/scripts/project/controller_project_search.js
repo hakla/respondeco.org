@@ -3,8 +3,7 @@
  */
 'use strict';
 
-respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project,
-                                                                ProjectNames, PropertyTagNames) {
+respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project) {
 
     var PAGESIZE = 20;
 
