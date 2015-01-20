@@ -5,7 +5,9 @@ import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
@@ -39,23 +41,21 @@ public class TextMessageService {
         this.userRepository = userRepository;
     }
 
-    public TextMessage createTextMessage(Long receiverId, String content) throws NoSuchUserException {
+    public TextMessage createTextMessage(Long receiverId, String content) throws IllegalValueException {
         if(content == null || content.length() <= 0) {
-            throw new IllegalArgumentException("Content must not be empty");
+            throw new IllegalValueException("global.textmessages.error.contentlength", "Content must not be empty");
         }
         User currentUser = userService.getUserWithAuthorities();
         User receivingUser = userService.getUser(receiverId);
         if(currentUser.equals(receivingUser)) {
-            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receiverId));
+            throw new IllegalValueException("global.textmessages.error.receivercurrentuser",
+                String.format("Receiver cannot be equal to sender: %s", receiverId));
         }
 
         if(receivingUser == null) {
             throw new NoSuchUserException(String.format("Receiver %s does not exist", receiverId));
         }
 
-        if(currentUser.equals(receivingUser)) {
-            throw new IllegalArgumentException(String.format("Receiver cannot be equal to sender: %s", receivingUser.getId()));
-        }
         TextMessage newTextMessage = new TextMessage();
         newTextMessage.setSender(currentUser);
         newTextMessage.setTimestamp(DateTime.now());
@@ -80,14 +80,15 @@ public class TextMessageService {
         return textMessagesToDTO(textMessageRepository.findByReceiverAndActiveIsTrue(user));
     }
 
-    public TextMessage deleteTextMessage(Long id) {
+    public TextMessage deleteTextMessage(Long id) throws IllegalValueException {
         TextMessage textMessage = textMessageRepository.findOne(id);
         if(textMessage == null) {
-            throw new IllegalArgumentException(String.format("A text message with id %d does not exist", id));
+            throw new IllegalValueException("global.textmessages.error.usernotfound",
+                String.format("A text message with id %d does not exist", id));
         }
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.equals(textMessage.getReceiver()) == false) {
-            throw new IllegalArgumentException(
+            throw new IllegalValueException("global.textmessages.error.notreceiver",
                     String.format("User %s is not the receiver of the text message %d", currentUser.getLogin(), id));
         }
         textMessage.setActive(false);

@@ -138,7 +138,7 @@ public class ResourceServiceTest {
         resourceTags.add(expResourceTag);
 
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
-        when(resourceOfferRepositoryMock.findByName(expOffer.getName(), null)).thenReturn(resourceOffers);
+        when(resourceOfferRepositoryMock.findByNameAndActiveIsTrue(expOffer.getName(), null)).thenReturn(resourceOffers);
         //Assign all variables to new Resource Requirement Objekt and execute Save
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -166,6 +166,7 @@ public class ResourceServiceTest {
         expOrg = new Organization();
         expOrg.setId(1L);
         expOrg.setOwner(loggedInUser);
+        expOrg.setActive(true);
         expOrg.setVerified(true);
         loggedInUser.setOrganization(expOrg);
         when(this.userService.getUserWithAuthorities()).thenReturn(loggedInUser);
@@ -205,8 +206,8 @@ public class ResourceServiceTest {
         //endregion
 
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
-        when(resourceRequirementRepositoryMock.findByNameAndProject(expectedReq.getName(),
-            expectedReq.getProject())).thenReturn(resourceReqs);
+        when(resourceRequirementRepositoryMock.findByNameAndProjectAndActiveIsTrue(expectedReq.getName(),
+                expectedReq.getProject())).thenReturn(resourceReqs);
         //Assign all variables to new Resource Requirement Objekt and execute Save
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -285,7 +286,7 @@ public class ResourceServiceTest {
         this.prepareUser();
         List<String> tags = this.prepareCreateRequirement();
 
-        when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
+        when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(expectedReq.getId())).thenReturn(expectedReq);
         //save without any tags
         ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(),
             expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject().getId(), //just to make the project run
@@ -315,11 +316,10 @@ public class ResourceServiceTest {
         this.prepareUser();
         List<String> tags = this.prepareCreateRequirement();
 
-        when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
+        when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(expectedReq.getId())).thenReturn(expectedReq);
         this.resourceService.deleteRequirement(expectedReq.getId());
 
-        verify(resourceRequirementRepositoryMock, times(1)).findOne(isA(longCl));
-        verify(resourceRequirementRepositoryMock, times(1)).delete(isA(longCl));
+        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(isA(longCl));
     }
 
     @Test
@@ -337,7 +337,7 @@ public class ResourceServiceTest {
             item2.setProject(expProject);
             items.add(item2);
             return items;
-        }).when(resourceRequirementRepositoryMock).findAll();
+        }).when(resourceRequirementRepositoryMock).findByActiveIsTrue();
         Long expected = 1L;
         int listSize = 2;
         List<ResourceRequirement> items = this.resourceService.getAllRequirements();
@@ -349,7 +349,7 @@ public class ResourceServiceTest {
             expected += 9L;
         }
 
-        verify(this.resourceRequirementRepositoryMock, times(1)).findAll();
+        verify(this.resourceRequirementRepositoryMock, times(1)).findByActiveIsTrue();
     }
 
     @Test
@@ -379,13 +379,13 @@ public class ResourceServiceTest {
                 }
             }
             return internalItems;
-        }).when(resourceRequirementRepositoryMock).findByProjectId(isA(longCl));
+        }).when(resourceRequirementRepositoryMock).findByProjectIdAndActiveIsTrue(isA(longCl));
         int listSize = 1;
         List<ResourceRequirement> expectedItem = this.resourceService.getAllRequirements(projectID);
         assertEquals(expectedItem.size(), listSize);
         assertEquals(expectedItem.get(0).getProject().getId(), projectID);
         assertEquals(expectedItem.get(0).getId(), expectedRequirementID);
-        verify(this.resourceRequirementRepositoryMock, times(1)).findByProjectId(isA(longCl));
+        verify(this.resourceRequirementRepositoryMock, times(1)).findByProjectIdAndActiveIsTrue(isA(longCl));
     }
 
     @Test
@@ -428,7 +428,7 @@ public class ResourceServiceTest {
     public void testUpdateOffer() throws Exception {
         this.prepareUser();
         List<String> tags = this.prepareCreateOffer();
-        when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
+        when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(expOffer.getId())).thenReturn(expOffer);
         ResourceOffer actual = this.resourceService.updateOffer(expOffer.getId(), expOffer.getOrganization().getId(),
             expOffer.getName(), expOffer.getAmount(), expOffer.getDescription(), expOffer.getIsCommercial(),
             expOffer.getStartDate(), expOffer.getEndDate(), tags, null, expOffer.getPrice());
@@ -456,11 +456,10 @@ public class ResourceServiceTest {
     public void testDeleteOffer() throws Exception {
         this.prepareUser();
         List<String> tags = this.prepareCreateOffer();
-        when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
+        when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(expOffer.getId())).thenReturn(expOffer);
         this.resourceService.deleteOffer(expOffer.getId());
 
-        verify(resourceOfferRepositoryMock, times(1)).findOne(isA(longCl));
-        verify(resourceOfferRepositoryMock, times(1)).delete(isA(longCl));
+        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(isA(longCl));
     }
 
     @Test
@@ -553,7 +552,7 @@ public class ResourceServiceTest {
 
         // mocks that defines our result
         when(resourceOfferRepositoryMock.findOne(offerId)).thenReturn(offer);
-        when(resourceRequirementRepositoryMock.findOne(requirementId)).thenReturn(req);
+        when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(requirementId)).thenReturn(req);
         when(organizationRepository.findOne(organizationId)).thenReturn(org);
         when(projectRepository.findOne(projectId)).thenReturn(project);
         when(userService.getUserWithAuthorities()).thenReturn(orgUser);
@@ -593,9 +592,9 @@ public class ResourceServiceTest {
         assertEquals(expected.getAmount(), actual.getAmount());
 
         verify(resourceOfferRepositoryMock, times(1)).findOne(offerId);
-        verify(resourceRequirementRepositoryMock, times(1)).findOne(requirementId);
-        verify(organizationRepository, times(1)).findOne(organizationId);
-        verify(projectRepository, times(1)).findOne(projectId);
+        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(requirementId);
+        verify(organizationRepository, times(1)).findByIdAndActiveIsTrue(organizationId);
+        verify(projectRepository, times(1)).findByIdAndActiveIsTrue(projectId);
         verify(userService, times(1)).getUserWithAuthorities();
     }
 
@@ -1037,10 +1036,10 @@ public class ResourceServiceTest {
             return page;
         }).when(resourceMatchRepositoryMock).findAll(any(Predicate.class), any(PageRequest.class));
 
-        List<ResourceMatch> resourceMatches = resourceService.getResourceRequestsForOrganization(1L, new RestParameters(1,20));
+        List<ResourceMatch> resourceMatches = resourceService.getResourcesForOrganization(1L, new RestParameters(1, 20));
         ResourceMatch match = resourceMatches.get(0);
 
-        verify(resourceMatchRepositoryMock, times(1)).findAll(any(Predicate.class), any(PageRequest.class));
+        verify(resourceMatchRepositoryMock, times(2)).findAll(any(Predicate.class), any(PageRequest.class));
 
         assertTrue(match.getOrganization().getId().equals(1L));
     }

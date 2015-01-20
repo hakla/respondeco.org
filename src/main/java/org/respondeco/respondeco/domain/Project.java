@@ -34,7 +34,7 @@ import java.util.Set;
 @ToString(exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo", "FollowingUsers"})
 public class Project extends AbstractAuditingNamedEntity implements Serializable, MatchingEntity {
 
-    @Column(name = "purpose")
+    @Column(name = "purpose", length = 2048)
     private String purpose;
 
     @Column(name = "is_concrete")

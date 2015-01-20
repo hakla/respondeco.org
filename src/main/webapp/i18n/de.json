@@ -15,6 +15,7 @@
                 "main": "Zugang",
                 "messages": "Nachrichten",
                 "settings": "Einstellungen",
+                "social-networks": "Verbundene Netzwerke",
                 "organization": "Meine Organisation",
                 "password": "Passwort",
                 "sessions": "Sitzungen",
@@ -27,7 +28,8 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung",
-                "newsfeed": "Newsfeed"
+                "newsfeed": "Newsfeed",
+                "resourcerequestapply": "Ressourcen-Anfragen"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",
@@ -36,7 +38,8 @@
         "tooltip": {
             "not-changeable": "Diese Einstellung kann nicht mehr geändert werden. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
             "not-changeable-init": "Diese Einstellung kann nachträglich nicht mehr geändert werden.",
-            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org)."
+            "not-changeable-email": "Die E-Mail der Organisation wurde bereits bei der Registrierung eingegeben. Falls eine Änderung notwendig sein sollte, wenden Sie sich bitte an den Support (support@respondeco.org).",
+            "not-deleteable": "Die Organisation kann nur vom Administrator gelöscht werden. Bitte wenden Sie sich an den Support (support@respondeco.org)."
         },
         "form": {
             "title": "Titel",
@@ -55,7 +58,8 @@
             "save": "Speichern",
             "postingInformation": "Posting",
             "orgname": "Name der Organisation",
-            "orgname.placeholder": "Der Name Ihrer Organisation"
+            "orgname.placeholder": "Der Name Ihrer Organisation",
+            "delete": "Löschen"
         },
 
         "messages": {
@@ -85,16 +89,16 @@
                     "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
                 },
                 "name": {
-                    "minlength": "Der Name Ihrer Organisation muss mindestens 1 Zeichen lang sein",
-                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 50 Zeichen sein"
+                    "minlength": "Der Name Ihrer Organisation muss mindestens 3 Zeichen lang sein",
+                    "maxlength": "Der Name Ihrer Organisation darf nicht länger als 255 Zeichen sein"
                 },
                 "description": {
                     "maxlength": "Ihre Beschreibung darf nicht länger als 2048 Zeichen sein"
                 },
                 "posting": {
-                    "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten.",
-                    "maxlength": "Ihre Eingabe darf maximal 100 Zeichen enthalten.",
-                    "required": "Ihre Eingabe wird benötigt."
+                    "minlength": "Ihre Eingabe muss mindestens 5 Zeichen enthalten",
+                    "maxlength": "Ihre Eingabe darf maximal 2048 Zeichen enthalten",
+                    "required": "Ihre Eingabe wird benötigt"
                 }
             }
         },
@@ -117,12 +121,13 @@
                 "send": "<strong>Die Nachricht wurde erfolgreich versandt.</strong>"
             },
             "error": {
-                "delete": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gelöscht werden: ",
-                "send": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht konnte nicht gesendet werden.",
-                "usernotfound": "<strong>Es ist ein Fehler aufgetreten!</strong> Der angegebene Empfänger existiert nicht.",
-                "receiverlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
-                "contentlength": "<strong>Es ist ein Fehler aufgetreten!</strong> Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
-                "receivercurrentuser": "<strong>Es ist ein Fehler aufgetreten!</strong> Sie können sich selbst keine Nachricht schicken."
+                "delete": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gelöscht werden: ",
+                "send": "Es ist ein Fehler aufgetreten! Die Nachricht konnte nicht gesendet werden.",
+                "usernotfound": "Es ist ein Fehler aufgetreten! Der angegebene Empfänger existiert nicht.",
+                "receiverlength": "Es ist ein Fehler aufgetreten! Der Emfänger muss aus mindestens 1 Zeichen bestehen.",
+                "contentlength": "Es ist ein Fehler aufgetreten! Die Nachricht muss aus mindestens 1 Zeichen bestehen.",
+                "receivercurrentuser": "Es ist ein Fehler aufgetreten! Sie können sich selbst keine Nachricht schicken.",
+                "notreceiver": "Sie haben keine Berechtigung diese Nachricht zu löschen!"
             },
             "validate": {
                 "receiver": {
@@ -149,6 +154,11 @@
         "info": "Projekt Information",
         "title": "Projekte",
         "logotext": "Projekt-Logo",
+        "found": "gefundene Projekte",
+        "remainingdays": "Tage verbleibend",
+        "posted": "postet: ",
+        "rating": "Aktuelle Bewertung:",
+        "found": "gefundene Projekte",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -180,7 +190,7 @@
         "startDate": "Start-Datum",
         "endDate": "End-Datum",
         "tags": "Tags",
-        "resource": "Ressoucen",
+        "resource": "Ressourcen",
         "logo": "ProjectLogo",
         "name.placeholder": "Projektname",
         "tags.placeholder": "Tags",
@@ -207,6 +217,7 @@
         "notnow": "Später bewerten",
         "yourrating": "Ihre Bewertung: ",
         "yourcomment": "Kommentar",
+        "actual": "Akutelle Bewertung:",
         "match": {
             "dorate": "Bewerten Sie die Interaktion"
         },
@@ -223,7 +234,6 @@
             "notsameproject": "Das gesendete Projekt stimmt nicht mit dem gesendeten Match überein"
         }
     },
-
     "main": {
         "title": "Willkommen bei respondeco!",
         "find": "Projekte finden",
@@ -529,11 +539,13 @@
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
         "newproject": "Neues Projekt anlegen",
-        "error": {
+        "rating": "Aktuelle Bewertung:",
+        "posted": "postet: ",
+            "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
             "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
-            "notverified": "Ihre Organisation wurde noch nicht validiert!"
+            "notverified": "Ihre Organisation wurde noch nicht verifiziert!"
         },
         "verify": {
             "verify": "Verifizieren",
@@ -555,11 +567,23 @@
             }
         }
     },
-    "resourcerequest": {
-        "title":"Ressourcen-Anfragen für ihre Angebote",
+    "resourcemessages": {
+        "title": "Verwalten Sie die Resourcen Anfragen und Spenden für [{{OrganizationName}}]",
+        "request": {
+            "title": "Ressourcen-Anfragen für ihre Angebote",
+            "text": "Das Project <a ng-click='redirectToProject({{id}})'> {{Name}} </a> mit der Ressourcenanforderung <span class='underline'>{{RequirementName}}</span> interessiert sich für ihre Ressource <span class='underline'>{{OfferName}}</span>.",
+            "tabtitle": "Anfragen"
+        },
+        "apply": {
+            "title": "Ressourcen-Angebot für ihren Projekt",
+            "text": "Die Organisation <a ng-click='redirectToOrganization({{id}})'> {{Name}} </a> möchte für die Anforderungsressource <span class='underline'>{{RequirementName}}</span>, die Ressource <span class='underline'>{{OfferName}}</span> bereitstellen.",
+            "tabtitle": "Spenden"
+        },
+        "olddata": "Alte Anfragen/Spenden",
         "acceptButton": "Annehmen",
         "declineButton": "Ablehnen",
-        "backButton": "Zurück zur Organisation"
+        "acceptedButton": "Angenohmen",
+        "declinedButton": "Abgelehnt"
     },
     "resource": {
         "title": "Marktplatz",
@@ -573,7 +597,12 @@
         "searchbutton":"Suchen",
         "organization": "Organisation",
         "tags": "Tags",
+        "found": "Ressourcen gefunden",
         "available": "Verfügbar",
+        "stillneeded": "Noch benötigte Anzahl",
+        "chosen": "Ausgewählte Ressource:",
+        "collected": "% der Resourcen gesammelt",
+        "essentialcollected": "% der notwendigen Ressourcen gesammelt",
         "search": {
             "filter": "Name / Tags / Organisation",
             "type": "Filter",
@@ -606,6 +635,7 @@
             "cancelbutton":"Abbrechen",
             "error": "Ressource konnte nicht erstellt werden!",
             "error.amount": "Eine Ressource muss mindestens einmal vorhanden sein",
+            "error.startDate": "Das Startdatum muss vor dem Enddatum liegen",
             "price": "Preis"
         },
         "edit": {
@@ -641,7 +671,8 @@
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",
             "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
-            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!"
+            "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
+            "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden"
         }
     },
     "nearProjects": {
@@ -667,6 +698,7 @@
     },
     "posting": {
         "showmore": "Mehr anzeigen",
+        "posted": "postet: ",
         "information": {
             "placeholder": "Was gibt's neues?"
         }
@@ -682,19 +714,41 @@
     "follow": {
         "button": "Folgen",
         "project": {
-            "accepted": "Sie können nur dem Projekt folgen. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
+            "accepted": "Sie folgen nun dem Projekt. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
             "rejected": {
-                "ownererror": "Das Folgen eigene Projekte ist nicht erlaubt",
+                "ownererror": "Das Folgen des eigenen Projekts ist nicht erlaubt",
                 "error": "Das Folgen des aktuellen Projekt ist derzeit aus technischen Gründen nicht möglich",
                 "notfound": "Das ausgewählte Projekt existiert nicht mehr. Bitte wenden Sie sich an die Organisation des Projekts"
             }
         },
         "organization": {
-            "accepted": "Sie können nun der Organisation folgen. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
+            "accepted": "Sie folgen nun der Organisation. Alle Neuigkeiten bezüglich dieses Projekts werden auf dem Newsfeed angezeigt",
             "rejected": {
-                "ownererror": "Das Folgen eigener Organisation ist leider nicht möglich",
+                "ownererror": "Das Folgen der eigenen Organisation ist nicht möglich",
                 "error": "Das Folgen der aktuelle Organisation ist derzeit aus technischen Gründen nicht möglich",
                 "notfound": "Die ausgewählte Organisation existiert nicht mehr. Bitte wenden Sie sich an den Verwaltenden Benutzer der Organisation"
+            }
+        }
+    },
+    "socialmedia": {
+        "heading": "Verbunde soziale Netzwerke",
+        "connect": "Verbinden",
+        "disconnect": "Verbindung löschen",
+        "error": {
+            "facebook": {
+                "connectionexists": "Ihr Account ist bereits mit Facebook verbunden!",
+                "permissionrevoked": "Der Post auf Facebook konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Facebook wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
+                "apiconnection": "Unser Server konnte keine Verbindung mit Facebook herstellen. Bitte versuchen Sie es später nochmal!"
+            },
+            "twitter": {
+                "connectionexists": "Ihr Account ist bereits mit Twitter verbunden!",
+                "permissionrevoked": "Der Post auf Twitter konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Twitter wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
+                "apiconnection": "Unser Server konnte keine Verbindung mit Twitter herstellen. Bitte versuchen Sie es später nochmal!"
+            },
+            "xing": {
+                "connectionexists": "Ihr Account ist bereits mit Xing verbunden!",
+                "permissionrevoked": "Der Post auf Xing konnte nicht erstellt werden, da die Berechtigung für Respondeco entzogen wurde. Um die Verbindung zu Xing wiederherzustellen gehen Sie bitte auf Verbundene Netzwerke und verbinden Sie sich erneut",
+                "apiconnection": "Unser Server konnte keine Verbindung mit Xing herstellen. Bitte versuchen Sie es später nochmal!"
             }
         }
     }

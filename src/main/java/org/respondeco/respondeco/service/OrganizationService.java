@@ -5,8 +5,12 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
+import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +33,11 @@ public class OrganizationService {
 
     private ProjectService projectService;
 
+    private ProjectRepository projectRepository;
+
     private PostingFeedRepository postingFeedRepository;
+
+    private ResourceOfferRepository resourceOfferRepository;
 
     @Inject
     public OrganizationService(OrganizationRepository organizationRepository,
@@ -37,13 +45,17 @@ public class OrganizationService {
                                UserRepository userRepository,
                                ImageRepository imageRepository,
                                ProjectService projectService,
-                               PostingFeedRepository postingFeedRepository) {
+                               ProjectRepository projectRepository,
+                               PostingFeedRepository postingFeedRepository,
+                               ResourceOfferRepository resourceOfferRepository) {
         this.organizationRepository = organizationRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
         this.projectService = projectService;
+        this.projectRepository = projectRepository;
         this.postingFeedRepository = postingFeedRepository;
+        this.resourceOfferRepository = resourceOfferRepository;
     }
 
     /**
@@ -187,7 +199,7 @@ public class OrganizationService {
     @Transactional(readOnly=true)
     public Organization getOrganization(Long id) {
         log.debug("getOrganization() with id " + id + " called");
-        Organization org = organizationRepository.findOne(id);
+        Organization org = organizationRepository.findByIdAndActiveIsTrue(id);
 
         return org;
     }
@@ -197,10 +209,14 @@ public class OrganizationService {
      * @return a list of all active organizations
      */
     @Transactional(readOnly = true)
-    public List<Organization> getOrganizations() {
+    public Page<Organization> getOrganizations(RestParameters restParameters) {
         log.debug("getOrganizations() called");
+        Pageable pageable = null;
+        if(restParameters != null) {
+            pageable = restParameters.buildPageRequest();
+        }
 
-        List<Organization> organizations = organizationRepository.findByActiveIsTrue();
+        Page<Organization> organizations = organizationRepository.findByActiveIsTrue(pageable);
 
         return organizations;
     }
@@ -264,15 +280,39 @@ public class OrganizationService {
      *
      * @throws NoSuchOrganizationException if the user is not the owner of any organization
      */
-    public void deleteOrganizationInformation() throws NoSuchOrganizationException {
-        User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
+    public void deleteOrganizationInformation(Long id) throws NoSuchOrganizationException {
+        Organization currentOrganization = organizationRepository.findByIdAndActiveIsTrue(id);
         if(currentOrganization==null) {
-            throw new NoSuchOrganizationException(String.format("Organization does not exist", currentUser.getLogin()));
+            throw new NoSuchOrganizationException(String.format("Organization %d does not exist", id));
         }
-        currentUser.setOrganization(null);
-        userRepository.save(currentUser);
-        organizationRepository.delete(currentOrganization);
+        if(currentOrganization.getMembers() != null) {
+            for (User user : currentOrganization.getMembers()) {
+                user.setActive(false);
+                userRepository.save(user);
+            }
+        }
+        User owner = currentOrganization.getOwner();
+        owner.setActive(false);
+        userRepository.save(owner);
+        if(currentOrganization.getProjects() != null) {
+            for (Project project : currentOrganization.getProjects()) {
+                if (project.getSuccessful() == false) {
+                    project.setActive(false);
+                    projectRepository.save(project);
+                }
+            }
+        }
+        if(currentOrganization.getResourceOffers() != null) {
+            for (ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
+                if (resourceOffer.getResourceMatches() == null) {
+                    resourceOffer.setActive(false);
+                    resourceOfferRepository.save(resourceOffer);
+                }
+            }
+        }
+
+        currentOrganization.setActive(false);
+        organizationRepository.save(currentOrganization);
         log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
 
@@ -286,13 +326,13 @@ public class OrganizationService {
     public void deleteMember(Long userId) throws NoSuchUserException, NoSuchOrganizationException,
         NotOwnerOfOrganizationException, OrganizationNotVerifiedException {
         User user = userService.getUserWithAuthorities();
-        User member = userRepository.findOne(userId);
+        User member = userRepository.findByIdAndActiveIsTrue(userId);
 
         if(member == null) {
             throw new NoSuchUserException(String.format("User %s does not exist", userId));
         }
         System.out.println(member);
-        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(member.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization %s does not exist",
                 member.getOrganization().getId()));
@@ -316,7 +356,7 @@ public class OrganizationService {
      * @throws NoSuchOrganizationException if the given organization does not exist
      */
     public List<User> getUserByOrgId(Long orgId) throws NoSuchOrganizationException {
-        Organization organization = organizationRepository.findOne(orgId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
         User user = userService.getUserWithAuthorities();
 
         if(organization == null) {
@@ -335,7 +375,7 @@ public class OrganizationService {
      * @return a list of users which can be invited by the given organization
      */
     public List<User> findInvitableUsersByOrgId(Long orgId) {
-        Organization organization = organizationRepository.getOne(orgId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
 
         // if there is no organization than all users should be returned
         if(organization != null) {
@@ -412,7 +452,7 @@ public class OrganizationService {
             throw new IllegalValueException("follow.organization.rejected.error", "Cannot follow an organization that already marked as followed");
         }
 
-        Organization selected = organizationRepository.findOne(organizationId);
+        Organization selected = organizationRepository.findByIdAndActiveIsTrue(organizationId);
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated

@@ -25,6 +25,8 @@ public class ResourceMatchResponseDTO {
 
     ProjectResponseDTO project;
 
+    String matchDirection;
+
     ResourceOfferDTO resourceOffer;
 
     ResourceRequirementResponseDTO resourceRequirement;
@@ -34,7 +36,7 @@ public class ResourceMatchResponseDTO {
     BigDecimal amount;
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
-        "matchId", "project", "organization", "resourceOffer","resourceRequirement", "projectRating", "supporterRating", "accepted", "amount");
+        "matchId", "project", "organization", "resourceOffer","resourceRequirement", "projectRating", "supporterRating", "accepted", "amount", "matchDirection");
 
     public static ResourceMatchResponseDTO fromEntity(ResourceMatch match, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -68,6 +70,10 @@ public class ResourceMatchResponseDTO {
 
         if( fieldNames.contains("amount")) {
             responseDTO.setAmount(match.getAmount());
+        }
+
+        if(fieldNames.contains("matchDirection") == true && match.getMatchDirection() != null){
+            responseDTO.setMatchDirection(match.getMatchDirection().toString());
         }
 
         return responseDTO;

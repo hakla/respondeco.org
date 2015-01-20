@@ -15,14 +15,13 @@ describe('Project Service Tests ', function () {
         beforeEach(inject(function($httpBackend, Project) {
             serviceTested = Project;
             httpBackend = $httpBackend;
-            //Request on app init
-            httpBackend.expectGET('i18n/de.json').respond(200, '');
+
+            TestHelper.initHttpBackend(httpBackend);
         }));
         //make sure no expectations were missed in your tests.
         //(e.g. expectGET or expectPOST)
         afterEach(function() {
-            httpBackend.verifyNoOutstandingExpectation();
-            httpBackend.verifyNoOutstandingRequest();
+            TestHelper.flushHttpBackend(httpBackend);
         });
 
         it('should call backend with filter parameter when querying for projects by name', function() {
@@ -32,8 +31,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.query({filter: "test"});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call the backend with tags parameter when querying for projects by tags', function(){
@@ -42,8 +39,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.query({tags: "test,foo,bar"});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call backend with filter and tags parameter when querying for projects by name and tags', function(){
@@ -52,8 +47,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.query({filter: "test", tags: "test,foo,bar"});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call backend for aggregated project rating', function(){
@@ -62,8 +55,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.getAggregatedRating({pid: 2});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to create a project rating', function(){
@@ -72,8 +63,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.rateProject({pid: 2}, testRating);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to check if the user has the right to rate a project', function(){
@@ -84,8 +73,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.checkIfRatingPossible({pid: 2, permission: testPermisson});
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to check if the user has the right to rate matches of the project', function(){
@@ -101,8 +88,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.checkIfRatingPossible({pid: 2, permission: testPermisson, matches: testMatches});
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to create new project apply', function() {
@@ -116,8 +101,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.apply(testProjectApply);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to get all postings', function() {
@@ -126,8 +109,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.getPostingsByProjectId({id: 2});
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to create a project posting', function(){
@@ -136,8 +117,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.addPostingForProject({id: 2}, testPosting);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to delete a project posting', function(){
@@ -145,24 +124,18 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.deletePosting({id: 2, pid:5});
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call project backend to create a follow entry', function(){
             httpBackend.expectPOST('app/rest/projects/1/follow').respond(201);
             //WHEN
             serviceTested.follow({id:1}, null);
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call project backend to delete follow entry', function(){
             httpBackend.expectDELETE('app/rest/projects/1/unfollow').respond(200);
             //WHEN
             serviceTested.unfollow({id:1});
-            //flush the backend to "execute" the request to do the expected POST assertion.
-            httpBackend.flush();
         });
 
         it('should call backend to get projects following state', function() {
@@ -171,8 +144,6 @@ describe('Project Service Tests ', function () {
 
             //WHEN
             serviceTested.followingState({id: 1}, null);
-            //flush the backend to "execute" the request to do the expected GET assertion.
-            httpBackend.flush();
         });
 
     });

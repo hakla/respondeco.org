@@ -2,7 +2,7 @@
 
 respondecoApp.factory('Organization', function ($resource) {
         return $resource('app/rest/organizations/:id', {}, {
-            'query': { method: 'GET', isArray: true},
+            'query': { method: 'GET' },
             'get': { method: 'GET'},
             'update': { method: 'PUT', url: 'app/rest/organizations' },
             'getMembers': { method: 'GET', url: 'app/rest/organizations/:id/members', isArray: true },

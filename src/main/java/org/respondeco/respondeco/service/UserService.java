@@ -209,7 +209,7 @@ public class UserService {
     }
 
     public void setOrganization(User user, Long id) {
-        user.setOrganization(organizationRepository.findOne(id));
+        user.setOrganization(organizationRepository.findByIdAndActiveIsTrue(id));
         userRepository.save(user);
     }
 
@@ -217,6 +217,12 @@ public class UserService {
         return userRepository.findByLogin(loginName);
     }
 
+    /**
+     * method to get the newsfeed (page of postings) for the given user
+     * newsfeed is defined by the postings from organization and projects which the user is following
+     * @param restParameters given from the controller; embodies information to create the pagerequest
+     * @return a page of postings found by followed organization and projects
+     */
     public Page<Posting> getNewsfeed(RestParameters restParameters) {
         // get the signed in user
         User user = getUserWithAuthorities();

@@ -83,4 +83,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, QueryDs
         @Param("project_id") Long project_id
     );
 
+    @Query("SELECT p.id FROM Project p WHERE p.organization.id = :organizationId AND p.active = 1 AND p.organization.active = 1")
+    public List<Long> findByOrganizationId(@Param("organizationId") Long organizationId);
+
 }

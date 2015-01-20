@@ -8,13 +8,13 @@ describe('Project Controller Tests ', function() {
 
     describe('ProjectController', function() {
         var scope, location, routeParams, ProjectNamesService, PropertyTagsNamesService, ProjectService,
-            ResourceRequirementService, AccountService, sce, OrganizationService, translate;
+            ResourceRequirementService, AccountService, sce, OrganizationService, translate, SocialMediaService;
         var fakeDeferred;
         var emptyProject;
         var existingProject;
 
         beforeEach(inject(function($rootScope, $controller, $location, $q, $sce, $routeParams, ProjectNames,
-                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate) {
+                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate, SocialMedia) {
             scope = $rootScope.$new();
             location = $location;
             translate = $translate;
@@ -26,6 +26,7 @@ describe('Project Controller Tests ', function() {
             routeParams = $routeParams;
             AccountService = Account;
             OrganizationService = Organization;
+            SocialMediaService = SocialMedia;
             sce = $sce;
 
             fakeDeferred = {
@@ -60,7 +61,8 @@ describe('Project Controller Tests ', function() {
                 ResourceRequirement: ResourceRequirementService,
                 $sce: sce,
                 Account: AccountService,
-                Organization: OrganizationService
+                Organization: OrganizationService,
+                SocialMedia: SocialMediaService
             });
 
             scope.showOrgRatingModal = function() {}

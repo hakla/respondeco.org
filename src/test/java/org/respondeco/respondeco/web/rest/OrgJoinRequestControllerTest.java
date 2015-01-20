@@ -142,12 +142,12 @@ public class OrgJoinRequestControllerTest {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(userRepository.findByLogin(defaultUser.getLogin())).thenReturn(defaultUser);
         when(organizationRepository.findByName(organization.getName())).thenReturn(organization);
-        when(organizationRepository.findOne(organization.getId())).thenReturn(organization);
-        when(orgjoinrequestRepository.findOne(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
+        when(organizationRepository.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
+        when(orgjoinrequestRepository.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
         when(userRepository.findByLogin(potMember.getLogin())).thenReturn(potMember);
         when(organizationRepository.findByOwner(defaultUser)).thenReturn(organization);
-        when(userRepository.findOne(defaultUser.getId())).thenReturn(defaultUser);
-        when(userRepository.findOne(potMember.getId())).thenReturn(potMember);
+        when(userRepository.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
+        when(userRepository.findByIdAndActiveIsTrue(potMember.getId())).thenReturn(potMember);
         when(orgjoinrequestRepository.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
 // Create OrgJoinRequest
         restOrgJoinRequestMockMvc.perform(post("/app/rest/orgjoinrequests")

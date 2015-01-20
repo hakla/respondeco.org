@@ -2,7 +2,7 @@
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, $location, $routeParams, $sce, $translate,
-                                                       Account, $modal, AuthenticationSharedService) {
+                                                       Account, $modal, AuthenticationSharedService, SocialMedia) {
 
     $scope.project = {
         id: null,
@@ -23,6 +23,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.resourceMatches = new Object();
     $scope.resourceRequirementsWithMatches = [];
 
+    $scope.twitterConnected = false;
+    $scope.facebookConnected = false;
+    $scope.xingConnected = false;
+
     //initial latlng coordinates belong to Austria (via googleplaces)
     $scope.map = { control: {}, center: { latitude: 47.516231, longitude: 14.550072 }, zoom: 7 };
 
@@ -32,7 +36,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
       coords: {latitude: null, longitude: null}
     };
 
-     /**
+    /**
      * $scope.placeToMarker
      *
      * @description This function is called whenever a new place is entered in the searchbox.
@@ -53,25 +57,39 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.marker.address = place[0].formatted_address;
 
         $scope.map.zoom = 14;
-    }
+    };
 
     var searchBoxEvents = {
         places_changed: function (searchBox) {
             var id = 0;
             $scope.placeToMarker(searchBox, id);
         }
-    }
+    };
 
     $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
-
-    $scope.postingShowCount = 5;
-    $scope.postingShowIncrement = 5;
-    $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
-    $scope.postingInformation = null;
 
     // details mock
     $scope.status = {
         open1: true
+    };
+
+    /**
+     *  Gets all active connection for the currently logged in user
+     *  and if the connection for the specific provider exists, it
+     *  sets the connected variable for the appropriate provider to true.
+     */
+    $scope.getConnections = function() {
+        SocialMedia.getConnections(function(response) {
+            response.forEach(function(connection) {
+                if(connection.provider === 'twitter') {
+                    $scope.twitterConnected = true;
+                } else if(connection.provider === 'facebook') {
+                    $scope.facebookConnected = true;
+                } else if(connection.provider === 'xing') {
+                    $scope.xingConnected = true;
+                }
+            })
+        });
     };
 
     /**
@@ -84,10 +102,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     var searchText = null;
-    var isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
+    $scope.isNew = $routeParams.id === 'new' || $routeParams.id === 'null' || $routeParams.id === 'undefined';
 
     //allow execute follow state only if project ID is set!
-    if (isNew == false){
+    if ($scope.isNew == false){
         $scope.followingState();
     }
 
@@ -95,7 +113,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.ProjectApply =
     {
-        organization: null,
         account: null,
         allowedToApply: false,
         selectedResourceOffer: null,
@@ -151,8 +168,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             propertyTags: $.map($scope.project.propertyTags, function(tag) {
                 return tag.name
             }),
-            resourceRequirements: $scope.project.resourceRequirements,
-            postings: $scope.project.postings
+            resourceRequirements: $scope.project.resourceRequirements
         };
 
         if($scope.marker.coords.latitude !== null) {
@@ -163,7 +179,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 projectId: $scope.project.id}
         }
 
-        Project[isNew ? 'save' : 'update'](project,
+        Project[$scope.isNew ? 'save' : 'update'](project,
             function() {
                 $scope.projects = Project.query();
                 $scope.clear();
@@ -172,7 +188,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.edit = function() {
         $location.path("/projects/edit/" + $scope.project.id)
-    }
+    };
 
     $scope.createStaticMapLink = function() {
         var lat = $scope.project.projectLocation.latitude;
@@ -184,14 +200,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         lng;
 
         return link;
-    }
+    };
 
     $scope.update = function(id) {
         $scope.project = Project.get({
             id: id
         }, function() {
             $scope.project.resourceRequirements = $scope.project.resourceRequirements || [];
-            $scope.project.postings = $scope.project.postings || [];
             $scope.purpose = $sce.trustAsHtml($scope.project.purpose);
 
             if ($scope.project.concrete === true) {
@@ -265,6 +280,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             id: id
         }, function() {
             $scope.editable = true;
+            $scope.getConnections();
         }, function() {
             $scope.editable = false;
         });
@@ -300,14 +316,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
         $scope.collected = Math.round($scope.collected);
         $scope.collectedEssential = Math.round($scope.collectedEssential);
-    }
+    };
 
-    $scope.delete = function(id) {
+    $scope.delete = function() {
         Project.delete({
-                id: id
+                id: $routeParams.id
             },
             function() {
-                $scope.projects = Project.query();
                 $location.path('/projects');
             });
     };
@@ -332,8 +347,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     var edit = false;
     $scope.resource = {
         resourceTags: [],
-        isEssential: false
-    }
+        isEssential: false,
+        originalAmount: null
+    };
     $scope.selectedResourceTags = [];
 
     $scope.createRequirement = function() {
@@ -343,12 +359,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         if (edit == false) {
             $scope.project.resourceRequirements.push(resource);
         }
-    }
+    };
 
     $scope.clearRequirement = function() {
         $scope.resource = {
             resourceTags: [],
-            isEssential: false
+            isEssential: false,
+            originalAmount: null
         };
         $scope.selectedResourceTags = [];
         edit = false;
@@ -356,7 +373,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.removeRequirement = function(index) {
         $scope.project.resourceRequirements.splice(index, 1);
-    }
+    };
 
     $scope.editRequirement = function(index) {
         edit = true;
@@ -367,7 +384,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.showResourceModal = function() {
         $('#addResource').modal('toggle');
-    }
+    };
 
     //RATING
     $scope.canRate = false;
@@ -400,24 +417,24 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 $scope.canRate = permissions[0].allowed;
                 $scope.ratedMatch = permissions[0].matchid;
             });
-    }
+    };
     $scope.refreshProjectRating();
 
     $scope.refreshOrganizationRating = function(orgid) {
         Organization.getAggregatedRating({id: orgid}, function(rating) {
             $scope.organizationRatings[orgid] = {rating: rating.rating, count: rating.count};
         });
-    }
+    };
 
     $scope.showRating = function() {
         if($scope.canRate) {
             $scope.isRating = true;
         }
-    }
+    };
 
     $scope.hideRating = function() {
         $scope.isRating = false;
-    }
+    };
 
     $scope.rateProject = function() {
         if($scope.project != null) {
@@ -442,7 +459,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 });
 
         }
-    }
+    };
 
     $scope.rateMatch = function(id) {
         if(!$scope.matchRatingPermissions[id]) {
@@ -452,7 +469,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         var match = $scope.resourceMatches[id];
         $scope.currentOrgRating = $scope.organizationRatings[match.organization.id].rating;
         $scope.showOrgRatingModal();
-    }
+    };
 
     $scope.rateOrganization = function() {
         var matchid = $scope.currentMatchId;
@@ -475,7 +492,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 }
 
             });
-    }
+    };
 
     $scope.projectApply = function(resourceRequirement, $event) {
         $event.stopPropagation();
@@ -509,9 +526,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         var data = {
             resourceOfferId: $scope.ProjectApply.selectedResourceOffer.id,
             resourceRequirementId: $scope.ProjectApply.selectedRequirement.id,
-            organizationId: $scope.ProjectApply.organization.id,
+            organizationId: $scope.ProjectApply.account.organization.id,
             projectId: $scope.project.id
-        }
+        };
         // please do not remove this variable. some user operation can be faster than timeout.
         // this cause an exception.
         var reqTarget = $scope.ProjectApply.selectedRequirement.$target;
@@ -530,40 +547,42 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
      * Get all resource offer from the organization the user currently in.
      */
     $scope.getOffers = function() {
+        //first of all we need the account information!
         Account.get(function (acc) {
             $scope.ProjectApply.account = acc;
-            if (acc.organization != null) {
-                Organization.get({
-                    id: acc.organization.id
-                }, function (org) {
-                    $scope.ProjectApply.organization = org;
-                    if (org != null && org.owner.id === acc.id &&
-                        $scope.project.organizationId != org.id) {
-                        // owner
-                        $scope.ProjectApply.allowedToApply = true;
-                        Organization.getResourceOffers({
-                            id: org.id
-                        }, function (offers) {
-                            var arr = [];
-                            for (var i = 0, len = offers.length; i < len; i++) {
-                                if (offers[i].amount > 0) {
-                                    arr.push(offers[i]);
-                                }
-                            }
-                            $scope.resourceOffers = arr;
-                            if(arr.length == 0){
-                                $scope.ProjectApply.allowedToApply = false;
-                            }
-                        });
+            //since organization is a part of an account, we do not need to load organization over the rest
+            if(
+                $scope.ProjectApply.account.organization &&
+                $scope.project.organizationId != $scope.ProjectApply.account.organization.id
+            ){
+                //get available resource
+                $scope.ProjectApply.allowedToApply = true;
+                Organization.getResourceOffers({
+                    id: $scope.ProjectApply.account.organization.id
+                }, null, function (offers) {
+                    var arr = [];
+                    //and remove those who have no amount.
+                    for (var i = 0, len = offers.length; i < len; i++) {
+                        if (offers[i].amount > 0) {
+                            arr.push(offers[i]);
+                        }
+                    }
+                    $scope.resourceOffers = arr;
+                    //if array is empty, the current account do not have any resources to apply
+                    if(arr.length == 0){
+                        $scope.ProjectApply.allowedToApply = false;
                     }
                 });
             }
+            else{
+                $scope.ProjectApply.allowedToApply = false;
+            }
         });
-    }
+    };
 
     $scope.getOffers();
 
-    if (isNew === false) {
+    if ($scope.isNew === false) {
         $scope.update($routeParams.id);
     }
 
@@ -627,24 +646,79 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.showFollow = function() {
         return $scope.following == false;// && $scope.editable == false;
     };
-    //Posting
 
+    //Posting for project
+    $scope.postingPage = -1;
+    $scope.postingPageSize = 5;
+    $scope.postingInformation = null;
+    $scope.postingsTotal = null;
+    $scope.postings = [];
+
+    //function to refresh postings for the project in the scope; get postings in the given pagesize
     var refreshPostings = function() {
-        $scope.postingPage = Project.getPostingsByProjectId({id:$routeParams.id, pageSize: $scope.postingShowCount})
+        Project.getPostingsByProjectId({
+            id: $routeParams.id,
+            page: $scope.postingPage,
+            pageSize: $scope.postingPageSize },
+            function(data) {
+                $scope.postingsTotal = data.totalElements;
+                $scope.postings = $scope.postings.concat(data.postings);
+        });
     };
 
+    var resetPostings = function() {
+        $scope.postingPage = -1;
+        $scope.postingsTotal = null;
+        $scope.postings = [];
+        $scope.showMorePostings();
+    }
+
+    $scope.canShowMorePostings = function() {
+        return $scope.postings.length < $scope.postingsTotal;
+    };
+
+    //shows more postings by incrementing the postingCount (default 5 + 5)
+    $scope.showMorePostings = function() {
+        $scope.postingPage = $scope.postingPage + 1;
+        refreshPostings();
+    };
+
+    //show first page of postings
+    $scope.showMorePostings();
+
+    //method to add postings for the project in the scope; lenght of posting has to be at least 5 char and
+    // at max 2048 chars long; refreshing postings after adding
     $scope.addPosting = function() {
-        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 100) {
+        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
         Project.addPostingForProject({id:$routeParams.id}, $scope.postingInformation,
-            function() {
-                refreshPostings();
+            function(newPosting) {
+                //add new posting and cut array down to current number of shown postings
+                $scope.postings.unshift(newPosting);
+                $scope.postingsTotal = $scope.postingsTotal + 1;
+                $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
                 $scope.postingInformation = null;
                 $scope.postingform.$setPristine();
             });
+
+        //post on social media
+        if($scope.postOnTwitter === true) {
+            SocialMedia.createTwitterPost({string: $scope.postingInformation});
+        }
+
+        if($scope.postOnFacebook === true) {
+            SocialMedia.createFacebookPost({string: $scope.postingInformation});
+        }
+
+        if($scope.postOnXing === true) {
+            var urlPath = $location.url();
+            SocialMedia.createXingPost({urlPath: urlPath, post: $scope.postingInformation});
+        }
+
     };
 
+    //delete posting and refresh after deletion
     $scope.deletePosting = function(id) {
         Project.deletePosting({id:$scope.project.id,
             pid:id},
@@ -653,8 +727,4 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         });
     };
 
-    $scope.showMorePostings = function() {
-        $scope.postingShowCount = $scope.postingShowCount + $scope.postingShowIncrement;
-        refreshPostings();
-    }
 });

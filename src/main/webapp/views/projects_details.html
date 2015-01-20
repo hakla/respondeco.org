@@ -4,11 +4,11 @@
             <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
         </div>
         <div class="text-right col-md-10">
-            <button type="button" ng-show="showFollow()" name="follow_button" class="btn btn-success ng-hide" ng-click="follow()">
+            <button type="button" ng-show="showFollow()&&!editable" name="follow_button" class="btn btn-success ng-hide" ng-click="follow()">
                 <span class="glyphicon glyphicon-plus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>
-            <button type="button" ng-show="showUnfollow()" name="unfollow_button" class="btn btn-danger ng-hide" ng-click="unfollow()">
+            <button type="button" ng-show="showUnfollow()&&!editable" name="unfollow_button" class="btn btn-danger ng-hide" ng-click="unfollow()">
                 <span class="glyphicon glyphicon-minus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>
@@ -35,7 +35,7 @@
             <div class="rating-container">
                 <div class="row">
                     <div id="rating" class="col-md-12">
-                        <span>Aktuelle Bewertung: </span>
+                        <span>{{ 'project.rating' | translate }}</span>
                         <rating max="5" readonly="!canRate" on-leave="overStar = null"
                                 ng-click="showRating()" ng-model="shownRating"></rating>
                     </div>
@@ -80,18 +80,23 @@
                 <h3>PostingFeed</h3>
                 <div class="well">
                     <ul>
-                        <li ng-repeat="posting in postingPage.postings">
-                            <h4>{{posting.author.login}} <small>postet: </small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
+                        <li ng-repeat="posting in postings">
+                            <h4>{{posting.author.login}} <small translate="posting.posted">{{ 'project.posted' | translate}}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
                         </li>
                     </ul>
                 </div>
                 <a ng-click="showMorePostings()" translate="posting.showmore"
-                   ng-show="postingPage.totalElements > postingShowCount">Show more</a>
+                   ng-show="canShowMorePostings()">Show more</a>
                 <hr/>
                 <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
                     <div class="form-group" ng-show="editable">
-                        <input class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
-                               ng-minlength="5" ng-maxlength="100" ng-model="postingInformation" required autocomplete="off"/>
+                        <div ng-show="editable">
+                            <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
+                            <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
+                            <label ng-show="xingConnected"><input type="checkbox" ng-model="postOnXing"/>Auf Xing posten</label>
+                        </div>
+                        <textarea class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
+                               ng-minlength="5" ng-maxlength="2048" ng-model="postingInformation" required autocomplete="off"/>
                         <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
                         <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
                             <p class="help-block"
@@ -100,7 +105,7 @@
                             </p>
                             <p class="help-block"
                                ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
-                                Your Posting is required to be at max 100 characters
+                                Your Posting is required to be at max 2048 characters
                             </p>
                             <p class="help-block"
                                ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
@@ -114,16 +119,16 @@
 
         </div>
         <div class="col-md-6">
-            <img src="/images/approved.png" alt="approved" class="approved" ng-show="successful || remainingDays == true" />
+            <img src="/images/approved.png" alt="approved" class="approved" ng-show="project.successful" />
             <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
                 <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong>{{remainingDays}} Tage verbleiben</strong>
+                <strong>{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
             <div class="resources">
-                <strong>{{collected}}% Ressourcen gesammelt</strong>
+                <strong>{{collected}}{{ 'resource.collected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
-                <strong>{{collectedEssential}}% der notwendigen Ressourcen gesammelt</strong>
+                <strong>{{collectedEssential}}{{ 'resource.essentialcollected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collectedEssential"></progressbar>
             </div>
             <div class="resource-requirements">
@@ -134,7 +139,7 @@
                             <div class="row hover-toggle">
                                 <div class="col-md-8">{{requirement.name}}</div>
                                 <div class="col-md-2 on-hover">
-                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                                    <button class="btn btn-default btn-sm" ng-show="isAllowedToApply()&&(requirement.sum<requirement.originalAmount)" type="button" ng-click="projectApply(requirement, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
                                 </div>
                                 <div class="col-md-2">
                                     <span ng-show="requirement.sum != undefined">{{requirement.sum}}</span>
@@ -161,7 +166,7 @@
                 </accordion>
             </div>
 
-            <img src="{{staticMap}}"></img>
+            <img src="{{staticMap}}"/>
 
         </div>
     </div>
@@ -176,9 +181,9 @@
                 <div class="modal-body">
                     <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
                         <dl class="dl-horizontal">
-                            <dt>Ausgewählte Ressource:</dt>
+                            <dt>{{ 'resource.chosen' | translate }}</dt>
                             <dd>{{ selectedRequirement.name }}</dd>
-                            <dt>Noch benötigte Anzahl</dt>
+                            <dt>{{ 'resource.stillneeded' | translate }}</dt>
                             <dd>{{ selectedRequirement.amount }}</dd>
                         </dl>
                         <ul class="resources">

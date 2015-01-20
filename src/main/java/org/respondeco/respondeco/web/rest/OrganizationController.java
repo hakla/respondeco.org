@@ -123,15 +123,17 @@ public class OrganizationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<OrganizationResponseDTO> getAll(
+    public ResponseEntity<OrganizationPaginationResponseDTO> getAll(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String fields,
             @RequestParam(required = false) String order) {
         log.debug("REST request to get organizations");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<Organization> organizations = organizationService.getOrganizations();
-        return OrganizationResponseDTO.fromEntities(organizations, restParameters.getFields());
+        Page<Organization> organizations = organizationService.getOrganizations(restParameters);
+        OrganizationPaginationResponseDTO response =
+            OrganizationPaginationResponseDTO.createFromPage(organizations, restParameters.getFields());
+        return new ResponseEntity<OrganizationPaginationResponseDTO>(response, HttpStatus.OK);
     }
 
     /**
@@ -210,16 +212,16 @@ public class OrganizationController {
      * @return response status OK if the organization was deleted successfully, or NOT FOUND if the user is not
      * the owner of an existing organization
      */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations",
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RequestMapping(value = "/rest/organizations/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> delete(){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         log.debug("REST request to delete Organization : {}");
         ResponseEntity<?> responseEntity;
         try {
-            organizationService.deleteOrganizationInformation();
+            organizationService.deleteOrganizationInformation(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not delete Organization : {}", e);
@@ -286,15 +288,16 @@ public class OrganizationController {
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) String fields,
-        @RequestParam(required = false) String order) {
+        @RequestParam(required = false) String order){
 
         log.debug("REST request to get all resource claim requests for organization with id " + id);
-        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        List<ResourceMatchResponseDTO> list = new ArrayList<>();
+        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceMatch> resourceClaims = resourceService.getResourceRequestsForOrganization(id, restParameters);
+        List<ResourceMatch> resourceInQueue = resourceService.getResourcesForOrganization(id, restParameters);
 
-        for(ResourceMatch match : resourceClaims) {
+        for(ResourceMatch match : resourceInQueue) {
             ResourceMatchResponseDTO resourceDTO = new ResourceMatchResponseDTO();
 
             OrganizationResponseDTO organizationDTO = OrganizationResponseDTO.fromEntity(match.getOrganization(), null);
@@ -306,8 +309,11 @@ public class OrganizationController {
             resourceDTO.setResourceOffer(resourceOfferDTO);
             resourceDTO.setResourceRequirement(resourceRequirementResponseDTO);
             resourceDTO.setMatchId(match.getId());
+            resourceDTO.setMatchDirection(match.getMatchDirection().toString());
+            resourceDTO.setOrganization(organizationDTO);
+            resourceDTO.setAccepted(match.getAccepted());
 
-            responseEntity.getBody().add(resourceDTO);
+            list.add(resourceDTO);
         }
 
         return responseEntity;
@@ -555,10 +561,12 @@ public class OrganizationController {
 
 
     /**
-     * gets the list of postings ordered by creation date for the specified organization
+     * GET gets the postings of the given organization as a page of postings defined by page and pagesize
      *
-     * @param id the id of the organization for which to get the postings
-     * @return response status OK and the Postings for the organization
+     * @param id given id of the organization
+     * @param page the page which is used for the pagerequest (0 by default)
+     * @param pageSize the pagesize (elements of the page) used for the pagerequest
+     * @return OK and PostingPaginationResponseDTO with found postings; NOT_FOUND if organization doesn't exist
      */
     @RequestMapping(value = "/rest/organizations/{id}/postings",
             method = RequestMethod.GET,
@@ -591,9 +599,10 @@ public class OrganizationController {
 
     /**
      * creates a post for the organization in the postingfeed
-     * @param information the string which contains the informaiton of the posting
+     * @param information the string which contains the information of the posting
      * @param id the id of the organization for which to create the posting
-     * @return response status ok if posting has
+     * @return response status OK if no exception has been thrown; NOT_FOUND if the organization doesn't exist;
+     * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
      */
     @RequestMapping(value = "/rest/organizations/{id}/postings",
             method = RequestMethod.POST,
@@ -605,9 +614,9 @@ public class OrganizationController {
             @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            postingFeedService.addPostingForOrganization(id,information);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
+            Posting createdPosting = postingFeedService.addPostingForOrganization(id,information);
+            PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
+            responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
         } catch (NoSuchOrganizationException e) {
             log.error("Could not post for organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);

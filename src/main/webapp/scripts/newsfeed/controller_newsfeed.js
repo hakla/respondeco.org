@@ -2,20 +2,30 @@
 
 respondecoApp.controller('NewsfeedController', function($scope, $location, $routeParams, Account) {
 
-	$scope.account = {};
+    $scope.newsPage = -1;
+    $scope.newsPageSize = 20;
+    $scope.newsTotal = null;
+    $scope.news = [];
 
-	$scope.onPageLoad = function() {
-		Account.get(null, function(account) {
-			$scope.account = account;
+    var refreshNews = function() {
+        Account.getNewsfeed({
+                page: $scope.newsPage,
+                pageSize: $scope.newsPageSize },
+            function(data) {
+                $scope.newsTotal = data.totalElements;
+                $scope.news = $scope.news.concat(data.postings);
+            });
+    };
 
+    $scope.canShowMoreNews = function() {
+        return $scope.news.length < $scope.newsTotal;
+    };
 
-			Account.getNewsfeed({pageSize: 20, page: 0}, function(news) {
-    			$scope.postingPage = news;
-	    	});
+    $scope.showMoreNews = function() {
+        $scope.newsPage = $scope.newsPage + 1;
+        refreshNews();
+    };
 
-		});
-	}
-   
-    $scope.onPageLoad();
+    $scope.showMoreNews();
 
 });

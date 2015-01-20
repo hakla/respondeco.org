@@ -10,10 +10,13 @@ import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
+import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -64,9 +67,9 @@ public class TextMessageController {
         } catch (NoSuchUserException e) {
             log.error("could not save text TextMessage", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalValueException e) {
             log.error("could not save text TextMessage", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }
@@ -102,9 +105,9 @@ public class TextMessageController {
         try {
             textMessageService.deleteTextMessage(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalValueException e) {
             log.error("could not delete text TextMessage", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }

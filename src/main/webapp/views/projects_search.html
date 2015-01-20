@@ -1,12 +1,12 @@
 <div class="project clearfix">
     <div class="col-md-12">
-        <h1>Projekte</h1>
+        <h1 translate="project.title">Projects</h1>
         
         <form name="searchform" role="form" novalidate class="ng-scope form-search" ng-submit="searchButton()">
             <div class="input-group form-group">
                 <input type="text" class="form-control" placeholder="{{'project.searchtext.placeholder' | translate}}" ng-model="searchText" />
                 <span class="input-group-btn">
-                    <button id="searchButton" type="submit" class="btn btn-primary">Suchen</button>
+                    <button id="searchButton" type="submit" class="btn btn-primary" translate="project.search">Search</button>
                 </span>
             </div>
 
@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <p ng-show="totalItems>0">{{totalItems}} Projekte gefunden! </p>
+            <p ng-show="totalItems>0" class="col-md-12">{{totalItems}} {{ 'project.found' | translate }}</p>
         </form>
         
         <div class="row">
