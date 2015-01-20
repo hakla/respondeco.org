@@ -153,6 +153,11 @@
         "info": "Project information",
         "title": "Projects",
         "logotext": "Project-logo",
+        "found": "projects found",
+        "remainingdays": "days remaining",
+        "posted": "posted: ",
+        "rating": "Actual Rating:",
+        "found": "projects found",
         "createProject": {
             "title": "Create a new project",
             "tag":"Add tag",
@@ -211,6 +216,7 @@
         "notnow": "Rate later",
         "yourrating": "Your rating: ",
         "yourcomment": "Commentary",
+        "actual": "Actual rating:",
         "match": {
             "dorate": "Rate the interaction"
         },
@@ -532,6 +538,8 @@
         "requests": "Resource requests",
         "backToOverview": "Back to overview",
         "newproject": "Create a new porject",
+        "rating": "Actual rating:",
+        "posted": "posted: ",
         "error": {
             "nosuchorganization": "There does not exist a organization with given id",
             "alreadyExists": "You can only be owner of one organization",
@@ -589,6 +597,11 @@
         "organization": "Organization",
         "tags": "Tags",
         "available": "Available",
+        "found": "resources found",
+        "stillneeded": "Still needed resources:",
+        "chosen": "Chosen resource:",
+        "collected": "% of resources collected",
+        "essentialcollected": "% of essential resources collected",
         "search": {
             "filter": "Name / Tags / Organization",
             "type": "Filter",
@@ -682,6 +695,7 @@
     },
     "posting": {
         "showmore": "Show more",
+        "posted": "posted: ",
         "information": {
             "placeholder": "What's new?"
         }

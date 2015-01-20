@@ -154,6 +154,11 @@
         "info": "Projekt Information",
         "title": "Projekte",
         "logotext": "Projekt-Logo",
+        "found": "gefundene Projekte",
+        "remainingdays": "Tage verbleibend",
+        "posted": "postet: ",
+        "rating": "Aktuelle Bewertung:",
+        "found": "gefundene Projekte",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -212,6 +217,7 @@
         "notnow": "Später bewerten",
         "yourrating": "Ihre Bewertung: ",
         "yourcomment": "Kommentar",
+        "actual": "Akutelle Bewertung:",
         "match": {
             "dorate": "Bewerten Sie die Interaktion"
         },
@@ -533,7 +539,9 @@
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
         "newproject": "Neues Projekt anlegen",
-        "error": {
+        "rating": "Aktuelle Bewertung:",
+        "posted": "postet: ",
+            "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "alreadyExists": "Du kannst nur eine Organisation besitzen",
             "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
@@ -589,7 +597,12 @@
         "searchbutton":"Suchen",
         "organization": "Organisation",
         "tags": "Tags",
+        "found": "Ressourcen gefunden",
         "available": "Verfügbar",
+        "stillneeded": "Noch benötigte Anzahl",
+        "chosen": "Ausgewählte Ressource:",
+        "collected": "% der Resourcen gesammelt",
+        "essentialcollected": "% der notwendigen Ressourcen gesammelt",
         "search": {
             "filter": "Name / Tags / Organisation",
             "type": "Filter",
@@ -683,6 +696,7 @@
     },
     "posting": {
         "showmore": "Mehr anzeigen",
+        "posted": "postet: ",
         "information": {
             "placeholder": "Was gibt's neues?"
         }
