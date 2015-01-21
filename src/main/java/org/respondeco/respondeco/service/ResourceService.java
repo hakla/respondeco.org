@@ -385,41 +385,45 @@ public class ResourceService {
             Set<MatchingEntity> matchingEntities = new HashSet<>();
 
             Long orgId = user.getOrganization().getId();
-            List<Project> projects = projectRepository.findByOrganization(orgId, new RestParameters(0, 100000).buildPageRequest()).getContent();
+            Page<Project> organizations = projectRepository.findByOrganization(orgId, new RestParameters(0, 100000).buildPageRequest());
 
-            // add all projects of the organization to the matchingEntities
-            matchingEntities.addAll(projects);
+            if (organizations != null) {
+                List<Project> projects = organizations.getContent();
 
-            // add all resource offers of the organization
-            matchingEntities.addAll(getAllOffers(orgId));
+                // add all projects of the organization to the matchingEntities
+                matchingEntities.addAll(projects);
 
-            // add all resource requests of all projects of the organization
-            matchingEntities.addAll(
-                projects
-                    .stream()
-                    .map(p -> getAllRequirements(p.getId()))
-                    .reduce(new ArrayList<ResourceRequirement>(), (a, b) -> {
-                        a.addAll(b);
-                        return a;
-                    })
-            );
+                // add all resource offers of the organization
+                matchingEntities.addAll(getAllOffers(orgId));
 
-            matchingEntities.forEach(p -> {
-                matchingTags.addAll(p.getTags());
-            });
+                // add all resource requests of all projects of the organization
+                matchingEntities.addAll(
+                    projects
+                        .stream()
+                        .map(p -> getAllRequirements(p.getId()))
+                        .reduce(new ArrayList<ResourceRequirement>(), (a, b) -> {
+                            a.addAll(b);
+                            return a;
+                        })
+                );
 
-            // filter duplicates by lower case name
-            TreeSet<MatchingTag> collect = matchingTags.stream().distinct().collect(Collectors.toCollection(TreeSet::new));
+                matchingEntities.forEach(p -> {
+                    matchingTags.addAll(p.getTags());
+                });
 
-            Set<MatchingEntity> setToOrder = new HashSet<>(page.getContent());
+                // filter duplicates by lower case name
+                TreeSet<MatchingTag> collect = matchingTags.stream().distinct().collect(Collectors.toCollection(TreeSet::new));
 
-            MatchingImpl matching = new MatchingImpl();
-            matching.setEntities(matchingEntities);
-            matching.setTags(collect);
-            matching.setAPriori(1);
-            entities = matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
+                Set<MatchingEntity> setToOrder = new HashSet<>(page.getContent());
 
-            page = new PageImpl<MatchingEntity>(entities);
+                MatchingImpl matching = new MatchingImpl();
+                matching.setEntities(matchingEntities);
+                matching.setTags(collect);
+                matching.setAPriori(1);
+                entities = matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
+
+                page = new PageImpl<>(entities);
+            }
         }
 
         return page;

@@ -1,0 +1,20 @@
+<div class="project-item resource-item" ng-click="toggle" ng-class="{ 'open': toggled }">
+    <uploaded-image name="resource.logo.id"></uploaded-image>
+    <div class="content">
+        <h2>
+            {{resource.name}}
+            <br />
+            <small>Angebot von <a ng-click="redirectToOrganization(resource.organization.id)">{{ resource.organization.name }}</a></small>
+        </h2>
+        <p>
+            <span>Ende des Angebots: {{ resource.endDate | date }}</span>
+        </p>
+        <p class="last">
+            <span>{{ resource.amount }} Stück verfügbar</span>
+            <progressbar value="100 * resource.amount / (resource.originalAmount)"></progressbar>
+        </p>
+    </div>
+    <div class="details col-xs-12 spacer-top" ng-show="toggled">
+        {{ resource.description }}
+    </div>
+</div>

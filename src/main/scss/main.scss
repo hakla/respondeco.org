@@ -361,10 +361,52 @@ uploaded-image, [uploaded-image] {
 }
 
 .resource-search-container {
+    .resource-item-container {
+        position: relative;
+        height: 200px;
+    }
+
+    .resource-item {
+        position: absolute;
+        padding-top: 70px;
+        min-height: inherit;
+
+        &.open {
+            top: -75px;
+            left: -75px;
+            z-index: 3;
+            height: 200%;
+            width: 150%;
+
+            uploaded-image > div {
+                height: 200px;
+                top: -125px;
+            }
+        }
+    }
+
+    .progress {
+        height: 5px;
+        margin-bottom: 0;
+    }
+
+    .last {
+        margin-bottom: 0;
+    }
+
     uploaded-image {
-        height: 70px;
-        display: block;
-        width: 100%;
+        height: auto;
+
+        > div {
+            height: 70px;
+            display: block;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            cursor: ns-resize;
+            transition: .2s ease all;
+        }
     }
 }
 

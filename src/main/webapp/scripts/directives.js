@@ -303,6 +303,7 @@ angular.module('respondecoApp')
             replace: true,
             templateUrl: 'template/organization.html',
             scope: {
+                className: '=class',
                 value: '@'
             },
             controller: function($scope, $location, Organization) {
@@ -319,6 +320,24 @@ angular.module('respondecoApp')
                         })
                     }
                 });
+            }
+        };
+    }).directive('respResourceItem', function() {
+        return {
+            restrict: 'AE',
+            templateUrl: 'template/resource-item.html',
+            scope: {
+                resource: '='
+            },
+            controller: function($scope, $location, Organization) {
+                $scope.redirectToOrganization = function(id) {
+                    $location.path("/organization/" + id);
+                };
+
+                $scope.toggled = false;
+                $scope.toggle = function() {
+                    $scope.toggled = !$scope.toggled;
+                };
             }
         };
     });

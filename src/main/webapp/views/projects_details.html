@@ -26,7 +26,7 @@
                 <h3 translate="project.details.purpose">Project purpose</h3>
                 <div ng-bind-html="purpose"></div>
             </div>
-            <resp-organization value="{{project.organizationId}}"></resp-organization>
+            <resp-organization value="{{project.organizationId}}" class="'col-sm-8 col-xs-12'"></resp-organization>
             <div class="tags-container clear-left">
                 <h3 translate="project.tags">Tags</h3>
                 <tags-input ng-model="project.propertyTags" add-on-space="true" display-property="name" min-length="1" placeholder="{{'project.tags.placeholder' | translate}}">
