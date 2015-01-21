@@ -2,9 +2,11 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.PropertyTag;
+import org.respondeco.respondeco.domain.ResourceTag;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
 import org.respondeco.respondeco.service.PropertyTagService;
 import org.respondeco.respondeco.web.rest.dto.PropertyTagResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.ResourceTagResponseDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,10 @@ public class PropertyTagController {
             @RequestParam(required = false) String order,
             @RequestParam(required = false) String fields) {
         log.debug("REST request to get PropertyTags");
-        return propertyTagService.getPropertyTags(filter, new RestParameters(page, pageSize, order, fields));
+        RestParameters params = new RestParameters(page, pageSize, order, fields);
+        List<PropertyTag> tags = propertyTagService
+            .getPropertyTags(filter, params);
+        return PropertyTagResponseDTO.fromEntities(tags, params.getFields());
     }
 
 }

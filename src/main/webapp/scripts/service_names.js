@@ -36,6 +36,22 @@ respondecoApp.factory('PropertyTagNames', function ($resource, $cacheFactory) {
     }
 });
 
+respondecoApp.factory('ResourceTagNames', function ($resource, $cacheFactory) {
+    var ResourceTagNamesService = $resource('app/rest/resourcetags', { filter: "", fields: "name" }, { });
+    var cache = $cacheFactory("ResourceTagNames");
+
+    return {
+        getResourceTagNames: function(partialName) {
+            var names = cache.get(partialName);
+            if(!names) {
+                names = ResourceTagNamesService.query({ filter: partialName });
+                cache.put(partialName, names);
+            }
+            return names;
+        }
+    }
+});
+
 respondecoApp.factory('ProjectNames', function ($resource, $cacheFactory) {
     var ProjectNamesService = $resource('app/rest/projects', { filter: "", fields: "name" }, { });
     var cache = $cacheFactory("ProjectNames");

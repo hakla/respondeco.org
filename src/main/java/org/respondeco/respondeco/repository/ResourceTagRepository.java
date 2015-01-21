@@ -15,8 +15,7 @@ import java.util.List;
 @Transactional
 public interface ResourceTagRepository extends JpaRepository<ResourceTag, Long> {
 
-    @Query("SELECT rt FROM ResourceTag rt WHERE rt.name LIKE %?1%")
-    public List<ResourceTag> findWhereNameLike(String filter, Pageable pageable);
+    public List<ResourceTag> findByNameContainingIgnoreCase(String filter, Pageable pageable);
 
     public ResourceTag findByName(String name);
 
