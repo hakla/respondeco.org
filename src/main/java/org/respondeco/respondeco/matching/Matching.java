@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.matching;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,6 +34,6 @@ public interface Matching {
      * @param entities
      * @return Set sorted by probability
      */
-    public Set<ProbabilityEntity> evaluate(Set<MatchingEntity> entities);
+    public List<ProbabilityEntity> evaluate(Set<MatchingEntity> entities);
 
 }

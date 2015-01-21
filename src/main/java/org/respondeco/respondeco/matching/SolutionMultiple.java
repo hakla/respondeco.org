@@ -18,14 +18,23 @@ public class SolutionMultiple extends Solution {
     private FormulaParameter a = new FormulaParameter() {
         @Override
         public double evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
+            double result;
             Set<MatchingTag> inclusive = new TreeSet<>();
             inclusive.add(t);
             inclusive.addAll(V);
 
             double p1 = count.apply(inclusive);
-            double p2 = count.apply(V);
 
-            return A * (p1 / p2);
+            // p1 is the denominator in the equation, if it is 0 then this part would evaluate to NaN
+            if (p1 == 0) {
+                result = 0;
+            } else {
+                double p2 = count.apply(V);
+
+                result = A * ((p1 + aPriori) / (p2 + aPriori));
+            }
+
+            return result;
         }
     };
 

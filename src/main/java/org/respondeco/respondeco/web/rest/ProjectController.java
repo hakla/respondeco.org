@@ -741,12 +741,4 @@ public class ProjectController {
         return responseEntity;
     }
 
-    @Inject
-    ProjectRepository projectRepository;
-
-    @Inject
-    PropertyTagRepository propertyTagRepository;
-
-    @Inject
-    ResourceTagRepository resourceTagRepository;
 }

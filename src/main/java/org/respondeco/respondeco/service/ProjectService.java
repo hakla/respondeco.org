@@ -370,7 +370,6 @@ public class ProjectService {
         }
 
         return page;
-
     }
 
     /**
@@ -536,9 +535,5 @@ public class ProjectService {
         List<Project> followers = currentUser.getFollowProjects();
         followers.remove(selected);
         userRepository.save(currentUser);
-    }
-
-    public Collection<? extends MatchingEntity> getProjectsByOrganizationId(Long orgId) {
-        return projectRepository.findByOrganization(orgId, null).getContent();
     }
 }

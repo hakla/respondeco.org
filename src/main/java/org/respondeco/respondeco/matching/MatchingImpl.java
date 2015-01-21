@@ -1,9 +1,11 @@
 package org.respondeco.respondeco.matching;
 
+import javafx.collections.transformation.SortedList;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Matching algorithm
@@ -46,13 +48,8 @@ public class MatchingImpl implements Matching {
     private Solution solutionMultiple = new SolutionMultiple();
 
     @Override
-    public Set<ProbabilityEntity> evaluate(Set<MatchingEntity> entities) {
-        SortedSet<ProbabilityEntity> sortedSet = new TreeSet<>(new Comparator<ProbabilityEntity>() {
-            @Override
-            public int compare(ProbabilityEntity o1, ProbabilityEntity o2) {
-                return o1.getProbability().compareTo(o2.getProbability());
-            }
-        });
+    public List<ProbabilityEntity> evaluate(Set<MatchingEntity> entities) {
+        List<ProbabilityEntity> p_Entities = new ArrayList<>();
 
         // iterate over all entities
         entities.stream().forEach(entity -> {
@@ -81,14 +78,22 @@ public class MatchingImpl implements Matching {
             // aggregate the probabilities
             double probability = aggregateProbability(probabilities);
 
-            sortedSet.add(new ProbabilityEntity(entity, probability));
+            p_Entities.add(new ProbabilityEntity(entity, probability));
         });
 
-        return sortedSet;
+        p_Entities.sort(new Comparator<ProbabilityEntity>() {
+            @Override
+            public int compare(ProbabilityEntity o1, ProbabilityEntity o2) {
+                return o2.getProbability().compareTo(o1.getProbability());
+            }
+        });
+
+        return p_Entities;
     }
 
     /**
      * For a set of probabilities this function aggregates one probability
+     *
      * @param probabilities
      * @return
      */
@@ -96,7 +101,7 @@ public class MatchingImpl implements Matching {
         double product = probabilities
             .stream()
             .mapToDouble(p -> p.getProbability())
-            .reduce(0, (a, b) -> a * b);
+            .reduce(1, (a, b) -> a * b);
 
         return Math.pow(product, 1 / (double) probabilities.size());
     }
