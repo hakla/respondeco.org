@@ -14,11 +14,11 @@
             <progressbar value="100 * resource.amount / (resource.originalAmount)"></progressbar>
         </p>
     </div>
-    <div class="details col-xs-12 spacer-top" ng-show="toggled">
-        {{ resource.description }}
-    </div>
-
-    <button ng-show="isClaimable(resource)" ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
-        Request resource
-    </button>
 </div>
+
+<div class="details col-xs-12 spacer-top">
+    {{ resource.description }}
+</div>
+<button ng-show="isClaimable(resource)" ng-click="$claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
+    Request resource
+</button>

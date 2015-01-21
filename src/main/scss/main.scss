@@ -370,13 +370,12 @@ uploaded-image, [uploaded-image] {
         position: absolute;
         padding-top: 70px;
         min-height: inherit;
+        top: 0;
+        transition: .2s ease all;
 
         &.open {
-            top: -75px;
-            left: -75px;
+            top: -200px;
             z-index: 3;
-            height: 200%;
-            width: 150%;
 
             uploaded-image > div {
                 height: 200px;
