@@ -259,7 +259,7 @@ describe('Resource Controller Tests ', function () {
             expect(ResourceService.query).toHaveBeenCalled();
 
             ResourceService.query.calls.mostRecent().args[1]({
-                res: 'resources'
+                resourceOffers: []
             });
 
             ResourceService.query.calls.mostRecent().args[2]();

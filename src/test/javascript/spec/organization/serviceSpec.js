@@ -35,9 +35,9 @@ describe('Organization Service Tests ', function () {
         });
 
         it('should call backend when querying organization', function(){
-            var textMessages = [{ receiver: "test", content: "test" }];
+            var organizations = {};
 
-            httpBackend.expectGET('app/rest/organizations').respond(textMessages);
+            httpBackend.expectGET('app/rest/organizations').respond(organizations);
 
             //WHEN
             serviceTested.query();
@@ -69,7 +69,7 @@ describe('Organization Service Tests ', function () {
         });
 
         it('should call backend to get all postings', function() {
-            var returnData = [];
+            var returnData = {};
             httpBackend.expectGET('app/rest/organizations/1/postings').respond(returnData);
 
             //WHEN

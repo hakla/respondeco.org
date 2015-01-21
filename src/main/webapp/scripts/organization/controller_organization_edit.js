@@ -44,6 +44,10 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
         return isNew;
     };
 
+    $scope.setRootScopeOrganization = function() {
+        $rootScope._account.organization = {};
+    }
+
     $scope.create = function() {
         organization.npo = $scope.organization.isNpo || false;
         organization.name = $scope.organization.name;
@@ -56,7 +60,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
                 $scope.clear();
 
                 // Set global organization, otherwise on routeChange the "Create an organization" dialog would be shown
-                $rootScope._account.organization = {};
+                $scope.setRootScopeOrganization();
 
                 // Refresh the account of the currently logged in user
                 AuthenticationSharedService.refresh();
@@ -106,7 +110,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
                 $location.path('organization');
 
                 // Set global organization, otherwise on routeChange the "Create an organization" dialog would be shown
-                $rootScope._account.organization = null;
+                $scope.setRootScopeOrganization();
 
                 // Refresh the account of the currently logged in user
                 AuthenticationSharedService.refresh();

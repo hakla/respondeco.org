@@ -41,7 +41,7 @@ describe('TextMessage Controller Tests ', function () {
                     error: "Some error message"
                 }
             });
-            expect($scope.senderror).toBe("ERROR");
+            expect($scope.senderrorGeneral).toBe("ERROR");
             expect($scope.sendsuccess).toBeNull();
         });
 

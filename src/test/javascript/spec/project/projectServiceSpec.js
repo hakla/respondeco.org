@@ -33,22 +33,6 @@ describe('Project Service Tests ', function () {
             serviceTested.query({filter: "test"});
         });
 
-        it('should call the backend with tags parameter when querying for projects by tags', function(){
-            var returnData = {};
-            httpBackend.expectGET('app/rest/projects?tags=test,foo,bar').respond(returnData);
-
-            //WHEN
-            serviceTested.query({tags: "test,foo,bar"});
-        });
-
-        it('should call backend with filter and tags parameter when querying for projects by name and tags', function(){
-            var returnData = {};
-            httpBackend.expectGET('app/rest/projects?filter=test&tags=test,foo,bar').respond(returnData);
-
-            //WHEN
-            serviceTested.query({filter: "test", tags: "test,foo,bar"});
-        });
-
         it('should call backend for aggregated project rating', function(){
             var returnData = {count: 1, rating: 2.0};
             httpBackend.expectGET('app/rest/projects/2/ratings').respond(returnData);
@@ -104,7 +88,7 @@ describe('Project Service Tests ', function () {
         });
 
         it('should call backend to get all postings', function() {
-            var returnData = [];
+            var returnData = {};
             httpBackend.expectGET('app/rest/projects/2/postings').respond(returnData);
 
             //WHEN
