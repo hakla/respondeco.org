@@ -271,7 +271,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                     });
                 });
 
-                calculateCollected();
+                $scope.calculateCollected();
 
             });
         });
@@ -289,9 +289,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
 
-
-
-    var calculateCollected = function() {
+    $scope.calculateCollected = function() {
         var reqs = $scope.resourceRequirementsWithMatches;
         var quantifier;
         var percentage = 0;
@@ -674,13 +672,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 $scope.postings = $scope.postings.concat(data.postings);
         });
     };
-
-    var resetPostings = function() {
-        $scope.postingPage = -1;
-        $scope.postingsTotal = null;
-        $scope.postings = [];
-        $scope.showMorePostings();
-    }
 
     $scope.canShowMorePostings = function() {
         return $scope.postings.length < $scope.postingsTotal;

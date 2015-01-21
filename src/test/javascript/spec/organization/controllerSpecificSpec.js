@@ -12,21 +12,23 @@ describe('Controllers Tests ', function () {
         var UserService;
         var existingOrganization;
         var routeParams;
+        var SocialMediaService;
 
-        beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Organization, User, Account) {
+        beforeEach(inject(function ($rootScope, $controller, $location, $routeParams, Organization, User, Account, SocialMedia) {
             $scope = $rootScope.$new();
             location = $location;
             OrganizationService = Organization;
             AccountService = Account;
             UserService = User;
             routeParams = $routeParams;
+            SocialMediaService = SocialMedia;
 
             existingOrganization = {id: 1};
 
             spyOn(AccountService, 'get');
             $routeParams.id = 1;
             $controller('OrganizationController', {$scope: $scope, $location: $location, $routeParams: $routeParams, resolvedOrganization: [1],
-                Organization: Organization, Account: Account, User: User});
+                Organization: Organization, Account: Account, User: User, SocialMedia: SocialMediaService});
         }));
 
         it('should set organizations to resolvedOrganization', function() {
@@ -121,5 +123,54 @@ describe('Controllers Tests ', function () {
             expect($scope.showFollow()).toBe(true);
             expect($scope.showUnfollow()).toBe(false);
         });
+
+        it('should get all connections for the current user', function() {
+
+            spyOn(SocialMediaService, 'getConnections');
+
+            $scope.getConnections();
+
+            expect(SocialMediaService.getConnections).toHaveBeenCalled();
+
+            SocialMediaService.getConnections.calls.mostRecent().args[0]([
+                {provider: 'twitter'},
+                {provider: 'facebook'},
+                {provider: 'xing'}
+            ]);
+
+            expect($scope.twitterConnected).toBe(true);
+            expect($scope.facebookConnected).toBe(true);
+            expect($scope.xingConnected).toBe(true);
+        });
+
+        it('should add a posting', function() {
+            spyOn(SocialMediaService, 'createTwitterPost');
+            spyOn(SocialMediaService, 'createFacebookPost');
+            spyOn(SocialMediaService, 'createXingPost');
+            spyOn(OrganizationService, 'addPostingForOrganization');
+
+            $scope.postingInformation = 'posting';
+
+
+            $scope.postOnTwitter = true;
+            $scope.postOnXing = true;            
+            $scope.postOnFacebook = true;
+
+            $scope.addPosting();
+
+            expect(OrganizationService.addPostingForOrganization).toHaveBeenCalledWith({ id : 1 }, 'posting', jasmine.any(Function));
+            expect(SocialMediaService.createTwitterPost).toHaveBeenCalledWith({string: 'posting'});
+            expect(SocialMediaService.createFacebookPost).toHaveBeenCalledWith({string: 'posting'});
+            expect(SocialMediaService.createXingPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
+
+
+        });
+
+        it('should return if posting is too short', function() {
+            $scope.postingInformation = 'post';
+            $scope.addPosting();
+        });
+
+
     });
 });
