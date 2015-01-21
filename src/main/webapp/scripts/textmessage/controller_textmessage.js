@@ -55,7 +55,6 @@ respondecoApp.controller('TextMessageController', function ($scope, TextMessage,
                             $translate(error.data.key).then(function(translated) {
                                 $scope.senderrorMessage = translated;
                             });
-                            console.log("blabla");
                         } else {
                             $scope.senderrorGeneral = "ERROR";
                         }
