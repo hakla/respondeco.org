@@ -9,6 +9,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.respondeco.respondeco.matching.MatchingEntity;
+import org.respondeco.respondeco.matching.MatchingTag;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -30,7 +32,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class ResourceBase extends AbstractAuditingEntity implements Serializable {
+public class ResourceBase extends AbstractAuditingEntity implements Serializable, MatchingEntity {
 
     @NotNull
     @Column(length = 50)
@@ -60,6 +62,11 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
 
     public void addResourceTag(ResourceTag tag) {
         this.resourceTags.add(tag);
+    }
+
+    @Override
+    public Set<MatchingTag> getTags() {
+        return new HashSet<>(resourceTags);
     }
 
 }

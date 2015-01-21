@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,13 +11,17 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
+import org.respondeco.respondeco.matching.MatchingEntity;
+import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A Project
@@ -29,7 +32,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo", "FollowingUsers"})
-public class Project extends AbstractAuditingNamedEntity implements Serializable {
+public class Project extends AbstractAuditingNamedEntity implements Serializable, MatchingEntity {
 
     @Column(name = "purpose", length = 2048)
     private String purpose;
@@ -90,4 +93,8 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     )
     private List<User> FollowingUsers;
 
+    @Override
+    public Set<MatchingTag> getTags() {
+        return new HashSet<>(propertyTags);
+    }
 }

@@ -7,6 +7,9 @@ import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.domain.QResourceMatch;
 import org.respondeco.respondeco.domain.QResourceOffer;
+import org.respondeco.respondeco.matching.MatchingEntity;
+import org.respondeco.respondeco.matching.MatchingImpl;
+import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -14,15 +17,16 @@ import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * Created by Roman Kern on 15.11.14.
  * Definition for
@@ -367,6 +371,61 @@ public class ResourceService {
             log.debug("TOTALELEMENTS: " + page.getTotalElements());
             log.debug("TOTALPAGES: " + page.getTotalPages());
         }
+
+        return orderByProbability(page);
+    }
+
+    private Page<MatchingEntity> orderByProbability(Page<MatchingEntity> page) {
+        User user = userService.getUserWithAuthorities();
+        List<MatchingEntity> entities;
+
+        // check if a user is currently signed in
+        if (user.getOrganization() != null) {
+            Set<MatchingTag> matchingTags = new HashSet<>();
+            Set<MatchingEntity> matchingEntities = new HashSet<>();
+
+            Long orgId = user.getOrganization().getId();
+            Page<Project> organizations = projectRepository.findByOrganization(orgId, new RestParameters(0, 100000).buildPageRequest());
+
+            if (organizations != null) {
+                List<Project> projects = organizations.getContent();
+
+                // add all projects of the organization to the matchingEntities
+                matchingEntities.addAll(projects);
+
+                // add all resource offers of the organization
+                matchingEntities.addAll(getAllOffers(orgId));
+
+                // add all resource requests of all projects of the organization
+                matchingEntities.addAll(
+                    projects
+                        .stream()
+                        .map(p -> getAllRequirements(p.getId()))
+                        .reduce(new ArrayList<ResourceRequirement>(), (a, b) -> {
+                            a.addAll(b);
+                            return a;
+                        })
+                );
+
+                matchingEntities.forEach(p -> {
+                    matchingTags.addAll(p.getTags());
+                });
+
+                // filter duplicates by lower case name
+                TreeSet<MatchingTag> collect = matchingTags.stream().distinct().collect(Collectors.toCollection(TreeSet::new));
+
+                Set<MatchingEntity> setToOrder = new HashSet<>(page.getContent());
+
+                MatchingImpl matching = new MatchingImpl();
+                matching.setEntities(matchingEntities);
+                matching.setTags(collect);
+                matching.setAPriori(1);
+                entities = matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
+
+                page = new PageImpl<>(entities);
+            }
+        }
+
         return page;
     }
 
@@ -661,5 +720,6 @@ public class ResourceService {
 
         return resourceMatch;
     }
+
 
 }

@@ -3,6 +3,12 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.matching.MatchingEntity;
+import org.respondeco.respondeco.matching.MatchingImpl;
+import org.respondeco.respondeco.matching.MatchingTag;
+import org.respondeco.respondeco.repository.ProjectRepository;
+import org.respondeco.respondeco.repository.PropertyTagRepository;
+import org.respondeco.respondeco.repository.ResourceTagRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -24,9 +30,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * REST controller for managing Project.
@@ -734,4 +740,5 @@ public class ProjectController {
         }
         return responseEntity;
     }
+
 }

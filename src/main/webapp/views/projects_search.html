@@ -28,7 +28,10 @@
         </form>
 
         <div class="row">
-            <resp-project project="project" on-project-click="redirectToProject(project)" ng-repeat-start="project in projects"></resp-project>
+            <div ng-repeat-start="project in projects"></div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <resp-project project="project" on-project-click="redirectToProject(project)"></resp-project>
+            </div>
             <div class="visible-xs clearfix"></div>
             <div class="visible-xs spacer-top"></div>
             <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>

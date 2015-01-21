@@ -159,6 +159,7 @@
         "posted": "postet: ",
         "rating": "Aktuelle Bewertung:",
         "found": "gefundene Projekte",
+        "by": "Ein Projekt der Organisation",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.respondeco.respondeco.matching.MatchingTag;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Data
 @ToString(exclude = "projects")
-public class PropertyTag extends AbstractAuditingEntity implements Serializable {
+public class PropertyTag extends AbstractAuditingEntity implements Serializable, MatchingTag {
 
     @Column(name = "name")
     @NotNull

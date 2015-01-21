@@ -210,7 +210,7 @@ angular.module('respondecoApp')
                         $target = $target;
                     }
 
-                    $target.parent().find(".selected").removeClass("selected");
+                    $target.parents(":eq(3)").find(".selected").removeClass("selected");
                     $target.addClass("selected");
 
                     $scope.onProjectClick();
@@ -297,5 +297,47 @@ angular.module('respondecoApp')
                 });
             }
         }
-    });
+    }).directive('respOrganization', function() {
+        return {
+            restrict: 'AE',
+            replace: true,
+            templateUrl: 'template/organization.html',
+            scope: {
+                className: '=class',
+                value: '@'
+            },
+            controller: function($scope, $location, Organization) {
+                $scope.redirectToOrganization = function(id) {
+                    $location.path("/organization/" + id);
+                };
 
+                $scope.$watch('value', function(value) {
+                    if (value != '') {
+                        Organization.get({
+                            id: value
+                        }, function(org) {
+                            $scope.organization = org;
+                        })
+                    }
+                });
+            }
+        };
+    }).directive('respResourceItem', function() {
+        return {
+            restrict: 'AE',
+            templateUrl: 'template/resource-item.html',
+            scope: {
+                resource: '='
+            },
+            controller: function($scope, $location, Organization) {
+                $scope.redirectToOrganization = function(id) {
+                    $location.path("/organization/" + id);
+                };
+
+                $scope.toggled = false;
+                $scope.toggle = function() {
+                    $scope.toggled = !$scope.toggled;
+                };
+            }
+        };
+    });
