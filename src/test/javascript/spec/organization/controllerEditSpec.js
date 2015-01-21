@@ -44,7 +44,7 @@ describe('Controllers Tests ', function () {
 
         it('should call Organization.save if new', function() {
             spyOn(OrganizationService, 'save');
-            $scope.setRootScopeOrganization = function() {};
+            $scope.setRootScopeOrganization = function(value) {};
             $scope.organization = {
                 npo: false,
                 name: 'test',
@@ -73,7 +73,7 @@ describe('Controllers Tests ', function () {
 
         it('should call Organization.delete', function() {
             spyOn(OrganizationService, 'delete');
-            $scope.setRootScopeOrganization = function() {};
+            $scope.setRootScopeOrganization = function(value) {};
             $scope.delete(1);
             $scope.delete(1);
             expect(OrganizationService.delete).toHaveBeenCalledWith({
