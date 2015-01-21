@@ -210,7 +210,7 @@ angular.module('respondecoApp')
                         $target = $target;
                     }
 
-                    $target.parent().find(".selected").removeClass("selected");
+                    $target.parents(":eq(3)").find(".selected").removeClass("selected");
                     $target.addClass("selected");
 
                     $scope.onProjectClick();

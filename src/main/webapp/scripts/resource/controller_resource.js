@@ -112,10 +112,10 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
     $scope.selectRequirement = function (requirement, $event) {
         var $target = $($event.target);
 
-        $target.closest("ul").find(".selected").removeClass("selected");
+        $target.closest(".resources").find(".selected").removeClass("selected");
 
-        if ($target.is("li") === false) {
-            $target = $target.closest("li");
+        if ($target.is(".resource") === false) {
+            $target = $target.closest(".resource");
         } else {
             $target = $target;
         }

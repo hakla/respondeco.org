@@ -1,38 +1,42 @@
 <div class="row project-details">
-    <div>
-        <div class="col-md-2">
-            <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
+    <div class="col-xs-12 pull-left">
+        <div class="clearfix">
+            <div class="col-xs-2">
+                <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
+            </div>
+            <div class="text-right col-xs-10">
+                <button type="button" ng-show="showFollow()&&!editable" name="follow_button" class="btn btn-success ng-hide" ng-click="follow()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span translate="follow.button" class="ng-scope">Folgen</span>
+                </button>
+                <button type="button" ng-show="showUnfollow()&&!editable" name="unfollow_button" class="btn btn-danger ng-hide" ng-click="unfollow()">
+                    <span class="glyphicon glyphicon-minus"></span>
+                    <span translate="follow.button" class="ng-scope">Folgen</span>
+                </button>
+                <button class="btn btn-primary" ng-click='edit()' translate='general.edit' ng-show="editable">Edit</button>
+            </div>
         </div>
-        <div class="text-right col-md-10">
-            <button type="button" ng-show="showFollow()&&!editable" name="follow_button" class="btn btn-success ng-hide" ng-click="follow()">
-                <span class="glyphicon glyphicon-plus"></span>
-                <span translate="follow.button" class="ng-scope">Folgen</span>
-            </button>
-            <button type="button" ng-show="showUnfollow()&&!editable" name="unfollow_button" class="btn btn-danger ng-hide" ng-click="unfollow()">
-                <span class="glyphicon glyphicon-minus"></span>
-                <span translate="follow.button" class="ng-scope">Folgen</span>
-            </button>
-            <button class="btn btn-primary" ng-click='edit()' translate='general.edit' ng-show="editable">Edit</button>
-        </div>
-        <div style="clear:both;"></div>
-        <div class="col-xs-12">
+        <div class="spacer-top"></div>
+        <div class="col-sm-8 col-xs-12">
             <h2 class="spacer-top" translate="project.details.title" translate-values="{project: '{{project.name}}'}">{{project.name}}</h2>
-        </div>
-    </div>
-    <div class="modal-body">
-        <div class="col-md-6">
-            <resp-organization value="{{project.organizationId}}" class="'col-sm-4 col-xs-12 visible-xs'"></resp-organization>
+            <span class="badge" ng-repeat="tag in project.propertyTags">{{ tag.name }}</span>
+            <div class="visible-xs spacer-top-2"></div>
             <div class="clearfix">
                 <uploaded-image name="project.logo.id" class="project-logo pull-left"></uploaded-image>
                 <h3 translate="project.details.purpose">Project purpose</h3>
                 <div ng-bind-html="purpose"></div>
             </div>
-            <div class="tags-container clear-left">
-                <h3 translate="project.tags">Tags</h3>
-                <tags-input ng-model="project.propertyTags" add-on-space="true" display-property="name" min-length="1" placeholder="{{'project.tags.placeholder' | translate}}">
-                    <auto-complete source="getPropertyTagNames($query)" min-length="1"></auto-complete>
-                </tags-input>
+            <div class="visible-xs spacer-top-2"></div>
+        </div>
+        <div class="col-sm-4 col-xs-12 spacer-top">
+            <p translate="project.by"></p>
+            <div class="row">
+                <resp-organization value="{{project.organizationId}}" class="'organization col-lg-6 col-md-8 col-sm-12 col-xs-8'"></resp-organization>
             </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="col-md-8">
             <div class="rating-container">
                 <div class="row">
                     <div id="rating" class="col-md-12">
@@ -117,13 +121,11 @@
                 </form>
             </div>
         </div>
-
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-4 col-xs-12">
             <img src="/images/approved.png" alt="approved" class="approved" ng-show="project.successful" />
-            <resp-organization value="{{project.organizationId}}" class="'col-sm-4 col-xs-12 hidden-xs'"></resp-organization>
+            <div class="spacer-top"></div>
             <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
-                <div class="col-md-2 pull-right"><strong>{{project.startDate | date}}</strong></div>
+                <div class="pull-right"><strong>{{project.startDate | date}}</strong></div>
                 <strong>{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
                 <progressbar class="progress-striped" value="50"></progressbar>
             </div>
@@ -139,14 +141,14 @@
                     <accordion-group ng-open="item.id" ng-repeat="item in project.resourceRequirements">
                         <accordion-heading>
                             <div style="height: 30px; line-height: 30px;" class="row hover-toggle" ng-click="expandResource(item, $event)">
-                                <div class="col-md-6">{{item.name}}</div>
-                                <div class="col-md-2" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}">
-                                    <button class="btn btn-primary" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
-                                </div>
-                                <div class="col-md-4" style="text-align: right;">
+                                <div class="col-xs-4 pull-right" style="text-align: right;">
                                     <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
                                     <i class="glyphicon" ng-class="{'glyphicon-chevron-down': item.expanded, 'glyphicon-chevron-right': !item.expanded}"></i>
                                 </div>
+                                <div class="col-xs-2 pull-right" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)">
+                                    <button class="btn btn-primary" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                                </div>
+                                <div class="ellipsis" tooltip="{{item.name}}">{{item.name}}</div>
                             </div>
                         </accordion-heading>
                         <ul>
@@ -167,10 +169,8 @@
                 </accordion>
             </div>
 
-            <img src="{{staticMap}}"/>
-
+            <div class="dynamic-image" style="height: 200px; background-image: url('{{staticMap}}');"></div>
         </div>
-    </div>
 
     <div class="modal fade modal-apply" id="apply" tabindex="-1" role="dialog" aria-labelledby="applyLabel" aria-hidden="true">
         <div class="modal-dialog">

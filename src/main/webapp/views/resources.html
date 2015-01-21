@@ -4,7 +4,7 @@
     </div>
 
     <form name="searchForm" class="form-search clearfix" role="form" ng-submit="search()" novalidate>
-        <div class="col-xs-9">
+        <div class="col-xs-12 col-sm-7 col-md-8 clearfix">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder=" {{'resource.placeholder.search' | translate}}" ng-model="resourceSearch.name" />
                 <span class="input-group-btn">
@@ -14,7 +14,10 @@
                 </span>
             </div>
         </div>
-        <div class="form-group col-xs-3">
+
+        <div class="visible-xs spacer-top clearfix"></div>
+
+        <div class="form-group col-xs-12 col-sm-5 col-md-4">
             <button type="submit" class="btn {{ resourceSearch.isFree ? 'btn-success' : 'btn-default'}}" ng-model="resourceSearch.isFree" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
                 <span class="glyphicon {{ resourceSearch.isFree ? 'glyphicon-check' : 'glyphicon-unchecked' }}"></span> {{'resource.search.free' | translate}}
             </button>
@@ -35,18 +38,28 @@
     </form>
 
     <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 resource-item-container" ng-repeat-start="resource in resources">
-            <resp-resource-item resource="resource"></resp-resource-item>
+        <div class="col-xs-12">
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 col-sm-offset-0 resource-item-container" ng-repeat-start="resource in resources" ng-class="{ 'open': toggled }" ng-click="toggled = !toggled">
+                <resp-resource-item resource="resource"></resp-resource-item>
+                <div class="details col-xs-12 spacer-top">
+                    {{ resource.description }}
+                </div>
+                <div class="col-xs-12 row btn-claim">
+                    <button ng-show="isClaimable(resource)" ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
+                        Request resource
+                    </button>
+                </div>
+            </div>
+            <div class="visible-xs clearfix"></div>
+            <div class="visible-xs spacer-top"></div>
+            <div class="visible-sm clearfix" ng-if="$index % 3 == 2"></div>
+            <div class="visible-sm spacer-top" ng-if="$index % 3 == 2"></div>
+            <div class="visible-md clearfix" ng-if="$index % 4 == 3"></div>
+            <div class="visible-md spacer-top" ng-if="$index % 4 == 3"></div>
+            <div class="visible-lg clearfix" ng-if="$index % 4 == 3"></div>
+            <div class="visible-lg spacer-top" ng-if="$index % 4 == 3"></div>
+            <div ng-repeat-end></div>
         </div>
-        <div class="visible-xs clearfix"></div>
-        <div class="visible-xs spacer-top"></div>
-        <div class="visible-sm clearfix" ng-if="$index % 3 == 2"></div>
-        <div class="visible-sm spacer-top" ng-if="$index % 3 == 2"></div>
-        <div class="visible-md clearfix" ng-if="$index % 4 == 3"></div>
-        <div class="visible-md spacer-top" ng-if="$index % 4 == 3"></div>
-        <div class="visible-lg clearfix" ng-if="$index % 4 == 3"></div>
-        <div class="visible-lg spacer-top" ng-if="$index % 4 == 3"></div>
-        <div ng-repeat-end></div>
     </div>
 
     <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize" total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()" ng-show="totalItems>filter.pageSize"></pagination>
@@ -74,30 +87,38 @@
                             </div>
                         </div>
 
-                        <div class="clearfix">
+                        <div class="col-xs-12">
                             <h4 translate="resource.claim.chooseproject">choose project</h4>
-                            <div class="col-sm-12 spacer-top project-overview">
-                                <resp-project project="project" on-project-click="selectProject(project, $event)"
-                                              ng-repeat="project in projects" tags="false"></resp-project>
+                            <div class="spacer-top project-overview">
+                                <div ng-repeat="project in projects">
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <resp-project project="project" on-project-click="selectProject(project, $event)" tags="false"></resp-project>
+                                    </div>
+                                    <div class="visible-xs clearfix"></div>
+                                    <div class="visible-xs spacer-top"></div>
+                                    <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
+                                    <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
+                                    <div class="visible-md visible-lg clearfix" ng-if="$index % 3 == 2"></div>
+                                    <div class="visible-md visible-lg spacer-top" ng-if="$index % 3 == 2"></div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="clearfix">
+                        <div class="col-xs-12">
                             <h4 translate="resource.claim.chooserequirement" ng-show="showRequirements">choose requirement</h4>
-                            <ul class="resources spacer-top">
-                                <li ng-click="selectRequirement(requirement, $event)" class="resource row" ng-repeat="requirement in resourceRequirements">
-                                    <div class="col-md-2">
-                                        <img src="" alt="">
+                            <div class="resources spacer-top">
+                                <div ng-click="selectRequirement(requirement, $event)" class="resource" ng-repeat="requirement in resourceRequirements">
+                                    <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <resp-resource-item resource="requirement"></resp-resource-item>
                                     </div>
-                                    <div class="pull-right col-md-6">
-                                        {{ requirement.description }}
-                                    </div>
-                                    <h2 class="col-md-4">
-                                        {{ requirement.name }}
-                                        <span ng-hide="requirement.amount == 1">({{ requirement.amount }})</span>
-                                    </h2>
-                                </li>
-                            </ul>
+                                    <div class="visible-xs clearfix"></div>
+                                    <div class="visible-xs spacer-top"></div>
+                                    <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
+                                    <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
+                                    <div class="visible-md visible-lg clearfix" ng-if="$index % 3 == 2"></div>
+                                    <div class="visible-md visible-lg spacer-top" ng-if="$index % 3 == 2"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
