@@ -9,10 +9,10 @@ import lombok.*;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Probability {
+public class ProbabilityEntity {
 
     @NonNull
-    private MatchingTag matchingTag;
-    private double probability;
+    private MatchingEntity matchingEntity;
+    private Double probability;
 
 }

@@ -71,6 +71,12 @@
                                 <span translate="global.menu.resource">Resource</span>
                             </a>
                         </li>
+                        <li ng-switch-when="true">
+                            <a href="#/resourcemessages">
+                                <span class="glyphicon glyphicon-inbox"></span>
+                                <span translate="global.menu.resourcemanagement">Resource Management</span>
+                            </a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav nav-pills navbar-right">
                         <li class="dropdown pointer" ng-class="{ highlight: newMessages > 0 }">

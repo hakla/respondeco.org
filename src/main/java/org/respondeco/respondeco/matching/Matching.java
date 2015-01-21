@@ -29,10 +29,10 @@ public interface Matching {
     public double getAPriori();
 
     /**
-     * Calculate the probability of for a given tag
-     * @param tag
-     * @return
+     * Calculate the probabilities for a given set of entities
+     * @param entities
+     * @return Set sorted by probability
      */
-    public Set<Probability> evaluate(MatchingTag tag);
+    public Set<ProbabilityEntity> evaluate(Set<MatchingEntity> entities);
 
 }

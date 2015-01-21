@@ -10,8 +10,8 @@ public class Solution {
     double value = 0;
     Formula formula;
 
-    public final Probability evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
-        return new Probability(t, formula.evaluate(t, V, N_E, N_T, aPriori, count));
+    public final ProbabilityTag evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
+        return new ProbabilityTag(t, formula.evaluate(t, V, N_E, N_T, aPriori, count));
     }
 
     public Solution add(FormulaParameter f) {

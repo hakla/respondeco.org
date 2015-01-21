@@ -34,7 +34,7 @@ public class SolutionMultiple extends Solution {
         public double evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
             // b/n + SUM( P( T=t | V=v_i ) )
 
-            List<Probability> probabilities = new ArrayList<>();
+            List<ProbabilityTag> probabilities = new ArrayList<>();
             double probability = B / V.size();
 
             V.forEach(v -> {
