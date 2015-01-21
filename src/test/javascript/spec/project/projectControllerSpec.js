@@ -8,13 +8,15 @@ describe('Project Controller Tests ', function() {
 
     describe('ProjectController', function() {
         var scope, location, routeParams, ProjectNamesService, PropertyTagsNamesService, ProjectService,
-            ResourceRequirementService, AccountService, sce, OrganizationService, translate, SocialMediaService;
+            ResourceRequirementService, AccountService, sce, OrganizationService, translate, SocialMediaService,
+            rootScope, AuthenticationSharedService;
         var fakeDeferred;
         var emptyProject;
         var existingProject;
 
         beforeEach(inject(function($rootScope, $controller, $location, $q, $sce, $routeParams, ProjectNames,
-                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate, SocialMedia) {
+                                   PropertyTagNames, Project, ResourceRequirement, Account, Organization, $translate, SocialMedia,
+                                   AuthenticationSharedService) {
             scope = $rootScope.$new();
             location = $location;
             translate = $translate;
@@ -28,6 +30,7 @@ describe('Project Controller Tests ', function() {
             OrganizationService = Organization;
             SocialMediaService = SocialMedia;
             sce = $sce;
+            rootScope = $rootScope;
 
             fakeDeferred = {
                 $promise: {
@@ -52,17 +55,18 @@ describe('Project Controller Tests ', function() {
 
             $controller('ProjectController', {
                 $scope: scope,
+                Project: ProjectService,
+                Organization: OrganizationService,
+                ResourceRequirement: ResourceRequirementService,
+                PropertyTagNames: PropertyTagsNamesService,
                 $location: location,
                 $routeParams: routeParams,
-                $translate: translate,
-                Project: ProjectService,
-                ProjectNames: ProjectNamesService,
-                PropertyTagNames: PropertyTagsNamesService,
-                ResourceRequirement: ResourceRequirementService,
                 $sce: sce,
+                $translate: translate,
+                ProjectNames: ProjectNamesService,
                 Account: AccountService,
-                Organization: OrganizationService,
-                SocialMedia: SocialMediaService
+                SocialMedia: SocialMediaService,
+                $rootScope: rootScope
             });
 
             scope.showOrgRatingModal = function() {}
@@ -97,11 +101,14 @@ describe('Project Controller Tests ', function() {
 
         it('should call delete', function() {
             spyOn(ProjectService, 'delete');
-            scope.delete(1);
+
+            routeParams.id = 1;
+            scope.delete();
             expect(ProjectService.delete).toHaveBeenCalledWith({
                 id: 1
             }, jasmine.any(Function));
             ProjectService.delete.calls.mostRecent().args[1]();
+            expect(location.path()).toBe('/projects');
         });
 
         it('should redirect', function() {
@@ -253,7 +260,6 @@ describe('Project Controller Tests ', function() {
             // set current project organization id
             scope.project.organizationId = 2;
             spyOn(AccountService, 'get');
-            spyOn(OrganizationService, 'get');
             spyOn(OrganizationService, 'getResourceOffers');
 
 
@@ -262,29 +268,18 @@ describe('Project Controller Tests ', function() {
 
             AccountService.get.calls.mostRecent().args[0]({
                 id: 1,
-                organizationId: 1
+                organization: { id: 1 }
             });
             expect(scope.ProjectApply.account.id).toBe(1);
 
-            expect(OrganizationService.get).toHaveBeenCalledWith({ id: 1}, jasmine.any(Function));
+            expect(OrganizationService.getResourceOffers).toHaveBeenCalledWith({ id: 1}, null, jasmine.any(Function));
 
-            // simulate success callback
-            OrganizationService.get.calls.mostRecent().args[1]({
-                id: 1,
-                organizationId: 1,
-                owner: { id: 1}
-            });
-
-            expect(OrganizationService.getResourceOffers).toHaveBeenCalledWith({ id: 1}, jasmine.any(Function));
-
-            OrganizationService.getResourceOffers.calls.mostRecent().args[1](
+            OrganizationService.getResourceOffers.calls.mostRecent().args[2](
                 [
                     { amount: 10 },
                     { amount: 20 },
                 ]
             );
-
-            expect(scope.ProjectApply.organization.owner.id).toBe(1);
             expect(scope.resourceOffers.length).toBe(2);
         });
 

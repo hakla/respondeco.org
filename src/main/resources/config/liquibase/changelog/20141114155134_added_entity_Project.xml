@@ -18,7 +18,7 @@
             <column name="organization_id" type="bigint"/>
             <column name="manager_id" type="bigint"/>
             <column name="name" type="varchar(255)"/>
-            <column name="purpose" type="varchar(2048)"/>
+            <column name="purpose" type="varchar(255)"/>
             <column name="is_concrete" type="boolean" defaultValue="false"/>
             <column name="start_date" type="date" />
 

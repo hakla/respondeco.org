@@ -11,6 +11,7 @@ spring:
         serverName: localhost
         username: root
         password:
+        cachePrepStmts: true
 
     jpa:
         database-platform: org.hibernate.dialect.MySQLInnoDBDialect
