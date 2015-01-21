@@ -25,7 +25,7 @@ describe('Controllers Tests ', function () {
             spyOn(AccountService, 'get');
             $routeParams.id = 'new';
 
-            $controller('OrganizationControllerEdit', {$scope: $scope, $location: $location, $routeParams: $routeParams, resolvedOrganization: [1], 
+            $controller('OrganizationControllerEdit', {$scope: $scope, $location: $location, $routeParams: $routeParams, resolvedOrganization: [1],
                 Organization: Organization, Account: Account, User: User, OrgJoinRequest: OrgJoinRequest, TextMessage: TextMessage});
 
             // success callback
@@ -44,6 +44,7 @@ describe('Controllers Tests ', function () {
 
         it('should call Organization.save if new', function() {
             spyOn(OrganizationService, 'save');
+            $scope.setRootScopeOrganization = function(value) {};
             $scope.organization = {
                 npo: false,
                 name: 'test',
@@ -72,6 +73,7 @@ describe('Controllers Tests ', function () {
 
         it('should call Organization.delete', function() {
             spyOn(OrganizationService, 'delete');
+            $scope.setRootScopeOrganization = function(value) {};
             $scope.delete(1);
             $scope.delete(1);
             expect(OrganizationService.delete).toHaveBeenCalledWith({

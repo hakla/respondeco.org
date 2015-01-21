@@ -137,7 +137,7 @@ describe('Project Controller Tests ', function() {
             scope.resource = {name: 'test', amount: 2, isEssential: true};
             scope.clearRequirement();
 
-            expect(scope.resource).toEqual({resourceTags:[], isEssential: false});
+            expect(scope.resource).toEqual({resourceTags:[], isEssential: false, originalAmount: null});
         });
 
         it('should remove a requirement', function() {

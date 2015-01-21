@@ -121,6 +121,7 @@ describe('Controllers Tests ', function() {
         };
 
         var mockAccount = {
+            id: 1,
             organization: mockOrganization,
             firstName: 'mock',
             lastName: 'mockington',
@@ -130,6 +131,7 @@ describe('Controllers Tests ', function() {
         };
 
         var mockAccountFirstName = {
+            id: 1,
             organization: mockOrganization,
             firstName: 'mock',
             profilePicture: {
@@ -138,6 +140,7 @@ describe('Controllers Tests ', function() {
         };
 
         var mockAccountLastName = {
+            id: 1,
             organization: mockOrganization,
             lastName: 'mockington',
             profilePicture: {

@@ -3,11 +3,12 @@
  */
 'use strict';
 
-respondecoApp.controller('ProjectSearchController', function ($scope, $location, Project) {
+respondecoApp.controller('ProjectSearchController', function ($scope, $location, $q, Project,
+                                                              ProjectNames, PropertyTagNames) {
 
     var PAGESIZE = 20;
 
-    $scope.filter = {pageSize:PAGESIZE};
+    $scope.filter = {page:0, pageSize:PAGESIZE};
     $scope.currentPage = 1;
 
     $scope.searchText = null;

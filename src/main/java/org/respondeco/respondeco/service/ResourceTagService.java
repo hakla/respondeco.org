@@ -31,6 +31,26 @@ public class ResourceTagService {
     }
 
     /**
+     * get a list of resource tags matching the given filter string, case is ignored.
+     * @param filter the string against which to match the resource tags
+     * @param restParams rest parameters for the query
+     * @return a list of ResourceTags where their name matches the given filter string
+     */
+    public List<ResourceTag> getResourceTags(String filter, RestParameters restParams) {
+        Pageable pageable = null;
+        List<String> fields = null;
+        if(restParams != null) {
+            pageable = restParams.buildPageRequest();
+            fields = restParams.getFields();
+        }
+        if(filter == null) {
+            filter = "";
+        }
+        List<ResourceTag> result = resourceTagRepository.findByNameContainingIgnoreCase(filter, pageable);
+        return result;
+    }
+
+    /**
      * Return Tags. If the tag exists get him from the database, otherwise
      * create a new Tag and save the tag in the database.
      * @param tagNames list of tags
