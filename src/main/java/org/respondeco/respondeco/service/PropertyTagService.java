@@ -27,7 +27,7 @@ public class PropertyTagService {
         this.propertyTagRepository = propertyTagRepository;
     }
 
-    public List<PropertyTagResponseDTO> getPropertyTags(String filter, RestParameters restParams) {
+    public List<PropertyTag> getPropertyTags(String filter, RestParameters restParams) {
         Pageable pageable = null;
         List<String> fields = null;
         if(restParams != null) {
@@ -38,7 +38,7 @@ public class PropertyTagService {
             filter = "";
         }
         List<PropertyTag> result = propertyTagRepository.findByNameContainingIgnoreCase(filter, pageable);
-        return PropertyTagResponseDTO.fromEntities(result, fields);
+        return result;
     }
 
     public List<PropertyTag> getOrCreateTags(List<String> tagNames) {

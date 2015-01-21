@@ -132,6 +132,7 @@
                         <div class="form-group">
                             <label translate="resource.new.tags">tags</label>
                             <tags-input ng-model="selectedResourceTags" add-on-space="true" display-property="name" min-length="1" placeholder="{{'resource.placeholder.tags' | translate}}">
+                                <auto-complete source="getResourceTagNames($query)" min-length="1"></auto-complete>
                             </tags-input>
                         </div>
 

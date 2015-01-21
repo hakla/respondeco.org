@@ -1,7 +1,8 @@
 'use strict';
 
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
-                                                       PropertyTagNames, $location, $routeParams, $sce, $translate,
+                                                       PropertyTagNames, ResourceTagNames,
+                                                       $location, $routeParams, $sce, $translate,
                                                        Account, SocialMedia, $rootScope) {
 
     $scope.project = {
@@ -188,6 +189,14 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.edit = function() {
         $location.path("/projects/edit/" + $scope.project.id)
+    };
+
+    $scope.getPropertyTagNames = function(filter) {
+        return PropertyTagNames.getPropertyTagNames(filter).$promise;
+    };
+
+    $scope.getResourceTagNames = function(filter) {
+        return ResourceTagNames.getResourceTagNames(filter).$promise;
     };
 
     $scope.createStaticMapLink = function() {
