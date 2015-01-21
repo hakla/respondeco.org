@@ -160,13 +160,6 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
             });
     };
 
-    var resetPostings = function() {
-        $scope.postingPage = -1;
-        $scope.postingsTotal = null;
-        $scope.postings = [];
-        $scope.showMorePostings();
-    }
-
     $scope.canShowMorePostings = function() {
         return $scope.postings.length < $scope.postingsTotal;
     };

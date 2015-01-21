@@ -368,5 +368,26 @@ describe('Project Controller Tests ', function() {
             expect(link).toEqual("https://maps.google.com/maps/api/staticmap?center=20%2C20&format=jpg&maptype=terrain&size=533x190&zoom=14&markers=20%2C20");
         });
 
+        it('should get all connections for the current user', function() {
+
+            spyOn(SocialMediaService, 'getConnections');
+
+            scope.getConnections();
+
+            expect(SocialMediaService.getConnections).toHaveBeenCalled();
+
+            SocialMediaService.getConnections.calls.mostRecent().args[0]([
+                {provider: 'twitter'},
+                {provider: 'facebook'},
+                {provider: 'xing'}
+            ]);
+
+            expect(scope.twitterConnected).toBe(true);
+            expect(scope.facebookConnected).toBe(true);
+            expect(scope.xingConnected).toBe(true);
+        });
+
+        
+
     });
 });
