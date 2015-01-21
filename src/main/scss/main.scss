@@ -561,3 +561,13 @@ h4 {
 .form-search {
     margin-bottom: 50px;
 }
+
+.project-details {
+    .project-item {
+        min-height: inherit;
+
+        uploaded-image {
+            height: 75px;
+        }
+    }
+}

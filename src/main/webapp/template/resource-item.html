@@ -1,5 +1,5 @@
-<div class="project-item resource-item" ng-click="toggle" ng-class="{ 'open': toggled }">
-    <uploaded-image name="resource.logo.id"></uploaded-image>
+<div class="project-item resource-item" ng-class="{ 'open': toggled }">
+    <uploaded-image name="resource.logo.id" ng-click="toggle"></uploaded-image>
     <div class="content">
         <h2>
             {{resource.name}}
@@ -17,4 +17,8 @@
     <div class="details col-xs-12 spacer-top" ng-show="toggled">
         {{ resource.description }}
     </div>
+
+    <button ng-show="isClaimable(resource)" ng-click="claimResource(resource)" data-toggle="modal" data-target="#claimResourceModal" class="btn btn-primary" translate="resource.search.request">
+        Request resource
+    </button>
 </div>

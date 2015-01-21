@@ -8457,3 +8457,12 @@ h4 {
 .form-search {
   margin-bottom: 50px;
 }
+
+/* line 566, ../../scss/main.scss */
+.project-details .project-item {
+  min-height: inherit;
+}
+/* line 569, ../../scss/main.scss */
+.project-details .project-item uploaded-image {
+  height: 75px;
+}
