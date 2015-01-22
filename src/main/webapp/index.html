@@ -101,19 +101,12 @@
                                 </li>
                                  <li ng-switch-when="true">
                                     <a href="#/newsfeed">
-                                        <span class="glyphicon glyphicon-envelope"></span>
+                                        <span class="glyphicon glyphicon-cloud"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.newsfeed">Newsfeed</span>
                                     </a>
                                 </li>
                                 <li ng-switch-when="true" ng-hide="isOrganizationUser()">
-                                <li ng-switch-when="true">
-                                    <a href="#/settings">
-                                        <span class="glyphicon glyphicon-wrench"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.settings">Settings</span>
-                                    </a>
-                                </li>
                                 <li ng-switch-when="true" ng-show="isOrganizationUser()">
                                     <a ng-click="redirectToOwnOrganization()">
                                         <span class="glyphicon glyphicon-briefcase"></span>
@@ -123,9 +116,16 @@
                                 </li>
                                 <li ng-switch-when="true">
                                     <a href="#/social-networks">
-                                        <span class="glyphicon glyphicon-wrench"></span>
+                                        <span class="glyphicon glyphicon-link"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.social-networks">Social networks</span>
+                                    </a>
+                                </li>
+                                <li ng-switch-when="true">
+                                    <a href="#/settings">
+                                        <span class="glyphicon glyphicon-wrench"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.settings">Settings</span>
                                     </a>
                                 </li>
                                 <li ng-switch-when="true">
@@ -133,13 +133,6 @@
                                         <span class="glyphicon glyphicon-lock"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.password">Password</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/sessions">
-                                        <span class="glyphicon glyphicon-cloud"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.sessions">Sessions</span>
                                     </a>
                                 </li>
                                 <li ng-switch-when="true">

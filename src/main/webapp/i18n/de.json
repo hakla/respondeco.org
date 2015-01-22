@@ -686,6 +686,7 @@
         }
     },
     "nearProjects": {
+        "title": "Projekte in meiner Nähe (100km radius)",
         "autoButton": "Meinen Standort bestimmen",
         "manualButton": "Adresse manuell eingeben",
         "noProjectsFound": "Es wurden keine Projekte in ihrer Umgebung gefunden",

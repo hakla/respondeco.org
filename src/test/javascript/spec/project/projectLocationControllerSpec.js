@@ -4,14 +4,27 @@ describe('ProjectLocation Controller Tests ', function () {
     beforeEach(module('respondecoApp'));
 
     describe('ProjectLocationController', function () {
-        var scope, location, ProjectService;
+        var scope, location, ProjectService, windowMock;
         
         beforeEach(inject(function ($rootScope, $controller, $location, Project) {
             scope = $rootScope.$new();
             location = $location;
             ProjectService = Project;
+            windowMock = {};
+            windowMock.navigator = {};
+            windowMock.navigator.geolocation = {};
+            windowMock.navigator.geolocation.getCurrentPosition = function() {
+                var position = {
+                    coords: {
+                        latitude: 20.0,
+                        longitude: 10.0 
+                    }
+                };
 
-            $controller('ProjectLocationController', {$scope: scope, $location: location, Project: ProjectService});
+                return position;
+            }
+
+            $controller('ProjectLocationController', {$scope: scope, $window: windowMock, $location: location, Project: ProjectService});
         }));
 
         it('should create the map', function () {
@@ -38,8 +51,6 @@ describe('ProjectLocation Controller Tests ', function () {
             spyOn(scope.map.control, 'refresh');
 
             scope.placeToMarker(searchBox);
-
-            console.log(scope.map);
 
             expect(scope.map.control.refresh).toHaveBeenCalledWith({latitude:20.0, longitude:40.0})
 
@@ -123,14 +134,102 @@ describe('ProjectLocation Controller Tests ', function () {
         });
 
         it('should locate the user via geolocation', function() {
-            //spyOn(window.navigator.geolocation,"getCurrentPosition").andCallFake(function() {
-            //    var position = { coords: { latitude: 32, longitude: -96 } };
-            //    arguments[0](position);
-            //});
+            spyOn(windowMock.navigator.geolocation,"getCurrentPosition");
 
-            //scope.geolocate();
+
+            scope.position = {};
+            //mock
+            scope.showLocationOnMap = function(lat, lng) {};
+
+
+            scope.geolocate();
+
+            windowMock.navigator.geolocation.getCurrentPosition.calls.mostRecent().args[0]({
+                coords: {
+                    latitude: 20.0,
+                    longitude: 10.0 
+                }
+            });
+
+            expect(scope.showAccept).toBe(false);
+            expect(scope.position).toEqual({
+               coords: {
+                    latitude: 20.0,
+                    longitude: 10.0 
+                } 
+            });
+            expect(scope.marker.coords).toEqual({latitude:20.0, longitude: 10.0});
+
+
+
+
+
         });
 
+        it('should show permission denied error if user denies geolocation', function() {
+            spyOn(windowMock.navigator.geolocation,"getCurrentPosition");
+
+            scope.position = {};
+            scope.geolocate();
+
+            windowMock.navigator.geolocation.getCurrentPosition.calls.mostRecent().args[1]({
+                code: 1,
+                PERMISSION_DENIED: 1,
+                POSITION_UNAVAILABLE: 2,
+                TIMEOUT: 3
+            });
+
+            expect(scope.alertMessage).toEqual("nearProjects.error.PERMISSION_DENIED");
+        });
+
+        it('should show error if position not available', function() {
+            spyOn(windowMock.navigator.geolocation,"getCurrentPosition");
+
+            scope.position = {};
+            scope.geolocate();
+
+            windowMock.navigator.geolocation.getCurrentPosition.calls.mostRecent().args[1]({
+                code: 2,
+                PERMISSION_DENIED: 1,
+                POSITION_UNAVAILABLE: 2,
+                TIMEOUT: 3
+            });
+
+            expect(scope.alertMessage).toEqual("nearProjects.error.POSITION_UNAVAILABLE");
+        });
+
+        it('should show error geolocation timed out', function() {
+            spyOn(windowMock.navigator.geolocation,"getCurrentPosition");
+
+            scope.position = {};
+            scope.geolocate();
+
+            windowMock.navigator.geolocation.getCurrentPosition.calls.mostRecent().args[1]({
+                code: 3,
+                PERMISSION_DENIED: 1,
+                POSITION_UNAVAILABLE: 2,
+                TIMEOUT: 3
+            });
+
+            expect(scope.alertMessage).toEqual("nearProjects.error.TIMEOUT");
+        });
+
+        it('should show error if unknown geolocation error occurs', function() {
+            spyOn(windowMock.navigator.geolocation,"getCurrentPosition");
+
+            scope.position = {};
+            scope.geolocate();
+
+            windowMock.navigator.geolocation.getCurrentPosition.calls.mostRecent().args[1]({
+                code: 4,
+                PERMISSION_DENIED: 1,
+                POSITION_UNAVAILABLE: 2,
+                TIMEOUT: 3,
+                UNKNOWN_ERROR: 4
+            });
+
+            expect(scope.alertMessage).toEqual("nearProjects.error.UNKNOWN_ERROR");
+        });
 
         it('should redirect to project', function() {
             scope.redirectToProject({id:1});

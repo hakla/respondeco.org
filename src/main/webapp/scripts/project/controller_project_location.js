@@ -3,7 +3,7 @@
 /**
  * ProjectLocationController
  */
-respondecoApp.controller('ProjectLocationController', function ($scope, $location, Project) {
+respondecoApp.controller('ProjectLocationController', function ($scope, $location, $window, Project) {
 
   	$scope.projects = [];
 
@@ -116,8 +116,8 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
     $scope.geolocate = function() {
     	$scope.showAccept = true;
 
-    	if (navigator.geolocation) {
-	    	navigator.geolocation.getCurrentPosition(function(position){
+    	if ($window.navigator.geolocation) {
+	    	$window.navigator.geolocation.getCurrentPosition(function(position){
 	      			$scope.showAccept = false;
 	        		$scope.position = position;
 
