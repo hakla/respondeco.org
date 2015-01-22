@@ -6,7 +6,7 @@ respondecoApp.controller('OrganizationControllerVerify', function($scope, $route
     $scope.organizations = new Object();
     $scope.bla = false;
     Organization.query(function(results) {
-        results.forEach(function(result) {
+        results.organizations.forEach(function(result) {
             $scope.organizations[result.id] = result;
         });
     });
