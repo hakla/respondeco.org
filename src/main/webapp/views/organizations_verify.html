@@ -2,6 +2,9 @@
 
     <h2 translate='organization.verify.verification'>Verify Organizations</h2>
 
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize"
+                total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()"
+                ng-show="totalItems>filter.pageSize"></pagination>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -34,4 +37,7 @@
             </tr>
         </tbody>
     </table>
+    <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize"
+                total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()"
+                ng-show="totalItems>filter.pageSize"></pagination>
 </div>
