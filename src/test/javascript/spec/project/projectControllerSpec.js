@@ -387,7 +387,49 @@ describe('Project Controller Tests ', function() {
             expect(scope.xingConnected).toBe(true);
         });
 
-        
+        it('should calculate the collected amount of resources',function() {
+
+            //mock
+            scope.resourceRequirementsWithMatches = [
+                { 
+                    amount: 10,
+                    originalAmount: 10,
+                    sum: 10,
+                    isEssential: true
+                },
+                { 
+                    amount: 5,
+                    originalAmount: 10,
+                    sum: 5
+                },
+                { 
+                    amount: 5,
+                    originalAmount: 10,
+                    sum: 5
+                }
+            ];
+
+
+            scope.calculateCollected();
+
+            expect(scope.collected).toEqual(67);
+            expect(scope.collectedEssential).toEqual(100);
+
+        });
+
+
+/*        it('should update the project information', function() {
+            spyOn(ProjectService, 'get');
+
+            scope.update();
+
+            expect(ProjectService.get).toHaveBeenCalled();
+            ProjectService.get.calls.mostRecent().args[1]({
+                resourceRequirements: {}
+            });
+
+
+        });*/
 
     });
 });

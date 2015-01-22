@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Project Controller
+ */
 respondecoApp.controller('ProjectController', function($scope, Project, Organization, ResourceRequirement,
                                                        PropertyTagNames, ResourceTagNames,
                                                        $location, $routeParams, $sce, $translate,
@@ -122,6 +125,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     $scope.list_of_string = [];
 
+    //needed for tags
     $scope.select2Options = {
         'tags': []
     };
@@ -132,15 +136,24 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         startingDay: 1
     };
 
+    /**
+     * Open project start date picker.
+     */
     $scope.openStart = function($event) {
         $event.stopPropagation();
         $scope.openedStartDate = true;
     };
 
+    /**
+     * Sets the resource logo after loading is complete.
+     */
     $scope.onUploadComplete = function(fileItem, response) {
         $scope.project.logo = response;
     };
 
+    /**
+     * Create a new project.
+     */
     $scope.create = function() {
         var startDate = $scope.project.startDate || null;
 
@@ -187,18 +200,30 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             });
     };
 
+    /**
+     * Switch to project edit site
+     */
     $scope.edit = function() {
         $location.path("/projects/edit/" + $scope.project.id)
     };
 
+    /**
+     * For propertyTag autocomplete when typing
+     */
     $scope.getPropertyTagNames = function(filter) {
         return PropertyTagNames.getPropertyTagNames(filter).$promise;
     };
 
+    /**
+     * For resource autocomplete when typing
+     */
     $scope.getResourceTagNames = function(filter) {
         return ResourceTagNames.getResourceTagNames(filter).$promise;
     };
 
+    /**
+     * Create the link for the static google map used for project details
+     */
     $scope.createStaticMapLink = function() {
         var lat = $scope.project.projectLocation.latitude;
         var lng = $scope.project.projectLocation.longitude;
@@ -211,6 +236,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         return link;
     };
 
+    /**
+     * Load project information
+     */
     $scope.update = function(id) {
         $scope.project = Project.get({
             id: id
@@ -241,48 +269,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
             $scope.resourceRequirementsWithMatches = $scope.project.resourceRequirements.slice(0);
 
-            Project.getResourceMatchesByProjectId({id:id}, function(matches) {
-
-                //for each match, put it in a map with the id as key
-                matches.forEach(function(match) {
-                    $scope.resourceMatches[match.matchId] = match;
-                });
-                //get rating permissions for the matches
-                var matchIds = $.map(matches, function(match) {return match.matchId}).join(",");
-                Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'matches', matches: matchIds},
-                    function(permissions) {
-                        permissions.forEach(function(permission) {
-                            $scope.matchRatingPermissions[permission.matchid] = permission.allowed;
-                        })
-                    });
-
-                //assign matches to requirement and calculate amount
-                 $scope.resourceRequirementsWithMatches.forEach(function(req) {
-                    req.matches = [];
-                    req.sum = 0;
-                    req.essentialSum = 0;
-
-                    matches.forEach(function(match) {
-                        if(match.resourceRequirement.id == req.id) {
-                            req.matches.push(match);
-                            req.sum = req.sum + match.amount;
-
-                            if(match.resourceRequirement.isEssential === true) {
-                                req.essentialSum = req.essentialSum + match.amount;
-                            }
-
-                            //if there is no rating for this org already, get it
-                            if(!$scope.organizationRatings[match.organization.id]) {
-                                $scope.organizationRatings[match.organization.id] =
-                                    $scope.refreshOrganizationRating(match.organization.id);
-                            }
-                        }
-                    });
-                });
-
-                $scope.calculateCollected();
-
-            });
+            $scope.getResourceMatches(id);
         });
 
         Project.editable({
@@ -297,7 +284,61 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     };
 
+    /**
+     * Get resource matches for the given project.
+     * @param id - project id
+     */
+    $scope.getResourceMatches = function(id) {
+        Project.getResourceMatchesByProjectId({id:id}, function(matches) {
 
+            //for each match, put it in a map with the id as key
+            matches.forEach(function(match) {
+                $scope.resourceMatches[match.matchId] = match;
+            });
+            //get rating permissions for the matches
+            var matchIds = $.map(matches, function(match) {return match.matchId}).join(",");
+            Project.checkIfRatingPossible({pid: $routeParams.id, permission: 'matches', matches: matchIds},
+                function(permissions) {
+                    permissions.forEach(function(permission) {
+                        $scope.matchRatingPermissions[permission.matchid] = permission.allowed;
+                    })
+                });
+
+            //assign matches to requirement and calculate amount
+             $scope.resourceRequirementsWithMatches.forEach(function(req) {
+                req.matches = [];
+                req.sum = 0;
+                req.essentialSum = 0;
+
+                matches.forEach(function(match) {
+                    if(match.resourceRequirement.id == req.id) {
+                        req.matches.push(match);
+                        req.sum = req.sum + match.amount;
+
+                        if(match.resourceRequirement.isEssential === true) {
+                            req.essentialSum = req.essentialSum + match.amount;
+                        }
+
+                        //if there is no rating for this org already, get it
+                        if(!$scope.organizationRatings[match.organization.id]) {
+                            $scope.organizationRatings[match.organization.id] =
+                                $scope.refreshOrganizationRating(match.organization.id);
+                        }
+                    }
+                });
+            });
+
+            $scope.calculateCollected();
+
+        });
+    }
+
+    /**
+     * Calculate percentage of already collected resources compared to the needed amout
+     * of resources set in the resourcerequirements. Calculates two values, namely 
+     * collected percentage of all resourcerequirements and collected percentage of
+     * essential resourcerequirements.
+     */
     $scope.calculateCollected = function() {
         var reqs = $scope.resourceRequirementsWithMatches;
         var quantifier;
@@ -325,6 +366,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.collectedEssential = Math.round($scope.collectedEssential);
     };
 
+    /**
+     * Delete specific project. Project id is set via routeParams (URL)
+     */
     $scope.delete = function() {
         Project.delete({
                 id: $routeParams.id
@@ -334,6 +378,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             });
     };
 
+    /**
+     * Clear project scope variables
+     */
     $scope.clear = function() {
         $scope.project = {
             id: null,
@@ -346,11 +393,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $location.path('/projects');
     };
 
+
     $scope.createProject = function() {
         $location.path('/project/create');
     };
 
-    //Resource Requirement Modal
+    //Resource Requirement
     var edit = false;
     $scope.resource = {
         resourceTags: [],
@@ -359,6 +407,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
     $scope.selectedResourceTags = [];
 
+    /**
+     * Creat new resource requirement.
+     */
     $scope.createRequirement = function() {
         $scope.resource.resourceTags = $scope.selectedResourceTags;
         var resource = $scope.resource;
@@ -368,6 +419,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         }
     };
 
+    /**
+     * Clear requirement scope data.
+     */
     $scope.clearRequirement = function() {
         $scope.resource = {
             resourceTags: [],
@@ -378,10 +432,19 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         edit = false;
     };
 
+
+    /**
+     * Remove requirement from project resource requirements
+     * @param index - index of request parameter in list
+     */
     $scope.removeRequirement = function(index) {
         $scope.project.resourceRequirements.splice(index, 1);
     };
 
+    /**
+     * Edit resource requirement information
+     * @param index - index of request parameter in list
+     */
     $scope.editRequirement = function(index) {
         edit = true;
         $scope.showResourceModal();
@@ -389,6 +452,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.selectedResourceTags = $scope.resource.resourceTags;
     };
 
+    /**
+     * Open resource requirement modal
+     */
     $scope.showResourceModal = function() {
         $('#addResource').modal('toggle');
     };
@@ -411,6 +477,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.organizationRatings = new Object();
     $scope.matchRatingPermissions = new Object();
 
+    /**
+     * Get the actual project rating (eg after project gets rated by user)
+     */
     $scope.refreshProjectRating = function() {
         //get new aggregated rating
         Project.getAggregatedRating({pid: $routeParams.id},
@@ -427,22 +496,34 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
     $scope.refreshProjectRating();
 
+    /**
+     * Get the actual organization rating (eg after organization gets rated by user)
+     */
     $scope.refreshOrganizationRating = function(orgid) {
         Organization.getAggregatedRating({id: orgid}, function(rating) {
             $scope.organizationRatings[orgid] = {rating: rating.rating, count: rating.count};
         });
     };
 
+    /**
+     * Shows the rating comment text area if user has permission to rate.
+     */
     $scope.showRating = function() {
         if($scope.canRate) {
             $scope.isRating = true;
         }
     };
 
+    /**
+     * Hides the rating comment text area.
+     */
     $scope.hideRating = function() {
         $scope.isRating = false;
     };
 
+    /**
+     * Rate a Project
+     */
     $scope.rateProject = function() {
         if($scope.project != null) {
             Project.rateProject({pid: $routeParams.id},
@@ -458,7 +539,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                     $scope.projectRatingError = "ERROR";
                     $scope.ratingSuccess = null;
                     if(error.status == 400) {
-                        console.log("translating " + error.data.key);
                         $translate(error.data.key).then(function(translated) {
                             $scope.setProjectRatingError(translated);
                         });
@@ -468,6 +548,10 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         }
     };
 
+    /**
+     * 
+     * @param id - 
+     */
     $scope.rateMatch = function(id) {
         if(!$scope.matchRatingPermissions[id]) {
             return;
@@ -492,7 +576,6 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             function(error) {
                 $scope.orgRatingError = "ERROR";
                 if(error.status == 400) {
-                    console.log("translating " + error.data.key);
                     $translate(error.data.key).then(function(translated) {
                         $scope.setOrgRatingError(translated);
                     });
@@ -602,6 +685,9 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.update($routeParams.id);
     }
 
+    /**
+     * Reset rating scope variables
+     */
     $scope.clearRating = function() {
         $scope.hideOrgRatingModal();
         $scope.isRating = false;
@@ -613,10 +699,16 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
         $scope.orgRatingError = null;
     };
 
+    /**
+     * Open organization rating modal
+     */
     $scope.showOrgRatingModal = function() {
         $('#rateMatchModal').modal('show');
     };
 
+    /**
+     * Close organization rating modal
+     */
     $scope.hideOrgRatingModal = function() {
         $('#rateMatchModal').modal('hide');
     };
