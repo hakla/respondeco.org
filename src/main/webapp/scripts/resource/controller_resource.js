@@ -1,9 +1,9 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($scope, $location, $routeParams, Resource, Account, Organization, Project, $filter, $sce) {
+respondecoApp.controller('ResourceController', function($rootScope, $translate, $scope, $location, $routeParams, Resource, Account, Organization, Project, $filter, $sce) {
 
     var PAGESIZE = 20;
-    var $translate = $filter('translate');
+    var translate = $filter('translate');
 
     $scope.resource = {resourceTags: [], isCommercial: false};
     $scope.projects = [];
@@ -64,6 +64,9 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
         });
     };
 
+    /**
+     * Actualizes the resources after page has changed
+     */
     $scope.onPageChange = function () {
         $scope.filter.page = $scope.currentPage - 1;
 
@@ -73,6 +76,20 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
         });
     };
 
+    /**
+     * Push an alert to globalAlerts
+     * @param type: type of alert (eg info)
+     * @param key: translate key
+     */
+    $scope.pushAlert = function(type ,key) {
+         $translate(key).then(function(translated) {
+            $rootScope.globalAlerts.push({type: type, msg: translated, timeout: 5});
+        });
+    };
+
+    /**
+     * Sets the resource logo
+     */
     $scope.onUploadComplete = function (fileItem, response) {
         $scope.resource.logoId = response.id;
         $scope.logo = response;
@@ -126,6 +143,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
         $scope.claim.organizationId = requirement.organizationId;
     };
 
+
     $scope.claimResource = function (res) {
         $scope.claim.resourceOfferId = res.id;
         $scope.updateProjects();
@@ -148,8 +166,13 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
     };
 
 
+    /**
+     * Sends the claim request for the resource the user would
+     * like to use for his project.
+     */
     $scope.sendClaimRequest = function () {
         Resource.claimResource($scope.claim, function () {
+            $scope.pushAlert('info', 'resource.claim.claimSent');
             $scope.clearClaimResource();
         }, function (data) {
             $scope.claimError = data.key;
@@ -343,15 +366,15 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
 
     $scope.tabs = [
         {
-            title: $translate('resourcemessages.apply.tabtitle'),
+            title: translate('resourcemessages.apply.tabtitle'),
             url: 'views/resourcemessages_apply.html'
         },
         {
-            title: $translate('resourcemessages.request.tabtitle'),
+            title: translate('resourcemessages.request.tabtitle'),
             url: 'views/resourcemessages_request.html'
         },
         {
-            title: $translate('resourcemessages.olddata'),
+            title: translate('resourcemessages.olddata'),
             url: 'views/resourcemessages_old.html'
         }
     ];
@@ -366,4 +389,7 @@ respondecoApp.controller('ResourceController', function($scope, $location, $rout
     $scope.isActiveTab = function (tabUrl) {
         return tabUrl == $scope.currentTab;
     };
+
+    
+
 });

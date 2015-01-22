@@ -492,7 +492,7 @@ public class ResourceService {
         }
 
         if(project.getOrganization().getId() == organization.getId()) {
-            throw new IllegalValueException("claim.error.ownresource", "cannot claim own resourceoffer" + resourceOffer.toString());
+            throw new IllegalValueException("resource.claim.error.ownresource", "cannot claim own resourceoffer" + resourceOffer.toString());
         }
 
         List<ResourceMatch> result = resourceMatchRepository
@@ -508,7 +508,7 @@ public class ResourceService {
 
             resourceMatchRepository.save(resourceMatch);
         } else {
-            throw new MatchAlreadyExistsException("claim.error.matchexists", "match already exists");
+            throw new MatchAlreadyExistsException("resource.claim.error.matchexists", "match already exists");
         }
 
         return resourceMatch;

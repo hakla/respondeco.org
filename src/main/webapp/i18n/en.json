@@ -616,6 +616,7 @@
             "title": "Claim resource",
             "chooseproject": "For which project do you want to claim the resource?",
             "chooserequirement": "For which requirement do you want to use the resource?",
+            "claimSent": "Your request was successfully sent",
             "error": {
                 "matchexists": "The offer has already been chosen",
                 "ownresource": "You can't claim your own resource"

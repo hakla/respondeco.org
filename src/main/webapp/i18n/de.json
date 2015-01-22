@@ -624,6 +624,7 @@
             "title": "Ressource anfordern",
             "chooseproject": "Für welches ihrer Projekte wird die Ressource benötigt?",
             "chooserequirement": "Für welche Anforderung soll die Ressource verwendet werden?",
+            "claimSent": "Ihre Anfrage wurde erfolgreich versendet",
             "error": {
                 "matchexists": "Die Anfrage wurde bereits versendet",
                 "ownresource": "Sie können ihre eigene Ressource nicht anfordern"
