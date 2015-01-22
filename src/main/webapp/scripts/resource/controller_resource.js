@@ -34,31 +34,38 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
 
     $scope.totalItems = 0;
 
+    /**
+     * Get account user account and load necessary information for resources.
+     * The necessarily loaded informations are dependent on the location path. 
+     */
     $scope.getAccount = function () {
         Account.get(null, function (account) {
-            if (account.organization != null) {
+            if(account.organization != null) {
                 $scope.orgId = account.organization.id;
             }
 
-            if ($location.path() === '/ownresource') {
+            if($location.path() === '/ownresource') {
                 Resource.getByOrgId({
                     id: $scope.orgId
                 }, function (data) {
                     $scope.resources = data;
                 });
-            } else {
+            }
+
+            if($location.path() === '/resource') {
                 $scope.search();
             }
 
-            if ($location.path() === '/resourcemessages') {
+
+            if($location.path() === '/resourcemessages') {
                 $scope.loadResourceData();
             }
 
-            if ($scope.isNew === false && $scope.isOverview === false) {
+            if($scope.isNew === false && $scope.isOverview === false) {
                 $scope.update(id);
             }
 
-            if (account.organization != null) {
+            if(account.organization != null) {
                 $scope.organization = account.organization;
             }
         });
@@ -88,7 +95,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     };
 
     /**
-     * Sets the resource logo
+     * Sets the resource logo after loading is complete.
      */
     $scope.onUploadComplete = function (fileItem, response) {
         $scope.resource.logoId = response.id;
@@ -113,6 +120,9 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         });
     };
 
+    /**
+     * Selects a project for which the claimed resource is used.
+     */
     $scope.selectProject = function (project) {
         if (project.initialProject == null || project.initialProject === false) {
             $scope.resourceRequirements = Project.getProjectRequirements({id: project.id}, function () {
@@ -126,6 +136,10 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         }
     };
 
+    /**
+     * Selects the resource requirement from the project for which the
+     * claimed resource is needed
+     */
     $scope.selectRequirement = function (requirement, $event) {
         var $target = $($event.target);
 
@@ -143,18 +157,30 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         $scope.claim.organizationId = requirement.organizationId;
     };
 
-
+    /**
+     * Selects the resource which will be claimed from the user
+     * after pressing the claim resource button. Also gets the
+     * users projects so the user can define for which one the 
+     * resource will be claimed.
+     */
     $scope.claimResource = function (res) {
         $scope.claim.resourceOfferId = res.id;
         $scope.updateProjects();
     };
 
+    /**
+     * Clears all information belonging to claim resource
+     */
     $scope.clearClaimResource = function () {
         $scope.showRequirements = false;
         $scope.claim = {organizationId: null, projectId: null, resourceOfferId: null, resourceRequirementId: null};
         $scope.resourceRequirements = [];
     };
 
+    /**
+     * Returns if the resource is claimable or not. If the user has no organization the resource is not claimable.
+     * @param resource - resource which is getting checked for being claimable or not.
+     */
     $scope.isClaimable = function (resource) {
         var isClaimable = true;
 
@@ -179,16 +205,26 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         });
     };
 
+    /**
+     * Redirect to project with given id
+     * @param id project-id
+     */
     $scope.redirectToProject = function (id) {
         $location.path('projects/' + id);
     };
 
+    /**
+     * Accept the resource request
+     */
     $scope.acceptResource = function (data) {
         Resource.updateResource({id: data.matchId}, {accepted: true}, function () {
             $scope.loadResourceData();
         });
     };
 
+    /**
+     * Declines the resource request
+     */
     $scope.declineResource = function (data) {
         Resource.updateResource({id: data.matchId}, {accepted: false}, function () {
             $scope.loadResourceData();
@@ -237,11 +273,14 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
                     Name: Name
                 };
                 //manually translate the data and use html save wrapper. Do not forget: HTML should have ng-bind-html tag
-                data[i].text = $sce.trustAsHtml($translate(locKey, translateData));
+                data[i].text = $sce.trustAsHtml(translate(locKey, translateData));
             }
         });
     };
 
+    /**
+     * Redirect to own Organization
+     */ 
     $scope.redirectToOrganization = function () {
         $location.path('organization/' + $scope.orgId);
     };
@@ -254,24 +293,41 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         startingDay: 1
     };
 
+    /**
+     * Used for opening the 'available from' datePicker.
+     */
     $scope.openStart = function ($event) {
         $event.stopPropagation();
         $scope.openedStartDate = true;
     };
 
+    /**
+     * Used for opening the 'available to' datePicker.
+     */
     $scope.openEnd = function ($event) {
         $event.stopPropagation();
         $scope.openedEndDate = true;
     };
 
+    /**
+     * Redirects to resource with given id
+     * @param id resource id
+     */
     $scope.redirectToResource = function (id) {
         $location.path('resource/' + id);
     };
 
+    /**
+     * Redirects to own resource site
+     */
     $scope.redirectToOwnResource = function () {
         $location.path('ownresource');
     };
 
+    /**
+     * Search for resources. Queries for resources in the backend via the ResourceService.
+     * Sets filter and page for the request.
+     */
     $scope.search = function () {
         $scope.filter.name = $scope.resourceSearch.name;
 
@@ -298,6 +354,9 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         });
     };
 
+    /**
+     * Create a new resourceoffer
+     */
     $scope.create = function () {
         //startDate has to be earlier than endDate
         if (new XDate($scope.resource.startDate).diffDays(new XDate($scope.resource.endDate)) >= 0) {
@@ -313,8 +372,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
                 function () {
                     $scope.redirectToOwnResource('');
                 },
-                function (error) {
-                    console.log(error);
+                function () {
                     $scope.formSaveError = true;
                 });
         } else {
@@ -322,6 +380,10 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         }
     };
 
+    /**
+     * Load resourceoffer informations. If no resourceoffer with given id
+     * can be found, a redirect to create a new resource is executed.
+     */
     $scope.update = function (id) {
         Resource.get({id: id}, function (resource) {
             $scope.resource = resource;
@@ -334,6 +396,9 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         });
     };
 
+    /**
+     * Clear resourceoffer information
+     */
     $scope.clear = function () {
         $scope.resource = {id: null, name: null, description: null, resourceTags: [],
             amount: null, startDate: null, endDate: null, isCommercial: false};
@@ -351,11 +416,12 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
         });
     };
 
+    //load account and get needed resource information
     $scope.getAccount();
 
 
+    // Used for ResourceRequests
     // tabs for resource apply/claim/old data
-
     $scope.loadTabs = function () {
         var t = $("#tabs");
         if (t && t.tab) {
