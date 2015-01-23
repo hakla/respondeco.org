@@ -159,103 +159,6 @@ describe('Project Controller Tests ', function() {
             expect(scope.resource).toEqual({name: 'res1'});
         });
 
-        it('should set rating success if a rating was sent successfully', function () {
-            scope.ratedMatch = 5;
-            scope.shownRating = 3;
-            scope.ratingComment = "meh";
-            routeParams.id = 3;
-
-            spyOn(ProjectService, "rateProject");
-
-            scope.rateProject();
-
-            expect(ProjectService.rateProject).toHaveBeenCalledWith(
-                {pid: 3}, {matchid: 5, rating: 3, comment: "meh"},
-                jasmine.any(Function),
-                jasmine.any(Function));
-
-            //Simulate call to success callback
-            ProjectService.rateProject.calls.mostRecent().args[2]();
-            expect(scope.ratingSuccess).toBe("SUCCESS");
-            expect(scope.projectRatingError).toBeNull();
-            expect(scope.isRating).toBe(false);
-            expect(scope.ratingComment).toBeNull();
-        });
-
-        it('should set rating error if the rating was not successful', function () {
-            scope.ratedMatch = 5;
-            scope.shownRating = 3;
-            scope.ratingComment = "meh";
-            routeParams.id = 3;
-            var error = {status: 500}
-
-            spyOn(ProjectService, "rateProject");
-
-            scope.rateProject();
-
-            expect(ProjectService.rateProject).toHaveBeenCalledWith(
-                {pid: 3}, {matchid: 5, rating: 3, comment: "meh"},
-                jasmine.any(Function),
-                jasmine.any(Function));
-
-            //Simulate call to error callback
-            ProjectService.rateProject.calls.mostRecent().args[3](error);
-            expect(scope.ratingSuccess).toBeNull();
-            expect(scope.projectRatingError).toBe("ERROR");
-            expect(scope.ratingComment).toBe("meh");
-        });
-
-        it('should prepare values for the org rating modal if a match is rated', function () {
-            scope.matchRatingPermissions[5] = true;
-            scope.resourceMatches[5] = {organization: {id: 3}};
-            scope.organizationRatings[3] = {rating: 4};
-
-            scope.rateMatch(5);
-
-            expect(scope.currentMatchId).toBe(5);
-            expect(scope.currentOrgRating).toBe(4);
-        });
-
-        it('should disable rating for a match if it was rated successfully', function () {
-            scope.currentMatchId = 5;
-            scope.resourceMatches[5] = {organization: {id: 3}};
-            scope.currentOrgRating = 3;
-            scope.currentOrgRatingComment = "test";
-
-            spyOn(OrganizationService, "rateOrganization");
-            spyOn(OrganizationService, "getAggregatedRating");
-            scope.rateOrganization();
-
-            expect(OrganizationService.rateOrganization).toHaveBeenCalledWith(
-                {id: 3}, {matchid: 5, rating: 3, comment: "test"},
-                jasmine.any(Function),
-                jasmine.any(Function));
-
-            //Simulate call to success callback
-            OrganizationService.rateOrganization.calls.mostRecent().args[2]();
-            expect(OrganizationService.getAggregatedRating).toHaveBeenCalledWith({id: 3}, jasmine.any(Function));
-            expect(scope.matchRatingPermissions[5]).toBe(false);
-        });
-
-        it('should set org rating error if an organization could not be rated successfully', function () {
-            scope.currentMatchId = 5;
-            scope.resourceMatches[5] = {organization: {id: 3}};
-            scope.currentOrgRating = 3;
-            scope.currentOrgRatingComment = "test";
-            var error = {status: 500}
-
-            spyOn(OrganizationService, "rateOrganization");
-            scope.rateOrganization();
-
-            expect(OrganizationService.rateOrganization).toHaveBeenCalledWith(
-                {id: 3}, {matchid: 5, rating: 3, comment: "test"},
-                jasmine.any(Function),
-                jasmine.any(Function));
-
-            //Simulate call to success callback
-            OrganizationService.rateOrganization.calls.mostRecent().args[3](error);
-            expect(scope.orgRatingError).toBe("ERROR");
-        });
         it('should get all available offers for apply', function(){
             // set current project organization id
             scope.project.organizationId = 2;
@@ -391,18 +294,18 @@ describe('Project Controller Tests ', function() {
 
             //mock
             scope.resourceRequirementsWithMatches = [
-                { 
+                {
                     amount: 10,
                     originalAmount: 10,
                     sum: 10,
                     isEssential: true
                 },
-                { 
+                {
                     amount: 5,
                     originalAmount: 10,
                     sum: 5
                 },
-                { 
+                {
                     amount: 5,
                     originalAmount: 10,
                     sum: 5
