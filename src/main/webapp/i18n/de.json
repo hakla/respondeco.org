@@ -211,9 +211,7 @@
             "nosuchproject": "Ein Projekt mit dieser Id existiert nicht",
             "nosuchuser": "Der angegebene Manager existiert nicht",
             "startdate.null": "Das Startdatum muss angegeben werden wenn das Projekt als konkret markiert ist",
-            "enddate.null": "Das Enddatum muss angegeben werden wenn das Projekt als konkret markiert ist",
-            "enddate.beforenow": "Das Enddatum muss in der Zukunft liegen",
-            "enddate.beforestart": "Das Enddatum kann nicht vor dem Startdatum liegen",
+            "startdate.beforenow": "Das Startdatum muss in der Zukunft liegen",
             "idnull": "Das Projekt konnte nicht gespeichert werden da keine id angegeben wurde",
             "null": "Das Startdatum muss für ein konkretes Projekt ausgefüllt sein"
         }
@@ -682,7 +680,8 @@
             "notfound": "Die angegeben Resource exisitiert nicht",
             "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
-            "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden"
+            "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden",
+            "delete.match": "Eine oder mehrere der gelöschen Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden"
         }
     },
     "nearProjects": {

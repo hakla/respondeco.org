@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
