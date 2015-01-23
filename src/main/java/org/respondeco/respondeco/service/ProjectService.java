@@ -303,12 +303,20 @@ public class ProjectService {
         if(searchText == null || searchText.isEmpty()) {
             page = projectRepository.findByActiveIsTrue(pageRequest);
         } else {
+            String[] searchValues = searchText.split(" ");
             QProject project = QProject.project;
-            BooleanExpression projectNameLike = project.name.containsIgnoreCase(searchText);
-            BooleanExpression projectTagLike = project.propertyTags.any().name.containsIgnoreCase(searchText);
+            List<Predicate> projectNameOrTagLike = new ArrayList<>();
+            for(String sval : searchValues) {
+                sval = sval.trim();
+                if(sval.length() == 0) {
+                    continue;
+                }
+                projectNameOrTagLike.add(project.name.containsIgnoreCase(sval));
+                projectNameOrTagLike.add(project.propertyTags.any().name.containsIgnoreCase(sval));
+            }
             BooleanExpression isActive = project.active.isTrue();
 
-            Predicate nameOrTags = ExpressionUtils.anyOf(projectNameLike, projectTagLike);
+            Predicate nameOrTags = ExpressionUtils.anyOf(projectNameOrTagLike);
             Predicate query = ExpressionUtils.allOf(nameOrTags, isActive);
 
             page = projectRepository.findAll(query, pageRequest);

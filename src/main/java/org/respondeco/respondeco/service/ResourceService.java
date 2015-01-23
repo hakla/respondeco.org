@@ -342,20 +342,23 @@ public class ResourceService {
         if(searchField.isEmpty() && isCommercial == null) {
             page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
         } else {
+            String[] searchValues = searchField.split(" ");
             //create dynamic query with help of querydsl
             QResourceOffer resourceOffer = QResourceOffer.resourceOffer;
 
-            BooleanExpression resourceOfferNameLike = null;
-            BooleanExpression resourceCommercial = null;
-            BooleanExpression resourceOfferOrganizationLike = null;
-            BooleanExpression resourceOfferTagLike = null;
-            BooleanExpression isActive = resourceOffer.active.isTrue();
-
-            if(searchField.isEmpty() == false) {
-                resourceOfferNameLike = resourceOffer.name.containsIgnoreCase(searchField);
-                resourceOfferOrganizationLike = resourceOffer.organization.name.containsIgnoreCase(searchField);
-                resourceOfferTagLike = resourceOffer.resourceTags.any().name.toLowerCase().in(searchField.toLowerCase());
+            List<Predicate> resourceNameOrOrgnameOrTagLike = new ArrayList<>();
+            for(String sval : searchValues) {
+                sval = sval.trim();
+                if(sval.length() == 0) {
+                    continue;
+                }
+                resourceNameOrOrgnameOrTagLike.add(resourceOffer.name.containsIgnoreCase(sval));
+                resourceNameOrOrgnameOrTagLike.add(resourceOffer.resourceTags.any().name.containsIgnoreCase(sval));
+                resourceNameOrOrgnameOrTagLike.add(resourceOffer.organization.name.containsIgnoreCase(sval));
             }
+
+            BooleanExpression resourceCommercial = null;
+            BooleanExpression isActive = resourceOffer.active.isTrue();
 
             if(isCommercial!=null && isCommercial == true) {
                 resourceCommercial = resourceOffer.isCommercial.eq(true);
@@ -363,7 +366,7 @@ public class ResourceService {
                 resourceCommercial = resourceOffer.isCommercial.eq(false);
             }
 
-            Predicate predicateAnyOf = ExpressionUtils.anyOf(resourceOfferNameLike, resourceOfferOrganizationLike, resourceOfferTagLike);
+            Predicate predicateAnyOf = ExpressionUtils.anyOf(resourceNameOrOrgnameOrTagLike);
             Predicate where = ExpressionUtils.allOf(predicateAnyOf, resourceCommercial, isActive);
 
             page = resourceOfferRepository.findAll(where, pageRequest);
