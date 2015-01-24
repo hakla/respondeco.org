@@ -210,6 +210,9 @@
             "enddate.beforestart": "The end date can not be before start date",
             "idnull": "The project could not be saved because the id is missing",
             "null": "There has to be a start date if the project is concrete"
+        },
+        "own": {
+            "title": "Own Projects"
         }
     },
     "rating": {
@@ -536,7 +539,6 @@
         "decline": "Decline invitation",
         "header.info": "Information about organization",
         "header.logo": "Logo",
-        "ownresources": "Show resources",
         "requests": "Resource requests",
         "backToOverview": "Back to overview",
         "newproject": "Create a new porject",
@@ -657,7 +659,8 @@
             "title": "Resource of",
             "editbutton": "Edit",
             "delete": "Delete",
-            "confirmDelete": "Delete irrevocable"
+            "confirmDelete": "Delete irrevocable",
+            "donatedResources": "Donated resources"
         },
         "requirement": {
             "title": "Add Resourcerequirement",

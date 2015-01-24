@@ -665,4 +665,33 @@ public class OrganizationControllerTest {
             .andExpect(status().isBadRequest());
         verify(organizationServiceMock, times(1)).unfollow(anyLong());
     }
+
+    @Test
+    public void testGetDonatedResources_expectOK() throws Exception {
+        List<ResourceMatch> resourceMatches = new ArrayList<>();
+        resourceMatches.add(match1);
+        resourceMatches.add(match2);
+
+        doReturn(new PageImpl<>(resourceMatches)).when(resourceServiceMock).getDonatedResourcesForOrganization(
+            anyLong(), any(RestParameters.class)
+        );
+
+
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/donatedresources?page=0&pageSize=20")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.resourceMatches").isArray())
+            .andExpect(jsonPath("$.totalItems").value(2));
+    }
+
+    @Test
+    public void testGetDonatedResources_throwNoSuchOrganizationException() throws Exception {
+        doThrow(NoSuchOrganizationException.class).when(resourceServiceMock).getDonatedResourcesForOrganization(
+            anyLong(), any(RestParameters.class)
+        );
+
+        restOrganizationMockMvc.perform(get("/app/rest/organizations/1/donatedresources?page=0&pageSize=20")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isNotFound());
+    }
 }

@@ -31,10 +31,6 @@ describe('Controllers Tests ', function () {
                 Organization: Organization, Account: Account, User: User, SocialMedia: SocialMediaService});
         }));
 
-        it('should set organizations to resolvedOrganization', function() {
-            expect($scope.organizations[0]).toEqual(1);
-        });
-
         it('should call Organization.get', function() {
             spyOn(OrganizationService, 'get').and.callThrough();
             $scope.update("test");

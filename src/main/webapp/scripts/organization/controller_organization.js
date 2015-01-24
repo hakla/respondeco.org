@@ -1,11 +1,9 @@
 'use strict';
 
-respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, resolvedOrganization,
+respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams,
                                                             Organization, Account, SocialMedia, AuthenticationSharedService) {
     var isOwner = false;
     var user;
-
-    $scope.organizations = resolvedOrganization;
 
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;

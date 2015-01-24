@@ -5,6 +5,8 @@ import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.support.QueryDslRepositorySupport;
@@ -66,4 +68,12 @@ public interface ResourceMatchRepository extends JpaRepository<ResourceMatch, Lo
      */
     public List<ResourceMatch> findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(
         ResourceOffer resourceOffer, ResourceRequirement resourceRequirement, Organization organization, Project project);
+
+    /**
+     * Find all ResourceMatches containing the donated resources of an organization
+     * @param organization organization for which the donated resources should be returned
+     * @param pageable contains page information (page size, nr of page)
+     * @return Page of ResourceMatches
+     */
+    public Page<ResourceMatch> findByOrganizationAndAcceptedIsTrueAndActiveIsTrue(Organization organization, Pageable pageable);
 }

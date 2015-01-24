@@ -215,6 +215,9 @@
             "startdate.beforenow": "Das Startdatum muss in der Zukunft liegen",
             "idnull": "Das Projekt konnte nicht gespeichert werden da keine id angegeben wurde",
             "null": "Das Startdatum muss für ein konkretes Projekt ausgefüllt sein"
+        },
+        "own": {
+            "title": "Eigene Projekte"
         }
     },
     "rating": {
@@ -541,7 +544,6 @@
         "decline": "Einladung ablehnen",
         "header.info": "Informationen über das Unternehmen",
         "header.logo": "Logo",
-        "ownresources": "Ressourcen anzeigen",
         "requests": "Ressourcen-Anfragen",
         "backToOverview": "Zurück zur Übersicht",
         "newproject": "Neues Projekt anlegen",
@@ -662,7 +664,8 @@
             "title": "Ressourcen von",
             "editbutton": "Bearbeiten",
             "delete": "Löschen",
-            "confirmDelete": "Unwiderruflich Löschen"
+            "confirmDelete": "Unwiderruflich Löschen",
+            "donatedResources": "Gespendete Ressourcen"
         },
         "requirement": {
             "title": "Ressourcenanforderung hinzufügen",
@@ -676,6 +679,9 @@
             "donate": "Spenden",
             "resourceselected": "Ausgewählte Ressource: ",
             "resourceneeded": "Noch benötigte Anzahl: "
+        },
+        "donated": {
+            "title": "Gespendete Ressourcen"
         },
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",

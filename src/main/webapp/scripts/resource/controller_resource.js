@@ -61,6 +61,10 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
                 $scope.loadResourceData();
             }
 
+            if($location.path() === '/donatedresources') {
+                $scope.loadDonatedResources();
+            }
+
             if($scope.isNew === false && $scope.isOverview === false) {
                 $scope.update(id);
             }
@@ -325,6 +329,13 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     };
 
     /**
+     * Redirects to donated resources site
+     */
+    $scope.redirectToDonatedResources = function () {
+        $location.path('donatedresources');
+    };
+
+    /**
      * Search for resources. Queries for resources in the backend via the ResourceService.
      * Sets filter and page for the request.
      */
@@ -455,6 +466,18 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     $scope.isActiveTab = function (tabUrl) {
         return tabUrl == $scope.currentTab;
     };
+
+
+    /**
+     * Calls the organization service to get all donated resources from the users organization.
+     */
+    $scope.loadDonatedResources = function() {
+        Organization.getDonatedResources({id: $scope.orgId}, {pageSize:20, page:0}, function(response) {
+            console.log(response);
+        });
+
+
+    }
 
     
 

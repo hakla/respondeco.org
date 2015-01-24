@@ -725,4 +725,30 @@ public class ResourceService {
     }
 
 
+    /**
+     * Find all donated Resources of an organization
+     * @param orgId organization id for which the donated resources should be found
+     * @param restParameters restParameters used for building the page request
+     * @return Page containing ResourceMatches which represent donated resources
+     * @throws NoSuchOrganizationException if organization with id cannot be found
+     */
+    public Page<ResourceMatch> getDonatedResourcesForOrganization(Long orgId, RestParameters restParameters)
+        throws NoSuchOrganizationException {
+
+        PageRequest pageRequest = null;
+
+        if (restParameters != null) {
+            pageRequest = restParameters.buildPageRequest();
+        }
+
+        Organization organization = organizationRepository.findOne(orgId);
+        if (organization == null) {
+            throw new NoSuchOrganizationException("organization with id " + orgId + "can't be found");
+        }
+
+        Page<ResourceMatch> resourceMatches =
+            resourceMatchRepository.findByOrganizationAndAcceptedIsTrueAndActiveIsTrue(organization, pageRequest);
+
+        return resourceMatches;
+    }
 }

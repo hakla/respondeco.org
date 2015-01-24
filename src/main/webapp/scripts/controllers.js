@@ -31,6 +31,16 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
         $location.path("/organization/" + org);
     };
 
+    $scope.redirectToOwnProjects = function() {
+        var org = 'edit/new';
+
+        if ($rootScope._account != null && $rootScope._account.organization != null) {
+            org = $rootScope._account.organization.id;
+        }
+
+        $location.path("/organization/" + org + "/projects");
+    };
+
     $scope.isOrganizationUser = function()  {
         var account = $rootScope._account;
 
