@@ -378,9 +378,9 @@ public class ResourceService {
         return orderByProbability(page);
     }
 
-    private Page<MatchingEntity> orderByProbability(Page<MatchingEntity> page) {
+    private <T extends MatchingEntity> Page<T> orderByProbability(Page<T> page) {
         User user = userService.getUserWithAuthorities();
-        List<MatchingEntity> entities;
+        List<T> entities;
 
         // check if a user is currently signed in
         if (user.getOrganization() != null) {
@@ -423,9 +423,9 @@ public class ResourceService {
                 matching.setEntities(matchingEntities);
                 matching.setTags(collect);
                 matching.setAPriori(1);
-                entities = matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
+                entities = (List<T>) matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
 
-                page = new PageImpl<>(entities);
+                page = new PageImpl<>(entities, page.nextPageable(), page.getTotalElements());
             }
         }
 
