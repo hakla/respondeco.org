@@ -5,7 +5,7 @@
 var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
     'ngResource', 'ngRoute', 'ngCookies', 'pascalprecht.translate', 'truncate',
     'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'respondecoAppFilters',
-    'angularFileUpload', 'ngTagsInput', 'ui.bootstrap', 'uiGmapgoogle-maps']);
+    'angularFileUpload', 'ngTagsInput', 'ui.bootstrap', 'uiGmapgoogle-maps', 'angularMoment']);
 
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
@@ -98,7 +98,6 @@ respondecoApp
             });
 
             $translateProvider.preferredLanguage('de');
-
             $translateProvider.useCookieStorage();
 
             tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js')

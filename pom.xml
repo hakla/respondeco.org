@@ -553,7 +553,16 @@
                 <!-- log configuration -->
                 <logback.loglevel>DEBUG</logback.loglevel>
                 <!-- Spring profile to use -->
-                <spring.profiles.active>dev</spring.profiles.active>
+                <spring.profiles.active>dev-sql</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev-sql</id>
+            <properties>
+                <!-- log configuration -->
+                <logback.loglevel>DEBUG</logback.loglevel>
+                <!-- Spring profile to use -->
+                <spring.profiles.active>dev-sql</spring.profiles.active>
             </properties>
         </profile>
         <profile>

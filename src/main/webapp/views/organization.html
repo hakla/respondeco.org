@@ -20,7 +20,7 @@
     <div class="row spacer-top">
         <div class="col-md-4">
             <div class="col-xs-12">
-                <h2>{{organization.name}}</h2>
+                <h2><img src="https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/48/deciduous_tree.png" alt="">{{organization.name}}</h2>
                 <p ng-show='organization.isNpo'>NGO</p>
                 <uploaded-image name="organization.logo.id" class="organization-logo" />
             </div>
@@ -80,12 +80,8 @@
                     </div>
                 </div>
             </form>
-            <div class="well">
-                <ul>
-                    <li ng-repeat="posting in postings">
-                            <h4>{{posting.author.login}} <small>{{ 'organization.posted' | translate }}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="isOwner()" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
-                        </li>
-                </ul>
+            <div ng-repeat="posting in postings">
+                <resp-posting value="posting" hide-organization="true"></resp-posting>
             </div>
             <a ng-click="showMorePostings()" translate="posting.showmore"
                ng-show="canShowMorePostings()">Show more</a>

@@ -17,6 +17,12 @@ body {
     color: #333;
 }
 
+.input-group {
+    input[type=text].form-control {
+        height: 33px;
+    }
+}
+
 .btn, .form-control {
     border-radius: 0;
 }
@@ -356,12 +362,20 @@ uploaded-image, [uploaded-image] {
 }
 
 .newsfeed {
-    ul {
-        padding: 0;
+    .posting {
+        margin: 25px 0;
+        padding: 15px;
+        background-color: #fff;
+        border: 1px solid #E2E2E2;
+    }
 
-        li {
-            list-style-type: none;
-        }
+    .heading h4 {
+        margin-left: 10px;
+    }
+
+    uploaded-image {
+        width: 60px;
+        height: 60px;
     }
 }
 
