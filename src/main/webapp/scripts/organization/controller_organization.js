@@ -177,15 +177,16 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
             return;
         }
-        Organization.addPostingForOrganization({id:$routeParams.id}, $scope.postingInformation,
-            function(newPosting) {
-                //add new posting and cut array down to current number of shown postings
-                $scope.postings.unshift(newPosting);
-                $scope.postingsTotal = $scope.postingsTotal + 1;
-                $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
-                $scope.postingInformation = null;
-                $scope.postingform.$setPristine();
-            });
+        Organization.addPostingForOrganization({
+            id:$routeParams.id
+        }, $scope.postingInformation, function(newPosting) {
+            //add new posting and cut array down to current number of shown postings
+            $scope.postings.unshift(newPosting);
+            $scope.postingsTotal = $scope.postingsTotal + 1;
+            $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
+            $scope.postingInformation = null;
+            $scope.postingform.$setPristine();
+        });
 
         if($scope.postOnTwitter === true) {
             SocialMedia.createTwitterPost({string: $scope.postingInformation});
@@ -199,14 +200,24 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
             var urlPath = $location.url();
             SocialMedia.createXingPost({urlPath: urlPath, post: $scope.postingInformation});
         }
+
+        $scope.focused = false;
     };
 
     $scope.deletePosting = function(id) {
-        Organization.deletePosting({id:$scope.organization.id,
-            pid:id},
+        Organization.deletePosting({
+                id:$scope.organization.id,
+                pid:id
+            },
             function() {
-                refreshPostings();
-            });
+                for (var i in $scope.postings) {
+                    if ($scope.postings[i].id == id) {
+                        $scope.postings.splice(i, 1);
+                        break
+                    }
+                }
+            }
+        );
     };
 
     /**

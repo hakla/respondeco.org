@@ -17,6 +17,10 @@ body {
     color: #333;
 }
 
+a, a:hover, a:visited, a:focus {
+    color: #333;
+}
+
 .input-group {
     input[type=text].form-control {
         height: 33px;
@@ -242,6 +246,10 @@ canvas {
     }
 }
 
+.icons {
+    font-size: 20px;
+}
+
 .project-item {
     list-style-type: none;
     background-color: #FFF;
@@ -256,12 +264,6 @@ canvas {
     img {
         height: 200px;
         width: 100%;
-    }
-
-    uploaded-image {
-        div {
-            background-size: cover;
-        }
     }
 
     h2 {
@@ -308,9 +310,9 @@ uploaded-image, [uploaded-image] {
     div {
         height: 100%;
         width: 100%;
-        background-position: 50% 50%;
+        background-position: 0;
         background-repeat: no-repeat;
-        background-size: contain;
+        background-size: 100%;
     }
 }
 
@@ -546,6 +548,26 @@ uploaded-image, [uploaded-image] {
     }
 }
 
+.spacer-left {
+    margin-left: 16px;
+}
+
+.spacer-left-2 {
+    margin-left: 32px;
+}
+
+.spacer-left-3 {
+    margin-left: 48px;
+}
+
+.spacer-left-4 {
+    margin-left: 64px;
+}
+
+.spacer-left-small {
+    margin-left: 8px;
+}
+
 .spacer-top {
     margin-top: 16px;
 }
@@ -621,4 +643,27 @@ h4 {
     width: 100%;
     background-position: 50%;
     background-repeat: no-repeat;
+}
+
+.postingform {
+    textarea {
+        height: 33px;
+        transition: .25s ease height;
+    }
+
+    .btn {
+        opacity: 0;
+        transition: .25s ease opacity;
+        transition-delay: .25s;
+    }
+
+    .focused {
+        textarea {
+            height: 100px;
+        }
+
+        .btn {
+            opacity: 1;
+        }
+    }
 }

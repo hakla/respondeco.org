@@ -346,7 +346,9 @@ angular.module('respondecoApp')
             templateUrl: 'template/posting.html',
             scope: {
                 posting: '=value',
-                hideOrganization: '='
+                hideOrganization: '=',
+                delete: '=',
+                canDelete: '='
             },
             controller: function($scope, $location, Organization) {
                 $scope.redirectToOrganization = function(id) {

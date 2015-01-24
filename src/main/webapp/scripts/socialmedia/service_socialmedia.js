@@ -2,7 +2,7 @@
 
 respondecoApp.factory('SocialMedia', function ($resource) {
 	return $resource('app/rest/connect/', {}, {
-		'getConnections' : {method: 'GET', isArray:true, url: 'app/rest/connections'},
+		'getConnections' : {method: 'GET', isArray:true, url: 'app/rest/connections', ignoreAuthModule: true },
 		'connectFacebook' : { method: 'GET', url: 'app/rest/connect/facebook'},
 		'createFacebookConnection' : {method: 'POST', url: 'app/rest/connect/facebook/createconnection'},
 		'createFacebookPost' : {method: 'POST', url: 'app/rest/socialmedia/facebook/post'},
