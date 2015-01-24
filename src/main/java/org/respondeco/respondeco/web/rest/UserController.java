@@ -40,15 +40,11 @@ public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    private UserRepository userRepository;
     private UserService userService;
-    private TextMessageService textMessageService;
 
     @Inject
-    public UserController(UserRepository userRepository, UserService userService, TextMessageService textMessageService) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.textMessageService = textMessageService;
     }
 
     /**
@@ -61,7 +57,7 @@ public class UserController {
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     ResponseEntity<User> getUser(@PathVariable Long id) {
         log.debug("REST request to get User : {}", id);
-        return Optional.ofNullable(userRepository.findOne(id))
+        return Optional.ofNullable(userService.getUser(id))
             .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

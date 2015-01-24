@@ -229,7 +229,7 @@ public class ProjectControllerTest {
                 projectRequestDTO.getResourceRequirements(),
                 projectRequestDTO.getLogo().getId());
 
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
+        doReturn(project).when(projectServiceMock).findProjectById(project.getId());
         // Read Project
 
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", project.getId()))
@@ -241,7 +241,7 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.name").value(projectRequestDTO.getName()))
                 .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()));
 
-        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(project.getId());
+        verify(projectServiceMock, times(1)).findProjectById(project.getId());
 
         // Update Project
         projectRequestDTO.setId(project.getId());
@@ -272,21 +272,6 @@ public class ProjectControllerTest {
                 projectRequestDTO.getLogo().getId(),
                 projectRequestDTO.getPropertyTags(),
                 projectRequestDTO.getResourceRequirements());
-
-        project.setName(UPDATED_NAME);
-        project.setPurpose(UPDATED_PURPOSE);
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(project.getId())).thenReturn(project);
-        // Read updated Project
-        restProjectMockMvc.perform(get("/app/rest/projects/{id}", project.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(project.getId().intValue()))
-                .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
-                .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(UPDATED_NAME.toString()))
-                .andExpect(jsonPath("$.purpose").value(UPDATED_PURPOSE.toString()));
-
-        verify(projectRepositoryMock, times(2)).findByIdAndActiveIsTrue(project.getId());
 
         doReturn(project).when(projectServiceMock).delete(project.getId());
         // Delete Project

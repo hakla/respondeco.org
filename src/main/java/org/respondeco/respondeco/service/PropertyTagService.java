@@ -29,10 +29,8 @@ public class PropertyTagService {
 
     public List<PropertyTag> getPropertyTags(String filter, RestParameters restParams) {
         Pageable pageable = null;
-        List<String> fields = null;
         if(restParams != null) {
             pageable = restParams.buildPageRequest();
-            fields = restParams.getFields();
         }
         if(filter == null) {
             filter = "";
