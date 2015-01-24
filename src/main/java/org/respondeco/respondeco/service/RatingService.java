@@ -203,7 +203,7 @@ public class RatingService {
         User currentUser = userService.getUserWithAuthorities();
         RatingPermission permission = new RatingPermission();
         permission.setAllowed(false);
-        if(currentUser.getOrganization() != null && project.getSuccessful() == true) {
+        if(currentUser.getOrganization() != null && Boolean.TRUE.equals(project.getSuccessful())) {
             //check if user organization and project organization are the same
             if (currentUser.getOrganization().equals(project.getOrganization()) == false) {
                 //check if user is owner of his organization
@@ -244,7 +244,7 @@ public class RatingService {
             permission.setResourceMatch(match);
             permission.setAllowed(false);
             log.debug("match project: {}", match.getProject());
-            if(match.getProject().getSuccessful() == true) {
+            if(Boolean.TRUE.equals(match.getProject().getSuccessful())) {
                 //if the user is project manager of the project which is connected to the match
                 if (match.getProject().getManager().equals(currentUser)) {
                     //if the match was accepted and has not been rated yet
