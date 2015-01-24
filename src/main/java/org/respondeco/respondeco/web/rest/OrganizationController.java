@@ -667,4 +667,38 @@ public class OrganizationController {
         return responseEntity;
     }
 
+
+    /**
+     * Get donated resources for an organization.
+     * @param id organization id
+     * @return
+     */
+    @RequestMapping(value = "/rest/organizations/{id}/donatedresources",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    public ResponseEntity getDonatedResources(
+        @PathVariable Long id,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
+
+        ResponseEntity responseEntity;
+        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
+
+        try {
+            Page<ResourceMatch> resourceMatchesPage = resourceService.getDonatedResourcesForOrganization(id,restParameters);
+            ResourceMatchPaginationResponseDTO dto = ResourceMatchPaginationResponseDTO.createFromPage(resourceMatchesPage, null);
+
+            responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (NoSuchOrganizationException e) {
+            log.error("Could not update Organization : {}", id, e);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
+    }
+
 }

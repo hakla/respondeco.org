@@ -130,5 +130,29 @@ describe('Controllers Tests ', function () {
             expect(OrganizationService.getOrgJoinRequests).toHaveBeenCalled();
             expect(OrganizationService.getMembers).toHaveBeenCalled();
         });
+
+        it('should set organization logo', function() {
+            var response = 'logo';
+            $scope.onUploadComplete({}, response);
+
+            expect($scope.organization.logo).toEqual('logo');
+        });
+
+        it('should close alerts', function() {
+            spyOn($scope.alerts,'splice');
+
+            $scope.closeAlert(1);
+
+            expect($scope.alerts.splice).toHaveBeenCalled();
+        });
+
+        it('should delete the user invitation', function() {
+            spyOn(OrgJoinRequestService, 'delete');
+
+            $scope.deleteInvitation(1);
+
+            expect(OrgJoinRequestService.delete).toHaveBeenCalledWith({id:1}, jasmine.any(Function));
+            OrgJoinRequestService.delete.calls.mostRecent().args[1]();
+        });
     });
 });

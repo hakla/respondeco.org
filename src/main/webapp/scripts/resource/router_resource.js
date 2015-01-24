@@ -33,5 +33,11 @@ respondecoApp
                 access: {
                     authorizedRoles: [USER_ROLES.all]
                 }
+            }).when('/donatedresources', {
+                templateUrl: '/views/resources-donated.html',
+                controller: 'ResourceController',
+                access: {
+                    authorizedRoles: [USER_ROLES.all]
+                }
             });
     });

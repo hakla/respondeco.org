@@ -18,6 +18,8 @@ respondecoApp.factory('Organization', function ($resource) {
             'getPostingsByOrgId': {method: 'GET', url: 'app/rest/organizations/:id/postings'},
             'addPostingForOrganization': {method: 'POST', url: '/app/rest/organizations/:id/postings'},
             'deletePosting' : {method: 'DELETE', url: 'app/rest/organizations/:id/postings/:pid'},
-            'verify': { method: 'POST', url: 'app/rest/organizations/:id/verify' }
+            'verify': { method: 'POST', url: 'app/rest/organizations/:id/verify' },
+            'getDonatedResources': { method: 'GET', url: '/app/rest/organizations/:id/donatedresources'},
+            'getOwnProjects': {method: 'GET', url: '/app/rest/organizations/:id/projects'}
         });
     });

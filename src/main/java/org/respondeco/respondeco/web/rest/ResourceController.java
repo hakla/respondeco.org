@@ -71,8 +71,8 @@ public class ResourceController {
     public ResponseEntity<ResourceOfferPaginationResponseDTO> getAllResourceOffers(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) Boolean commercial,
-        @RequestParam(required = false) Integer page,
-        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = true) Integer page,
+        @RequestParam(required = true) Integer pageSize,
         @RequestParam(required = false) String fields,
         @RequestParam(required = false) String order) {
 
@@ -372,7 +372,7 @@ public class ResourceController {
     /**
      * Delete a Resource Requirement
      * @param resourceRequirementId id of the resource requirement
-     * @return ResponseEnetity with HttpStatus
+     * @return ResponseEntity with HttpStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/resourcerequirements/{resourceRequirementId}",

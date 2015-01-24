@@ -17,10 +17,13 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import scala.Console;
+
+import javax.annotation.Resource;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isA;
@@ -1116,6 +1119,28 @@ public class ResourceServiceTest {
         assertEquals(page.getTotalPages(), 1);
         assertEquals(page.getTotalElements(), 2);
         assertEquals(page.getContent().size(), 2);
+    }
+
+    @Test
+    public void testGetDonatedResourcesForOrganization() throws Exception {
+        doReturn(expOrg).when(organizationRepositoryMock).findOne(anyLong());
+
+        List<ResourceMatch> resourceMatches = new ArrayList<>();
+        ResourceMatch resourceMatch = new ResourceMatch();
+        resourceMatch.setOrganization(expOrg);
+        resourceMatch.setProject(expProject);
+        resourceMatch.setId(1L);
+
+        resourceMatches.add(resourceMatch);
+
+        Page<ResourceMatch> resourceMatchPage = new PageImpl<>(resourceMatches);
+
+        doReturn(resourceMatchPage).when(resourceMatchRepositoryMock).findByOrganizationAndAcceptedIsTrueAndActiveIsTrue(any(Organization.class), any(Pageable.class));
+
+        Page<ResourceMatch> page = resourceService.getDonatedResourcesForOrganization(1L, new RestParameters(0,20));
+
+        assertEquals(page.getTotalElements(), 1L);
+        assertEquals(page.getContent().get(0).getId().longValue(), 1L);
     }
 
 

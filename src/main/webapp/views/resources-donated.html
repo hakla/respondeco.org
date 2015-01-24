@@ -1,12 +1,8 @@
 <div>
  
-    <h1> {{ 'resource.own.title' | translate }} {{organization.name}}
-        <button class="btn btn-success pull-right"
-                ng-click="redirectToDonatedResources()">
-            {{ 'resource.own.donatedResources' | translate }}
-        </button>
+    <h1> {{ 'resource.donated.title' | translate }}
         <button class="btn btn-primary pull-right"
-                ng-click="redirectToResource('new')">
+                ng-click="redirectToOwnResource()">
             <span class="glyphicon glyphicon-tree-conifer"></span> {{ 'resource.newbutton' | translate }}
         </button>
     </h1>

@@ -30,5 +30,11 @@ respondecoApp
                 access: {
                     authorizedRoles: [USER_ROLES.all]
                 }
+            }).when('/ownprojects', {
+                templateUrl: 'views/projects_own.html',
+                controller: 'ProjectSearchController',
+                access: {
+                    authorizedRoles: [USER_ROLES.all]
+                }
             });
     });

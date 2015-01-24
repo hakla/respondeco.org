@@ -71,12 +71,6 @@
                                 <span translate="global.menu.resource">Resource</span>
                             </a>
                         </li>
-                        <li ng-switch-when="true">
-                            <a href="#/resourcemessages">
-                                <span class="glyphicon glyphicon-inbox"></span>
-                                <span translate="global.menu.resourcemanagement">Resource Management</span>
-                            </a>
-                        </li>
                     </ul>
                     <ul class="nav navbar-nav nav-pills navbar-right">
                         <li class="dropdown pointer" ng-class="{ highlight: newMessages > 0 }">
@@ -107,6 +101,12 @@
                                     </a>
                                 </li>
                                 <li ng-switch-when="true" ng-hide="isOrganizationUser()">
+                                    <a href="#/settings">
+                                        <span class="glyphicon glyphicon-wrench"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.settings">Settings</span>
+                                    </a>
+                                </li>
                                 <li ng-switch-when="true" ng-show="isOrganizationUser()">
                                     <a ng-click="redirectToOwnOrganization()">
                                         <span class="glyphicon glyphicon-briefcase"></span>
@@ -114,18 +114,32 @@
                                         <span translate="global.menu.account.organization">My organization</span>
                                     </a>
                                 </li>
+                                <li ng-switch-when="true" ng-show="isOrganizationUser()">
+                                    <a ng-click="redirectToOwnProjects()">
+                                        <span class="glyphicon glyphicon-briefcase"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.projects">My projects</span>
+                                    </a>
+                                </li>
+                                <li ng-switch-when="true">
+                                    <a href="#/ownresource">
+                                        <span class="glyphicon glyphicon-link"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.myresources">Resource management</span>
+                                    </a>
+                                </li>
+                                <li ng-switch-when="true">
+                                    <a href="#/resourcemessages">
+                                        <span class="glyphicon glyphicon-link"></span>
+                                        &#xA0;
+                                        <span translate="global.menu.account.resourcerequests">Resource requests</span>
+                                    </a>
+                                </li>
                                 <li ng-switch-when="true">
                                     <a href="#/social-networks">
                                         <span class="glyphicon glyphicon-link"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.social-networks">Social networks</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/settings">
-                                        <span class="glyphicon glyphicon-wrench"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.settings">Settings</span>
                                     </a>
                                 </li>
                                 <li ng-switch-when="true">
