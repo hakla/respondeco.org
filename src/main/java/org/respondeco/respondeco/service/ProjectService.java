@@ -194,27 +194,29 @@ public class ProjectService {
         log.debug("updating requirements: {}", resourceRequirements);
 
         //get deleted requirements
-        List<ResourceRequirement> deletedRequirements = project.getResourceRequirements();
-        for(ResourceRequirementRequestDTO req : resourceRequirements) {
-            if(req.getId() != null) {
-                deletedRequirements.removeIf(new java.util.function.Predicate<ResourceRequirement>() {
-                    @Override
-                    public boolean test(ResourceRequirement resourceRequirement) {
-                        return resourceRequirement.getId().equals(req.getId());
-                    }
-                });
+        if(project.getResourceRequirements() != null) {
+            List<ResourceRequirement> deletedRequirements = project.getResourceRequirements();
+            for (ResourceRequirementRequestDTO req : resourceRequirements) {
+                if (req.getId() != null) {
+                    deletedRequirements.removeIf(new java.util.function.Predicate<ResourceRequirement>() {
+                        @Override
+                        public boolean test(ResourceRequirement resourceRequirement) {
+                            return resourceRequirement.getId().equals(req.getId());
+                        }
+                    });
+                }
             }
-        }
 
-        for(ResourceRequirement req : deletedRequirements) {
-            if(req.getResourceMatches() != null && req.getResourceMatches().size() > 0) {
-                throw new IllegalValueException("resource.errors.delete.match",
-                    "You cannot delete resource requirement %s, it already has a match");
+            for (ResourceRequirement req : deletedRequirements) {
+                if (req.getResourceMatches() != null && req.getResourceMatches().size() > 0) {
+                    throw new IllegalValueException("resource.errors.delete.match",
+                        "You cannot delete resource requirement %s, it already has a match");
+                }
             }
-        }
 
-        for(ResourceRequirement req : deletedRequirements) {
-            resourceService.deleteRequirement(req.getId());
+            for (ResourceRequirement req : deletedRequirements) {
+                resourceService.deleteRequirement(req.getId());
+            }
         }
 
         List<ResourceRequirement> requirements = new ArrayList<>();
@@ -307,12 +309,17 @@ public class ProjectService {
      */
     public Project findProjectById(Long id) {
         Project project = projectRepository.findByIdAndActiveIsTrue(id);
-        project.getResourceRequirements().removeIf(new java.util.function.Predicate<ResourceRequirement>() {
-            @Override
-            public boolean test(ResourceRequirement resourceRequirement) {
-                return resourceRequirement.isActive() == false;
-            }
-        });
+        if(project == null) {
+            return null;
+        }
+        if(project.getResourceRequirements() != null) {
+            project.getResourceRequirements().removeIf(new java.util.function.Predicate<ResourceRequirement>() {
+                @Override
+                public boolean test(ResourceRequirement resourceRequirement) {
+                    return resourceRequirement.isActive() == false;
+                }
+            });
+        }
         return project;
     }
 
