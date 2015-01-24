@@ -8,7 +8,6 @@
             "organization": "Organisationen",
             "projects": "Projekte",
             "resource": "Marktplatz",
-            "resourcemanagement": "Ressourcen Verwaltung",
             "entities": {
                 "main": "Entities"
             },
@@ -29,7 +28,9 @@
                 "logout": "Abmelden",
                 "apidocs": "API",
                 "register": "Registrierung",
-                "newsfeed": "Newsfeed"
+                "newsfeed": "Newsfeed",
+                "myresources": "Meine Ressourcen",
+                "resourcerequests": "Ressourcen-Anfragen"
             },
             "admin": "Administration",
             "admin.verify": "Verifizierung",

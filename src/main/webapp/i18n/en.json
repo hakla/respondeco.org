@@ -29,7 +29,9 @@
                 "apidocs": "API",
                 "register": "Register",
                 "newsfeed": "Newsfeed",
-                "resourcerequestapply": "Ressource-Requests"
+                "resourcerequestapply": "Ressource-Requests",
+                "myresources": "My Resources",
+                "resourcerequests": "Resource Requests"
             },
             "admin": "Administration",
             "admin.verify": "Verification",
