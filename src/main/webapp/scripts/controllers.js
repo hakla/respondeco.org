@@ -56,17 +56,24 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
 
 respondecoApp.controller('AdminController', function($scope) {});
 
-respondecoApp.controller('LanguageController', function($scope, $translate, LanguageService) {
+respondecoApp.controller('LanguageController', function($scope, $translate, LanguageService, $window, $rootScope) {
     $scope.changeLanguage = function(languageKey) {
-        $translate.use(languageKey);
-
+        changeLocale(languageKey);
         LanguageService.getBy(languageKey).then(function(languages) {
             $scope.languages = languages;
         });
     };
 
+    var changeLocale = function(languageKey) {
+        $translate.use(languageKey);
+        $window.moment.locale(languageKey);
+        $rootScope.$broadcast('amMoment:localeChanged');
+    }
+
     LanguageService.getBy().then(function(languages) {
         $scope.languages = languages;
+
+        changeLocale($translate.use());
     });
 });
 

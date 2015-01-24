@@ -64,7 +64,7 @@ public class UserDTO {
         if (fieldNames.contains("organization")) {
             if(user.getOrganization() != null) {
                 responseDTO.setOrganization(OrganizationResponseDTO.fromEntity(user.getOrganization(),
-                    Arrays.asList("id", "name", "email", "isNpo", "ownerId")));
+                    Arrays.asList("id", "name", "email", "isNpo", "ownerId", "logo")));
             }
         }
         if (fieldNames.contains("organizationId")) {

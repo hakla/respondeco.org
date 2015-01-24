@@ -426,7 +426,7 @@ public class ProjectController {
             List<ResourceMatchResponseDTO> resourceMatchResponseDTO = ResourceMatchResponseDTO.fromEntities(resourceMatches, null);
             responseEntity = new ResponseEntity<>(resourceMatchResponseDTO, HttpStatus.OK);
         } else {
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
         }
 
         return responseEntity;

@@ -1,12 +1,11 @@
-<div class="newsfeed">
-    <h3>Newsfeed</h3>
-    <div class="well">
-        <ul>
-            <li ng-repeat="posting in news">
-                <h4>{{posting.author.login}} <small>{{ 'organization.posted' | translate }}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
-            </li>
-        </ul>
+<div class="row">
+    <div class="newsfeed col-xs-12">
+        <h3>Newsfeed</h3>
+        <div ng-repeat-start="posting in news" class="col-xs-12 col-sm-6">
+            <resp-posting value="posting"></resp-posting>
+        </div>
+        <div class="clearfix"></div>
+        <div ng-repeat-end></div>
+        <a ng-click="showMoreNews()" translate="posting.showmore" ng-show="canShowMoreNews()">Show more</a>
     </div>
-    <a ng-click="showMoreNews()" translate="posting.showmore"
-       ng-show="canShowMoreNews()">Show more</a>
 </div>

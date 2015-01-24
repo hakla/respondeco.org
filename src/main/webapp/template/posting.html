@@ -1,0 +1,21 @@
+<div class="posting row">
+    <div>
+        <div class="pull-left" ng-hide="hideOrganization">
+            <uploaded-image name="posting.author.organization.logo.id"></uploaded-image>
+        </div>
+        <div class="heading">
+            <div class="pull-right">
+                <a href=""><i class="glyphicon glyphicon-remove"></i></a>
+            </div>
+            <h4 ng-hide="hideOrganization">
+                <a href="redirectToOrganization(posting.author.organization.id)">{{posting.author.organization.name}}</a>
+            </h4>
+            <sup am-time-ago="posting.createdDate" tooltip="{{posting.createdDate | date:'medium'}}" tooltip-placement="right" tooltip-popup-delay="500"></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a>
+        </div>
+    </div>
+    <div class="spacer-top-2" ng-hide="hideOrganization"></div>
+    <div class="spacer-top" ng-show="hideOrganization"></div>
+    <div class="row">
+        <div class="content col-xs-12">{{posting.information}}</div>
+    </div>
+</div>

@@ -83,12 +83,10 @@
             </div>
             <div class="newsfeed">
                 <h3>{{ 'postingfeed.title' | translate }}</h3>
-                <div class="well">
-                    <ul>
-                        <li ng-repeat="posting in postings">
-                            <h4>{{posting.author.login}} <small translate="posting.posted">{{ 'project.posted' | translate}}</small><pre>{{posting.information}}</pre><sup><small> {{posting.createdDate | date}}</small></sup><a ng-show="editable" ng-click="deletePosting(posting.id)"><i class="text-right glyphicon glyphicon-remove"></i></a></h4>
-                        </li>
-                    </ul>
+                <div>
+                    <div ng-repeat="posting in postings">
+                        <resp-posting value="posting" hide-organization="true"></resp-posting>
+                    </div>
                 </div>
                 <a ng-click="showMorePostings()" translate="posting.showmore"
                    ng-show="canShowMorePostings()">Show more</a>

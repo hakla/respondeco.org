@@ -340,4 +340,18 @@ angular.module('respondecoApp')
                 };
             }
         };
+    }).directive('respPosting', function() {
+        return {
+            restrict: 'AE',
+            templateUrl: 'template/posting.html',
+            scope: {
+                posting: '=value',
+                hideOrganization: '='
+            },
+            controller: function($scope, $location, Organization) {
+                $scope.redirectToOrganization = function(id) {
+                    $location.path("/organization/" + id);
+                };
+            }
+        };
     });

@@ -49,7 +49,9 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js',
             'src/main/webapp/bower_components/ng-tags-input/ng-tags-input.js',
             'src/main/webapp/bower_components/lodash/dist/lodash.js',
-            'src/main/webapp/bower_components/angular-google-maps/dist/angular-google-maps.js'
+            'src/main/webapp/bower_components/angular-google-maps/dist/angular-google-maps.js',
+            'src/main/webapp/bower_components/moment/moment.js',
+            'src/main/webapp/bower_components/angular-moment/angular-moment.js'
         ],
 
         // list of files / patterns to exclude
