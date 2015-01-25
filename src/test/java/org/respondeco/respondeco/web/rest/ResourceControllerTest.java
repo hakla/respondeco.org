@@ -296,7 +296,7 @@ public class ResourceControllerTest {
     public void testReadAllOffers_SUCCESS() throws Exception{
         ResourceOfferDTO dto = bindOfferDTOMockData(3);
         //region READ DATA
-        restMockMvc.perform(get("/app/rest/resourceoffers", null, null, null, null, null, null)
+        restMockMvc.perform(get("/app/rest/resourceoffers?page=0&pageSize=20")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
             //.content("{\"name\":\"1\",\"commercial\":null,\"page\":null,\"pageSize\":null,\"fields\":null,\"order\":null}"))
             .andExpect(status().isOk());

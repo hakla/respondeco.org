@@ -5,7 +5,7 @@
 
 respondecoApp.controller('ProjectSearchController', function ($scope, $location, $q, Project,
                                                               ProjectNames, PropertyTagNames,
-                                                              Organization, $rootScope, $route, $routeParams) {
+                                                              Organization, $route, $routeParams) {
 
     var PAGESIZE = 20;
 
@@ -60,6 +60,10 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
 
     $scope.redirectToProject = function(project) {
         $location.path("/projects/" + project.id);
+    }
+
+    $scope.redirectToOrganization = function(organization) {
+        $location.path("/organization/" + $routeParams.id);
     }
 
 });

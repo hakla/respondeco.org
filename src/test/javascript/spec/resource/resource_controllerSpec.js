@@ -345,7 +345,7 @@ describe('Resource Controller Tests ', function () {
 
         it('should redirect to own resources', function() {
             location.path('');
-            $scope.redirectToOwnResource();
+            $scope.redirectToOwnResources();
             expect(location.path()).toEqual('/ownresource');
         });
 

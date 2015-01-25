@@ -17,6 +17,7 @@
                 "settings": "Einstellungen",
                 "social-networks": "Verbundene Netzwerke",
                 "organization": "Meine Organisation",
+                "projects": "Meine Projekte",
                 "password": "Passwort",
                 "sessions": "Sitzungen",
                 "tracker": "User tracker",
@@ -161,6 +162,7 @@
         "rating": "Aktuelle Bewertung:",
         "found": "gefundene Projekte",
         "by": "Ein Projekt der Organisation",
+        "toOrganization": "Zurück zur Organisation",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -548,6 +550,7 @@
         "backToOverview": "Zurück zur Übersicht",
         "newproject": "Neues Projekt anlegen",
         "rating": "Aktuelle Bewertung:",
+        "toProjects": "Projekte der Organisation",
         "posted": "postet: ",
             "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",

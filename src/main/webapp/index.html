@@ -35,7 +35,7 @@
         <!--[if lt IE 10]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <nav class="navbar navbar-default" role="navigation">
+        <nav class="navbar navbar-default" role="navigation" ng-cloak>
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
@@ -116,7 +116,7 @@
                                 </li>
                                 <li ng-switch-when="true" ng-show="isOrganizationUser()">
                                     <a ng-click="redirectToOwnProjects()">
-                                        <span class="glyphicon glyphicon-briefcase"></span>
+                                        <span class="glyphicon glyphicon-leaf"></span>
                                         &#xA0;
                                         <span translate="global.menu.account.projects">My projects</span>
                                     </a>
@@ -220,7 +220,7 @@
             <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
         </div>
         <div ng-class="main() ? 'container-landing-page' : 'container'">
-            <div ng-class="main() ? '' : 'well'" ng-view></div>
+            <div ng-class="main() ? '' : 'well'" ng-view ng-cloak></div>
 
             <div ng-hide="main()" class="footer">
                 <p translate="footer">This is your footer</p>

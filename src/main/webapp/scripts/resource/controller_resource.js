@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('ResourceController', function($rootScope, $translate, $scope, $location, $routeParams, Resource, Account, Organization, Project, $filter, $sce) {
+respondecoApp.controller('ResourceController', function($rootScope, $translate, $scope, $location, $routeParams, Resource, Account, Organization, Project, $filter, $sce, ResourceTagNames) {
 
     var PAGESIZE = 20;
     var translate = $filter('translate');
@@ -33,6 +33,13 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     $scope.filter = {pageSize: PAGESIZE};
 
     $scope.totalItems = 0;
+
+    /**
+     * For propertyTag autocomplete when typing
+     */
+    $scope.getResourceTagNames = function(filter) {
+        return ResourceTagNames.getResourceTagNames(filter).$promise;
+    };
 
     /**
      * Get account user account and load necessary information for resources.

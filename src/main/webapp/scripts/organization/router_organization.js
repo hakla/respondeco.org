@@ -28,7 +28,7 @@ respondecoApp
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 }).when('/organization/:id/projects', {
-                    templateUrl: 'views/projects_search.html',
+                    templateUrl: 'views/projects_own.html',
                     controller: 'ProjectSearchController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]

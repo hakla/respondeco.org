@@ -7,23 +7,32 @@ describe('ProjectSearch Controller Tests ', function () {
     beforeEach(module('respondecoApp'));
 
     describe('ProjectSearchController', function () {
-        var scope, location, ProjectNamesService, PropertyTagsNamesService, ProjectService;
+        var scope, location, ProjectNamesService, PropertyTagsNamesService, ProjectService, OrganizationService,$routeService,$routeParamsService;
         var fakeDeferred;
 
-        beforeEach(inject(function ($rootScope, $controller, $location, $q, ProjectNames, PropertyTagNames, Project) {
+        beforeEach(inject(function ($rootScope, $controller, $location, $q, ProjectNames, PropertyTagNames, Project, Organization, $route, $routeParams) {
             scope = $rootScope.$new();
             location = $location;
             ProjectNamesService = ProjectNames;
             PropertyTagsNamesService = PropertyTagNames;
             ProjectService = Project;
+            OrganizationService = Organization;
+            $routeService = $route;
+            $routeParamsService = $routeParams;
             fakeDeferred = {
                 $promise: {
                     then: function(object) {}
                 }
             }
 
+            // mock $route.current.$$route
+            $routeService.current = {
+                $$route: ""
+            };
+
             $controller('ProjectSearchController', {$scope: scope, $location: location, Project: ProjectService,
-                resolvedProjects: [], ProjectNames: ProjectNamesService, PropertyTagNames: PropertyTagsNamesService});
+                resolvedProjects: [], ProjectNames: ProjectNamesService, PropertyTagNames: PropertyTagsNamesService,
+                Organization: OrganizationService, $route: $routeService, $routeParams: $routeParamsService});
         }));
 
         it('should change the location to the project if redirectToProject is called', function () {

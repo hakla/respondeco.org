@@ -17,6 +17,7 @@
                 "settings": "Settings",
                 "social-networks": "Connected Networks",
                 "organization": "My Organization",
+                "projects": "My projects",
                 "password": "Password",
                 "sessions": "Sessions",
                 "tracker": "User tracker",
@@ -160,6 +161,7 @@
         "posted": "posted: ",
         "rating": "Actual Rating:",
         "found": "projects found",
+        "toOrganization": "Back to the organization",
         "createProject": {
             "title": "Create a new project",
             "tag":"Add tag",
@@ -544,6 +546,7 @@
         "newproject": "Create a new porject",
         "rating": "Actual rating:",
         "posted": "posted: ",
+        "toProjects": "Projects of the organization",
         "error": {
             "nosuchorganization": "There does not exist a organization with given id",
             "alreadyExists": "You can only be owner of one organization",
