@@ -1,7 +1,10 @@
 package org.respondeco.respondeco.web.rest;
 
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
+import org.respondeco.respondeco.domain.Gender;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +23,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,25 +65,40 @@ public class UserControllerTest {
     @Mock
     private TextMessageService textMessageService;
 
+    private User user;
+
     @Before
     public void setup() {
-        UserController userController = new UserController(userRepository,userService, textMessageService);
-        ReflectionTestUtils.setField(userController, "userRepository", userRepository);
+        MockitoAnnotations.initMocks(this);
+        UserController userController = new UserController(userService);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+
+        user = new User();
+        user.setId(1L);
+        user.setLogin("testuser");
+        user.setActivated(true);
+        user.setAuthorities(new HashSet<>());
+        user.setEmail("test@test.at");
+        user.setFollowOrganizations(new ArrayList<>());
+        user.setFollowProjects(new ArrayList<>());
+        user.setGender(Gender.UNSPECIFIED);
+        user.setActive(true);
     }
 
     @Test
     public void testGetExistingUser() throws Exception {
+        doReturn(user).when(userService).getUser(user.getId());
         restUserMockMvc.perform(get("/app/rest/users/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.lastName").value("System"));
+                .andExpect(jsonPath("$.login").value("testuser"));
     }
 
 
     @Test
     public void testGetUnknownUser() throws Exception {
+        doReturn(null).when(userService).getUser(200L);
         restUserMockMvc.perform(get("/app/rest/users/200")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());

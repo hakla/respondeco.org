@@ -38,10 +38,8 @@ public class ResourceTagService {
      */
     public List<ResourceTag> getResourceTags(String filter, RestParameters restParams) {
         Pageable pageable = null;
-        List<String> fields = null;
         if(restParams != null) {
             pageable = restParams.buildPageRequest();
-            fields = restParams.getFields();
         }
         if(filter == null) {
             filter = "";
