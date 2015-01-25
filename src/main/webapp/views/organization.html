@@ -12,6 +12,7 @@
                 <span class="glyphicon glyphicon-minus"></span>
                 <span translate="follow.button" class="ng-scope">Folgen</span>
             </button>
+            <a ng-click="redirectToProjects(organization.id)" class="btn btn-default" type="button" translate="organization.toProjects"></a>
             <button class="btn btn-primary btn-success" ng-click='redirectToNewProject()' translate='organization.newproject' ng-show='isOwner()'>Create New Project</button>
             <button class="btn btn-primary" ng-click='redirectToEdit()' translate='general.edit' ng-show='isOwner()'>Edit</button>
         </div>

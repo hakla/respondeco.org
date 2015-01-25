@@ -478,6 +478,7 @@ uploaded-image, [uploaded-image] {
 .modal-apply, .modal-claim {
     h2 {
         @include ellipsis;
+        text-align: center;
     }
 
     .resource {
@@ -489,7 +490,9 @@ uploaded-image, [uploaded-image] {
 
         &.selected {
             .resource-item {
-                box-shadow: 0 0 8px #CCC;
+                h2 {
+                    text-decoration: underline;;
+                }
             }
         }
     }

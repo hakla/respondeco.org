@@ -675,7 +675,8 @@
             "editbutton": "Bearbeiten",
             "delete": "Löschen",
             "confirmDelete": "Unwiderruflich Löschen",
-            "donatedResources": "Gespendete Ressourcen"
+            "donatedResources": "Gespendete Ressourcen",
+            "ownResources": "Eigene Ressourcen"
         },
         "requirement": {
             "title": "Ressourcenanforderung hinzufügen",

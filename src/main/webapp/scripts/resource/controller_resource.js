@@ -324,7 +324,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     /**
      * Redirects to own resource site
      */
-    $scope.redirectToOwnResource = function () {
+    $scope.redirectToOwnResources = function () {
         $location.path('ownresource');
     };
 

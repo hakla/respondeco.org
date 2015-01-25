@@ -143,9 +143,6 @@
                                     <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
                                     <i class="glyphicon" ng-class="{'glyphicon-chevron-down': item.expanded, 'glyphicon-chevron-right': !item.expanded}"></i>
                                 </div>
-                                <div class="col-xs-2 pull-right" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)">
-                                    <button class="btn btn-primary" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
-                                </div>
                                 <div class="ellipsis" tooltip="{{item.name}}">{{item.name}}</div>
                             </div>
                         </accordion-heading>
@@ -162,6 +159,9 @@
                                 </div>
                             </li>
                         </ul>
+                        <div class="text-right" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)">
+                            <button class="btn btn-primary" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
+                        </div>
                     </accordion-group>
 
                 </accordion>
@@ -185,20 +185,19 @@
                             <dt>{{ 'resource.stillneeded' | translate }}</dt>
                             <dd>{{ ProjectApply.selectedRequirement.amount }}</dd>
                         </dl>
-                        <ul class="resources">
-                            <li ng-click="selectResourceOffer(offer, $event)" class="resource row" ng-repeat="offer in resourceOffers">
-                                <div class="col-md-2">
-                                    <img src="" alt="">
+                        <div class="resources spacer-top clearfix">
+                            <div ng-click="selectResourceOffer(offer, $event)" class="resource" ng-repeat="offer in resourceOffers">
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <resp-resource-item resource="offer"></resp-resource-item>
                                 </div>
-                                <div class="pull-right col-md-6 offerdesc">
-                                    {{ offer.description }}
-                                </div>
-                                <h2 class="col-md-4">
-                                    {{ offer.name }}
-                                    <span ng-hide="offer.amount == 1">({{ offer.amount }})</span>
-                                </h2>
-                            </li>
-                        </ul>
+                                <div class="visible-xs clearfix"></div>
+                                <div class="visible-xs spacer-top"></div>
+                                <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
+                                <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
+                                <div class="visible-md visible-lg clearfix" ng-if="$index % 3 == 2"></div>
+                                <div class="visible-md visible-lg spacer-top" ng-if="$index % 3 == 2"></div>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">

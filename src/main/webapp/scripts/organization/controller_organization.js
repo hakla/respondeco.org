@@ -98,6 +98,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $location.path('projects/edit/new');
     };
 
+    $scope.redirectToProjects = function() {
+        $location.path('organization/' + $scope.organization.id + '/projects');
+    };
+
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);
     }

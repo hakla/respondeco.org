@@ -605,13 +605,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     $scope.selectResourceOffer = function(offer, $event) {
         var $target = $($event.target);
 
-        var selected = $target.closest("ul").find(".selected");
-        selected.removeClass("selected");
+        $target.closest(".resources").find(".selected").removeClass("selected");
 
-        if ($target.is("li") === false) {
-            selected = $target = $target.closest("li");
+        if ($target.is(".resource") === false) {
+            $target = $target.closest(".resource");
+        } else {
+            $target = $target;
         }
-        offer.$target = selected;
 
         $target.addClass("selected");
         $scope.ProjectApply.selectedResourceOffer = offer;

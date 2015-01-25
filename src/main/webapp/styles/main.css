@@ -8356,30 +8356,31 @@ uploaded-image div, [uploaded-image] div {
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
+  text-align: center;
 }
-/* line 485, ../../scss/main.scss */
+/* line 486, ../../scss/main.scss */
 .modal-apply .resource .content p, .modal-apply .resource .content small, .modal-claim .resource .content p, .modal-claim .resource .content small {
   display: none;
 }
-/* line 491, ../../scss/main.scss */
-.modal-apply .resource.selected .resource-item, .modal-claim .resource.selected .resource-item {
-  box-shadow: 0 0 8px #CCC;
+/* line 493, ../../scss/main.scss */
+.modal-apply .resource.selected .resource-item h2, .modal-claim .resource.selected .resource-item h2 {
+  text-decoration: underline;
 }
-/* line 498, ../../scss/main.scss */
+/* line 501, ../../scss/main.scss */
 .modal-apply .project-item.selected, .modal-claim .project-item.selected {
   box-shadow: 0 0 8px #CCC;
 }
 
-/* line 505, ../../scss/main.scss */
+/* line 508, ../../scss/main.scss */
 .modal .project-item {
   min-height: inherit;
 }
-/* line 509, ../../scss/main.scss */
+/* line 512, ../../scss/main.scss */
 .modal .project-item h2 a {
   font-size: 14px;
 }
 
-/* line 516, ../../scss/main.scss */
+/* line 519, ../../scss/main.scss */
 .approved {
   position: absolute;
   height: 100px;
@@ -8387,12 +8388,12 @@ uploaded-image div, [uploaded-image] div {
   top: -140px;
 }
 
-/* line 523, ../../scss/main.scss */
+/* line 526, ../../scss/main.scss */
 .dropdown-toggle {
   border-radius: 0 !important;
 }
 
-/* line 528, ../../scss/main.scss */
+/* line 531, ../../scss/main.scss */
 .dropdown .badge {
   background-color: #C40000;
   top: -1px;
@@ -8400,125 +8401,125 @@ uploaded-image div, [uploaded-image] div {
   left: 12px;
 }
 
-/* line 536, ../../scss/main.scss */
+/* line 539, ../../scss/main.scss */
 .highlight, .highlight td {
   background-color: #FFF37B !important;
 }
 
-/* line 540, ../../scss/main.scss */
+/* line 543, ../../scss/main.scss */
 .error-container {
   width: 80%;
   max-width: 800px;
   margin: 0 auto;
 }
-/* line 545, ../../scss/main.scss */
+/* line 548, ../../scss/main.scss */
 .error-container .alert {
   border-radius: 0;
   margin: 10px 0;
 }
 
-/* line 551, ../../scss/main.scss */
+/* line 554, ../../scss/main.scss */
 .spacer-left {
   margin-left: 16px;
 }
 
-/* line 555, ../../scss/main.scss */
+/* line 558, ../../scss/main.scss */
 .spacer-left-2 {
   margin-left: 32px;
 }
 
-/* line 559, ../../scss/main.scss */
+/* line 562, ../../scss/main.scss */
 .spacer-left-3 {
   margin-left: 48px;
 }
 
-/* line 563, ../../scss/main.scss */
+/* line 566, ../../scss/main.scss */
 .spacer-left-4 {
   margin-left: 64px;
 }
 
-/* line 567, ../../scss/main.scss */
+/* line 570, ../../scss/main.scss */
 .spacer-left-small {
   margin-left: 8px;
 }
 
-/* line 571, ../../scss/main.scss */
+/* line 574, ../../scss/main.scss */
 .spacer-top {
   margin-top: 16px;
 }
 
-/* line 575, ../../scss/main.scss */
+/* line 578, ../../scss/main.scss */
 .spacer-top-2 {
   margin-top: 32px;
 }
 
-/* line 579, ../../scss/main.scss */
+/* line 582, ../../scss/main.scss */
 .spacer-top-3 {
   margin-top: 48px;
 }
 
-/* line 583, ../../scss/main.scss */
+/* line 586, ../../scss/main.scss */
 .spacer-top-4 {
   margin-top: 64px;
 }
 
-/* line 587, ../../scss/main.scss */
+/* line 590, ../../scss/main.scss */
 .angular-google-map-container {
   height: 400px;
 }
 
-/* line 589, ../../scss/main.scss */
+/* line 592, ../../scss/main.scss */
 h1 {
   font-size: 28px;
   margin-bottom: 50px;
 }
 
-/* line 594, ../../scss/main.scss */
+/* line 597, ../../scss/main.scss */
 h2 {
   font-size: 24px;
 }
 
-/* line 598, ../../scss/main.scss */
+/* line 601, ../../scss/main.scss */
 h3 {
   font-size: 20px;
 }
 
-/* line 602, ../../scss/main.scss */
+/* line 605, ../../scss/main.scss */
 h4 {
   font-size: 18px;
 }
 
-/* line 606, ../../scss/main.scss */
+/* line 609, ../../scss/main.scss */
 .form-search {
   margin-bottom: 50px;
 }
 
-/* line 611, ../../scss/main.scss */
+/* line 614, ../../scss/main.scss */
 .project-details .organization {
   max-width: 200px;
 }
-/* line 615, ../../scss/main.scss */
+/* line 618, ../../scss/main.scss */
 .project-details .project-item {
   min-height: inherit;
 }
-/* line 618, ../../scss/main.scss */
+/* line 621, ../../scss/main.scss */
 .project-details .project-item uploaded-image {
   height: 75px;
 }
-/* line 623, ../../scss/main.scss */
+/* line 626, ../../scss/main.scss */
 .project-details .badge {
   margin: 2px;
 }
-/* line 627, ../../scss/main.scss */
+/* line 630, ../../scss/main.scss */
 .project-details .modal-body {
   clear: left;
 }
-/* line 632, ../../scss/main.scss */
+/* line 635, ../../scss/main.scss */
 .project-details .accordion-toggle .ellipsis {
   padding-left: 15px;
 }
 
-/* line 638, ../../scss/main.scss */
+/* line 641, ../../scss/main.scss */
 .ellipsis {
   overflow: hidden;
   white-space: nowrap;
@@ -8526,29 +8527,29 @@ h4 {
   display: block;
 }
 
-/* line 642, ../../scss/main.scss */
+/* line 645, ../../scss/main.scss */
 .dynamic-image {
   width: 100%;
   background-position: 50%;
   background-repeat: no-repeat;
 }
 
-/* line 649, ../../scss/main.scss */
+/* line 652, ../../scss/main.scss */
 .postingform textarea {
   height: 33px;
   transition: .25s ease height;
 }
-/* line 654, ../../scss/main.scss */
+/* line 657, ../../scss/main.scss */
 .postingform .btn {
   opacity: 0;
   transition: .25s ease opacity;
   transition-delay: .25s;
 }
-/* line 661, ../../scss/main.scss */
+/* line 664, ../../scss/main.scss */
 .postingform .focused textarea {
   height: 100px;
 }
-/* line 665, ../../scss/main.scss */
+/* line 668, ../../scss/main.scss */
 .postingform .focused .btn {
   opacity: 1;
 }
