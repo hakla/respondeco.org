@@ -36,7 +36,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
 
     /**
      * Get account user account and load necessary information for resources.
-     * The necessarily loaded informations are dependent on the location path. 
+     * The necessarily loaded informations are dependent on the location path.
      */
     $scope.getAccount = function () {
         Account.get(null, function (account) {
@@ -164,7 +164,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     /**
      * Selects the resource which will be claimed from the user
      * after pressing the claim resource button. Also gets the
-     * users projects so the user can define for which one the 
+     * users projects so the user can define for which one the
      * resource will be claimed.
      */
     $scope.claimResource = function (res) {
@@ -284,7 +284,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
 
     /**
      * Redirect to own Organization
-     */ 
+     */
     $scope.redirectToOrganization = function () {
         $location.path('organization/' + $scope.orgId);
     };
@@ -381,7 +381,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
 
             Resource[$scope.isNew ? 'save' : 'update']($scope.resource,
                 function () {
-                    $scope.redirectToOwnResource('');
+                    $scope.redirectToOwnResources();
                 },
                 function () {
                     $scope.formSaveError = true;
@@ -479,6 +479,6 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
 
     }
 
-    
+
 
 });

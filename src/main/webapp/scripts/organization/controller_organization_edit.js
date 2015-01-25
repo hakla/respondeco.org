@@ -1,6 +1,6 @@
 'use strict';
 
-respondecoApp.controller('OrganizationControllerEdit', function($scope, $location, $routeParams, resolvedOrganization, Organization, Account, User, OrgJoinRequest, TextMessage, AuthenticationSharedService, $rootScope) {
+respondecoApp.controller('OrganizationControllerEdit', function($scope, $location, $routeParams, Organization, Account, User, OrgJoinRequest, TextMessage, AuthenticationSharedService, $rootScope) {
 
     var id = $routeParams.id;
     var isNew = id === 'new';
@@ -37,8 +37,6 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
             $scope.organization.email = account.email;
         });
     }
-
-    $scope.organizations = resolvedOrganization;
 
     $scope.isNew = function() {
         return isNew;
