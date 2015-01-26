@@ -20,6 +20,7 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
     
     $scope.search = function() {
         $scope.filter.filter = $scope.searchText;
+        $scope.filter.page = $scope.currentPage - 1;
 
         var success = function(data) {
             $scope.projects = data.projects;

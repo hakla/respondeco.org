@@ -83,7 +83,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     };
 
     /**
-     * Actualizes the resources after page has changed
+     * Refresh the resources after page has changed.
      */
     $scope.onPageChange = function () {
         $scope.filter.page = $scope.currentPage - 1;
