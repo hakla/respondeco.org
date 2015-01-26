@@ -78,20 +78,6 @@ public class ProjectResponseDTO {
             responseDTO.setSuccessful(project.getSuccessful());
         }
 
-        /*
-        if (fieldNames.contains("postings")) {
-            responseDTO.setPostings(PostingDTO
-                    .fromEntities(project.getPostingFeed_id().getPostings(), null));
-        }*/
-
-        //TODO FIX
-        /**
-        if (fieldNames.contains("ratings")) {
-            responseDTO.setRatings(ProjectRatingResponseDTO
-                    .fromEntities(project.getRatings(),null));
-            responseDTO.setRatings(RatingResponseDTO.fromEntities(project.getResourceMatches().g, null));
-        }
-         **/
         return responseDTO;
     }
 

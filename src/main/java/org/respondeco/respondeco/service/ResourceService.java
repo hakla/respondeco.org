@@ -751,4 +751,27 @@ public class ResourceService {
 
         return resourceMatches;
     }
+
+    public Page<ResourceMatch> getSupportedProjectsForOrganization(Long orgId, RestParameters restParameters)
+        throws NoSuchOrganizationException {
+
+        PageRequest pageRequest = null;
+
+        if (restParameters != null) {
+            pageRequest = restParameters.buildPageRequest();
+        }
+
+        Organization organization = organizationRepository.findOne(orgId);
+        if (organization == null) {
+            throw new NoSuchOrganizationException("organization with id " + orgId + "can't be found");
+        }
+
+        Page<ResourceMatch> resourceMatches =
+            resourceMatchRepository.findByOrganizationAndAcceptedIsTrueAndActiveIsTrue(organization, pageRequest);
+
+        return resourceMatches;
+
+    }
+
+
 }

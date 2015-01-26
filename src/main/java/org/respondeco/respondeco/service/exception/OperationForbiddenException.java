@@ -5,7 +5,6 @@ package org.respondeco.respondeco.service.exception;
  */
 public class OperationForbiddenException extends IllegalValueException {
 
-    //TODO CHANGE HERE!
     public OperationForbiddenException(String message) {
         super("operation.forbidden", message);
     }

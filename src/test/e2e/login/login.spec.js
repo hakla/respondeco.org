@@ -5,6 +5,7 @@ describe('e2e: login', function() {
     beforeEach(function() {
         loginPage.navigate();
         browser.waitForAngular();
+        loginPage.username.clear();
     });
     it('should login', function() {
         expect(browser.getLocationAbsUrl()).toMatch("/login");

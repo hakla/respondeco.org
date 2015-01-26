@@ -15,7 +15,7 @@ var NewProjectPage = function() {
 //modal bindings for resource requirement
     this.resourceName = element(by.model("resource.name"));
     this.resourceDescription = element(by.model("resource.description"));
-    this.resourceAmount = element(by.model("resource.amount"));
+    this.resourceAmount = element(by.model("resource.originalAmount"));
     this.resourceTags = element(by.model("selectedResourceTags"));
     this.resourceEssential = element(by.model("resource.isEssential"));
     this.resourceSaveButton = element(by.id("resourceSaveButton"));

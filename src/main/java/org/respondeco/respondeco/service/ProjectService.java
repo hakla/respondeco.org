@@ -549,13 +549,6 @@ public class ProjectService {
             throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", projectId));
         }
 
-        /*
-        TODO: make it sense?
-        if(selected.getOrganization() == currentUser.getOrganization()){
-            throw new IllegalValueException("follow.project.rejected.ownererror", "Cannot follow own organization");
-        }
-        */
-
         // add new follower over Projects Table and save it
         List<Project> followers = currentUser.getFollowProjects();
         followers.add(selected);
