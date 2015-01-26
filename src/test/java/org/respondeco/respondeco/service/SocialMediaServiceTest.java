@@ -197,7 +197,7 @@ public class SocialMediaServiceTest {
         doReturn(feedOperations).when(facebook).feedOperations();
         doReturn(post).when(feedOperations).updateStatus("post");
 
-        String status = socialMediaService.createFacebookPost("post");
+        String status = socialMediaService.createFacebookPost("urlpath","post");
 
         verify(socialMediaRepositoryMock, times(1)).findByUserAndProvider(user,"facebook");
         assertEquals(status, "post");
@@ -269,9 +269,9 @@ public class SocialMediaServiceTest {
 
         doReturn(conn).when(twitterConnection).getApi();
         doReturn(timelineOperations).when(conn).timelineOperations();
-        doReturn(tweet).when(timelineOperations).updateStatus("post");
+        doReturn(tweet).when(timelineOperations).updateStatus(anyString());
 
-        Tweet returnedTweet = socialMediaService.createTwitterPost("post");
+        Tweet returnedTweet = socialMediaService.createTwitterPost("urlpath", "post");
 
         verify(socialMediaRepositoryMock, times(1)).findByUserAndProvider(user, "twitter");
         assertEquals(returnedTweet.getText(), "post");
@@ -282,7 +282,7 @@ public class SocialMediaServiceTest {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
         doReturn(null).when(socialMediaRepositoryMock).findByUserAndProvider(user,"twitter");
 
-        socialMediaService.createTwitterPost("post");
+        socialMediaService.createTwitterPost("urlpath", "post");
     }
 
     @Test

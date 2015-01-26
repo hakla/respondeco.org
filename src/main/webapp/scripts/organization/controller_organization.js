@@ -191,11 +191,13 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         });
 
         if($scope.postOnTwitter === true) {
-            SocialMedia.createTwitterPost({string: $scope.postingInformation});
+            var urlPath = $location.url();
+            SocialMedia.createTwitterPost({urlPath: urlPath, post: $scope.postingInformation});
         }
 
         if($scope.postOnFacebook === true) {
-            SocialMedia.createFacebookPost({string: $scope.postingInformation});
+            var urlPath = $location.url();
+            SocialMedia.createFacebookPost({urlPath: urlPath, post: $scope.postingInformation});
         }
 
         if($scope.postOnXing === true) {

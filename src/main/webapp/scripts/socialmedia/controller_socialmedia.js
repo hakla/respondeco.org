@@ -5,7 +5,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	$scope.code = {string: null}
 	$scope.post = {string: null}
 
-	$scope.loading = false;
 	$scope.twitterConnected = false;
 	$scope.facebookConnected = false;
 	$scope.xingConnected = false;
@@ -35,7 +34,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 *	respondeco.
 	 */
 	$scope.connectFacebook = function() {
-		$scope.loading = true;
 		SocialMedia.connectFacebook(function(redirectURL) {
 			$window.location.href = redirectURL.string;
 		}, function() {
@@ -76,7 +74,6 @@ respondecoApp.controller('SocialMediaController', function($rootScope, $scope, $
 	 $scope.disconnectFacebook = function() {
 	 	$scope.loading = true;
 	 	SocialMedia.disconnectFacebook(function() {
-	 		$scope.loading = false;
 	 		$scope.facebookConnected = false
 	 		$scope.addAlert('info','Die Verbindung zwischen ihrem Account und Facebook wurde erfolgreich aufgehoben');
 	 	}, function() {

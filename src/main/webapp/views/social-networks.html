@@ -7,9 +7,8 @@
                 <img src="images/sn/facebook.png" alt="Facebook">
             </div>
             <div class="spacer-top">
-                <button class="btn btn-default" ng-show="facebookConnected==false && loading == false" ng-click="connectFacebook()" translate="socialmedia.connect">Connect</button>
-                <button class="btn btn-default btn-danger" ng-show="facebookConnected && loading == false" ng-click="disconnectFacebook()" translate="socialmedia.disconnect">Disconnect</button>
-                <button ng-show="loading" class="btn btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
+                <button class="btn btn-default" ng-show="facebookConnected==false" ng-click="connectFacebook()" translate="socialmedia.connect">Connect</button>
+                <button class="btn btn-default btn-danger" ng-show="facebookConnected" ng-click="disconnectFacebook()" translate="socialmedia.disconnect">Disconnect</button>
             </div>
         </div>
         <div class="col-md-4 col-xs-12 text-center disabled">
