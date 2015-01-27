@@ -662,6 +662,8 @@
             "error": "Ressource konnte nicht erstellt werden!",
             "error.amount": "Eine Ressource muss mindestens einmal vorhanden sein",
             "error.startDate": "Das Startdatum muss vor dem Enddatum liegen",
+            "error.name": "Der Name muss zwischen 2 und 40 Zeichen lang sein",
+            "error.description": "Die Beschreibung darf maximal 255 Zeichen lang sein",
             "price": "Preis"
         },
         "edit": {

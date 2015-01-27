@@ -647,6 +647,8 @@
             "error": "Resouce could not be created!",
             "error.amount": "Amount has to be at least 1",
             "error.startDate": "Available from has to be earlier than available to date.",
+            "error.name": "Name has to be between 2 and 40 characters long",
+            "error.description": "The description has to be no longer than 255 characters",
             "price": "Price"
         },
         "edit": {
