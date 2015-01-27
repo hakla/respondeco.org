@@ -42,6 +42,7 @@
     <include file="classpath:config/liquibase/changelog/20141209154500_load_default_ResourceRequirements.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20141209154500_load_default_ResourceMatches.xml" relativeToChangelogFile="false"/>
 
+    <include file="classpath:config/liquibase/changelog/20150127203500_modified_entity_Textmessage.xml" relativeToChangelogFile="false"/>
     <!-- JHipster will add liquibase changelogs here -->
 
 </databaseChangeLog>
