@@ -11,6 +11,10 @@
         Modified type of fields in ProjectLocation
     -->
     <changeSet id="20150120233100" author="Benjamin Fraller">
+        <preConditions onFail="CONTINUE">
+            <dbms type="h2" />
+        </preConditions>
+
         <modifyDataType columnName="lat"
                         newDataType="real not null"
                         tableName="T_PROJECT_LOCATION"/>

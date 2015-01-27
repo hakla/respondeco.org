@@ -407,7 +407,8 @@ public class ResourceService {
                 List<Project> projects = organizations.getContent();
 
                 // add all projects of the organization to the matchingEntities
-                matchingEntities.addAll(projects);
+                // only add projects which are currently active and haven't started yet (projects which aren't concrete or the start date is in the future)
+                matchingEntities.addAll(projects.stream().filter(p -> !p.isConcrete() || p.getStartDate().isBefore(LocalDate.now()) == false).collect(Collectors.toList()));
 
                 // add all resource requests of all projects of the organization
                 matchingEntities.addAll(
@@ -435,7 +436,16 @@ public class ResourceService {
                 matching.setAPriori(1);
                 entities = (List<T>) matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
 
-                page = new PageImpl<>(entities, pageRequest, pageRequest.getPageSize());
+                int from = pageRequest.getPageNumber() * pageRequest.getPageSize();
+                int to = from + pageRequest.getPageSize();
+
+                if (to > entities.size()) {
+                    to -= (to - entities.size());
+                }
+
+                List<T> pagedEntities = new ArrayList<>(entities.subList(from, to));
+
+                page = new PageImpl<>(pagedEntities, pageRequest, entities.size());
             }
         }
 
