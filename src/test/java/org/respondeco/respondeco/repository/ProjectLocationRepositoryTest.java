@@ -93,12 +93,12 @@ public class ProjectLocationRepositoryTest extends AbstractTransactionalJUnit4Sp
     public void testFindNearProjects_shouldReturnNearProjects() {
 
         //1 km radius - 0.997km distance from 10,10 -> should be found
-        List<Object[]> objList = projectLocationRepository.findNearProjects(10.0,10.00913,1);
+        List<Object[]> objList = projectLocationRepository.findNearProjects(10.0f,10.00913f,1);
 
         Object[] object = objList.get(0);
         assertEquals(object[0], new BigInteger("1"));
-        assertEquals((double)object[1], 10.0, 0.1);
-        assertEquals((double)object[2], 10.00913,0.1);
+        assertEquals((float)object[1], 10.0, 0.1);
+        assertEquals((float)object[2], 10.00913,0.1);
         assertEquals(object[3], "address");
         assertEquals(object[4], new BigInteger("1"));
     }
@@ -107,7 +107,7 @@ public class ProjectLocationRepositoryTest extends AbstractTransactionalJUnit4Sp
     public void testFindNearProjects_shouldNotFindAnyProjects() {
 
         //1 km radius - 0.997km distance from 10,10 -> should be found
-        List<Object[]> objList = projectLocationRepository.findNearProjects(10.0,10.00914,1);
+        List<Object[]> objList = projectLocationRepository.findNearProjects(10.0f,10.00914f,1);
 
         assertTrue(objList.isEmpty());
     }

@@ -124,7 +124,7 @@ public class ProjectLocationService {
      * @param radius radius in kilometres, defines the radius of found projects from the position given by latitude and longitude
      * @return a List of ProjectLocations which represents projects near position given by latitude and longitude
      */
-    public List<ProjectLocation> getNearProjects(double latitude, double longitude, double radius)
+    public List<ProjectLocation> getNearProjects(float latitude, float longitude, double radius)
         throws IllegalValueException {
 
         if(radius <= 0) {
@@ -133,7 +133,7 @@ public class ProjectLocationService {
 
         List<ProjectLocation> projectLocationList = new ArrayList<>();
 
-        List<Object[]> objectArrayList = projectLocationRepository.findNearProjects(latitude,longitude, radius);
+        List<Object[]> objectArrayList = projectLocationRepository.findNearProjects(latitude, longitude, radius);
         for(Object[] objArray : objectArrayList) {
             //Create the object manually, because native sql query returns a list of object arrays
             ProjectLocation projectLocation = new ProjectLocation();

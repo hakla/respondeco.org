@@ -632,9 +632,9 @@ public class ProjectController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> findProjectsNearMe(
-        @RequestParam(required = true) Double latitude,
-        @RequestParam(required = true) Double longitude,
-        @RequestParam(required = true) Double radius) {
+        @RequestParam(required = true) Float latitude,
+        @RequestParam(required = true) Float longitude,
+        @RequestParam(required = true) Float radius) {
         log.debug("REST Request to get near projects: (latitude: " + latitude +" , longitude: " + longitude + "), radius: " + radius );
 
         ResponseEntity<?> responseEntity = null;

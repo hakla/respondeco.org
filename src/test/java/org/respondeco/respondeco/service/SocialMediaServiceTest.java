@@ -20,6 +20,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.FacebookLink;
 import org.springframework.social.facebook.api.FeedOperations;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
@@ -191,16 +192,16 @@ public class SocialMediaServiceTest {
         //mock connection.getApi().feedOperations().updateStatus(post);
         Facebook facebook = mock(Facebook.class);
         FeedOperations feedOperations = mock(FeedOperations.class);
-        String post = "post";
+        String postId = "123456789";
 
         doReturn(facebook).when(facebookConnection).getApi();
         doReturn(feedOperations).when(facebook).feedOperations();
-        doReturn(post).when(feedOperations).updateStatus("post");
+        doReturn(postId).when(feedOperations).postLink(anyString(), any(FacebookLink.class));
 
-        String status = socialMediaService.createFacebookPost("urlpath","post");
+        postId = socialMediaService.createFacebookPost("urlpath","post");
 
         verify(socialMediaRepositoryMock, times(1)).findByUserAndProvider(user,"facebook");
-        assertEquals(status, "post");
+        assertEquals(postId, "123456789");
     }
 
     @Test

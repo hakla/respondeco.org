@@ -551,8 +551,8 @@ public class ProjectControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(1))
             .andExpect(jsonPath("$[0].address").value(projectLocation.getAddress()))
-            .andExpect(jsonPath("$[0].latitude").value(projectLocation.getLat()))
-            .andExpect(jsonPath("$[0].longitude").value(projectLocation.getLng()))
+            .andExpect(jsonPath("$[0].latitude").value(new Double(projectLocation.getLat())))
+            .andExpect(jsonPath("$[0].longitude").value(new Double(projectLocation.getLng())))
             .andExpect(jsonPath("$[0].project.id").value(project.getId().intValue()));
 
         verify(projectLocationServiceMock, times(1)).getAllLocations();
@@ -561,21 +561,21 @@ public class ProjectControllerTest {
     @Test
     public void testGetNearProjects_expectOK_shouldReturnNearProjects() throws Exception {
 
-        doReturn(Arrays.asList(projectLocation)).when(projectLocationServiceMock).getNearProjects(10.0,15.0,100);
+        doReturn(Arrays.asList(projectLocation)).when(projectLocationServiceMock).getNearProjects(10.0f,15.0f,100);
 
         restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(1))
             .andExpect(jsonPath("$[0].address").value(projectLocation.getAddress()))
-            .andExpect(jsonPath("$[0].latitude").value(projectLocation.getLat()))
-            .andExpect(jsonPath("$[0].longitude").value(projectLocation.getLng()))
+            .andExpect(jsonPath("$[0].latitude").value(new Double(projectLocation.getLat())))
+            .andExpect(jsonPath("$[0].longitude").value(new Double(projectLocation.getLng())))
             .andExpect(jsonPath("$[0].project.id").value(project.getId().intValue()));
     }
 
     @Test
     public void testGetNearProjects_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
-        doThrow(NoSuchProjectException.class).when(projectLocationServiceMock).getNearProjects(10.0,15.0,100);
+        doThrow(NoSuchProjectException.class).when(projectLocationServiceMock).getNearProjects(10.0f,15.0f,100);
 
         restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -584,7 +584,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testGetNearProjects_expectBAD_REQUEST_serviceThrowsIllegalValueException() throws Exception {
-        doThrow(IllegalValueException.class).when(projectLocationServiceMock).getNearProjects(10.0, 15.0, 100);
+        doThrow(IllegalValueException.class).when(projectLocationServiceMock).getNearProjects(10.0f, 15.0f, 100);
 
         restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))

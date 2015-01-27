@@ -24,6 +24,6 @@ public interface ProjectLocationRepository extends JpaRepository<ProjectLocation
         "HAVING distance < ?3 " +
         "ORDER BY distance " +
         "LIMIT 0,20",nativeQuery = true)
-    public List<Object[]> findNearProjects(double userLat, double userLng, double radius);
+    public List<Object[]> findNearProjects(float userLat, float userLng, double radius);
 
 }

@@ -1092,6 +1092,11 @@ public class ResourceServiceTest {
             return page;
         }).when(resourceOfferRepositoryMock).findByActiveIsTrue(any(PageRequest.class));
 
+        User user = new User();
+        user.setId(2L);
+
+        doReturn(user).when(userServiceMock).getUserWithAuthorities();
+
         Page<ResourceOffer> page = resourceService.getAllOffers("",null,new RestParameters(0,5));
         assertEquals(page.getTotalPages(), 1);
         assertEquals(page.getTotalElements(), 2);

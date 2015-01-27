@@ -136,13 +136,13 @@ public class ProjectLocationServiceTest {
     @Test
     public void testGetNearProjects_shouldReturnNearProjects() throws Exception {
         List<Object[]> objectArrayList = new ArrayList<>();
-        Object[] object = {new BigInteger("1"), new Double(20.0), new Double(15.0), new String("address"), new BigInteger("1")};
+        Object[] object = {new BigInteger("1"), new Float(20.0), new Float(15.0), new String("address"), new BigInteger("1")};
         objectArrayList.add(object);
 
-        doReturn(objectArrayList).when(projectLocationRepositoryMock).findNearProjects(anyDouble(), anyDouble(), anyDouble());
+        doReturn(objectArrayList).when(projectLocationRepositoryMock).findNearProjects(anyFloat(), anyFloat(), anyDouble());
         doReturn(project).when(projectRespositoryMock).findOne(anyLong());
 
-        List<ProjectLocation> projectLocations = projectLocationService.getNearProjects(20.0,10.0,100.0);
+        List<ProjectLocation> projectLocations = projectLocationService.getNearProjects(20.0f,10.0f,100.0);
 
         assertEquals(projectLocations.get(0).getAddress(), "address");
         assertEquals(projectLocations.get(0).getLat(), 20.0, 0.1);
@@ -153,18 +153,18 @@ public class ProjectLocationServiceTest {
     @Test(expected = NoSuchProjectException.class)
     public void testGetNearProjects_shouldThrowNoSuchProjectException() throws Exception {
         List<Object[]> objectArrayList = new ArrayList<>();
-        Object[] object = {new BigInteger("1"), new Double(20.0), new Double(15.0), new String("address"), new BigInteger("1")};
+        Object[] object = {new BigInteger("1"), new Float(20.0), new Float(15.0), new String("address"), new BigInteger("1")};
         objectArrayList.add(object);
 
-        doReturn(objectArrayList).when(projectLocationRepositoryMock).findNearProjects(anyDouble(), anyDouble(), anyDouble());
+        doReturn(objectArrayList).when(projectLocationRepositoryMock).findNearProjects(anyFloat(), anyFloat(), anyDouble());
         doReturn(null).when(projectRespositoryMock).findOne(anyLong());
 
-        projectLocationService.getNearProjects(20.0,10.0,100);
+        projectLocationService.getNearProjects(20.0f,10.0f,100);
     }
 
     @Test(expected = IllegalValueException.class)
     public void testGetNearProjects_shouldThrowIllegalValueException() throws Exception {
-        projectLocationService.getNearProjects(20.0,10.0,-1);
+        projectLocationService.getNearProjects(20.0f,10.0f,-1);
     }
 
     @Test
