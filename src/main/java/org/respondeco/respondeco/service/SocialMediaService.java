@@ -13,6 +13,7 @@ import org.springframework.social.ApiException;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.FacebookLink;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
@@ -132,7 +133,7 @@ public class SocialMediaService {
      * @param post
      * @throws OperationForbiddenException
      */
-    public String createFacebookPost(String post) throws OperationForbiddenException,
+    public String createFacebookPost(String urlPath, String post) throws OperationForbiddenException,
         NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException {
 
         User user = userService.getUserWithAuthorities();
@@ -151,15 +152,18 @@ public class SocialMediaService {
 
         Connection<Facebook> connection = facebookConnectionFactory.createConnection(connectionData);
 
-        String status = null;
+        String createdId;
 
         try{
-            status = connection.getApi().feedOperations().updateStatus(post);
+            String url = env.getProperty("spring.social.postBaseUrl") + urlPath;
+            FacebookLink facebookLink = new FacebookLink(url, "Respondeco", url, "Respondeco.org");
+
+            createdId = connection.getApi().feedOperations().postLink(post, facebookLink);
         } catch (ResourceAccessException e) {
             throw new SocialMediaPermissionRevokedException("socialmedia.error.facebook.apiconnection", "permissions for facebook got revoked");
         }
 
-        return status;
+        return createdId;
     }
 
     /**
@@ -248,11 +252,10 @@ public class SocialMediaService {
      * @throws OperationForbiddenException if user is not logged in.
      * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
      */
-    public Tweet createTwitterPost(String post) throws OperationForbiddenException, NoSuchSocialMediaConnectionException,
-        SocialMediaPermissionRevokedException, SocialMediaApiConnectionException {
+    public Tweet createTwitterPost(String urlPath, String post) throws OperationForbiddenException,
+        NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException, SocialMediaApiConnectionException {
 
         User user = userService.getUserWithAuthorities();
-
 
         if(user == null) {
             throw new OperationForbiddenException("no current user found");
@@ -267,11 +270,12 @@ public class SocialMediaService {
             socialMediaConnection.getProvider(), null, null, null, null, socialMediaConnection.getToken(), socialMediaConnection.getSecret(), null, null)
         );
 
-
-        Tweet tweet = null;
+        Tweet tweet;
 
         try{
-            tweet = connection.getApi().timelineOperations().updateStatus(post);
+            String url = env.getProperty("spring.social.postBaseUrl") + urlPath;
+            tweet = connection.getApi().timelineOperations().updateStatus(post + " " + url);
+
         } catch (ResourceAccessException e) {
             throw new SocialMediaPermissionRevokedException("socialmedia.error.twitter.permissionrevoked", "permissions for twitter got revoked");
         } catch (ApiException e) {
@@ -388,7 +392,7 @@ public class SocialMediaService {
 
         OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.xing.com/v1/users/me/share/link?");
 
-        String uri = env.getProperty("spring.social.xing.postBaseUrl") + url;
+        String uri = env.getProperty("spring.social.postBaseUrl") + url;
         log.debug("URI: " + uri);
 
         request.addBodyParameter("uri", uri);

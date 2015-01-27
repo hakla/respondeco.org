@@ -59,15 +59,15 @@ public class ProjectLocationServiceTest {
         projectLocation = new ProjectLocation();
         projectLocation.setProject(project);
         projectLocation.setAddress("address");
-        projectLocation.setLat(10.0);
-        projectLocation.setLng(15.0);
+        projectLocation.setLat(10.0f);
+        projectLocation.setLng(15.0f);
         projectLocation.setId(1L);
 
         projectLocation2 = new ProjectLocation();
         projectLocation2.setProject(project2);
         projectLocation2.setAddress("address2");
-        projectLocation2.setLat(10.0);
-        projectLocation2.setLng(10.0);
+        projectLocation2.setLat(10.0f);
+        projectLocation2.setLng(10.0f);
         projectLocation2.setId(2L);
     }
 
@@ -77,7 +77,7 @@ public class ProjectLocationServiceTest {
         doReturn(project).when(projectRespositoryMock).findByIdAndActiveIsTrue(1L);
         doReturn(projectLocation).when(projectLocationRepositoryMock).save(any(ProjectLocation.class));
 
-        ProjectLocation location = projectLocationService.createProjectLocation(1L, "address", 10.0, 15.0);
+        ProjectLocation location = projectLocationService.createProjectLocation(1L, "address", 10.0f, 15.0f);
 
         assertEquals(location.getId().longValue(), 1L);
         assertEquals(location.getAddress(), "address");
@@ -89,7 +89,7 @@ public class ProjectLocationServiceTest {
     @Test(expected = NoSuchProjectException.class)
     public void testCreateProjectLocation_shouldThrowException() throws Exception {
         doReturn(null).when(projectRespositoryMock).findByIdAndActiveIsTrue(1L);
-        projectLocationService.createProjectLocation(1L, "address", 10.0, 15.0);
+        projectLocationService.createProjectLocation(1L, "address", 10.0f, 15.0f);
     }
 
     @Test
@@ -108,14 +108,14 @@ public class ProjectLocationServiceTest {
                 ProjectLocation location = new ProjectLocation();
                 location.setId(1L);
                 location.setAddress("newaddress");
-                location.setLat(20.0);
-                location.setLng(25.0);
+                location.setLat(20.0f);
+                location.setLng(25.0f);
                 location.setProject(project);
 
                 return location;
             }).when(projectLocationRepositoryMock).save(any(ProjectLocation.class));
 
-        ProjectLocation updatedLocation = projectLocationService.updateProjectLocation(1L, "newaddress", 20.0, 25.0);
+        ProjectLocation updatedLocation = projectLocationService.updateProjectLocation(1L, "newaddress", 20.0f, 25.0f);
 
         assertEquals(updatedLocation.getAddress(), "newaddress");
         assertEquals(updatedLocation.getLat(), 20.0, 0.1);
@@ -130,7 +130,7 @@ public class ProjectLocationServiceTest {
         doReturn(null).when(projectLocationRepositoryMock).findByProjectId(1L);
         doReturn(null).when(projectLocationRepositoryMock).save(any(ProjectLocation.class));
 
-        projectLocationService.updateProjectLocation(1L, "newaddress", 20.0, 25.0);
+        projectLocationService.updateProjectLocation(1L, "newaddress", 20.0f, 25.0f);
     }
 
     @Test

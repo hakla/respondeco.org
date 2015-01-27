@@ -168,30 +168,34 @@ describe('Project Controller Tests ', function() {
             expect(scope.postingsTotal).toBe(3);
         });
 
-        it('should post of facebook if the flag is set', function() {
+        it('should post on facebook if the flag is set', function() {
             spyOn(SocialMediaService, 'createFacebookPost');
+            location.url = function() {return "test.url"};
             scope.postingInformation = "test posting";
             scope.postOnFacebook = true;
             scope.addPosting();
-            expect(SocialMediaService.createFacebookPost).toHaveBeenCalledWith({string: scope.postingInformation});
+            expect(SocialMediaService.createFacebookPost).toHaveBeenCalledWith(
+                {urlPath: "test.url", post: scope.postingInformation});
         });
 
-        it('should post of twitter if the flag is set', function() {
+        it('should post on twitter if the flag is set', function() {
             spyOn(SocialMediaService, 'createTwitterPost');
+            location.url = function() {return "test.url"};
             scope.postingInformation = "test posting";
             scope.postOnTwitter = true;
             scope.addPosting();
-            expect(SocialMediaService.createTwitterPost).toHaveBeenCalledWith({string: scope.postingInformation});
+            expect(SocialMediaService.createTwitterPost).toHaveBeenCalledWith(
+                {urlPath: "test.url", post: scope.postingInformation});
         });
 
-        it('should post of xing if the flag is set', function() {
+        it('should post on xing if the flag is set', function() {
             spyOn(SocialMediaService, 'createXingPost');
-            location.url = function() {return "test url"};
+            location.url = function() {return "test.url"};
             scope.postingInformation = "test posting";
             scope.postOnXing = true;
             scope.addPosting();
             expect(SocialMediaService.createXingPost).toHaveBeenCalledWith(
-                {urlPath: "test url", post: scope.postingInformation});
+                {urlPath: "test.url", post: scope.postingInformation});
         });
 
     });

@@ -155,8 +155,8 @@ describe('Controllers Tests ', function () {
             $scope.addPosting();
 
             expect(OrganizationService.addPostingForOrganization).toHaveBeenCalledWith({ id : 1 }, 'posting', jasmine.any(Function));
-            expect(SocialMediaService.createTwitterPost).toHaveBeenCalledWith({string: 'posting'});
-            expect(SocialMediaService.createFacebookPost).toHaveBeenCalledWith({string: 'posting'});
+            expect(SocialMediaService.createTwitterPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
+            expect(SocialMediaService.createFacebookPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
             expect(SocialMediaService.createXingPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
 
 

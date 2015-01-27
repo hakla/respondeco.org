@@ -13,13 +13,4 @@ describe('e2e: settings', function() {
         browser.waitForAngular();
         expect(browser.getLocationAbsUrl()).toContain("/settings");
     });
-    it('should edit the user settings', function() {
-        page.editButton.click();
-        page.setTitle("Dr.");
-        page.setFirstName("User");
-        page.setLastName("User");
-        page.setEmail("test@test.at");
-        page.setDescription("Vorstand Greenpeace");
-        page.saveButton.click();
-    });
 });

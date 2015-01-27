@@ -83,7 +83,7 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     };
 
     /**
-     * Actualizes the resources after page has changed
+     * Refresh the resources after page has changed.
      */
     $scope.onPageChange = function () {
         $scope.filter.page = $scope.currentPage - 1;
@@ -473,19 +473,4 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
     $scope.isActiveTab = function (tabUrl) {
         return tabUrl == $scope.currentTab;
     };
-
-
-    /**
-     * Calls the organization service to get all donated resources from the users organization.
-     */
-    $scope.loadDonatedResources = function() {
-        Organization.getDonatedResources({id: $scope.orgId}, {pageSize:20, page:0}, function(response) {
-            console.log(response);
-        });
-
-
-    }
-
-
-
 });

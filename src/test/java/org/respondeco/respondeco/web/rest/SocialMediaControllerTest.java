@@ -17,7 +17,7 @@ import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
 import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
-import org.respondeco.respondeco.web.rest.dto.XingPostDTO;
+import org.respondeco.respondeco.web.rest.dto.PostDTO;
 import org.scribe.oauth.OAuthService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.core.env.Environment;
@@ -179,35 +179,37 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateFacebookPost_expectCreated() throws Exception {
-        StringDTO post = new StringDTO("hallo facebook");
-        doReturn(post.getString()).when(socialMediaServiceMock).createFacebookPost(anyString());
+        PostDTO post = new PostDTO();
+        post.setPost("post");
+        post.setUrlPath("urlpath");
+
+        String createdId = "1234567890";
+        doReturn(createdId).when(socialMediaServiceMock).createFacebookPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/facebook/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(post)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.string").value(post.getString()));
+            .andExpect(jsonPath("$.string").value(createdId));
     }
 
     @Test
     public void testCreateFacebookPost_throwsOperationForbiddenException() throws Exception {
-        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createFacebookPost(anyString());
-        StringDTO post = new StringDTO("hallo facebook");
+        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createFacebookPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/facebook/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(post)))
+            .content(TestUtil.convertObjectToJsonBytes(new PostDTO("post", "urlpath"))))
             .andExpect(status().isForbidden());
     }
 
     @Test
     public void testCreateFacebookPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
-        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createFacebookPost(anyString());
-        StringDTO post = new StringDTO("hallo facebook");
+        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createFacebookPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/facebook/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(post)))
+            .content(TestUtil.convertObjectToJsonBytes(new PostDTO("post", "urlpath"))))
             .andExpect(status().isNotFound());
     }
 
@@ -297,11 +299,11 @@ public class SocialMediaControllerTest {
         Tweet tweet = new Tweet(1L, "text", new Date(), "user",
             "profileImageUrl", 1L, 1L, "de", "source");
 
-        doReturn(tweet).when(socialMediaServiceMock).createTwitterPost(anyString());
+        doReturn(tweet).when(socialMediaServiceMock).createTwitterPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/twitter/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(new StringDTO("post"))))
+            .content(TestUtil.convertObjectToJsonBytes(new PostDTO("post", "urlpath"))))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.text").value(tweet.getText()));
@@ -309,21 +311,21 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateTwitterPost_throwsOperationForbiddenException() throws Exception {
-        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createTwitterPost(anyString());
+        doThrow(OperationForbiddenException.class).when(socialMediaServiceMock).createTwitterPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/twitter/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(new StringDTO("post"))))
+            .content(TestUtil.convertObjectToJsonBytes(new PostDTO("post", "urlpath"))))
             .andExpect(status().isForbidden());
     }
 
     @Test
     public void testCreateTwitterPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
-        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createTwitterPost(anyString());
+        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createTwitterPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/twitter/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(new StringDTO("post"))))
+            .content(TestUtil.convertObjectToJsonBytes(new PostDTO("post", "urlpath"))))
             .andExpect(status().isNotFound());
     }
 
@@ -379,7 +381,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateXingPost_expectCreated() throws Exception {
-        XingPostDTO dto = new XingPostDTO();
+        PostDTO dto = new PostDTO();
         dto.setPost("post");
         dto.setUrlPath("/organization/1");
 
@@ -394,7 +396,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateXingPost_throwsOperationForbiddenException() throws Exception {
-        XingPostDTO dto = new XingPostDTO();
+        PostDTO dto = new PostDTO();
         dto.setPost("post");
         dto.setUrlPath("/organization/1");
 
@@ -408,7 +410,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateXingPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
-        XingPostDTO dto = new XingPostDTO();
+        PostDTO dto = new PostDTO();
         dto.setPost("post");
         dto.setUrlPath("/organization/1");
 

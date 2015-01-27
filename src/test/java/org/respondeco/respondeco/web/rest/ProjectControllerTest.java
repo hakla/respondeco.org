@@ -187,8 +187,8 @@ public class ProjectControllerTest {
         projectLocation = new ProjectLocation();
         projectLocation.setId(1L);
         projectLocation.setAddress("address");
-        projectLocation.setLat(10.0);
-        projectLocation.setLng(10.0);
+        projectLocation.setLat(10.0f);
+        projectLocation.setLng(10.0f);
         projectLocation.setProject(project);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgMember);

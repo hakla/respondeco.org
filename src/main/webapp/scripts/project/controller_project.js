@@ -390,7 +390,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             startDate: null,
             projectLogo: null
         };
-        $location.path('/projects');
+        window.history.back();
     };
 
 
@@ -805,11 +805,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
         //post on social media
         if($scope.postOnTwitter === true) {
-            SocialMedia.createTwitterPost({string: $scope.postingInformation});
+            var urlPath = $location.url();
+            SocialMedia.createTwitterPost({urlPath: urlPath, post: $scope.postingInformation});
         }
 
         if($scope.postOnFacebook === true) {
-            SocialMedia.createFacebookPost({string: $scope.postingInformation});
+            var urlPath = $location.url();
+            SocialMedia.createFacebookPost({urlPath: urlPath, post: $scope.postingInformation});
         }
 
         if($scope.postOnXing === true) {
@@ -843,5 +845,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 item.expanded = !item.expanded;
             }
         }
+    };
+
+    /**
+     * redirect to project creation page
+     */
+    $scope.redirectToNewProject = function() {
+        $location.path('projects/edit/new');
     };
 });

@@ -167,10 +167,7 @@ public class OrgJoinRequestService {
         if(organization == null) {
             throw new NoSuchOrganizationException(String.format("Organization does not exist"));
         }
-        // TODO talk with the team about this --> should a user really have to leave the formerly organization just to accept a new invitation?
-//        if(user.getOrganization()!=null) {
-//            throw new AlreadyInOrganizationException(String.format("User %s is already in an Organization", user.getLogin()));
-//        }
+
         user.setOrganization(organization);
         orgJoinRequest.setActive(false);
         userRepository.save(user);

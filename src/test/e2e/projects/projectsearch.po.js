@@ -4,7 +4,6 @@
 
 var ProjectSearchPage = function() {
     this.nameTextField = element(by.model("project.name"));
-    this.tagsInput = element(by.model("newTag.text"));
     this.searchButton = element(by.id("searchButton"));
     this.projectElement = element.all(by.css(".project-item")).get(0);
     this.navigate = function() {

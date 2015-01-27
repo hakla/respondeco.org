@@ -41,7 +41,7 @@ public class ProjectLocationService {
      * @param longitude coordinates longitude
      * @return
      */
-    public ProjectLocation createProjectLocation(Long projectId, String address, double latitude, double longitude)
+    public ProjectLocation createProjectLocation(Long projectId, String address, float latitude, float longitude)
         throws NoSuchProjectException {
 
         ProjectLocation projectLocation = new ProjectLocation();
@@ -77,7 +77,7 @@ public class ProjectLocationService {
      * @param longitude longitude coordinate of the project
      * @return updated ProjectLocation Object
      */
-    public ProjectLocation updateProjectLocation(Long projectId, String address, double latitude, double longitude)
+    public ProjectLocation updateProjectLocation(Long projectId, String address, float latitude, float longitude)
         throws NoSuchProjectException {
 
         ProjectLocation projectLocation = projectLocationRepository.findByProjectId(projectId);
@@ -138,8 +138,8 @@ public class ProjectLocationService {
             //Create the object manually, because native sql query returns a list of object arrays
             ProjectLocation projectLocation = new ProjectLocation();
             projectLocation.setId(((BigInteger)objArray[0]).longValue());
-            projectLocation.setLat((double)objArray[1]);
-            projectLocation.setLng((double)objArray[2]);
+            projectLocation.setLat((float)objArray[1]);
+            projectLocation.setLng((float)objArray[2]);
             projectLocation.setAddress((String)objArray[3]);
 
             long projectId = ((BigInteger) objArray[4]).longValue();

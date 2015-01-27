@@ -460,17 +460,6 @@ public class OrganizationService {
             throw new IllegalValueException("follow.organization.rejected.notfound", String.format("Could not find Organization with ID: %d", organizationId));
         }
 
-        /*
-
-        TODO: make it sense?
-        List<User> userInOrg = getUserByOrgId(selected.getId());
-
-        //if(selected.getOwner() == currentUser){
-        if(userInOrg.contains(currentUser) == false){
-            throw new IllegalValueException("follow.organization.rejected.ownererror", "Cannot follow own organization");
-        }
-        */
-
         // add new follower
         List<Organization> followers = currentUser.getFollowOrganizations();
         followers.add(selected);

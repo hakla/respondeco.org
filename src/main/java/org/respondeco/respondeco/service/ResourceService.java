@@ -315,12 +315,14 @@ public class ResourceService {
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if offer can't be found
      */
     public void deleteOffer(Long offerId) throws IllegalValueException {
-        if (this.resourceOfferRepository.findByIdAndActiveIsTrue(offerId) != null) {
-            this.resourceOfferRepository.delete(offerId);
-        }
-        else{
+        ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
+
+        if(resourceOffer == null) {
             throw new ResourceNotFoundException(String.format("No resource offer found for the id: %d", offerId));
         }
+
+        resourceOffer.setActive(false);
+        resourceOfferRepository.save(resourceOffer);
     }
 
     /**
@@ -762,4 +764,27 @@ public class ResourceService {
 
         return resourceMatches;
     }
+
+    public Page<ResourceMatch> getSupportedProjectsForOrganization(Long orgId, RestParameters restParameters)
+        throws NoSuchOrganizationException {
+
+        PageRequest pageRequest = null;
+
+        if (restParameters != null) {
+            pageRequest = restParameters.buildPageRequest();
+        }
+
+        Organization organization = organizationRepository.findOne(orgId);
+        if (organization == null) {
+            throw new NoSuchOrganizationException("organization with id " + orgId + "can't be found");
+        }
+
+        Page<ResourceMatch> resourceMatches =
+            resourceMatchRepository.findByOrganizationAndAcceptedIsTrueAndActiveIsTrue(organization, pageRequest);
+
+        return resourceMatches;
+
+    }
+
+
 }

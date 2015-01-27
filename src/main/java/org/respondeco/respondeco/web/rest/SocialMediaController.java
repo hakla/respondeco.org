@@ -8,7 +8,7 @@ import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.SocialMediaConnectionResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
 import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
-import org.respondeco.respondeco.web.rest.dto.XingPostDTO;
+import org.respondeco.respondeco.web.rest.dto.PostDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,11 +107,12 @@ public class SocialMediaController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity createFacebookPost(@RequestBody StringDTO post) {
+    public ResponseEntity createFacebookPost(@RequestBody PostDTO post) {
         ResponseEntity responseEntity;
 
+
         try{
-            String createdPost = socialMediaService.createFacebookPost(post.getString());
+            String createdPost = socialMediaService.createFacebookPost(post.getUrlPath(), post.getPost());
             responseEntity = new ResponseEntity<>(new StringDTO(createdPost), HttpStatus.CREATED);
         } catch (OperationForbiddenException ex) {
             log.error("operation forbidden: " + ex);
@@ -222,11 +223,11 @@ public class SocialMediaController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity createTwitterPost(@RequestBody StringDTO post) {
+    public ResponseEntity createTwitterPost(@RequestBody PostDTO post) {
         ResponseEntity responseEntity;
 
         try{
-            Tweet tweet = socialMediaService.createTwitterPost(post.getString());
+            Tweet tweet = socialMediaService.createTwitterPost(post.getUrlPath(), post.getPost());
             responseEntity = new ResponseEntity<>(tweet, HttpStatus.CREATED);
         } catch (OperationForbiddenException e) {
             log.error("operation forbidden: " + e);
@@ -296,7 +297,7 @@ public class SocialMediaController {
 
     /**
      * POST /rest/socialmedia/xing/post
-     * @param xingPostDTO xingPostDTO containing two strings, one for the post message and one for the urlPath
+     * @param postDTO xingPostDTO containing two strings, one for the post message and one for the urlPath
      *                    for which the link is posted on the xing wall. The urlPath gets appended to the baseUrl
      *                    which is defined in the application.yml under spring.social.xing.postBaseUrl
      * @return returns a ResponseEntity containing the created post information and a HttpStatus.
@@ -306,11 +307,11 @@ public class SocialMediaController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity createXingPost(@RequestBody XingPostDTO xingPostDTO) {
+    public ResponseEntity createXingPost(@RequestBody PostDTO postDTO) {
         ResponseEntity responseEntity;
 
-        String post = xingPostDTO.getPost();
-        String url = xingPostDTO.getUrlPath();
+        String post = postDTO.getPost();
+        String url = postDTO.getUrlPath();
 
         if(post.isEmpty()) {
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);

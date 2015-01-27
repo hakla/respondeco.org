@@ -81,8 +81,8 @@ public class ProjectLocationRepositoryTest extends AbstractTransactionalJUnit4Sp
 
         projectLocation = new ProjectLocation();
         projectLocation.setId(1L);
-        projectLocation.setLat(10.0);
-        projectLocation.setLng(10.0);
+        projectLocation.setLat(10.0f);
+        projectLocation.setLng(10.0f);
         projectLocation.setAddress("address");
         projectLocation.setProject(project);
 
