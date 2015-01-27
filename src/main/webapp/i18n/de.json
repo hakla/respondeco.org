@@ -699,10 +699,10 @@
         },
         "errors": {
             "notfound": "Die angegeben Resource exisitiert nicht",
-            "general": "Ups, es wurde ein unbehandelter Fehler entdeck. Die aktuelle Operation konnte nicht ausgeführt werden",
+            "general": "Ups, es wurde ein unbehandelter Fehler entdeckt. Die aktuelle Operation konnte nicht ausgeführt werden",
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
             "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden",
-            "delete.match": "Eine oder mehrere der gelöschen Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden"
+            "delete.match": "Eine oder mehrere der gelöschten Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden"
         }
     },
     "nearProjects": {

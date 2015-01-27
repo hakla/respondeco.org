@@ -47,7 +47,7 @@
                 <label translate="resource.new.price">price</label>
                 <div class="input-group">
                     <div class="input-group-addon">&euro;</div>
-                    <input type="text" class="form-control" ng-model="resource.price" placeholder="{{'resource.placeholder.price' | translate }}">
+                    <input type="number" min="0" class="form-control" ng-model="resource.price" placeholder="{{'resource.placeholder.price' | translate }}">
                 </div>
             </div>
         </div>
