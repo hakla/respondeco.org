@@ -11,7 +11,7 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
   	$scope.noProjectsFound = false;
   	$scope.searchStarted = false;
     $scope.showSearchBox = false;
-  	
+
     //the places_changed function is called whenever a new place is entered
     var searchBoxEvents = {
         places_changed: function (searchBox) {
@@ -20,7 +20,7 @@ respondecoApp.controller('ProjectLocationController', function ($scope, $locatio
         }
     }
 
-    $scope.searchBox = { template:'searchBox.template.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
+    $scope.searchBox = { template:'template/searchBox.html', events:searchBoxEvents, parentdiv: "searchBoxParent"};
 
     /**
      * $scope.createMap
