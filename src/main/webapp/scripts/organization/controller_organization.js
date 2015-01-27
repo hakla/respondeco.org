@@ -237,12 +237,9 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         });
     };
 
-    //allow execute follow state only if organization ID is set!
-    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
-        $scope.followingState();
-
+    $scope.getDonatedResources = function() {
         Organization.getDonatedResources({
-            id: $routeParams.id
+        id: $routeParams.id
         }, {
             pageSize: 20,
             page: 0
@@ -262,5 +259,11 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
 
             $scope.projects = projects;
         });
+    };
+
+    //allow execute follow state only if organization ID is set!
+    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
+        $scope.followingState();
+        $scope.getDonatedResources();
     }
 });

@@ -169,7 +169,7 @@ public class ResourceMatchRepositoryTest extends AbstractTransactionalJUnit4Spri
 
         Object[][] aggregatedRating = resourceMatchRepository.getAggregatedRatingByProject(project.getId());
         Long count = new Long(2);
-        Double rating = new Double(2.5);
+        Double rating = new Double(2);
 
         assertTrue(aggregatedRating[0] != null);
         assertTrue(aggregatedRating[0][0] != null);
