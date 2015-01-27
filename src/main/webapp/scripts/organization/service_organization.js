@@ -19,7 +19,7 @@ respondecoApp.factory('Organization', function ($resource) {
             'addPostingForOrganization': {method: 'POST', url: '/app/rest/organizations/:id/postings'},
             'deletePosting' : {method: 'DELETE', url: 'app/rest/organizations/:id/postings/:pid'},
             'verify': { method: 'POST', url: 'app/rest/organizations/:id/verify' },
-            'getDonatedResources': { method: 'GET', url: '/app/rest/organizations/:id/donatedresources'},
+            'getDonatedResources': { method: 'GET', url: '/app/rest/organizations/:id/donatedresources', ignoreAuthModule: true},
             'getOwnProjects': {method: 'GET', url: '/app/rest/organizations/:id/projects'}
         });
     });
