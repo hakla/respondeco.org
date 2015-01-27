@@ -677,7 +677,6 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity getDonatedResources(
         @PathVariable Long id,
         @RequestParam(required = false) Integer page,
