@@ -18,7 +18,13 @@
         </div>
         <div class="spacer-top"></div>
         <div class="col-sm-8 col-xs-12">
-            <h2 class="spacer-top" translate="project.details.title" translate-values="{project: '{{project.name}}'}">{{project.name}}</h2>
+            <h2 class="spacer-top">
+                <span translate="project.details.title" translate-values="{project: '{{project.name}}'}" ng-class="{ 'line-through': remainingDays <= 0 && project.successful == false }">{{project.name}}</span>
+                <div class="spacer-left inline-block" ng-show="remainingDays <= 0">
+                    <i class="glyphicon glyphicon-ok" ng-show="project.successful" popover="{{ 'project.tooltip.success.content'| translate }}" popover-title="{{ 'project.tooltip.success.title'| translate }}" popover-append-to-body="true" popover-popup-delay="500" popover-trigger="mouseenter"></i>
+                    <i class="glyphicon glyphicon-remove" ng-hide="project.successful"popover="{{ 'project.tooltip.failed.content'| translate }}" popover-title="{{ 'project.tooltip.failed.title'| translate }}" popover-append-to-body="true" popover-popup-delay="500" popover-trigger="mouseenter"></i>
+                </div>
+            </h2>
             <span class="badge" ng-repeat="tag in project.propertyTags">{{ tag.name }}</span>
             <div class="visible-xs spacer-top-2"></div>
             <div class="clearfix">
@@ -120,14 +126,13 @@
             </div>
         </div>
         <div class="col-md-4 col-xs-12">
-            <img src="/images/approved.png" alt="approved" class="approved" ng-show="project.successful" />
             <div class="spacer-top"></div>
-            <div class="remaining" ng-show="remainingDays != true && remainingDays > 0 && project.concrete == true">
+            <div class="remaining">
                 <div class="pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong>{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
-                <progressbar class="progress-striped" value="50"></progressbar>
+                <strong ng-show="project.successful" translate="project.started"></strong>
+                <strong ng-hide="(remainingDays <= 0) || project.concrete == false">{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
             </div>
-            <div class="resources">
+            <div class="resources spacer-top">
                 <strong>{{collected}}{{ 'resource.collected' | translate }}</strong>
                 <progressbar class="progress-striped" value="collected"></progressbar>
                 <strong>{{collectedEssential}}{{ 'resource.essentialcollected' | translate }}</strong>

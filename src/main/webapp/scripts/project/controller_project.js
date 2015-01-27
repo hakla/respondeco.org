@@ -252,7 +252,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 if (startDate.diffDays() < 0) {
                     $scope.remainingDays = Math.round(startDate.diffDays() * -1) + 1;
                 } else {
-                    $scope.remainingDays = true;
+                    $scope.remainingDays = false;
                 }
             }
 

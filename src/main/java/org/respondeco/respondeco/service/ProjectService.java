@@ -49,6 +49,7 @@ public class ProjectService {
     private ResourceMatchRepository resourceMatchRepository;
     private PostingFeedRepository postingFeedRepository;
     private ProjectLocationRepository projectLocationRepository;
+    private ResourceOfferRepository resourceOfferRepository;
 
     private RestUtil restUtil;
 
@@ -517,6 +518,8 @@ public class ProjectService {
                         if (resourceOffer != null) {
                             resourceOffer.setAmount(resourceOffer.getAmount().add(match.getAmount()));
                         }
+
+                        resourceOfferRepository.save(resourceOffer);
                     });
                 }
             }

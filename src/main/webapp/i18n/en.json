@@ -159,7 +159,7 @@
         "found": "projects found",
         "remainingdays": "days remaining",
         "posted": "posted: ",
-        "rating": "Actual Rating:",
+        "rating": "Rating:",
         "found": "projects found",
         "toOrganization": "Back to the organization",
         "near-you": "Projects near you",
@@ -215,7 +215,17 @@
             "null": "There has to be a start date if the project is concrete"
         },
         "own": {
-            "title": "Own Projects"
+            "title": "Projects by '{{name}}'"
+        },
+        "tooltip": {
+            "failed": {
+                "title": "Failed",
+                "content": "If a project has a start date and this start date has passed, then this icon indicates the failure of the project."
+            },
+            "success": {
+                "title": "Success",
+                "content": "If a project has a start date and this start date has passed, then this icon indicates the successful start of the project."
+            }
         }
     },
     "rating": {
@@ -224,7 +234,7 @@
         "notnow": "Rate later",
         "yourrating": "Your rating: ",
         "yourcomment": "Commentary",
-        "actual": "Actual rating:",
+        "actual": "Rating:",
         "match": {
             "dorate": "Rate the interaction"
         },
@@ -545,7 +555,7 @@
         "requests": "Resource requests",
         "backToOverview": "Back to overview",
         "newproject": "Create a new porject",
-        "rating": "Actual rating:",
+        "rating": "Rating:",
         "posted": "posted: ",
         "toProjects": "Projects of the organization",
         "supportedProjects": "Supported projects",
@@ -684,7 +694,7 @@
         },
         "errors": {
             "notfound": "The resource doesn't exist",
-            "general": "Ups, an error has occured. Your actual operation could not be performed",
+            "general": "Ups, an error has occured. The last operation could not be performed",
             "searcherror": "Data could not be read from server!"
         }
     },

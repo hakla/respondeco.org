@@ -199,7 +199,8 @@ angular.module('respondecoApp')
                 project: '=',
                 onProjectClick: '&',
                 tags: '=',
-                ellipsis: '='
+                ellipsis: '=',
+                showFailed: "="
             },
             controller: function($scope) {
                 $scope.projectClicked = function(project, $event) {

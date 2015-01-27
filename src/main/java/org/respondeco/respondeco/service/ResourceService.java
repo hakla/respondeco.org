@@ -158,7 +158,10 @@ public class ResourceService {
             BigDecimal matchSum = new BigDecimal(0);
             if(requirement.getResourceMatches() != null) {
                 for (ResourceMatch match : requirement.getResourceMatches()) {
-                    matchSum = matchSum.add(match.getAmount());
+                    //only take accepted matches into account
+                    if(Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
+                        matchSum = matchSum.add(match.getAmount());
+                    }
                 }
             }
             log.debug("MATCH SUM = " + matchSum);
@@ -344,7 +347,7 @@ public class ResourceService {
 
         if(searchField.isEmpty() && isCommercial == null) {
             if (user.getOrganization() != null) {
-                page = resourceOfferRepository.findByOrganizationNotAndActiveIsTrue(user.getOrganization(), pageRequest);
+                page = resourceOfferRepository.findByOrganizationNotAndActiveIsTrue(user.getOrganization(), null);
             } else {
                 page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
             }
@@ -382,16 +385,16 @@ public class ResourceService {
                 where = ExpressionUtils.and(where, resourceOffer.organization.eq(user.getOrganization()).not());
             }
 
-            page = resourceOfferRepository.findAll(where, pageRequest);
+            page = resourceOfferRepository.findAll(where, new PageRequest(0, 10000));
 
             log.debug("TOTALELEMENTS: " + page.getTotalElements());
             log.debug("TOTALPAGES: " + page.getTotalPages());
         }
 
-        return orderByProbability(page);
+        return orderByProbability(page, pageRequest);
     }
 
-    private <T extends MatchingEntity> Page<T> orderByProbability(Page<T> page) {
+    private <T extends MatchingEntity> Page<T> orderByProbability(Page<T> page, PageRequest pageRequest) {
         User user = userService.getUserWithAuthorities();
         List<T> entities;
 
@@ -408,9 +411,6 @@ public class ResourceService {
 
                 // add all projects of the organization to the matchingEntities
                 matchingEntities.addAll(projects);
-
-                // add all resource offers of the organization
-                matchingEntities.addAll(getAllOffers(orgId));
 
                 // add all resource requests of all projects of the organization
                 matchingEntities.addAll(
@@ -438,7 +438,7 @@ public class ResourceService {
                 matching.setAPriori(1);
                 entities = (List<T>) matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
 
-                page = new PageImpl<>(entities, page.nextPageable(), page.getTotalElements());
+                page = new PageImpl<>(entities, pageRequest, pageRequest.getPageSize());
             }
         }
 
