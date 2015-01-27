@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Created by Klaus on 15.01.2015.
  */
-public class Solution {
+public abstract class Solution {
 
     double value = 0;
     Formula formula;

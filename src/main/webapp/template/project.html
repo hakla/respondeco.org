@@ -1,7 +1,7 @@
 <div class="project-item" ng-click="projectClicked(project, $event)">
   <uploaded-image name="project.logo.id"></uploaded-image>
   <div class="content">
-    <h2 ng-class="{ ellipsis: ellipsis == true }">
+    <h2 ng-class="{ ellipsis: ellipsis == true, 'line-through': project.successful == false && showFailed == true }">
         {{project.name}}
     </h2>
     <div ng-hide="tags == false">

@@ -24,10 +24,13 @@ public class MatchingImpl implements Matching {
     @Setter
     private double aPriori;
 
+    private static long counter = 0;
+
     private CountFunction count = new CountFunction() {
         @Override
         public Long apply(MatchingTag... t) {
             List<MatchingTag> tags = Arrays.asList(t);
+            counter++;
 
             return entities.stream().filter(entity ->
                     entity.getTags().stream().filter(
@@ -87,6 +90,8 @@ public class MatchingImpl implements Matching {
                 return o2.getProbability().compareTo(o1.getProbability());
             }
         });
+
+        System.out.println(counter);
 
         return p_Entities;
     }

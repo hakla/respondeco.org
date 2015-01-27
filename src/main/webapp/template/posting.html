@@ -8,7 +8,7 @@
                 <a ng-click="delete(posting.id, this)" ng-show="canDelete" tooltip="{{ 'posting.delete' | translate }}" tooltip-placement="top" tooltip-delay="250" tooltip-append-to-body="true"><i class="glyphicon glyphicon-remove"></i></a>
             </div>
             <h4 ng-hide="hideOrganization">
-                <a href="redirectToOrganization(posting.author.organization.id)">{{posting.author.organization.name}}</a>
+                <a ng-click="redirectToOrganization(posting.author.organization.id)">{{posting.author.organization.name}}</a>
             </h4>
             <sup am-time-ago="posting.createdDate" tooltip="{{posting.createdDate | date:'medium'}}" tooltip-placement="right" tooltip-popup-delay="500"></sup>
         </div>

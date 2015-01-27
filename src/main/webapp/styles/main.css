@@ -8597,3 +8597,13 @@ h4 {
 .postingform .focused .btn {
   opacity: 1;
 }
+
+/* line 733, ../../scss/main.scss */
+.inline-block {
+  display: inline-block;
+}
+
+/* line 737, ../../scss/main.scss */
+.line-through {
+  text-decoration: line-through;
+}

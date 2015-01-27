@@ -3,12 +3,12 @@
         <div class="col-md-9">
             <button class="btn btn-default" ng-click="redirectToOrganization()" translate="project.toOrganization"></button>
         </div>
-        <div class="col-md-3 text-right">
+        <div class="col-md-3 text-right" ng-show="ownOrganization">
             <button class="btn btn-default" ng-click="redirectToNewProject()" translate="organization.newproject"></button> 
         </div>
     </div>
     <div class="col-md-12">
-        <h1 translate="project.own.title">Projects</h1> 
+        <h1 translate="project.own.title" translate-values="{ 'name': {{ 'organization.name' }} }">Projects</h1>
 
         <form name="searchform" role="form" novalidate class="ng-scope form-search" ng-submit="searchButton()">
             <div class="input-group form-group">
@@ -38,7 +38,7 @@
         <div class="row">
             <div ng-repeat-start="project in projects"></div>
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                <resp-project project="project" on-project-click="redirectToProject(project)"></resp-project>
+                <resp-project project="project" on-project-click="redirectToProject(project)" show-failed="true"></resp-project>
             </div>
             <div class="visible-xs clearfix"></div>
             <div class="visible-xs spacer-top"></div>

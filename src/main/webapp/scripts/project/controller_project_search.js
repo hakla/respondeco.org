@@ -5,7 +5,7 @@
 
 respondecoApp.controller('ProjectSearchController', function ($scope, $location, $q, Project,
                                                               ProjectNames, PropertyTagNames,
-                                                              Organization, $route, $routeParams) {
+                                                              Organization, $route, $routeParams, $rootScope) {
 
     var PAGESIZE = 20;
 
@@ -31,6 +31,16 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
                 $scope.noProjects = null;
             }
             $scope.searchError = null;
+
+            $scope.projects.filter(function(project) { return project.concrete == true; }).forEach(function(project) {
+                var startDate = new XDate(project.startDate);
+
+                if (startDate.diffDays() < 0) {
+                    project.remainingDays = Math.round(startDate.diffDays() * -1) + 1;
+                } else {
+                    project.remainingDays = false;
+                }
+            })
         };
 
         var error = function(error) {
@@ -47,7 +57,27 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
         }
     }
 
-    // if the account isn't yet loaded, we'll wait for it
+    if ($scope.showOrganizationOnly) {
+        var checkAccount = function(account) {
+            $scope.ownOrganization = account.organization.id == $routeParams.id;
+
+            Organization.get({
+                id: $routeParams.id
+            }, function(data) {
+                $scope.organization = data;
+            });
+        };
+
+        // if the account isn't yet loaded, we'll wait for it
+        if ($rootScope._account == null) {
+            $rootScope.$on("event:authenticated", function() {
+                checkAccount($rootScope._account);
+            });
+        } else {
+            checkAccount($rootScope._account);
+        }
+    }
+
     $scope.search();
 
     $scope.searchButton = function() {
