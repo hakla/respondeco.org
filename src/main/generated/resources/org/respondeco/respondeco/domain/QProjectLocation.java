@@ -44,9 +44,9 @@ public class QProjectLocation extends EntityPathBase<ProjectLocation> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
 
-    public final NumberPath<Double> lat = createNumber("lat", Double.class);
+    public final NumberPath<Float> lat = createNumber("lat", Float.class);
 
-    public final NumberPath<Double> lng = createNumber("lng", Double.class);
+    public final NumberPath<Float> lng = createNumber("lng", Float.class);
 
     public final QProject project;
 

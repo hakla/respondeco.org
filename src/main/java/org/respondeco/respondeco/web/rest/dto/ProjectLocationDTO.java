@@ -20,8 +20,8 @@ public class ProjectLocationDTO {
 
     private String address;
 
-    private double latitude;
+    private float latitude;
 
-    private double longitude;
+    private float longitude;
 
 }

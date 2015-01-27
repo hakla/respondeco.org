@@ -298,6 +298,7 @@ public class ProjectService {
             }
         }
         project.setActive(false);
+
         projectRepository.save(project);
         return project;
     }

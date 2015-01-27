@@ -25,8 +25,8 @@ public class ProjectLocation extends AbstractAuditingEntity implements Serializa
 
     private String address;
 
-    private double lat;
+    private float lat;
 
-    private double lng;
+    private float lng;
 
 }
