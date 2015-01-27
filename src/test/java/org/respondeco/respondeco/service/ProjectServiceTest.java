@@ -71,6 +71,9 @@ public class ProjectServiceTest {
     @Mock
     private PostingFeedRepository postingFeedRepository;
 
+    @Mock
+    private ProjectLocationRepository projectLocationRepositoryMock;
+
     private ProjectService projectService;
     private Project basicProject;
     private User defaultUser;
@@ -83,13 +86,14 @@ public class ProjectServiceTest {
         MockitoAnnotations.initMocks(this);
         projectService = new ProjectService(
                 projectRepositoryMock,
-            userServiceMock,
+                userServiceMock,
                 userRepositoryMock,
                 propertyTagServiceMock,
                 resourceService,
                 imageRepositoryMock,
                 resourceMatchRepository,
-                postingFeedRepository);
+                postingFeedRepository,
+                projectLocationRepositoryMock);
 
 
         defaultOrganization = new Organization();

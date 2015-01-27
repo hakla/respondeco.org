@@ -109,6 +109,9 @@ public class ProjectControllerTest {
     @Mock
     private PostingFeedService postingFeedServiceMock;
 
+    @Mock
+    private ProjectLocationRepository projectLocationRepositoryMock;
+
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
     private ProjectRequestDTO projectRequestDTO;
@@ -132,7 +135,8 @@ public class ProjectControllerTest {
                 resourceServiceMock,
                 imageRepositoryMock,
                 resourceMatchRepositoryMock,
-                postingFeedRepositoryMock));
+                postingFeedRepositoryMock,
+                projectLocationRepositoryMock));
         ProjectController projectController = new ProjectController(
                 projectServiceMock,
                 resourceServiceMock,

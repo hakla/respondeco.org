@@ -48,6 +48,7 @@ public class ProjectService {
     private ImageRepository imageRepository;
     private ResourceMatchRepository resourceMatchRepository;
     private PostingFeedRepository postingFeedRepository;
+    private ProjectLocationRepository projectLocationRepository;
 
     private RestUtil restUtil;
 
@@ -58,7 +59,8 @@ public class ProjectService {
                           ResourceService resourceService,
                           ImageRepository imageRepository,
                           ResourceMatchRepository resourceMatchRepository,
-                          PostingFeedRepository postingFeedRepository) {
+                          PostingFeedRepository postingFeedRepository,
+                          ProjectLocationRepository projectLocationRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
@@ -68,6 +70,7 @@ public class ProjectService {
         this.resourceMatchRepository = resourceMatchRepository;
         this.restUtil = new RestUtil();
         this.postingFeedRepository = postingFeedRepository;
+        this.projectLocationRepository = projectLocationRepository;
     }
 
     /**
@@ -296,6 +299,12 @@ public class ProjectService {
                 throw new OperationForbiddenException("current user has no authority to " +
                         "delete project " + id);
             }
+        }
+
+        ProjectLocation projectLocation = projectLocationRepository.findByProjectId(id);
+        if(projectLocation != null) {
+            projectLocation.setActive(false);
+            projectLocationRepository.save(projectLocation);
         }
         project.setActive(false);
 
