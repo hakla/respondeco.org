@@ -390,7 +390,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
             startDate: null,
             projectLogo: null
         };
-        $location.path('/projects');
+        window.history.back();
     };
 
 
@@ -845,5 +845,12 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 item.expanded = !item.expanded;
             }
         }
+    };
+
+    /**
+     * redirect to project creation page
+     */
+    $scope.redirectToNewProject = function() {
+        $location.path('projects/edit/new');
     };
 });
