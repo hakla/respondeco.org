@@ -198,7 +198,8 @@ angular.module('respondecoApp')
             scope: {
                 project: '=',
                 onProjectClick: '&',
-                tags: '='
+                tags: '=',
+                ellipsis: '='
             },
             controller: function($scope) {
                 $scope.projectClicked = function(project, $event) {

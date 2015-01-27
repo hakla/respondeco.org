@@ -331,6 +331,7 @@ public class ResourceService {
      * @return List of active ResourceOffers filtered by set parameters. (searchField, isCommercial)
      */
     public Page<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
+        User user = userService.getUserWithAuthorities();
 
         PageRequest pageRequest = null;
         Page page;
@@ -340,7 +341,11 @@ public class ResourceService {
         }
 
         if(searchField.isEmpty() && isCommercial == null) {
-            page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
+            if (user.getOrganization() != null) {
+                page = resourceOfferRepository.findByOrganizationNotAndActiveIsTrue(user.getOrganization(), pageRequest);
+            } else {
+                page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
+            }
         } else {
             String[] searchValues = searchField.split(" ");
             //create dynamic query with help of querydsl
@@ -368,6 +373,12 @@ public class ResourceService {
 
             Predicate predicateAnyOf = ExpressionUtils.anyOf(resourceNameOrOrgnameOrTagLike);
             Predicate where = ExpressionUtils.allOf(predicateAnyOf, resourceCommercial, isActive);
+
+            // if a user is currently logged in
+            if (user.getOrganization() != null) {
+                // remove all offers of the organization the user is in
+                where = ExpressionUtils.and(where, resourceOffer.organization.eq(user.getOrganization()).not());
+            }
 
             page = resourceOfferRepository.findAll(where, pageRequest);
 

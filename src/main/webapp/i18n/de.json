@@ -163,6 +163,7 @@
         "found": "gefundene Projekte",
         "by": "Ein Projekt der Organisation",
         "toOrganization": "Zurück zur Organisation",
+        "near-you": "Projekte in der Nähe",
         "createProject": {
             "title": "Neues Projekt erstellen",
             "tag":"Tags hinzufügen",
@@ -551,6 +552,9 @@
         "newproject": "Neues Projekt anlegen",
         "rating": "Aktuelle Bewertung:",
         "toProjects": "Projekte der Organisation",
+        "supportedProjects": "Unterstützte Projekte",
+        "donated": "Gespendet",
+        "toProject": "Zum Projekt",
         "posted": "postet: ",
             "error": {
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",

@@ -1,7 +1,7 @@
 <div class="project-item resource-item" ng-class="{ 'open': toggled }">
     <uploaded-image name="resource.logo.id" ng-click="toggle"></uploaded-image>
     <div class="content">
-        <h2>
+        <h2 class="ellipsis" tooltip="{{ resource.name }}" tooltip-popup-delay="1000" tooltip-append-to-body="true">
             {{resource.name}}
             <br />
             <small>Angebot von <a ng-click="redirectToOrganization(resource.organization.id)">{{ resource.organization.name }}</a></small>

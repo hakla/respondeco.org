@@ -102,6 +102,10 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
         $location.path('organization/' + $scope.organization.id + '/projects');
     };
 
+    $scope.redirectToProject = function(projectId) {
+        $location.path('project/' + projectId);
+    };
+
     if ($routeParams.id !== undefined) {
         $scope.update($routeParams.id);
     }
@@ -234,5 +238,27 @@ respondecoApp.controller('OrganizationController', function($scope, $location, $
     //allow execute follow state only if organization ID is set!
     if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
         $scope.followingState();
+
+        Organization.getDonatedResources({
+            id: $routeParams.id
+        }, {
+            pageSize: 20,
+            page: 0
+        }, function(response) {
+            var projects = {};
+            $scope.donatedResources = response;
+            response.resourceMatches.map(function(x) {
+                x.project.match = [x];
+                return x.project;
+            }).forEach(function(project) {
+                if (projects[project.id] == undefined) {
+                    projects[project.id] = project;
+                } else {
+                    projects[project.id].match = projects[project.id].match.concat(project.match);
+                }
+            });
+
+            $scope.projects = projects;
+        });
     }
 });

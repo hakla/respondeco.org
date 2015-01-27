@@ -139,7 +139,7 @@
                     <accordion-group ng-open="item.id" ng-repeat="item in project.resourceRequirements">
                         <accordion-heading>
                             <div style="height: 30px; line-height: 30px;" class="row hover-toggle" ng-click="expandResource(item, $event)">
-                                <div class="col-xs-4 pull-right" style="text-align: right;">
+                                <div class="pull-right" style="text-align: right;">
                                     <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
                                     <i class="glyphicon" ng-class="{'glyphicon-chevron-down': item.expanded, 'glyphicon-chevron-right': !item.expanded}"></i>
                                 </div>
@@ -149,8 +149,8 @@
                         <ul>
                             <li ng-repeat="match in item.matches">
                                 <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
+                                <div class="pull-right">{{match.amount}}/{{item.originalAmount}}</div>
                                 <div class="col-md-6 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4 pull-right">{{match.amount}}/{{item.originalAmount}}</div>
                                 <div class="col-md-4">
                                     <rating max="5" on-leave="overStar = null"
                                             readonly="!matchRatingPermissions[match.matchId]"

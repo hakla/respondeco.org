@@ -1,4 +1,4 @@
-<div>
+<div class="organization-details">
     <div class="row">
         <div class="col-md-2">
             <button class="btn btn-default" ng-click="redirectToOverview()" translate="organization.backToOverview"></button>
@@ -24,59 +24,83 @@
                         <i class="glyphicon glyphicon-ok-circle" ng-show="organization.verified" popover="{{ 'organization.tooltip.verified.content'| translate }}" popover-title="{{ 'organization.tooltip.verified.title'| translate }}" popover-append-to-body="true" popover-popup-delay="250" popover-trigger="mouseenter"></i>
                         <i class="glyphicon glyphicon-star" ng-show="organization.isNpo"  popover="{{ 'organization.tooltip.npo.content'| translate }}" popover-title="{{ 'organization.tooltip.npo.title'| translate }}" popover-append-to-body="true" popover-popup-delay="250" popover-trigger="mouseenter"></i>
                     </div>
-                    <a href="mailto://{{ organization.email }}" class="ellipsis" target="_blank">{{organization.name}}</a>
+                    <span>{{organization.name}}</span>
                 </h2>
-                <uploaded-image name="organization.logo.id" class="organization-logo" />
+                <p><strong><a href="mailto://{{ organization.email }}" class="ellipsis" target="_blank">{{organization.email}}</a></strong></p>
+                <p><rating max="5" readonly="!canRate" on-leave="overStar = null" ng-model="shownRating"></rating></p>
+                <uploaded-image name="organization.logo.id" class="organization-logo spacer-top" />
             </div>
-            <div class="col-xs-12">
-                <h2></h2>
+            <div class="col-xs-12 spacer-top">
                 <p>{{ organization.description }}</p>
             </div>
             <div class="col-xs-12">
-                <organization-members />
-            </div>
-            <div class="rating-container">
-                <div class="row">
-                    <div id="rating">
-                        <span>{{ 'organization.rating' | translate }}</span>
-                        <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                ng-model="shownRating"></rating>
-                    </div>
-                </div>
+                <organization-members></organization-members>
             </div>
         </div>
         <div class="col-md-8 newsfeed">
-            <h3 translate="postingfeed.title">News</h3>
-            <div ng-show="isOwner()">
-                <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
-                <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
-                <label ng-show="xingConnected"><input type="checkbox" ng-model="postOnXing"/>Auf Xing posten</label>
-
-                <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength postingform" show-validation>
-                    <div class="form-group" ng-show="isOwner()" ng-class="{ focused: focused }">
-                        <textarea class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
-                              ng-minlength="5" ng-maxlength="2048" ng-model="postingInformation" required autocomplete="off" ng-init="focused = false" ng-focus="focused = true" />
-                        <button type="submit" class="btn btn-success pull-right" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
-                        <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
-                            <p class="help-block" ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
-                                Your Posting is required to be at least 5 characters
-                            </p>
-                            <p class="help-block" ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
-                                Your Posting is required to be at max 2048 characters
-                            </p>
-                            <p class="help-block" ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
-                                Your Posting is required
-                            </p>
+            <div class="col-xs-12">
+                <h3 translate="postingfeed.title">News</h3>
+                <div ng-show="isOwner()">
+                    <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
+                    <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
+                    <label ng-show="xingConnected"><input type="checkbox" ng-model="postOnXing"/>Auf Xing posten</label>
+                
+                    <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength postingform" show-validation>
+                        <div class="form-group" ng-show="isOwner()" ng-class="{ focused: focused }">
+                            <textarea class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
+                                  ng-minlength="5" ng-maxlength="2048" ng-model="postingInformation" required autocomplete="off" ng-init="focused = false" ng-focus="focused = true" />
+                            <button type="submit" class="btn btn-success pull-right" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
+                            <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
+                                <p class="help-block" ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
+                                    Your Posting is required to be at least 5 characters
+                                </p>
+                                <p class="help-block" ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
+                                    Your Posting is required to be at max 2048 characters
+                                </p>
+                                <p class="help-block" ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
+                                    Your Posting is required
+                                </p>
+                            </div>
                         </div>
+                        <div class="spacer-top-3"></div>
+                    </form>
+                </div>
+                <div ng-repeat="posting in postings">
+                    <resp-posting value="posting" hide-organization="true" delete="deletePosting" can-delete="isOwner()"></resp-posting>
+                </div>
+                <a ng-click="showMorePostings()" translate="posting.showmore"
+                   ng-show="canShowMorePostings()">Show more</a>
+            </div>
+        </div>
+    </div>
+    <div class="spacer-top-4"></div>
+    <div class="row toggleable-cards-container" ng-hide="donatedResources.resourceMatches.length == 0">
+        <div class="col-xs-12">
+            <div class="col-xs-12">
+                <h2 translate="organization.supportedProjects"></h2>
+            </div>
+            <div ng-repeat-start="project in projects"></div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 toggleable-card" ng-class="{ 'open': toggled }" ng-click="toggled = !toggled">
+                <resp-project project="project" tags="false" ellipsis="true"></resp-project>
+                <div class="details">
+                    <h4>
+                        <span translate="organization.donated"></span>
+                        <a href="#/projects/{{project.id}}"><small translate="organization.toProject" class="pull-right"></small></a>
+                    </h4>
+                    <div class="col-xs-12 spacer-top" ng-repeat="match in project.match">
+                        {{ match.amount }}x {{ match.resourceOffer.name }}
                     </div>
-                    <div class="spacer-top-3"></div>
-                </form>
+                </div>
             </div>
-            <div ng-repeat="posting in postings">
-                <resp-posting value="posting" hide-organization="true" delete="deletePosting" can-delete="isOwner()"></resp-posting>
-            </div>
-            <a ng-click="showMorePostings()" translate="posting.showmore"
-               ng-show="canShowMorePostings()">Show more</a>
+            <div class="visible-xs clearfix"></div>
+            <div class="visible-xs spacer-top"></div>
+            <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
+            <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
+            <div class="visible-md clearfix" ng-if="$index % 3 == 2"></div>
+            <div class="visible-md spacer-top" ng-if="$index % 3 == 2"></div>
+            <div class="visible-lg clearfix" ng-if="$index % 4 == 3"></div>
+            <div class="visible-lg spacer-top" ng-if="$index % 4 == 3"></div>
+            <div ng-repeat-end></div>
         </div>
     </div>
 </div>

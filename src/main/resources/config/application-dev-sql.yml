@@ -2,12 +2,12 @@ server:
     port: 8081
 
 spring:
-    profiles: dev
+    profiles: dev-sql
 
     datasource:
         dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
-        url: jdbc:mysql://localhost:3306/respondeco_algorithm
-        databaseName: respondeco_algorithm
+        url: jdbc:mysql://localhost:3306/respondeco
+        databaseName: respondeco
         serverName: localhost
         username: root
         password:

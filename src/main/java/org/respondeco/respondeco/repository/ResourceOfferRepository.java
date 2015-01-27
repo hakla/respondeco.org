@@ -21,4 +21,5 @@ public interface ResourceOfferRepository extends JpaRepository<ResourceOffer, Lo
     Page<ResourceOffer> findByActiveIsTrue(Pageable pageable);
     List<ResourceOffer> findByOrganizationIdAndActiveIsTrue(Long id);
     ResourceOffer findByIdAndActiveIsTrue(Long id);
+    Page<ResourceOffer> findByOrganizationNotAndActiveIsTrue(Organization organization, Pageable pageable);
 }

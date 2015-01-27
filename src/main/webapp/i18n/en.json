@@ -162,6 +162,7 @@
         "rating": "Actual Rating:",
         "found": "projects found",
         "toOrganization": "Back to the organization",
+        "near-you": "Projects near you",
         "createProject": {
             "title": "Create a new project",
             "tag":"Add tag",
@@ -547,6 +548,9 @@
         "rating": "Actual rating:",
         "posted": "posted: ",
         "toProjects": "Projects of the organization",
+        "supportedProjects": "Supported projects",
+        "donated": "Gespendet",
+        "toProject": "Zum Projekt",
         "error": {
             "nosuchorganization": "There does not exist a organization with given id",
             "alreadyExists": "You can only be owner of one organization",
