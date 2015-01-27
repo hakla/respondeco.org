@@ -158,7 +158,10 @@ public class ResourceService {
             BigDecimal matchSum = new BigDecimal(0);
             if(requirement.getResourceMatches() != null) {
                 for (ResourceMatch match : requirement.getResourceMatches()) {
-                    matchSum = matchSum.add(match.getAmount());
+                    //only take accepted matches into account
+                    if(Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
+                        matchSum = matchSum.add(match.getAmount());
+                    }
                 }
             }
             log.debug("MATCH SUM = " + matchSum);
