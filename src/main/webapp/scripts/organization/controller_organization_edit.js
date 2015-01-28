@@ -125,7 +125,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
 
     $scope.sendInvite = function() {
         // save if the user should be created and invited to join the organization
-        var invite = false;
+        $scope.invite = false;
 
         if (typeof $scope.selectedUser === 'string') {
             $scope.users.forEach(function(user) {
@@ -135,9 +135,9 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
             });
 
             if (typeof $scope.selectedUser === 'string') {
-                invite = confirm("Ein Benutzer mit dieser E-Mail Adresse existiert noch nicht, soll er eingeladen werden?");
+                $scope.invite = confirm("Ein Benutzer mit dieser E-Mail Adresse existiert noch nicht, soll er eingeladen werden?");
 
-                if (invite === true) {
+                if ($scope.invite === true) {
                     $scope.selectedUser = {
                         login: "sendInvitation",
                         email: $scope.selectedUser
@@ -149,7 +149,7 @@ respondecoApp.controller('OrganizationControllerEdit', function($scope, $locatio
             }
         }
 
-        if (invite === false) {
+        if ($scope.invite === false) {
             OrgJoinRequest.save({
                 organization: {
                     id: $scope.organization.id
