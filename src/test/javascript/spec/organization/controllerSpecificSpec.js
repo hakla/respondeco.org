@@ -32,10 +32,19 @@ describe('Controllers Tests ', function () {
         }));
 
         it('should call Organization.get', function() {
-            spyOn(OrganizationService, 'get').and.callThrough();
+            spyOn(OrganizationService, 'get').and.returnValue({id:1});
+            spyOn(OrganizationService, 'getMembers');
+
             $scope.update("test");
             expect(OrganizationService.get).toHaveBeenCalledWith({ id: 'test' }, jasmine.any(Function));
             OrganizationService.get.calls.mostRecent().args[1]();
+            expect(OrganizationService.getMembers).toHaveBeenCalledWith({
+                id: 1}, jasmine.any(Function));
+
+            OrganizationService.getMembers.calls.mostRecent().args[1](
+                'test'
+            );
+            expect($scope.members).toEqual('test');
         });
 
         it('should return false for isOwner', function() {
@@ -62,6 +71,7 @@ describe('Controllers Tests ', function () {
 
         it('should call delete on Organization', function() {
             spyOn(OrganizationService, 'delete');
+            spyOn(OrganizationService, 'query');
             $scope.organization = {
                 id: 1
             };
@@ -158,8 +168,6 @@ describe('Controllers Tests ', function () {
             expect(SocialMediaService.createTwitterPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
             expect(SocialMediaService.createFacebookPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
             expect(SocialMediaService.createXingPost).toHaveBeenCalledWith({urlPath: '', post: 'posting'});
-
-
         });
 
         it('should return if posting is too short', function() {
@@ -167,6 +175,63 @@ describe('Controllers Tests ', function () {
             $scope.addPosting();
         });
 
+        it('should delete Posting', function() {
+            spyOn(OrganizationService, 'deletePosting');
+
+            $scope.postings = [{
+                id: 1
+            }, {
+
+                id: 2
+            }];
+
+            $scope.deletePosting(1);
+
+            expect(OrganizationService.deletePosting).toHaveBeenCalled();
+            OrganizationService.deletePosting.calls.mostRecent().args[1]();
+        });
+
+        it('should update user', function() {
+            $scope.updateUser('item', 'modal', 'label');
+            expect($scope.selectedUser).toEqual('item');
+        });
+
+        it('should show more postings', function() {
+            spyOn(OrganizationService, 'getPostingsByOrgId');
+
+            $scope.showMorePostings();
+
+            expect(OrganizationService.getPostingByOrgId);
+            OrganizationService.getPostingsByOrgId.calls.mostRecent().args[1]({
+                totalElements: 5,
+                postings: [
+                {post: 1}, {post:2}]
+            });
+        });
+
+        it('should get donated resources', function() {
+            spyOn(OrganizationService, 'getDonatedResources');
+
+            $scope.getDonatedResources();
+
+            expect(OrganizationService.getDonatedResources).toHaveBeenCalled();
+
+            OrganizationService.getDonatedResources.calls.mostRecent().args[2]({
+                resourceMatches: [
+                    {
+                        project: {
+                            id: 1
+                        }
+                    },
+                    {
+                        project: {
+                            id: 2
+                        }
+                    }
+                ]
+            });
+
+        });
 
     });
 });

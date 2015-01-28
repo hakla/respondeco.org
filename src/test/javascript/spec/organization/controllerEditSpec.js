@@ -71,6 +71,12 @@ describe('Controllers Tests ', function () {
             });
         });
 
+        it('should send invite', function() {
+            $scope.users = [{login: 'user' }]
+            $scope.selectedUser = 'user';
+            $scope.sendInvite();
+        });
+
         it('should call Organization.delete', function() {
             spyOn(OrganizationService, 'delete');
             $scope.setRootScopeOrganization = function(value) {};

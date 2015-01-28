@@ -57,8 +57,7 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
         }
     }
 
-    if ($scope.showOrganizationOnly) {
-        var checkAccount = function(account) {
+    $scope.checkAccount = function(account) {
             $scope.ownOrganization = account.organization.id == $routeParams.id;
 
             Organization.get({
@@ -68,16 +67,22 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
             });
         };
 
-        // if the account isn't yet loaded, we'll wait for it
-        if ($rootScope._account == null) {
-            $rootScope.$on("event:authenticated", function() {
-                checkAccount($rootScope._account);
-            });
-        } else {
-            checkAccount($rootScope._account);
+    $scope.checkShowOrgOnly = function() {
+        if ($scope.showOrganizationOnly) {
+            
+            $scope.checkAccount();
+
+            // if the account isn't yet loaded, we'll wait for it
+            if ($rootScope._account == null) {
+                $rootScope.$on("event:authenticated", function() {
+                    $scope.checkAccount($rootScope._account);
+                });
+            } else {
+                $scope.checkAccount($rootScope._account);
+            }
         }
     }
-
+    
     $scope.search();
 
     $scope.searchButton = function() {

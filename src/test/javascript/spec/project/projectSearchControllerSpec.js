@@ -10,7 +10,7 @@ describe('ProjectSearch Controller Tests ', function () {
         var scope, location, ProjectNamesService, PropertyTagsNamesService, ProjectService, OrganizationService,$routeService,$routeParamsService;
         var fakeDeferred;
 
-        beforeEach(inject(function ($rootScope, $controller, $location, $q, ProjectNames, PropertyTagNames, Project, Organization, $route, $routeParams) {
+        beforeEach(inject(function ($rootScope, $controller, $location, $q, ProjectNames, PropertyTagNames, Project, Organization, $route) {
             scope = $rootScope.$new();
             location = $location;
             ProjectNamesService = ProjectNames;
@@ -18,7 +18,10 @@ describe('ProjectSearch Controller Tests ', function () {
             ProjectService = Project;
             OrganizationService = Organization;
             $routeService = $route;
-            $routeParamsService = $routeParams;
+
+            var routeParamsMock = {id: 1};
+
+            $routeParamsService = routeParamsMock;
             fakeDeferred = {
                 $promise: {
                     then: function(object) {}
@@ -88,6 +91,52 @@ describe('ProjectSearch Controller Tests ', function () {
             ProjectService.query.calls.mostRecent().args[1]({projects:[], totalItems:0});
             expect(scope.searchError).toBeNull();
             expect(scope.noProjects).toBe("NOPROJECTS");
+        });
+
+        it('should search after pressing search button', function() {
+            spyOn(scope, 'search');
+            scope.searchButton();
+
+            expect(scope.currentPage).toEqual(1);
+            expect(scope.search).toHaveBeenCalled();
+        });
+
+        it('should search after pagechange', function() {
+            spyOn(scope, 'search');
+
+            scope.onPageChange();
+
+            expect(scope.search).toHaveBeenCalled();
+        });
+
+        it('should check the account', function(){
+            spyOn(OrganizationService, 'get');
+
+            var account =  {
+                organization: {
+                    id:1
+                }
+            };
+
+            scope.checkAccount(account);
+
+            expect(scope.ownOrganization).toBe(true);
+            expect(OrganizationService.get).toHaveBeenCalled();
+            OrganizationService.get.calls.mostRecent().args[1]('test');
+
+            expect(scope.organization).toEqual('test');
+        });
+
+        it('should check show org only', function() {
+            spyOn(scope, 'checkAccount');
+
+            scope.showOrganizationOnly = true;
+            scope.checkShowOrgOnly();
+
+            expect(scope.checkAccount).toHaveBeenCalled();
+
+            scope.showOrganizationOnly = false;
+            scope.checkShowOrgOnly();
         });
     });
 

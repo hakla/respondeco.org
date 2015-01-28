@@ -7,9 +7,9 @@ describe('TextMessage Controller Tests ', function () {
     beforeEach(module('respondecoApp'));
 
     describe('TextMessageController', function () {
-        var $scope, TextMessageService;
+        var $scope, TextMessageService, UserService;
 
-        beforeEach(inject(function ($rootScope, $controller, TextMessage) {
+        beforeEach(inject(function ($rootScope, $controller, TextMessage, User) {
             $scope = $rootScope.$new();
             $scope.sendform = {
                 $setPristine: function() {}
@@ -119,6 +119,42 @@ describe('TextMessage Controller Tests ', function () {
             TextMessageService.delete.calls.mostRecent().args[1]();
             expect(TextMessageService.query).toHaveBeenCalled();
         });
+
+        it('should refresh text messages', function() {
+            spyOn(TextMessageService, 'query');
+            $scope.refreshTextMessages();
+
+            expect(TextMessageService.query).toHaveBeenCalled();
+        });
+
+        it('should view messages', function() {
+            spyOn(TextMessageService, 'markRead');
+            spyOn(TextMessageService, 'countNewMessages');
+
+            $scope.viewMessage({id: '1'});
+
+            expect(TextMessageService.markRead).toHaveBeenCalledWith({
+                id: '1',
+            }, jasmine.any(Function));
+
+            TextMessageService.markRead.calls.mostRecent().args[1]();
+
+            expect(TextMessageService.countNewMessages).toHaveBeenCalled();
+
+            var amount = [5];
+            TextMessageService.countNewMessages.calls.mostRecent().args[0](amount);
+        });
+
+        it('should create reply', function() {
+            spyOn($scope, 'create');
+            $scope.replyContent = 'test';
+
+            $scope.reply('receiver');
+            expect($scope.create).toHaveBeenCalled();
+        });
+
+
+
     });
 
 });

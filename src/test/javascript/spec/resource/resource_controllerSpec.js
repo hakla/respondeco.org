@@ -398,6 +398,30 @@ describe('Resource Controller Tests ', function () {
             var result = $scope.isActiveTab(tab.url);
             expect(result).toBe(true);
         });
+
+        it('should react to page change', function() {
+            spyOn(ResourceService, 'query');
+            $scope.currentPage = 2;
+            $scope.filter = {
+                page: 2,
+                pageSize: 20
+            };
+
+            $scope.onPageChange();
+
+            expect($scope.filter.page).toEqual(1);
+            expect(ResourceService.query).toHaveBeenCalledWith(
+                $scope.filter,
+                jasmine.any(Function));
+
+            ResourceService.query.calls.mostRecent().args[1]({
+                resourceOffers: {
+                    id: 1
+                },
+                totalItems: 2
+            });
+
+        });
     });
 
 
