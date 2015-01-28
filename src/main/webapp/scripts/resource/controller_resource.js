@@ -126,6 +126,12 @@ respondecoApp.controller('ResourceController', function($rootScope, $translate, 
                 }
             });
 
+            $scope.projects.filter(function(project) { return project.concrete == true; }).forEach(function(project, key) {
+                if (new XDate(project.startDate).diffDays() > 0) {
+                    $scope.projects.splice(key, 1);
+                }
+            });
+
             // reverse the array so the projects are ordered by creation date
             // $scope.projects = $filter('orderBy')($scope.projects, "id", true);
         });

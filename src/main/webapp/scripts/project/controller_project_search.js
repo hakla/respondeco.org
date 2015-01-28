@@ -40,7 +40,7 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
                 } else {
                     project.remainingDays = false;
                 }
-            })
+            });
         };
 
         var error = function(error) {
