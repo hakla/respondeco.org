@@ -21,7 +21,7 @@ public class SolutionSingle extends Solution {
             // count the occurrences of entities that
             double cV = count.apply(v);
 
-            return (cV + aPriori) / (N_E / aPriori);
+            return (cV + aPriori) / (N_E + aPriori);
         }
     };
 
@@ -39,11 +39,11 @@ public class SolutionSingle extends Solution {
             // count the occurrences of entities that have t and v as tag
             double cTV = count.apply(t, v);
 
-            return (cTV + aPriori) / (N_E / aPriori);
+            return (cTV + aPriori) / (N_E + aPriori);
         }
     };
 
     public SolutionSingle() {
-        add(PV).add(PTV);
+        add(PTV).add(PV);
     }
 }

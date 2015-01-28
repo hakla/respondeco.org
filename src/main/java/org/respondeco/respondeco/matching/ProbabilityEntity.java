@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ProbabilityEntity {
 
     @NonNull

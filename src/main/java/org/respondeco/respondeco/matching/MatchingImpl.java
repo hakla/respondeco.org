@@ -51,16 +51,16 @@ public class MatchingImpl implements Matching {
     private Solution solutionMultiple = new SolutionMultiple();
 
     @Override
-    public List<ProbabilityEntity> evaluate(Set<MatchingEntity> entities) {
+    public List<ProbabilityEntity> evaluate(Set<MatchingEntity> e) {
         List<ProbabilityEntity> p_Entities = new ArrayList<>();
 
         // iterate over all entities
-        entities.stream().forEach(entity -> {
+        e.stream().forEach(entity -> {
             // store the probabilities for all the tags a project is tagged with
             Set<ProbabilityTag> probabilities = new HashSet<>();
 
             long N_V = tags.size();
-            long N_E = entities.size();
+            long N_E = e.size();
             Set<MatchingTag> V = entity.getTags();
 
             Solution solution;
@@ -90,8 +90,6 @@ public class MatchingImpl implements Matching {
                 return o2.getProbability().compareTo(o1.getProbability());
             }
         });
-
-        System.out.println(counter);
 
         return p_Entities;
     }

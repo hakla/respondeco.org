@@ -11,6 +11,7 @@ import java.util.Set;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Formula implements FormulaParameter {
 
     /**
@@ -39,10 +40,10 @@ public class Formula implements FormulaParameter {
     CountFunction count;
 
     @NonNull
-    public FormulaParameter p1;
+    FormulaParameter p1;
 
-    public FormulaParameter p2;
-    public FormulaConnector connector;
+    FormulaParameter p2;
+    FormulaConnector connector;
 
     @Override
     public double evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {

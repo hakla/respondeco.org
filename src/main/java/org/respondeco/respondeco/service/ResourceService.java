@@ -407,11 +407,11 @@ public class ResourceService {
             Page<Project> organizations = projectRepository.findByOrganization(orgId, new RestParameters(0, 100000).buildPageRequest());
 
             if (organizations != null) {
-                List<Project> projects = organizations.getContent();
+                List<Project> projects = organizations.getContent().stream().filter(p -> !p.isConcrete() || p.getStartDate().isBefore(LocalDate.now()) == false).collect(Collectors.toList());
 
                 // add all projects of the organization to the matchingEntities
                 // only add projects which are currently active and haven't started yet (projects which aren't concrete or the start date is in the future)
-                matchingEntities.addAll(projects.stream().filter(p -> !p.isConcrete() || p.getStartDate().isBefore(LocalDate.now()) == false).collect(Collectors.toList()));
+                matchingEntities.addAll(projects);
 
                 // add all resource requests of all projects of the organization
                 matchingEntities.addAll(
