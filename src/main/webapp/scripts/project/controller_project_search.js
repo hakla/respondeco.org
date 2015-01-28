@@ -69,9 +69,6 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
 
     $scope.checkShowOrgOnly = function() {
         if ($scope.showOrganizationOnly) {
-            
-            $scope.checkAccount();
-
             // if the account isn't yet loaded, we'll wait for it
             if ($rootScope._account == null) {
                 $rootScope.$on("event:authenticated", function() {
@@ -84,6 +81,7 @@ respondecoApp.controller('ProjectSearchController', function ($scope, $location,
     }
     
     $scope.search();
+    $scope.checkShowOrgOnly();
 
     $scope.searchButton = function() {
         $scope.currentPage = 1;

@@ -126,18 +126,6 @@ describe('ProjectSearch Controller Tests ', function () {
 
             expect(scope.organization).toEqual('test');
         });
-
-        it('should check show org only', function() {
-            spyOn(scope, 'checkAccount');
-
-            scope.showOrganizationOnly = true;
-            scope.checkShowOrgOnly();
-
-            expect(scope.checkAccount).toHaveBeenCalled();
-
-            scope.showOrganizationOnly = false;
-            scope.checkShowOrgOnly();
-        });
     });
 
 });
