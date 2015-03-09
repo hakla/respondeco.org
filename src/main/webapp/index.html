@@ -9,17 +9,37 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>respondeco</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+        <title>respondeco</title>
+
+        <!-- unify begin -->
+        <!-- Web Fonts -->
+        <link rel="shortcut" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=cyrillic,latin">
+        <link rel="stylesheet" href="unify/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="unify/css/style.css">
+
+        <!-- CSS Header and Footer -->
+        <link rel="stylesheet" href="unify/css/headers/header-default.css">
+        <link rel="stylesheet" href="unify/css/footers/footer-v1.css">
+
+        <!-- CSS Implementing Plugins -->
+        <link rel="stylesheet" href="unify/plugins/animate.css">
+        <link rel="stylesheet" href="unify/plugins/line-icons/line-icons.css">
+        <link rel="stylesheet" href="unify/plugins/font-awesome/css/font-awesome.css">
+        
+        <!-- CSS Theme -->
+        <link rel="stylesheet" href="unify/css/theme-colors/default.css">
+        <!-- unify end -->
+
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.css">
         <link rel="stylesheet" href="styles/main.css">
         <link rel="stylesheet" href="styles/textmessages.css">
-
-
         <!-- endbuild -->
+
+        <!-- build:js(.tmp) scripts/lib.js -->
         <script src="bower_components/modernizr/modernizr.js"></script>
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
@@ -29,201 +49,177 @@
         <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
         <script src="bower_components/angular-translate/angular-translate.js"></script>
         <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+        <!-- endbuild -->
     </head>
 
     <body ng-app="respondecoApp" ng-controller="MainController">
         <!--[if lt IE 10]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <nav class="navbar navbar-default" role="navigation" ng-cloak>
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+        <div class="wrapper">
+            <div class="header">
+                <div class="container">
+                    <a class="logo" href="#">
+                        <img src="images/logo-small.png" alt="Logo">
+                    </a>
+                    <div class="topbar" ng-switch="authenticated">
+                        <ul class="loginbar pull-right">
+                            <li class="hoverSelector topbar-account-header" ng-class="{ highlight: newMessages > 0 }" ng-controller="MenuController">
+                                <i class="fa fa-user"></i>
+                                <span ng-switch-when="false" class="hidden-tablet" translate="global.menu.account.main">Account</span>
+                                <span ng-switch-when="true" class="hidden-tablet">{{ username }}</span>
+                                <ul class="languages topbar-account hoverSelectorBlock">
+                                    <li ng-switch-when="true">
+                                        <a href="#/textmessages">
+                                            <span class="glyphicon glyphicon-envelope"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.messages">Messages</span>
+                                            <span class="badge" ng-show="newMessages > 0">{{ newMessages }}</span>
+                                        </a>
+                                    </li>
+                                     <li ng-switch-when="true">
+                                        <a href="#/newsfeed">
+                                            <span class="glyphicon glyphicon-cloud"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.newsfeed">Newsfeed</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true" ng-hide="isOrganizationUser()">
+                                        <a href="#/settings">
+                                            <span class="glyphicon glyphicon-wrench"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.settings">Settings</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true" ng-show="isOrganizationUser()">
+                                        <a ng-click="redirectToOwnOrganization()">
+                                            <span class="glyphicon glyphicon-briefcase"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.organization">My organization</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true" ng-show="isOrganizationUser()">
+                                        <a ng-click="redirectToOwnProjects()">
+                                            <span class="glyphicon glyphicon-leaf"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.projects">My projects</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true">
+                                        <a href="#/ownresource">
+                                            <span class="glyphicon glyphicon-tree-deciduous"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.myresources">Resource management</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true">
+                                        <a href="#/resourcemessages">
+                                            <span class="glyphicon glyphicon-inbox"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.resourcerequests">Resource requests</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true">
+                                        <a href="#/social-networks">
+                                            <span class="glyphicon glyphicon-link"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.social-networks">Social networks</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true">
+                                        <a href="#/password">
+                                            <span class="glyphicon glyphicon-lock"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.password">Password</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="true">
+                                        <a href="#/logout">
+                                            <span class="glyphicon glyphicon-log-out"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.logout">Log out</span>
+                                        </a>
+                                    </li>
+                                    <li ng-switch-when="false">
+                                        <a href="#/login">
+                                            <span class="glyphicon glyphicon-log-in"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.login">Authenticate</span>
+                                        </a>
+                                    </li>
+            
+                                    <li ng-switch-when="false">
+                                        <a href="#/register">
+                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                            &#xA0;
+                                            <span translate="global.menu.account.register">Register</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="hoverSelector" ng-controller="LanguageController">
+                                <i class="fa fa-globe"></i>
+                                <span class="hidden-tablet" translate="global.menu.language">Language</span>
+                                <ul class="languages hoverSelectorBlock">
+                                    <li active-menu="{{key}}" ng-repeat="(key, language) in languages">
+                                        <a href="javascript:;" ng-click="changeLanguage(key)">{{language}}</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="hoverSelector" ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" ng-controller="AdminController">
+                                <span class="glyphicon glyphicon-tower"></span>
+                                <span class="hidden-tablet" translate="global.menu.admin">Admin</span>
+                                <ul class="languages hoverSelectorBlock">
+                                    <li>
+                                        <a href="#/docs">
+                                            <span translate="global.menu.account.apidocs">API Docs</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#/admin/organization/verify">
+                                            <span translate="global.menu.admin.verify">Verify</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
+                        <span class="fa fa-bars"></span>
                     </button>
                 </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse" ng-switch="authenticated">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="#">
-                                <span class="glyphicon glyphicon-home"></span>
-                                <span translate="global.menu.home">Home</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#/organization">
-                                <span class="glyphicon glyphicon-briefcase"></span>
-                                <span translate="global.menu.organization">Organization</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#/projects">
-                                <span class="glyphicon glyphicon-leaf"></span>
-                                <span translate="global.menu.projects">Projects</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#/resource">
-                                <span class="glyphicon glyphicon-tree-deciduous"></span>
-                                <span translate="global.menu.resource">Resource</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav nav-pills navbar-right">
-                        <li class="dropdown pointer" ng-class="{ highlight: newMessages > 0 }">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
-                                <span>
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <span ng-switch-when="false" class="hidden-tablet" translate="global.menu.account.main">
-                                        Account
-                                    </span>
-                                    <span ng-switch-when="true" class="hidden-tablet">{{ username }}</span>
-                                    <b class="caret"></b>
-                                </span>
-                            </a>
-                            <ul class="dropdown-menu" ng-controller="MenuController">
-                                <li ng-switch-when="true">
-                                    <a href="#/textmessages">
-                                        <span class="glyphicon glyphicon-envelope"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.messages">Messages</span>
-                                        <span class="badge" ng-show="newMessages > 0">{{ newMessages }}</span>
-                                    </a>
-                                </li>
-                                 <li ng-switch-when="true">
-                                    <a href="#/newsfeed">
-                                        <span class="glyphicon glyphicon-cloud"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.newsfeed">Newsfeed</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true" ng-hide="isOrganizationUser()">
-                                    <a href="#/settings">
-                                        <span class="glyphicon glyphicon-wrench"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.settings">Settings</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true" ng-show="isOrganizationUser()">
-                                    <a ng-click="redirectToOwnOrganization()">
-                                        <span class="glyphicon glyphicon-briefcase"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.organization">My organization</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true" ng-show="isOrganizationUser()">
-                                    <a ng-click="redirectToOwnProjects()">
-                                        <span class="glyphicon glyphicon-leaf"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.projects">My projects</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/ownresource">
-                                        <span class="glyphicon glyphicon-tree-deciduous"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.myresources">Resource management</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/resourcemessages">
-                                        <span class="glyphicon glyphicon-inbox"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.resourcerequests">Resource requests</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/social-networks">
-                                        <span class="glyphicon glyphicon-link"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.social-networks">Social networks</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/password">
-                                        <span class="glyphicon glyphicon-lock"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.password">Password</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="true">
-                                    <a href="#/logout">
-                                        <span class="glyphicon glyphicon-log-out"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.logout">Log out</span>
-                                    </a>
-                                </li>
-                                <li ng-switch-when="false">
-                                    <a href="#/login">
-                                        <span class="glyphicon glyphicon-log-in"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.login">Authenticate</span>
-                                    </a>
-                                </li>
-
-                                <li ng-switch-when="false">
-                                    <a href="#/register">
-                                        <span class="glyphicon glyphicon-plus-sign"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.register">Register</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" class="dropdown pointer" ng-controller="AdminController">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
-                                <span>
-                                    <span class="glyphicon glyphicon-tower"></span>
-                                    <span class="hidden-tablet" translate="global.menu.admin">Admin</span>
-                                    <b class="caret"></b>
-                                </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="#/docs">
-                                        <span class="glyphicon glyphicon-book"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.account.apidocs">API Docs</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#/admin/organization/verify">
-                                        <span class="glyphicon glyphicon-book"></span>
-                                        &#xA0;
-                                        <span translate="global.menu.admin.verify">Verify</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="dropdown pointer" ng-controller="LanguageController">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
-                                <span>
-                                    <span class="glyphicon glyphicon-flag"></span>
-                                    <span class="hidden-tablet" translate="global.menu.language">Language</span>
-                                    <b class="caret"></b>
-                                </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li active-menu="{{key}}" ng-repeat="(key, language) in languages">
-                                    <a href="javascript:;" ng-click="changeLanguage(key)">{{language}}</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                <nav class="collapse navbar-collapse mega-menu navbar-responsive-collapse" role="navigation" ng-cloak>
+                    <div class="container">
+                        <ul class="nav navbar-nav" ng-switch="authenticated">
+                            <li ng-class="{ active: isActive('/organization') }">
+                                <a href="#/organization">
+                                    <span translate="global.menu.organization">Organization</span>
+                                </a>
+                            </li>
+                            <li ng-class="{ active: isActive('/projects') }">
+                                <a href="#/projects">
+                                    <span translate="global.menu.projects">Projects</span>
+                                </a>
+                            </li>
+                            <li ng-class="{ active: isActive('/resource') }">
+                                <a href="#/resource">
+                                    <span translate="global.menu.resource">Resource</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
             </div>
-        </nav>
-        <div class="container error-container">
-            <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
-        </div>
-        <div ng-class="main() ? 'container-landing-page' : 'container'">
-            <div ng-class="main() ? '' : 'well'" ng-view ng-cloak></div>
-
-            <div ng-hide="main()" class="footer">
-                <p translate="footer">This is your footer</p>
+            <div class="container error-container">
+                <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
+            </div>
+            <div ng-class="main() ? 'container-landing-page' : 'container'">
+                <div ng-class="main() ? '' : 'well'" ng-view ng-cloak></div>
+            
+                <div ng-hide="main()" class="footer">
+                    <p translate="footer">This is your footer</p>
+                </div>
             </div>
         </div>
 
@@ -237,6 +233,27 @@
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>-->
 
+
+        <!-- JS Implementing Plugins -->
+        <script src="unify/plugins/back-to-top.js"></script>
+        <script src="unify/plugins/smoothScroll.js"></script>
+
+        <!-- JS Customization -->
+        <script type="text/javascript" src="unify/js/custom.js"></script>
+
+        <!-- JS Page Level -->
+        <script src="unify/js/app.js"></script>
+        <script>
+        jQuery(document).ready(function() {
+            App.init();
+        });
+        </script>
+
+        <!--[if lt IE 9]>
+            <script src="unify/plugins/respond.js"></script>
+            <script src="unify/plugins/html5shiv.js"></script>
+            <script src="unify/plugins/placeholder-IE-fixes.js"></script>
+        <![endif]-->
 
         <!-- build:js scripts/scripts.js -->
         <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
