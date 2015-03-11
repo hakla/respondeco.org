@@ -1,0 +1,26 @@
+/* Add here all your css styles (customizations) */
+.big-explanation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 90%;
+  width: 100%;
+  z-index: 100000;
+  background-color: #FFF;
+  -webkit-transition: .5s ease all;
+  -o-transition: .5s ease all;
+  transition: .5s ease all;
+  padding: 2em;
+}
+
+.big-explanation.out {
+  margin-top: -100%;
+}
+
+.big-explanation i {
+  font-size: 2em;
+  position: absolute;
+  right: 2em;
+  top: 1em;
+  cursor: pointer;
+}
