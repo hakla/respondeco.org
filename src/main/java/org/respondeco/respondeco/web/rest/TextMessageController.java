@@ -28,6 +28,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller for managing TextMessage.

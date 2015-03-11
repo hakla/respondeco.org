@@ -3,16 +3,9 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.matching.MatchingEntity;
-import org.respondeco.respondeco.matching.MatchingImpl;
-import org.respondeco.respondeco.matching.MatchingTag;
-import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.ResourceTagRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -31,8 +24,6 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * REST controller for managing Project.
@@ -118,7 +109,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid ProjectRequestDTO project) {
+    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
         log.debug("REST request to create Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -160,7 +151,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid ProjectRequestDTO project) {
+    public ResponseEntity<?> update(@RequestBody @Valid ProjectDTO project) {
         log.error("REST request to update Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -341,7 +332,7 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseDTO> get(
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {
-        log.debug("REST request to get Project : {}", id);
+        log.debug("REST redkkdkquest to get Project : {}", id);
         Project project = projectService.findProjectById(id);
         ResponseEntity<ProjectResponseDTO> response;
         RestParameters restParameters = new RestParameters(null, null, null, fields);

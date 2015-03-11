@@ -12,7 +12,6 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -114,7 +113,7 @@ public class ProjectControllerTest {
 
     private ProjectService projectServiceMock;
     private MockMvc restProjectMockMvc;
-    private ProjectRequestDTO projectRequestDTO;
+    private ProjectDTO projectDTO;
     private Project project;
     private Organization defaultOrganization;
     private User orgAdmin;
@@ -147,11 +146,11 @@ public class ProjectControllerTest {
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
-        projectRequestDTO = new ProjectRequestDTO();
-        projectRequestDTO.setName(DEFAULT_NAME);
-        projectRequestDTO.setPurpose(DEFAULT_PURPOSE);
-        projectRequestDTO.setConcrete(false);
-        projectRequestDTO.setLogo(new ImageDTO());
+        projectDTO = new ProjectDTO();
+        projectDTO.setName(DEFAULT_NAME);
+        projectDTO.setPurpose(DEFAULT_PURPOSE);
+        projectDTO.setConcrete(false);
+        projectDTO.setLogo(new ImageDTO());
 
 
         defaultOrganization = new Organization();
@@ -207,13 +206,13 @@ public class ProjectControllerTest {
     public void testCRUDProject() throws Exception {
 
         doReturn(project).when(projectServiceMock).create(
-                projectRequestDTO.getName(),
-                projectRequestDTO.getPurpose(),
-                projectRequestDTO.getConcrete(),
-                projectRequestDTO.getStartDate(),
-                projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getLogo().getId());
+                projectDTO.getName(),
+                projectDTO.getPurpose(),
+                projectDTO.getConcrete(),
+                projectDTO.getStartDate(),
+                projectDTO.getPropertyTags(),
+                projectDTO.getResourceRequirements(),
+                projectDTO.getLogo().getId());
 
         doReturn(projectLocation).when(projectLocationServiceMock).createProjectLocation(1L, projectLocation.getAddress(),
             projectLocation.getLat(), projectLocation.getLng());
@@ -221,17 +220,17 @@ public class ProjectControllerTest {
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isCreated());
 
         verify(projectServiceMock, times(1)).create(
-                projectRequestDTO.getName(),
-                projectRequestDTO.getPurpose(),
-                projectRequestDTO.getConcrete(),
-                projectRequestDTO.getStartDate(),
-                projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements(),
-                projectRequestDTO.getLogo().getId());
+                projectDTO.getName(),
+                projectDTO.getPurpose(),
+                projectDTO.getConcrete(),
+                projectDTO.getStartDate(),
+                projectDTO.getPropertyTags(),
+                projectDTO.getResourceRequirements(),
+                projectDTO.getLogo().getId());
 
         doReturn(project).when(projectServiceMock).findProjectById(project.getId());
         // Read Project
@@ -242,40 +241,40 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.id").value(project.getId().intValue()))
                 .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
                 .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(projectRequestDTO.getName()))
-                .andExpect(jsonPath("$.purpose").value(projectRequestDTO.getPurpose()));
+                .andExpect(jsonPath("$.name").value(projectDTO.getName()))
+                .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()));
 
         verify(projectServiceMock, times(1)).findProjectById(project.getId());
 
         // Update Project
-        projectRequestDTO.setId(project.getId());
-        projectRequestDTO.setName(UPDATED_NAME);
-        projectRequestDTO.setPurpose(UPDATED_PURPOSE);
+        projectDTO.setId(project.getId());
+        projectDTO.setName(UPDATED_NAME);
+        projectDTO.setPurpose(UPDATED_PURPOSE);
 
         doReturn(project).when(projectServiceMock).update(
-                projectRequestDTO.getId(),
-                projectRequestDTO.getName(),
-                projectRequestDTO.getPurpose(),
-                projectRequestDTO.getConcrete(),
-                projectRequestDTO.getStartDate(),
-                projectRequestDTO.getLogo().getId(),
-                projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectDTO.getId(),
+                projectDTO.getName(),
+                projectDTO.getPurpose(),
+                projectDTO.getConcrete(),
+                projectDTO.getStartDate(),
+                projectDTO.getLogo().getId(),
+                projectDTO.getPropertyTags(),
+                projectDTO.getResourceRequirements());
 
         restProjectMockMvc.perform(put("/app/rest/projects")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectRequestDTO)))
+                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
                 .andExpect(status().isOk());
 
         verify(projectServiceMock, times(1)).update(
-                projectRequestDTO.getId(),
-                projectRequestDTO.getName(),
-                projectRequestDTO.getPurpose(),
-                projectRequestDTO.getConcrete(),
-                projectRequestDTO.getStartDate(),
-                projectRequestDTO.getLogo().getId(),
-                projectRequestDTO.getPropertyTags(),
-                projectRequestDTO.getResourceRequirements());
+                projectDTO.getId(),
+                projectDTO.getName(),
+                projectDTO.getPurpose(),
+                projectDTO.getConcrete(),
+                projectDTO.getStartDate(),
+                projectDTO.getLogo().getId(),
+                projectDTO.getPropertyTags(),
+                projectDTO.getResourceRequirements());
 
         doReturn(project).when(projectServiceMock).delete(project.getId());
         // Delete Project
