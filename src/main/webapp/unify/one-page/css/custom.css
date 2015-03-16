@@ -24,3 +24,16 @@
   top: 1em;
   cursor: pointer;
 }
+
+uploaded-image, [uploaded-image] {
+  height: 200px;
+  display: block;
+}
+/* line 291, ../../scss/main.scss */
+uploaded-image div, [uploaded-image] div {
+  height: 100%;
+  width: 100%;
+  background-position: 0;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}

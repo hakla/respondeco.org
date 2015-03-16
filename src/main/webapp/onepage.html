@@ -30,7 +30,7 @@
         <!-- CSS Implementing Plugins -->
         <link rel="stylesheet" href="unify/one-page/plugins/animate.css">
         <link rel="stylesheet" href="unify/one-page/plugins/line-icons/line-icons.css">
-        <link rel="stylesheet" href="unify/one-page/plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
         <link rel="stylesheet" href="unify/one-page/plugins/pace/pace-flash.css">
         <link rel="stylesheet" href="unify/one-page/plugins/owl-carousel/owl.carousel.css">
         <link rel="stylesheet" href="unify/one-page/plugins/cube-portfolio/cubeportfolio/css/cubeportfolio.min.css">
@@ -40,14 +40,26 @@
 
         <!-- CSS Customization -->
         <link rel="stylesheet" href="unify/one-page/css/custom.css">
+
+        <!-- build:js(.tmp) scripts/lib_one-page.js -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="bower_components/angular-translate/angular-translate.js"></script>
+        <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+        <!-- endbuild -->
     </head>
 
-    <!-- 
+    <!--
 The #page-top ID is part of the scrolling feature.
 The data-spy and data-target are part of the built-in Bootstrap scrollspy function.
 -->
 
-    <body id="body" data-spy="scroll" data-target=".one-page-header" class="demo-lightbox-gallery">
+    <body id="body" data-spy="scroll" data-target=".one-page-header" class="demo-lightbox-gallery" ng-app="respondecoApp" ng-controller="MainController" >
         <!--=== Header ===-->
         <nav class="one-page-header navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
@@ -60,7 +72,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </button>
 
                     <a class="navbar-brand" href="#intro">
-                        <span>U</span>nify
+                        <span>r</span>espondeco.org
                         <!-- <img src="unify/one-page/img/logo1.png" alt="Logo"> -->
                     </a>
                 </div>
@@ -108,12 +120,35 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             <!-- MAIN IMAGE -->
                             <img src="images/slide1-alternative.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
 
-                            <!-- LAYER -->
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6">
-                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
+                            <!-- LAYER --><!-- LAYERS -->
+                            <div class="tp-caption rs-caption-1 sft start"
+                                data-x="center"
+                                data-hoffset="0"
+                                data-y="100"
+                                data-speed="800"
+                                data-start="1000"
+                                data-easing="Back.easeInOut"
+                                data-endspeed="300">
+                                Hallo
                             </div>
 
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="420" data-captionhidden="off" style="z-index: 6">
+                            <!-- LAYER -->
+                            <div class="tp-caption rs-caption-2 sft"
+                                data-x="center"
+                                data-hoffset="0"
+                                data-y="200"
+                                data-speed="1000"
+                                data-start="3000"
+                                data-easing="Power4.easeOut"
+                                data-endspeed="300"
+                                data-endeasing="Power1.easeIn"
+                                data-captionhidden="off"
+                                style="z-index: 6">
+                                Hilf mit!
+                            </div>
+
+                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="800" data-start="2000" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
+                                <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
                                 <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
                             </div>
                         </li>
@@ -124,9 +159,9 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             <img src="images/slide1.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
 
                             <!-- LAYER -->
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6">
-                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Learn More</a></span>
-                                <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Our Work</a></span>
+                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="0" data-start="0" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
+                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
+                                <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
                             </div>
                         </li>
 
@@ -136,9 +171,9 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             <img src="images/slide3.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
 
                             <!-- LAYER -->
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6">
-                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Learn More</a></span>
-                                <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Our Work</a></span>
+                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="0" data-start="0" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
+                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
+                                <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
                             </div>
                         </li>
                     </ul>
@@ -168,145 +203,21 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     <!--/end Filters Container-->
 
                     <div id="grid-container" class="cbp-l-grid-gallery">
-                        <div class="cbp-item print motion">
-                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita">
+                        <div class="cbp-item" ng-repeat="project in projects">
+                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="{{ project.purpose }}">
                                 <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/1.jpg" alt="">
+                                    <uploaded-image name="project.logo.id"></uploaded-image>
                                 </div>
                                 <div class="cbp-caption-activeWrap">
                                     <div class="cbp-l-caption-alignLeft">
                                         <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">World Clock Widget</div>
-                                            <div class="cbp-l-caption-desc">by Paul Flavius Nechita</div>
+                                            <div class="cbp-l-caption-title">{{ project.name }}</div>
+                                            <div class="cbp-l-caption-desc">{{ project.purpose }}</div>
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
-                        <div class="cbp-item web-design">
-                            <a href="unify/one-page/ajax/project2.html" class="cbp-caption cbp-singlePageInline" data-title="Bolt UI<br>by Tiberiu Neamu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/2.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">Bolt UI</div>
-                                            <div class="cbp-l-caption-desc">by Tiberiu Neamu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item print motion">
-                            <a href="unify/one-page/ajax/project3.html" class="cbp-caption cbp-singlePageInline" data-title="WhereTO App<br>by Tiberiu Neamu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/3.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">WhereTO App</div>
-                                            <div class="cbp-l-caption-desc">by Tiberiu Neamu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item web-design print">
-                            <a href="unify/one-page/ajax/project4.html" class="cbp-caption cbp-singlePageInline" data-title="iDevices<br>by Tiberiu Neamu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/11.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">iDevices</div>
-                                            <div class="cbp-l-caption-desc">by Tiberiu Neamu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item motion">
-                            <a href="unify/one-page/ajax/project5.html" class="cbp-caption cbp-singlePageInline" data-title="Seemple* Music for iPad<br>by Tiberiu Neamu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/5.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">Seemple* Music for iPad</div>
-                                            <div class="cbp-l-caption-desc">by Tiberiu Neamu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item print motion">
-                            <a href="unify/one-page/ajax/project6.html" class="cbp-caption cbp-singlePageInline" data-title="Remind~Me Widget<br>by Tiberiu Neamu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/6.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">Remind~Me Widget</div>
-                                            <div class="cbp-l-caption-desc">by Tiberiu Neamu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item web-design print">
-                            <a href="unify/one-page/ajax/project7.html" class="cbp-caption cbp-singlePageInline" data-title="Workout Buddy<br>by Tiberiu Neamu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/7.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">Workout Buddy</div>
-                                            <div class="cbp-l-caption-desc">by Tiberiu Neamu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item print">
-                            <a href="unify/one-page/ajax/project8.html" class="cbp-caption cbp-singlePageInline" data-title="Digital Menu<br>by Cosmin Capitanu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/8.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">Digital Menu</div>
-                                            <div class="cbp-l-caption-desc">by Cosmin Capitanu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="cbp-item motion">
-                            <a href="unify/one-page/ajax/project9.html" class="cbp-caption cbp-singlePageInline" data-title="Holiday Selector<br>by Cosmin Capitanu">
-                                <div class="cbp-caption-defaultWrap">
-                                    <img src="unify/one-page/img/portfolio/4.jpg" alt="">
-                                </div>
-                                <div class="cbp-caption-activeWrap">
-                                    <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">Holiday Selector</div>
-                                            <div class="cbp-l-caption-desc">by Cosmin Capitanu</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="cbp-l-loadMore-button">
-                        <a href="unify/one-page/ajax/loadMore.html" class="cbp-l-loadMore-button-link">LOAD MORE</a>
                     </div>
                 </div>
             </div>
@@ -624,6 +535,12 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
             RevolutionSlider.initRSfullScreen();
         });
         </script>
+        <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+        <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
+        <script src="scripts/http-auth-interceptor.js"></script>
+        <script src="scripts/truncate.js"></script>
+        <script type="text/javascript" src="unify/js/custom.js"></script>
+        <script src="scripts/directives.js"></script>
         <!--[if lt IE 9]>
         <script src="unify/one-page/plugins/respond.js"></script>
         <script src="unify/one-page/plugins/html5shiv.js"></script>
