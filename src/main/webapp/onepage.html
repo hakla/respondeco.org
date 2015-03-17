@@ -88,6 +88,9 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                 <a href="#portfolio">Projekte</a>
                             </li>
                             <li class="page-scroll">
+                                <a href="">Dein Angebot eintragen</a>
+                            </li>
+                            <li class="page-scroll">
                                 <a href="#about">Über uns</a>
                             </li>
                             <li class="page-scroll">
@@ -129,27 +132,26 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                 data-start="1000"
                                 data-easing="Back.easeInOut"
                                 data-endspeed="300">
-                                Hallo
+                                Marktplatz für Nachhaltigkeit
                             </div>
 
                             <!-- LAYER -->
                             <div class="tp-caption rs-caption-2 sft"
                                 data-x="center"
                                 data-hoffset="0"
-                                data-y="200"
-                                data-speed="1000"
-                                data-start="3000"
-                                data-easing="Power4.easeOut"
+                                data-y="170"
+                                data-speed="800"
+                                data-start="1000"
+                                data-easing="Back.easeInOut"
                                 data-endspeed="300"
-                                data-endeasing="Power1.easeIn"
                                 data-captionhidden="off"
                                 style="z-index: 6">
-                                Hilf mit!
+                                <span>Finde und unterstütze einzigartige Partner und Projekte</span><br>
+                                <a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">So funktionierts</a></span>
                             </div>
 
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="800" data-start="2000" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
+                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="450" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="800" data-start="2000" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
                                 <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
-                                <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
                             </div>
                         </li>
 
@@ -204,7 +206,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
 
                     <div id="grid-container" class="cbp-l-grid-gallery">
                         <div class="cbp-item" ng-repeat="project in projects">
-                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="{{ project.purpose }}">
+                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="<h1>{{project.name}}</h1>{{ project.purpose }}">
                                 <div class="cbp-caption-defaultWrap">
                                     <uploaded-image name="project.logo.id"></uploaded-image>
                                 </div>
