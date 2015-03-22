@@ -64,10 +64,12 @@ var App = function () {
 
             jQuery('.explanation').on('click', function() {
                 jQuery('.big-explanation').toggleClass('out');
+                jQuery('body').toggleClass('overflow-hidden');
             });
 
             jQuery('.close-explanation').on('click', function() {
                 jQuery('.big-explanation').toggleClass('out');
+                jQuery('body').toggleClass('overflow-hidden');
             });
         },
 
@@ -76,13 +78,7 @@ var App = function () {
                 delay: 10,
                 time: 1000
             });
-        },
-
-        initParallaxBg: function () {
-            $(window).load(function(){
-                jQuery('.parallaxBg').parallax("50%", 0.4);
-            });
-        },
+        }
 
     };
 

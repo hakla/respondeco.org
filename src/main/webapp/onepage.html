@@ -7,26 +7,20 @@
 
     <head>
         <title>Unify | Creative One Page Theme</title>
-
         <!-- Meta -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
-
         <!-- Favicon -->
         <link rel="shortcut icon" href="favicon.ico">
-
         <!-- Web Fonts -->
         <link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin'>
-
         <!-- CSS Global Compulsory -->
         <link rel="stylesheet" href="unify/one-page/plugins/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="unify/one-page/css/one.style.css">
-
         <!-- CSS Footer -->
         <link rel="stylesheet" href="unify/one-page/css/footers/footer-v7.css">
-
         <!-- CSS Implementing Plugins -->
         <link rel="stylesheet" href="unify/one-page/plugins/animate.css">
         <link rel="stylesheet" href="unify/one-page/plugins/line-icons/line-icons.css">
@@ -37,10 +31,8 @@
         <link rel="stylesheet" href="unify/one-page/plugins/cube-portfolio/cubeportfolio/custom/custom-cubeportfolio.css">
         <link rel="stylesheet" href="unify/one-page/plugins/revolution-slider/rs-plugin/css/settings.css" type="text/css" media="screen">
         <!--[if lt IE 9]><link rel="stylesheet" href="unify/one-page/plugins/revolution-slider/rs-plugin/css/settings-ie8.css" type="text/css" media="screen"><![endif]-->
-
         <!-- CSS Customization -->
         <link rel="stylesheet" href="unify/one-page/css/custom.css">
-
         <!-- build:js(.tmp) scripts/lib_one-page.js -->
         <script src="bower_components/modernizr/modernizr.js"></script>
         <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -53,13 +45,12 @@
         <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
         <!-- endbuild -->
     </head>
-
     <!--
 The #page-top ID is part of the scrolling feature.
 The data-spy and data-target are part of the built-in Bootstrap scrollspy function.
 -->
 
-    <body id="body" data-spy="scroll" data-target=".one-page-header" class="demo-lightbox-gallery" ng-app="respondecoApp" ng-controller="MainController" >
+    <body id="body" data-spy="scroll" data-target=".one-page-header" class="demo-lightbox-gallery" ng-app="respondecoApp" ng-controller="MainController">
         <!--=== Header ===-->
         <nav class="one-page-header navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
@@ -70,13 +61,11 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-
                     <a class="navbar-brand" href="#intro">
                         <span>r</span>espondeco.org
                         <!-- <img src="unify/one-page/img/logo1.png" alt="Logo"> -->
                     </a>
                 </div>
-
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <div class="menu-container">
@@ -88,16 +77,27 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                 <a href="#portfolio">Projekte</a>
                             </li>
                             <li class="page-scroll">
-                                <a href="">Dein Angebot eintragen</a>
+                                <a href="#organization">Organisationen</a>
                             </li>
                             <li class="page-scroll">
-                                <a href="#about">Über uns</a>
+                                <a href="#about">Registrieren</a>
                             </li>
                             <li class="page-scroll">
-                                <a href="#contact">Kontakt</a>
+                                <a href="#contact">Login</a>
                             </li>
                             <li class="page-scroll">
-                                <a href="./index.html" class="btn btn-default">Sammle für dein Projekt</a>
+                                <div class="btn-group">
+                                    <button type="button" class="btn">Zeige dein Engagement</button>
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Dropdown öffnen</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Sammle für dein Projekt</a></li>
+                                        <li><a href="#">Spende Ressourcen</a></li>
+                                        <li><a href="#">Promote deine nachhaltige Dienstleistung</a></li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -107,12 +107,38 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
             <!-- /.container -->
         </nav>
         <!--=== End Header ===-->
-
         <div class="big-explanation out">
-            <h1>Erklärung</h1>
+            <h1>So funktionierts</h1>
             <a class="close-explanation"><i class="fa fa-times-circle"></i></a>
+            <div class="spacer-medium"></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <div class="circle">1</div>
+                        <h2>Entdecke tolle Projekte</h2>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="circle">2</div>
+                        <h2>Unterstütze nachhaltige Projekte<br/><small>mit deinen Produkten und deiner Kompetenz</small></h2>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="circle">3</div>
+                        <h2>Zeige dein Engagement<br/><small>Lass dich feiern</small></h2>
+                    </div>
+                </div>
+                <div class="spacer-big"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p>
+                            <a href="#/erste-schritte/sammle">Sammle</a> für dein eigenes Projekt
+                        </p>
+                        <p>
+                            <a href="#/erste-schritte/promote">Promote</a> deine nachhaltige Weiterbildungs- und Beratungsangebote
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <!-- Intro Section -->
         <section id="intro" class="intro-section">
             <div class="fullscreenbanner-container">
@@ -122,56 +148,36 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                         <li data-transition="fade" data-slotamount="5" data-masterspeed="700" data-title="Slide 1">
                             <!-- MAIN IMAGE -->
                             <img src="images/slide1-alternative.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
-
-                            <!-- LAYER --><!-- LAYERS -->
-                            <div class="tp-caption rs-caption-1 sft start"
-                                data-x="center"
-                                data-hoffset="0"
-                                data-y="100"
-                                data-speed="800"
-                                data-start="1000"
-                                data-easing="Back.easeInOut"
-                                data-endspeed="300">
-                                Marktplatz für Nachhaltigkeit
-                            </div>
-
                             <!-- LAYER -->
-                            <div class="tp-caption rs-caption-2 sft"
-                                data-x="center"
-                                data-hoffset="0"
-                                data-y="170"
-                                data-speed="800"
-                                data-start="1000"
-                                data-easing="Back.easeInOut"
-                                data-endspeed="300"
-                                data-captionhidden="off"
-                                style="z-index: 6">
-                                <span>Finde und unterstütze einzigartige Partner und Projekte</span><br>
-                                <a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">So funktionierts</a></span>
+                            <!-- LAYERS -->
+                            <div class="tp-caption rs-caption-1 sft start" data-x="center" data-hoffset="0" data-y="100" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
+                                Gemeinsam verändern
                             </div>
-
+                            <!-- LAYER -->
+                            <div class="tp-caption rs-caption-2 sft" data-x="center" data-hoffset="0" data-y="170" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300" data-captionhidden="off" style="z-index: 6">
+                                <span>Finde verantwortungsvolle Partner und nachhaltige Projekte</span>
+                                <br>
+                                <a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">So funktionierts</a>
+                                </span>
+                            </div>
                             <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="450" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="800" data-start="2000" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
                                 <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
                             </div>
                         </li>
-
                         <!-- SLIDE 2 -->
                         <li data-transition="fade" data-slotamount="5" data-masterspeed="1000" data-title="Slide 2">
                             <!-- MAIN IMAGE -->
                             <img src="images/slide1.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
-
                             <!-- LAYER -->
                             <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="0" data-start="0" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
                                 <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
                                 <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
                             </div>
                         </li>
-
                         <!-- SLIDE 3 -->
                         <li data-transition="fade" data-slotamount="5" data-masterspeed="700" data-title="Slide 3">
                             <!-- MAIN IMAGE -->
                             <img src="images/slide3.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
-
                             <!-- LAYER -->
                             <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="0" data-start="0" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
                                 <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
@@ -184,37 +190,32 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
             </div>
         </section>
         <!-- End Intro Section -->
-
         <!-- Portfolio Section -->
         <section id="portfolio" class="about-section">
             <div class="container content-lg">
                 <div class="title-v1">
-                    <h2>Projekte</h2>
-                    <p>We do <strong>things</strong> differently company providing key digital services.
-                        <br> Focused on helping our clients to build a <strong>successful</strong> business on web and mobile.</p>
+                    <h2>({{ projects.length }}) Projekte</h2>
                 </div>
-
-
                 <div class="cube-portfolio">
-                    <div id="filters-container" class="cbp-l-filters-button">
+                    <div class="filters-container cbp-l-filters-button">
                         <div data-filter="*" class="cbp-filter-item-active cbp-filter-item"> All </div>
-                        <div data-filter=".print" class="cbp-filter-item"> Print </div>
-                        <div data-filter=".web-design" class="cbp-filter-item"> Web Design </div>
+                        <div data-filter=".Tierschutz" class="cbp-filter-item"> Tierschutz </div>
+                        <div data-filter=".Obdachlosenhilfe" class="cbp-filter-item"> Obdachlosenhilfe </div>
                         <div data-filter=".motion" class="cbp-filter-item"> Motion </div>
                     </div>
                     <!--/end Filters Container-->
-
-                    <div id="grid-container" class="cbp-l-grid-gallery">
-                        <div class="cbp-item" ng-repeat="project in projects">
-                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="<h1>{{project.name}}</h1>{{ project.purpose }}">
-                                <div class="cbp-caption-defaultWrap">
-                                    <uploaded-image name="project.logo.id"></uploaded-image>
-                                </div>
-                                <div class="cbp-caption-activeWrap">
+                    <div class="grid-container cbp-l-grid-gallery">
+                        <div class="cbp-item {{item.propertyTags[0].name}} {{item.className}}" ng-repeat="item in projects">
+                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="<h1>{{item.name}}</h1>{{ item.purpose }}">
+                                <div class="cbp-caption">
+                                    <uploaded-image name="item.logo.id"></uploaded-image>
+                                    <div class="progress-bar progress-bar-u" style="width: {{item.progress}}%"></div>
                                     <div class="cbp-l-caption-alignLeft">
-                                        <div class="cbp-l-caption-body">
-                                            <div class="cbp-l-caption-title">{{ project.name }}</div>
-                                            <div class="cbp-l-caption-desc">{{ project.purpose }}</div>
+                                        <div class="cbp-l-caption-title">
+                                            <span popover="{{item.name}}" popover-trigger="mouseover mouseleave">{{item.name}}</span>
+                                            <div class="organization-logo" popover="{{item.organization.name}}" popover-trigger="mouseover mouseleave" popover-placement="left">
+                                                <uploaded-image name="item.organization.logo.id"></uploaded-image>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +226,38 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
             </div>
         </section>
         <!-- End Portfolio Section -->
-
+        <!-- Organization Section -->
+        <section id="organization" class="about-section">
+            <div class="container content-lg">
+                <div class="title-v1">
+                    <h2>({{ organizations.length }}) Organisationen</h2>
+                </div>
+                <div class="cube-portfolio">
+                    <div class="filters-container cbp-l-filters-button">
+                        <div data-filter="*" class="cbp-filter-item-active cbp-filter-item"> All </div>
+                        <div data-filter=".Tierschutz" class="cbp-filter-item"> Tierschutz </div>
+                        <div data-filter=".Obdachlosenhilfe" class="cbp-filter-item"> Obdachlosenhilfe </div>
+                        <div data-filter=".motion" class="cbp-filter-item"> Motion </div>
+                    </div>
+                    <!--/end Filters Container-->
+                    <div class="grid-container cbp-l-grid-gallery">
+                        <div class="cbp-item {{item.className}}" ng-repeat="item in organizations">
+                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="<h1>{{item.name}}</h1>{{ item.purpose }}">
+                                <div class="cbp-caption">
+                                    <uploaded-image name="item.logo.id"></uploaded-image>
+                                    <div class="cbp-l-caption-alignLeft">
+                                        <div class="cbp-l-caption-title" popover="{{item.name}}" popover-trigger="mouseover mouseleave">
+                                            {{item.name}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Organization Section -->
         <!--  About Section -->
         <section id="about" class="about-section section-first">
             <div class="block-v1">
@@ -255,7 +287,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                 </div>
             </div>
-
             <div class="about-image bg-grey">
                 <div class="container">
                     <div class="title-v1">
@@ -268,14 +299,12 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                 </div>
             </div>
-
             <div class="container content-lg">
                 <div class="title-v1">
                     <h2>Our Vision And Mission</h2>
                     <p>We <strong>meet</strong> and get to know you. You tell us and we listen.
                         <br> We build your website to realise your vision and we <strong>deliver</strong> the ready product.</p>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6 content-boxes-v3 margin-bottom-40">
                         <div class="clearfix margin-bottom-30">
@@ -300,13 +329,11 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             </div>
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <img class="img-responsive" src="unify/one-page/img/mockup/mockup1.png" alt="">
                     </div>
                 </div>
             </div>
-
             <div class="team-v1 bg-grey content-lg">
                 <div class="container">
                     <div class="title-v1">
@@ -314,7 +341,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                         <p>We <strong>meet</strong> and get to know you. You tell us and we listen.
                             <br> We build your website to realise your vision and we <strong>deliver</strong> the ready product.</p>
                     </div>
-
                     <ul class="list-unstyled row">
                         <li class="col-sm-3 col-xs-6 md-margin-bottom-30">
                             <div class="team-img">
@@ -411,7 +437,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
             </div>
         </section>
         <!--  About Section -->
-
         <!-- Contact Section -->
         <section id="contact" class="contacts-section">
             <div class="container content-lg">
@@ -420,7 +445,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                         <br> It has been the industry's standard dummy text.</p>
                 </div>
-
                 <div class="row contacts-in">
                     <div class="col-md-6 md-margin-bottom-40">
                         <ul class="list-unstyled">
@@ -432,7 +456,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             </li>
                         </ul>
                     </div>
-
                     <div class="col-md-6">
                         <form action="unify/one-page/php/sky-forms-pro/demo-contacts-process.php" method="post" id="sky-form3" class="sky-form contact-style">
                             <fieldset>
@@ -444,8 +467,8 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                         </div>
                                     </div>
                                 </div>
-
                                 <label>Email <span class="color-red">*</span>
+                                </label>
                                 </label>
                                 <div class="row">
                                     <div class="col-md-7 margin-bottom-20 col-md-offset-0">
@@ -454,7 +477,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                         </div>
                                     </div>
                                 </div>
-
                                 <label>Message</label>
                                 <div class="row">
                                     <div class="col-md-11 margin-bottom-20 col-md-offset-0">
@@ -463,12 +485,10 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                         </div>
                                     </div>
                                 </div>
-
                                 <p>
                                     <button type="submit" class="btn-u btn-brd btn-brd-hover btn-u-dark">Send Message</button>
                                 </p>
                             </fieldset>
-
                             <div class="message">
                                 <i class="rounded-x fa fa-check"></i>
                                 <p>Your message was successfully sent!</p>
@@ -477,7 +497,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                 </div>
             </div>
-
             <div class="copyright-section">
                 <p>2014 &copy; All Rights Reserved. Unify Theme by <a target="_blank" href="https://twitter.com/htmlstream">Htmlstream</a>
                 </p>
@@ -501,8 +520,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                 <span class="page-scroll"><a href="#intro"><i class="fa fa-angle-double-up back-to-top"></i></a></span>
             </div>
         </section>
-        <!-- End Contact Section -->
-
         <!-- JS Global Compulsory -->
         <script type="text/javascript" src="unify/one-page/plugins/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/jquery/jquery-migrate.min.js"></script>
@@ -520,6 +537,13 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <script type="text/javascript" src="unify/one-page/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+        <!-- Angular UI -->
+        <script src="bower_components/ui-bootstrap/src/typeahead/typeahead.js"></script>
+        <script src="bower_components/ui-bootstrap/src/position/position.js"></script>
+        <script src="bower_components/ui-bootstrap/src/bindHtml/bindHtml.js"></script>
+        <script src="bower_components/ui-bootstrap/src/datepicker/datepicker.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
         <!-- JS Page Level-->
         <script type="text/javascript" src="unify/one-page/js/one.app.js"></script>
         <script type="text/javascript" src="unify/one-page/js/forms/login.js"></script>
@@ -532,7 +556,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         jQuery(document).ready(function() {
             App.init();
             LoginForm.initLoginForm();
-            App.initParallaxBg();
             ContactForm.initContactForm();
             RevolutionSlider.initRSfullScreen();
         });
@@ -541,7 +564,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
         <script src="scripts/http-auth-interceptor.js"></script>
         <script src="scripts/truncate.js"></script>
-        <script type="text/javascript" src="unify/js/custom.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/custom.js"></script>
         <script src="scripts/directives.js"></script>
         <!--[if lt IE 9]>
         <script src="unify/one-page/plugins/respond.js"></script>
@@ -549,7 +572,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <script src="unify/one-page/js/plugins/placeholder-IE-fixes.js"></script>
         <script src="unify/one-page/plugins/sky-forms-pro/skyforms/js/sky-forms-ie8.js"></script>
     <![endif]-->
-
         <!--[if lt IE 10]>
         <script src="unify/one-page/plugins/sky-forms-pro/skyforms/js/jquery.placeholder.min.js"></script>
     <![endif]-->

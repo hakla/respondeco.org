@@ -8,6 +8,7 @@ import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class ProjectResponseDTO {
 
     public static List<String> DEFAULT_FIELDS = Arrays.asList(
             "id", "name", "purpose", "concrete", "startDate", "endDate",
-            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings", "successful", "postings");
+            "organizationId", "managerId", "propertyTags", "resourceRequirements", "logo", "ratings", "successful", "postings", "progress");
 
     public static ProjectResponseDTO fromEntity(Project project, Collection<String> fieldNames) {
         if(fieldNames == null || fieldNames.size() == 0) {
@@ -68,6 +69,17 @@ public class ProjectResponseDTO {
             log.debug("adding resource requirements");
             responseDTO.setResourceRequirements(ResourceRequirementResponseDTO
                 .fromEntities(project.getResourceRequirements(), null));
+        }
+        if (fieldNames.contains("progress")) {
+            log.debug("adding progress");
+            List<ResourceRequirementResponseDTO> requirements = ResourceRequirementResponseDTO.fromEntities(project.getResourceRequirements(), null);
+            responseDTO.setProgress(
+                requirements
+                .stream()
+                    .mapToDouble(r ->
+                        new BigDecimal(1).subtract(r.getAmount().divide(r.getOriginalAmount())).doubleValue()
+                    ).sum() / requirements.size()
+            );
         }
         if (fieldNames.contains("logo")) {
             if (project.getProjectLogo() != null) {
@@ -113,5 +125,6 @@ public class ProjectResponseDTO {
     private Boolean successful;
     private ProjectLocationResponseDTO projectLocation;
     private List<PostingDTO> postings;
+    private Double progress;
 
 }
