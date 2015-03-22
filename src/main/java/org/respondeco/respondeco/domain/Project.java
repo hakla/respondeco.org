@@ -10,12 +10,11 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
-import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -37,7 +36,7 @@ import java.util.Set;
 public class Project extends AbstractAuditingNamedEntity implements Serializable, MatchingEntity {
 
     @Column(name = "purpose", length = 2048)
-    @DefaultReturnValue
+    @DefaultReturnField
     private String purpose;
 
     @Column(name = "is_concrete")
