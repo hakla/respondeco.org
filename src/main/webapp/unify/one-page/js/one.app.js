@@ -4,9 +4,9 @@
  * Version: 1.6
  * Author: @htmlstream
  * Website: http://htmlstream.com
-*/
+ */
 
-var App = function () {
+var App = function() {
 
     function handleBootstrap() {
         /*Bootstrap Carousel*/
@@ -17,10 +17,10 @@ var App = function () {
 
         /*Tooltips*/
         jQuery('.tooltips').tooltip();
-        jQuery('.tooltips-show').tooltip('show');      
-        jQuery('.tooltips-hide').tooltip('hide');       
-        jQuery('.tooltips-toggle').tooltip('toggle');       
-        jQuery('.tooltips-destroy').tooltip('destroy');       
+        jQuery('.tooltips-show').tooltip('show');
+        jQuery('.tooltips-hide').tooltip('hide');
+        jQuery('.tooltips-toggle').tooltip('toggle');
+        jQuery('.tooltips-destroy').tooltip('destroy');
 
         /*Popovers*/
         jQuery('.popovers').popover();
@@ -55,10 +55,27 @@ var App = function () {
         $('.navbar-nav li a, .navbar-brand').click(function() {
             $(".navbar-collapse.in").collapse('hide');
         });
+
+        var $window = $(window);
+        var $headerCarousel = $('.header-carousel');
+
+        $headerCarousel.owlCarousel({
+            slideSpeed: 1000,
+            singleItem: true,
+            pagination: false,
+            autoPlay: 10000
+        });
+
+        var onResize = function() {
+            $headerCarousel.add($headerCarousel.find('.item')).height($window.innerHeight());
+        }
+
+        $window.on("resize", onResize);
+        onResize();
     }
 
     return {
-        init: function () {
+        init: function() {
             handleHeader();
             handleBootstrap();
 
@@ -71,15 +88,7 @@ var App = function () {
                 jQuery('.big-explanation').toggleClass('out');
                 jQuery('body').toggleClass('overflow-hidden');
             });
-        },
-
-        initCounter: function () {
-            jQuery('.counter').counterUp({
-                delay: 10,
-                time: 1000
-            });
         }
-
     };
 
 }();

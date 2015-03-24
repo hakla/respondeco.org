@@ -29,7 +29,7 @@
                     cols: 1
                 }],
                 defaultFilter: '*',
-                animationType: 'sequentially',
+                animationType: 'fadeOut',
                 gapHorizontal: 0,
                 gapVertical: 0,
                 gridAdjustment: 'responsive',

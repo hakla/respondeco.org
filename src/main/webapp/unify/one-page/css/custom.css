@@ -17,7 +17,7 @@
   -o-transition: .5s ease all;
   transition: .5s ease all;
   padding: 2em;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .big-explanation.out {
@@ -56,12 +56,12 @@ uploaded-image div,
 }
 
 .tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light {
-  background: rgba(0, 0, 0, 0.2);
-  color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   border-color: transparent;
   color: #fff !important;
 }
@@ -69,6 +69,7 @@ uploaded-image div,
 .tp-caption.rs-caption-3 .btn-brd {
   border: transparent;
   background-color: #358835;
+  text-transform: none;
   padding: 20px 30px;
   font-size: 18px;
   border-color: transparent;
@@ -81,6 +82,8 @@ uploaded-image div,
 .rs-caption-1 {
   font-size: 54px !important;
   border-width: 0 !important;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .rs-caption-1::after,
@@ -128,8 +131,25 @@ uploaded-image div,
   margin-top: 100px;
 }
 
+.one-page-header .navbar-nav > li > a {
+  text-transform: none;
+}
+
 .nav .btn-group {
-  margin-top: 6px;
+  margin-top: 7px;
+}
+
+.nav .nav-none {
+  padding-right: 0;
+}
+
+.top-nav-collapse .nav-none {
+  position: relative;
+  z-index: 1;
+}
+
+.top-nav-collapse .nav-none {
+  padding-left: 0;
 }
 
 .cbp-caption {
@@ -158,10 +178,63 @@ uploaded-image div,
 }
 
 .cbp-caption .progress-bar {
-  height: 4px;
+  height: 49px;
+  margin-bottom: -49px;
   float: none;
 }
 
 .cbp-item.resource {
   background-color: #f2f2f2;
+}
+
+.star {
+  position: relative;
+}
+
+.star:before,
+.star:after {
+  font-size: 16px;
+  content: "\f005";
+  position: absolute;
+  font-family: FontAwesome;
+  top: 4px;
+}
+
+.star:after {
+  right: -30px;
+}
+
+.star:before {
+  left: -30px;
+}
+
+.title-v1 h1,
+.title-v1 h2 {
+  text-transform: none;
+}
+
+.header-carousel {
+  position: absolute;
+}
+
+.header-carousel .item {
+  display: block;
+  background-size: 100% auto;
+  background-position: 0 50%;
+}
+
+.btn-group .btn, .btn-group .btn.dropdown-toggle {
+  background-color: #fff;
+}
+
+.btn-group .btn a, .btn-group .btn.dropdown-toggle a {
+  font-size: 12.5px;
+}
+
+.btn-group .btn a:hover, .btn-group .btn.dropdown-toggle a:hover {
+  color: #777;
+}
+
+.btn-group .btn a:focus, .btn-group .btn.dropdown-toggle a:focus {
+  color: #72c02c !important;
 }

@@ -18,9 +18,11 @@
         <link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin'>
         <!-- CSS Global Compulsory -->
         <link rel="stylesheet" href="unify/one-page/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="unify/css/style.css">
         <link rel="stylesheet" href="unify/one-page/css/one.style.css">
+        <link rel="stylesheet" href="unify/one-page/css/pricing_v6.css">
         <!-- CSS Footer -->
-        <link rel="stylesheet" href="unify/one-page/css/footers/footer-v7.css">
+        <link rel="stylesheet" href="unify/one-page/css/footers/footer-v1.css">
         <!-- CSS Implementing Plugins -->
         <link rel="stylesheet" href="unify/one-page/plugins/animate.css">
         <link rel="stylesheet" href="unify/one-page/plugins/line-icons/line-icons.css">
@@ -80,14 +82,17 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                 <a href="#organization">Organisationen</a>
                             </li>
                             <li class="page-scroll">
-                                <a href="#about">Registrieren</a>
+                                <a href="#about">Über uns</a>
                             </li>
                             <li class="page-scroll">
                                 <a href="#contact">Login</a>
                             </li>
+                            <li class="nav-none">
+                                <a class="nav-none" href=""></a>
+                            </li>
                             <li class="page-scroll">
                                 <div class="btn-group">
-                                    <button type="button" class="btn">Zeige dein Engagement</button>
+                                    <button type="button" class="btn"><a class="page-scroll" href="#engagement">Zeige dein Engagement</a></button>
                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                         <span class="caret"></span>
                                         <span class="sr-only">Dropdown öffnen</span>
@@ -141,13 +146,17 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         </div>
         <!-- Intro Section -->
         <section id="intro" class="intro-section">
+            <div class="header-carousel">
+                <div class="item" style="background-image: url('images/slide1-alternative.jpg')" alt="The Last of us"></div>
+                <div class="item" style="background-image: url('images/slide1.jpg')" alt="GTA V"></div>
+                <div class="item" style="background-image: url('images/slide3.jpg')" alt="Mirror Edge"></div>
+            </div>
             <div class="fullscreenbanner-container">
                 <div class="fullscreenbanner">
                     <ul>
                         <!-- SLIDE 1 -->
                         <li data-transition="fade" data-slotamount="5" data-masterspeed="700" data-title="Slide 1">
                             <!-- MAIN IMAGE -->
-                            <img src="images/slide1-alternative.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
                             <!-- LAYER -->
                             <!-- LAYERS -->
                             <div class="tp-caption rs-caption-1 sft start" data-x="center" data-hoffset="0" data-y="100" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
@@ -164,26 +173,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                 <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
                             </div>
                         </li>
-                        <!-- SLIDE 2 -->
-                        <li data-transition="fade" data-slotamount="5" data-masterspeed="1000" data-title="Slide 2">
-                            <!-- MAIN IMAGE -->
-                            <img src="images/slide1.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
-                            <!-- LAYER -->
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="0" data-start="0" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
-                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
-                                <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
-                            </div>
-                        </li>
-                        <!-- SLIDE 3 -->
-                        <li data-transition="fade" data-slotamount="5" data-masterspeed="700" data-title="Slide 3">
-                            <!-- MAIN IMAGE -->
-                            <img src="images/slide3.jpg" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
-                            <!-- LAYER -->
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="360" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="0" data-start="0" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
-                                <span class="page-scroll"><a href="#about" class="btn-u btn-brd btn-brd-hover btn-u-light">Finde dein Projekt</a></span>
-                                <span><a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">Erklärung</a></span>
-                            </div>
-                        </li>
                     </ul>
                     <div class="tp-bannertimer tp-bottom"></div>
                 </div>
@@ -194,7 +183,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <section id="portfolio" class="about-section">
             <div class="container content-lg">
                 <div class="title-v1">
-                    <h2>({{ projects.length }}) Projekte</h2>
+                    <h2>Projekte ({{ projects.length }})</h2>
                 </div>
                 <div class="cube-portfolio">
                     <div class="filters-container cbp-l-filters-button">
@@ -209,7 +198,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita" data-description="<h1>{{item.name}}</h1>{{ item.purpose }}">
                                 <div class="cbp-caption">
                                     <uploaded-image name="item.logo.id"></uploaded-image>
-                                    <div class="progress-bar progress-bar-u" style="width: {{item.progress}}%"></div>
+                                    <div class="progress-bar progress-bar-u" style="width: {{item.progress * 100}}%"></div>
                                     <div class="cbp-l-caption-alignLeft">
                                         <div class="cbp-l-caption-title">
                                             <span popover="{{item.name}}" popover-trigger="mouseover mouseleave">{{item.name}}</span>
@@ -230,7 +219,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <section id="organization" class="about-section">
             <div class="container content-lg">
                 <div class="title-v1">
-                    <h2>({{ organizations.length }}) Organisationen</h2>
+                    <h2>Organisationen ({{ organizations.length }})</h2>
                 </div>
                 <div class="cube-portfolio">
                     <div class="filters-container cbp-l-filters-button">
@@ -258,268 +247,172 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
             </div>
         </section>
         <!-- End Organization Section -->
-        <!--  About Section -->
-        <section id="about" class="about-section section-first">
-            <div class="block-v1">
-                <div class="container">
-                    <div class="row content-boxes-v3">
-                        <div class="col-md-4 md-margin-bottom-30">
-                            <i class="icon-custom rounded-x icon-bg-dark fa fa-lightbulb-o"></i>
-                            <div class="content-boxes-in-v3">
-                                <h2 class="heading-sm">Creative Desgin</h2>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 md-margin-bottom-30">
-                            <i class="icon-custom rounded-x icon-bg-dark fa fa-flask"></i>
-                            <div class="content-boxes-in-v3">
-                                <h2 class="heading-sm">Web Development</h2>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <i class="icon-custom rounded-x icon-bg-dark fa fa-bolt"></i>
-                            <div class="content-boxes-in-v3">
-                                <h2 class="heading-sm">Online Marketing</h2>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="about-image bg-grey">
-                <div class="container">
-                    <div class="title-v1">
-                        <h1>Wir sind respondeco.org</h1>
-                        <p>Unify <strong>creative</strong> technology company providing key digital services.
-                            <br> Focused on helping our clients to build a <strong>successful</strong> business on web and mobile.</p>
-                    </div>
-                    <div class="img-center">
-                        <img class="img-responsive" src="unify/one-page/img/mockup/mockup.png" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="container content-lg">
+        <section id="engagement" class="about-section">
+            <div class="container text-center content-lg">
                 <div class="title-v1">
-                    <h2>Our Vision And Mission</h2>
-                    <p>We <strong>meet</strong> and get to know you. You tell us and we listen.
-                        <br> We build your website to realise your vision and we <strong>deliver</strong> the ready product.</p>
+                    <h2>
+                        <span class="star">Zeige dein Engagement</span>
+                    </h2>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 content-boxes-v3 margin-bottom-40">
-                        <div class="clearfix margin-bottom-30">
-                            <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-trophy"></i>
-                            <div class="content-boxes-in-v3">
-                                <h2 class="heading-sm">Innovation Leader</h2>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
-                            </div>
-                        </div>
-                        <div class="clearfix margin-bottom-30">
-                            <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-directions"></i>
-                            <div class="content-boxes-in-v3">
-                                <h2 class="heading-sm">Best Solutions &amp; Approaches</h2>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
-                            </div>
-                        </div>
-                        <div class="clearfix margin-bottom-30">
-                            <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-diamond"></i>
-                            <div class="content-boxes-in-v3">
-                                <h2 class="heading-sm">Quality Service &amp; Support</h2>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <div class="pricing-table-v6 v6-plus">
+                            <div class="service-block service-block-dark-blue">
+                                <i class="icon-custom icon-color-light rounded-x fa fa-user"></i>
+                                <h2 class="heading-md">Sammle</h2>
+                                <p>Stelle dein Projekt vor und sammle die Ressourcen die du dafür brauchst</p>
+                                <h3></h3>
+                                <ul class="list-unstyled pricing-v4-content text-center">
+                                    <li><span class="fa fa-check"></span> kostenlos</li>
+                                    <li><span class="fa fa-check"></span> Sachspenden</li>
+                                    <li><span class="fa fa-check"></span> Beratung</li>
+                                </ul>
+                                <a href="#" class="btn-u btn-brd btn-u">Weiter</a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <img class="img-responsive" src="unify/one-page/img/mockup/mockup1.png" alt="">
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <div class="pricing-table-v6">
+                            <div class="service-block service-block-red">
+                                <i class="icon-custom icon-color-light rounded-x icon-line icon-graduation"></i>
+                                <h2 class="heading-md">Spende</h2>
+                                <p>Unterstütze nachhaltige Projekte mit deinen Produkten und (Kern)kompetenzen</p>
+                                <h3></h3>
+                                <ul class="list-unstyled pricing-v4-content">
+                                    <li><span class="fa fa-check"></span> passende Projekte</li>
+                                    <li><span class="fa fa-check"></span> vertrauenswürdige Partner</li>
+                                    <li><span class="fa fa-check"></span> lass dich feiern</li>
+                                </ul>
+                                <a href="#" class="btn-u btn-brd btn-u">Weiter</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <div class="pricing-table-v6">
+                            <div class="service-block service-block-dark">
+                                <i class="icon-custom icon-color-light rounded-x fa fa-users"></i>
+                                <h2 class="heading-md">Promote</h2>
+                                <p>Präsentiere deine Weiterbildungs- und Beratungsangebote</p>
+                                <h3></h3>
+                                <ul class="list-unstyled pricing-v4-content text-center">
+                                    <li><span class="fa fa-check"></span> kostenlos</li>
+                                    <li><span class="fa fa-check"></span> zielgruppengerecht</li>
+                                    <li><span class="fa fa-check"></span> neue Kunden</li>
+                                </ul>
+                                <a href="#" class="btn-u btn-brd btn-u">Weiter</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="team-v1 bg-grey content-lg">
-                <div class="container">
+        </section>
+        <!--  About Section -->
+        <section id="about" class="about-section section-first">
+            <div class="about-image bg-grey">
+                <div class="container content-lg">
                     <div class="title-v1">
-                        <h2>Meet Our Team</h2>
-                        <p>We <strong>meet</strong> and get to know you. You tell us and we listen.
-                            <br> We build your website to realise your vision and we <strong>deliver</strong> the ready product.</p>
+                        <h2>Über uns</h2>
+                        <p>
+                            Wir ermöglichen Partnerschaften für den guten Zweck.
+                        </p>
                     </div>
-                    <ul class="list-unstyled row">
-                        <li class="col-sm-3 col-xs-6 md-margin-bottom-30">
-                            <div class="team-img">
-                                <img class="img-responsive" src="unify/one-page/img/team/img1-md.jpg" alt="">
-                                <ul>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-twitter"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-facebook"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-google-plus"></i></a>
-                                    </li>
-                                </ul>
+                    <div class="row">
+                        <div class="col-md-4 content-boxes-v3 margin-bottom-40">
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-trophy"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Sozial</h2>
+                                    <p></p>
+                                </div>
                             </div>
-                            <h3>Jan Draxler</h3>
-                            <h4>/ Geschäftsführung</h4>
-                        </li>
-                        <li class="col-sm-3 col-xs-6 md-margin-bottom-30">
-                            <div class="team-img">
-                                <img class="img-responsive" src="unify/one-page/img/team/img2-md.jpg" alt="">
-                                <ul>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-twitter"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-facebook"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-google-plus"></i></a>
-                                    </li>
-                                </ul>
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-directions"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Nachhaltig</h2>
+                                    <p>Zu unserer Projektseite...</p>
+                                </div>
                             </div>
-                            <h3>Roland Spitzlinger</h3>
-                            <h4>/ Lead Designer</h4>
-                        </li>
-                        <li class="col-sm-3 col-xs-6">
-                            <div class="team-img">
-                                <img class="img-responsive" src="unify/one-page/img/team/img3-md.jpg" alt="">
-                                <ul>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-twitter"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-facebook"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-google-plus"></i></a>
-                                    </li>
-                                </ul>
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-diamond"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Transparent</h2>
+                                    <p>Link zu github, link zu Finanzen</p>
+                                </div>
                             </div>
-                            <h3>Matthias Steinklammer</h3>
-                            <h4>/ Finanzen</h4>
-                        </li>
-                        <li class="col-sm-3 col-xs-6">
-                            <div class="team-img">
-                                <img class="img-responsive" src="unify/one-page/img/team/img5-md.jpg" alt="">
-                                <ul>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-twitter"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-facebook"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-google-plus"></i></a>
-                                    </li>
-                                </ul>
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-diamond"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Demokratisch</h2>
+                                    <p>Link zu tricider</p>
+                                </div>
                             </div>
-                            <h3>Gregor Kappler</h3>
-                            <h4>/ Creative Designer</h4>
-                        </li>
-                        <li class="col-sm-3 col-xs-6 col-sm-offset-3">
-                            <div class="team-img">
-                                <img class="img-responsive" src="unify/one-page/img/team/img3-md.jpg" alt="">
-                                <ul>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-twitter"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-facebook"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-google-plus"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h3>Klaus Harrer</h3>
-                            <h4>/ Web Developer</h4>
-                        </li>
-                        <li class="col-sm-3 col-xs-6">
-                            <div class="team-img">
-                                <img class="img-responsive" src="unify/one-page/img/team/img5-md.jpg" alt="">
-                                <ul>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-twitter"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-facebook"></i></a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-custom icon-sm rounded-x fa fa-google-plus"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h3>Clemens Pühringer</h3>
-                            <h4>/ Web Developer</h4>
-                        </li>
-                    </ul>
+                        </div>
+                        <div class="col-md-8">
+                            <img class="img-responsive" src="unify/one-page/img/mockup/mockup1.png" alt="">
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
         <!--  About Section -->
         <!-- Contact Section -->
-        <section id="contact" class="contacts-section">
-            <div class="container content-lg">
-                <div class="title-v1">
-                    <h2>Contact Us</h2>
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        <br> It has been the industry's standard dummy text.</p>
-                </div>
-                <div class="row contacts-in">
-                    <div class="col-md-6 md-margin-bottom-40">
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-home"></i> 5B Streat, City 50987 New Town US</li>
-                            <li><i class="fa fa-phone"></i> 1(800) 220 084</li>
-                            <li><i class="fa fa-envelope"></i> <a href="info@example.com">info@example.com</a>
-                            </li>
-                            <li><i class="fa fa-globe"></i> <a href="http://htmlstream.com">www.htmlstream.com</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <form action="unify/one-page/php/sky-forms-pro/demo-contacts-process.php" method="post" id="sky-form3" class="sky-form contact-style">
-                            <fieldset>
-                                <label>Name</label>
-                                <div class="row">
-                                    <div class="col-md-7 margin-bottom-20 col-md-offset-0">
-                                        <div>
-                                            <input type="text" name="name" id="name" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <label>Email <span class="color-red">*</span>
-                                </label>
-                                </label>
-                                <div class="row">
-                                    <div class="col-md-7 margin-bottom-20 col-md-offset-0">
-                                        <div>
-                                            <input type="text" name="email" id="email" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <label>Message</label>
-                                <div class="row">
-                                    <div class="col-md-11 margin-bottom-20 col-md-offset-0">
-                                        <div>
-                                            <textarea rows="8" name="message" id="message" class="form-control"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p>
-                                    <button type="submit" class="btn-u btn-brd btn-brd-hover btn-u-dark">Send Message</button>
-                                </p>
-                            </fieldset>
-                            <div class="message">
-                                <i class="rounded-x fa fa-check"></i>
-                                <p>Your message was successfully sent!</p>
+        <div id="footer-v1" class="footer-v1">
+            <div class="footer">
+                <div class="container">
+                    <div class="row">
+                        <!-- About -->
+                        <div class="col-md-3 md-margin-bottom-40">
+                            <a href="#"><img id="logo-footer" class="footer-logo" src="/images/logo-small.png" alt=""></a>
+                        </div>
+                        <!-- End About -->
+                        <!-- Latest -->
+                        <div class="col-md-3 md-margin-bottom-40">
+                            <div class="posts">
+                                <div class="headline">
+                                    <h2>Latest Posts</h2></div>
+                                <ul class="list-unstyled latest-list">
+                                    <li>
+                                        <a href="#">Incredible content</a>
+                                        <small>May 8, 2014</small>
+                                    </li>
+                                    <li>
+                                        <a href="#">Best shoots</a>
+                                        <small>June 23, 2014</small>
+                                    </li>
+                                    <li>
+                                        <a href="#">New Terms and Conditions</a>
+                                        <small>September 15, 2014</small>
+                                    </li>
+                                </ul>
                             </div>
-                        </form>
+                        </div>
+                        <!-- End Latest -->
+                        <!-- Link List -->
+                        <div class="col-md-3 md-margin-bottom-40">
+                            <div class="headline">
+                                <h2>Coole Seiten</h2></div>
+                            <ul class="list-unstyled link-list">
+                                <li><a href="#">Über uns</a><i class="fa fa-angle-right"></i></li>
+                                <li><a href="#">Kontaktiere uns</a><i class="fa fa-angle-right"></i></li>
+                                <li><a href="">AGB</a><i class="fa fa-angle-right"></i></li>
+                            </ul>
+                        </div>
+                        <!-- End Link List -->
+                        <!-- Address -->
+                        <div class="col-md-3 map-img md-margin-bottom-40">
+                            <div class="headline">
+                                <h2>Kontakt</h2></div>
+                            <address class="md-margin-bottom-40">
+                                Grünbergstraße 3/17
+                                <br /> 1120 Wien, Österreich
+                                <br /> Email: <a href="mailto:info@respondeco.org" class="">info@respondeco.org</a>
+                            </address>
+                        </div>
+                        <!-- End Address -->
                     </div>
                 </div>
             </div>
-            <div class="copyright-section">
-                <p>2014 &copy; All Rights Reserved. Unify Theme by <a target="_blank" href="https://twitter.com/htmlstream">Htmlstream</a>
-                </p>
-                <ul class="social-icons">
-                    <li>
-                        <a href="#" data-original-title="Facebook" class="social_facebook rounded-x"></a>
-                    </li>
-                    <li>
-                        <a href="#" data-original-title="Twitter" class="social_twitter rounded-x"></a>
-                    </li>
-                    <li>
-                        <a href="#" data-original-title="Goole Plus" class="social_googleplus rounded-x"></a>
-                    </li>
-                    <li>
-                        <a href="#" data-original-title="Pinterest" class="social_pintrest rounded-x"></a>
-                    </li>
-                    <li>
-                        <a href="#" data-original-title="Linkedin" class="social_linkedin rounded-x"></a>
-                    </li>
-                </ul>
-                <span class="page-scroll"><a href="#intro"><i class="fa fa-angle-double-up back-to-top"></i></a></span>
-            </div>
-        </section>
+        </div>
         <!-- JS Global Compulsory -->
         <script type="text/javascript" src="unify/one-page/plugins/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/jquery/jquery-migrate.min.js"></script>
