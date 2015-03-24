@@ -1,10 +1,8 @@
-package org.respondeco.respondeco.web.rest.mapping;
+package org.respondeco.respondeco.web.rest.mapper;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.respondeco.respondeco.domain.Project;
-
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,7 +1,7 @@
 package org.respondeco.respondeco.domain;
 
 import lombok.Data;
-import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapper.DefaultReturnField;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

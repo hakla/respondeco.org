@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapping;
+package org.respondeco.respondeco.web.rest.mapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

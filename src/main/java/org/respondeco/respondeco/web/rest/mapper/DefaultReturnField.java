@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapping;
+package org.respondeco.respondeco.web.rest.mapper;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
