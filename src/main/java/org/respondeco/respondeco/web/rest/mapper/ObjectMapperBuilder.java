@@ -60,8 +60,6 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
         try {
             field = util.getField(clazz, name);
             mapper.addMapping(createSimpleMapping(field));
-        } catch (NoSuchFieldException e) {
-            throw new ExpressionParsingException(e);
         } catch (Exception e) {
             throw new ExpressionParsingException(e);
         }
@@ -76,8 +74,6 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
             subParser.parse();
             FieldMapping nestedMapping = new NestedFieldMapping(clazz, name, childBuilder.getMapper());
             mapper.addMapping(nestedMapping);
-        } catch (NoSuchFieldException e) {
-            throw new ExpressionParsingException(e);
         } catch (Exception e) {
             throw new ExpressionParsingException(e);
         }

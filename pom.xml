@@ -45,6 +45,7 @@
         <swagger-springmvc.version>0.8.8</swagger-springmvc.version>
         <usertype-core.version>3.2.0.GA</usertype-core.version>
         <querydsl.version>3.6.0</querydsl.version>
+        <junit-benchmarks.version>0.7.2</junit-benchmarks.version>
     </properties>
 
     <repositories>
@@ -353,6 +354,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.carrotsearch</groupId>
+            <artifactId>junit-benchmarks</artifactId>
+            <version>${junit-benchmarks.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

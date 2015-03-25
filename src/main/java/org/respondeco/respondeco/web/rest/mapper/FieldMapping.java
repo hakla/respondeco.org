@@ -12,7 +12,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * Created by clemens on 22/03/15.
+ * Created by Clemens Puehringer on 22/03/15.
+ * Takes a field or field name of a class and maps it to its value for a specific object.
+ * Uses ReflectionUtil#getAccessor(Class<T>,String) to get the accessor for the field and
+ * returns the return value of the accessor as the result of map(Object)
  */
 @ToString(exclude = { "util", "accessor" })
 public class FieldMapping {
@@ -81,6 +84,10 @@ public class FieldMapping {
         }
     }
 
+    /**
+     * not yet working
+     * @throws MappingException
+     */
     private void initSerializer() throws MappingException {
         try {
             Annotation annotation = util.getAnnotation(field, JsonSerialize.class);

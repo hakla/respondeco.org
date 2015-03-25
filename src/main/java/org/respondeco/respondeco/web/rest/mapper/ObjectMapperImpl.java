@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by clemens on 22/03/15.
@@ -25,15 +26,10 @@ public class ObjectMapperImpl implements ObjectMapper {
     }
 
     public ObjectMapperImpl removeMapping(String fieldName) {
-        FieldMapping m = null;
-        for(FieldMapping mapping : this.mappings) {
-            if(mapping.getFieldName().equals(fieldName)) {
-                m = mapping;
-            }
-        }
-        if(m != null) {
-            this.mappings.remove(m);
-        }
+        this.mappings = this.mappings
+            .stream()
+            .filter(mapping -> !mapping.getFieldName().equals(fieldName))
+            .collect(Collectors.toSet());
         return this;
     }
 

@@ -43,60 +43,67 @@ public class FieldExpressionParser {
     public void parse() throws ExpressionParsingException {
         String currentString = expression;
         while(currentString.length() > 0) {
-            log.debug("parsing \"{}\"", currentString);
-            Integer nextOpeningBracket = currentString.indexOf('(');
-            Integer nextComma = currentString.indexOf(',');
-            // because of the mandatory comma after ) e.g. "foo(bar),next"
-            log.debug("next comma is at {}", nextComma);
-            if(nextComma == 0) {
-                currentString = currentString.substring(1);
-                nextComma = currentString.indexOf(',');
-                nextOpeningBracket = nextOpeningBracket - 1;
-                log.debug("omitted comma, next comma is at {}", nextComma);
-            }
-            if(nextOpeningBracket >= 0) {
-                if (nextComma >= 0 && nextComma < nextOpeningBracket) {
-                    String simpleToken = currentString.substring(0, nextComma);
-                    if(simpleToken.startsWith("-")) {
-                        listener.onNegatedExpression(simpleToken.substring(1));
-                    } else if(simpleToken.startsWith("+")) {
-                        listener.onSimpleExpression(simpleToken.substring(1));
-                    } else {
-                        listener.onSimpleExpression(simpleToken);
-                    }
-                    currentString = currentString.substring(nextComma + 1);
-                } else {
-                    String fieldName = currentString.substring(0, nextOpeningBracket);
-                    if(fieldName.startsWith("-")) {
-                        throw new MalformedExpressionException("negations not supported on nested expressions: " +
-                            currentString);
-                    } else if(fieldName.startsWith("+")) {
-                        fieldName = fieldName.substring(1);
-                    }
-                    Integer matchingBracket = getMatchingBracket(currentString, nextOpeningBracket);
-                    failIfTooDeep();
-                    String childExpression =
-                        currentString.substring(nextOpeningBracket + 1, matchingBracket);
-                    FieldExpressionParser childParser =
-                        new FieldExpressionParser(maxLevel, (currentLevel + 1), childExpression);
-                    listener.onNestedExpression(fieldName, childParser);
-                    currentString = currentString.substring(matchingBracket + 1);
-                }
+            currentString = consumeToken(currentString);
+            currentString = consumeMaybeComma(currentString);
+        }
+    }
+
+    private String consumeToken(String string) throws ExpressionParsingException {
+        Integer nextComma = string.indexOf(',');
+        Integer nextOpeningBracket = string.indexOf('(');
+        //last expression in the string
+        if(nextComma == -1) {
+            if(nextOpeningBracket == -1) {
+                //last expression is a simple expression
+                return consumeSimpleToken(string, string.length());
             } else {
-                //no more complex expressions
-                log.debug("no complex expressions in \"{}\"", currentString);
-                for(String simpleToken : currentString.split(",")) {
-                    if(simpleToken.length() > 0) {
-                        if (simpleToken.startsWith("-")) {
-                            listener.onNegatedExpression(simpleToken.substring(1));
-                        } else if (simpleToken.startsWith("+")) {
-                            listener.onSimpleExpression(simpleToken.substring(1));
-                        } else {
-                            listener.onSimpleExpression(simpleToken);
-                        }
-                    }
-                }
-                break;
+                //last expression is a complex expression
+                return consumeComplexToken(string, nextOpeningBracket);
+            }
+        } else if(nextOpeningBracket == -1 || nextComma < nextOpeningBracket) {
+            //next expression is a simple one
+            //if nextOpeningBracket == -1, there are no more complex expressions in the string
+            return consumeSimpleToken(string, nextComma);
+        } else {
+            //expression has to be a complex one because the next "(" comes before the next ","
+            return consumeComplexToken(string, nextOpeningBracket);
+        }
+    }
+
+    private String consumeSimpleToken(String string, Integer end) throws ExpressionParsingException {
+        String simpleToken = string.substring(0, end);
+        if(simpleToken.startsWith("-")) {
+            listener.onNegatedExpression(simpleToken.substring(1));
+        } else if(simpleToken.startsWith("+")) {
+            listener.onSimpleExpression(simpleToken.substring(1));
+        } else {
+            listener.onSimpleExpression(simpleToken);
+        }
+        return string.substring(end);
+    }
+
+    private String consumeComplexToken(String string, Integer openingBracketIndex) throws ExpressionParsingException {
+        failIfTooDeep();
+        if(string.startsWith("-")) {
+            throw new MalformedExpressionException(
+                "minus operator (-) not supported for complex expressions: " + string);
+        }
+        String fieldName = string.substring(0, openingBracketIndex);
+        Integer matchingClosingBracket = getMatchingBracket(string, openingBracketIndex);
+        String childExpression = string.substring(openingBracketIndex + 1, matchingClosingBracket);
+        FieldExpressionParser childParser = new FieldExpressionParser(maxLevel, currentLevel + 1, childExpression);
+        listener.onNestedExpression(fieldName, childParser);
+        return string.substring(matchingClosingBracket + 1);
+    }
+
+    private String consumeMaybeComma(String string) throws ExpressionParsingException {
+        if(string.length() <= 0) {
+            return string;
+        } else {
+            if(string.charAt(0) == ',') {
+                return string.substring(1);
+            } else {
+                throw new ExpressionParsingException("expected comma, but got {}" + string.charAt(0));
             }
         }
     }
