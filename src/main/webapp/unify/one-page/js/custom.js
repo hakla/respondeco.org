@@ -46,7 +46,7 @@ respondecoApp.factory('Organization', function($resource, $http) {
 
 
 respondecoApp.controller('MainController', function($scope, $location, $rootScope, Project, Organization) {
-  $scope.projects = Project.query({ pageSize: 6, fields: [ "name", "progress", "logo", "propertyTags", "organization" ] }, function() {
+  $scope.projects = Project.query({ pageSize: 6, fields: [ "name", "progress", "logo", "propertyTags", "organization", "purpose", "resourceRequirements" ] }, function() {
     setTimeout(function() {
       App.cubeportfolio();
     });
@@ -54,4 +54,8 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
   $scope.organizations = Organization.query({
     pageSize: 6
   });
+
+  $scope.goToOrganization = function(id) {
+    document.location = '/#/organization/' + id;
+  }
 });

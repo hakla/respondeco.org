@@ -60,10 +60,11 @@ var App = function() {
         var $headerCarousel = $('.header-carousel');
 
         $headerCarousel.owlCarousel({
-            slideSpeed: 1000,
+            slideSpeed: 2000,
             singleItem: true,
             pagination: false,
-            autoPlay: 10000
+            autoPlay: 10000,
+            transitionStyle: "fade"
         });
 
         var onResize = function() {

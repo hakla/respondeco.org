@@ -51,7 +51,7 @@ uploaded-image div,
   color: #fff;
   border-color: transparent;
   margin-top: 24px;
-  padding: 10px 30px;
+  padding: 5px 30px;
   border-color: transparent;
 }
 
@@ -71,7 +71,7 @@ uploaded-image div,
   background-color: #358835;
   text-transform: none;
   padding: 20px 30px;
-  font-size: 18px;
+  font-size: 20px;
   border-color: transparent;
 }
 
@@ -92,7 +92,7 @@ uploaded-image div,
 }
 
 .rs-caption-2 .btn-brd {
-  font-size: 0.8em;
+  font-size: 18px;
 }
 
 .rs-caption-2:after {
@@ -135,8 +135,22 @@ uploaded-image div,
   text-transform: none;
 }
 
+.one-page-header .navbar-nav > li.button > a {
+  padding: 0;
+  margin: 0 8px;
+}
+
+.one-page-header .navbar-nav > li.button.active > a button {
+  color: #72c02c;
+}
+
+.one-page-header .navbar-nav > li.button > a:before {
+  top: 15px;
+  left: -7px;
+}
+
 .nav .btn-group {
-  margin-top: 7px;
+  margin-top: 8px;
 }
 
 .nav .nav-none {
@@ -154,7 +168,7 @@ uploaded-image div,
 
 .cbp-caption {
   padding: 12px;
-  height: 300px;
+  height: 250px;
 }
 
 .cbp-caption uploaded-image div {
@@ -163,10 +177,11 @@ uploaded-image div,
 
 .cbp-l-caption-alignLeft {
   background-color: rgba(48, 48, 48, 0.5);
-  padding: 12px;
+  padding: 10px 12px 5px;
   box-sizing: content-box;
   height: 25px;
   white-space: nowrap;
+  margin-top: -40px;
 }
 
 .cbp-l-caption-alignLeft .cbp-l-caption-title span {
@@ -223,18 +238,186 @@ uploaded-image div,
   background-position: 0 50%;
 }
 
-.btn-group .btn, .btn-group .btn.dropdown-toggle {
+.btn-group .btn,
+.btn-group .btn.dropdown-toggle {
   background-color: #fff;
+  color: #444;
 }
 
-.btn-group .btn a, .btn-group .btn.dropdown-toggle a {
-  font-size: 12.5px;
+.btn-group .btn a,
+.btn-group .btn.dropdown-toggle a {
+  font-size: 14px;
 }
 
-.btn-group .btn a:hover, .btn-group .btn.dropdown-toggle a:hover {
+.btn-group .btn a:hover,
+.btn-group .btn.dropdown-toggle a:hover {
   color: #777;
 }
 
-.btn-group .btn a:focus, .btn-group .btn.dropdown-toggle a:focus {
+.btn-group .btn a:focus,
+.btn-group .btn.dropdown-toggle a:focus {
   color: #72c02c !important;
+}
+
+.pricing-table-v6 {
+  max-width: 345px;
+  margin: 0 auto;
+}
+
+.cbp-item .description {
+  display: none;
+}
+
+.cbp-popup-content .description {
+  display: block;
+}
+
+.cbp-popup-content .badge {
+  margin: 4px 6px 4px 18px;
+  position: relative;
+  padding-left: 15px;
+  font-size: 14px;
+}
+
+.cbp-popup-content .badge:before {
+  content: "";
+  display: block;
+  position: absolute;
+  border-right: 10px solid #777;
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  top: 0;
+  left: -10px;
+}
+
+.cbp-popup-content {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-top: 12px;
+  background-color: #F8F8F8;
+  margin-left: 24px;
+}
+
+.cbp-popup-content .badge:after {
+  content: "";
+  display: block;
+  position: absolute;
+  height: 6px;
+  width: 6px;
+  background: #fff;
+  top: 8px;
+  border-radius: 10px;
+  left: 2px;
+}
+
+.cbp-l-filters-button .cbp-filter-item {
+  font-size: 14px;
+}
+
+.cbp-popup-content .purpose {
+  margin: 32px 0;
+}
+
+.spanner-md {
+  height: 50px;
+}
+
+.spanner-big {
+  height: 100px;
+}
+
+.modal-dialog {
+  width: 380px;
+}
+
+.modal-body {
+  padding: 0;
+}
+
+.reg-block {
+  width: 380px;
+  padding: 20px;
+  margin: 0 auto;
+  background: #fff;
+  border-top: solid 2px #72c02c;
+}
+
+.reg-block h2,
+.reg-block p,
+.reg-block p a {
+  color: #777;
+}
+
+.reg-block-header h2 {
+  font-size: 28px;
+}
+
+.reg-block p a {
+  text-decoration: underline;
+}
+.reg-block p a:hover {
+  text-decoration: none;
+}
+
+/*Forms*/
+.reg-block .input-group-addon {
+  color: #bbb;
+  background: none;
+  min-width: 40px;
+}
+
+.reg-block .form-control:focus {
+   box-shadow: none;
+   border-color: #999;
+}
+
+.icon-question  {
+  position: absolute;
+  right: 6px;
+  z-index: 2;
+  top: 9px;
+  color: #acacac;
+}
+
+.reg-block .checkbox { 
+  color: #555;
+  margin-bottom: 20px;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+/*Reg Header*/
+.reg-block-header {
+  padding-bottom: 5px;
+  margin-bottom: 30px;
+  border-bottom: solid 1px #eee;
+}
+
+.reg-block-header h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.reg-block-header p {
+  text-align: center;
+}
+
+/*For Mobile Devices*/
+@media (max-width: 500px) { 
+  .reg-block {
+    width: 300px;
+    margin: 60px auto;
+  }
+}
+
+.modal-header {
+  border-bottom: 0;
+  margin-bottom: -32px;
+  z-index: 1;
+  position: relative;
+}
+
+.btn-block .icon-question {
+  right: 24px;
+  top: 10px;
 }

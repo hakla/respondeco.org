@@ -56,7 +56,7 @@
                 singlePageInlineInFocus: true,
                 singlePageInlineCallback: function(url, element) {
                     // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
-                    this.updateSinglePageInline($(element).data("description"));
+                    this.updateSinglePageInline($(element).parent().children(".description").clone());
                     // var t = this;
 
                     // $.ajax({
