@@ -42,8 +42,6 @@ public class ObjectMappingPerformanceTest extends AbstractBenchmark {
     private ObjectMapper mapper;
 
     @Inject
-    private ObjectMapperFactoryProvider objectMapperFactoryProvider;
-
     private ObjectMapperFactory projectMapperFactory;
 
     @Before
@@ -84,8 +82,7 @@ public class ObjectMappingPerformanceTest extends AbstractBenchmark {
                     setLastName("managerLastName");
                 }});
             }};
-        projectMapperFactory = objectMapperFactoryProvider.getMapperFactory(Project.class);
-        mapper = objectMapperFactoryProvider.getMapperFactory(Project.class).createMapper(PROJECT_MAPPING_EXRESSION);
+        mapper = projectMapperFactory.createMapper(Project.class, PROJECT_MAPPING_EXRESSION);
     }
 
     @Test
@@ -105,7 +102,7 @@ public class ObjectMappingPerformanceTest extends AbstractBenchmark {
     @Test
     @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 100)
     public void testCachedBuilderPerformance() throws Exception {
-        projectMapperFactory.createMapper(PROJECT_MAPPING_EXRESSION);
+        projectMapperFactory.createMapper(Project.class, PROJECT_MAPPING_EXRESSION);
     }
 
     @Test

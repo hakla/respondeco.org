@@ -19,12 +19,12 @@ public class ObjectMappingTest {
 
     private final Logger log = LoggerFactory.getLogger(ObjectMappingTest.class);
 
-    private CachingObjectMapperFactory mapperFactory;
+    private ObjectMapperFactory mapperFactory;
     private Project project;
 
     @Before
     public void setUp() {
-        mapperFactory = new CachingObjectMapperFactory(Project.class);
+        mapperFactory = new ObjectMapperFactory();
         project = new Project();
         project.setId(3L);
         project.setName("foobar");
@@ -48,7 +48,7 @@ public class ObjectMappingTest {
 
     @Test
     public void testSimpleExpression() throws Exception {
-        ObjectMapper mapper = mapperFactory.createMapper("concrete");
+        ObjectMapper mapper = mapperFactory.createMapper(Project.class, "concrete");
         Map<String, Object> mapping = mapper.map(project);
         log.debug("{}", mapping);
         assertTrue(mapping.containsKey("concrete"));
@@ -57,7 +57,7 @@ public class ObjectMappingTest {
 
     @Test
     public void testSimpleNegatedExpression() throws Exception {
-        ObjectMapper mapper = mapperFactory.createMapper("-id");
+        ObjectMapper mapper = mapperFactory.createMapper(Project.class, "-id");
         Map<String, Object> mapping = mapper.map(project);
         log.debug("{}", mapping);
         assertFalse(mapping.containsKey("id"));
@@ -65,7 +65,7 @@ public class ObjectMappingTest {
 
     @Test
     public void testSimplePostiveExpression() throws Exception {
-        ObjectMapper mapper = mapperFactory.createMapper("+concrete");
+        ObjectMapper mapper = mapperFactory.createMapper(Project.class, "+concrete");
         Map<String, Object> mapping = mapper.map(project);
         log.debug("{}", mapping);
         assertTrue(mapping.containsKey("concrete"));
@@ -74,7 +74,7 @@ public class ObjectMappingTest {
 
     @Test
     public void testManySimpleExpressions() throws Exception {
-        ObjectMapper mapper = mapperFactory.createMapper("+concrete,manager,startDate");
+        ObjectMapper mapper = mapperFactory.createMapper(Project.class, "+concrete,manager,startDate");
         Map<String, Object> mapping = mapper.map(project);
         log.debug("{}", mapping);
         assertTrue(mapping.containsKey("concrete"));
@@ -87,7 +87,7 @@ public class ObjectMappingTest {
 
     @Test
     public void testNestedExpression() throws Exception {
-        ObjectMapper mapper = mapperFactory.createMapper(
+        ObjectMapper mapper = mapperFactory.createMapper(Project.class,
             "+concrete,manager(-id,firstName),organization(owner(firstName))");
         Map<String, Object> mapping = mapper.map(project);
         log.debug("{}", mapping);

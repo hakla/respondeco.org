@@ -58,6 +58,7 @@ public class CacheConfiguration {
                 cache.getCacheConfiguration().setTimeToLiveSeconds(env.getProperty("cache.timeToLiveSeconds", Long.class, 3600L));
             }
         }
+
         EhCacheCacheManager ehCacheManager = new EhCacheCacheManager();
         ehCacheManager.setCacheManager(cacheManager);
         return ehCacheManager;
