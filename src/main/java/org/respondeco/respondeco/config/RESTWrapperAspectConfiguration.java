@@ -1,6 +1,6 @@
 package org.respondeco.respondeco.config;
 
-import org.respondeco.respondeco.aop.RestFieldsAspect;
+import org.respondeco.respondeco.aop.RESTWrapperAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Profile;
  */
 @Configuration
 @EnableAspectJAutoProxy
-public class RestFieldsAspectConfiguration {
+public class RESTWrapperAspectConfiguration {
 
     @Bean
     @Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
-    public RestFieldsAspect restFieldsAspect() { return new RestFieldsAspect(); }
+    public RESTWrapperAspect restFieldsAspect() { return new RESTWrapperAspect(); }
 }
