@@ -38,7 +38,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
         return mapper;
     }
 
-        private FieldMapping createSimpleMapping(Field field) throws MappingException {
+    private FieldMapping createSimpleMapping(Field field) throws MappingException {
         Class<?> fieldClass = field.getType();
         if(AbstractAuditingEntity.class.isAssignableFrom(fieldClass)) {
             ObjectMapperImpl childMapper = new ObjectMapperImpl();

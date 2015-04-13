@@ -4,17 +4,27 @@ import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.web.rest.mapper.parser.ExpressionParsingException;
 import org.respondeco.respondeco.web.rest.mapper.parser.FieldExpressionParser;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.lang.reflect.Field;
+import javax.inject.Inject;
 
 /**
  * Created by clemens on 25/03/15.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ObjectMappingPerformanceTest extends AbstractBenchmark {
 
     private static final String PARSER_TEST_EXPRESSION =
@@ -31,6 +41,11 @@ public class ObjectMappingPerformanceTest extends AbstractBenchmark {
     private Project project;
     private ObjectMapper mapper;
 
+    @Inject
+    private ObjectMapperFactoryProvider objectMapperFactoryProvider;
+
+    private ObjectMapperFactory projectMapperFactory;
+
     @Before
     public void setUp() throws Exception {
         parserTestParser = new FieldExpressionParser(Integer.MAX_VALUE, 0, PARSER_TEST_EXPRESSION);
@@ -41,7 +56,10 @@ public class ObjectMappingPerformanceTest extends AbstractBenchmark {
             public void onSimpleExpression(String name) throws ExpressionParsingException { }
             @Override
             public void onNestedExpression(String name, FieldExpressionParser subParser)
-                throws ExpressionParsingException { }
+                throws ExpressionParsingException {
+                subParser.setParserListener(this);
+                subParser.parse();
+            }
         };
 
         listenerTestParser = new FieldExpressionParser(PROJECT_MAPPING_EXRESSION);
@@ -66,25 +84,32 @@ public class ObjectMappingPerformanceTest extends AbstractBenchmark {
                     setLastName("managerLastName");
                 }});
             }};
-        mapper = new ObjectMapperFactory(Project.class).createMapper(PROJECT_MAPPING_EXRESSION);
+        projectMapperFactory = objectMapperFactoryProvider.getMapperFactory(Project.class);
+        mapper = objectMapperFactoryProvider.getMapperFactory(Project.class).createMapper(PROJECT_MAPPING_EXRESSION);
     }
 
     @Test
-    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 500)
+    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 100)
     public void testParserPerformance() throws Exception {
         parserTestParser.setParserListener(listenerMock);
         parserTestParser.parse();
     }
 
     @Test
-    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 500)
+    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 100)
     public void testBuilderPerformance() throws Exception {
         listenerTestParser.setParserListener(listener);
         listenerTestParser.parse();
     }
 
     @Test
-    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 500)
+    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 100)
+    public void testCachedBuilderPerformance() throws Exception {
+        projectMapperFactory.createMapper(PROJECT_MAPPING_EXRESSION);
+    }
+
+    @Test
+    @BenchmarkOptions(warmupRounds = 16, benchmarkRounds = 100)
     public void testMappingPerformance() throws Exception {
         mapper.map(project);
     }
