@@ -18,11 +18,14 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     private ReflectionUtil util;
     private ReturnFieldExtractor extractor;
 
+    private Boolean pristine;
+
     public ObjectMapperBuilder(Class<?> clazz) throws MappingException {
         this.util = new ReflectionUtil();
         this.extractor = new DefaultReturnFieldExtractor();
         this.clazz = clazz;
         this.mapper = initializeDefaultMapper(clazz);
+        this.pristine = true;
     }
 
     public ObjectMapper getMapper() {
@@ -47,6 +50,10 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
         } else {
             return new FieldMapping(clazz, field);
         }
+    }
+
+    private void clearIfPristine() {
+        
     }
 
     @Override
