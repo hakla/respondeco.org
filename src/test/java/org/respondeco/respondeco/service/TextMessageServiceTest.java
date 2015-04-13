@@ -3,37 +3,27 @@ package org.respondeco.respondeco.service;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.testutil.ResultCaptor;
-import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import javax.inject.Inject;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
@@ -102,7 +92,7 @@ public class TextMessageServiceTest {
         textMessageService.createTextMessage(user.getId(), content);
     }
 
-    @Test(expected = NoSuchUserException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testCreateTextMessage_shouldThrowExceptionBecauseReceiverDoesNotExist() throws Exception {
         String receiver = "testReceiver";
         String content = "testContent";
@@ -139,7 +129,7 @@ public class TextMessageServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(currentUser);
         when(textMessageRepositoryMock.findByReceiverAndActiveIsTrue(currentUser))
-                .thenReturn(Arrays.asList(message1, message2));
+            .thenReturn(Arrays.asList(message1, message2));
 
         List<TextMessageResponseDTO> messages = textMessageService.getTextMessagesForCurrentUser();
 

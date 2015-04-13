@@ -7,6 +7,9 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
+import org.respondeco.respondeco.web.rest.mapper.MappingException;
+import org.respondeco.respondeco.web.rest.mapper.ObjectMapper;
+import org.respondeco.respondeco.web.rest.mapper.ObjectMapperFactory;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
@@ -24,6 +27,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller for managing Organization.
@@ -170,6 +174,34 @@ public class OrganizationController {
         return response;
     }
 
+    @PermitAll
+    @ApiOperation(value = "Get organization", notes = "Get a organization by its id")
+    @RequestMapping(value = "/rest/organization/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Map> getO(
+        @PathVariable Long id,
+        @RequestParam(required = false) String fields) throws MappingException {
+        log.debug("REST request to get Organization : {}", id);
+        Organization organization = organizationService.getOrganization(id);
+        ResponseEntity<Map> response;
+
+        if (fields == null) {
+            fields = "";
+        }
+
+        RestParameters restParameters = new RestParameters(null, null, null, fields);
+        if(organization != null) {
+            ObjectMapper mapper = new ObjectMapperFactory(Organization.class).createMapper(fields);
+
+            response = new ResponseEntity<>(mapper.map(organization), HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
     /**
      * PUT  /rest/organizations -> Update an organization.
      *
@@ -195,7 +227,7 @@ public class OrganizationController {
                 organization.isNpo(),
                 organization.getLogo());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not update Organization : {}", organization, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch(IllegalArgumentException e) {
@@ -223,7 +255,7 @@ public class OrganizationController {
         try {
             organizationService.deleteOrganizationInformation(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not delete Organization : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -348,7 +380,7 @@ public class OrganizationController {
                 responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest));
             }
 
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not find OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -380,7 +412,7 @@ public class OrganizationController {
             users.forEach(p -> userDTOs.add(new UserDTO(p)));
             responseEntity = new ResponseEntity<>(userDTOs, HttpStatus.OK);
 
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             // if the organization with :id couldn't be found
             log.error("Could not get User by Organization : {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -410,10 +442,7 @@ public class OrganizationController {
         try {
             organizationService.deleteMember(userId);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchUserException e) {
-            log.error("Could not delete Member : {}", userId, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not delete Member : {}", userId, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotOwnerOfOrganizationException e) {
@@ -470,10 +499,10 @@ public class OrganizationController {
                 ratingRequestDTO.getRating(),
                 ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
-            log.error("Could not grate organization {}", id, e);
+        } catch (NoSuchEntityException e) {
+            log.error("Could not rate organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NoSuchProjectException | NoSuchResourceMatchException | SupporterRatingException e) {
+        } catch (SupporterRatingException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
@@ -590,7 +619,7 @@ public class OrganizationController {
             responseDTO.setTotalElements(currentPage.getTotalElements());
             responseDTO.setPostings(postings);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not get postings for organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -617,7 +646,7 @@ public class OrganizationController {
             Posting createdPosting = postingFeedService.addPostingForOrganization(id,information);
             PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
             responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not post for organization {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (PostingFeedException e) {
@@ -659,7 +688,7 @@ public class OrganizationController {
         try {
             Organization organization = organizationService.verify(id, verified);
             responseEntity = new ResponseEntity<>(OrganizationResponseDTO.fromEntity(organization, null), HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         } catch (OperationForbiddenException e) {
             responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
@@ -692,7 +721,7 @@ public class OrganizationController {
             ResourceMatchPaginationResponseDTO dto = ResourceMatchPaginationResponseDTO.createFromPage(resourceMatchesPage, null);
 
             responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not update Organization : {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

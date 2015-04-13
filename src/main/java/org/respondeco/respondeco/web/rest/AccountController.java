@@ -13,7 +13,6 @@ import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.apache.commons.lang.StringUtils;
-import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,6 @@ import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing the current user's account.
@@ -109,9 +107,7 @@ public class AccountController {
                         } else {
                             orgJoinRequestService.declineRequest(orgJoinRequest.getId());
                         }
-                    } catch (NoSuchOrgJoinRequestException e) {
-                        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-                    } catch (NoSuchOrganizationException e) {
+                    } catch (NoSuchEntityException e) {
                         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
                     }
                 }

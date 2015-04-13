@@ -22,8 +22,9 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * REST controller for managing Project.
@@ -444,10 +445,10 @@ public class ProjectController {
             ratingService.rateProject(id,ratingRequestDTO.getMatchid(),
                 ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchProjectException e ) {
-            log.error("Could not grate project {}", id, e);
+        } catch (NoSuchEntityException e ) {
+            log.error("Could not rate project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException  | NoSuchResourceMatchException | NoSuchOrganizationException e) {
+        } catch (ProjectRatingException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
@@ -477,7 +478,7 @@ public class ProjectController {
                     permissions = ratingService.checkPermissionsForMatches(matches);
                     List<RatingPermissionResponseDTO> responseDTOs = RatingPermissionResponseDTO.fromEntities(permissions);
                     responseEntity = new ResponseEntity<>(responseDTOs, HttpStatus.OK);
-                } catch (NoSuchResourceMatchException e) {
+                } catch (NoSuchEntityException e) {
                     responseEntity = ErrorHelper.buildErrorResponse(e);
                 }
             } else {
@@ -485,7 +486,7 @@ public class ProjectController {
                     RatingPermission ratingPermission = ratingService.checkPermissionForProject(id);
                     RatingPermissionResponseDTO responseDTO = RatingPermissionResponseDTO.fromEntity(ratingPermission);
                     responseEntity = new ResponseEntity<>(Arrays.asList(responseDTO), HttpStatus.OK);
-                } catch (NoSuchProjectException e) {
+                } catch (NoSuchEntityException e) {
                     responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
             }
@@ -633,7 +634,7 @@ public class ProjectController {
         try{
             List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
             responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
-        } catch (NoSuchProjectException e) {
+        } catch (NoSuchEntityException e) {
             log.debug("Can not find project for projectLocation");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalValueException e) {
@@ -671,7 +672,7 @@ public class ProjectController {
             responseDTO.setTotalElements(currentPage.getTotalElements());
             responseDTO.setPostings(postings);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch (NoSuchProjectException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not get postings for project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -698,7 +699,7 @@ public class ProjectController {
             Posting createdPosting = postingFeedService.addPostingForProjects(id, information);
             PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
             responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
-        } catch (NoSuchProjectException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not post for project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (PostingFeedException e) {

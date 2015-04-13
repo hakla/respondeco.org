@@ -6,7 +6,6 @@ import com.mysema.query.types.expr.BooleanExpression;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.domain.QProject;
-import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.*;
@@ -18,14 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -166,12 +163,12 @@ public class ProjectService {
         Organization organization = currentUser.getOrganization();
         //check if user does belong to an organization
         if(organization == null) {
-            throw new NoSuchOrganizationException("current user does not belong to an organization");
+            throw new NoSuchEntityException("current user does not belong to an organization");
         }
         Project project = projectRepository.findByIdAndActiveIsTrue(id);
         if(project == null) {
             //no project found
-            throw new NoSuchProjectException(id);
+            throw new NoSuchEntityException(id);
         }
         if(project.getOrganization().equals(organization) == false) {
             //project's org does not match user's org
@@ -255,11 +252,11 @@ public class ProjectService {
     public Project setManager(Long id, Long newManagerId) throws IllegalValueException {
         User newManager = userRepository.findByIdAndActiveIsTrue(newManagerId);
         if(newManager == null) {
-            throw new NoSuchUserException("no such user: " + id);
+            throw new NoSuchEntityException("no such user: " + id);
         }
         Project project = projectRepository.findByIdAndActiveIsTrue(id);
         if(project == null) {
-            throw new NoSuchProjectException(id);
+            throw new NoSuchEntityException(id);
         }
         User currentUser = userService.getUserWithAuthorities();
         //check if user has authority to delete
@@ -286,10 +283,10 @@ public class ProjectService {
      * of the project's organization
      * @throws NoSuchProjectException if the project with the given id could not be found
      */
-    public Project delete(Long id) throws OperationForbiddenException, NoSuchProjectException {
+    public Project delete(Long id) throws OperationForbiddenException, NoSuchEntityException {
         Project project = projectRepository.findByIdAndActiveIsTrue(id);
         if(project == null) {
-            throw new NoSuchProjectException(id);
+            throw new NoSuchEntityException(id);
         }
         User currentUser = userService.getUserWithAuthorities();
         User manager = project.getManager();

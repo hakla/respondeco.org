@@ -5,10 +5,10 @@ import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.SocialMediaService;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.web.rest.dto.PostDTO;
 import org.respondeco.respondeco.web.rest.dto.SocialMediaConnectionResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
 import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
-import org.respondeco.respondeco.web.rest.dto.PostDTO;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,7 +117,7 @@ public class SocialMediaController {
         } catch (OperationForbiddenException ex) {
             log.error("operation forbidden: " + ex);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (NoSuchSocialMediaConnectionException ex) {
+        } catch (NoSuchEntityException ex) {
             log.error("could not find SocialMediaConnection: " + ex);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (SocialMediaPermissionRevokedException e) {
@@ -155,7 +155,7 @@ public class SocialMediaController {
                 responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
             }
 
-        } catch (NoSuchSocialMediaConnectionException e) {
+        } catch (NoSuchEntityException e) {
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -232,7 +232,7 @@ public class SocialMediaController {
         } catch (OperationForbiddenException e) {
             log.error("operation forbidden: " + e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (NoSuchSocialMediaConnectionException e) {
+        } catch (NoSuchEntityException e) {
             log.error("could not find SocialMediaConnection: " + e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (SocialMediaPermissionRevokedException e) {
@@ -322,7 +322,7 @@ public class SocialMediaController {
             } catch (OperationForbiddenException e) {
                 log.error("operation forbidden: " + e);
                 responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            } catch (NoSuchSocialMediaConnectionException e) {
+            } catch (NoSuchEntityException e) {
                 log.error("could not find SocialMediaConnection: " + e);
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } catch (SocialMediaPermissionRevokedException e) {

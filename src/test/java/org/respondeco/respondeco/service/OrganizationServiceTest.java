@@ -11,8 +11,6 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
-import org.respondeco.respondeco.testutil.DomainModel;
-import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -149,7 +147,7 @@ public class OrganizationServiceTest {
         assertEquals(organization.getName(), "testOrg");
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testGetOrganizationByName_NotExisting() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -221,7 +219,7 @@ public class OrganizationServiceTest {
         organizationService.updateOrganizationInformation("", "testDescription", "test@email.com", false, 1L);
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testUpdateOrganization_NotExisting() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -245,7 +243,7 @@ public class OrganizationServiceTest {
         assertEquals(organizationArgumentCaptor.getValue().isActive(), false);
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testDeleteOrganization_NotExisting() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
@@ -268,7 +266,7 @@ public class OrganizationServiceTest {
         verify(userRepositoryMock, times(1)).save(defaultUser);
     }
 
-    @Test(expected = NoSuchUserException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testDeleteMember_shouldThrowNoSuchUserException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -280,7 +278,7 @@ public class OrganizationServiceTest {
 
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testDeleteMember_shouldThrowNoSuchOrganizationException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -323,7 +321,7 @@ public class OrganizationServiceTest {
         assertTrue(members.size()==2);
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testGetUserByOrgId_shouldThrowNoSuchOrganizationException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);

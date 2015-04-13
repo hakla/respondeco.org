@@ -8,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.OrgJoinRequest;
 import org.respondeco.respondeco.domain.Organization;
-import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -122,7 +121,7 @@ public class OrgJoinRequestServiceTest {
         verify(orgJoinRequestRepositoryMock, times(1)).save(isA(OrgJoinRequest.class));
     }
 
-    @Test(expected = NoSuchUserException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testCreateOrgJoinRequest_NotExistingUser() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -135,7 +134,7 @@ public class OrgJoinRequestServiceTest {
     }
 
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testCreateOrgJoinRequest_NotExistingOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -198,7 +197,7 @@ public class OrgJoinRequestServiceTest {
 
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testGetOrgJoinRequestByOrganization_NoSuchOrganization() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
@@ -274,7 +273,7 @@ public class OrgJoinRequestServiceTest {
         verify(orgJoinRequestRepositoryMock, times(2)).save(isA(OrgJoinRequest.class));
     }
 
-    @Test(expected = NoSuchOrgJoinRequestException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testAcceptOrgJoinRequest_NotExistingOrgJoinRequest() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
@@ -290,7 +289,7 @@ public class OrgJoinRequestServiceTest {
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testAcceptOrgJoinRequest_NotExistingOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -348,7 +347,7 @@ public class OrgJoinRequestServiceTest {
         verify(orgJoinRequestRepositoryMock, times(2)).save(isA(OrgJoinRequest.class));
     }
 
-    @Test(expected = NoSuchOrgJoinRequestException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testDeclineOrgJoinRequest_NotExistingOrgJoinRequest() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
@@ -403,7 +402,7 @@ public class OrgJoinRequestServiceTest {
         verify(orgJoinRequestRepositoryMock, times(1)).delete(orgJoinRequest.getId());
     }
 
-    @Test(expected = NoSuchOrgJoinRequestException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testDeleteOrgJoinRequest_NotExistingOrgJoinRequest() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);

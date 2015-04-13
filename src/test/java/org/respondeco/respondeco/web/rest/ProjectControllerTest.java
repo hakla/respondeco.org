@@ -14,7 +14,10 @@ import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.*;
+import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
+import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
+import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
@@ -37,10 +40,7 @@ import java.util.HashSet;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,9 +52,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class })
+    TransactionalTestExecutionListener.class})
 public class ProjectControllerTest {
 
     private static final Long DEFAULT_ID = new Long(1L);
@@ -127,22 +127,22 @@ public class ProjectControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         projectServiceMock = spy(new ProjectService(
-                projectRepositoryMock,
-                userServiceMock,
-                userRepositoryMock,
-                propertyTagServiceMock,
-                resourceServiceMock,
-                imageRepositoryMock,
-                resourceMatchRepositoryMock,
-                postingFeedRepositoryMock,
-                projectLocationRepositoryMock));
+            projectRepositoryMock,
+            userServiceMock,
+            userRepositoryMock,
+            propertyTagServiceMock,
+            resourceServiceMock,
+            imageRepositoryMock,
+            resourceMatchRepositoryMock,
+            postingFeedRepositoryMock,
+            projectLocationRepositoryMock));
         ProjectController projectController = new ProjectController(
-                projectServiceMock,
-                resourceServiceMock,
-                ratingServiceMock,
-                userServiceMock,
-                postingFeedServiceMock,
-                projectLocationServiceMock);
+            projectServiceMock,
+            resourceServiceMock,
+            ratingServiceMock,
+            userServiceMock,
+            postingFeedServiceMock,
+            projectLocationServiceMock);
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -206,43 +206,43 @@ public class ProjectControllerTest {
     public void testCRUDProject() throws Exception {
 
         doReturn(project).when(projectServiceMock).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getPropertyTags(),
-                projectDTO.getResourceRequirements(),
-                projectDTO.getLogo().getId());
+            projectDTO.getName(),
+            projectDTO.getPurpose(),
+            projectDTO.getConcrete(),
+            projectDTO.getStartDate(),
+            projectDTO.getPropertyTags(),
+            projectDTO.getResourceRequirements(),
+            projectDTO.getLogo().getId());
 
         doReturn(projectLocation).when(projectLocationServiceMock).createProjectLocation(1L, projectLocation.getAddress(),
             projectLocation.getLat(), projectLocation.getLng());
 
         // Create Project
         restProjectMockMvc.perform(post("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+            .andExpect(status().isCreated());
 
         verify(projectServiceMock, times(1)).create(
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getPropertyTags(),
-                projectDTO.getResourceRequirements(),
-                projectDTO.getLogo().getId());
+            projectDTO.getName(),
+            projectDTO.getPurpose(),
+            projectDTO.getConcrete(),
+            projectDTO.getStartDate(),
+            projectDTO.getPropertyTags(),
+            projectDTO.getResourceRequirements(),
+            projectDTO.getLogo().getId());
 
         doReturn(project).when(projectServiceMock).findProjectById(project.getId());
         // Read Project
 
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", project.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(project.getId().intValue()))
-                .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
-                .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(projectDTO.getName()))
-                .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(project.getId().intValue()))
+            .andExpect(jsonPath("$.organizationId").value(defaultOrganization.getId().intValue()))
+            .andExpect(jsonPath("$.managerId").value(orgMember.getId().intValue()))
+            .andExpect(jsonPath("$.name").value(projectDTO.getName()))
+            .andExpect(jsonPath("$.purpose").value(projectDTO.getPurpose()));
 
         verify(projectServiceMock, times(1)).findProjectById(project.getId());
 
@@ -252,35 +252,35 @@ public class ProjectControllerTest {
         projectDTO.setPurpose(UPDATED_PURPOSE);
 
         doReturn(project).when(projectServiceMock).update(
-                projectDTO.getId(),
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getLogo().getId(),
-                projectDTO.getPropertyTags(),
-                projectDTO.getResourceRequirements());
+            projectDTO.getId(),
+            projectDTO.getName(),
+            projectDTO.getPurpose(),
+            projectDTO.getConcrete(),
+            projectDTO.getStartDate(),
+            projectDTO.getLogo().getId(),
+            projectDTO.getPropertyTags(),
+            projectDTO.getResourceRequirements());
 
         restProjectMockMvc.perform(put("/app/rest/projects")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(projectDTO)))
+            .andExpect(status().isOk());
 
         verify(projectServiceMock, times(1)).update(
-                projectDTO.getId(),
-                projectDTO.getName(),
-                projectDTO.getPurpose(),
-                projectDTO.getConcrete(),
-                projectDTO.getStartDate(),
-                projectDTO.getLogo().getId(),
-                projectDTO.getPropertyTags(),
-                projectDTO.getResourceRequirements());
+            projectDTO.getId(),
+            projectDTO.getName(),
+            projectDTO.getPurpose(),
+            projectDTO.getConcrete(),
+            projectDTO.getStartDate(),
+            projectDTO.getLogo().getId(),
+            projectDTO.getPropertyTags(),
+            projectDTO.getResourceRequirements());
 
         doReturn(project).when(projectServiceMock).delete(project.getId());
         // Delete Project
         restProjectMockMvc.perform(delete("/app/rest/projects/{id}", project.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
         verify(projectServiceMock, times(1)).delete(project.getId());
 
@@ -288,7 +288,7 @@ public class ProjectControllerTest {
         // Read nonexisting Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", 1000L)
             .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
 
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(1000L);
 
@@ -305,18 +305,18 @@ public class ProjectControllerTest {
         project2.setConcrete(false);
 
         doReturn(new PageImpl(Arrays.asList(project, project2))).when(projectServiceMock)
-                .findProjects(isNull(String.class), isA(RestParameters.class));
+            .findProjects(isNull(String.class), isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/projects"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.totalItems", is(2)))
-                .andExpect(jsonPath("$.projects[0].id").value(project.getId().intValue()))
-                .andExpect(jsonPath("$.projects[1].id").value(project2.getId().intValue()));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.totalItems", is(2)))
+            .andExpect(jsonPath("$.projects[0].id").value(project.getId().intValue()))
+            .andExpect(jsonPath("$.projects[1].id").value(project2.getId().intValue()));
 
         verify(projectServiceMock, times(1))
-                .findProjects(isNull(String.class), isA(RestParameters.class));
+            .findProjects(isNull(String.class), isA(RestParameters.class));
     }
 
     @Test
@@ -330,20 +330,20 @@ public class ProjectControllerTest {
         project2.setConcrete(false);
 
         doReturn(new PageImpl(Arrays.asList(project, project2))).when(projectServiceMock)
-                .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
-                    isA(RestParameters.class));
+            .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
+                isA(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/organizations/{id}/projects", defaultOrganization.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.totalItems", is(2)))
-                .andExpect(jsonPath("$.projects.[0].id").value(project.getId().intValue()))
-                .andExpect(jsonPath("$.projects.[1].id").value(project2.getId().intValue()));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.totalItems", is(2)))
+            .andExpect(jsonPath("$.projects.[0].id").value(project.getId().intValue()))
+            .andExpect(jsonPath("$.projects.[1].id").value(project2.getId().intValue()));
 
         verify(projectServiceMock, times(1))
-                .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
-                    isA(RestParameters.class));
+            .findProjectsFromOrganization(isA(Long.class), isNull(String.class),
+                isA(RestParameters.class));
     }
 
     @Test
@@ -515,7 +515,7 @@ public class ProjectControllerTest {
         ratingRequestDTO.setComment("foobar");
         ratingRequestDTO.setMatchid(100L);
 
-        doThrow(NoSuchProjectException.class).when(ratingServiceMock)
+        doThrow(NoSuchEntityException.class).when(ratingServiceMock)
             .rateProject(anyLong(), anyLong(), anyInt(), anyString());
 
         restProjectMockMvc.perform(post("/app/rest/projects/1/ratings")
@@ -564,7 +564,7 @@ public class ProjectControllerTest {
     @Test
     public void testGetNearProjects_expectOK_shouldReturnNearProjects() throws Exception {
 
-        doReturn(Arrays.asList(projectLocation)).when(projectLocationServiceMock).getNearProjects(10.0f,15.0f,100);
+        doReturn(Arrays.asList(projectLocation)).when(projectLocationServiceMock).getNearProjects(10.0f, 15.0f, 100);
 
         restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -578,7 +578,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testGetNearProjects_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
-        doThrow(NoSuchProjectException.class).when(projectLocationServiceMock).getNearProjects(10.0f,15.0f,100);
+        doThrow(NoSuchEntityException.class).when(projectLocationServiceMock).getNearProjects(10.0f, 15.0f, 100);
 
         restProjectMockMvc.perform(get("/app/rest/nearprojects?latitude=10.0&longitude=15.0&radius=100")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -605,29 +605,29 @@ public class ProjectControllerTest {
         doReturn(posting).when(postingFeedServiceMock).addPostingForProjects(any(Long.class), any(String.class));
 
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes("posting1")))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes("posting1")))
+            .andExpect(status().isOk());
     }
 
     @Test
     public void testPostingForProject_expectBAD_REQUEST_serviceThrowsPostingFeedException() throws Exception {
-        doThrow(PostingFeedException.class).when(postingFeedServiceMock).addPostingForProjects(anyLong(),anyString());
+        doThrow(PostingFeedException.class).when(postingFeedServiceMock).addPostingForProjects(anyLong(), anyString());
 
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes("posting1")))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes("posting1")))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testPostingForProject_expectNOT_FOUND_serviceThrowsNoSuchProjectException() throws Exception {
-        doThrow(NoSuchProjectException.class).when(postingFeedServiceMock).addPostingForProjects(anyLong(),anyString());
+        doThrow(NoSuchEntityException.class).when(postingFeedServiceMock).addPostingForProjects(anyLong(), anyString());
 
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/postings", project.getId())
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes("posting1")))
-                .andExpect(status().isNotFound());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes("posting1")))
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -644,23 +644,23 @@ public class ProjectControllerTest {
             .getPostingsForProject(any(Long.class), any(RestParameters.class));
 
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(postingFeedServiceMock, times(1)).getPostingsForProject(any(Long.class), any(RestParameters.class));
     }
 
     @Test
     public void testGetPostingForProject_NoSuchProject() throws Exception {
-        doThrow(NoSuchProjectException.class).when(postingFeedServiceMock)
+        doThrow(NoSuchEntityException.class).when(postingFeedServiceMock)
             .getPostingsForProject(anyLong(), isA(RestParameters.class));
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isNotFound());
     }
 
     @Test
-    public void testFollowingState_TRUE() throws Exception{
+    public void testFollowingState_TRUE() throws Exception {
         Long id = 1L;
         Boolean result = true;
         doReturn(result)
@@ -674,7 +674,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testFollowingState_FALSE() throws Exception{
+    public void testFollowingState_FALSE() throws Exception {
         Long id = 1L;
         Boolean result = false;
         doReturn(result)
@@ -688,7 +688,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testFollow_SUCCESS() throws Exception{
+    public void testFollow_SUCCESS() throws Exception {
         Long id = 1L;
         doNothing().when(projectServiceMock).follow(id);
         restProjectMockMvc.perform(post("/app/rest/projects/{id}/follow", id))
@@ -698,7 +698,7 @@ public class ProjectControllerTest {
 
 
     @Test
-    public void testFollow_FAIL() throws Exception{
+    public void testFollow_FAIL() throws Exception {
         Long id = 1L;
         doThrow(IllegalValueException.class).when(projectServiceMock).follow(id);
 
@@ -708,7 +708,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testUnfollow_SUCCESS() throws Exception{
+    public void testUnfollow_SUCCESS() throws Exception {
         Long id = 1L;
         doNothing().when(projectServiceMock).unfollow(id);
         restProjectMockMvc.perform(delete("/app/rest/projects/{id}/unfollow", id))
@@ -717,7 +717,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testUnfollow_FAIL() throws Exception{
+    public void testUnfollow_FAIL() throws Exception {
         Long id = 1L;
         doThrow(IllegalValueException.class).when(projectServiceMock).unfollow(id);
         restProjectMockMvc.perform(delete("/app/rest/projects/{id}/unfollow", id))
