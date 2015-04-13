@@ -2,10 +2,7 @@ package org.respondeco.respondeco.web.rest.mapper;
 
 import lombok.ToString;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +37,13 @@ public class ObjectMapperImpl implements ObjectMapper {
             result.put(mapping.getFieldName(), mapping.map(object));
         }
         return result;
+    }
+
+    @Override
+    public List<Map<String, Object>> mapAll(List objects) throws MappingException {
+        return (List<Map<String, Object>>) objects.stream()
+            .map(this::map)
+            .collect(Collectors.toList());
     }
 
 }

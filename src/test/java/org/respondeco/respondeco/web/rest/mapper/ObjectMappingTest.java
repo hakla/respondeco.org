@@ -19,12 +19,12 @@ public class ObjectMappingTest {
 
     private final Logger log = LoggerFactory.getLogger(ObjectMappingTest.class);
 
-    private ObjectMapperFactory mapperFactory;
+    private CachingObjectMapperFactory mapperFactory;
     private Project project;
 
     @Before
     public void setUp() {
-        mapperFactory = new ObjectMapperFactory(Project.class);
+        mapperFactory = new CachingObjectMapperFactory(Project.class);
         project = new Project();
         project.setId(3L);
         project.setName("foobar");
