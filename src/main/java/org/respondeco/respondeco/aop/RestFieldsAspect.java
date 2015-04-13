@@ -4,6 +4,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.respondeco.respondeco.web.rest.mapper.ObjectMapperFactory;
+import org.respondeco.respondeco.web.rest.mapper.ObjectMapperFactoryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -21,15 +23,16 @@ public class RestFieldsAspect {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    private Environment env;
+    private ObjectMapperFactoryProvider factoryProvider;
 
-    @Pointcut("within(org.respondeco.respondeco.web.rest..*)")
+    @Pointcut("@annotation(org.respondeco.respondeco.aop.WrapWrapWrap)")
     public void restMethodPointcut() {}
 
     @Around("restMethodPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();
+            factoryProvider.getMapperFactory(result.getClass());
             return result;
         } catch (IllegalArgumentException e) {
             log.error("Illegal argument: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()),

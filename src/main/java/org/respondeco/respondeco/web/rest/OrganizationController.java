@@ -180,26 +180,16 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Map> getO(
-        @PathVariable Long id,
-        @RequestParam(required = false) String fields) throws MappingException {
+    public Organization getO(
+        @PathVariable Long id) {
         log.debug("REST request to get Organization : {}", id);
         Organization organization = organizationService.getOrganization(id);
-        ResponseEntity<Map> response;
 
-        if (fields == null) {
-            fields = "";
-        }
-
-        RestParameters restParameters = new RestParameters(null, null, null, fields);
         if(organization != null) {
-            ObjectMapper mapper = new ObjectMapperFactory(Organization.class).createMapper(fields);
-
-            response = new ResponseEntity<>(mapper.map(organization), HttpStatus.OK);
+            return organization;
         } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NoSuchEntityException(id);
         }
-        return response;
     }
 
     /**
