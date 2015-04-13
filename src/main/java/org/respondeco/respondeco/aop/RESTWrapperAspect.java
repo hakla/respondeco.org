@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.mapper.ObjectMapper;
-import org.respondeco.respondeco.web.rest.mapper.ObjectMapperFactoryProvider;
+import org.respondeco.respondeco.web.rest.mapper.ObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class RESTWrapperAspect {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    private ObjectMapperFactoryProvider factoryProvider;
+    private ObjectMapperFactory factory;
 
     @Autowired
     private HttpServletRequest request;
@@ -61,7 +61,7 @@ public class RESTWrapperAspect {
                 List content = page.getContent();
 
                 Class<?> clazz = content.get(0).getClass();
-                ObjectMapper mapper = factoryProvider.getMapperFactory(clazz).createMapper(fields);
+                ObjectMapper mapper = factory.createMapper(clazz, fields);
 
                 List<Map<String, Object>> mapped = mapper.mapAll(content);
                 String fieldName = clazz.getSimpleName().toLowerCase() + "s";
@@ -71,7 +71,7 @@ public class RESTWrapperAspect {
 
                 return new ResponseEntity<>(map, HttpStatus.OK);
             } else {
-                ObjectMapper mapper = factoryProvider.getMapperFactory(result.getClass()).createMapper(fields);
+                ObjectMapper mapper = factory.createMapper(result.getClass(), fields);
                 return new ResponseEntity<>(mapper.map(result), HttpStatus.OK);
             }
         } catch (IllegalArgumentException e) {

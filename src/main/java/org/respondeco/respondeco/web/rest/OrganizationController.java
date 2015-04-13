@@ -8,7 +8,6 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
-import org.respondeco.respondeco.web.rest.mapper.ObjectMapperFactoryProvider;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
@@ -126,7 +125,7 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Page<Organization> getAll(
+    public Object getAll(
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) String fields,
@@ -135,9 +134,6 @@ public class OrganizationController {
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         return organizationService.getOrganizations(restParameters);
     }
-
-    @Inject
-    ObjectMapperFactoryProvider provider;
 
     /**
      * GET  /rest/organization/:id -> get the "id" organization.
