@@ -1,6 +1,8 @@
 package org.respondeco.respondeco.web.rest.mapper;
 
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,6 +12,8 @@ import java.util.stream.Collectors;
  */
 @ToString
 public class ObjectMapperImpl implements ObjectMapper {
+
+    private static Logger log = LoggerFactory.getLogger(ObjectMapperImpl.class);
 
     private Set<FieldMapping> mappings;
 
@@ -27,6 +31,16 @@ public class ObjectMapperImpl implements ObjectMapper {
             .stream()
             .filter(mapping -> !mapping.getFieldName().equals(fieldName))
             .collect(Collectors.toSet());
+        return this;
+    }
+
+    public ObjectMapperImpl clearAllButId() {
+        this.mappings = this.mappings.stream()
+            .filter(
+                mapping ->
+                    mapping.getFieldName().equals("id"))
+            .collect(Collectors.toSet());
+        log.debug("cleared mappings, remaining mappings: {}", mappings);
         return this;
     }
 

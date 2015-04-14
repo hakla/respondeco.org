@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
+import org.respondeco.respondeco.web.rest.mapper.DefaultReturnField;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -32,6 +33,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @NotNull
     @Size(min = 3, max = 255)
     @Column(length = 255)
+    @DefaultReturnField
     private String name;
 
     @Column(length = 2048)
