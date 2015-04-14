@@ -34,7 +34,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
         return this.mapper;
     }
 
-    private ObjectMapperImpl initializeDefaultMapper(Class<?> clazz)throws MappingException {
+    private ObjectMapperImpl initializeDefaultMapper(Class<?> clazz) throws MappingException {
         List<Field> defaultFields = extractor.extract(clazz);
         ObjectMapperImpl mapper = new ObjectMapperImpl();
         for(Field field : defaultFields) {
@@ -61,7 +61,10 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     }
 
     private void clearIfPristine() {
-
+        if(pristine) {
+            mapper.clearAllButId();
+            pristine = false;
+        }
     }
 
     @Override
@@ -71,6 +74,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
 
     @Override
     public void onSimpleExpression(String name) throws ExpressionParsingException {
+        clearIfPristine();
         Field field = null;
         try {
             field = util.getField(clazz, name);
@@ -83,6 +87,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     @Override
     public void onNestedExpression(String name, FieldExpressionParser subParser) throws ExpressionParsingException {
         try {
+            clearIfPristine();
             Class<?> fieldClass = util.getFieldClass(clazz, name);
 
             if (Iterable.class.isAssignableFrom(fieldClass)) {
