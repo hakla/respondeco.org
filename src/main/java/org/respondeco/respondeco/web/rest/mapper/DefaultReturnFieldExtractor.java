@@ -13,7 +13,7 @@ public class DefaultReturnFieldExtractor implements ReturnFieldExtractor {
     public List<Field> extract(Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
         Class<?> currentClass = clazz;
-        while(currentClass != Object.class) {
+        while(currentClass != Object.class && currentClass != null) {
             for(Field field : currentClass.getDeclaredFields()) {
                 if(field.getAnnotation(DefaultReturnField.class) != null) {
                     fields.add(field);

@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Clemens Puehringer on 22/03/15.
@@ -17,7 +20,7 @@ import java.lang.reflect.Method;
  * Uses ReflectionUtil#getAccessor(Class<T>,String) to get the accessor for the field and
  * returns the return value of the accessor as the result of map(Object)
  */
-@ToString(exclude = { "util", "accessor" })
+@ToString(exclude = {"util", "accessor"})
 public class FieldMapping {
 
     private final Logger log = LoggerFactory.getLogger(FieldMapping.class);
@@ -60,7 +63,7 @@ public class FieldMapping {
 
     private void checkAccess() throws MappingException {
         try {
-            if(util.hasAnnotation(field, JsonIgnore.class)) {
+            if (util.hasAnnotation(field, JsonIgnore.class)) {
                 throw new NoSuchFieldException(field.getName());
             }
         } catch (NoSuchFieldException e) {
@@ -86,12 +89,13 @@ public class FieldMapping {
 
     /**
      * not yet working
+     *
      * @throws MappingException
      */
     private void initSerializer() throws MappingException {
         try {
             Annotation annotation = util.getAnnotation(field, JsonSerialize.class);
-            if(annotation != null) {
+            if (annotation != null) {
                 JsonSerialize serialize = (JsonSerialize) annotation;
                 serializer = serialize.using().newInstance();
             }

@@ -5,6 +5,8 @@ import org.respondeco.respondeco.web.rest.mapper.parser.ExpressionParsingExcepti
 import org.respondeco.respondeco.web.rest.mapper.parser.FieldExpressionParser;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -47,13 +49,19 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
             ObjectMapperImpl childMapper = new ObjectMapperImpl();
             childMapper.addMapping(new FieldMapping(fieldClass, "id"));
             return new NestedFieldMapping(clazz, field, childMapper);
+        } else if (Iterable.class.isAssignableFrom(fieldClass)) {
+            fieldClass = (Class) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+            ObjectMapperImpl childMapper = new ObjectMapperImpl();
+            childMapper.addMapping(new FieldMapping(fieldClass, "id"));
+            return new NestedFieldMapping(clazz, field, childMapper);
         } else {
             return new FieldMapping(clazz, field);
         }
     }
 
     private void clearIfPristine() {
-        
+
     }
 
     @Override
@@ -76,6 +84,11 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     public void onNestedExpression(String name, FieldExpressionParser subParser) throws ExpressionParsingException {
         try {
             Class<?> fieldClass = util.getFieldClass(clazz, name);
+
+            if (Iterable.class.isAssignableFrom(fieldClass)) {
+                fieldClass = (Class) ((ParameterizedType) util.getField(clazz, name).getGenericType()).getActualTypeArguments()[0];
+            }
+
             ObjectMapperBuilder childBuilder = new ObjectMapperBuilder(fieldClass);
             subParser.setParserListener(childBuilder);
             subParser.parse();
