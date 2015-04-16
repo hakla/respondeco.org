@@ -5,7 +5,7 @@ import org.respondeco.respondeco.domain.ProjectLocation;
 import org.respondeco.respondeco.repository.ProjectLocationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,13 +42,13 @@ public class ProjectLocationService {
      * @return
      */
     public ProjectLocation createProjectLocation(Long projectId, String address, float latitude, float longitude)
-        throws NoSuchProjectException {
+        throws NoSuchEntityException {
 
         ProjectLocation projectLocation = new ProjectLocation();
 
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
-            throw new NoSuchProjectException(projectId);
+            throw new NoSuchEntityException(projectId);
         }
         projectLocation.setProject(project);
         projectLocation.setLat(latitude);
@@ -78,7 +78,7 @@ public class ProjectLocationService {
      * @return updated ProjectLocation Object
      */
     public ProjectLocation updateProjectLocation(Long projectId, String address, float latitude, float longitude)
-        throws NoSuchProjectException {
+        throws NoSuchEntityException {
 
         ProjectLocation projectLocation = projectLocationRepository.findByProjectId(projectId);
 
@@ -89,7 +89,7 @@ public class ProjectLocationService {
             Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
 
             if(project == null) {
-                throw new NoSuchProjectException(projectId);
+                throw new NoSuchEntityException(projectId);
             }
             projectLocation.setProject(project);
         }
@@ -145,7 +145,7 @@ public class ProjectLocationService {
             long projectId = ((BigInteger) objArray[4]).longValue();
             Project project = projectRepository.findOne(projectId);
             if(project == null) {
-                throw new NoSuchProjectException(projectId);
+                throw new NoSuchEntityException(projectId);
             }
 
             projectLocation.setProject(project);

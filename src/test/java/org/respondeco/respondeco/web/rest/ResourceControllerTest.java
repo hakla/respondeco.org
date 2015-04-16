@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.web.rest;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,7 +10,6 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.ResourceService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.exception.enumException.EnumResourceException;
 import org.respondeco.respondeco.service.ResourceTagService;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
@@ -27,7 +25,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
@@ -231,7 +228,7 @@ public class ResourceControllerTest {
     @Test
     public void testCreateOffer_FAIL() throws Exception{
         ResourceOfferDTO dto = this.bindOfferDTOMockData(0);
-        doThrow(new NoSuchOrganizationException(dto.getOrganizationId())).when(resourceService).createOffer(
+        doThrow(new NoSuchEntityException(dto.getOrganizationId())).when(resourceService).createOffer(
             dto.getName(), dto.getAmount(), dto.getDescription(), dto.getOrganizationId(), dto.getIsCommercial(),
             dto.getStartDate(), dto.getEndDate(), dto.getResourceTags(), dto.getLogoId(), dto.getPrice());
 

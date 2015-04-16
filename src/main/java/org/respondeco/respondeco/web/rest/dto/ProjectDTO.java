@@ -21,7 +21,7 @@ import java.util.List;
 @Data
 @ApiModel(value = "Project", description = "A project DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProjectRequestDTO {
+public class ProjectDTO {
 
     @ApiModelProperty(value = "The id of the project to modify")
     private Long id;

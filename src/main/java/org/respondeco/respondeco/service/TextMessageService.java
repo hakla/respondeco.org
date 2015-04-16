@@ -6,8 +6,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
@@ -53,7 +52,7 @@ public class TextMessageService {
         }
 
         if(receivingUser == null) {
-            throw new NoSuchUserException(String.format("Receiver %s does not exist", receiverId));
+            throw new NoSuchEntityException(String.format("Receiver %s does not exist", receiverId));
         }
 
         TextMessage newTextMessage = new TextMessage();

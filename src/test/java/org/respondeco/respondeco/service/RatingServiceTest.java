@@ -1,7 +1,6 @@
 package org.respondeco.respondeco.service;
 
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,21 +9,18 @@ import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.testutil.ArgumentCaptor;
-import org.respondeco.respondeco.web.rest.dto.ProjectResponseDTO;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
+import org.respondeco.respondeco.service.exception.ProjectRatingException;
+import org.respondeco.respondeco.service.exception.SupporterRatingException;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
@@ -89,17 +85,17 @@ public class RatingServiceTest {
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
         projectService = new ProjectService(
-                projectRepositoryMock,
-                userService,
-                userRepositoryMock,
-                propertyTagService,
-                resourceService,
-                imageRepositoryMock,
-                resourceMatchRepositoryMock,
-                postingFeedRepository,
-                projectLocationRepositoryMock);
-        ratingService = new RatingService(ratingRepositoryMock,resourceMatchRepositoryMock,projectRepositoryMock,
-                organizationRepositoryMock,userService,projectService);
+            projectRepositoryMock,
+            userService,
+            userRepositoryMock,
+            propertyTagService,
+            resourceService,
+            imageRepositoryMock,
+            resourceMatchRepositoryMock,
+            postingFeedRepository,
+            projectLocationRepositoryMock);
+        ratingService = new RatingService(ratingRepositoryMock, resourceMatchRepositoryMock, projectRepositoryMock,
+            organizationRepositoryMock, userService, projectService);
 
         orgOwner = new User();
         orgOwner.setId(1L);
@@ -146,8 +142,8 @@ public class RatingServiceTest {
     }
 
     @Test
-    public void testRateProject() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        ProjectRatingException, NoSuchProjectException {
+    public void testRateProject() throws
+        ProjectRatingException, NoSuchEntityException {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
@@ -160,49 +156,49 @@ public class RatingServiceTest {
 
     }
 
-    @Test(expected = NoSuchProjectException.class)
-    public void testRateProject_NoSuchProject() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        ProjectRatingException, NoSuchProjectException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testRateProject_NoSuchProject() throws NoSuchEntityException,
+        ProjectRatingException {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(null);
-        when(resourceMatchRepositoryMock.findByProjectAndOrganization(basicProject,defaultOrganization))
-                .thenReturn(Arrays.asList(defaultMatch));
+        when(resourceMatchRepositoryMock.findByProjectAndOrganization(basicProject, defaultOrganization))
+            .thenReturn(Arrays.asList(defaultMatch));
 
         ratingService.rateProject(basicProject.getId(), 1L, 3, "testComment");
 
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
-    public void testRateProject_NoSuchOrganization() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        ProjectRatingException, NoSuchProjectException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testRateProject_NoSuchOrganization() throws NoSuchEntityException,
+        ProjectRatingException {
 
         orgOwner.setOrganization(null);
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
-        when(resourceMatchRepositoryMock.findByProjectAndOrganization(basicProject,defaultOrganization))
-                .thenReturn(Arrays.asList(defaultMatch));
+        when(resourceMatchRepositoryMock.findByProjectAndOrganization(basicProject, defaultOrganization))
+            .thenReturn(Arrays.asList(defaultMatch));
 
         ratingService.rateProject(basicProject.getId(), 1L, 2, "testComment");
 
     }
 
-    @Test(expected = NoSuchResourceMatchException.class)
-    public void testRateProject_NoSuchResourceMatch() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        ProjectRatingException, NoSuchProjectException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testRateProject_NoSuchResourceMatch() throws NoSuchEntityException,
+        ProjectRatingException {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
-        when(resourceMatchRepositoryMock.findByProjectAndOrganization(basicProject,defaultOrganization))
-                .thenReturn(new ArrayList<ResourceMatch>());
+        when(resourceMatchRepositoryMock.findByProjectAndOrganization(basicProject, defaultOrganization))
+            .thenReturn(new ArrayList<ResourceMatch>());
 
         ratingService.rateProject(basicProject.getId(), 1L, 2, "testComment");
     }
 
     @Test(expected = ProjectRatingException.class)
-    public void testRateProject_NotAccepted() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        ProjectRatingException, NoSuchProjectException {
+    public void testRateProject_NotAccepted() throws NoSuchEntityException,
+        ProjectRatingException {
 
         defaultMatch.setAccepted(false);
 
@@ -214,8 +210,7 @@ public class RatingServiceTest {
     }
 
     @Test(expected = ProjectRatingException.class)
-     public void testRateProject_NotOwnerOfOrganization() throws NoSuchResourceMatchException,
-        NoSuchOrganizationException, ProjectRatingException, NoSuchProjectException {
+    public void testRateProject_NotOwnerOfOrganization() throws NoSuchEntityException, ProjectRatingException {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
@@ -225,8 +220,8 @@ public class RatingServiceTest {
     }
 
     @Test(expected = ProjectRatingException.class)
-    public void testRateProject_AlreadyRated() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        ProjectRatingException, NoSuchProjectException {
+    public void testRateProject_AlreadyRated() throws NoSuchEntityException,
+        ProjectRatingException {
 
         defaultMatch.setProjectRating(defaultRating);
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -237,8 +232,8 @@ public class RatingServiceTest {
     }
 
     @Test
-    public void testRateOrganization() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        SupporterRatingException, NoSuchProjectException {
+    public void testRateOrganization() throws NoSuchEntityException,
+        SupporterRatingException {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId())).thenReturn(defaultMatch);
@@ -250,91 +245,87 @@ public class RatingServiceTest {
 
     }
 
-    @Test(expected = NoSuchProjectException.class)
-    public void testRateOrganization_NoSuchProject() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        SupporterRatingException, NoSuchProjectException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testRateOrganization_NoSuchProject() throws NoSuchEntityException,
+        SupporterRatingException {
         defaultMatch.setProject(null);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(defaultMatch);
+            .thenReturn(defaultMatch);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
 
     }
 
-    @Test(expected = NoSuchOrganizationException.class)
-    public void testRateOrganization_NoSuchOrganization() throws NoSuchResourceMatchException,
-        NoSuchOrganizationException, SupporterRatingException, NoSuchProjectException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testRateOrganization_NoSuchOrganization() throws NoSuchEntityException, SupporterRatingException {
         defaultMatch.setOrganization(null);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(defaultMatch);
+            .thenReturn(defaultMatch);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
 
     }
 
-    @Test(expected = NoSuchResourceMatchException.class)
-    public void testRateOrganization_NoSuchResourceMatch() throws NoSuchResourceMatchException,
-        NoSuchOrganizationException, SupporterRatingException, NoSuchProjectException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testRateOrganization_NoSuchResourceMatch() throws NoSuchEntityException, SupporterRatingException {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(null);
+            .thenReturn(null);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
 
     }
 
     @Test(expected = SupporterRatingException.class)
-    public void testRateOrganization_NotManagerOfProject() throws NoSuchResourceMatchException,
-        NoSuchOrganizationException, SupporterRatingException, NoSuchProjectException {
+    public void testRateOrganization_NotManagerOfProject() throws NoSuchEntityException, SupporterRatingException {
         basicProject.setManager(orgOwner);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(defaultMatch);
+            .thenReturn(defaultMatch);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
 
     }
 
     @Test(expected = SupporterRatingException.class)
-    public void testRateOrganization_OrgOwnerNotAllowedToRate() throws NoSuchResourceMatchException,
-        NoSuchOrganizationException, SupporterRatingException, NoSuchProjectException {
+    public void testRateOrganization_OrgOwnerNotAllowedToRate() throws NoSuchEntityException, SupporterRatingException {
         defaultOrganization.setOwner(defaultUser);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(defaultMatch);
+            .thenReturn(defaultMatch);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
 
     }
 
     @Test(expected = SupporterRatingException.class)
-    public void testRateOrganization_NotAccepted() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        SupporterRatingException, NoSuchProjectException {
+    public void testRateOrganization_NotAccepted() throws NoSuchEntityException,
+        SupporterRatingException {
         defaultMatch.setAccepted(false);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(defaultMatch);
+            .thenReturn(defaultMatch);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
 
     }
 
     @Test(expected = SupporterRatingException.class)
-    public void testRateOrganization_AlreadyRated() throws NoSuchResourceMatchException, NoSuchOrganizationException,
-        SupporterRatingException, NoSuchProjectException {
+    public void testRateOrganization_AlreadyRated() throws NoSuchEntityException,
+        SupporterRatingException {
         defaultMatch.setSupporterRating(defaultRating);
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId()))
-                .thenReturn(defaultMatch);
+            .thenReturn(defaultMatch);
 
         ratingService.rateOrganization(defaultOrganization.getId(), defaultMatch.getId(), 2, "testComment");
     }
@@ -346,7 +337,7 @@ public class RatingServiceTest {
         defaultMatch.setProjectRating(defaultRating);
 
         when(resourceMatchRepositoryMock.getAggregatedRatingByProject(basicProject.getId()))
-                .thenReturn(objectArray);
+            .thenReturn(objectArray);
 
         ratingService.getAggregatedRatingByProject(basicProject.getId());
 
@@ -362,7 +353,7 @@ public class RatingServiceTest {
         defaultMatch.setSupporterRating(defaultRating);
 
         when(resourceMatchRepositoryMock.getAggregatedRatingByOrganization(defaultOrganization.getId()))
-                .thenReturn(objectArray);
+            .thenReturn(objectArray);
 
         ratingService.getAggregatedRatingByOrganization(defaultOrganization.getId());
 
@@ -372,17 +363,17 @@ public class RatingServiceTest {
     }
 
     @Test
-    public void testCheckPermissionForProject() throws NoSuchProjectException {
+    public void testCheckPermissionForProject() throws NoSuchEntityException {
         when(projectService.findProjectById(basicProject.getId())).thenReturn(basicProject);
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
 
         ratingService.checkPermissionForProject(basicProject.getId());
 
-        verify(resourceMatchRepositoryMock, times(1)).findByProjectAndOrganization(basicProject,defaultOrganization);
+        verify(resourceMatchRepositoryMock, times(1)).findByProjectAndOrganization(basicProject, defaultOrganization);
     }
 
     @Test
-    public void testCheckPermissionForMatches() throws NoSuchResourceMatchException {
+    public void testCheckPermissionForMatches() throws NoSuchEntityException {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId())).thenReturn(defaultMatch);
 
@@ -392,8 +383,8 @@ public class RatingServiceTest {
         assertNotNull(ratingService.checkPermissionsForMatches(matchList));
     }
 
-    @Test(expected = NoSuchResourceMatchException.class)
-    public void testCheckPermissionForMatches_NoSuchResourceMatch() throws NoSuchResourceMatchException {
+    @Test(expected = NoSuchEntityException.class)
+    public void testCheckPermissionForMatches_NoSuchResourceMatch() throws NoSuchEntityException {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(resourceMatchRepositoryMock.findOne(defaultMatch.getId())).thenReturn(null);
 

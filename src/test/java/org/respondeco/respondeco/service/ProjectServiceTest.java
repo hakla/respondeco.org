@@ -1,7 +1,6 @@
 package org.respondeco.respondeco.service;
 
 import com.mysema.query.types.Predicate;
-import com.sun.jmx.remote.internal.ArrayQueue;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +14,7 @@ import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchProjectException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
@@ -29,9 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
@@ -204,7 +200,7 @@ public class ProjectServiceTest {
 
     }
 
-    @Test(expected = NoSuchProjectException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseProjectDoesNotExist() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
@@ -296,7 +292,7 @@ public class ProjectServiceTest {
         assertEquals(basicProject.getManager(), otherUser);
     }
 
-    @Test(expected = NoSuchUserException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testSetManager_shouldThrowExceptionIfNewManagerDoesNotExist() throws Exception {
         User otherUser = new User();
         otherUser.setLogin("other");
@@ -310,7 +306,7 @@ public class ProjectServiceTest {
 
     }
 
-    @Test(expected = NoSuchProjectException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testSetManager_shouldThrowExceptionIfProjectDoesNotExist() throws Exception {
         User otherUser = new User();
         otherUser.setId(100L);

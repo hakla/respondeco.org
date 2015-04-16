@@ -94,16 +94,16 @@ public class ResourceService {
      * @param resourceTags defined tags for the resource requirement
      * @return saved ResourceRequirement created resource requirement
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource can't be found
-     * @throws NoSuchProjectException if project of the resource can't be found
+     * @throws NoSuchEntityException if project of the resource can't be found
      */
     public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceNotFoundException, NoSuchProjectException {
+        throws ResourceNotFoundException, NoSuchEntityException {
         ResourceRequirement newRequirement = null;
 
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
-            throw new NoSuchProjectException(projectId);
+            throw new NoSuchEntityException(projectId);
         }
 
         ensureUserIsPartOfOrganisation(project);
@@ -139,16 +139,16 @@ public class ResourceService {
      * @return updated Resource requirement
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource requirement can't be found
      * @throws OperationForbiddenException if operation is forbidden
-     * @throws NoSuchProjectException if project of the resource requirement can't be found
+     * @throws NoSuchEntityException if project of the resource requirement can't be found
      */
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceNotFoundException, OperationForbiddenException, NoSuchProjectException, IllegalValueException {
+        throws ResourceNotFoundException, OperationForbiddenException, NoSuchEntityException, IllegalValueException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
 
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
-            throw new NoSuchProjectException(projectId);
+            throw new NoSuchEntityException(projectId);
         }
         if (project.equals(requirement.getProject()) == false) {
             throw new OperationForbiddenException("cannot modify resource requirements of other projects");
@@ -237,10 +237,10 @@ public class ResourceService {
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
-        throws NoSuchOrganizationException, OrganizationNotVerifiedException {
+        throws NoSuchEntityException, OrganizationNotVerifiedException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
         if(organization == null) {
-            throw new NoSuchOrganizationException(organizationId);
+            throw new NoSuchEntityException(organizationId);
         }
         if(organization.getVerified() == false) {
             throw new OrganizationNotVerifiedException(organizationId);
@@ -577,14 +577,14 @@ public class ResourceService {
             throw new IllegalValueException("resourcematch.error.idnull", "Resourcematch id must not be null");
         }
         if(resourceMatch == null) {
-            throw new NoSuchResourceMatchException(resourceMatchId);
+            throw new NoSuchEntityException(resourceMatchId);
         }
 
         Project project = resourceMatch.getProject();
         Organization organization = resourceMatch.getOrganization();
 
         if(project == null) {
-            throw new NoSuchProjectException("can't find project for match with matchId " + resourceMatchId);
+            throw new NoSuchEntityException("can't find project for match with matchId " + resourceMatchId);
         }
 
         User user = userService.getUserWithAuthorities();
@@ -753,10 +753,10 @@ public class ResourceService {
      * @param orgId organization id for which the donated resources should be found
      * @param restParameters restParameters used for building the page request
      * @return Page containing ResourceMatches which represent donated resources
-     * @throws NoSuchOrganizationException if organization with id cannot be found
+     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if organization with id cannot be found
      */
     public Page<ResourceMatch> getDonatedResourcesForOrganization(Long orgId, RestParameters restParameters)
-        throws NoSuchOrganizationException {
+        throws NoSuchEntityException {
 
         PageRequest pageRequest = null;
 
@@ -766,7 +766,7 @@ public class ResourceService {
 
         Organization organization = organizationRepository.findOne(orgId);
         if (organization == null) {
-            throw new NoSuchOrganizationException("organization with id " + orgId + "can't be found");
+            throw new NoSuchEntityException("organization with id " + orgId + "can't be found");
         }
 
         Page<ResourceMatch> resourceMatches =
@@ -776,7 +776,7 @@ public class ResourceService {
     }
 
     public Page<ResourceMatch> getSupportedProjectsForOrganization(Long orgId, RestParameters restParameters)
-        throws NoSuchOrganizationException {
+        throws NoSuchEntityException {
 
         PageRequest pageRequest = null;
 
@@ -786,7 +786,7 @@ public class ResourceService {
 
         Organization organization = organizationRepository.findOne(orgId);
         if (organization == null) {
-            throw new NoSuchOrganizationException("organization with id " + orgId + "can't be found");
+            throw new NoSuchEntityException("organization with id " + orgId + "can't be found");
         }
 
         Page<ResourceMatch> resourceMatches =

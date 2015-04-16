@@ -10,7 +10,7 @@ import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.SocialMediaRepository;
 import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
-import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
@@ -129,16 +129,16 @@ public class SocialMediaServiceTest {
         connectionData = mock(ConnectionData.class);
         doReturn("accesstoken").when(connectionData).getAccessToken();
 
-        facebookConnection = (Connection<Facebook>)mock(Connection.class);
+        facebookConnection = (Connection<Facebook>) mock(Connection.class);
         doReturn(connectionData).when(facebookConnection).createData();
 
-        OAuthToken accessToken = new OAuthToken("accesstoken","secret");
+        OAuthToken accessToken = new OAuthToken("accesstoken", "secret");
 
         //mocks for twitter
         oAuth1Operations = mock(OAuth1Operations.class);
         doReturn(accessToken).when(oAuth1Operations).exchangeForAccessToken(any(AuthorizedRequestToken.class), any());
 
-        twitterConnection = (Connection<Twitter>)mock(Connection.class);
+        twitterConnection = (Connection<Twitter>) mock(Connection.class);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class SocialMediaServiceTest {
 
         verify(socialMediaRepositoryMock, times(1)).save(any(SocialMediaConnection.class));
         assertEquals(socialMediaConnection.getUser().getId().longValue(), 1L);
-        assertEquals(socialMediaConnection.getProvider(),"facebook");
+        assertEquals(socialMediaConnection.getProvider(), "facebook");
         assertEquals(socialMediaConnection.getToken(), "accesstoken");
     }
 
@@ -198,9 +198,9 @@ public class SocialMediaServiceTest {
         doReturn(feedOperations).when(facebook).feedOperations();
         doReturn(postId).when(feedOperations).postLink(anyString(), any(FacebookLink.class));
 
-        postId = socialMediaService.createFacebookPost("urlpath","post");
+        postId = socialMediaService.createFacebookPost("urlpath", "post");
 
-        verify(socialMediaRepositoryMock, times(1)).findByUserAndProvider(user,"facebook");
+        verify(socialMediaRepositoryMock, times(1)).findByUserAndProvider(user, "facebook");
         assertEquals(postId, "123456789");
     }
 
@@ -247,26 +247,26 @@ public class SocialMediaServiceTest {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
         doReturn(twitterSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProvider(user, "twitter");
 
-        socialMediaService.createTwitterConnection("token","verifier");
+        socialMediaService.createTwitterConnection("token", "verifier");
     }
 
     @Test(expected = OperationForbiddenException.class)
     public void testCreateTwitterConnection_shouldThrowOperationForbiddenException() throws Exception {
         doReturn(null).when(userServiceMock).getUserWithAuthorities();
-        socialMediaService.createTwitterConnection("token","verifier");
+        socialMediaService.createTwitterConnection("token", "verifier");
     }
 
     @Test
     public void testCreateTwitterPost_shouldCreateTwitterPost() throws Exception {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
-        doReturn(twitterSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProvider(user,"twitter");
+        doReturn(twitterSocialMediaConnection).when(socialMediaRepositoryMock).findByUserAndProvider(user, "twitter");
 
         doReturn(twitterConnection).when(twitterConnectionFactoryMock).createConnection(any(ConnectionData.class));
 
 
         Twitter conn = mock(Twitter.class);
         TimelineOperations timelineOperations = mock(TimelineOperations.class);
-        Tweet tweet = new Tweet(1L, "post", null,null,null,null,1L ,null, null);
+        Tweet tweet = new Tweet(1L, "post", null, null, null, null, 1L, null, null);
 
         doReturn(conn).when(twitterConnection).getApi();
         doReturn(timelineOperations).when(conn).timelineOperations();
@@ -278,10 +278,10 @@ public class SocialMediaServiceTest {
         assertEquals(returnedTweet.getText(), "post");
     }
 
-    @Test(expected = NoSuchSocialMediaConnectionException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testCreateTwitterPost_shouldThrowNoSuchSocialMediaConnectionException() throws Exception {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
-        doReturn(null).when(socialMediaRepositoryMock).findByUserAndProvider(user,"twitter");
+        doReturn(null).when(socialMediaRepositoryMock).findByUserAndProvider(user, "twitter");
 
         socialMediaService.createTwitterPost("urlpath", "post");
     }
@@ -350,10 +350,10 @@ public class SocialMediaServiceTest {
         assertEquals(socialMediaConnection.getSecret(), "verifier");
     }
 
-    @Test(expected = NoSuchSocialMediaConnectionException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testCreateXingPost_shouldCreateXingPost() throws Exception {
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
-        doReturn(null).when(socialMediaRepositoryMock).findByUserAndProviderAndActiveIsTrue(user,"xing");
+        doReturn(null).when(socialMediaRepositoryMock).findByUserAndProviderAndActiveIsTrue(user, "xing");
 
         socialMediaService.createXingPost("url", "post");
     }
