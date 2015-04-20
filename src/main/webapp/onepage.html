@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="unify/one-page/plugins/animate.css">
         <link rel="stylesheet" href="unify/one-page/plugins/line-icons/line-icons.css">
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/glyphicons-pro/css/glyphicons.css">
         <link rel="stylesheet" href="unify/one-page/plugins/pace/pace-flash.css">
         <link rel="stylesheet" href="unify/one-page/plugins/owl-carousel/owl.carousel.css">
         <link rel="stylesheet" href="unify/one-page/plugins/cube-portfolio/cubeportfolio/css/cubeportfolio.min.css">
@@ -230,11 +231,13 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                 </div>
                 <div class="spanner-md"></div>
-                <div class="col-xs-6 col-xs-offset-1">
-                    <a href="/#/projects" class="btn btn-block btn-default">Alle Projekte anzeigen</a>
-                </div>
-                <div class="col-xs-4 col-xs-offset-1">
-                    <a href="/#/resource" class="btn btn-block btn-default">Alle Angebote anzeigen</a>
+                <div class="project-actions row">
+                    <div class="col-xs-6 col-md-8">
+                        <a href="/#/projects" class="btn btn-block btn-default"><i class="fa fa-search"></i> Alle Projekte anzeigen</a>
+                    </div>
+                    <div class="col-xs-6 col-md-4">
+                        <a href="/#/resource" class="btn btn-block btn-default"><i class="fa fa-search"></i> Alle Angebote anzeigen</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -262,14 +265,16 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                 </div>
                 <div class="spanner-md"></div>
-                <div class="col-xs-6 col-xs-offset-1">
-                    <a href="/#/organization" class="btn btn-block btn-default">Alle Organisationen anzeigen</a>
-                </div>
-                <div class="col-xs-4 col-xs-offset-1">
-                    <a href="/#/organization" class="btn btn-block btn-default">
-                        Alle Premiumspender anzeigen
-                        <i class="icon-question" popover="Hier werden Organisationen angezeigt die respondeco.org durch eine Spende unterstützen." popover-trigger="mouseover mouseleave" popover-title="Unser Dank an Premiumspender" popover-placement="left"></i>
-                    </a>
+                <div class="project-actions row">
+                    <div class="col-xs-6 col-md-8">
+                        <a href="/#/organization" class="btn btn-block btn-default"><i class="fa fa-search"></i> Alle Organisationen anzeigen</a>
+                    </div>
+                    <div class="col-xs-6 col-md-4">
+                        <a href="/#/organization" class="btn btn-block btn-default">
+                            <i class="fa fa-search"></i> Alle Premiumspender anzeigen
+                            <i class="icon-question" popover="Hier werden Organisationen angezeigt die respondeco.org durch eine Spende unterstützen." popover-trigger="mouseover mouseleave" popover-title="Unser Dank an Premiumspender" popover-placement="left"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -284,9 +289,9 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                 <div class="row service-box-v1">
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="service-block service-block-default">
-                            <i class="icon-custom icon-lg icon-bg-u rounded-x fa fa-user"></i>
+                            <i class="icon-custom icon-lg icon-bg-u rounded-x icon-line icon-basket"></i>
                             <h2 class="heading-md">Sammle</h2>
-                            <p>Stellen Sie ihr Projekt vor und sammeln Sie Ressourcen die Sie dafür brauchen</p>
+                            <p>Stellen Sie Ihr Projekt vor und sammeln Sie Ressourcen die Sie dafür brauchen</p>
                             <h3></h3>
                             <ul class="list-unstyled pricing-v4-content text-center">
                                 <li><span class="fa fa-check"></span> kostenlos</li>
@@ -297,7 +302,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="service-block service-block-default">
-                            <i class="icon-custom icon-lg icon-bg-u rounded-x icon-line icon-graduation"></i>
+                            <i class="icon-custom icon-lg rounded-x icon-bg-u icon-line icon-present"></i>
                             <h2 class="heading-md">Spende</h2>
                             <p>Unterstützen Sie nachhaltige Projekte mit Ihren Produkten und (Kern)kompetenzen</p>
                             <h3></h3>
@@ -310,7 +315,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                     </div>
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="service-block service-block-default">
-                            <i class="icon-custom icon-lg icon-bg-u rounded-x fa fa-users"></i>
+                            <i class="icon-custom icon-lg icon-bg-u rounded-x icon-line icon-bubbles"></i>
                             <h2 class="heading-md">Promote</h2>
                             <p>Präsentieren Sie Ihre Weiterbildungs- und Beratungsangebote</p>
                             <h3></h3>
@@ -321,8 +326,8 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-                        <button class="btn btn-block btn-default" data-toggle="modal" data-target="#modal-register">Jetzt Engagement zeigen</button>
+                    <div class="col-xs-12">
+                        <button class="btn btn-block btn-u btn-u-lg" data-toggle="modal" data-target="#modal-register">Jetzt Engagement zeigen</button>
                     </div>
                 </div>
             </div>

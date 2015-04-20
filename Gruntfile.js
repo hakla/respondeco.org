@@ -35,6 +35,7 @@ module.exports = function (grunt) {
                 files: [
                     'src/main/webapp/**/*.html',
                     'src/main/webapp/**/*.json',
+                    'src/main/webapp/unify/**/*',
                     '.tmp/styles/**/*.css',
                     '{.tmp/,}src/main/webapp/scripts/**/*.js',
                     'src/main/webapp/images/**/*.{png,jpg,jpeg,gif,webp,svg}'

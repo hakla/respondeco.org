@@ -21,7 +21,7 @@
 }
 
 .big-explanation.out {
-  margin-top: -200%;
+  margin-top: -250%;
 }
 
 .big-explanation i {
@@ -50,8 +50,8 @@ uploaded-image div,
 .btn-u.btn-brd.btn-u-light {
   color: #fff;
   border-color: transparent;
-  margin-top: 24px;
-  padding: 5px 30px;
+  margin-top: 16px;
+  padding: 0px 30px;
   border-color: transparent;
 }
 
@@ -68,11 +68,16 @@ uploaded-image div,
 
 .tp-caption.rs-caption-3 .btn-brd {
   border: transparent;
-  background-color: #358835;
+  background-color: #54922C;
   text-transform: none;
   padding: 20px 30px;
   font-size: 20px;
   border-color: transparent;
+}
+
+.tp-caption.rs-caption-3 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+  color: #fff !important;
+  background-color: #358835;
 }
 
 .one-page-header {
@@ -167,8 +172,8 @@ uploaded-image div,
 }
 
 .cbp-caption {
-  padding: 12px;
-  height: 250px;
+  height: 200px;
+  padding: 0.5px;
 }
 
 .cbp-caption uploaded-image div {
@@ -234,8 +239,8 @@ uploaded-image div,
 
 .header-carousel .item {
   display: block;
-  background-size: 100% auto;
-  background-position: 0 50%;
+  background-position: 50%;
+  background-size: auto 120%;
 }
 
 .btn-group .btn,
@@ -355,11 +360,12 @@ uploaded-image div,
 .reg-block p a {
   text-decoration: underline;
 }
+
 .reg-block p a:hover {
   text-decoration: none;
 }
-
 /*Forms*/
+
 .reg-block .input-group-addon {
   color: #bbb;
   background: none;
@@ -367,11 +373,11 @@ uploaded-image div,
 }
 
 .reg-block .form-control:focus {
-   box-shadow: none;
-   border-color: #999;
+  box-shadow: none;
+  border-color: #999;
 }
 
-.icon-question  {
+.icon-question {
   position: absolute;
   right: 6px;
   z-index: 2;
@@ -379,14 +385,14 @@ uploaded-image div,
   color: #acacac;
 }
 
-.reg-block .checkbox { 
+.reg-block .checkbox {
   color: #555;
   margin-bottom: 20px;
   font-weight: normal;
   font-size: 14px;
 }
-
 /*Reg Header*/
+
 .reg-block-header {
   padding-bottom: 5px;
   margin-bottom: 30px;
@@ -401,9 +407,9 @@ uploaded-image div,
 .reg-block-header p {
   text-align: center;
 }
-
 /*For Mobile Devices*/
-@media (max-width: 500px) { 
+
+@media (max-width: 500px) {
   .reg-block {
     width: 300px;
     margin: 60px auto;
@@ -420,4 +426,103 @@ uploaded-image div,
 .btn-block .icon-question {
   right: 24px;
   top: 10px;
+}
+
+@media(min-width: 992px) {
+  .project-actions .col-xs-6.col-md-8 {
+    padding-right: 6px;
+  }
+  .project-actions .col-xs-6.col-md-8 + .col-xs-6.col-md-4 {
+    padding-left: 0px;
+    margin-left: -4px;
+    padding-right: 12px;
+  }
+}
+
+@media(min-width: 530px) and (max-width: 992px) {
+  .project-actions .col-xs-6.col-md-8 {
+    padding-right: 1px;
+  }
+  .project-actions .col-xs-6.col-md-8 + .col-xs-6.col-md-4 {
+    padding-left: 1px;
+  }
+}
+
+@media(max-width: 529px) {
+  .project-actions .col-xs-6 {
+    width: 100%;
+    padding: 0 15px 0 15px;
+    margin-bottom: 8px;
+  }
+}
+
+@media(max-width: 992px) {
+  .btn-u.btn-brd.btn-u-light {
+    color: #fff;
+    border-color: transparent;
+    margin-top: 24px;
+    padding: 10px 30px;
+    border-color: transparent;
+  }
+  .tp-caption.rs-caption-2 {
+      white-space: normal;
+      font-size: 20px !important;
+      padding: 0 20px !important;
+      line-height: 1.2 !important;
+      margin-top: 8px !important;
+  }
+  .tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 10px 38px;
+  }
+  .tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: transparent;
+    color: #fff !important;
+  }
+  .tp-caption.rs-caption-3 .btn-brd {
+    border: transparent;
+    background-color: #54922C;
+    text-transform: none;
+    padding: 20px 30px;
+    font-size: 20px;
+    border-color: transparent;
+  }
+  .tp-caption.rs-caption-3 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+    color: #fff !important;
+    background-color: #358835;
+  }
+  .one-page-header {
+    background-color: transparent;
+  }
+  .rs-caption-1 {
+    font-size: 42px !important;
+    border-width: 0 !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: normal;
+    text-align: center;
+    line-height: 1em !important;
+  }
+  .rs-caption-1::after,
+  .rs-caption-1::before {
+    content: none;
+  }
+  .rs-caption-2 .btn-brd {
+    font-size: 20px;
+  }
+  .rs-caption-2:after {
+    content: none;
+  }
+}
+
+@media(max-width: 615px) {
+  .rs-caption-1 {
+    margin-top: -70px !important;
+  }
+
+  .tp-caption.rs-caption-3 {
+    margin-top: 26px !important;
+  }
 }
