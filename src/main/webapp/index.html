@@ -1,45 +1,42 @@
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js">
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
     <!--<![endif]-->
 
     <head>
+        <title>Unify | Creative One Page Theme</title>
+        <!-- Meta -->
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <title>respondeco</title>
-
-        <!-- unify begin -->
+        <meta name="author" content="">
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="favicon.ico">
         <!-- Web Fonts -->
-        <link rel="shortcut" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=cyrillic,latin">
-        <link rel="stylesheet" href="unify/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin'>
+        <!-- CSS Global Compulsory -->
+        <link rel="stylesheet" href="unify/one-page/plugins/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="unify/css/style.css">
-
-        <!-- CSS Header and Footer -->
-        <link rel="stylesheet" href="unify/css/headers/header-default.css">
-        <link rel="stylesheet" href="unify/css/footers/footer-v1.css">
-
+        <link rel="stylesheet" href="unify/one-page/css/one.style.css">
+        <link rel="stylesheet" href="unify/one-page/css/pricing_v6.css">
+        <!-- CSS Footer -->
+        <link rel="stylesheet" href="unify/one-page/css/footers/footer-v1.css">
         <!-- CSS Implementing Plugins -->
-        <link rel="stylesheet" href="unify/plugins/animate.css">
-        <link rel="stylesheet" href="unify/plugins/line-icons/line-icons.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/animate.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/line-icons/line-icons.css">
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
-        
-        <!-- CSS Theme -->
-        <link rel="stylesheet" href="unify/css/theme-colors/default.css">
-        <!-- unify end -->
-
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.css">
-        <link rel="stylesheet" href="styles/main.css">
-        <link rel="stylesheet" href="styles/textmessages.css">
-        <!-- endbuild -->
-
-        <!-- build:js(.tmp) scripts/lib.js -->
+        <link rel="stylesheet" href="unify/one-page/plugins/glyphicons-pro/css/glyphicons.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/pace/pace-flash.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/owl-carousel/owl.carousel.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/cube-portfolio/cubeportfolio/css/cubeportfolio.min.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/cube-portfolio/cubeportfolio/custom/custom-cubeportfolio.css">
+        <link rel="stylesheet" href="unify/one-page/plugins/revolution-slider/rs-plugin/css/settings.css" type="text/css" media="screen">
+        <!--[if lt IE 9]><link rel="stylesheet" href="unify/one-page/plugins/revolution-slider/rs-plugin/css/settings-ie8.css" type="text/css" media="screen"><![endif]-->
+        <!-- CSS Customization -->
+        <link rel="stylesheet" href="unify/one-page/css/custom.css">
+        <!-- build:js(.tmp) scripts/lib_one-page.js -->
         <script src="bower_components/modernizr/modernizr.js"></script>
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
@@ -51,276 +48,511 @@
         <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
         <!-- endbuild -->
     </head>
+    <!--
+The #page-top ID is part of the scrolling feature.
+The data-spy and data-target are part of the built-in Bootstrap scrollspy function.
+-->
 
-    <body ng-app="respondecoApp" ng-controller="MainController" ng-cloak>
-        <!--[if lt IE 10]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        <div class="wrapper">
-            <div class="header">
-                <div class="container">
-                    <a class="logo" href="#">
-                        <img src="images/logo-small.png" alt="Logo">
-                    </a>
-                    <div class="topbar" ng-switch="authenticated">
-                        <ul class="loginbar pull-right">
-                            <li class="hoverSelector topbar-account-header" ng-class="{ highlight: newMessages > 0 }" ng-controller="MenuController">
-                                <i class="fa fa-user"></i>
-                                <span ng-switch-when="false" class="hidden-tablet" translate="global.menu.account.main">Account</span>
-                                <span ng-switch-when="true" class="hidden-tablet">{{ username }}</span>
-                                <ul class="languages topbar-account hoverSelectorBlock">
-                                    <li ng-switch-when="true">
-                                        <a href="#/textmessages">
-                                            <span class="glyphicon glyphicon-envelope"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.messages">Messages</span>
-                                            <span class="badge" ng-show="newMessages > 0">{{ newMessages }}</span>
-                                        </a>
-                                    </li>
-                                     <li ng-switch-when="true">
-                                        <a href="#/newsfeed">
-                                            <span class="glyphicon glyphicon-cloud"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.newsfeed">Newsfeed</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true" ng-hide="isOrganizationUser()">
-                                        <a href="#/settings">
-                                            <span class="glyphicon glyphicon-wrench"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.settings">Settings</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true" ng-show="isOrganizationUser()">
-                                        <a ng-click="redirectToOwnOrganization()">
-                                            <span class="glyphicon glyphicon-briefcase"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.organization">My organization</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true" ng-show="isOrganizationUser()">
-                                        <a ng-click="redirectToOwnProjects()">
-                                            <span class="glyphicon glyphicon-leaf"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.projects">My projects</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/ownresource">
-                                            <span class="glyphicon glyphicon-tree-deciduous"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.myresources">Resource management</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/resourcemessages">
-                                            <span class="glyphicon glyphicon-inbox"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.resourcerequests">Resource requests</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/social-networks">
-                                            <span class="glyphicon glyphicon-link"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.social-networks">Social networks</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/password">
-                                            <span class="glyphicon glyphicon-lock"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.password">Password</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/logout">
-                                            <span class="glyphicon glyphicon-log-out"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.logout">Log out</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="false">
-                                        <a href="#/login">
-                                            <span class="glyphicon glyphicon-log-in"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.login">Authenticate</span>
-                                        </a>
-                                    </li>
-            
-                                    <li ng-switch-when="false">
-                                        <a href="#/register">
-                                            <span class="glyphicon glyphicon-plus-sign"></span>
-                                            &#xA0;
-                                            <span translate="global.menu.account.register">Register</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="hoverSelector" ng-controller="LanguageController">
-                                <i class="fa fa-globe"></i>
-                                <span class="hidden-tablet" translate="global.menu.language">Language</span>
-                                <ul class="languages hoverSelectorBlock">
-                                    <li active-menu="{{key}}" ng-repeat="(key, language) in languages">
-                                        <a href="javascript:;" ng-click="changeLanguage(key)">{{language}}</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="hoverSelector" ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" ng-controller="AdminController">
-                                <span class="glyphicon glyphicon-tower"></span>
-                                <span class="hidden-tablet" translate="global.menu.admin">Admin</span>
-                                <ul class="languages hoverSelectorBlock">
-                                    <li>
-                                        <a href="#/docs">
-                                            <span translate="global.menu.account.apidocs">API Docs</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#/admin/organization/verify">
-                                            <span translate="global.menu.admin.verify">Verify</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+    <body id="body" data-spy="scroll" data-target=".one-page-header" class="demo-lightbox-gallery" ng-app="respondecoApp" ng-controller="MainController">
+        <!--=== Header ===-->
+        <nav class="one-page-header navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="menu-container page-scroll">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="fa fa-bars"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
                     </button>
+                    <a class="navbar-brand" href="#intro">
+                        <span>r</span>espondeco.org
+                        <!-- <img src="unify/one-page/img/logo1.png" alt="Logo"> -->
+                    </a>
                 </div>
-                <nav class="collapse navbar-collapse mega-menu navbar-responsive-collapse" role="navigation" ng-cloak>
-                    <div class="container">
-                        <ul class="nav navbar-nav" ng-switch="authenticated">
-                            <li ng-class="{ active: isActive('/organization') }">
-                                <a href="#/organization">
-                                    <span translate="global.menu.organization">Organization</span>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse navbar-ex1-collapse">
+                    <div class="menu-container">
+                        <ul class="nav navbar-nav">
+                            <li class="page-scroll home">
+                                <a href="#portfolio">Projekte</a>
+                            </li>
+                            <li class="page-scroll">
+                                <a href="#organization">Organisationen</a>
+                            </li>
+                            <li class="page-scroll button">
+                                <a href="#engagement">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn">Engagement zeigen</button>
+                                    </div>
                                 </a>
                             </li>
-                            <li ng-class="{ active: isActive('/projects') }">
-                                <a href="#/projects">
-                                    <span translate="global.menu.projects">Projects</span>
-                                </a>
+                            <li class="page-scroll">
+                                <a href="#about">Über uns</a>
                             </li>
-                            <li ng-class="{ active: isActive('/resource') }">
-                                <a href="#/resource">
-                                    <span translate="global.menu.resource">Resource</span>
-                                </a>
+                            <li class="page-scroll">
+                                <a href="/#/login">Login</a>
                             </li>
                         </ul>
                     </div>
-                </nav>
+                </div>
+                <!-- /.navbar-collapse -->
             </div>
-            <div class="container error-container">
-                <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)"><resp-bind content="alert.msg"></resp-bind></alert>
-            </div>
-            <div ng-class="main() ? 'container-landing-page' : 'container'">
-                <div ng-class="main() ? '' : 'well'" ng-view ng-cloak></div>
-            
-                <div ng-hide="main()" class="footer">
-                    <p translate="footer">This is your footer</p>
+            <!-- /.container -->
+        </nav>
+        <!--=== End Header ===-->
+        <div class="big-explanation out">
+            <h1>So funktionierts</h1>
+            <a class="close-explanation"><i class="fa fa-times-circle"></i></a>
+            <div class="spacer-medium"></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <div class="circle">1</div>
+                        <h2>Entdecke tolle Projekte</h2>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="circle">2</div>
+                        <h2>Unterstütze nachhaltige Projekte<br/><small>mit deinen Produkten und deiner Kompetenz</small></h2>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="circle">3</div>
+                        <h2>Zeige dein Engagement<br/><small>Lass dich feiern</small></h2>
+                    </div>
+                </div>
+                <div class="spacer-big"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p>
+                            <a href="#/erste-schritte/sammle">Sammle</a> für dein eigenes Projekt
+                        </p>
+                        <p>
+                            <a href="#/erste-schritte/promote">Promote</a> deine nachhaltige Weiterbildungs- und Beratungsangebote
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script>-->
-
-
+        <!-- Intro Section -->
+        <section id="intro" class="intro-section">
+            <div class="header-carousel">
+                <div class="item" style="background-image: url('images/slide1-alternative.jpg')" alt="The Last of us"></div>
+                <div class="item" style="background-image: url('images/slide1.jpg')" alt="GTA V"></div>
+                <div class="item" style="background-image: url('images/slide3.jpg')" alt="Mirror Edge"></div>
+            </div>
+            <div class="fullscreenbanner-container">
+                <div class="fullscreenbanner">
+                    <ul>
+                        <!-- SLIDE 1 -->
+                        <li data-transition="fade" data-slotamount="5" data-masterspeed="700" data-title="Slide 1">
+                            <!-- MAIN IMAGE -->
+                            <!-- LAYER -->
+                            <!-- LAYERS -->
+                            <div class="tp-caption rs-caption-1 sft start" data-x="center" data-hoffset="0" data-y="100" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
+                                Gemeinsam verändern
+                            </div>
+                            <!-- LAYER -->
+                            <div class="tp-caption rs-caption-2 sft" data-x="center" data-hoffset="0" data-y="170" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300" data-captionhidden="off" style="z-index: 6">
+                                <span>Finde verantwortungsvolle Partner und nachhaltige Projekte</span>
+                                <br>
+                                <a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">So funktionierts</a>
+                                </span>
+                            </div>
+                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="450" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="800" data-start="2000" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
+                                <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Projekte anzeigen</a></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="tp-bannertimer tp-bottom"></div>
+                </div>
+            </div>
+        </section>
+        <!-- End Intro Section -->
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="about-section">
+            <div class="container content-lg">
+                <div class="title-v1">
+                    <h2>Projekte ({{ projects.length }})</h2>
+                </div>
+                <div class="cube-portfolio">
+                    <div class="filters-container cbp-l-filters-button">
+                        <div data-filter="*" class="cbp-filter-item-active cbp-filter-item"> All </div>
+                        <div data-filter=".Tierschutz" class="cbp-filter-item"> Tierschutz </div>
+                        <div data-filter=".Obdachlosenhilfe" class="cbp-filter-item"> Obdachlosenhilfe </div>
+                        <div data-filter=".motion" class="cbp-filter-item"> Motion </div>
+                    </div>
+                    <!--/end Filters Container-->
+                    <div class="grid-container cbp-l-grid-gallery">
+                        <div class="cbp-item {{item.propertyTags[0].name}} {{item.className}}" ng-repeat="item in projects">
+                            <div class="description">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-12">
+                                        <h3>{{item.name}}</h3>
+                                    </div>
+                                    <div class="col-xs-12 col-md-7">
+                                        <p>
+                                            Organisation: <a href="/#/organization/{{item.organization.id}}">{{item.organization.name}}</a>
+                                            <sup><rating max="5" readonly="false" on-leave="overStar = null" ng-model="item.organization.rating"></rating></sup>
+                                        </p>
+                                        <p class="purpose">
+                                            {{item.purpose}}
+                                        </p>
+                                        <p>
+                                            Themenfeld:
+                                        </p>
+                                        <p>
+                                            Schlagwörter: <span class="badge" ng-repeat="tag in item.propertyTags">{{ tag.name }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-xs-12 col-md-4 col-md-offset-1">
+                                        <strong>Was benötigt wird</strong>
+                                        <ul>
+                                            <li ng-repeat="req in item.resourceRequirements">
+                                                {{req.name}} ({{req.amount}}/{{req.originalAmount}})
+                                            </li>
+                                        </ul>
+                                        <button class="btn btn-default btn-success">Mehr Infos</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="unify/one-page/ajax/project1.html" class="cbp-caption cbp-singlePageInline">
+                                <div class="cbp-caption">
+                                    <uploaded-image name="item.logo.id"></uploaded-image>
+                                    <div class="cbp-l-caption-alignLeft">
+                                        <div class="cbp-l-caption-title">
+                                            <span popover="{{item.name}}" popover-trigger="mouseover mouseleave">{{item.name}}</span>
+                                            <div class="organization-logo" popover="{{item.organization.name}}" popover-trigger="mouseover mouseleave" popover-placement="left">
+                                                <uploaded-image name="item.organization.logo.id"></uploaded-image>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="spanner-md"></div>
+                <div class="project-actions row">
+                    <div class="col-xs-6 col-md-8">
+                        <a href="/#/projects" class="btn btn-block btn-default"><i class="fa fa-search"></i> Alle Projekte anzeigen</a>
+                    </div>
+                    <div class="col-xs-6 col-md-4">
+                        <a href="/#/resource" class="btn btn-block btn-default"><i class="fa fa-search"></i> Alle Angebote anzeigen</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Portfolio Section -->
+        <!-- Organization Section -->
+        <section id="organization" class="about-section">
+            <div class="container content-lg">
+                <div class="title-v1">
+                    <h2>Organisationen ({{ organizations.length }})</h2>
+                </div>
+                <div class="cube-portfolio">
+                    <div class="grid-container cbp-l-grid-gallery">
+                        <div class="cbp-item {{item.className}}" ng-repeat="item in organizations">
+                            <a href="/#/organization/{{item.id}}" class="cbp-caption">
+                                <div class="cbp-caption">
+                                    <uploaded-image name="item.logo.id"></uploaded-image>
+                                    <div class="cbp-l-caption-alignLeft">
+                                        <div class="cbp-l-caption-title" popover="{{item.name}}" popover-trigger="mouseover mouseleave">
+                                            {{item.name}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="spanner-md"></div>
+                <div class="project-actions row">
+                    <div class="col-xs-6 col-md-8">
+                        <a href="/#/organization" class="btn btn-block btn-default"><i class="fa fa-search"></i> Alle Organisationen anzeigen</a>
+                    </div>
+                    <div class="col-xs-6 col-md-4">
+                        <a href="/#/organization" class="btn btn-block btn-default">
+                            <i class="fa fa-search"></i> Alle Premiumspender anzeigen
+                            <i class="icon-question" popover="Hier werden Organisationen angezeigt die respondeco.org durch eine Spende unterstützen." popover-trigger="mouseover mouseleave" popover-title="Unser Dank an Premiumspender" popover-placement="left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Organization Section -->
+        <section id="engagement" class="about-section">
+            <div class="container text-center content-lg">
+                <div class="title-v1">
+                    <h2>
+                        <span class="star">Engagement zeigen</span>
+                    </h2>
+                </div>
+                <div class="row service-box-v1">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <div class="service-block service-block-default">
+                            <i class="icon-custom icon-lg icon-bg-u rounded-x icon-line icon-basket"></i>
+                            <h2 class="heading-md">Sammle</h2>
+                            <p>Stellen Sie Ihr Projekt vor und sammeln Sie Ressourcen die Sie dafür brauchen</p>
+                            <h3></h3>
+                            <ul class="list-unstyled pricing-v4-content text-center">
+                                <li><span class="fa fa-check"></span> kostenlos</li>
+                                <li><span class="fa fa-check"></span> Sachspenden</li>
+                                <li><span class="fa fa-check"></span> Beratung</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <div class="service-block service-block-default">
+                            <i class="icon-custom icon-lg rounded-x icon-bg-u icon-line icon-present"></i>
+                            <h2 class="heading-md">Spende</h2>
+                            <p>Unterstützen Sie nachhaltige Projekte mit Ihren Produkten und (Kern)kompetenzen</p>
+                            <h3></h3>
+                            <ul class="list-unstyled pricing-v4-content">
+                                <li><span class="fa fa-check"></span> passende Projekte</li>
+                                <li><span class="fa fa-check"></span> vertrauenswürdige Partner</li>
+                                <li><span class="fa fa-check"></span> lassen Sie sich feiern</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <div class="service-block service-block-default">
+                            <i class="icon-custom icon-lg icon-bg-u rounded-x icon-line icon-bubbles"></i>
+                            <h2 class="heading-md">Promote</h2>
+                            <p>Präsentieren Sie Ihre Weiterbildungs- und Beratungsangebote</p>
+                            <h3></h3>
+                            <ul class="list-unstyled pricing-v4-content text-center">
+                                <li><span class="fa fa-check"></span> kostenlos</li>
+                                <li><span class="fa fa-check"></span> zielgruppengerecht</li>
+                                <li><span class="fa fa-check"></span> neue Kunden</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-block btn-u btn-u-lg" data-toggle="modal" data-target="#modal-register">Jetzt Engagement zeigen</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--  About Section -->
+        <section id="about" class="about-section section-first">
+            <div class="about-image bg-grey">
+                <div class="container content-lg">
+                    <div class="title-v1">
+                        <h2>Über uns</h2>
+                        <p>
+                            Wir ermöglichen Partnerschaften für den guten Zweck.
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 content-boxes-v3 margin-bottom-40">
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-support"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Sozial</h2>
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-refresh"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Nachhaltig</h2>
+                                    <p>Zu unserer Projektseite...</p>
+                                </div>
+                            </div>
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-magnifier"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Transparent</h2>
+                                    <p>Link zu github, link zu Finanzen</p>
+                                </div>
+                            </div>
+                            <div class="clearfix margin-bottom-30">
+                                <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-users"></i>
+                                <div class="content-boxes-in-v3">
+                                    <h2 class="heading-sm">Demokratisch</h2>
+                                    <p>Link zu tricider</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <img class="img-responsive" src="unify/one-page/img/mockup/mockup1.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--  About Section -->
+        <!-- Contact Section -->
+        <div id="footer-v1" class="footer-v1">
+            <div class="footer">
+                <div class="container">
+                    <div class="row">
+                        <!-- About -->
+                        <div class="col-md-3 md-margin-bottom-40">
+                            <a href="#"><img id="logo-footer" class="footer-logo" src="/images/logo-small.png" alt=""></a>
+                        </div>
+                        <!-- End About -->
+                        <!-- Latest -->
+                        <div class="col-md-3 md-margin-bottom-40">
+                            <div class="posts">
+                                <div class="headline">
+                                    <h2>Latest Posts</h2></div>
+                                <ul class="list-unstyled latest-list">
+                                    <li>
+                                        <a href="#">Incredible content</a>
+                                        <small>May 8, 2014</small>
+                                    </li>
+                                    <li>
+                                        <a href="#">Best shoots</a>
+                                        <small>June 23, 2014</small>
+                                    </li>
+                                    <li>
+                                        <a href="#">New Terms and Conditions</a>
+                                        <small>September 15, 2014</small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- End Latest -->
+                        <!-- Link List -->
+                        <div class="col-md-3 md-margin-bottom-40">
+                            <div class="headline">
+                                <h2>Coole Seiten</h2></div>
+                            <ul class="list-unstyled link-list">
+                                <li><a href="#">Über uns</a><i class="fa fa-angle-right"></i></li>
+                                <li><a href="#">Kontaktiere uns</a><i class="fa fa-angle-right"></i></li>
+                                <li><a href="">AGB</a><i class="fa fa-angle-right"></i></li>
+                            </ul>
+                        </div>
+                        <!-- End Link List -->
+                        <!-- Address -->
+                        <div class="col-md-3 map-img md-margin-bottom-40">
+                            <div class="headline">
+                                <h2>Kontakt</h2></div>
+                            <address class="md-margin-bottom-40">
+                                Grünbergstraße 3/17
+                                <br /> 1120 Wien, Österreich
+                                <br /> Email: <a href="mailto:info@respondeco.org" class="">info@respondeco.org</a>
+                            </address>
+                        </div>
+                        <!-- End Address -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="reg-block">
+                            <div class="reg-block-header">
+                                <h2>Registrieren <small>und engagieren</small></h2>
+                                <ul class="social-icons text-center hidden">
+                                    <li>
+                                        <a class="rounded-x social_facebook" data-original-title="Facebook" href="#"></a>
+                                    </li>
+                                    <li>
+                                        <a class="rounded-x social_twitter" data-original-title="Twitter" href="#"></a>
+                                    </li>
+                                    <li>
+                                        <a class="rounded-x social_googleplus" data-original-title="Google Plus" href="#"></a>
+                                    </li>
+                                    <li>
+                                        <a class="rounded-x social_linkedin" data-original-title="Linkedin" href="#"></a>
+                                    </li>
+                                </ul>
+                                <small>Bereits angemeldet? Klicken Sie <a class="color-green" href="page_login1.html">Anmelden</a> um sich in Ihrem Account anzumelden.</small>
+                            </div>
+                            <div class="input-group margin-bottom-20">
+                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <input type="text" class="form-control" placeholder="Organisationsname">
+                                <span class="icon-question" popover="Geben Sie hier den Namen Ihrer Organisation ein, so wie er auf Ihrem Profil erscheinen soll" popover-placement="left" popover-trigger="mouseover mouseleave"></span>
+                            </div>
+                            <div class="input-group margin-bottom-20">
+                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                <input type="text" class="form-control" placeholder="Email">
+                            </div>
+                            <div class="input-group margin-bottom-20">
+                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                <input type="text" class="form-control" placeholder="Passwort">
+                            </div>
+                            <div class="input-group margin-bottom-30">
+                                <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                <input type="text" class="form-control" placeholder="Passwort bestätigen">
+                            </div>
+                            <hr>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Ich habe die <a target="_blank" href="page_terms.html">Nutzungsbedingungen</a> gelesen
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <button type="submit" class="btn-u btn-block">Registrieren</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- JS Global Compulsory -->
+        <script type="text/javascript" src="unify/one-page/plugins/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/jquery/jquery-migrate.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/bootstrap/js/bootstrap.min.js"></script>
         <!-- JS Implementing Plugins -->
-        <script src="unify/plugins/back-to-top.js"></script>
-        <script src="unify/plugins/smoothScroll.js"></script>
-
-        <!-- JS Customization -->
-        <script type="text/javascript" src="unify/js/custom.js"></script>
-
-        <!-- JS Page Level -->
-        <script src="unify/js/app.js"></script>
-        <script>
-        jQuery(document).ready(function() {
-            App.init();
-        });
-        </script>
-
-        <!--[if lt IE 9]>
-            <script src="unify/plugins/respond.js"></script>
-            <script src="unify/plugins/html5shiv.js"></script>
-            <script src="unify/plugins/placeholder-IE-fixes.js"></script>
-        <![endif]-->
-
-        <!-- build:js scripts/scripts.js -->
-        <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-        <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
-        <script src="scripts/http-auth-interceptor.js"></script>
-        <script src="scripts/truncate.js"></script>
-        <script src="scripts/app.js"></script>
-        <script src="scripts/constants.js"></script>
-        <script src="scripts/controllers.js"></script>
-        <script src="scripts/services.js"></script>
-        <script src="scripts/directives.js"></script>
-        <script src="scripts/filters.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
-        <script src="bower_components/angular-file-upload/angular-file-upload.min.js"></script>
-        <script src="scripts/vendor/xdate.js"></script>
+        <!-- <script type="text/javascript" src="unify/one-page/plugins/smoothScroll.js"></script> -->
+        <script type="text/javascript" src="unify/one-page/plugins/jquery.easing.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/pace/pace.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/jquery.parallax.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/counter/waypoints.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/counter/jquery.counterup.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/owl-carousel/owl.carousel.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/sky-forms-pro/skyforms/js/jquery.form.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/sky-forms-pro/skyforms/js/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+        <script type="text/javascript" src="unify/one-page/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+        <!-- Angular UI -->
         <script src="bower_components/ui-bootstrap/src/typeahead/typeahead.js"></script>
         <script src="bower_components/ui-bootstrap/src/position/position.js"></script>
         <script src="bower_components/ui-bootstrap/src/bindHtml/bindHtml.js"></script>
         <script src="bower_components/ui-bootstrap/src/datepicker/datepicker.js"></script>
         <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
         <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-        <script src="bower_components/ng-tags-input/ng-tags-input.js"></script>
-        <script src="bower_components/moment/moment.js"></script>
-        <script src="bower_components/angular-moment/angular-moment.js"></script>
-        <script src="bower_components/moment/locale/de.js"></script>
-        <script src="scripts/resource/router_resource.js"></script>
-        <script src="scripts/resource/controller_resource.js"></script>
-        <script src="scripts/resource/service_resource.js"></script>
-        <script src="scripts/image/service_image.js"></script>
-        <script src="scripts/textmessage/router_textmessage.js"></script>
-        <script src="scripts/textmessage/controller_textmessage.js"></script>
-        <script src="scripts/textmessage/service_textmessage.js"></script>
-        <script src="scripts/organization/router_organization.js"></script>
-        <script src="scripts/organization/controller_organization.js"></script>
-        <script src="scripts/organization/controller_organizations.js"></script>
-        <script src="scripts/organization/controller_organization_edit.js"></script>
-        <script src="scripts/organization/controller_organization_verify.js"></script>
-        <script src="scripts/organization/service_organization.js"></script>
-        <script src="scripts/orgjoinrequest/service_orgjoinrequest.js"></script>
-        <script src="scripts/project/router_project.js"></script>
-        <script src="scripts/project/controller_project.js"></script>
-        <script src="scripts/project/service_project.js"></script>
-        <script src="scripts/project/controller_project_search.js"></script>
-        <script src="scripts/project/controller_project_location.js"></script>
-        <script src="scripts/newsfeed/controller_newsfeed.js"></script>
-        <script src="scripts/newsfeed/router_newsfeed.js"></script>
-        <script src="scripts/socialmedia/controller_socialmedia.js"></script>
-        <script src="scripts/socialmedia/router_socialmedia.js"></script>
-        <script src="scripts/socialmedia/service_socialmedia.js"></script>
-        <script src="scripts/service_names.js"></script>
-        <script src="scripts/service_user.js"></script>
-        <script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false&language=en&v=3.17"></script>
-        <script src="bower_components/lodash/dist/lodash.js"></script>
-        <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
-        <!-- endbuild -->
-
+        <!-- JS Page Level-->
+        <script type="text/javascript" src="unify/one-page/js/one.app.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/forms/login.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/forms/contact.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/plugins/pace-loader.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/plugins/owl-carousel.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/plugins/revolution-slider.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js"></script>
+        <script type="text/javascript">
+        jQuery(document).ready(function() {
+            App.init();
+            LoginForm.initLoginForm();
+            ContactForm.initContactForm();
+            RevolutionSlider.initRSfullScreen();
+        });
+        </script>
+        <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+        <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
+        <script src="scripts/http-auth-interceptor.js"></script>
+        <script src="scripts/truncate.js"></script>
+        <script type="text/javascript" src="unify/one-page/js/custom.js"></script>
+        <script src="scripts/directives.js"></script>
+        <!--[if lt IE 9]>
+        <script src="unify/one-page/plugins/respond.js"></script>
+        <script src="unify/one-page/plugins/html5shiv.js"></script>
+        <script src="unify/one-page/js/plugins/placeholder-IE-fixes.js"></script>
+        <script src="unify/one-page/plugins/sky-forms-pro/skyforms/js/sky-forms-ie8.js"></script>
+    <![endif]-->
+        <!--[if lt IE 10]>
+        <script src="unify/one-page/plugins/sky-forms-pro/skyforms/js/jquery.placeholder.min.js"></script>
+    <![endif]-->
     </body>
 
 </html>
