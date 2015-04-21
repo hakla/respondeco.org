@@ -154,6 +154,11 @@ uploaded-image div,
   left: -7px;
 }
 
+.one-page-header .navbar-nav i.icon-star {
+  font-size: 8px;
+  vertical-align: middle;
+}
+
 .nav .btn-group {
   margin-top: 8px;
 }

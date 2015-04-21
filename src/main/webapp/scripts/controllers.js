@@ -56,6 +56,8 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
     };
+
+    $rootScope.title = "Organization";
 });
 
 respondecoApp.controller('AdminController', function($scope) {});

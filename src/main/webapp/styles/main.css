@@ -595,61 +595,40 @@ uploaded-image div, [uploaded-image] div {
 }
 
 /* line 619, ../../scss/main.scss */
-h1 {
-  font-size: 28px;
-  margin-bottom: 50px;
-}
-
-/* line 624, ../../scss/main.scss */
-h2 {
-  font-size: 24px;
-}
-
-/* line 628, ../../scss/main.scss */
-h3 {
-  font-size: 20px;
-}
-
-/* line 632, ../../scss/main.scss */
-h4 {
-  font-size: 18px;
-}
-
-/* line 636, ../../scss/main.scss */
 .form-search {
   margin-bottom: 50px;
 }
 
-/* line 641, ../../scss/main.scss */
+/* line 624, ../../scss/main.scss */
 .project-details .organization {
   max-width: 200px;
 }
-/* line 645, ../../scss/main.scss */
+/* line 628, ../../scss/main.scss */
 .project-details .project-item {
   min-height: inherit;
 }
-/* line 648, ../../scss/main.scss */
+/* line 631, ../../scss/main.scss */
 .project-details .project-item uploaded-image {
   height: 75px;
 }
-/* line 653, ../../scss/main.scss */
+/* line 636, ../../scss/main.scss */
 .project-details .badge {
   margin: 2px;
 }
-/* line 657, ../../scss/main.scss */
+/* line 640, ../../scss/main.scss */
 .project-details .modal-body {
   clear: left;
 }
-/* line 662, ../../scss/main.scss */
+/* line 645, ../../scss/main.scss */
 .project-details .accordion-toggle .ellipsis {
   padding-left: 15px;
 }
-/* line 666, ../../scss/main.scss */
+/* line 649, ../../scss/main.scss */
 .project-details .accordion-toggle .pull-right {
   margin-right: 10px;
 }
 
-/* line 672, ../../scss/main.scss */
+/* line 655, ../../scss/main.scss */
 .ellipsis {
   overflow: hidden;
   white-space: nowrap;
@@ -657,75 +636,62 @@ h4 {
   display: block;
 }
 
-/* line 676, ../../scss/main.scss */
+/* line 659, ../../scss/main.scss */
 .dynamic-image {
   width: 100%;
   background-position: 50%;
   background-repeat: no-repeat;
 }
 
-/* line 683, ../../scss/main.scss */
+/* line 666, ../../scss/main.scss */
 .postingform textarea {
   height: 33px;
   transition: .25s ease height;
 }
-/* line 688, ../../scss/main.scss */
+/* line 671, ../../scss/main.scss */
 .postingform .btn {
   opacity: 0;
   transition: .25s ease opacity;
   transition-delay: .25s;
 }
-/* line 695, ../../scss/main.scss */
+/* line 678, ../../scss/main.scss */
 .postingform .focused textarea {
   height: 100px;
 }
-/* line 699, ../../scss/main.scss */
+/* line 682, ../../scss/main.scss */
 .postingform .focused .btn {
   opacity: 1;
 }
 
-/* line 705, ../../scss/main.scss */
+/* line 688, ../../scss/main.scss */
 .inline-block {
   display: inline-block;
 }
 
-/* line 709, ../../scss/main.scss */
+/* line 692, ../../scss/main.scss */
 .line-through {
   text-decoration: line-through;
 }
 
 /* unify customizations */
-/* line 717, ../../scss/main.scss */
+/* line 700, ../../scss/main.scss */
 .header .logo img {
   margin: 5px 0;
 }
-/* line 724, ../../scss/main.scss */
+/* line 707, ../../scss/main.scss */
 .header .topbar .loginbar > li {
   margin: 0 5px;
 }
-/* line 728, ../../scss/main.scss */
+/* line 711, ../../scss/main.scss */
 .header .topbar .loginbar .topbar-account-header {
   display: inline-block;
   white-space: nowrap;
 }
-/* line 732, ../../scss/main.scss */
+/* line 715, ../../scss/main.scss */
 .header .topbar .loginbar .topbar-account-header > span {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
   vertical-align: top;
-}
-
-.development {
-  position: absolute;
-  width: 149px;
-  height: 149px;
-  top: 0;
-  left: 0;
-  border: 0;
-  z-index: 1000;
-  background-image: url("../images/demo_ribbon.png");
-  background-position: center center;
-  background-repeat: no-repeat;
 }
