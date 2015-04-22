@@ -1,13 +1,15 @@
 'use strict';
 
 respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams,
-                                                            Organization, Account, SocialMedia, AuthenticationSharedService) {
+                                                            Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope) {
     var isOwner = false;
     var user;
 
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;
     $scope.xingConnected = false;
+
+    $rootScope.title = "Organisation";
 
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
