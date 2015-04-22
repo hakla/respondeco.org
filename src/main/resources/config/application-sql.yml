@@ -2,7 +2,7 @@ server:
     port: 8081
 
 spring:
-    profiles: dev-sql
+    profiles: sql
 
     datasource:
         dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource

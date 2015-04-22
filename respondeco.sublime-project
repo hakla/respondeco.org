@@ -1,0 +1,15 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				".idea",
+				"target",
+				"node_modules"
+			],
+			"follow_symlinks": true,
+			"path": "."
+		}
+	]
+}

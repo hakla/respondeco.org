@@ -52,6 +52,12 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
 
         return $rootScope._account.invited === false;
     };
+
+    $scope.isActive = function (viewLocation) { 
+        return viewLocation === $location.path();
+    };
+
+    $rootScope.title = "Organization";
 });
 
 respondecoApp.controller('AdminController', function($scope) {});
