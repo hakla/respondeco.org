@@ -134,7 +134,7 @@ public class SocialMediaService {
      * @throws OperationForbiddenException
      */
     public String createFacebookPost(String urlPath, String post) throws OperationForbiddenException,
-        NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException {
+        NoSuchEntityException, SocialMediaPermissionRevokedException {
 
         User user = userService.getUserWithAuthorities();
         if(user == null) {
@@ -143,7 +143,7 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
         if(socialMediaConnection == null) {
-            throw new NoSuchSocialMediaConnectionException("no connection found for user with id: " + user.getId());
+            throw new NoSuchEntityException("no connection found for user with id: " + user.getId());
         }
 
         //create connection with help of socialMediaConnection
@@ -171,14 +171,14 @@ public class SocialMediaService {
      * with facebook. Also sends a REST Request to the facebook graph api to revoke the permissions
      * for the respondeco app. Otherwise it throws an NoSuchMediaConnectionException.
      * @return the deleted connection from the db.
-     * @throws NoSuchSocialMediaConnectionException if users account is not connected with facebook.
+     * @throws NoSuchEntityException if users account is not connected with facebook.
      */
-    public SocialMediaConnection disconnectFacebook() throws NoSuchSocialMediaConnectionException {
+    public SocialMediaConnection disconnectFacebook() throws NoSuchEntityException {
         User user = userService.getUserWithAuthorities();
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
         if(socialMediaConnection == null) {
-            throw new NoSuchSocialMediaConnectionException("user is not connected with facebook");
+            throw new NoSuchEntityException("user is not connected with facebook");
         }
 
         RestTemplate restTemplate = new RestTemplate();
@@ -250,10 +250,10 @@ public class SocialMediaService {
      * @param post message to post.
      * @return created Tweet object.
      * @throws OperationForbiddenException if user is not logged in.
-     * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
+     * @throws NoSuchEntityException if users account is not connected with twitter.
      */
     public Tweet createTwitterPost(String urlPath, String post) throws OperationForbiddenException,
-        NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException, SocialMediaApiConnectionException {
+        NoSuchEntityException, SocialMediaPermissionRevokedException, SocialMediaApiConnectionException {
 
         User user = userService.getUserWithAuthorities();
 
@@ -263,7 +263,7 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
         if(socialMediaConnection == null) {
-            throw new NoSuchSocialMediaConnectionException("no connection found for user with id: " + user.getId());
+            throw new NoSuchEntityException("no connection found for user with id: " + user.getId());
         }
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(new ConnectionData(
@@ -289,14 +289,14 @@ public class SocialMediaService {
      * Disconnects the logged in users account from twitter if his account was already connected with
      * twitter. Otherwise it throws an NoSuchMediaConnectionException.
      * @return the deleted connection from the db.
-     * @throws NoSuchSocialMediaConnectionException if users account is not connected with facebook.
+     * @throws NoSuchEntityException if users account is not connected with facebook.
      */
-    public SocialMediaConnection disconnectTwitter() throws NoSuchSocialMediaConnectionException {
+    public SocialMediaConnection disconnectTwitter() throws NoSuchEntityException {
         User user = userService.getUserWithAuthorities();
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
         if(socialMediaConnection == null) {
-            throw new NoSuchSocialMediaConnectionException("user is not connected with twitter");
+            throw new NoSuchEntityException("user is not connected with twitter");
         }
 
         socialMediaRepository.delete(socialMediaConnection);
@@ -372,10 +372,10 @@ public class SocialMediaService {
      * @param post message to post.
      * @return created Post as String
      * @throws OperationForbiddenException if user is not logged in.
-     * @throws NoSuchSocialMediaConnectionException if users account is not connected with twitter.
+     * @throws NoSuchEntityException if users account is not connected with twitter.
      */
     public String createXingPost(String url, String post) throws OperationForbiddenException,
-        NoSuchSocialMediaConnectionException, SocialMediaPermissionRevokedException , SocialMediaApiConnectionException {
+        NoSuchEntityException, SocialMediaPermissionRevokedException , SocialMediaApiConnectionException {
 
         User user = userService.getUserWithAuthorities();
 
@@ -385,7 +385,7 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProviderAndActiveIsTrue(user, "xing");
         if(socialMediaConnection == null) {
-            throw new NoSuchSocialMediaConnectionException("no connection found for user with id: " + user.getId());
+            throw new NoSuchEntityException("no connection found for user with id: " + user.getId());
         }
 
         Token accessToken = new Token(socialMediaConnection.getToken(), socialMediaConnection.getSecret());
@@ -419,14 +419,14 @@ public class SocialMediaService {
      * Disconnects the logged in users account from xing if his account was already connected with
      * xing. Otherwise it throws an NoSuchMediaConnectionException.
      * @return the deleted connection from the db.
-     * @throws NoSuchSocialMediaConnectionException if users account is not connected with facebook.
+     * @throws NoSuchEntityException if users account is not connected with facebook.
      */
-    public SocialMediaConnection disconnectXing() throws NoSuchSocialMediaConnectionException {
+    public SocialMediaConnection disconnectXing() throws NoSuchEntityException {
         User user = userService.getUserWithAuthorities();
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProviderAndActiveIsTrue(user, "xing");
         if(socialMediaConnection == null) {
-            throw new NoSuchSocialMediaConnectionException("user is not connected with xing");
+            throw new NoSuchEntityException("user is not connected with xing");
         }
 
         socialMediaRepository.delete(socialMediaConnection);

@@ -1,36 +1,22 @@
 package org.respondeco.respondeco.web.rest;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import javax.inject.Inject;
-
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.respondeco.respondeco.domain.Authority;
-import org.respondeco.respondeco.domain.Gender;
+import org.respondeco.respondeco.Application;
+import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
-import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
-import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
+import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -43,13 +29,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.TextMessage;
-import org.respondeco.respondeco.repository.TextMessageRepository;
-
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the TextMessageController REST controller.
@@ -153,7 +138,7 @@ public class TextMessageControllerTest {
         textMessageRequestDTO.setReceiver(new UserDTO(sender));
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
-        doThrow(NoSuchUserException.class).when(textMessageServiceMock).createTextMessage(anyLong(), anyString());
+        doThrow(NoSuchEntityException.class).when(textMessageServiceMock).createTextMessage(anyLong(), anyString());
 
         // Create TextMessage
         restTextMessageMockMvc.perform(post("/app/rest/textmessages")

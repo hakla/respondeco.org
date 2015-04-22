@@ -9,8 +9,11 @@
 
     <defaultCache
             eternal="false"
-            overflowToDisk="false"
-            />
+            overflowToDisk="false"/>
+
+    <cache name="objectMapper"
+           eternal="false"
+           overflowToDisk="false"/>
 
     <cache name="org.respondeco.respondeco.domain.User"
            timeToLiveSeconds="3600">

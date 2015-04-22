@@ -12,12 +12,12 @@ import org.respondeco.respondeco.repository.SocialMediaRepository;
 import org.respondeco.respondeco.service.SocialMediaService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.ConnectionAlreadyExistsException;
-import org.respondeco.respondeco.service.exception.NoSuchSocialMediaConnectionException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.TestUtil;
+import org.respondeco.respondeco.web.rest.dto.PostDTO;
 import org.respondeco.respondeco.web.rest.dto.StringDTO;
 import org.respondeco.respondeco.web.rest.dto.TwitterConnectionDTO;
-import org.respondeco.respondeco.web.rest.dto.PostDTO;
 import org.scribe.oauth.OAuthService;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.core.env.Environment;
@@ -51,9 +51,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class })
+    TransactionalTestExecutionListener.class})
 public class SocialMediaControllerTest {
 
 
@@ -205,7 +205,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateFacebookPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
-        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createFacebookPost(anyString(), anyString());
+        doThrow(NoSuchEntityException.class).when(socialMediaServiceMock).createFacebookPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/facebook/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -233,7 +233,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testDisconnectTwitter_throwsNoSuchSocialMediaConnectionException() throws Exception {
-        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).disconnectTwitter();
+        doThrow(NoSuchEntityException.class).when(socialMediaServiceMock).disconnectTwitter();
 
         restSocialMediaMockMvc.perform(delete("/app/rest/socialmedia/twitter/disconnect")
             .contentType(TestUtil.APPLICATION_JSON_UTF8))
@@ -321,7 +321,7 @@ public class SocialMediaControllerTest {
 
     @Test
     public void testCreateTwitterPost_throwsNoSuchSocialMediaConnectionException() throws Exception {
-        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock).createTwitterPost(anyString(), anyString());
+        doThrow(NoSuchEntityException.class).when(socialMediaServiceMock).createTwitterPost(anyString(), anyString());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/twitter/post")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -414,7 +414,7 @@ public class SocialMediaControllerTest {
         dto.setPost("post");
         dto.setUrlPath("/organization/1");
 
-        doThrow(NoSuchSocialMediaConnectionException.class).when(socialMediaServiceMock)
+        doThrow(NoSuchEntityException.class).when(socialMediaServiceMock)
             .createXingPost(dto.getUrlPath(), dto.getPost());
 
         restSocialMediaMockMvc.perform(post("/app/rest/socialmedia/xing/post")

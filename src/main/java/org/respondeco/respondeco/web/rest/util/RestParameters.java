@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.web.rest.util;
 
-import lombok.Data;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,33 +39,26 @@ public class RestParameters {
         this(page, pageSize, order, null);
     }
 
+    // TODO remove fields
     public RestParameters(Integer page, Integer pageSize, String order, String fields) {
         this.restUtil = new RestUtil();
-        if(page == null) {
+        if (page == null) {
             this.page = DEFAULT_PAGE;
         } else {
             this.page = page;
         }
-        if(pageSize == null) {
+
+        if (pageSize == null) {
             this.pageSize = DEFAULT_PAGE_SIZE;
         } else {
             this.pageSize = pageSize;
         }
-        this.fields = restUtil.splitCommaSeparated(fields);
+
         buildOrders(order);
     }
 
-    private void buildFields(String fields) {
-        this.fields = new ArrayList<>();
-        if(fields != null) {
-            for(String f : fields.split(",")) {
-                this.fields.add(f.trim());
-            }
-        }
-    }
-
     private void buildOrders(String order) {
-        if(order != null) {
+        if (order != null) {
             List<String> orders = restUtil.splitCommaSeparated(order);
             List<Sort.Order> sortOrders = new ArrayList<>();
             for (String o : orders) {
@@ -95,7 +87,6 @@ public class RestParameters {
         return "RestParameters: {" +
             " page: " + page +
             " pageSize: " + pageSize +
-            " fields: " + fields +
             " sort: " + sort +
             "}";
     }

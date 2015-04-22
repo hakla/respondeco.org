@@ -3,16 +3,9 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.matching.MatchingEntity;
-import org.respondeco.respondeco.matching.MatchingImpl;
-import org.respondeco.respondeco.matching.MatchingTag;
-import org.respondeco.respondeco.repository.ProjectRepository;
-import org.respondeco.respondeco.repository.PropertyTagRepository;
-import org.respondeco.respondeco.repository.ResourceTagRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.*;
 import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
@@ -29,10 +22,9 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * REST controller for managing Project.
@@ -118,7 +110,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid ProjectRequestDTO project) {
+    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
         log.debug("REST request to create Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -160,7 +152,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid ProjectRequestDTO project) {
+    public ResponseEntity<?> update(@RequestBody @Valid ProjectDTO project) {
         log.error("REST request to update Project : {}", project);
         ResponseEntity<?> responseEntity;
         try {
@@ -341,7 +333,7 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseDTO> get(
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {
-        log.debug("REST request to get Project : {}", id);
+        log.debug("REST redkkdkquest to get Project : {}", id);
         Project project = projectService.findProjectById(id);
         ResponseEntity<ProjectResponseDTO> response;
         RestParameters restParameters = new RestParameters(null, null, null, fields);
@@ -453,10 +445,10 @@ public class ProjectController {
             ratingService.rateProject(id,ratingRequestDTO.getMatchid(),
                 ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchProjectException e ) {
-            log.error("Could not grate project {}", id, e);
+        } catch (NoSuchEntityException e ) {
+            log.error("Could not rate project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException  | NoSuchResourceMatchException | NoSuchOrganizationException e) {
+        } catch (ProjectRatingException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
@@ -486,7 +478,7 @@ public class ProjectController {
                     permissions = ratingService.checkPermissionsForMatches(matches);
                     List<RatingPermissionResponseDTO> responseDTOs = RatingPermissionResponseDTO.fromEntities(permissions);
                     responseEntity = new ResponseEntity<>(responseDTOs, HttpStatus.OK);
-                } catch (NoSuchResourceMatchException e) {
+                } catch (NoSuchEntityException e) {
                     responseEntity = ErrorHelper.buildErrorResponse(e);
                 }
             } else {
@@ -494,7 +486,7 @@ public class ProjectController {
                     RatingPermission ratingPermission = ratingService.checkPermissionForProject(id);
                     RatingPermissionResponseDTO responseDTO = RatingPermissionResponseDTO.fromEntity(ratingPermission);
                     responseEntity = new ResponseEntity<>(Arrays.asList(responseDTO), HttpStatus.OK);
-                } catch (NoSuchProjectException e) {
+                } catch (NoSuchEntityException e) {
                     responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
             }
@@ -642,7 +634,7 @@ public class ProjectController {
         try{
             List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
             responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
-        } catch (NoSuchProjectException e) {
+        } catch (NoSuchEntityException e) {
             log.debug("Can not find project for projectLocation");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalValueException e) {
@@ -680,7 +672,7 @@ public class ProjectController {
             responseDTO.setTotalElements(currentPage.getTotalElements());
             responseDTO.setPostings(postings);
             responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch (NoSuchProjectException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not get postings for project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -707,7 +699,7 @@ public class ProjectController {
             Posting createdPosting = postingFeedService.addPostingForProjects(id, information);
             PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
             responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
-        } catch (NoSuchProjectException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not post for project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (PostingFeedException e) {

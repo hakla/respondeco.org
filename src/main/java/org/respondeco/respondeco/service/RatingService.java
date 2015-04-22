@@ -1,6 +1,5 @@
 package org.respondeco.respondeco.service;
 
-import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
@@ -56,24 +55,21 @@ public class RatingService {
      * @param matchId the given id of the resourcematch which has to exist and has to include the project and is unrated
      * @param ratingValue integer value for rating
      * @param comment string for commentary of rating
-     * @throws NoSuchResourceMatchException resource match doesn't exist in repository
-     * @throws NoSuchOrganizationException organization doesn't exist (user is not a member of an organization)
-     * @throws NoSuchProjectException project doesn't exist in the repository
+     * @throws NoSuchEntityException resource match or project doesn't exist in repository
+     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException organization doesn't exist (user is not a member of an organization)
      * @throws ProjectRatingException project hasn't been started yet, project is not concrete, match hasn't been
      * accepted yet (no resource exchange so far), user is not owner of organization, organization doesn't match
      * the organization from the resourcematch, the project doesn't match the resourcematch, the match has already
      * been rated
      */
     public void rateProject(Long projectId, Long matchId, Integer ratingValue, String comment)
-            throws NoSuchResourceMatchException,
-            NoSuchOrganizationException,
-            NoSuchProjectException,
+            throws NoSuchEntityException,
             ProjectRatingException {
         User user = userService.getUserWithAuthorities();
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         Organization organization = user.getOrganization();
         if(project == null) {
-            throw new NoSuchProjectException(String.format("Project doesn't exist"));
+            throw new NoSuchEntityException(String.format("Project doesn't exist"));
         }
         if(project.isConcrete() == false) {
             throw new ProjectRatingException(".notconcrete", "The project cannot be rated" +
@@ -83,11 +79,11 @@ public class RatingService {
             throw new ProjectRatingException(".notstarted", "The project has not started yet");
         }
         if(organization == null) {
-            throw new NoSuchOrganizationException(String.format("Organization doesn't exist"));
+            throw new NoSuchEntityException(String.format("Organization doesn't exist"));
         }
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(matchId);
         if(resourceMatch == null) {
-            throw new NoSuchResourceMatchException(String.format("ResourceMatch doesn't exist"));
+            throw new NoSuchEntityException(String.format("ResourceMatch doesn't exist"));
         }
         if(resourceMatch.getAccepted() == false) {
             throw new ProjectRatingException(".notaccepted",
@@ -131,9 +127,8 @@ public class RatingService {
      * @param matchId the given id of the resourcematch which has to exist and has to include the project and is unrated
      * @param ratingValue integer value for rating
      * @param comment string for commentary of rating
-     * @throws NoSuchResourceMatchException resource match doesn't exist in repository
-     * @throws NoSuchOrganizationException organization doesn't exist (user is not a member of an organization)
-     * @throws NoSuchProjectException project of the resourcematch doesn't exist in the repository
+     * @throws NoSuchEntityException resource match or project doesn't exist in repository
+     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException organization doesn't exist (user is not a member of an organization)
      * @throws SupporterRatingException project hasn't been started yet, project is not concrete, match hasn't been
      * accepted yet (no resource exchange so far), user is not manager of project,
      * user is owner of organization, organization doesn't match
@@ -141,19 +136,17 @@ public class RatingService {
      * been rated
      */
     public void rateOrganization(Long orgId, Long matchId, Integer ratingValue, String comment)
-            throws NoSuchResourceMatchException,
-            NoSuchProjectException,
-            NoSuchOrganizationException,
+            throws NoSuchEntityException,
             SupporterRatingException {
         User user = userService.getUserWithAuthorities();
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(matchId);
         if(resourceMatch == null) {
-            throw new NoSuchResourceMatchException(String.format("ResourceMatch doesn't exist"));
+            throw new NoSuchEntityException(String.format("ResourceMatch doesn't exist"));
         }
         Project project = resourceMatch.getProject();
         Organization organization = resourceMatch.getOrganization();
         if(project == null) {
-            throw new NoSuchProjectException(String.format("Project doesn't exist"));
+            throw new NoSuchEntityException(String.format("Project doesn't exist"));
         }
         if(project.isConcrete() == false) {
             throw new SupporterRatingException(".notconcrete", "The project cannot be rated" +
@@ -163,7 +156,7 @@ public class RatingService {
             throw new SupporterRatingException(".notstarted", "The project has not started yet");
         }
         if(organization == null || organization.getId().equals(orgId) == false) {
-            throw new NoSuchOrganizationException(String.format("Organization doesn't exist"));
+            throw new NoSuchEntityException(String.format("Organization doesn't exist"));
         }
         if(project.getManager().equals(user) == false) {
             throw new SupporterRatingException(".notmanagerofproject", String
@@ -195,10 +188,10 @@ public class RatingService {
      * @param projectId the project for which to check
      * @return the rating permission for this project
      */
-    public RatingPermission checkPermissionForProject(Long projectId) throws NoSuchProjectException {
+    public RatingPermission checkPermissionForProject(Long projectId) throws NoSuchEntityException {
         Project project = projectService.findProjectById(projectId);
         if(project == null) {
-            throw new NoSuchProjectException(projectId);
+            throw new NoSuchEntityException(projectId);
         }
         User currentUser = userService.getUserWithAuthorities();
         RatingPermission permission = new RatingPermission();
@@ -228,9 +221,9 @@ public class RatingService {
      * Checks for each match in the input, if the current user is allowed to rate it
      * @param matchIds matches to check
      * @return a list of permissions indicating the permission of the user to rate a match
-     * @throws NoSuchResourceMatchException if a match in the input list can not be found
+     * @throws NoSuchEntityException if a match in the input list can not be found
      */
-    public List<RatingPermission> checkPermissionsForMatches(List<Long> matchIds) throws NoSuchResourceMatchException {
+    public List<RatingPermission> checkPermissionsForMatches(List<Long> matchIds) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
         List<RatingPermission> ratingPermissions = new ArrayList<>();
         ResourceMatch match;
@@ -238,7 +231,7 @@ public class RatingService {
         for(Long id : matchIds) {
             match = resourceMatchRepository.findOne(id);
             if(match == null) {
-                throw new NoSuchResourceMatchException(id);
+                throw new NoSuchEntityException(id);
             }
             permission = new RatingPermission();
             permission.setResourceMatch(match);

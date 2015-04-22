@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
+import org.respondeco.respondeco.web.rest.mapper.DefaultReturnField;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -27,6 +28,7 @@ public abstract class AbstractAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @DefaultReturnField
     protected Long id;
 
     @CreatedBy
@@ -52,14 +54,6 @@ public abstract class AbstractAuditingEntity {
     @JsonIgnore
     @Column(name = "is_active")
     protected boolean active= true;
-
-    public Long getId(){
-        return this.id;
-    }
-
-    public void setId(Long id){
-        this.id = id;
-    }
 
     @Override
     public int hashCode() {

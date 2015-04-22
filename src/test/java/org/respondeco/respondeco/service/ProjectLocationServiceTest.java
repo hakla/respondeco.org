@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Project;
@@ -12,7 +11,7 @@ import org.respondeco.respondeco.domain.ProjectLocation;
 import org.respondeco.respondeco.repository.ProjectLocationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchProjectException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -86,7 +85,7 @@ public class ProjectLocationServiceTest {
         assertEquals(location.getProject().getId().longValue(), 1L);
     }
 
-    @Test(expected = NoSuchProjectException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testCreateProjectLocation_shouldThrowException() throws Exception {
         doReturn(null).when(projectRespositoryMock).findByIdAndActiveIsTrue(1L);
         projectLocationService.createProjectLocation(1L, "address", 10.0f, 15.0f);
@@ -125,7 +124,7 @@ public class ProjectLocationServiceTest {
         verify(projectLocationRepositoryMock, times(1)).save(any(ProjectLocation.class));
     }
 
-    @Test(expected = NoSuchProjectException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testUpdateProjectLocation_shouldThrowNoSuchProjectException() throws Exception {
         doReturn(null).when(projectLocationRepositoryMock).findByProjectId(1L);
         doReturn(null).when(projectLocationRepositoryMock).save(any(ProjectLocation.class));
@@ -150,7 +149,7 @@ public class ProjectLocationServiceTest {
         assertEquals(projectLocations.get(0).getId().longValue(), 1L);
     }
 
-    @Test(expected = NoSuchProjectException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void testGetNearProjects_shouldThrowNoSuchProjectException() throws Exception {
         List<Object[]> objectArrayList = new ArrayList<>();
         Object[] object = {new BigInteger("1"), new Float(20.0), new Float(15.0), new String("address"), new BigInteger("1")};

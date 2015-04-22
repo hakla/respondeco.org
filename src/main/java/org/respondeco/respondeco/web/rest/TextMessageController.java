@@ -11,7 +11,7 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.TextMessageService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.NoSuchUserException;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.TextMessageRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
@@ -28,6 +28,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller for managing TextMessage.
@@ -64,7 +65,7 @@ public class TextMessageController {
             textMessageService.createTextMessage(textMessageRequestDTO.getReceiver().getId(),
                 textMessageRequestDTO.getContent());
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (NoSuchUserException e) {
+        } catch (NoSuchEntityException e) {
             log.error("could not save text TextMessage", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalValueException e) {

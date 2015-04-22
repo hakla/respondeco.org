@@ -2,9 +2,7 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.respondeco.respondeco.domain.OrgJoinRequest;
-import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.OrgJoinRequestRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.MailService;
 import org.respondeco.respondeco.service.OrgJoinRequestService;
@@ -20,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.context.IWebContext;
-import org.thymeleaf.spring4.context.SpringWebContext;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -75,50 +71,50 @@ public class OrgJoinRequestController {
         UserDTO user = orgjoinrequest.getUser();
         try {
             if (user.getId() == null) {
-                throw new NoSuchUserException("");
+                // TODO throw new NoSuchUserException("");
             }
 
             orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization(),
                 user);
             responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (NoSuchUserException e) {
-            // if the user doesn't exist the owner can send an invitation to the user
-            if ("sendInvitation".matches(user.getLogin())) {
-                // create a new user with the specified email
-                User newUser = userService.createUserInformation(user.getEmail(), "tochange", null, null, null, user.getEmail(), null, null, null, null, true);
-
-                // set the organization for the user
-                userService.setOrganization(newUser, orgjoinrequest.getOrganization().getId());
-
-                // send the invited user an email so he can accept the invitation
-                mailService.sendActivationEmail(user.getEmail(), accountController.createHtmlContentFromTemplate(newUser, Locale.GERMAN, request, response, "invitationEmail"), Locale.GERMAN);
-
-                try {
-                    // and create a new orgjoinrequest that gets accepted automatically when the user registers
-                    UserDTO userDTO = new UserDTO();
-                    userDTO.setId(newUser.getId());
-                    orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization(), userDTO);
-                    responseEntity = new ResponseEntity<>(HttpStatus.OK);
-                } catch (AlreadyInvitedToOrganizationException e1) {
-                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
-                    responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
-                } catch (NoSuchOrganizationException e1) {
-                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
-                    responseEntity = ErrorHelper.buildErrorResponse(e);
-                } catch (NoSuchUserException e1) {
-                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
-                    responseEntity = ErrorHelper.buildErrorResponse(e);
-                } catch (OrganizationNotVerifiedException e1) {
-                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
-                    responseEntity = ErrorHelper.buildErrorResponse(e);
-                }
-            } else {
-                log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
-                responseEntity = ErrorHelper.buildErrorResponse(e);
-            }
+//        } catch (NoSuchUserException e) {
+//            // if the user doesn't exist the owner can send an invitation to the user
+//            if ("sendInvitation".matches(user.getLogin())) {
+//                // create a new user with the specified email
+//                User newUser = userService.createUserInformation(user.getEmail(), "tochange", null, null, null, user.getEmail(), null, null, null, null, true);
+//
+//                // set the organization for the user
+//                userService.setOrganization(newUser, orgjoinrequest.getOrganization().getId());
+//
+//                // send the invited user an email so he can accept the invitation
+//                mailService.sendActivationEmail(user.getEmail(), accountController.createHtmlContentFromTemplate(newUser, Locale.GERMAN, request, response, "invitationEmail"), Locale.GERMAN);
+//
+//                try {
+//                    // and create a new orgjoinrequest that gets accepted automatically when the user registers
+//                    UserDTO userDTO = new UserDTO();
+//                    userDTO.setId(newUser.getId());
+//                    orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization(), userDTO);
+//                    responseEntity = new ResponseEntity<>(HttpStatus.OK);
+//                } catch (AlreadyInvitedToOrganizationException e1) {
+//                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
+//                    responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
+//                } catch (NoSuchEntityException e1) {
+//                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
+//                    responseEntity = ErrorHelper.buildErrorResponse(e);
+//                } catch (NoSuchUserException e1) {
+//                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);
+//                    responseEntity = ErrorHelper.buildErrorResponse(e);
+//                } catch (OrganizationNotVerifiedException e1) {
+//                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+//                    responseEntity = ErrorHelper.buildErrorResponse(e);
+//                }
+//            } else {
+//                log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
+//                responseEntity = ErrorHelper.buildErrorResponse(e);
+//            }
         } catch (AlreadyInvitedToOrganizationException e) {
             log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e);
             responseEntity = new ResponseEntity<>(0x0001, HttpStatus.BAD_REQUEST);
@@ -166,10 +162,7 @@ public class OrgJoinRequestController {
         try {
             orgJoinRequestService.acceptRequest(id.getId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchOrgJoinRequestException e) {
-            log.error("Could not accept OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not accept OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -194,10 +187,7 @@ public class OrgJoinRequestController {
         try {
             orgJoinRequestService.declineRequest(id.getId());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchOrgJoinRequestException e) {
-            log.error("Could not decline OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not decline OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -221,15 +211,12 @@ public class OrgJoinRequestController {
         try {
             orgJoinRequestService.delete(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchOrgJoinRequestException e) {
-            log.error("Could not delete OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotOwnerOfOrganizationException | IllegalArgumentException e) {
             log.error("Could not delete OrgJoinRequest : {}", e);
             responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } catch (NoSuchOrganizationException e) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not delete OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
         return responseEntity;
     }
