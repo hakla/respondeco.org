@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.dto.util;
+package org.respondeco.respondeco.web.rest.mapping.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -21,7 +21,7 @@ public class CustomLocalDateSerializer extends JsonSerializer<LocalDate> {
     public void serialize(LocalDate value, JsonGenerator generator,
                           SerializerProvider serializerProvider)
             throws IOException {
-
+        System.out.println("serializer called");
         generator.writeString(formatter.print(value));
     }
 }

@@ -1,6 +1,6 @@
-package org.respondeco.respondeco.web.rest.mapper;
+package org.respondeco.respondeco.web.rest.mapping;
 
-import org.respondeco.respondeco.web.rest.mapper.parser.FieldExpressionParser;
+import org.respondeco.respondeco.web.rest.parsing.FieldExpressionParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;

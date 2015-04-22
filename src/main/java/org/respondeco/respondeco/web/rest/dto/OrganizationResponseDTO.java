@@ -2,11 +2,8 @@ package org.respondeco.respondeco.web.rest.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.Organization;
-import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

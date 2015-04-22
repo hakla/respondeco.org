@@ -1,8 +1,8 @@
-package org.respondeco.respondeco.web.rest.mapper;
+package org.respondeco.respondeco.web.rest.mapping;
 
 import org.respondeco.respondeco.domain.AbstractAuditingEntity;
-import org.respondeco.respondeco.web.rest.mapper.parser.ExpressionParsingException;
-import org.respondeco.respondeco.web.rest.mapper.parser.FieldExpressionParser;
+import org.respondeco.respondeco.web.rest.parsing.ExpressionParsingException;
+import org.respondeco.respondeco.web.rest.parsing.FieldExpressionParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;

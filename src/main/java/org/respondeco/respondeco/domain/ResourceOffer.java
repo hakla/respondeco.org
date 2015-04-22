@@ -6,20 +6,16 @@ import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.sf.cglib.core.Local;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateDeserializer;
-import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * A ResourceOffer.
@@ -39,7 +35,7 @@ public class ResourceOffer extends ResourceBase implements Serializable {
 
     @Column(name = "is_commercial", nullable = false)
     private Boolean isCommercial = false;
-    
+
     private BigDecimal price;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")

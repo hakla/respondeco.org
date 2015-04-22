@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapper;
+package org.respondeco.respondeco.web.rest.mapping;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

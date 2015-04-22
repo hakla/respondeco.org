@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapper;
+package org.respondeco.respondeco.web.rest.mapping;
 
 /**
  * Created by clemens on 24/03/15.

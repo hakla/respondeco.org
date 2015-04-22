@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
-import org.respondeco.respondeco.web.rest.mapper.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;

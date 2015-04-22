@@ -1,12 +1,16 @@
-package org.respondeco.respondeco.web.rest.mapper;
+package org.respondeco.respondeco.web.rest.mapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,14 +33,12 @@ public class FieldMapping {
     private Class<?> clazz;
     private Field field;
     private Method accessor;
-    private JsonSerializer serializer = null;
 
     public FieldMapping(Class<?> clazz, String fieldName) throws MappingException {
         this.clazz = clazz;
         this.util = new ReflectionUtil();
         initField(fieldName);
         checkAccess();
-        initSerializer();
         initAccessor();
     }
 
@@ -45,7 +47,6 @@ public class FieldMapping {
         this.util = new ReflectionUtil();
         this.field = field;
         checkAccess();
-        initSerializer();
         initAccessor();
     }
 
@@ -87,21 +88,5 @@ public class FieldMapping {
         }
     }
 
-    /**
-     * not yet working
-     *
-     * @throws MappingException
-     */
-    private void initSerializer() throws MappingException {
-        try {
-            Annotation annotation = util.getAnnotation(field, JsonSerialize.class);
-            if (annotation != null) {
-                JsonSerialize serialize = (JsonSerialize) annotation;
-                serializer = serialize.using().newInstance();
-            }
-        } catch (Exception e) {
-            throw new MappingException(e);
-        }
-    }
 
 }

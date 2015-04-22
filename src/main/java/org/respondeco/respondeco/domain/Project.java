@@ -13,8 +13,8 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
-import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
-import org.respondeco.respondeco.web.rest.mapper.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;

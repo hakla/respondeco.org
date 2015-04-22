@@ -1,14 +1,10 @@
 package org.respondeco.respondeco.web.rest.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.joda.time.LocalDate;
-import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.ResourceOffer;
-import org.respondeco.respondeco.domain.ResourceRequirement;
-import org.respondeco.respondeco.domain.ResourceTag;
-import org.respondeco.respondeco.web.rest.dto.util.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

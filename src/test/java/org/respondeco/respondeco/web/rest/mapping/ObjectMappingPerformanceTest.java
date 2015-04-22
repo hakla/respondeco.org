@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapper;
+package org.respondeco.respondeco.web.rest.mapping;
 
 import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
@@ -9,8 +9,8 @@ import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.web.rest.mapper.parser.ExpressionParsingException;
-import org.respondeco.respondeco.web.rest.mapper.parser.FieldExpressionParser;
+import org.respondeco.respondeco.web.rest.parsing.ExpressionParsingException;
+import org.respondeco.respondeco.web.rest.parsing.FieldExpressionParser;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

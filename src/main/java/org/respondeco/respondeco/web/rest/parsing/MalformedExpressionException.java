@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapper.parser;
+package org.respondeco.respondeco.web.rest.parsing;
 
 /**
  * Created by clemens on 22/03/15.
