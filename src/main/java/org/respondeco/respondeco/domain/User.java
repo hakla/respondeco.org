@@ -1,14 +1,12 @@
 package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.Email;
-import org.respondeco.respondeco.web.rest.mapper.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

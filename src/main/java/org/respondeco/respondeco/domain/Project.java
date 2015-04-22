@@ -44,7 +44,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
