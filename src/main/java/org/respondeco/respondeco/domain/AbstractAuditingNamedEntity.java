@@ -1,7 +1,7 @@
 package org.respondeco.respondeco.domain;
 
 import lombok.Data;
-import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -19,6 +19,6 @@ public abstract class AbstractAuditingNamedEntity extends AbstractAuditingEntity
     @NotNull
     @Size(min = 0, max = 50)
     @Column(length = 50)
-    @DefaultReturnField
+    @DefaultReturnValue
     private String name;
 }

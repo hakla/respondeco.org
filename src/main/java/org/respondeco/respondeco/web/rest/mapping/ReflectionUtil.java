@@ -15,16 +15,13 @@ public class ReflectionUtil {
     private final Logger log = LoggerFactory.getLogger(ReflectionUtil.class);
 
     public Method getAccessor(Class<?> clazz, String fieldName) throws NoSuchFieldException, NoSuchMethodException {
-        Class<?> fieldClass = getFieldClass(clazz, fieldName);
-        if(fieldClass == Boolean.class || fieldClass == boolean.class) {
-            try {
-                return getBooleanAccessor(clazz, fieldName);
-            } catch (NoSuchMethodException e) {
-                log.info("no boolean accessor for {}.{} found, trying standard accessor",
-                    clazz.getSimpleName(), fieldName);
-            }
+        try {
+            return getStandardAccessor(clazz, fieldName);
+        } catch (NoSuchMethodException e) {
+            log.info("no standard accessor (get) for {}.{} found, trying boolean (is) accessor",
+                clazz.getSimpleName(), fieldName);
         }
-        return getStandardAccessor(clazz, fieldName);
+        return getBooleanAccessor(clazz, fieldName);
     }
 
     public Method getStandardAccessor(Class<?> clazz, String fieldName) throws NoSuchMethodException {
@@ -67,9 +64,12 @@ public class ReflectionUtil {
         throw new NoSuchMethodException(methodName);
     }
 
-    public Boolean hasAnnotation(Field field, Class<? extends Annotation> annotationClass)
-        throws NoSuchFieldException {
-        return field.getAnnotation(annotationClass) != null;
+    public Boolean hasAnnotation(Field field, Class<? extends Annotation> annotationClass) {
+        return field.isAnnotationPresent(annotationClass);
+    }
+
+    public Boolean hasAnnotation(Method method, Class<? extends Annotation> annotationClass) {
+        return method.isAnnotationPresent(annotationClass);
     }
 
     public Annotation getAnnotation(Field field, Class<? extends Annotation> annotationClass)

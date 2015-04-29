@@ -60,7 +60,7 @@ public class ObjectMappingTest {
         log.debug("{}", mapping);
         assertTrue(mapping.containsKey("id"));
         assertTrue(mapping.containsKey("concrete"));
-        assertFalse(mapping.containsKey("purpose"));
+        assertTrue(mapping.containsKey("purpose"));
         assertEquals(true, mapping.get("concrete"));
     }
 
@@ -112,10 +112,12 @@ public class ObjectMappingTest {
         Map<String,Object> orgMapping = (Map<String,Object>) mapping.get("organization");
         assertEquals(2L, orgMapping.get("id"));
         assertTrue(orgMapping.containsKey("owner"));
-        assertFalse(orgMapping.containsKey("name"));
+        assertTrue(orgMapping.containsKey("name"));
 
         Map<String,Object> ownerMapping = (Map<String,Object>) orgMapping.get("owner");
         assertEquals(1L, ownerMapping.get("id"));
+        assertTrue(ownerMapping.containsKey("firstName"));
+        assertTrue(ownerMapping.containsKey("login"));
 
     }
 

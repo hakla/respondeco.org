@@ -1,17 +1,11 @@
 package org.respondeco.respondeco.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,6 +30,7 @@ public class ResourceBase extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @Column(length = 50)
+    @DefaultReturnValue
     protected String name;
 
     @NotNull

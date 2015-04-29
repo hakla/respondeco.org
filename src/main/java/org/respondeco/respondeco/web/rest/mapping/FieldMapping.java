@@ -30,28 +30,20 @@ public class FieldMapping {
     private final Logger log = LoggerFactory.getLogger(FieldMapping.class);
 
     private ReflectionUtil util;
-    private Class<?> clazz;
+    private String fieldName;
     private Field field;
     private Method accessor;
 
-    public FieldMapping(Class<?> clazz, String fieldName) throws MappingException {
-        this.clazz = clazz;
+    public FieldMapping(String fieldName, Field field, Method accessor) throws MappingException {
         this.util = new ReflectionUtil();
-        initField(fieldName);
-        checkAccess();
-        initAccessor();
-    }
-
-    public FieldMapping(Class<?> clazz, Field field) throws MappingException {
-        this.clazz = clazz;
-        this.util = new ReflectionUtil();
+        this.fieldName = fieldName;
         this.field = field;
+        this.accessor = accessor;
         checkAccess();
-        initAccessor();
     }
 
     public String getFieldName() {
-        return field.getName();
+        return fieldName;
     }
 
     public Object map(Object object) throws MappingException {
@@ -64,29 +56,17 @@ public class FieldMapping {
 
     private void checkAccess() throws MappingException {
         try {
-            if (util.hasAnnotation(field, JsonIgnore.class)) {
-                throw new NoSuchFieldException(field.getName());
+            if(field != null) {
+                if(util.hasAnnotation(field, JsonIgnore.class)) {
+                    throw new NoSuchFieldException(field.getName());
+                }
             }
-        } catch (NoSuchFieldException e) {
-            throw new MappingException(e);
-        }
-    }
-
-    private void initField(String name) throws MappingException {
-        try {
-            this.field = util.getField(clazz, name);
+            if(util.hasAnnotation(accessor, JsonIgnore.class)) {
+                throw new NoSuchMethodException(accessor.getName());
+            }
         } catch (Exception e) {
             throw new MappingException(e);
         }
     }
-
-    private void initAccessor() throws MappingException {
-        try {
-            this.accessor = util.getAccessor(clazz, field.getName());
-        } catch (Exception e) {
-            throw new MappingException(e);
-        }
-    }
-
 
 }

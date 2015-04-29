@@ -29,7 +29,7 @@ public class ObjectMapperImpl implements ObjectMapper {
     public ObjectMapperImpl removeMapping(String fieldName) {
         this.mappings = this.mappings
             .stream()
-            .filter(mapping -> !mapping.getFieldName().equals(fieldName))
+            .filter(mapping -> !fieldName.equals(mapping.getFieldName()))  //mapping.getFieldName() may be null
             .collect(Collectors.toSet());
         return this;
     }
@@ -38,7 +38,7 @@ public class ObjectMapperImpl implements ObjectMapper {
         this.mappings = this.mappings.stream()
             .filter(
                 mapping ->
-                    mapping.getFieldName().equals("id"))
+                    "id".equals(mapping.getFieldName()))    //mapping.getFieldName() may be null
             .collect(Collectors.toSet());
         log.debug("cleared mappings, remaining mappings: {}", mappings);
         return this;

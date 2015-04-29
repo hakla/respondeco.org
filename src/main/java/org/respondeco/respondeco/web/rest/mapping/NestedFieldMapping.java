@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest.mapping;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -10,13 +11,9 @@ public class NestedFieldMapping extends FieldMapping {
 
     private ObjectMapper childMapper;
 
-    public NestedFieldMapping(Class<?> clazz, String fieldName, ObjectMapper childMapper) throws MappingException {
-        super(clazz, fieldName);
-        this.childMapper = childMapper;
-    }
-
-    public NestedFieldMapping(Class<?> clazz, Field field, ObjectMapper childMapper) throws MappingException {
-        super(clazz, field);
+    public NestedFieldMapping(String fieldName, Field field, Method accessor, ObjectMapper childMapper)
+            throws MappingException {
+        super(fieldName, field, accessor);
         this.childMapper = childMapper;
     }
 

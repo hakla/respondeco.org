@@ -1,8 +1,6 @@
 package org.respondeco.respondeco.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +11,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementResponseDTO;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
-import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -39,7 +35,7 @@ import java.util.Set;
 public class Project extends AbstractAuditingNamedEntity implements Serializable, MatchingEntity {
 
     @Column(name = "purpose", length = 2048)
-    @DefaultReturnField
+    @DefaultReturnValue
     private String purpose;
 
     @Column(name = "is_concrete")
@@ -101,6 +97,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
         return new HashSet<>(propertyTags);
     }
 
+    @DefaultReturnValue
     public BigDecimal getProgress() {
         return resourceRequirements
             .stream()

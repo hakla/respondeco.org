@@ -6,7 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
-import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -30,7 +30,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @NotNull
     @Size(min = 3, max = 255)
     @Column(length = 255)
-    @DefaultReturnField
+    @DefaultReturnValue
     private String name;
 
     @Column(length = 2048)
@@ -39,7 +39,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Email
     @Size(min = 0, max = 100)
     @Column(length = 100)
-    @DefaultReturnField
+    @DefaultReturnValue
     private String email;
 
     @Column(name = "is_npo")
