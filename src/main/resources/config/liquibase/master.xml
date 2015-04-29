@@ -31,6 +31,16 @@
     <include file="classpath:config/liquibase/changelog/20150113011000_added_entity_SocialMediaConnection.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150120233100_modified_entity_Organization_Project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150127025200_modified_entity_ProjectLocation.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_PostingFeed.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141208154300_load_default_Organizations.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141208154500_load_default_Projects.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_Posting.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141208171000_load_default_PropertyTags.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_Ratings.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_Resources.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_ResourceOffers.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_ResourceRequirements.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20141209154500_load_default_ResourceMatches.xml" relativeToChangelogFile="false"/>
 
 
     <include file="classpath:config/liquibase/changelog/20150127203500_modified_entity_Textmessage.xml" relativeToChangelogFile="false"/>

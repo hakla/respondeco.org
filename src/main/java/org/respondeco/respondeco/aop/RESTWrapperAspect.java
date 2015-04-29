@@ -60,14 +60,16 @@ public class RESTWrapperAspect {
                 Page page = (Page) result;
                 List content = page.getContent();
 
-                Class<?> clazz = content.get(0).getClass();
-                ObjectMapper mapper = factory.createMapper(clazz, fields);
+                if (content.size() > 0) {
+                    Class<?> clazz = content.get(0).getClass();
+                    ObjectMapper mapper = factory.createMapper(clazz, fields);
 
-                List<Map<String, Object>> mapped = mapper.mapAll(content);
-                String fieldName = clazz.getSimpleName().toLowerCase() + "s";
+                    List<Map<String, Object>> mapped = mapper.mapAll(content);
+                    String fieldName = clazz.getSimpleName().toLowerCase() + "s";
+                    map.put(fieldName, mapped);
+                }
 
                 map.put("totalItems", ((Page) result).getTotalElements());
-                map.put(fieldName, mapped);
 
                 return new ResponseEntity<>(map, HttpStatus.OK);
             } else {
