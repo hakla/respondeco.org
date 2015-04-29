@@ -131,6 +131,20 @@ angular.module('respondecoApp')
             templateUrl: "templates/organization-members.html"
         }
     })
+    .directive('pageTitle', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            template: '<div class="hidden"></div>',
+            link: function(scope, element, attributes) {
+                scope.$watch(function() {
+                    return element[0].innerHTML;
+                }, function(value) {
+                    scope.$root.title = value;
+                });
+            }
+        }
+    })
     .directive('uploadedImage', function() {
         var baseUrl = '/app/rest/images/file/';
         var placeholder = '/images/profile_empty.png';
