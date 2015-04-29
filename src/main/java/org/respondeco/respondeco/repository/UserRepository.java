@@ -3,6 +3,7 @@ package org.respondeco.respondeco.repository;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
 import org.joda.time.DateTime;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByLogin(String userlogin);
 
     @Query("select u from User u where u.login like %:filter%")
-    List<User> findUsersByNameLike(@Param("filter") String filter, Pageable pageable);
+    Page<User> findUsersByNameLike(@Param("filter") String filter, Pageable pageable);
 
     User findByIdAndActiveIsTrue(Long id);
 

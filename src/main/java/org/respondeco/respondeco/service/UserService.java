@@ -3,6 +3,7 @@ package org.respondeco.respondeco.service;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.SecurityUtils;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -197,15 +198,16 @@ public class UserService {
         user.setOrganization(null);
     }
 
-    public List<User> findUsersByNameLike(String usernamePart, RestParameters restParameters) {
-        List<User> result = userRepository.findUsersByNameLike(usernamePart, restParameters.buildPageRequest());
-        result.remove("system");
-        result.remove("anonymousUser");
-        return result;
+    public Page<User> findUsersByNameLike(String usernamePart, RestParameters restParameters) {
+        return userRepository.findUsersByNameLike(usernamePart, restParameters.buildPageRequest());
     }
 
-    public User getUser(Long id) {
-        return userRepository.findByIdAndActiveIsTrue(id);
+    public User getUser(Long id) throws NoSuchEntityException {
+        User user = userRepository.findByIdAndActiveIsTrue(id);
+        if(user == null) {
+            throw new NoSuchEntityException(id);
+        }
+        return user;
     }
 
     public void setOrganization(User user, Long id) {
