@@ -2,6 +2,7 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
@@ -41,7 +42,6 @@ public class ProjectController {
     private ProjectService projectService;
     private ResourceService resourceService;
     private RatingService ratingService;
-    private UserService userService;
     private ProjectLocationService projectLocationService;
     private PostingFeedService postingFeedService;
 
@@ -56,7 +56,6 @@ public class ProjectController {
         this.projectService = projectService;
         this.resourceService = resourceService;
         this.ratingService = ratingService;
-        this.userService = userService;
         this.projectLocationService = projectLocationService;
         this.postingFeedService = postingFeedService;
     }
@@ -243,7 +242,8 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
-    public ResponseEntity<ProjectPaginationResponseDTO> getByNameAndTags(
+    @RESTWrapped
+    public Object getAll(
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
@@ -252,13 +252,7 @@ public class ProjectController {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
 
-        Page<Project> resultPage = projectService.findProjects(filter, restParameters);
-
-        ProjectPaginationResponseDTO paginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
-
-        ResponseEntity<ProjectPaginationResponseDTO> responseEntity = new ResponseEntity(paginationResponseDTO, HttpStatus.OK);
-
-        return responseEntity;
+        return projectService.findProjects(filter, restParameters);
     }
 
     /**

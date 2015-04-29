@@ -26,6 +26,8 @@
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
         <!-- CSS Theme -->
         <link rel="stylesheet" href="unify/css/theme-colors/default.css">
+        <!-- CSS Login -->
+        <link rel="stylesheet" href="unify/css/pages/page_log_reg_v1.css">
         <!-- unify end -->
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css(.tmp) styles/main.css -->
@@ -207,11 +209,8 @@
                     <resp-bind content="alert.msg"></resp-bind>
                 </alert>
             </div>
-            <div ng-class="main() ? 'container-landing-page' : 'container'">
+            <div ng-class="main() ? 'container-landing-page' : 'container content'">
                 <div ng-class="main() ? '' : ''" ng-view ng-cloak></div>
-                <div ng-hide="main()" class="footer">
-                    <p translate="footer">This is your footer</p>
-                </div>
             </div>
         </div>
         <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.

@@ -1,7 +1,6 @@
+<title>{{ global.menu.organization | translate }}</title>
 <div class="organization clearfix">
     <div class="col-xs-12">
-        <h1 translate='global.menu.organization'>Organizations</h1>
-
         <pagination direction-links="false" max-size="5" items-per-page="filter.pageSize"
                     total-items="totalItems" ng-model="currentPage" ng-change="onPageChange()"
                     ng-show="totalItems>filter.pageSize"></pagination>

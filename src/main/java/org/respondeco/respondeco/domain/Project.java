@@ -13,6 +13,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
+import org.respondeco.respondeco.web.rest.dto.ResourceRequirementResponseDTO;
 import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
 import org.respondeco.respondeco.web.rest.mapping.DefaultReturnField;
 import org.springframework.context.annotation.Lazy;
@@ -20,6 +21,8 @@ import org.springframework.context.annotation.Lazy;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,14 +60,13 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @ManyToMany
     @JoinTable(
-            name="T_PROJECT_JOIN_T_PROPERTYTAG",
-            joinColumns = { @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id" ) },
-            inverseJoinColumns = { @JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id" ) }
+        name = "T_PROJECT_JOIN_T_PROPERTYTAG",
+        joinColumns = {@JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id")}
     )
     @Lazy(false)
     private List<PropertyTag> propertyTags;
 
-    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "projectLogo_id")
     private Image projectLogo;
@@ -88,14 +90,22 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @ManyToMany
     @JoinTable(
-        name="T_USER_FOLLOW_PROJECT",
+        name = "T_USER_FOLLOW_PROJECT",
         joinColumns = {@JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")},
-        inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "id")}
+        inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")}
     )
     private List<User> FollowingUsers;
 
     @Override
     public Set<MatchingTag> getTags() {
         return new HashSet<>(propertyTags);
+    }
+
+    public BigDecimal getProgress() {
+        return resourceRequirements
+            .stream()
+            .map(r ->
+                    new BigDecimal(1).subtract(r.getAmount().divide(r.getOriginalAmount(), RoundingMode.HALF_UP))
+            ).reduce(new BigDecimal(1), (b1, b2) -> b1.add(b2)).divide(new BigDecimal(resourceRequirements.size()), RoundingMode.HALF_UP);
     }
 }

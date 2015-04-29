@@ -15,6 +15,7 @@
     "grunt-concurrent": "0.5.0",
     "grunt-connect-proxy": "0.1.10",
     "grunt-contrib-clean": "0.5.0",
+    "grunt-contrib-coffee": "^0.13.0",
     "grunt-contrib-compass": "0.7.2",
     "grunt-contrib-concat": "0.4.0",
     "grunt-contrib-connect": "0.8.0",
@@ -48,7 +49,7 @@
     "time-grunt": "0.3.2",
     "zeparser": "0.0.7"
   },
-    "scripts": {
+  "scripts": {
     "test": "grunt test",
     "install": "node node_modules/protractor/bin/webdriver-manager update"
   },

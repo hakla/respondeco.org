@@ -9,7 +9,7 @@
 
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
     require('time-grunt')(grunt);
 
@@ -20,9 +20,16 @@ module.exports = function (grunt) {
             dist: 'src/main/webapp/dist'
         },
         watch: {
+            coffee: {
+                files: ['src/main/webapp/scripts/**/*.coffee'],
+                tasks: ['coffee:dist']
+            },
             compass: {
                 files: ['src/main/scss/**/*.{scss,sass}'],
                 tasks: ['compass:server', 'autoprefixer']
+            },
+            grunt: {
+                files: ['Gruntfile.js']
             },
             styles: {
                 files: ['src/main/webapp/styles/**/*.css'],
@@ -58,43 +65,37 @@ module.exports = function (grunt) {
             }
         },
         connect: {
-            proxies: [
-                {
-                    context: '/app',
-                    host: 'localhost',
-                    port: 8081,
-                    https: false,
-                    changeOrigin: false
-                },
-                {
-                    context: '/metrics',
-                    host: 'localhost',
-                    port: 8081,
-                    https: false,
-                    changeOrigin: false
-                },
-                {
+            proxies: [{
+                context: '/app',
+                host: 'localhost',
+                port: 8081,
+                https: false,
+                changeOrigin: false
+            }, {
+                context: '/metrics',
+                host: 'localhost',
+                port: 8081,
+                https: false,
+                changeOrigin: false
+            }, {
                 context: '/dump',
                 host: 'localhost',
                 port: 8081,
                 https: false,
                 changeOrigin: false
-                },
-                {
+            }, {
                 context: '/api-docs',
                 host: 'localhost',
                 port: 8081,
                 https: false,
                 changeOrigin: false
-                },
-                {
-                    context: '/console',
-                    host: 'localhost',
-                    port: 8081,
-                    https: false,
-                    changeOrigin: false
-                 }
-            ],
+            }, {
+                context: '/console',
+                host: 'localhost',
+                port: 8081,
+                https: false,
+                changeOrigin: false
+            }],
             options: {
                 port: 9000,
                 // Change this to 'localhost' to deny access to the server from outside.
@@ -108,7 +109,7 @@ module.exports = function (grunt) {
                         '.tmp',
                         'src/main/webapp'
                     ],
-                    middleware: function (connect) {
+                    middleware: function(connect) {
                         return [
                             proxySnippet,
                             connect.static('.tmp'),
@@ -119,7 +120,7 @@ module.exports = function (grunt) {
             },
             test: {
                 options: {
-                 port: 9001,
+                    port: 9001,
                     base: [
                         '.tmp',
                         'test',
@@ -164,8 +165,8 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/main/webapp/scripts',
-                    src: '**/*.coffee',
-                    dest: '.tmp/scripts',
+                    src: ['**/*.coffee', '*.coffee'],
+                    dest: 'src/main/webapp/scripts',
                     ext: '.js'
                 }]
             },
@@ -236,7 +237,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/main/webapp/images',
-                src: '**/*.{jpg,jpeg}', // we don't optimize PNG files as it doesn't work on Linux. If you are not on Linux, feel free to use '{,*/}*.{png,jpg,jpeg}'
+                    src: '**/*.{jpg,jpeg}', // we don't optimize PNG files as it doesn't work on Linux. If you are not on Linux, feel free to use '{,*/}*.{png,jpg,jpeg}'
                     dest: '<%= yeoman.dist %>/images'
                 }]
             }
@@ -315,19 +316,19 @@ module.exports = function (grunt) {
                 src: '{,*/}*.css'
             },
             generateHerokuDirectory: {
-                    expand: true,
-                    dest: 'deploy/heroku',
-                    src: [
-                        'pom.xml',
-                        'src/main/**'
+                expand: true,
+                dest: 'deploy/heroku',
+                src: [
+                    'pom.xml',
+                    'src/main/**'
                 ]
             },
             generateOpenshiftDirectory: {
-                    expand: true,
-                    dest: 'deploy/openshift',
-                    src: [
-                        'pom.xml',
-                        'src/main/**'
+                expand: true,
+                dest: 'deploy/openshift',
+                src: [
+                    'pom.xml',
+                    'src/main/**'
                 ]
             }
         },
@@ -378,13 +379,13 @@ module.exports = function (grunt) {
         replace: {
             dist: {
                 src: ['<%= yeoman.dist %>/index.html'],
-                    overwrite: true,                                 // overwrite matched source files
-                    replacements: [{
-                        from: '<div class="development"></div>',
-                        to: ''
-                    }]
-                }
-            },
+                overwrite: true, // overwrite matched source files
+                replacements: [{
+                    from: '<div class="development"></div>',
+                    to: ''
+                }]
+            }
+        },
         uglify: {
             dist: {
                 files: {
@@ -418,7 +419,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('server', function (target) {
+    grunt.registerTask('server', function(target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'connect:dist:keepalive']);
         }

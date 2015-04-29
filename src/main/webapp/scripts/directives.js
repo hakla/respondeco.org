@@ -149,6 +149,24 @@ angular.module('respondecoApp')
             }
         }
     })
+    .directive('logo', function() {
+        var baseUrl = '/app/rest/images/file/';
+        var placeholder = 'http://placehold.it/300x150/666&text=Leeres+Bild';
+
+        return {
+            restrict: "A",
+            scope: {
+                id: '=logoId'
+            },
+            replace: false,
+            link: function(scope, element, attributes) {
+                scope.$watch('logoId', function(value) {
+                    if (value == null) element[0].src = placeholder;
+                    else element.src = baseUrl + value;
+                })
+            }
+        }
+    })
     .directive('fileUpload', ['FileUploader', function(FileUploader) {
         return {
             restrict: 'E',

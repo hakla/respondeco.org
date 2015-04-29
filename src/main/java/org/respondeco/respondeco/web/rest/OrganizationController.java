@@ -233,17 +233,13 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<ResourceOfferResponseDTO>> getAllResourceOffers(@PathVariable Long id) {
+    @RESTWrapped
+    public Object getAllResourceOffers(@PathVariable Long id) {
         ResponseEntity<List<ResourceOfferResponseDTO>> responseEntity;
 
         log.debug("REST request to get all resource offers which belong to Organization id: {}", id);
 
-        List<ResourceOffer> resourceOffers = this.resourceService.getAllOffers(id);
-        List<ResourceOfferResponseDTO> resourceOfferResponseDTOs = ResourceOfferResponseDTO.fromEntities(resourceOffers, null);
-
-        responseEntity = new ResponseEntity<>(resourceOfferResponseDTOs, HttpStatus.OK);
-
-        return responseEntity;
+        return this.resourceService.getAllOffers(id);
     }
 
 

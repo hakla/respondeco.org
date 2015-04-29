@@ -281,7 +281,7 @@ public class ProjectService {
      * @return the deleted project
      * @throws OperationForbiddenException if the current user is neither the manager of the project nor the owner
      * of the project's organization
-     * @throws NoSuchProjectException if the project with the given id could not be found
+     * @throws NoSuchEntityException if the project with the given id could not be found
      */
     public Project delete(Long id) throws OperationForbiddenException, NoSuchEntityException {
         Project project = projectRepository.findByIdAndActiveIsTrue(id);

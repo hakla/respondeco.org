@@ -1,271 +1,242 @@
-'use strict';
-
-respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams,
-                                                            Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope) {
-    var isOwner = false;
-    var user;
-
+(function() {
+  'use strict';
+  respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope) {
+    var isOwner, refreshPostings, user;
+    isOwner = false;
+    user = void 0;
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;
     $scope.xingConnected = false;
-
-    $rootScope.title = "Organisation";
-
+    $rootScope.title = 'Organisation';
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
-
     $scope.update = function(name) {
-        $scope.organization = Organization.get({
-            id: name
-        }, function() {
-            Organization.getMembers({
-                id: $scope.organization.id
-            }, function(data)  {
-                $scope.members = data;
-            });
-
-            Account.get(null, function(account) {
-                user = account;
-                isOwner = user !== undefined && user.login === $scope.organization.owner.login;
-            });
-
-            $scope.getConnections();
-
+      return $scope.organization = Organization.get({
+        id: name,
+        fields: 'logo,projects(name,projectLogo),email'
+      }, function() {
+        Organization.getMembers({
+          id: $scope.organization.id
+        }, function(data) {
+          return $scope.members = data;
         });
+        Account.get(null, function(account) {
+          var ref;
+          user = account;
+          return isOwner = user !== void 0 && user.login === ((ref = $scope.organization.owner) != null ? ref.login : void 0);
+        });
+        return $scope.getConnections();
+      });
     };
 
-    /**
+    /*
      *  Gets all active connection for the currently logged in user
      *  and if the connection for the specific provider exists, it
      *  sets the connected variable for the appropriate provider to true.
      */
     $scope.getConnections = function() {
-        SocialMedia.getConnections(function(response) {
-            response.forEach(function(connection) {
-                if(connection.provider === 'twitter') {
-                    $scope.twitterConnected = true;
-                } else if(connection.provider === 'facebook') {
-                    $scope.facebookConnected = true;
-                } else if(connection.provider === 'xing') {
-                    $scope.xingConnected = true;
-                }
-            })
+      return SocialMedia.getConnections(function(response) {
+        return response.forEach(function(connection) {
+          $scope.twitterConnected = connection.provider === 'twitter';
+          $scope.facebookConnected = connection.provider === 'facebook';
+          return $scope.xingConnected = connection.provider === 'xing';
         });
+      });
     };
-
     $scope.refreshOrganizationRating = function() {
-        //get new aggregated rating
-        Organization.getAggregatedRating({id: $routeParams.id},
-            function(rating) {
-                $scope.shownRating = rating.rating;
-                $scope.ratingCount = rating.count;
-            });
+      return Organization.getAggregatedRating({
+        id: $routeParams.id
+      }, function(rating) {
+        $scope.shownRating = rating.rating;
+        return $scope.ratingCount = rating.count;
+      });
     };
     $scope.refreshOrganizationRating();
-
-    $scope.delete = function(id) {
-        id = id || $scope.organization.id;
-
-        if (confirm("Wirklich löschen?") === false) return;
-
-        Organization.delete({
-                id: id
-            },
-            function() {
-                $scope.organizations = Organization.query();
-            });
+    $scope["delete"] = function(id) {
+      id = id || $scope.organization.id;
+      if (confirm('Wirklich löschen?') !== false) {
+        return Organization["delete"]({
+          id: id
+        }, function() {
+          return $scope.organizations = Organization.query();
+        });
+      }
     };
-
     $scope.redirectToEdit = function() {
-        $location.path('organization/edit/' + $scope.organization.id);
+      return $location.path('organization/edit/' + $scope.organization.id);
     };
-
     $scope.isOwner = function() {
-        return isOwner;
+      return isOwner;
     };
-
     $scope.updateUser = function($item, $model, $label) {
-        $scope.selectedUser = $item;
+      return $scope.selectedUser = $item;
     };
-
     $scope.redirectToOverview = function() {
-        $location.path('organization');
+      return $location.path('organization');
     };
-
     $scope.redirectToOwnResources = function() {
-        $location.path('ownresource');
+      return $location.path('ownresource');
     };
-
     $scope.redirectToNewProject = function() {
-        $location.path('projects/edit/new');
+      return $location.path('projects/edit/new');
     };
-
     $scope.redirectToProjects = function() {
-        $location.path('organization/' + $scope.organization.id + '/projects');
+      return $location.path('organization/' + $scope.organization.id + '/projects');
     };
-
     $scope.redirectToProject = function(projectId) {
-        $location.path('project/' + projectId);
+      return $location.path('project/' + projectId);
     };
-
-    if ($routeParams.id !== undefined) {
-        $scope.update($routeParams.id);
+    if ($routeParams.id !== void 0) {
+      $scope.update($routeParams.id);
     }
 
-
-    /**
+    /*
      * Button Event. Try to follow the current Organization Newsfeed
      */
-    $scope.follow = function(){
-        Organization.follow({id: $scope.organization.id}, null, function (result) {
-            $scope.following = true;
-        });
+    $scope.follow = function() {
+      return Organization.follow({
+        id: $scope.organization.id
+      }, null, function(result) {
+        return $scope.following = true;
+      });
     };
 
-    /**
+    /*
      * Button Event. Try to un-follow the current Organization Newsfeed
      */
-    $scope.unfollow = function(){
-        Organization.unfollow({id: $scope.organization.id}, function (result) {
-            $scope.following = false;
-        });
+    $scope.unfollow = function() {
+      return Organization.unfollow({
+        id: $scope.organization.id
+      }, function(result) {
+        return $scope.following = false;
+      });
     };
 
-    /**
+    /*
      * show or hide the Un-Follow Button. Show only if the current organization is being followed by user
      * @returns {boolean} true => show, else hide
      */
-    $scope.showUnfollow = function(){
-        return $scope.following == true;// && $scope.isOwner() == false;
+    $scope.showUnfollow = function() {
+      return $scope.following === true;
     };
 
-    /**
+    /*
      * show or hide the Follow Button. Show only if the current organization is not being followed by user
      * @returns {boolean} true => show, else hide
      */
     $scope.showFollow = function() {
-        return $scope.following == false;// && $scope.isOwner() == false;
+      return $scope.following === false;
     };
-
-    //Posting
-
-    //Posting for project
     $scope.postingPage = -1;
     $scope.postingPageSize = 5;
     $scope.postingInformation = null;
     $scope.postingsTotal = null;
     $scope.postings = [];
-
-    //function to refresh postings for the organization in the scope; get postings in the given pagesize
-    var refreshPostings = function() {
-        Organization.getPostingsByOrgId({
-                id: $routeParams.id,
-                page: $scope.postingPage,
-                pageSize: $scope.postingPageSize },
-            function(data) {
-                $scope.postingsTotal = data.totalElements;
-                $scope.postings = $scope.postings.concat(data.postings);
-            });
+    refreshPostings = function() {
+      return Organization.getPostingsByOrgId({
+        id: $routeParams.id,
+        page: $scope.postingPage,
+        pageSize: $scope.postingPageSize
+      }, function(data) {
+        $scope.postingsTotal = data.totalElements;
+        return $scope.postings = $scope.postings.concat(data.postings);
+      });
     };
-
     $scope.canShowMorePostings = function() {
-        return $scope.postings.length < $scope.postingsTotal;
+      return $scope.postings.length < $scope.postingsTotal;
     };
-
-    //shows more postings by incrementing the postingCount (default 5 + 5)
     $scope.showMorePostings = function() {
-        $scope.postingPage = $scope.postingPage + 1;
-        refreshPostings();
+      $scope.postingPage = $scope.postingPage + 1;
+      return refreshPostings();
     };
-
-    //show first page of postings
     $scope.showMorePostings();
-
     $scope.addPosting = function() {
-        if($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
-            return;
-        }
-        Organization.addPostingForOrganization({
-            id:$routeParams.id
-        }, $scope.postingInformation, function(newPosting) {
-            //add new posting and cut array down to current number of shown postings
-            $scope.postings.unshift(newPosting);
-            $scope.postingsTotal = $scope.postingsTotal + 1;
-            $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
-            $scope.postingInformation = null;
-            $scope.postingform.$setPristine();
+      var urlPath;
+      if ($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
+        return;
+      }
+      Organization.addPostingForOrganization({
+        id: $routeParams.id
+      }, $scope.postingInformation, function(newPosting) {
+        $scope.postings.unshift(newPosting);
+        $scope.postingsTotal = $scope.postingsTotal + 1;
+        $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
+        $scope.postingInformation = null;
+        return $scope.postingform.$setPristine();
+      });
+      urlPath = $location.url();
+      if ($scope.postOnTwitter) {
+        SocialMedia.createTwitterPost({
+          urlPath: urlPath,
+          post: $scope.postingInformation
         });
-
-        if($scope.postOnTwitter === true) {
-            var urlPath = $location.url();
-            SocialMedia.createTwitterPost({urlPath: urlPath, post: $scope.postingInformation});
-        }
-
-        if($scope.postOnFacebook === true) {
-            var urlPath = $location.url();
-            SocialMedia.createFacebookPost({urlPath: urlPath, post: $scope.postingInformation});
-        }
-
-        if($scope.postOnXing === true) {
-            var urlPath = $location.url();
-            SocialMedia.createXingPost({urlPath: urlPath, post: $scope.postingInformation});
-        }
-
-        $scope.focused = false;
+      } else if ($scope.postOnFacebook) {
+        SocialMedia.createFacebookPost({
+          urlPath: urlPath,
+          post: $scope.postingInformation
+        });
+      } else if ($scope.postOnXing) {
+        SocialMedia.createXingPost({
+          urlPath: urlPath,
+          post: $scope.postingInformation
+        });
+      }
+      return $scope.focused = false;
     };
-
     $scope.deletePosting = function(id) {
-        Organization.deletePosting({
-                id:$scope.organization.id,
-                pid:id
-            },
-            function() {
-                for (var i in $scope.postings) {
-                    if ($scope.postings[i].id == id) {
-                        $scope.postings.splice(i, 1);
-                        break
-                    }
-                }
-            }
-        );
+      Organization.deletePosting({
+        id: $scope.organization.id,
+        pid: id
+      }, function() {
+        var i;
+        for (i in $scope.postings) {
+          if ($scope.postings[i].id === id) {
+            $scope.postings.splice(i, 1);
+            break;
+          }
+        }
+      });
     };
 
     /**
      * Resolve the follow state for the current organization of logged in user
      */
-    $scope.followingState = function(){
-        Organization.followingState({id: $routeParams.id}, function(follow){
-            $scope.following = follow.state;
-        });
-    };
-
-    $scope.getDonatedResources = function() {
-        Organization.getDonatedResources({
+    $scope.followingState = function() {
+      return Organization.followingState({
         id: $routeParams.id
-        }, {
-            pageSize: 20,
-            page: 0
-        }, function(response) {
-            var projects = {};
-            $scope.donatedResources = response;
-            response.resourceMatches.map(function(x) {
-                x.project.match = [x];
-                return x.project;
-            }).forEach(function(project) {
-                if (projects[project.id] == undefined) {
-                    projects[project.id] = project;
-                } else {
-                    projects[project.id].match = projects[project.id].match.concat(project.match);
-                }
-            });
-
-            $scope.projects = projects;
-        });
+      }, function(follow) {
+        return $scope.following = follow.state;
+      });
     };
-
-    //allow execute follow state only if organization ID is set!
-    if($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
-        $scope.followingState();
-        $scope.getDonatedResources();
+    $scope.getDonatedResources = function() {
+      return Organization.getDonatedResources({
+        id: $routeParams.id
+      }, {
+        pageSize: 20,
+        page: 0
+      }, function(response) {
+        var projects;
+        projects = {};
+        $scope.donatedResources = response;
+        response.resourceMatches.map(function(x) {
+          x.project.match = [x];
+          return x.project;
+        }).forEach(function(project) {
+          if (projects[project.id] === void 0) {
+            return projects[project.id] = project;
+          } else {
+            return projects[project.id].match = projects[project.id].match.concat(project.match);
+          }
+        });
+        return $scope.projects = projects;
+      });
+    };
+    if ($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
+      $scope.followingState();
+      return $scope.getDonatedResources();
     }
-});
+  });
+
+}).call(this);
+
+//# sourceMappingURL=controller_organization.js.map

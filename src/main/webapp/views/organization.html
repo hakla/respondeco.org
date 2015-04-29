@@ -4,7 +4,7 @@
     <div class="row">
         <!--Left Sidebar-->
         <div class="col-md-3 md-margin-bottom-40">
-            <img class="img-responsive profile-img margin-bottom-20" src="/app/rest/images/file/{{organization.logo.id}}" alt="">
+            <img class="img-responsive profile-img margin-bottom-20" logo logo-id="organization.logo.id">
             <ul class="list-group sidebar-nav-v1 margin-bottom-40" id="sidebar-nav-1">
                 <li class="list-group-item active">
                     <a href="#"><i class="fa fa-bar-chart-o"></i> Übersicht</a>
@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="col-sm-6" ng-repeat="project in organization.projects">
                         <div class="easy-block-v1">
-                            <img class="img-responsive" src="/app/rest/images/file/{{project.logo.id}}" alt="">
+                            <img class="img-responsive" logo logo-id="project.logo.id" alt="">
                             <div class="easy-block-v1-badge rgba-red">ISO-Kategorie</div>
                         </div>
                         <div class="projects">
