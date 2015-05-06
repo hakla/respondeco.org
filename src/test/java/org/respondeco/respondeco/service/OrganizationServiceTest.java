@@ -168,7 +168,7 @@ public class OrganizationServiceTest {
 
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
 
-        Organization organization2 = organizationService.getOrganization(organization.getId());
+        Organization organization2 = organizationService.getById(organization.getId());
 
         assertEquals(organization, organization2);
     }
@@ -187,7 +187,7 @@ public class OrganizationServiceTest {
         Page<Organization> orgPage = new PageImpl<Organization>(Arrays.asList(organization1,organization2));
         when(organizationRepositoryMock.findByActiveIsTrue(any(Pageable.class))).thenReturn(orgPage);
 
-        Page<Organization> organizationPage = organizationService.getOrganizations(null);
+        Page<Organization> organizationPage = organizationService.get(null);
 
         assertEquals(organizationPage.getTotalElements(), 2L);
         verify(organizationRepositoryMock, times(1)).findByActiveIsTrue(any(Pageable.class));
@@ -200,7 +200,7 @@ public class OrganizationServiceTest {
 
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.updateOrganizationInformation("testOrg2", "testDescription", "test@email.com", false, 1L);
+        organizationService.update("testOrg2", "testDescription", "test@email.com", false, 1L);
 
         when(organizationRepositoryMock.findByName("testOrg2")).thenReturn(organization);
         Organization organization2 = organizationService.getOrganizationByName("testOrg2");
@@ -216,7 +216,7 @@ public class OrganizationServiceTest {
 
         Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
         when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.updateOrganizationInformation("", "testDescription", "test@email.com", false, 1L);
+        organizationService.update("", "testDescription", "test@email.com", false, 1L);
     }
 
     @Test(expected = NoSuchEntityException.class)
@@ -224,7 +224,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        organizationService.updateOrganizationInformation("testOrg1", "testDescription", "test@email.com", false, 1L);
+        organizationService.update("testOrg1", "testDescription", "test@email.com", false, 1L);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class OrganizationServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(any(Long.class))).thenReturn(organization);
         doAnswer(organizationArgumentCaptor).when(organizationRepositoryMock).save(any(Organization.class));
 
-        organizationService.deleteOrganizationInformation(organization.getId());
+        organizationService.delete(organization.getId());
 
         assertEquals(organizationArgumentCaptor.getValue().isActive(), false);
     }
@@ -248,7 +248,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
 
-        organizationService.deleteOrganizationInformation(anyLong());
+        organizationService.delete(anyLong());
     }
 
     @Test

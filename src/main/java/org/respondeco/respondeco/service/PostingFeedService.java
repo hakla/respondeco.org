@@ -5,6 +5,7 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -58,7 +59,7 @@ public class PostingFeedService {
         if(currentUser.equals(project.getManager()) == false) {
             throw new PostingFeedException(".notmanagerofproject", String.format("User is not manager of project"));
         }
-        if(information == "") {
+        if(information.length() == 0) {
             throw new PostingFeedException(".emptyinformation",String.format("Information must not be empty"));
         }
         PostingFeed postingFeed = project.getPostingFeed();
@@ -83,7 +84,7 @@ public class PostingFeedService {
      * @throws PostingFeedException is thrown if user is not owner, information of posting is empty or
      * organization doesn't have a postingfeed
      */
-    public Posting addPostingForOrganization(Long organizationId, String information) throws
+    public Posting createPostingForOrganization(Long organizationId, String information) throws
         NoSuchEntityException,
             PostingFeedException {
         User currentUser = userService.getUserWithAuthorities();
@@ -94,7 +95,7 @@ public class PostingFeedService {
         if(currentUser.equals(organization.getOwner()) == false) {
             throw new PostingFeedException(".notowneroforganization", String.format("User is not owner of organization"));
         }
-        if(information == "") {
+        if(information.length() == 0) {
             throw new PostingFeedException(".emptyinformation",String.format("Information must not be empty"));
         }
         PostingFeed postingFeed = organization.getPostingFeed();
@@ -113,33 +114,33 @@ public class PostingFeedService {
     /**
      * method to return a page of postings for the given organization; page settings are defined by the restParameters
      * @param organizationId the given id of the organization for which the postings are searched
-     * @param restParameters restParameters from the controller define the page settings
+     * @param pageable pagination options for retrieving values from the database
      * @return returns a page of postings for the given organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException is thrown if the organization doesn't exist
      */
-    public Page<Posting> getPostingsForOrganization(Long organizationId, RestParameters restParameters) throws
+    public Page<Posting> getPostingsForOrganization(Long organizationId, Pageable pageable) throws
         NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
         if(organization == null) {
             throw new NoSuchEntityException(organizationId);
         }
-        return postingFeedRepository.getPostingsForOrganization(organizationId, restParameters.buildPageRequest());
+        return postingFeedRepository.getPostingsForOrganization(organizationId, pageable);
     }
 
     /**
      * method to return a page of postings for the given project; page settings are defined by the restParameters
      * @param projectId the given id of the project for which the postings are searched
-     * @param restParameters restParameters from the controller define the page settings
+     * @param pageable paging information to be used when retrieving values from the database
      * @return returns a page of postings for the given project
      * @throws NoSuchEntityException is thrown if the project doesn't exist
      */
-    public Page<Posting> getPostingsForProject(Long projectId, RestParameters restParameters) throws
+    public Page<Posting> getPostingsForProject(Long projectId, Pageable pageable) throws
             NoSuchEntityException {
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
         if(project == null) {
             throw new NoSuchEntityException(projectId);
         }
-        return postingFeedRepository.getPostingsForProject(projectId, restParameters.buildPageRequest());
+        return postingFeedRepository.getPostingsForProject(projectId, pageable);
     }
 
     /**

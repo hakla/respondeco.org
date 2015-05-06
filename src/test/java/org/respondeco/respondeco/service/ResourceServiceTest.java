@@ -348,7 +348,7 @@ public class ResourceServiceTest {
         }).when(resourceRequirementRepositoryMock).findByActiveIsTrue();
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceRequirement> items = this.resourceService.getAllRequirements();
+        List<ResourceRequirement> items = this.resourceService.getRequirements();
         assertEquals(items.size(), listSize);
         for (int i = 0; i < items.size(); i++) {
             ResourceRequirement current = items.get(i);
@@ -389,7 +389,7 @@ public class ResourceServiceTest {
             return internalItems;
         }).when(resourceRequirementRepositoryMock).findByProjectIdAndActiveIsTrue(isA(longCl));
         int listSize = 1;
-        List<ResourceRequirement> expectedItem = this.resourceService.getAllRequirements(projectID);
+        List<ResourceRequirement> expectedItem = this.resourceService.getRequirementsForProject(projectID);
         assertEquals(expectedItem.size(), listSize);
         assertEquals(expectedItem.get(0).getProject().getId(), projectID);
         assertEquals(expectedItem.get(0).getId(), expectedRequirementID);
@@ -503,7 +503,7 @@ public class ResourceServiceTest {
         }).when(resourceOfferRepositoryMock).findByOrganizationIdAndActiveIsTrue(expOrg.getId());
         Long expected = 1L;
         int listSize = 2;
-        List<ResourceOffer> list = this.resourceService.getAllOffers(expOrg.getId());
+        List<ResourceOffer> list = this.resourceService.getOffersForOrganization(expOrg.getId());
         assertEquals(listSize, list.size());
         for (int i = 0; i < list.size(); i++) {
             ResourceOffer current = list.get(i);
@@ -525,7 +525,7 @@ public class ResourceServiceTest {
             return items;
         }).when(resourceOfferRepositoryMock).findByOrganizationIdAndActiveIsTrue(isA(longCl));
         listSize = 1;
-        list = this.resourceService.getAllOffers(99L);
+        list = this.resourceService.getOffersForOrganization(99L);
 
         assertEquals(list.size(), listSize);
         for (int i = 0; i < list.size(); i++) {
@@ -1071,7 +1071,7 @@ public class ResourceServiceTest {
             return page;
         }).when(resourceMatchRepositoryMock).findAll(any(Predicate.class), any(PageRequest.class));
 
-        List<ResourceMatch> resourceMatches = resourceService.getResourcesForOrganization(1L, new RestParameters(1, 20));
+        List<ResourceMatch> resourceMatches = resourceService.getResourcesForOrganization(1L, new PageRequest(1, 20));
         ResourceMatch match = resourceMatches.get(0);
 
         verify(resourceMatchRepositoryMock, times(2)).findAll(any(Predicate.class), any(PageRequest.class));
@@ -1101,7 +1101,7 @@ public class ResourceServiceTest {
 
         doReturn(user).when(userServiceMock).getUserWithAuthorities();
 
-        Page<ResourceOffer> page = resourceService.getAllOffers("", null, new RestParameters(0, 5));
+        Page<ResourceOffer> page = resourceService.getOffers("", null, new PageRequest(0, 5));
         assertEquals(page.getTotalPages(), 1);
         assertEquals(page.getTotalElements(), 2);
         assertEquals(page.getContent().size(), 2);
@@ -1124,7 +1124,7 @@ public class ResourceServiceTest {
             return page;
         }).when(resourceOfferRepositoryMock).findAll(any(Predicate.class), any(PageRequest.class));
 
-        Page<ResourceOffer> page = resourceService.getAllOffers("resource", true, new RestParameters(0, 5));
+        Page<ResourceOffer> page = resourceService.getOffers("resource", true, new PageRequest(0, 5));
         assertEquals(page.getTotalPages(), 1);
         assertEquals(page.getTotalElements(), 2);
         assertEquals(page.getContent().size(), 2);

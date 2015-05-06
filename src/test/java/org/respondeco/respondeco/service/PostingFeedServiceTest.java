@@ -154,7 +154,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.addPostingForOrganization(projectOrganization.getId(), "posting2");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
 
         verify(postingRepositoryMock, times(1)).save(isA(Posting.class));
     }
@@ -165,7 +165,7 @@ public class PostingFeedServiceTest {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId())).thenReturn(null);
 
-        postingFeedService.addPostingForOrganization(projectOrganization.getId(), "posting1");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting1");
 
     }
 
@@ -176,7 +176,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.addPostingForOrganization(projectOrganization.getId(), "posting2");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
 
     }
 
@@ -186,7 +186,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.addPostingForOrganization(projectOrganization.getId(),"");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "");
 
     }
 
@@ -199,7 +199,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.addPostingForOrganization(projectOrganization.getId(), "posting2");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
 
     }
 
@@ -208,7 +208,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
         RestParameters restParameters = new RestParameters(null, null, null, null);
-        postingFeedService.getPostingsForOrganization(projectOrganization.getId(), restParameters);
+        postingFeedService.getPostingsForOrganization(projectOrganization.getId(), restParameters.buildPageRequest());
 
         verify(postingFeedRepositoryMock, times(1)).getPostingsForOrganization(projectOrganization.getId(), restParameters.buildPageRequest());
     }
@@ -226,7 +226,7 @@ public class PostingFeedServiceTest {
         when(projectRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
                 .thenReturn(basicProject);
         RestParameters restParameters = new RestParameters(null, null, null, null);
-        postingFeedService.getPostingsForProject(basicProject.getId(), restParameters);
+        postingFeedService.getPostingsForProject(basicProject.getId(), restParameters.buildPageRequest());
 
         verify(postingFeedRepositoryMock, times(1)).getPostingsForProject(basicProject.getId(), restParameters.buildPageRequest());
     }

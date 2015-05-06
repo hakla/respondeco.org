@@ -84,7 +84,7 @@ public class AccountController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> registerAccount(@RequestBody RegisterDTO registerDTO, HttpServletRequest request,
+    public ResponseEntity<?> create(@RequestBody RegisterDTO registerDTO, HttpServletRequest request,
                                              HttpServletResponse response) {
         ResponseEntity<?> responseEntity;
         User user = userRepository.findByLogin(registerDTO.getEmail());
@@ -130,6 +130,55 @@ public class AccountController {
 
         return responseEntity;
     }
+
+    /**
+     * GET  /rest/account -> get the current user.
+     */
+    @RequestMapping(value = "/rest/account",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<UserDTO> getCurrent() {
+        ResponseEntity<UserDTO> responseEntity;
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser != null) {
+            List<String> fields = Arrays.asList("id", "login", "title", "gender", "firstName", "lastName", "email",
+                "description", "langKey", "roles", "organization", "profilePicture", "invited");
+            UserDTO responseDTO = UserDTO.fromEntity(currentUser, fields);
+            responseEntity = new ResponseEntity<UserDTO>(responseDTO, HttpStatus.OK);
+        } else {
+            responseEntity = new ResponseEntity<UserDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * POST  /rest/account -> update the current user information.
+     */
+    @RequestMapping(value = "/rest/account",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public void update(@RequestBody UserDTO userDTO) {
+        userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
+            userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription(), userDTO.getProfilePicture());
+    }
+
+    /**
+     * DELETE /rest/account -> deactivate the account
+     */
+    @RequestMapping(value = "/rest/account",
+        method = RequestMethod.DELETE)
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @Timed
+    public void delete() {
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser != null) {
+            currentUser.setActive(false);
+            userRepository.save(currentUser);
+        }
+    }
+
     /**
      * GET  /rest/activate -> activate the registered user.
      */
@@ -155,54 +204,6 @@ public class AccountController {
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
         return request.getRemoteUser();
-    }
-
-    /**
-     * GET  /rest/account -> get the current user.
-     */
-    @RequestMapping(value = "/rest/account",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<UserDTO> getAccount() {
-        ResponseEntity<UserDTO> responseEntity;
-        User currentUser = userService.getUserWithAuthorities();
-        if(currentUser != null) {
-            List<String> fields = Arrays.asList("id", "login", "title", "gender", "firstName", "lastName", "email",
-                "description", "langKey", "roles", "organization", "profilePicture", "invited");
-            UserDTO responseDTO = UserDTO.fromEntity(currentUser, fields);
-            responseEntity = new ResponseEntity<UserDTO>(responseDTO, HttpStatus.OK);
-        } else {
-            responseEntity = new ResponseEntity<UserDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return responseEntity;
-    }
-
-    /**
-     * POST  /rest/account -> update the current user information.
-     */
-    @RequestMapping(value = "/rest/account",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public void saveAccount(@RequestBody UserDTO userDTO) {
-        userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
-                userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription(), userDTO.getProfilePicture());
-    }
-
-    /**
-     * DELETE /rest/account -> deactivate the account
-     */
-    @RequestMapping(value = "/rest/account",
-            method = RequestMethod.DELETE)
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @Timed
-    public void deactivateAccount() {
-        User currentUser = userService.getUserWithAuthorities();
-        if(currentUser != null) {
-            currentUser.setActive(false);
-            userRepository.save(currentUser);
-        }
     }
 
     /**

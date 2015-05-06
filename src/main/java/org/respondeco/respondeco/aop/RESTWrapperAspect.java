@@ -50,42 +50,52 @@ public class RESTWrapperAspect {
     }
 
     @Around("publicMethod() && wrappedMethod() || wrappedClass()")
-    public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();
-            String fields = request.getParameter("fields");
-
-            if (result instanceof Page) {
-                Map<String, Object> map = new HashMap<>();
-                Page page = (Page) result;
-                List content = page.getContent();
-
-                if (content.size() > 0) {
-                    Class<?> clazz = content.get(0).getClass();
-                    ObjectMapper mapper = factory.createMapper(clazz, fields);
-
-                    List<Map<String, Object>> mapped = mapper.mapAll(content);
-                    String fieldName = clazz.getSimpleName().toLowerCase() + "s";
-                    map.put(fieldName, mapped);
-                }
-
-                map.put("totalItems", ((Page) result).getTotalElements());
-
-                return new ResponseEntity<>(map, HttpStatus.OK);
+            if(result != null) {
+                Object mapped = mapResult(result);
+                return new ResponseEntity<>(mapped, HttpStatus.OK);
             } else {
-                ObjectMapper mapper = factory.createMapper(result.getClass(), fields);
-                return new ResponseEntity<>(mapper.map(result), HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
         } catch (IllegalArgumentException e) {
             log.error("Illegal argument: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()),
                 joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
-
-            throw e;
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NoSuchEntityException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (OperationForbiddenException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
+    }
+
+    private Object mapResult(Object object) {
+        String fields = request.getParameter("fields");
+        if (object instanceof Page) {
+            return mapPage((Page) object, fields);
+        } else {
+            return mapObject(object, fields);
+        }
+    }
+
+    private Map<String, Object> mapPage(Page page, String fields) {
+        Map<String, Object> map = new HashMap<>();
+        List content = page.getContent();
+        if (content.size() > 0) {
+            Class<?> clazz = content.get(0).getClass();
+            ObjectMapper mapper = factory.createMapper(clazz, fields);
+            List<Map<String, Object>> mapped = mapper.mapAll(content);
+            String fieldName = clazz.getSimpleName().toLowerCase() + "s";
+            map.put(fieldName, mapped);
+        }
+        map.put("totalItems", page.getTotalElements());
+        return map;
+    }
+
+    private Map<String, Object> mapObject(Object object, String fields) {
+        ObjectMapper mapper = factory.createMapper(object.getClass(), fields);
+        return mapper.map(object);
     }
 
 }

@@ -82,7 +82,7 @@ public class ResourceController {
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         log.debug(restParameters.toString());
 
-        Page<ResourceOffer> resultPage = resourceService.getAllOffers(name, commercial, restParameters);
+        Page<ResourceOffer> resultPage = resourceService.getOffers(name, commercial, restParameters.buildPageRequest());
 
         ResponseEntity<ResourceOfferPaginationResponseDTO> responseEntity =
             new ResponseEntity<>(ResourceOfferPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields()), HttpStatus.OK);
@@ -296,7 +296,7 @@ public class ResourceController {
         log.debug("REST request to get all resource requirements");
         List<ResourceRequirementRequestDTO> response = new ArrayList<>();
 
-        List<ResourceRequirement> resourceRequirements = resourceService.getAllRequirements();
+        List<ResourceRequirement> resourceRequirements = resourceService.getRequirements();
         if(resourceRequirements.isEmpty() == false) {
             ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
         }

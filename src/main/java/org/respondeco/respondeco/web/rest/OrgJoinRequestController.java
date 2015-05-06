@@ -87,7 +87,7 @@ public class OrgJoinRequestController {
 //                User newUser = userService.createUserInformation(user.getEmail(), "tochange", null, null, null, user.getEmail(), null, null, null, null, true);
 //
 //                // set the organization for the user
-//                userService.setOrganization(newUser, orgjoinrequest.getOrganization().getId());
+//                userService.setOrganization(newUser, orgjoinrequest.getOfferById().getId());
 //
 //                // send the invited user an email so he can accept the invitation
 //                mailService.sendActivationEmail(user.getEmail(), accountController.createHtmlContentFromTemplate(newUser, Locale.GERMAN, request, response, "invitationEmail"), Locale.GERMAN);
@@ -96,7 +96,7 @@ public class OrgJoinRequestController {
 //                    // and create a new orgjoinrequest that gets accepted automatically when the user registers
 //                    UserDTO userDTO = new UserDTO();
 //                    userDTO.setId(newUser.getId());
-//                    orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOrganization(), userDTO);
+//                    orgJoinRequestService.createOrgJoinRequest(orgjoinrequest.getOfferById(), userDTO);
 //                    responseEntity = new ResponseEntity<>(HttpStatus.OK);
 //                } catch (AlreadyInvitedToOrganizationException e1) {
 //                    log.error("Could not save OrgJoinRequest : {}", orgjoinrequest, e1);

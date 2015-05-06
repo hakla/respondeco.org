@@ -387,7 +387,7 @@ public class ProjectController {
         log.debug("REST request to get all resource requirements belongs to project id:{}", id);
         ResponseEntity<List<ResourceRequirementResponseDTO>> responseEntity;
 
-        List<ResourceRequirement> resourceRequirements = resourceService.getAllRequirements(id);
+        List<ResourceRequirement> resourceRequirements = resourceService.getRequirementsForProject(id);
 
         List<ResourceRequirementResponseDTO> resourceRequirementResponseDTOs = ResourceRequirementResponseDTO.fromEntities(resourceRequirements, null);
 
@@ -638,6 +638,23 @@ public class ProjectController {
         return responseEntity;
     }
 
+    /**
+     * creates a post for the project in the postingfeed
+     * @param information the string which contains the information of the posting
+     * @param id the id of the project for which to create the posting
+     * @return response status OK if no exception has been thrown; NOT_FOUND if the project doesn't exist;
+     * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
+     */
+    @RequestMapping(value = "/rest/projects/{id}/postings",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RESTWrapped
+    public Object createPostingForProject(  @RequestBody String information,
+                                            @PathVariable Long id) {
+        return postingFeedService.addPostingForProjects(id, information);
+    }
 
     /**
      * GET gets the postings of the given project as a page of postings defined by page and pagesize
@@ -651,55 +668,12 @@ public class ProjectController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> getPostings(@PathVariable Long id,
-                                                        @RequestParam(required = false) Integer page,
-                                                        @RequestParam(required = false) Integer pageSize) {
+    @RESTWrapped
+    public Object getPostingsForProject(    @PathVariable Long id,
+                                            @RequestParam(required = false) Integer page,
+                                            @RequestParam(required = false) Integer pageSize) {
         RestParameters restParameters = new RestParameters(page, pageSize);
-        ResponseEntity<PostingPaginationResponseDTO> responseEntity;
-        PostingPaginationResponseDTO responseDTO = new PostingPaginationResponseDTO();
-        List<PostingDTO> postings = new ArrayList<>();
-        try {
-            Page<Posting> currentPage = postingFeedService.getPostingsForProject(id, restParameters);
-            for(Posting posting : currentPage.getContent()){
-                postings.add(new PostingDTO(posting));
-            }
-            responseDTO.setTotalElements(currentPage.getTotalElements());
-            responseDTO.setPostings(postings);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch (NoSuchEntityException e) {
-            log.error("Could not get postings for project {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
-    }
-
-    /**
-     * creates a post for the project in the postingfeed
-     * @param information the string which contains the information of the posting
-     * @param id the id of the project for which to create the posting
-     * @return response status OK if no exception has been thrown; NOT_FOUND if the project doesn't exist;
-     * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
-     */
-    @RequestMapping(value = "/rest/projects/{id}/postings",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> postingForProject(
-            @RequestBody String information,
-            @PathVariable Long id) {
-        ResponseEntity<?> responseEntity;
-        try {
-            Posting createdPosting = postingFeedService.addPostingForProjects(id, information);
-            PostingDTO postingDTO = PostingDTO.fromEntity(createdPosting, null);
-            responseEntity = new ResponseEntity<>(postingDTO, HttpStatus.OK);
-        } catch (NoSuchEntityException e) {
-            log.error("Could not post for project {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (PostingFeedException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+        return postingFeedService.getPostingsForProject(id, restParameters.buildPageRequest());
     }
 
     /**
@@ -713,18 +687,10 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> deletePostingForProject(
-            @PathVariable Long id,
-            @PathVariable Long pid) {
-        ResponseEntity<?> responseEntity;
-        try {
-            postingFeedService.deletePosting(pid);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (PostingException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+    @RESTWrapped
+    public void deletePostingForProject(   @PathVariable Long id,
+                                           @PathVariable Long pid) {
+        postingFeedService.deletePosting(pid);
     }
 
 }

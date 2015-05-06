@@ -22,6 +22,7 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -641,19 +642,19 @@ public class ProjectControllerTest {
         posting.setCreatedDate(DateTime.now());
         Page<Posting> postingPage = new PageImpl<Posting>(Arrays.asList(posting));
         doReturn(postingPage).when(postingFeedServiceMock)
-            .getPostingsForProject(any(Long.class), any(RestParameters.class));
+            .getPostingsForProject(any(Long.class), any(Pageable.class));
 
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        verify(postingFeedServiceMock, times(1)).getPostingsForProject(any(Long.class), any(RestParameters.class));
+        verify(postingFeedServiceMock, times(1)).getPostingsForProject(any(Long.class), any(Pageable.class));
     }
 
     @Test
     public void testGetPostingForProject_NoSuchProject() throws Exception {
         doThrow(NoSuchEntityException.class).when(postingFeedServiceMock)
-            .getPostingsForProject(anyLong(), isA(RestParameters.class));
+            .getPostingsForProject(anyLong(), isA(Pageable.class));
         restProjectMockMvc.perform(get("/app/rest/projects/{id}/postings", project.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isNotFound());

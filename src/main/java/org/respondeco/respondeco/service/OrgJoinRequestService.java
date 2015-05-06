@@ -91,7 +91,7 @@ public class OrgJoinRequestService {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
 
         if(organization == null) {
-            throw new NoSuchEntityException(String.format("Organization does not exist", id));
+            throw new NoSuchEntityException(String.format("Organization does not exist: %d", id));
         }
         log.debug("Found List of OrgJoinRequest by OrgName");
 
@@ -139,7 +139,7 @@ public class OrgJoinRequestService {
         for (OrgJoinRequest orgJoinRequest:orgJoinRequestRepository.findByOrganization(organization)) {
             orgJoinRequestWithActiveFlagDTO = new OrgJoinRequestWithActiveFlagDTO();
             orgJoinRequestWithActiveFlagDTO.setId(orgJoinRequest.getId());
-            orgJoinRequestWithActiveFlagDTO.setOrgName((orgJoinRequest.getOrganization()).getName());
+            orgJoinRequestWithActiveFlagDTO.setOrgName((orgJoinRequest.getOfferById()).getName());
             orgJoinRequestWithActiveFlagDTO.setUserLogin((orgJoinRequest.getUser()).getLogin());
             orgJoinRequestWithActiveFlagDTOList.add(orgJoinRequestWithActiveFlagDTO);
         }

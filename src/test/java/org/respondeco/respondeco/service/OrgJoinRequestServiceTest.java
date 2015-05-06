@@ -397,7 +397,7 @@ public class OrgJoinRequestServiceTest {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(orgJoinRequestRepositoryMock.findOne(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
 
-        orgJoinRequestService.delete(orgJoinRequest.getId()); //orgOwner.getOrganization==null ?!?!
+        orgJoinRequestService.delete(orgJoinRequest.getId()); //orgOwner.getOfferById==null ?!?!
 
         verify(orgJoinRequestRepositoryMock, times(1)).delete(orgJoinRequest.getId());
     }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 @Setter
 @ToString(exclude = {"projectRating", "supporterRating", "resourceOffer",
     "resourceRequirement", "organization", "project"})
-public class ResourceMatch extends AbstractAuditingEntity {
+public class ResourceMatch extends AbstractAuditingEntity implements Serializable {
 
     private BigDecimal amount;
 

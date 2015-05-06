@@ -100,6 +100,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     @Override
     public void onSimpleExpression(String fieldName) throws ExpressionParsingException {
         try {
+            mapper.removeMapping(fieldName);
             mapper.addMapping(createSimpleMapping(fieldName));
         } catch (Exception e) {
             throw new ExpressionParsingException(e);
@@ -127,6 +128,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
             subParser.setParserListener(childBuilder);
             subParser.parse();
             FieldMapping nestedMapping = new NestedFieldMapping(fieldName, field, accessor, childBuilder.getMapper());
+            mapper.removeMapping(fieldName);
             mapper.addMapping(nestedMapping);
         } catch (Exception e) {
             throw new ExpressionParsingException(e);

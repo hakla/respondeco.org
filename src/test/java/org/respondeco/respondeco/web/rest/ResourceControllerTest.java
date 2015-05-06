@@ -160,7 +160,7 @@ public class ResourceControllerTest {
         }else if (operation == 2){
             doNothing().when(resourceService).deleteOffer(dto.getId());
         }else if(operation == 3){
-            doReturn(resourceOffers).when(resourceService).getAllOffers(any(), any(), any());
+            doReturn(resourceOffers).when(resourceService).getOffers(any(), any(), any());
             doReturn(resourceOffer).when(resourceService).getOfferById(dto.getId());
         }
         return dto;
@@ -177,7 +177,7 @@ public class ResourceControllerTest {
         }else if (operation == 2){
             doNothing().when(resourceService).deleteRequirement(dto.getId());
         }else if(operation == 3){
-            doReturn(Arrays.asList(resourceRequirement)).when(resourceService).getAllRequirements();
+            doReturn(Arrays.asList(resourceRequirement)).when(resourceService).getRequirements();
         }
         return dto;
     }
@@ -193,7 +193,7 @@ public class ResourceControllerTest {
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteOffer(dto.getId());
         }else if (operation == 3){
-            verify(resourceService, times(1)).getAllOffers(any(), any(), any());
+            verify(resourceService, times(1)).getOffers(any(), any(), any());
         }
     }
     private void verifyRequirement(Integer operation, ResourceRequirementRequestDTO dto) throws Exception{
@@ -206,7 +206,7 @@ public class ResourceControllerTest {
         }else if(operation == 2){
             verify(resourceService, times(1)).deleteRequirement(dto.getId());
         }else if (operation == 3){
-            verify(resourceService, times(1)).getAllRequirements();
+            verify(resourceService, times(1)).getRequirements();
         }
     }
 

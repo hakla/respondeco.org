@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +49,6 @@ public class ResourceService {
 
     private UserService userService;
 
-    private RestUtil restUtil;
-
     @Inject
     public ResourceService(ResourceOfferRepository resourceOfferRepository,
                            ResourceRequirementRepository resourceRequirementRepository,
@@ -64,7 +63,6 @@ public class ResourceService {
         this.resourceTagService = resourceTagService;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
-        this.restUtil = new RestUtil();
         this.imageRepository = imageRepository;
         this.userService = userService;
         this.resourceMatchRepository = resourceMatchRepository;
@@ -143,7 +141,7 @@ public class ResourceService {
      */
     public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
                                                  Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceNotFoundException, OperationForbiddenException, NoSuchEntityException, IllegalValueException {
+        throws IllegalValueException {
         ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
 
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
@@ -153,34 +151,29 @@ public class ResourceService {
         if (project.equals(requirement.getProject()) == false) {
             throw new OperationForbiddenException("cannot modify resource requirements of other projects");
         }
-        if (requirement != null) {
-            ensureUserIsPartOfOrganisation(requirement.getProject());
-            BigDecimal matchSum = new BigDecimal(0);
-            if(requirement.getResourceMatches() != null) {
-                for (ResourceMatch match : requirement.getResourceMatches()) {
-                    //only take accepted matches into account
-                    if(Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
-                        matchSum = matchSum.add(match.getAmount());
-                    }
+        ensureUserIsPartOfOrganisation(requirement.getProject());
+        BigDecimal matchSum = new BigDecimal(0);
+        if(requirement.getResourceMatches() != null) {
+            for (ResourceMatch match : requirement.getResourceMatches()) {
+                //only take accepted matches into account
+                if (Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
+                    matchSum = matchSum.add(match.getAmount());
                 }
             }
-            log.debug("MATCH SUM = " + matchSum);
-            requirement.setName(name);
-            requirement.setDescription(description);
-            requirement.setIsEssential(isEssential);
-            requirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-
-            if(amount.subtract(matchSum).longValue() < 0L) {
-                throw new IllegalValueException("resource.errors.update.negative",
-                    "New amount is too low, a higher amount of resources was alredy donated");
-            }
-            requirement.setAmount(amount.subtract(matchSum));
-            requirement.setOriginalAmount(amount);
-            resourceRequirementRepository.save(requirement);
-
-        } else {
-            throw new ResourceNotFoundException(String.format("No resource requirement found for the id: %d", id));
         }
+        log.debug("MATCH SUM = " + matchSum);
+        requirement.setName(name);
+        requirement.setDescription(description);
+        requirement.setIsEssential(isEssential);
+        requirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
+
+        if(amount.subtract(matchSum).longValue() < 0L) {
+            throw new IllegalValueException("resource.errors.update.negative",
+                "New amount is too low, a higher amount of resources was alredy donated");
+        }
+        requirement.setAmount(amount.subtract(matchSum));
+        requirement.setOriginalAmount(amount);
+        resourceRequirementRepository.save(requirement);
 
         return requirement;
     }
@@ -205,7 +198,7 @@ public class ResourceService {
      * Return all Resource Requirements
      * @return list or resource requirements
      */
-    public List<ResourceRequirement> getAllRequirements() {
+    public List<ResourceRequirement> getRequirements() {
         return resourceRequirementRepository.findByActiveIsTrue();
     }
 
@@ -214,7 +207,7 @@ public class ResourceService {
      * @param projectId
      * @return List of ResourceRequirements
      */
-    public List<ResourceRequirement> getAllRequirements(Long projectId) {
+    public List<ResourceRequirement> getRequirementsForProject(Long projectId) {
         List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectIdAndActiveIsTrue(projectId);
 
         return entries;
@@ -332,24 +325,19 @@ public class ResourceService {
      * Get all ResourceOffers, filtered by searchField (name or organization or tags) and isCommercial
      * @param searchField contains search parameters for resource name, organization name and tags
      * @param isCommercial if true return only commercial resources, if false return only non commercial ones
-     * @param restParameters Rest Parameters to be set
+     * @param pageable A pageable to be used to query the database
      * @return List of active ResourceOffers filtered by set parameters. (searchField, isCommercial)
      */
-    public Page<ResourceOffer> getAllOffers(String searchField, Boolean isCommercial, RestParameters restParameters) {
+    public Page<ResourceOffer> getOffers(String searchField, Boolean isCommercial, Pageable pageable) {
         User user = userService.getUserWithAuthorities();
 
-        PageRequest pageRequest = null;
         Page page;
-
-        if(restParameters != null) {
-            pageRequest = restParameters.buildPageRequest();
-        }
 
         if(searchField.isEmpty() && isCommercial == null) {
             if (user.getOrganization() != null) {
                 page = resourceOfferRepository.findByOrganizationNotAndActiveIsTrue(user.getOrganization(), null);
             } else {
-                page = resourceOfferRepository.findByActiveIsTrue(pageRequest);
+                page = resourceOfferRepository.findByActiveIsTrue(pageable);
             }
         } else {
             String[] searchValues = searchField.split(" ");
@@ -391,10 +379,10 @@ public class ResourceService {
             log.debug("TOTALPAGES: " + page.getTotalPages());
         }
 
-        return orderByProbability(page, pageRequest);
+        return orderByProbability(page, pageable);
     }
 
-    private <T extends MatchingEntity> Page<T> orderByProbability(Page<T> page, PageRequest pageRequest) {
+    private <T extends MatchingEntity> Page<T> orderByProbability(Page<T> page, Pageable pageable) {
         User user = userService.getUserWithAuthorities();
         List<T> entities;
 
@@ -417,7 +405,7 @@ public class ResourceService {
                 matchingEntities.addAll(
                     projects
                         .stream()
-                        .map(p -> getAllRequirements(p.getId()))
+                        .map(p -> getRequirementsForProject(p.getId()))
                         .reduce(new ArrayList<ResourceRequirement>(), (a, b) -> {
                             a.addAll(b);
                             return a;
@@ -439,8 +427,8 @@ public class ResourceService {
                 matching.setAPriori(1);
                 entities = (List<T>) matching.evaluate(setToOrder).stream().map(p -> p.getMatchingEntity()).collect(Collectors.toList());
 
-                int from = pageRequest.getPageNumber() * pageRequest.getPageSize();
-                int to = from + pageRequest.getPageSize();
+                int from = pageable.getPageNumber() * pageable.getPageSize();
+                int to = from + pageable.getPageSize();
 
                 if (to > entities.size()) {
                     to -= (to - entities.size());
@@ -448,7 +436,7 @@ public class ResourceService {
 
                 List<T> pagedEntities = new ArrayList<>(entities.subList(from, to));
 
-                page = new PageImpl<>(pagedEntities, pageRequest, entities.size());
+                page = new PageImpl<>(pagedEntities, pageable, entities.size());
             }
         }
 
@@ -460,7 +448,7 @@ public class ResourceService {
      * @param organizationId Organization id
      * @return List of ResourceOffers
      */
-    public List<ResourceOffer> getAllOffers(Long organizationId) {
+    public List<ResourceOffer> getOffersForOrganization(Long organizationId) {
         List<ResourceOffer> entries = this.resourceOfferRepository.findByOrganizationIdAndActiveIsTrue(organizationId);
 
         return entries;
@@ -517,7 +505,7 @@ public class ResourceService {
             throw new IllegalValueException("no project for resourceRequirement {} found", resourceRequirement.toString());
         }
 
-        if(project.getOrganization().getId() == organization.getId()) {
+        if(project.getOrganization().getId().equals(organization.getId())) {
             throw new IllegalValueException("resource.claim.error.ownresource", "cannot claim own resourceoffer" + resourceOffer.toString());
         }
 
@@ -643,13 +631,11 @@ public class ResourceService {
     /**
      * Get Resources for specific Organization with given id. (Claim/Apply Resource)
      * @param organizationId Organization id
-     * @param restParameters creates pageable from this variable
+     * @param pageable pageable to be used for retrieving entries from the database
      * @return List of ResourceMatches representing open resource claims/applies
      */
     @Transactional(readOnly=true)
-    public List<ResourceMatch> getResourcesForOrganization(Long organizationId, RestParameters restParameters) {
-        PageRequest pageRequest = restParameters.buildPageRequest();
-
+    public List<ResourceMatch> getResourcesForOrganization(Long organizationId, Pageable pageable) {
         /// first of all, we have here organization that offered a resource for projects.
         QResourceMatch resourceMatch = QResourceMatch.resourceMatch;
         Collection<Long> projects = projectRepository.findByOrganizationId(organizationId);
@@ -658,14 +644,14 @@ public class ResourceService {
         BooleanExpression exp3 = resourceMatch.matchDirection.eq(MatchDirection.ORGANIZATION_OFFERED);
 
         Predicate where = ExpressionUtils.allOf(exp1, exp2, exp3);
-        List<ResourceMatch> first = resourceMatchRepository.findAll(where, pageRequest).getContent();
+        List<ResourceMatch> first = resourceMatchRepository.findAll(where, pageable).getContent();
 
         //and here we have a Project that claim the resource from organization
         exp1 = resourceMatch.organization.id.eq(organizationId);
         exp3 = resourceMatch.matchDirection.eq(MatchDirection.ORGANIZATION_CLAIMED);
         where = ExpressionUtils.allOf(exp1, exp2, exp3);
         //we need to join both list
-        List<ResourceMatch> second = resourceMatchRepository.findAll(where, pageRequest).getContent();
+        List<ResourceMatch> second = resourceMatchRepository.findAll(where, pageable).getContent();
         ArrayList result = new ArrayList<ResourceMatch>();
         result.addAll(first);
         result.addAll(second);

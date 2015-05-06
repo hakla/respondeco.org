@@ -5,7 +5,6 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
-import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -131,7 +130,7 @@ public class OrganizationService {
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
-        if(name=="" || name==null){
+        if(name == null || name.length() == 0){
             throw new IllegalArgumentException(String.format("Organization name must not be empty"));
         }
         User currentUser = userService.getUserWithAuthorities();
@@ -182,7 +181,7 @@ public class OrganizationService {
 
         Organization currentOrganization = organizationRepository.findByName(orgName);
         if(currentOrganization == null) {
-            throw new NoSuchEntityException(String.format("Organization does not exist", orgName));
+            throw new NoSuchEntityException(String.format("Organization does not exist: %s", orgName));
         }
 
         log.debug("Found Information for Organization: {}", currentOrganization);
@@ -195,29 +194,21 @@ public class OrganizationService {
      * @return organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if organization with id could not be found
      */
-    @Transactional(readOnly=true)
-    public Organization getOrganization(Long id) {
-        log.debug("getOrganization() with id " + id + " called");
-        Organization org = organizationRepository.findByIdAndActiveIsTrue(id);
-
-        return org;
+    public Organization getById(Long id) {
+        log.debug("getOfferById() with id " + id + " called");
+        Optional<Organization> nullableOrganization =
+            Optional.ofNullable(organizationRepository.findByIdAndActiveIsTrue(id));
+        nullableOrganization.orElseThrow(() -> new NoSuchEntityException(id));
+        return nullableOrganization.get();
     }
 
     /**
      * Returns all Organizations
      * @return a list of all active organizations
      */
-    @Transactional(readOnly = true)
-    public Page<Organization> getOrganizations(RestParameters restParameters) {
-        log.debug("getOrganizations() called");
-        Pageable pageable = null;
-        if(restParameters != null) {
-            pageable = restParameters.buildPageRequest();
-        }
-
-        Page<Organization> organizations = organizationRepository.findByActiveIsTrue(pageable);
-
-        return organizations;
+    public Page<Organization> get(Pageable pageable) {
+        log.debug("get() called");
+        return organizationRepository.findByActiveIsTrue(pageable);
     }
 
     /**
@@ -230,19 +221,19 @@ public class OrganizationService {
      * @param logo an ImageDTO containing the id of the organization's logo
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
      */
-    public void updateOrganizationInformation(String name, String description, String email,
-                                              Boolean isNpo, ImageDTO logo) throws NoSuchEntityException {
+    public Organization update(String name, String description, String email,
+                               Boolean isNpo, ImageDTO logo) throws NoSuchEntityException {
         Long logoId = null;
 
         if (logo != null) {
             logoId = logo.getId();
         }
 
-        updateOrganizationInformation(name, description, email, isNpo, logoId);
+        return update(name, description, email, isNpo, logoId);
     }
 
     /**
-     * {@see OrganizationService#updateOrganizationInformation(String,String,String,Boolean,ImageDTO}
+     * {@see OrganizationService#update(String,String,String,Boolean,ImageDTO}
      *
      * @param name
      * @param description
@@ -251,13 +242,13 @@ public class OrganizationService {
      * @param logoId
      * @throws NoSuchOrganizationException
      */
-    public void updateOrganizationInformation(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchEntityException {
+    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
             throw new NoSuchEntityException(String.format("Organization does not exist for %s", currentUser.getLogin()));
         }
-        if(name=="") {
+        if(name.length() == 0) {
             throw new IllegalArgumentException(String.format("Name must not be an empty string"));
         }
 
@@ -270,8 +261,8 @@ public class OrganizationService {
             currentOrganization.setLogo(imageRepository.findOne(logoId));
         }
 
-        organizationRepository.save(currentOrganization);
-        log.debug("Changed Information for Organization: {}", currentOrganization);
+        log.debug("Changing Information for Organization: {}", currentOrganization);
+        return organizationRepository.save(currentOrganization);
     }
 
     /**
@@ -279,7 +270,7 @@ public class OrganizationService {
      *
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
      */
-    public void deleteOrganizationInformation(Long id) throws NoSuchEntityException {
+    public void delete(Long id) throws NoSuchEntityException {
         Organization currentOrganization = organizationRepository.findByIdAndActiveIsTrue(id);
         if(currentOrganization==null) {
             throw new NoSuchEntityException(String.format("Organization %d does not exist", id));
@@ -355,7 +346,6 @@ public class OrganizationService {
      */
     public List<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
-        User user = userService.getUserWithAuthorities();
 
         if(organization == null) {
             throw new NoSuchEntityException(String.format("Organization %s does not exist", orgId));
