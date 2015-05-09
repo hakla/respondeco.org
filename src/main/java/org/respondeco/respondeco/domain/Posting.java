@@ -37,9 +37,12 @@ public class Posting extends AbstractAuditingEntity implements Serializable {
     @DefaultReturnValue
     private User author;
 
+    @NotNull
+    @DefaultReturnValue
+    private String title;
+
     @ManyToOne
     @JoinColumn(name = "postingfeed_id")
-    @DefaultReturnValue
     private PostingFeed postingfeed;
 
 }

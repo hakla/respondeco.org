@@ -1,0 +1,17 @@
+<div class="profile-body">
+    <!--Profile Blog-->
+    <div class="row margin-bottom-20">
+        <div class="col-sm-6 sm-margin-bottom-20" ng-repeat="user in organization.members">
+            <div class="profile-blog">
+                <img class="rounded-x" src="assets/img/testimonials/img1.jpg" alt="">
+                <div class="name-location">
+                    <strong>{{ user | formatUser }}</strong>
+                    <span><i class="fa fa-map-marker"></i><a href="#">California,</a> <a href="#">US</a></span>
+                </div>
+                <div class="clearfix margin-bottom-20"></div>
+                <p>Donec non dignissim eros. Mauris faucibus turpis volutpat sagittis rhoncus. Pellentesque et rhoncus sapien, sed ullamcorper justo.</p>
+                <hr> {{ user.description }}
+            </div>
+        </div>
+    </div>
+</div>

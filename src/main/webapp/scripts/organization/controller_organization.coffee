@@ -9,8 +9,24 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   $scope.shownRating = 0
   $scope.ratingCount = 0
 
+  $scope.titlesForView =
+    summary: -> ""
+    about_us: -> "- Über die Organisation"
+    members: -> "- Mitarbeiter"
+    news: -> "- Neuigkeiten"
+    transactions: -> "- Transaktionsübersicht"
+    settings: -> "- Einstellungen"
+    prices: -> "- Auszeichnungen"
+    projects: -> "- Projekte"
+
+  $scope.view = 'summary'
+
+  $scope.currentView = -> 
+    $rootScope.title = "#{$scope.organization?.name} #{$scope.titlesForView[$scope.view]()}"
+    "/template/organization/#{$scope.view}.html"
+
   $scope.update = (name) ->
-    $scope.organization = Organization.get({ id: name, fields: 'logo,projects(name,projectLogo),email' }, ->
+    $scope.organization = Organization.get({ id: name, fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate))' }, ->
       Organization.getMembers { id: $scope.organization.id }, (data) ->
         $scope.members = data
       Account.get null, (account) ->

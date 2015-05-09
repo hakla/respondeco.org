@@ -10,32 +10,27 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
 
   $scope.onUploadComplete = (fileItem, response) ->
     $scope.organization.logo = response
-    return
 
   $scope.alerts = []
   $scope.isCollapsed = false
 
   $scope.closeAlert = (index) ->
     $scope.alerts.splice index, 1
-    return
 
   updateOrgJoinRequests = ->
     $scope.orgJoinRequests = Organization.getOrgJoinRequests(id: $scope.organization.id)
-    return
 
   if isNew
     # get the current logged in user and set the organization owner to it
     Account.get null, (account) ->
       $scope.organization.owner = account.login
       $scope.organization.email = account.email
-      return
 
   $scope.isNew = ->
     isNew
 
   $scope.setRootScopeOrganization = (value) ->
     $rootScope._account.organization = value
-    return
 
   $scope.create = ->
     organization.npo = $scope.organization.isNpo or false
@@ -49,22 +44,16 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
       $scope.setRootScopeOrganization {}
       # Refresh the account of the currently logged in user
       AuthenticationSharedService.refresh()
-      return
     ), (resp) ->
       console.error resp.data.message
-      return
-    return
 
   $scope.update = (id) ->
-    Organization.get { id: id }, (org) ->
+    Organization.get { id: id, fields: 'description,logo,members' }, (org) ->
       $scope.organization = org
       $scope.users = Organization.getInvitableUsers(id: $scope.organization.id)
       updateOrgJoinRequests()
       Organization.getMembers { id: $scope.organization.id }, (data) ->
         $scope.members = data
-        return
-      return
-    return
 
   deleteState = false
   $scope.deleteType = 'default'
@@ -75,7 +64,7 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
       $scope.deleteMessage = 'organization.delete.sure'
       $scope.deleteType = 'danger'
       deleteState = true
-      return
+
     deleteState = true
     Organization.delete { id: id }, ->
       $location.path 'organization'
@@ -83,15 +72,12 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
       $scope.setRootScopeOrganization null
       # Refresh the account of the currently logged in user
       AuthenticationSharedService.refresh()
-      return
-    return
 
   $scope.clear = ->
     if isNew
       $location.path 'organization'
     else
       $location.path 'organization/' + $scope.organization.id
-    return
 
   $scope.sendInvite = ->
     # save if the user should be created and invited to join the organization
@@ -100,7 +86,6 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
       $scope.users.forEach (user) ->
         if user.login == $scope.selectedUser or user.email == $scope.selectedUser
           $scope.selectedUser = user
-        return
       if typeof $scope.selectedUser == 'string'
         $scope.invite = confirm('Ein Benutzer mit dieser E-Mail Adresse existiert noch nicht, soll er eingeladen werden?')
         if $scope.invite == true
@@ -109,7 +94,6 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
             email: $scope.selectedUser
         else
           # user doesn't exist and no invite should be sent - there's nothing to do
-          return
     if $scope.invite == false
       OrgJoinRequest.save {
         organization: id: $scope.organization.id
@@ -119,26 +103,21 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
         TextMessage.save
           receiver: id: data.user.id
           content: 'You got invited to join the organization ' + $scope.organization.name + '!'
-        return
       ), (error) ->
         if error.status == 400
           $scope.alerts.push
             msg: 'A user can only be invited once'
             type: 'warning'
-        return
     else
       OrgJoinRequest.save {
         organization: id: $scope.organization.id
         user: $scope.selectedUser
       }, updateOrgJoinRequests
     $scope.selectedUser = null
-    return
 
   $scope.deleteInvitation = (id) ->
     OrgJoinRequest.delete { id: id }, ->
       updateOrgJoinRequests()
-      return
-    return
 
   if isNew == false
     $scope.update id

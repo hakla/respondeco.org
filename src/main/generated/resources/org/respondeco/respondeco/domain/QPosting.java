@@ -48,6 +48,8 @@ public class QPosting extends EntityPathBase<Posting> {
 
     public final QPostingFeed postingfeed;
 
+    public final StringPath title = createString("title");
+
     public QPosting(String variable) {
         this(Posting.class, forVariable(variable), INITS);
     }

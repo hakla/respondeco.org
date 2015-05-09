@@ -171,54 +171,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "src/main/webapp/unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
-			"settings":
-			{
-				"buffer_size": 5527,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/onepage.html",
-			"settings":
-			{
-				"buffer_size": 29184,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/unify/one-page/js/one.app.js",
-			"settings":
-			{
-				"buffer_size": 2914,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/unify/one-page/js/custom.js",
-			"settings":
-			{
-				"buffer_size": 1713,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/scripts/project/controller_project_search.js",
-			"settings":
-			{
-				"buffer_size": 3325,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/unify/one-page/css/custom.css",
-			"settings":
-			{
-				"buffer_size": 3835,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Packages/SASS Build/SASS.sublime-build",
 	"build_system_choices":
@@ -533,7 +485,7 @@
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/styles",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/one-page",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page",
@@ -541,13 +493,22 @@
 	],
 	"file_history":
 	[
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/one.app.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/custom.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/controller_project_search.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/custom.css",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/app.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/index.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/application-sql.yml",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/master.xml",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/onepage.html",
 		"/Users/klaus.harrer/Documents/test.html",
 		"/Users/klaus.harrer/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/directives.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/one.style.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/css/custom.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/jquery/src/css/curCSS.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/index.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/project.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/documentation/css/reset.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/documentation/index.html",
@@ -574,7 +535,6 @@
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/java/org/respondeco/respondeco/service/exception/ProjectRatingException.java",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-scenario/jstd-scenario-adapter.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/jquery/dist/jquery.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/controller_project_search.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/service_project.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/services.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/controller_project.js",
@@ -582,15 +542,12 @@
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/controller_organization_edit.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/service_organization.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/custom.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/custom.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/onepage.html",
 		"/Users/klaus.harrer/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/.tmp/styles/main.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/gmap/gmap.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/app.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_en-pg.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/views/organization-edit.html",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/one.app.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/modernizr.custom.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/controllers.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-4-fw-tx.js",
@@ -663,12 +620,7 @@
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/styles/main.css",
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/swagger-ui/index.html",
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/image/service_image.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/service/MailService.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/.tmp/styles/bootstrap.css",
-		"/Users/klaus.harrer/projects/prv/respondeco/.tmp/styles/landing-page.css",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/template/typeahead/typeahead-match.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/textmessage/service_textmessage.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/resourcerequests.html"
+		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/service/MailService.java"
 	],
 	"find":
 	{
@@ -700,6 +652,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\"/>\n",
+			"/#/",
 			":",
 			"6px",
 			"h1",
@@ -825,9 +779,7 @@
 			"\"Name\"",
 			"ribbon",
 			"Name",
-			"Name^",
-			"Name",
-			"email"
+			"Name^"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -850,199 +802,8 @@
 	"groups":
 	[
 		{
-			"selected": 5,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "src/main/webapp/unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5527,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1060,
-								1060
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/main/webapp/onepage.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 29184,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5351,
-								5351
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 853.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/main/webapp/unify/one-page/js/one.app.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2914,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2158,
-								2158
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 344.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/main/webapp/unify/one-page/js/custom.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1713,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								244,
-								244
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/main/webapp/scripts/project/controller_project_search.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3325,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/main/webapp/unify/one-page/css/custom.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3835,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2026,
-								2026
-							]
-						],
-						"settings":
-						{
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1412.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -1099,6 +860,22 @@
 		"selected_items":
 		[
 			[
+				"masterxml",
+				"src/main/resources/config/liquibase/master.xml"
+			],
+			[
+				"application-sql",
+				"src/main/resources/config/application-sql.yml"
+			],
+			[
+				"index",
+				"src/main/webapp/index.html"
+			],
+			[
+				"apphtml",
+				"src/main/webapp/app.html"
+			],
+			[
 				"cuscss",
 				"src/main/webapp/unify/css/custom.css"
 			],
@@ -1137,10 +914,6 @@
 			[
 				"cujs",
 				"src/main/webapp/unify/js/custom.js"
-			],
-			[
-				"index",
-				"src/main/webapp/index.html"
 			],
 			[
 				"custom",
@@ -1597,18 +1370,6 @@
 			[
 				"controlerorgan",
 				"src/main/webapp/scripts/organization/controller_organization.js"
-			],
-			[
-				"filterjs",
-				"src/main/webapp/scripts/filters.js"
-			],
-			[
-				"organizationhtml",
-				"src/main/webapp/views/organization.html"
-			],
-			[
-				"organctrl",
-				"src/main/java/org/respondeco/respondeco/web/rest/OrganizationController.java"
 			]
 		],
 		"width": 0.0

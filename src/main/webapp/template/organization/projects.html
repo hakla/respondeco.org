@@ -1,0 +1,13 @@
+<div class="profile-body">
+    <div class="row">
+        <div class="col-sm-6" ng-repeat="project in organization.projects">
+            <div class="easy-block-v1">
+                <img class="img-responsive" logo logo-id="project.projectLogo.id" alt="">
+                <div class="easy-block-v1-badge rgba-red">ISO-Kategorie</div>
+            </div>
+            <div class="projects">
+                <h2><a class="color-dark" href="#">{{ project.name }}</a></h2>
+            </div>
+        </div>
+    </div>
+</div>

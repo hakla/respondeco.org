@@ -1,5 +1,5 @@
 <!--=== Profile ===-->
-<page-title>{{organization.name}}</page-title>
+<!-- <page-title>{{organization.name}}</page-title> -->
 <link rel="stylesheet" type="text/css" href="styles/organization.css">
 <div class="container content profile">
     <div class="row">
@@ -7,69 +7,33 @@
         <div class="col-md-3 md-margin-bottom-40">
             <img class="img-responsive profile-img margin-bottom-20" logo logo-id="organization.logo.id">
             <ul class="list-group sidebar-nav-v1 margin-bottom-40" id="sidebar-nav-1">
-                <li class="list-group-item active">
-                    <a href="#"><i class="fa fa-bar-chart-o"></i> Übersicht</a>
+                <li class="list-group-item" ng-class="{active: view == 'summary'}">
+                    <a ng-click="view = 'summary'"><i class="icon-grid"></i> Übersicht</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-user"></i> Über</a>
+                <li class="list-group-item" ng-class="{active: view == 'about_us'}">
+                    <a ng-click="view = 'about_us'"><i class="fa fa-user"></i> Über</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-trophy"></i> Preise/Zertifizierungen</a>
+                <li class="list-group-item" ng-class="{active: view == 'projects'}">
+                    <a ng-click="view = 'projects'"><i class="fa fa-cubes"></i> Projekte</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-cubes"></i> Projekte</a>
+                <li class="list-group-item" ng-class="{active: view == 'news'}">
+                    <a ng-click="view = 'news'"><i class="fa fa-comments"></i> Neuigkeiten</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-group"></i> Mitarbeiter</a>
+                <li class="list-group-item" ng-class="{active: view == 'members'}">
+                    <a ng-click="view = 'members'"><i class="fa fa-group"></i> Mitarbeiter</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-comments"></i> Neuigkeiten</a>
+                <li class="list-group-item" ng-class="{active: view == 'prices'}">
+                    <a ng-click="view = 'prices'"><i class="icon-badge"></i> Preise/Zertifizierungen</a>
                 </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-history"></i> Transaktionsübersicht</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#"><i class="fa fa-cog"></i> Settings</a>
+                <li class="list-group-item" ng-class="{active: view == 'settings'}">
+                    <a href="#/organization/edit/{{organization.id}}"><i class="fa fa-cog"></i> Settings</a>
                 </li>
             </ul>
         </div>
         <!--End Left Sidebar-->
         <!-- Profile Content -->
         <div class="col-md-9">
-            <div class="profile-body">
-                <div class="profile-bio">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h2>{{organization.name}}</h2>
-                            <span><strong>E-Mail:</strong> {{organization.email}}</span>
-                            <span><strong>Webseite:</strong> http://www.respondeco.org</span>
-                            <hr>
-                            <p>{{ organization.description }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="service-block-v3 service-block-blue">
-                                <i class="icon-trophy"></i>
-                                <span class="service-heading">Auszeichnungen</span>
-                                <span class="counter">8</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--/end row-->
-                <hr>
-                <div class="row">
-                    <div class="col-sm-6" ng-repeat="project in organization.projects">
-                        <div class="easy-block-v1">
-                            <img class="img-responsive" logo logo-id="project.logo.id" alt="">
-                            <div class="easy-block-v1-badge rgba-red">ISO-Kategorie</div>
-                        </div>
-                        <div class="projects">
-                            <h2><a class="color-dark" href="#">{{ project.name }}</a></h2>
-                        </div>
-                    </div>
-                </div>
-                <!--/end row-->
-            </div>
+            <div ng-include="currentView()"></div>
         </div>
         <!-- End Profile Content -->
     </div>

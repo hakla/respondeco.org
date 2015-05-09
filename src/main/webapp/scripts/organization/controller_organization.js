@@ -10,10 +10,42 @@
     $rootScope.title = 'Organisation';
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
+    $scope.titlesForView = {
+      summary: function() {
+        return "";
+      },
+      about_us: function() {
+        return "- Über die Organisation";
+      },
+      members: function() {
+        return "- Mitarbeiter";
+      },
+      news: function() {
+        return "- Neuigkeiten";
+      },
+      transactions: function() {
+        return "- Transaktionsübersicht";
+      },
+      settings: function() {
+        return "- Einstellungen";
+      },
+      prices: function() {
+        return "- Auszeichnungen";
+      },
+      projects: function() {
+        return "- Projekte";
+      }
+    };
+    $scope.view = 'summary';
+    $scope.currentView = function() {
+      var ref;
+      $rootScope.title = ((ref = $scope.organization) != null ? ref.name : void 0) + " " + ($scope.titlesForView[$scope.view]());
+      return "/template/organization/" + $scope.view + ".html";
+    };
     $scope.update = function(name) {
       return $scope.organization = Organization.get({
         id: name,
-        fields: 'logo,projects(name,projectLogo),email'
+        fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate))'
       }, function() {
         Organization.getMembers({
           id: $scope.organization.id

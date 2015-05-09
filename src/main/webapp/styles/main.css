@@ -327,60 +327,59 @@ uploaded-image div, [uploaded-image] div {
 }
 /* line 332, ../../scss/main.scss */
 .panel-body ul li {
-  height: 100px;
   list-style-type: none;
 }
-/* line 336, ../../scss/main.scss */
+/* line 335, ../../scss/main.scss */
 .panel-body ul li div {
   box-sizing: border-box;
 }
-/* line 340, ../../scss/main.scss */
+/* line 339, ../../scss/main.scss */
 .panel-body ul li img {
   height: 75px;
 }
 
-/* line 347, ../../scss/main.scss */
+/* line 346, ../../scss/main.scss */
 .newsfeed .posting {
   margin: 25px 0;
   padding: 15px;
   background-color: #fff;
   border: 1px solid #E2E2E2;
 }
-/* line 355, ../../scss/main.scss */
+/* line 354, ../../scss/main.scss */
 .newsfeed .pull-left {
   margin-right: 16px;
 }
-/* line 359, ../../scss/main.scss */
+/* line 358, ../../scss/main.scss */
 .newsfeed .heading h4 {
   margin-left: 16px;
   margin-top: 0;
 }
-/* line 364, ../../scss/main.scss */
+/* line 363, ../../scss/main.scss */
 .newsfeed uploaded-image {
   width: 60px;
   height: 60px;
 }
 
-/* line 372, ../../scss/main.scss */
+/* line 371, ../../scss/main.scss */
 .resource-search-container .resource-item-container .resource, .resource-search-container .toggleable-card .resource, .toggleable-cards-container .resource-item-container .resource, .toggleable-cards-container .toggleable-card .resource {
   position: relative;
 }
-/* line 377, ../../scss/main.scss */
+/* line 376, ../../scss/main.scss */
 .resource-search-container .resource-item-container.open .resource-item, .resource-search-container .resource-item-container.open .project-item, .resource-search-container .toggleable-card.open .resource-item, .resource-search-container .toggleable-card.open .project-item, .toggleable-cards-container .resource-item-container.open .resource-item, .toggleable-cards-container .resource-item-container.open .project-item, .toggleable-cards-container .toggleable-card.open .resource-item, .toggleable-cards-container .toggleable-card.open .project-item {
   top: -200px;
   z-index: 3;
 }
-/* line 381, ../../scss/main.scss */
+/* line 380, ../../scss/main.scss */
 .resource-search-container .resource-item-container.open .resource-item uploaded-image > div, .resource-search-container .resource-item-container.open .project-item uploaded-image > div, .resource-search-container .toggleable-card.open .resource-item uploaded-image > div, .resource-search-container .toggleable-card.open .project-item uploaded-image > div, .toggleable-cards-container .resource-item-container.open .resource-item uploaded-image > div, .toggleable-cards-container .resource-item-container.open .project-item uploaded-image > div, .toggleable-cards-container .toggleable-card.open .resource-item uploaded-image > div, .toggleable-cards-container .toggleable-card.open .project-item uploaded-image > div {
   height: 120px;
   top: -45px;
   outline: 1px solid #ddd;
 }
-/* line 388, ../../scss/main.scss */
+/* line 387, ../../scss/main.scss */
 .resource-search-container .resource-item-container.open .details, .resource-search-container .toggleable-card.open .details, .toggleable-cards-container .resource-item-container.open .details, .toggleable-cards-container .toggleable-card.open .details {
   opacity: 1;
 }
-/* line 393, ../../scss/main.scss */
+/* line 392, ../../scss/main.scss */
 .resource-search-container .resource-item-container .resource-item, .resource-search-container .resource-item-container .project-item, .resource-search-container .toggleable-card .resource-item, .resource-search-container .toggleable-card .project-item, .toggleable-cards-container .resource-item-container .resource-item, .toggleable-cards-container .resource-item-container .project-item, .toggleable-cards-container .toggleable-card .resource-item, .toggleable-cards-container .toggleable-card .project-item {
   position: relative;
   z-index: 1;
@@ -389,42 +388,42 @@ uploaded-image div, [uploaded-image] div {
   top: 0;
   transition: .2s ease all;
 }
-/* line 403, ../../scss/main.scss */
+/* line 402, ../../scss/main.scss */
 .resource-search-container .resource-item-container .resource-item .content h2 small, .resource-search-container .resource-item-container .project-item .content h2 small, .resource-search-container .toggleable-card .resource-item .content h2 small, .resource-search-container .toggleable-card .project-item .content h2 small, .toggleable-cards-container .resource-item-container .resource-item .content h2 small, .toggleable-cards-container .resource-item-container .project-item .content h2 small, .toggleable-cards-container .toggleable-card .resource-item .content h2 small, .toggleable-cards-container .toggleable-card .project-item .content h2 small {
   display: block;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
-/* line 413, ../../scss/main.scss */
+/* line 412, ../../scss/main.scss */
 .resource-search-container .resource-item-container .details, .resource-search-container .toggleable-card .details, .toggleable-cards-container .resource-item-container .details, .toggleable-cards-container .toggleable-card .details {
   opacity: 0;
   transition: .2s ease all;
   margin-top: -200px;
 }
-/* line 419, ../../scss/main.scss */
+/* line 418, ../../scss/main.scss */
 .resource-search-container .resource-item-container .btn-claim, .resource-search-container .toggleable-card .btn-claim, .toggleable-cards-container .resource-item-container .btn-claim, .toggleable-cards-container .toggleable-card .btn-claim {
   position: absolute;
   bottom: 0;
 }
-/* line 423, ../../scss/main.scss */
+/* line 422, ../../scss/main.scss */
 .resource-search-container .resource-item-container .btn-claim .btn, .resource-search-container .toggleable-card .btn-claim .btn, .toggleable-cards-container .resource-item-container .btn-claim .btn, .toggleable-cards-container .toggleable-card .btn-claim .btn {
   width: 100%;
 }
-/* line 428, ../../scss/main.scss */
+/* line 427, ../../scss/main.scss */
 .resource-search-container .resource-item-container .progress, .resource-search-container .toggleable-card .progress, .toggleable-cards-container .resource-item-container .progress, .toggleable-cards-container .toggleable-card .progress {
   height: 5px;
   margin-bottom: 0;
 }
-/* line 433, ../../scss/main.scss */
+/* line 432, ../../scss/main.scss */
 .resource-search-container .resource-item-container .last, .resource-search-container .toggleable-card .last, .toggleable-cards-container .resource-item-container .last, .toggleable-cards-container .toggleable-card .last {
   margin-bottom: 0;
 }
-/* line 437, ../../scss/main.scss */
+/* line 436, ../../scss/main.scss */
 .resource-search-container .resource-item-container uploaded-image, .resource-search-container .toggleable-card uploaded-image, .toggleable-cards-container .resource-item-container uploaded-image, .toggleable-cards-container .toggleable-card uploaded-image {
   height: auto;
 }
-/* line 440, ../../scss/main.scss */
+/* line 439, ../../scss/main.scss */
 .resource-search-container .resource-item-container uploaded-image > div, .resource-search-container .toggleable-card uploaded-image > div, .toggleable-cards-container .resource-item-container uploaded-image > div, .toggleable-cards-container .toggleable-card uploaded-image > div {
   height: 70px;
   display: block;
@@ -435,48 +434,48 @@ uploaded-image div, [uploaded-image] div {
   transition: .2s ease all;
 }
 
-/* line 455, ../../scss/main.scss */
+/* line 454, ../../scss/main.scss */
 .organization-details .toggleable-card .project-item {
   padding-top: 135px;
   min-height: 200px;
 }
-/* line 460, ../../scss/main.scss */
+/* line 459, ../../scss/main.scss */
 .organization-details .toggleable-card .details {
   min-height: 200px;
 }
-/* line 465, ../../scss/main.scss */
+/* line 464, ../../scss/main.scss */
 .organization-details .toggleable-card uploaded-image div {
   height: 140px;
   background-size: cover;
 }
-/* line 472, ../../scss/main.scss */
+/* line 471, ../../scss/main.scss */
 .organization-details .toggleable-card.open .project-item {
   height: 140px;
   top: -200px;
 }
-/* line 477, ../../scss/main.scss */
+/* line 476, ../../scss/main.scss */
 .organization-details .toggleable-card.open .project-item uploaded-image div {
   height: 140px;
   top: 0;
 }
-/* line 487, ../../scss/main.scss */
+/* line 486, ../../scss/main.scss */
 .organization-details uploaded-image div {
   background-position: 50%;
   background-size: contain;
 }
 
-/* line 494, ../../scss/main.scss */
+/* line 493, ../../scss/main.scss */
 .on-hover {
   opacity: 0;
   transition: .2s ease opacity;
 }
 
-/* line 500, ../../scss/main.scss */
+/* line 499, ../../scss/main.scss */
 .hover-toggle:hover .on-hover {
   opacity: 1;
 }
 
-/* line 506, ../../scss/main.scss */
+/* line 505, ../../scss/main.scss */
 .modal-apply h2, .modal-claim h2 {
   overflow: hidden;
   white-space: nowrap;
@@ -484,29 +483,29 @@ uploaded-image div, [uploaded-image] div {
   display: block;
   text-align: center;
 }
-/* line 513, ../../scss/main.scss */
+/* line 512, ../../scss/main.scss */
 .modal-apply .resource .content p, .modal-apply .resource .content small, .modal-claim .resource .content p, .modal-claim .resource .content small {
   display: none;
 }
-/* line 520, ../../scss/main.scss */
+/* line 519, ../../scss/main.scss */
 .modal-apply .resource.selected .resource-item h2, .modal-claim .resource.selected .resource-item h2 {
   text-decoration: underline;
 }
-/* line 528, ../../scss/main.scss */
+/* line 527, ../../scss/main.scss */
 .modal-apply .project-item.selected, .modal-claim .project-item.selected {
   box-shadow: 0 0 8px #CCC;
 }
 
-/* line 535, ../../scss/main.scss */
+/* line 534, ../../scss/main.scss */
 .modal .project-item {
   min-height: inherit;
 }
-/* line 539, ../../scss/main.scss */
+/* line 538, ../../scss/main.scss */
 .modal .project-item h2 a {
   font-size: 14px;
 }
 
-/* line 546, ../../scss/main.scss */
+/* line 545, ../../scss/main.scss */
 .approved {
   position: absolute;
   height: 100px;
@@ -514,12 +513,12 @@ uploaded-image div, [uploaded-image] div {
   top: -140px;
 }
 
-/* line 553, ../../scss/main.scss */
+/* line 552, ../../scss/main.scss */
 .dropdown-toggle {
   border-radius: 0 !important;
 }
 
-/* line 558, ../../scss/main.scss */
+/* line 557, ../../scss/main.scss */
 .dropdown .badge {
   background-color: #C40000;
   top: -1px;
@@ -527,108 +526,108 @@ uploaded-image div, [uploaded-image] div {
   left: 12px;
 }
 
-/* line 566, ../../scss/main.scss */
+/* line 565, ../../scss/main.scss */
 .highlight, .highlight td {
   background-color: #FFF37B !important;
 }
 
-/* line 570, ../../scss/main.scss */
+/* line 569, ../../scss/main.scss */
 .error-container {
   width: 80%;
   max-width: 800px;
   margin: 0 auto;
 }
-/* line 575, ../../scss/main.scss */
+/* line 574, ../../scss/main.scss */
 .error-container .alert {
   border-radius: 0;
   margin: 10px 0;
 }
 
-/* line 581, ../../scss/main.scss */
+/* line 580, ../../scss/main.scss */
 .spacer-left {
   margin-left: 16px;
 }
 
-/* line 585, ../../scss/main.scss */
+/* line 584, ../../scss/main.scss */
 .spacer-left-2 {
   margin-left: 32px;
 }
 
-/* line 589, ../../scss/main.scss */
+/* line 588, ../../scss/main.scss */
 .spacer-left-3 {
   margin-left: 48px;
 }
 
-/* line 593, ../../scss/main.scss */
+/* line 592, ../../scss/main.scss */
 .spacer-left-4 {
   margin-left: 64px;
 }
 
-/* line 597, ../../scss/main.scss */
+/* line 596, ../../scss/main.scss */
 .spacer-left-small {
   margin-left: 8px;
 }
 
-/* line 601, ../../scss/main.scss */
+/* line 600, ../../scss/main.scss */
 .spacer-top {
   margin-top: 16px;
 }
 
-/* line 605, ../../scss/main.scss */
+/* line 604, ../../scss/main.scss */
 .spacer-top-2 {
   margin-top: 32px;
 }
 
-/* line 609, ../../scss/main.scss */
+/* line 608, ../../scss/main.scss */
 .spacer-top-3 {
   margin-top: 48px;
 }
 
-/* line 613, ../../scss/main.scss */
+/* line 612, ../../scss/main.scss */
 .spacer-top-4 {
   margin-top: 64px;
 }
 
-/* line 617, ../../scss/main.scss */
+/* line 616, ../../scss/main.scss */
 .angular-google-map-container {
   height: 400px;
 }
 
-/* line 619, ../../scss/main.scss */
+/* line 618, ../../scss/main.scss */
 .form-search {
   margin-bottom: 50px;
 }
 
-/* line 624, ../../scss/main.scss */
+/* line 623, ../../scss/main.scss */
 .project-details .organization {
   max-width: 200px;
 }
-/* line 628, ../../scss/main.scss */
+/* line 627, ../../scss/main.scss */
 .project-details .project-item {
   min-height: inherit;
 }
-/* line 631, ../../scss/main.scss */
+/* line 630, ../../scss/main.scss */
 .project-details .project-item uploaded-image {
   height: 75px;
 }
-/* line 636, ../../scss/main.scss */
+/* line 635, ../../scss/main.scss */
 .project-details .badge {
   margin: 2px;
 }
-/* line 640, ../../scss/main.scss */
+/* line 639, ../../scss/main.scss */
 .project-details .modal-body {
   clear: left;
 }
-/* line 645, ../../scss/main.scss */
+/* line 644, ../../scss/main.scss */
 .project-details .accordion-toggle .ellipsis {
   padding-left: 15px;
 }
-/* line 649, ../../scss/main.scss */
+/* line 648, ../../scss/main.scss */
 .project-details .accordion-toggle .pull-right {
   margin-right: 10px;
 }
 
-/* line 655, ../../scss/main.scss */
+/* line 654, ../../scss/main.scss */
 .ellipsis {
   overflow: hidden;
   white-space: nowrap;
@@ -636,58 +635,58 @@ uploaded-image div, [uploaded-image] div {
   display: block;
 }
 
-/* line 659, ../../scss/main.scss */
+/* line 658, ../../scss/main.scss */
 .dynamic-image {
   width: 100%;
   background-position: 50%;
   background-repeat: no-repeat;
 }
 
-/* line 666, ../../scss/main.scss */
+/* line 665, ../../scss/main.scss */
 .postingform textarea {
   height: 33px;
   transition: .25s ease height;
 }
-/* line 671, ../../scss/main.scss */
+/* line 670, ../../scss/main.scss */
 .postingform .btn {
   opacity: 0;
   transition: .25s ease opacity;
   transition-delay: .25s;
 }
-/* line 678, ../../scss/main.scss */
+/* line 677, ../../scss/main.scss */
 .postingform .focused textarea {
   height: 100px;
 }
-/* line 682, ../../scss/main.scss */
+/* line 681, ../../scss/main.scss */
 .postingform .focused .btn {
   opacity: 1;
 }
 
-/* line 688, ../../scss/main.scss */
+/* line 687, ../../scss/main.scss */
 .inline-block {
   display: inline-block;
 }
 
-/* line 692, ../../scss/main.scss */
+/* line 691, ../../scss/main.scss */
 .line-through {
   text-decoration: line-through;
 }
 
 /* unify customizations */
-/* line 700, ../../scss/main.scss */
+/* line 699, ../../scss/main.scss */
 .header .logo img {
   margin: 5px 0;
 }
-/* line 707, ../../scss/main.scss */
+/* line 706, ../../scss/main.scss */
 .header .topbar .loginbar > li {
   margin: 0 5px;
 }
-/* line 711, ../../scss/main.scss */
+/* line 710, ../../scss/main.scss */
 .header .topbar .loginbar .topbar-account-header {
   display: inline-block;
   white-space: nowrap;
 }
-/* line 715, ../../scss/main.scss */
+/* line 714, ../../scss/main.scss */
 .header .topbar .loginbar .topbar-account-header > span {
   width: 100%;
   overflow: hidden;

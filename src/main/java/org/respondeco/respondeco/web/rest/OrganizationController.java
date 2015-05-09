@@ -157,6 +157,7 @@ public class OrganizationController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    @RESTWrapped
     public Object update(@RequestBody @Valid OrganizationRequestDTO organization) {
         log.debug("REST request to update Organization : {}", organization);
         return organizationService.update(

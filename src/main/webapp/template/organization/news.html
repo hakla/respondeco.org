@@ -1,0 +1,16 @@
+<div class="profile-body">
+    <ul class="timeline-v2">
+        <li ng-repeat="posting in organization.postingFeed.postings">
+            <time class="cbp_tmtime" datetime=""><span>{{ posting.createdDate | date }}</span></time>
+            <i class="cbp_tmicon rounded-x hidden-xs"></i>
+            <div class="cbp_tmlabel">
+                <h2>{{ posting.title }}</h2>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>{{ posting.information }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

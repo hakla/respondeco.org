@@ -5,19 +5,12 @@
 respondecoApp.controller 'MainController', ($scope, $location, $rootScope) ->
 
   $scope.main = -> $location.path() is '' or $location.path() is '/'
-
   $scope.redirectToProjectSearch = -> $location.path 'projects'
-
   $scope.redirectToNewProject = -> $location.path 'projects/edit/new'
-
   $rootScope.globalAlerts = []
-
   $rootScope.closeAlert = (index) -> $rootScope.globalAlerts.splice index, 1
-
   linkToOrganization = -> if $rootScope._account isnt null and $rootScope._account.organization isnt null then "/organization/#{$rootScope._account.organization.id}" else 'edit/new'
-
   $scope.redirectToOwnOrganization = -> $location.path linkToOrganization()
-
   $scope.redirectToOwnProjects = -> "#{linkToOrganization()}/projects"
 
   $scope.isOrganizationUser = ->

@@ -14,6 +14,5 @@ import org.springframework.context.annotation.Profile;
 public class RESTWrapperAspectConfiguration {
 
     @Bean
-    @Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
     public RESTWrapperAspect restFieldsAspect() { return new RESTWrapperAspect(); }
 }

@@ -11,29 +11,29 @@
       owner: false
     };
     $scope.onUploadComplete = function(fileItem, response) {
-      $scope.organization.logo = response;
+      return $scope.organization.logo = response;
     };
     $scope.alerts = [];
     $scope.isCollapsed = false;
     $scope.closeAlert = function(index) {
-      $scope.alerts.splice(index, 1);
+      return $scope.alerts.splice(index, 1);
     };
     updateOrgJoinRequests = function() {
-      $scope.orgJoinRequests = Organization.getOrgJoinRequests({
+      return $scope.orgJoinRequests = Organization.getOrgJoinRequests({
         id: $scope.organization.id
       });
     };
     if (isNew) {
       Account.get(null, function(account) {
         $scope.organization.owner = account.login;
-        $scope.organization.email = account.email;
+        return $scope.organization.email = account.email;
       });
     }
     $scope.isNew = function() {
       return isNew;
     };
     $scope.setRootScopeOrganization = function(value) {
-      $rootScope._account.organization = value;
+      return $rootScope._account.organization = value;
     };
     $scope.create = function() {
       organization.npo = $scope.organization.isNpo || false;
@@ -41,27 +41,28 @@
       organization.description = $scope.organization.description;
       organization.email = $scope.organization.email;
       organization.logo = $scope.organization.logo;
-      Organization[isNew ? 'save' : 'update'](organization, (function() {
+      return Organization[isNew ? 'save' : 'update'](organization, (function() {
         $scope.clear();
         $scope.setRootScopeOrganization({});
-        AuthenticationSharedService.refresh();
+        return AuthenticationSharedService.refresh();
       }), function(resp) {
-        console.error(resp.data.message);
+        return console.error(resp.data.message);
       });
     };
     $scope.update = function(id) {
-      Organization.get({
-        id: id
+      return Organization.get({
+        id: id,
+        fields: 'description,logo,members'
       }, function(org) {
         $scope.organization = org;
         $scope.users = Organization.getInvitableUsers({
           id: $scope.organization.id
         });
         updateOrgJoinRequests();
-        Organization.getMembers({
+        return Organization.getMembers({
           id: $scope.organization.id
         }, function(data) {
-          $scope.members = data;
+          return $scope.members = data;
         });
       });
     };
@@ -73,22 +74,21 @@
         $scope.deleteMessage = 'organization.delete.sure';
         $scope.deleteType = 'danger';
         deleteState = true;
-        return;
       }
       deleteState = true;
-      Organization["delete"]({
+      return Organization["delete"]({
         id: id
       }, function() {
         $location.path('organization');
         $scope.setRootScopeOrganization(null);
-        AuthenticationSharedService.refresh();
+        return AuthenticationSharedService.refresh();
       });
     };
     $scope.clear = function() {
       if (isNew) {
-        $location.path('organization');
+        return $location.path('organization');
       } else {
-        $location.path('organization/' + $scope.organization.id);
+        return $location.path('organization/' + $scope.organization.id);
       }
     };
     $scope.sendInvite = function() {
@@ -96,7 +96,7 @@
       if (typeof $scope.selectedUser === 'string') {
         $scope.users.forEach(function(user) {
           if (user.login === $scope.selectedUser || user.email === $scope.selectedUser) {
-            $scope.selectedUser = user;
+            return $scope.selectedUser = user;
           }
         });
         if (typeof $scope.selectedUser === 'string') {
@@ -107,7 +107,7 @@
               email: $scope.selectedUser
             };
           } else {
-            return;
+
           }
         }
       }
@@ -121,7 +121,7 @@
           }
         }, (function(data) {
           updateOrgJoinRequests();
-          TextMessage.save({
+          return TextMessage.save({
             receiver: {
               id: data.user.id
             },
@@ -129,7 +129,7 @@
           });
         }), function(error) {
           if (error.status === 400) {
-            $scope.alerts.push({
+            return $scope.alerts.push({
               msg: 'A user can only be invited once',
               type: 'warning'
             });
@@ -143,13 +143,13 @@
           user: $scope.selectedUser
         }, updateOrgJoinRequests);
       }
-      $scope.selectedUser = null;
+      return $scope.selectedUser = null;
     };
     $scope.deleteInvitation = function(id) {
-      OrgJoinRequest["delete"]({
+      return OrgJoinRequest["delete"]({
         id: id
       }, function() {
-        updateOrgJoinRequests();
+        return updateOrgJoinRequests();
       });
     };
     if (isNew === false) {
