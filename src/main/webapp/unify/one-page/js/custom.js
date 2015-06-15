@@ -46,13 +46,14 @@ respondecoApp.factory('Organization', function($resource, $http) {
 
 
 respondecoApp.controller('MainController', function($scope, $location, $rootScope, Project, Organization) {
-  $scope.projects = Project.query({ pageSize: 6, fields: [ "name", "progress", "logo", "propertyTags", "organization", "purpose", "resourceRequirements" ] }, function() {
+  $scope.projects = Project.query({ pageSize: 6, fields: [ "name", "progress", "projectLogo", "propertyTags", "organization", "purpose", "resourceRequirements" ].join(",") }, function() {
     setTimeout(function() {
       App.cubeportfolio();
     });
   });
   $scope.organizations = Organization.query({
-    pageSize: 6
+    pageSize: 6,
+    fields: "logo"
   });
 
   $scope.goToOrganization = function(id) {
