@@ -694,3 +694,14 @@ uploaded-image div, [uploaded-image] div {
   display: inline-block;
   vertical-align: top;
 }
+
+/* line 726, ../../scss/main.scss */
+.text-italic {
+  font-style: italic;
+}
+
+/* line 730, ../../scss/main.scss */
+.editable-controls {
+  position: relative;
+  z-index: 1;
+}

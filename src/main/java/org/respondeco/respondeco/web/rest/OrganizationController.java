@@ -158,14 +158,15 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object update(@RequestBody @Valid OrganizationRequestDTO organization) {
+    public Object update(@RequestBody Organization organization) {
         log.debug("REST request to update Organization : {}", organization);
         return organizationService.update(
             organization.getName(),
             organization.getDescription(),
             organization.getEmail(),
-            organization.isNpo(),
-            organization.getLogo());
+            organization.getIsNpo(),
+            organization.getLogo().getId(),
+            organization.getWebsite());
     }
 
     /**

@@ -171,6 +171,110 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/main/webapp/scripts/organization/controller_organization.coffee",
+			"settings":
+			{
+				"buffer_size": 7172,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Applications/MAMP/htdocs/club50/conf.php",
+			"settings":
+			{
+				"buffer_size": 6369,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/scripts/organization/controller_organization_edit.coffee",
+			"settings":
+			{
+				"buffer_size": 4896,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/template/organization/about_us.html",
+			"settings":
+			{
+				"buffer_size": 2465,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/template/organization/prices.html",
+			"settings":
+			{
+				"buffer_size": 4179,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/template/organization/projects.html",
+			"settings":
+			{
+				"buffer_size": 518,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/template/organization/members.html",
+			"settings":
+			{
+				"buffer_size": 859,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/template/organization/news.html",
+			"settings":
+			{
+				"buffer_size": 605,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/scss/organization.scss",
+			"settings":
+			{
+				"buffer_size": 16385,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/views/organization.html",
+			"settings":
+			{
+				"buffer_size": 2178,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/resources/config/liquibase/master.xml",
+			"settings":
+			{
+				"buffer_size": 4456,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/index.html",
+			"settings":
+			{
+				"buffer_size": 35143,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/template/organization/summary.html",
+			"settings":
+			{
+				"buffer_size": 1539,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/SASS Build/SASS.sublime-build",
 	"build_system_choices":
@@ -179,10 +283,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 400.0,
-		"last_filter": "setpre",
+		"height": 255.0,
+		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"scss",
+				"Set Syntax: SCSS"
+			],
 			[
 				"setpre",
 				"HTMLPrettify: Set Prettify Preferences"
@@ -460,7 +568,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 601.0
+		"width": 475.0
 	},
 	"console":
 	{
@@ -484,28 +592,60 @@
 		"/Users/klaus.harrer/projects/prv/respondeco.org",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/styles",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/one-page",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css"
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/changelog"
 	],
 	"file_history":
 	[
+		"/Applications/MAMP/htdocs/login.html",
+		"/Applications/MAMP/htdocs/club50/index.php",
+		"/Users/klaus.harrer/projects/prv/klugtouristik/club50/db/d0106c3e.sql",
+		"/Users/klaus.harrer/Documents/vaeb/zd-zpv/jboss.log",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/changelog/20150509000000_modified_entity_Posting.xml",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/changelog/20150111224200_modified_entity_user.xml",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/changelog/20150127205500_modified_entity_Project.xml",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/posting.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/changelog/00000000000000_initial_schema.xml",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/filters.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/scss/main.scss",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/app.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/views/organization-edit.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/prices.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/styles/organization.css",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/projects.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/views/organization.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/.tmp/styles/organization.css",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/templates/organization-members.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/directives.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/employees.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/summary.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/about_us.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/controllers.coffee",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/controller_organization_edit.coffee",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/controllers.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/app.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/app.js",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/package.json",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/settings.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/transactions.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/news.html",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/organization/prices",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/router_organization.coffee",
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/router_organization.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/one.app.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/js/custom.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/controller_project_search.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/custom.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/app.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/index.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/application-sql.yml",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/master.xml",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/onepage.html",
 		"/Users/klaus.harrer/Documents/test.html",
 		"/Users/klaus.harrer/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/directives.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/one.style.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/css/custom.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/jquery/src/css/curCSS.js",
@@ -547,19 +687,14 @@
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/gmap/gmap.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/app.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_en-pg.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/views/organization-edit.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/modernizr.custom.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/controllers.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-4-fw-tx.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/css/app.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/app.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/application-prod.yml",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/app.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/scrollbar/css/jquery.mCustomScrollbar.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_pl-pl.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_pt-pt.js",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/ui-bootstrap/misc/demo/assets/app.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/scss/main.scss",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/i18n/de.json",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/templates/file-upload.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/java/org/respondeco/respondeco/web/rest/UserController.java",
@@ -591,36 +726,7 @@
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/repository/ProjectRepository.java",
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/textmessage/controller_textmessage.js",
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/organization/controller_organization_edit.js",
-		"/Users/klaus.harrer/projects/oeamtc/mobito/mobito-web/conf/routes",
-		"/Users/klaus.harrer/projects/oeamtc/mobito/mobito-web/app/controllers/Application.scala",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/main.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/app.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/target/classes/config/application-dev.yml",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/resources/config/application-dev",
-		"/Users/klaus.harrer/projects/prv/respondeco/target/classes/config/application-dev",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/projects_create.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/pom.xml",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/projects.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/test/javascript/spec/project/projectControllerSpec.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/template/project.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/organizations.html",
-		"/Users/klaus.harrer/Desktop/JS-Assessment/simple/index.html",
-		"/Users/klaus.harrer/Desktop/JS-Assessment/simple/runner.html",
-		"/Users/klaus.harrer/Desktop/JS-Assessment/simple/runner.js",
-		"/Users/klaus.harrer/Desktop/JS-Assessment/simple/app/arrays.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/domain/ResourceRequirement.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/domain/OrgJoinRequest.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/resource/service_resource.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/services.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/service_names.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/config/metrics/JavaMailHealthIndicator.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/service/OrgJoinRequestService.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/test/javascript/spec/servicesSpec.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/organization/service_organization.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/styles/main.css",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/swagger-ui/index.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/image/service_image.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/service/MailService.java"
+		"/Users/klaus.harrer/projects/oeamtc/mobito/mobito-web/conf/routes"
 	],
 	"find":
 	{
@@ -631,6 +737,8 @@
 		"height": 90.0,
 		"where_history":
 		[
+			"*xml",
+			"",
 			"*js",
 			"*html",
 			"*,-node_modules/*,-dist/*",
@@ -652,6 +760,28 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"weil",
+			"Weil",
+			"addColumn",
+			"profile-body",
+			"strong",
+			"profile-body",
+			"<a href=\"#\"></a>",
+			"name",
+			"<ul class=\"list-inline share-list\">",
+			"title",
+			": ",
+			":",
+			"employees",
+			"assets",
+			".get",
+			"jffj",
+			"$rootScope",
+			"summary",
+			"m\">",
+			"\">",
+			" href=\"#\"",
+			"get",
 			"\"/>\n",
 			"/#/",
 			":",
@@ -757,29 +887,7 @@
 			"tr",
 			"account",
 			");\n",
-			"Factory",
-			"delete",
-			"p>",
-			"p",
-			"div",
-			"h4",
-			"organization\":",
-			"CustomDateTimeDeserializer",
-			"run",
-			"8080",
-			"redirectToEdit",
-			"controller_organization.js",
-			"id",
-			"settings",
-			"authenticated",
-			"ng-switch",
-			"isNPO",
-			"isNpo",
-			"yeoman.dist",
-			"\"Name\"",
-			"ribbon",
-			"Name",
-			"Name^"
+			"Factory"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -802,8 +910,420 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/main/webapp/scripts/organization/controller_organization.coffee",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7172,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1364,
+								1364
+							]
+						],
+						"settings":
+						{
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 107.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Applications/MAMP/htdocs/club50/conf.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6369,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5736,
+								5736
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1386.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/main/webapp/scripts/organization/controller_organization_edit.coffee",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4896,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4375,
+								4375
+							]
+						],
+						"settings":
+						{
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1305.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/main/webapp/template/organization/about_us.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2465,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								248,
+								248
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/main/webapp/template/organization/prices.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4179,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4171,
+								4171
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/main/webapp/template/organization/projects.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 518,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								26,
+								26
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/main/webapp/template/organization/members.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 859,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								859,
+								859
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/main/webapp/template/organization/news.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 605,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								361,
+								361
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/main/scss/organization.scss",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 16385,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								16385,
+								16385
+							]
+						],
+						"settings":
+						{
+							"encoding_helper_encoding": "UTF-8",
+							"open_with_edit": true,
+							"syntax": "Packages/SCSS/SCSS.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 14487.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/main/webapp/views/organization.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2178,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1684,
+								1684
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "src/main/resources/config/liquibase/master.xml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4456,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4299,
+								4337
+							]
+						],
+						"settings":
+						{
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 166.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "src/main/webapp/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 35143,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								22039,
+								22039
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5032.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "src/main/webapp/template/organization/summary.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1539,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								483,
+								483
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -860,6 +1380,166 @@
 		"selected_items":
 		[
 			[
+				"projects.html",
+				"src/main/webapp/template/organization/projects.html"
+			],
+			[
+				"summ",
+				"src/main/webapp/template/organization/summary.html"
+			],
+			[
+				"aboutu",
+				"src/main/webapp/template/organization/about_us.html"
+			],
+			[
+				"sum",
+				"src/main/webapp/template/organization/summary.html"
+			],
+			[
+				"indexhtml",
+				"src/main/webapp/index.html"
+			],
+			[
+				"mas",
+				"src/main/resources/config/liquibase/master.xml"
+			],
+			[
+				"modifiedor",
+				"src/main/resources/config/liquibase/changelog/20150127205500_modified_entity_Project.xml"
+			],
+			[
+				"posting.",
+				"src/main/resources/config/liquibase/changelog/20150509000000_modified_entity_Posting.xml"
+			],
+			[
+				"posting",
+				"src/main/webapp/template/posting.html"
+			],
+			[
+				"initialsche",
+				"src/main/resources/config/liquibase/changelog/00000000000000_initial_schema.xml"
+			],
+			[
+				"filterjs",
+				"src/main/webapp/scripts/filters.js"
+			],
+			[
+				"organizationhtml",
+				"src/main/webapp/views/organization.html"
+			],
+			[
+				"organization.html",
+				"src/main/webapp/template/organization.html"
+			],
+			[
+				"prices",
+				"src/main/webapp/template/organization/prices.html"
+			],
+			[
+				"organ",
+				"src/main/webapp/styles/organization.css"
+			],
+			[
+				"summar",
+				"src/main/webapp/template/organization/summary.html"
+			],
+			[
+				"ormembe",
+				"src/main/webapp/templates/organization-members.html"
+			],
+			[
+				"dire",
+				"src/main/webapp/scripts/directives.js"
+			],
+			[
+				"employ",
+				"src/main/webapp/template/organization/employees.html"
+			],
+			[
+				"orgacss",
+				".tmp/styles/organization.css"
+			],
+			[
+				"main.scs",
+				"src/main/scss/main.scss"
+			],
+			[
+				"about",
+				"src/main/webapp/template/organization/about_us.html"
+			],
+			[
+				"orgcss",
+				".tmp/styles/organization.css"
+			],
+			[
+				"aboutus",
+				"src/main/webapp/template/organization/about_us.html"
+			],
+			[
+				"conedico",
+				"src/main/webapp/scripts/organization/controller_organization_edit.coffee"
+			],
+			[
+				"summa",
+				"src/main/webapp/template/organization/summary.html"
+			],
+			[
+				"abouu",
+				"src/main/webapp/template/organization/about_us.html"
+			],
+			[
+				"conoredit",
+				"src/main/webapp/scripts/organization/controller_organization_edit.coffee"
+			],
+			[
+				"orgedit",
+				"src/main/webapp/views/organization-edit.html"
+			],
+			[
+				"summary",
+				"src/main/webapp/template/organization/summary.html"
+			],
+			[
+				"controllerscoffe",
+				"src/main/webapp/scripts/controllers.coffee"
+			],
+			[
+				"controllers.js",
+				"src/main/webapp/scripts/controllers.js"
+			],
+			[
+				"apphtml",
+				"src/main/webapp/app.html"
+			],
+			[
+				"app.js",
+				"src/main/webapp/scripts/app.js"
+			],
+			[
+				"appjs",
+				"src/main/webapp/unify/js/app.js"
+			],
+			[
+				"packaj",
+				"package.json"
+			],
+			[
+				"controllersjs",
+				"src/main/webapp/scripts/controllers.js"
+			],
+			[
+				"direc",
+				"src/main/webapp/scripts/directives.js"
+			],
+			[
+				"organization",
+				"src/main/webapp/views/organization.html"
+			],
+			[
+				"orgcoffee",
+				"src/main/webapp/scripts/organization/controller_organization.coffee"
+			],
+			[
 				"masterxml",
 				"src/main/resources/config/liquibase/master.xml"
 			],
@@ -870,10 +1550,6 @@
 			[
 				"index",
 				"src/main/webapp/index.html"
-			],
-			[
-				"apphtml",
-				"src/main/webapp/app.html"
 			],
 			[
 				"cuscss",
@@ -944,10 +1620,6 @@
 				"src/main/webapp/unify/one-page/js/one.app.js"
 			],
 			[
-				"appjs",
-				"src/main/webapp/unify/js/app.js"
-			],
-			[
 				"main.css",
 				".tmp/styles/main.css"
 			],
@@ -958,10 +1630,6 @@
 			[
 				"directi",
 				"src/main/webapp/scripts/directives.js"
-			],
-			[
-				"controllers.js",
-				"src/main/webapp/scripts/controllers.js"
 			],
 			[
 				"font-awe",
@@ -994,10 +1662,6 @@
 			[
 				"project",
 				"src/main/webapp/template/project.html"
-			],
-			[
-				"projects.html",
-				"src/main/webapp/views/projects.html"
 			],
 			[
 				"projedetail",
@@ -1044,10 +1708,6 @@
 				"src/main/webapp/scripts/resource/controller_resource.js"
 			],
 			[
-				"organ",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
 				"resournew",
 				"src/main/webapp/views/resource-new.html"
 			],
@@ -1064,20 +1724,12 @@
 				"src/main/webapp/views/organization-edit.html"
 			],
 			[
-				"main.scs",
-				"src/main/scss/main.scss"
-			],
-			[
 				"projcreate",
 				"src/main/webapp/views/projects_create.html"
 			],
 			[
 				"apjs",
 				"src/main/webapp/scripts/app.js"
-			],
-			[
-				"app.js",
-				"node_modules/protractor/testapp/app.js"
 			],
 			[
 				"filters.js",
@@ -1122,10 +1774,6 @@
 			[
 				"dejson",
 				"src/main/webapp/i18n/de.json"
-			],
-			[
-				"indexhtml",
-				"src/main/webapp/index.html"
 			],
 			[
 				"conorgedit",
@@ -1232,10 +1880,6 @@
 				"src/main/webapp/views/main.html"
 			],
 			[
-				"orgedit",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
 				"conedit",
 				"src/main/webapp/scripts/organization/controller_organization_edit.js"
 			],
@@ -1246,130 +1890,6 @@
 			[
 				"organizationh",
 				"src/main/webapp/views/organization.html"
-			],
-			[
-				"organizedit",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
-				"landingpage",
-				"src/main/webapp/styles/landing-page.css"
-			],
-			[
-				"bower",
-				"bower.json"
-			],
-			[
-				"bowerjson",
-				"bower.json"
-			],
-			[
-				"mainht",
-				"src/main/webapp/views/main.html"
-			],
-			[
-				"lan",
-				".tmp/styles/landing-page.css"
-			],
-			[
-				"maincon",
-				"src/main/webapp/scripts/controllers.js"
-			],
-			[
-				"landing-",
-				".tmp/styles/landing-page.css"
-			],
-			[
-				"landing",
-				".tmp/styles/landing-page.css"
-			],
-			[
-				"routerres",
-				"src/main/webapp/scripts/resource/router_resource.js"
-			],
-			[
-				"controller",
-				"src/main/webapp/scripts/controllers.js"
-			],
-			[
-				"contorllerjs",
-				"src/main/webapp/scripts/controllers.js"
-			],
-			[
-				"bootstrapcss",
-				".tmp/styles/bootstrap.css"
-			],
-			[
-				"organiztionedit",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
-				"organization",
-				"src/main/webapp/views/organization.html"
-			],
-			[
-				"controlledit.js",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"controllersjs",
-				"src/main/webapp/scripts/controllers.js"
-			],
-			[
-				"controlelroredjs",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"controllerogedit",
-				"coverage/PhantomJS 1.9.8 (Mac OS X)/scripts/organization/controller_organization_edit.js.html"
-			],
-			[
-				"coneditjs",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"controllerorganiz",
-				"src/main/webapp/scripts/organization/controller_organizations.js"
-			],
-			[
-				"controllerorga",
-				"src/main/webapp/scripts/organization/controller_organizations.js"
-			],
-			[
-				"orgahtml",
-				"src/main/webapp/views/organizations.html"
-			],
-			[
-				"controlledit",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"directive",
-				"src/main/webapp/scripts/directives.js"
-			],
-			[
-				"de.j",
-				"src/main/webapp/i18n/de.json"
-			],
-			[
-				"controller_edit",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"settings.html",
-				"src/main/webapp/views/settings.html"
-			],
-			[
-				"de",
-				"src/main/webapp/i18n/de.json"
-			],
-			[
-				"services",
-				"src/main/webapp/scripts/services.js"
-			],
-			[
-				"controlerorgan",
-				"src/main/webapp/scripts/organization/controller_organization.js"
 			]
 		],
 		"width": 0.0
@@ -1403,7 +1923,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 249.0,
 	"status_bar_visible": true,
 	"template_settings":

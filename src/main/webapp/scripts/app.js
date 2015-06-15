@@ -5,7 +5,7 @@
 var respondecoApp = angular.module('respondecoApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
     'ngResource', 'ngRoute', 'ngCookies', 'pascalprecht.translate', 'truncate',
     'ui.bootstrap.bindHtml', 'ui.bootstrap.position', 'ui.bootstrap.typeahead', 'respondecoAppFilters',
-    'angularFileUpload', 'ngTagsInput', 'ui.bootstrap', 'uiGmapgoogle-maps', 'angularMoment']);
+    'angularFileUpload', 'ngTagsInput', 'ui.bootstrap', 'uiGmapgoogle-maps', 'angularMoment', 'xeditable']);
 
 respondecoApp
     .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
@@ -104,7 +104,9 @@ respondecoApp
             tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
 
         })
-        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $sce, $route) {
+        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $sce, $route, editableOptions) {
+                editableOptions.theme = 'bs3';
+
                 $rootScope.globalAlerts = $rootScope.globalAlerts || [];
                 var regMessage = {
                     type: 'info',

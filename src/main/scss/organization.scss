@@ -1,3 +1,5 @@
+$link-color: #72c02c;
+
 li a i {
   display: inline-block;
   width: 20px;
@@ -498,7 +500,7 @@ li a i {
   font-weight: 200;
 }
 
-.profile span {
+.profile .display-block {
   display: block;
 }
 
@@ -1014,3 +1016,22 @@ li a i {
   } 
 }
 
+
+.headline {
+  .icon-pencil {
+    font-size: 14px;
+    color: $link-color;
+  }
+}
+
+.link-style {
+  color: $link-color;
+}
+
+.hover-underline {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

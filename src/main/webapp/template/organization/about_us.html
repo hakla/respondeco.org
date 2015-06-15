@@ -2,17 +2,58 @@
     <div class="row margin-bottom-30">
         <div class="col-md-6">
             <div class="profile-blog">
-                <div class="headline">
-                    <h2>{{organization.name}}</h2>
+                <div class="headline hover-toggle">
+                    <h2>
+                        <span editable-text="organization.name" e-form="editName" onaftersave="save()">{{organization.name}}</span>
+                    </h2>
+                    <div class="pull-right on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
+                        <i class="icon-pencil"></i>
+                        <span class="hover-underline">{{'general.edit' | translate}}</span>
+                    </div>
                 </div>
-                <span><strong>E-Mail:</strong> {{organization.email}}</span>
-                <span><strong>Webseite:</strong> http://www.respondeco.org</span>
+                <div class="hover-toggle">
+                    <div ng-hide="organization.email == false">
+                        <span editable-text="organization.email" e-form="editEmail" onaftersave="save()">
+                            {{organization.email || ('organization.email.placeholder' | translate) }}
+                        </span>
+                        <span class="pull-right on-hover link-style" ng-click="editEmail.$show()" ng-hide="editEmail.$visible">
+                            <i class="icon-pencil"></i> <span class="hover-underline">{{'general.edit' | translate}}</span>
+                        </span>
+                    </div>
+                    <div ng-show="organization.email == false">
+                        <span editable-text="organization.email" onaftersave="save()">
+                            {{organization.email || ('organization.email.placeholder' | translate) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="display-block hover-toggle">
+                    <div ng-hide="organization.website == false">
+                        <span editable-text="organization.website" e-form="editWebsite" onaftersave="save()">
+                            {{organization.website || ('organization.website.placeholder' | translate) }}
+                        </span>
+                        <span class="pull-right on-hover link-style" ng-click="editWebsite.$show()" ng-hide="editWebsite.$visible">
+                            <i class="icon-pencil"></i> <span class="hover-underline">{{'general.edit' | translate}}</span>
+                        </span>
+                    </div>
+                    <div ng-show="organization.website == false">
+                        <span editable-text="organization.website" onaftersave="save()">
+                            {{organization.website || ('organization.website.placeholder' | translate) }}
+                        </span>
+                    </div>
+                </div>
                 <br>
                 <a href="#"><i class="rounded-x tw fa fa-twitter"></i> </a>
                 <a href="#"><i class="rounded-x fb fa fa-facebook"></i> </a>
                 <a href="#"><i class="rounded-x sk fa fa-skype"></i> </a>
                 <a href="#"><i class="rounded-x gp fa fa-google-plus"></i> </a>
                 <a href="#"><i class="rounded-x gm fa fa-envelope"></i> </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="service-block-v3 service-block-u">
+                <i class="icon-badge"></i>
+                <span class="service-heading">Auszeichnungen</span>
+                <span class="counter">8</span>
             </div>
         </div>
     </div>
@@ -24,8 +65,12 @@
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left"><i class="icon-info"></i> Was wir tun</h2>
                 </div>
-                <div class="panel-body">
-                    {{ organization.description }}
+                <div class="panel-body hover-toggle" editable-textarea="organization.description" e-form="editDescription" e-rows="12" e-cols="50" onaftersave="save()">
+                    <div class="pull-right on-hover link-style" ng-click="editDescription.$show()" ng-hide="editDescription.$visible">
+                        <i class="icon-pencil"></i>
+                        <span class="hover-underline">{{'general.edit' | translate}}</span>
+                    </div>
+                    {{ organization.description || ('organization.description.placeholder' | translate) }}
                 </div>
             </div>
             <!--End Skills-->
@@ -37,15 +82,27 @@
                     <a href="#"><i class="fa fa-cog pull-right"></i></a>
                 </div>
                 <div class="panel-body">
-                    <p><strong>Konsumentenanliegen</strong>: Schutz und Vertraulichkeit von Kundendaten</p>
-                    <p class="text-italic">
-                        Wir verkaufen weder uns noch Daten. Wir sind ein IT- Unternehmen, das keine Kundendaten verkauft
-                    </p>
-                    <hr>
-                    <p><strong>Arbeitspraktiken</strong>: Beschäftigung und Beschäftigungsverhältnisse</p>
-                    <p class="text-italic">
-                        Wir wollen unsere Beschäftigungsverhältnisse fair und  flexibel gestalten
-                    </p>
+                    <div ng-repeat="category in chosenCategories">
+                        <p>
+                            <strong>
+                                <a href="#" editable-select="_category" e-ng-options="s for s in categories.main" onaftersave="clearCategory(category)">
+                                    <span ng-show="_category != undefined">{{ _category }}</span>
+                                    <span ng-hide="_category != undefined" translate="organization.category.placeholder"></span>
+                                </a>
+                            </strong>
+                            <br />
+                            <a href="#" editable-select="_subcategory" buttons="no" e-ng-options="s for s in categories[_category]" ng-show="_category != undefined && categories[_category] != undefined">
+                                <span ng-show="_subcategory != undefined">{{ _subcategory }}</span>
+                                <span ng-hide="_subcategory != undefined" translate="organization.subcategory.placeholder"></span>
+                            </a>
+                        </p>
+                        <p class="text-italic">
+                            <span editable-textarea="category.description" e-rows="4" e-cols="40">
+                                {{category.description || ('organization.category.description.placeholder' | translate) }}
+                            </span>
+                        </p>
+                        <hr />
+                    </div>
                 </div>
             </div>
         </div>

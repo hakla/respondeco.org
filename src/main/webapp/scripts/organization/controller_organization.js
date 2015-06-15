@@ -1,7 +1,7 @@
 (function() {
   'use strict';
-  respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope) {
-    var isOwner, refreshPostings, user;
+  respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter) {
+    var isOwner, mapToDTO, refreshPostings, user;
     isOwner = false;
     user = void 0;
     $scope.twitterConnected = false;
@@ -11,9 +11,6 @@
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
     $scope.titlesForView = {
-      summary: function() {
-        return "";
-      },
       about_us: function() {
         return "- Über die Organisation";
       },
@@ -36,7 +33,27 @@
         return "- Projekte";
       }
     };
-    $scope.view = 'summary';
+    $scope.view = 'about_us';
+    $scope.categories = {
+      "main": ["Organisationsführung", "Faire Betriebs- und Geschäftspraktiken", "Menschenrechte", "Konsumentenanliegen", "Arbeitspraktiken", "Einbindung und Entwicklung der Gemeinschaft", "Umwelt"],
+      "Faire Betriebs- und Geschäftspraktiken": ["Korruptionsbekämpfung", "Verantwortungsbewusste politische Mitwirkung", "Fairer Wettbewerb", "Gesellschaftliche Verantwortung in der Wertschöpfungskette fördern", "Eigentumsrechte achten"],
+      "Menschenrechte": ["Gebührende Sorgfalt", "Menschenrechte in kritischen Situationen", "Mittäterschaft vermeiden", "Missstände beseitigen", "Diskriminierung und schutzbedürftige Gruppen", "Bürgerliche und politische Rechte", "Wirtschaftliche, soziale und kulturelle Rechte", "Grundlegende Prinzipien und Rechte bei der Arbeit"],
+      "Konsumentenanliegen": ["Faire Werbe-, Vertriebs- und Vertragspraktiken sowie sachliche und unverfälschte, nicht irreführende Informationen", "Schutz von Gesundheit und Sicherheit der Konsumenten", "Nachhaltiger Konsum", "Kundendienst, Beschwerdemanagement und Schlichtungsverfahren", "Schutz und Vertraulichkeit von Kundendaten", "Sicherung der Grundversorgung", "Verbraucherbildung und Sensibilisierung"],
+      "Arbeitspraktiken": ["Beschäftigung und Beschäftigungsverhältnisse Wir wollen unsere Beschäftigungsverhältnisse fair und  flexibel gestalten, der Arbeitsaufwand kann monatlich angepasst werden)   ", "Arbeitsbedingungen und Sozialschutz", "Sozialer Dialog", "Gesundheit und Sicherheit am Arbeitsplatz", "Menschliche Entwicklung und Schulung am Arbeitsplatz "],
+      "Einbindung und Entwicklung der Gemeinschaft": ["Einbindung der Gemeinschaft", "Bildung und Kultur", "Schaffen von Arbeitsplätzen und berufliche Qualifizierung", "Technologien entwickeln und Zugang dazu ermöglichen"],
+      "Umwelt": ["Vermeidung der Umweltbelastung", "Nachhaltige Nutzung von Ressourcen", "Abschwächung des Klimawandels und Anpassung", "Umweltschutz, Artenvielfalt und Wiederherstellung natürli­cher Lebensräume"]
+    };
+    $scope.chosenCategories = [
+      {
+        main: 0,
+        sub: "Menschenrechte in kritischen Situationen",
+        description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
+      }
+    ];
+    $scope.clearCategory = function(category) {
+      $scope._subcategory = null;
+      return category;
+    };
     $scope.currentView = function() {
       var ref;
       $rootScope.title = ((ref = $scope.organization) != null ? ref.name : void 0) + " " + ($scope.titlesForView[$scope.view]());
@@ -45,7 +62,7 @@
     $scope.update = function(name) {
       return $scope.organization = Organization.get({
         id: name,
-        fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate))'
+        fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate)),website'
       }, function() {
         Organization.getMembers({
           id: $scope.organization.id
@@ -262,6 +279,19 @@
         });
         return $scope.projects = projects;
       });
+    };
+    mapToDTO = function(model) {
+      return {
+        name: model.name,
+        id: model.id,
+        description: model.description,
+        email: model.email,
+        website: model.website,
+        logo: model.logo
+      };
+    };
+    $scope.save = function() {
+      return Organization.update(mapToDTO($scope.organization));
     };
     if ($routeParams.id !== 'new' || $routeParams.id !== 'null' || $routeParams.id !== 'undefined') {
       $scope.followingState();

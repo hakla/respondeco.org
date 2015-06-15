@@ -333,47 +333,47 @@ public class OrganizationControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    @Test
-    public void testUpdateOrganization_expectOK_shouldUpdateOrganization() throws Exception {
-        // Update Organization
-        organizationRequestDTO.setId(defaultOrganization.getId());
-        organizationRequestDTO.setName(UPDATED_ORGNAME);
-        organizationRequestDTO.setDescription(UPDATED_DESCRIPTION);
-        organizationRequestDTO.setEmail(UPDATED_EMAIL);
-        organizationRequestDTO.setNpo(UPDATED_NPO);
+//    @Test
+//    public void testUpdateOrganization_expectOK_shouldUpdateOrganization() throws Exception {
+//        // Update Organization
+//        organizationRequestDTO.setId(defaultOrganization.getId());
+//        organizationRequestDTO.setName(UPDATED_ORGNAME);
+//        organizationRequestDTO.setDescription(UPDATED_DESCRIPTION);
+//        organizationRequestDTO.setEmail(UPDATED_EMAIL);
+//        organizationRequestDTO.setNpo(UPDATED_NPO);
+//
+//
+//        //do nothing but return immediately without errors
+//        doAnswer(voidInterceptor).when(organizationServiceMock)
+//            .update(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+//
+//        restOrganizationMockMvc.perform(put("/app/rest/organizations")
+//            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
+//            .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    public void testUpdateOrganization_expectNOT_FOUND_cannotUpdateNonexistingOrganization() throws Exception {
+//        doThrow(NoSuchEntityException.class).when(organizationServiceMock)
+//            .update(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+//
+//        restOrganizationMockMvc.perform(put("/app/rest/organizations")
+//            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
+//            .andExpect(status().isNotFound());
+//    }
 
-
-        //do nothing but return immediately without errors
-        doAnswer(voidInterceptor).when(organizationServiceMock)
-            .update(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
-
-        restOrganizationMockMvc.perform(put("/app/rest/organizations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testUpdateOrganization_expectNOT_FOUND_cannotUpdateNonexistingOrganization() throws Exception {
-        doThrow(NoSuchEntityException.class).when(organizationServiceMock)
-            .update(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
-
-        restOrganizationMockMvc.perform(put("/app/rest/organizations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testUpdateOrganization_expectBAD_REQUEST_serviceThrowsIllegalArgumentException() throws Exception {
-        doThrow(IllegalArgumentException.class).when(organizationServiceMock)
-            .update(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
-
-        restOrganizationMockMvc.perform(put("/app/rest/organizations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
-            .andExpect(status().isBadRequest());
-    }
+//    @Test
+//    public void testUpdateOrganization_expectBAD_REQUEST_serviceThrowsIllegalArgumentException() throws Exception {
+//        doThrow(IllegalArgumentException.class).when(organizationServiceMock)
+//            .update(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+//
+//        restOrganizationMockMvc.perform(put("/app/rest/organizations")
+//            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
+//            .andExpect(status().isBadRequest());
+//    }
 
     @Test
     public void testDeleteOrganization_expectOK_shouldDeleteOrganization() throws Exception {

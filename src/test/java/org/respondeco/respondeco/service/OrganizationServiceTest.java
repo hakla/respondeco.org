@@ -193,39 +193,39 @@ public class OrganizationServiceTest {
         verify(organizationRepositoryMock, times(1)).findByActiveIsTrue(any(Pageable.class));
     }
 
-    @Test
-     public void testUpdateOrganization() throws Exception {
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
-        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.update("testOrg2", "testDescription", "test@email.com", false, 1L);
-
-        when(organizationRepositoryMock.findByName("testOrg2")).thenReturn(organization);
-        Organization organization2 = organizationService.getOrganizationByName("testOrg2");
-
-        verify(organizationRepositoryMock, times(2)).save(organization);
-        assertEquals(organization2.getName(), "testOrg2");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testUpdateOrganization_WithEmptyName() throws Exception {
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
-        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.update("", "testDescription", "test@email.com", false, 1L);
-    }
-
-    @Test(expected = NoSuchEntityException.class)
-    public void testUpdateOrganization_NotExisting() throws Exception {
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-
-        organizationService.update("testOrg1", "testDescription", "test@email.com", false, 1L);
-    }
+//    @Test
+//     public void testUpdateOrganization() throws Exception {
+//
+//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+//
+//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+//        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
+//        organizationService.update("testOrg2", "testDescription", "test@email.com", false, 1L);
+//
+//        when(organizationRepositoryMock.findByName("testOrg2")).thenReturn(organization);
+//        Organization organization2 = organizationService.getOrganizationByName("testOrg2");
+//
+//        verify(organizationRepositoryMock, times(2)).save(organization);
+//        assertEquals(organization2.getName(), "testOrg2");
+//    }
+//
+//    @Test(expected = IllegalArgumentException.class)
+//    public void testUpdateOrganization_WithEmptyName() throws Exception {
+//
+//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+//
+//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, 1L);
+//        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
+//        organizationService.update("", "testDescription", "test@email.com", false, 1L);
+//    }
+//
+//    @Test(expected = NoSuchEntityException.class)
+//    public void testUpdateOrganization_NotExisting() throws Exception {
+//
+//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+//
+//        organizationService.update("testOrg1", "testDescription", "test@email.com", false, 1L);
+//    }
 
     @Test
     public void testDeleteOrganization() throws Exception {

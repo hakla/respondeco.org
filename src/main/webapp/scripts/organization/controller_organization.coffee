@@ -1,5 +1,5 @@
 'use strict'
-respondecoApp.controller 'OrganizationController', ($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope) ->
+respondecoApp.controller 'OrganizationController', ($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter) ->
   isOwner = false
   user = undefined
   $scope.twitterConnected = false
@@ -10,7 +10,6 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   $scope.ratingCount = 0
 
   $scope.titlesForView =
-    summary: -> ""
     about_us: -> "- Über die Organisation"
     members: -> "- Mitarbeiter"
     news: -> "- Neuigkeiten"
@@ -19,14 +18,41 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
     prices: -> "- Auszeichnungen"
     projects: -> "- Projekte"
 
-  $scope.view = 'summary'
+  $scope.view = 'about_us'
+
+  $scope.categories =
+    "main": [
+        "Organisationsführung",
+        "Faire Betriebs- und Geschäftspraktiken",
+        "Menschenrechte",
+        "Konsumentenanliegen",
+        "Arbeitspraktiken",
+        "Einbindung und Entwicklung der Gemeinschaft",
+        "Umwelt"
+    ],
+    "Faire Betriebs- und Geschäftspraktiken": ["Korruptionsbekämpfung", "Verantwortungsbewusste politische Mitwirkung", "Fairer Wettbewerb", "Gesellschaftliche Verantwortung in der Wertschöpfungskette fördern", "Eigentumsrechte achten"],
+    "Menschenrechte": ["Gebührende Sorgfalt", "Menschenrechte in kritischen Situationen", "Mittäterschaft vermeiden", "Missstände beseitigen", "Diskriminierung und schutzbedürftige Gruppen", "Bürgerliche und politische Rechte", "Wirtschaftliche, soziale und kulturelle Rechte", "Grundlegende Prinzipien und Rechte bei der Arbeit"],
+    "Konsumentenanliegen": ["Faire Werbe-, Vertriebs- und Vertragspraktiken sowie sachliche und unverfälschte, nicht irreführende Informationen", "Schutz von Gesundheit und Sicherheit der Konsumenten", "Nachhaltiger Konsum", "Kundendienst, Beschwerdemanagement und Schlichtungsverfahren", "Schutz und Vertraulichkeit von Kundendaten", "Sicherung der Grundversorgung", "Verbraucherbildung und Sensibilisierung"],
+    "Arbeitspraktiken": ["Beschäftigung und Beschäftigungsverhältnisse Wir wollen unsere Beschäftigungsverhältnisse fair und  flexibel gestalten, der Arbeitsaufwand kann monatlich angepasst werden)   ", "Arbeitsbedingungen und Sozialschutz", "Sozialer Dialog", "Gesundheit und Sicherheit am Arbeitsplatz", "Menschliche Entwicklung und Schulung am Arbeitsplatz "],
+    "Einbindung und Entwicklung der Gemeinschaft": ["Einbindung der Gemeinschaft", "Bildung und Kultur", "Schaffen von Arbeitsplätzen und berufliche Qualifizierung", "Technologien entwickeln und Zugang dazu ermöglichen"],
+    "Umwelt": ["Vermeidung der Umweltbelastung", "Nachhaltige Nutzung von Ressourcen", "Abschwächung des Klimawandels und Anpassung", "Umweltschutz, Artenvielfalt und Wiederherstellung natürli­cher Lebensräume"]
+
+  $scope.chosenCategories = [
+    main: 0,
+    sub: "Menschenrechte in kritischen Situationen",
+    description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
+  ]
+
+  $scope.clearCategory = (category) ->
+    $scope._subcategory = null
+    category
 
   $scope.currentView = -> 
     $rootScope.title = "#{$scope.organization?.name} #{$scope.titlesForView[$scope.view]()}"
     "/template/organization/#{$scope.view}.html"
 
   $scope.update = (name) ->
-    $scope.organization = Organization.get({ id: name, fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate))' }, ->
+    $scope.organization = Organization.get({ id: name, fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate)),website' }, ->
       Organization.getMembers { id: $scope.organization.id }, (data) ->
         $scope.members = data
       Account.get null, (account) ->
@@ -216,6 +242,17 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
           projects[project.id].match = projects[project.id].match.concat(project.match)
 
       $scope.projects = projects
+
+  mapToDTO = (model) ->
+    name: model.name
+    id: model.id
+    description: model.description
+    email: model.email
+    website: model.website
+    logo: model.logo
+
+  $scope.save = ->
+    Organization.update mapToDTO $scope.organization
 
   #allow execute follow state only if organization ID is set!
   if $routeParams.id != 'new' or $routeParams.id != 'null' or $routeParams.id != 'undefined'

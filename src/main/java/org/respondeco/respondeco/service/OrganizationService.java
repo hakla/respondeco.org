@@ -222,14 +222,14 @@ public class OrganizationService {
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
      */
     public Organization update(String name, String description, String email,
-                               Boolean isNpo, ImageDTO logo) throws NoSuchEntityException {
+                               Boolean isNpo, ImageDTO logo, String website) throws NoSuchEntityException {
         Long logoId = null;
 
         if (logo != null) {
             logoId = logo.getId();
         }
 
-        return update(name, description, email, isNpo, logoId);
+        return update(name, description, email, isNpo, logoId, website);
     }
 
     /**
@@ -242,7 +242,7 @@ public class OrganizationService {
      * @param logoId
      * @throws NoSuchOrganizationException
      */
-    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId) throws NoSuchEntityException {
+    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId, String website) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
@@ -257,6 +257,7 @@ public class OrganizationService {
         currentOrganization.setEmail(email);
         currentOrganization.setIsNpo(isNpo);
         currentOrganization.setOwner(currentUser);
+        currentOrganization.setWebsite(website);
         if(logoId != null) {
             currentOrganization.setLogo(imageRepository.findOne(logoId));
         }

@@ -35,6 +35,7 @@
     <include file="classpath:config/liquibase/changelog/20150127203500_modified_entity_Textmessage.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150127205500_modified_entity_Project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150509000000_modified_entity_Posting.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20150615000000_modified_entity_Organization.xml" relativeToChangelogFile="false"/>
     <!-- JHipster will add liquibase changelogs here -->
 
 </databaseChangeLog>

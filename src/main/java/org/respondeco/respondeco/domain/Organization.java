@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,6 +26,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers"})
+@JsonIgnoreProperties
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -76,6 +78,9 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 
     @Column(name = "verified")
     private Boolean verified = false;
+
+    @Column(name = "website")
+    private String website;
 
 
     public void addMember(User user) {

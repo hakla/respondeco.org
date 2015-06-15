@@ -723,3 +723,11 @@ uploaded-image, [uploaded-image] {
     }
 }
 
+.text-italic {
+    font-style: italic;
+}
+
+.editable-controls {
+    position: relative;
+    z-index: 1;
+}
