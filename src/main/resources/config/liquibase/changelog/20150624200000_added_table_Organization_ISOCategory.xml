@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!--
+        Added the entity PropertyTag.
+    -->
+    <changeSet id="20150624200000" author="Clemens Puehringer">
+        <createTable tableName="T_ORGANIZATION_T_ISO_CATEGORY">
+            <column name="organization_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iso_category_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="organization_id, iso_category_id" tableName="T_ORGANIZATION_T_ISO_CATEGORY"/>
+
+    </changeSet>
+</databaseChangeLog>
