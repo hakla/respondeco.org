@@ -230,13 +230,13 @@ public class ResourceService {
     public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
                                      Boolean isCommercial, LocalDate startDate,
                                      LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
-        throws NoSuchEntityException, OrganizationNotVerifiedException {
+        throws NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
         if(organization == null) {
             throw new NoSuchEntityException(organizationId);
         }
         if(organization.getVerified() == false) {
-            throw new OrganizationNotVerifiedException(organizationId);
+            throw new OperationForbiddenException("Organization (id: " + organizationId + ") not verified");
         }
         ResourceOffer newOffer = new ResourceOffer();
         newOffer.setName(name);

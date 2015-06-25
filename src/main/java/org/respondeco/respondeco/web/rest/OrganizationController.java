@@ -3,7 +3,7 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.respondeco.respondeco.aop.RESTWrapped;
-import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
@@ -12,7 +12,6 @@ import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +22,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * REST controller for managing Organization.
@@ -38,7 +35,6 @@ public class OrganizationController {
 
     private ResourceService resourceService;
     private OrganizationService organizationService;
-    private UserService userService;
     private OrgJoinRequestService orgJoinRequestService;
     private RatingService ratingService;
     private PostingFeedService postingFeedService;
@@ -51,7 +47,6 @@ public class OrganizationController {
                                   RatingService ratingService,
                                   PostingFeedService postingFeedService) {
         this.organizationService = organizationService;
-        this.userService = userService;
         this.resourceService = resourceService;
         this.orgJoinRequestService = orgJoinRequestService;
         this.ratingService = ratingService;
@@ -194,7 +189,7 @@ public class OrganizationController {
      * Returns all ResourceOffers created by a specific Organzation given by id
      *
      * @param id the id of the organization
-     * @return ResponseEntity which contains a list of ResourceOfferResponseDTOs and a HTTP Status
+     * @return a list of ResourceOffers
      */
     @PermitAll
     @RequestMapping(value = "/rest/organizations/{id}/resourceoffers",
@@ -218,57 +213,28 @@ public class OrganizationController {
      * @param page     optional parameter indicating the page of projects to be returned, works in conjunction with
      *                 pageSize, dafault is 1 (first page)
      * @param pageSize optional parameter indicating the size of the pages of projects to be returned
-     * @param fields   optional parameter indicating the fields of the responses to be returned, if specified, only the
-     *                 corresponding fields in the response DTO will be set.
-     *                 example: fields=id,name
-     *                 response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
      * @param order    optional parameter indicating the order of the returned values, orders can be specified as follows:
      *                 fieldname: orders the responses by the fieldname ascending,
      *                 +fieldname: same as fieldname,
      *                 -fieldname: orders the responses by the fieldname descending
      *                 example: order=-id,+name orders by id descending and name ascending
-     * @return
+     * @return resources for the organization
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations/{id}/resourcerequests",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<ResourceMatchResponseDTO>> getAllResourceRequests(
+    @RESTWrapped
+    public Object getAllResourceRequests(
         @PathVariable Long id,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
-        @RequestParam(required = false) String fields,
         @RequestParam(required = false) String order) {
 
         log.debug("REST request to get all resource claim requests for organization with id " + id);
-        List<ResourceMatchResponseDTO> list = new ArrayList<>();
-        ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-
-        RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        List<ResourceMatch> resourceInQueue =
-            resourceService.getResourcesForOrganization(id, restParameters.buildPageRequest());
-
-        for (ResourceMatch match : resourceInQueue) {
-            ResourceMatchResponseDTO resourceDTO = new ResourceMatchResponseDTO();
-
-            OrganizationResponseDTO organizationDTO = OrganizationResponseDTO.fromEntity(match.getOrganization(), null);
-            ProjectResponseDTO projectDTO = ProjectResponseDTO.fromEntity(match.getProject(), null);
-            ResourceOfferDTO resourceOfferDTO = new ResourceOfferDTO(match.getResourceOffer());
-            ResourceRequirementResponseDTO resourceRequirementResponseDTO = ResourceRequirementResponseDTO.fromEntity(match.getResourceRequirement(), null);
-
-            resourceDTO.setProject(projectDTO);
-            resourceDTO.setResourceOffer(resourceOfferDTO);
-            resourceDTO.setResourceRequirement(resourceRequirementResponseDTO);
-            resourceDTO.setMatchId(match.getId());
-            resourceDTO.setMatchDirection(match.getMatchDirection().toString());
-            resourceDTO.setOrganization(organizationDTO);
-            resourceDTO.setAccepted(match.getAccepted());
-
-            list.add(resourceDTO);
-        }
-
-        return responseEntity;
+        RestParameters restParameters = new RestParameters(page, pageSize, order);
+        return resourceService.getResourcesForOrganization(id, restParameters.buildPageRequest());
     }
 
 
@@ -280,62 +246,33 @@ public class OrganizationController {
      * or declined by the user
      *
      * @param id the id of the organization for which to return the org join requests
-     * @return response status OK and a list of org join request DTOs if the reques was executed successfully, or status
-     * NOT FOUND if the organization does not exist
+     * @return a list of org join requests
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations/{id}/orgjoinrequests",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-
-    public ResponseEntity<?> getByOrgId(@PathVariable Long id) {
+    @RESTWrapped
+    public Object getByOrgId(@PathVariable Long id) {
         log.debug("REST request to get OrgJoinRequest : {}", id);
-        ResponseEntity<List<OrgJoinRequestDTO>> responseEntity = new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
-        try {
-            List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByOrganization(id);
-            for (OrgJoinRequest orgJoinRequest : orgJoinRequests) {
-                responseEntity.getBody().add(new OrgJoinRequestDTO(orgJoinRequest));
-            }
-
-        } catch (NoSuchEntityException e) {
-            log.error("Could not find OrgJoinRequest : {}", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
+        return orgJoinRequestService.getOrgJoinRequestByOrganization(id);
     }
 
     /**
      * GET  /rest/organizations/{id}/members -> get the members for the organization {id}
      *
      * @param id the id of the organization for which to get the members
-     * @return response status OK and a list of all members if the request was executed successfully, status NOT FOUND
-     * otherwise
+     * @return a list of all members
      */
     @RequestMapping(value = "/rest/organizations/{id}/members",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    ResponseEntity<List<UserDTO>> getMembers(@PathVariable Long id) {
+    @RESTWrapped
+    public Object getMembers(@PathVariable Long id) {
         log.debug("REST request to get Users by OrgId : {}", id);
-        ResponseEntity<List<UserDTO>> responseEntity;
-
-        try {
-            // get all users for organization with id :id
-            List<User> users = organizationService.getUserByOrgId(id);
-            List<UserDTO> userDTOs = new ArrayList<>();
-
-            // map found users and http status 200
-            users.forEach(p -> userDTOs.add(new UserDTO(p)));
-            responseEntity = new ResponseEntity<>(userDTOs, HttpStatus.OK);
-
-        } catch (NoSuchEntityException e) {
-            // if the organization with :id couldn't be found
-            log.error("Could not get User by Organization : {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return responseEntity;
+        return organizationService.getUserByOrgId(id);
     }
 
     /**
@@ -343,7 +280,6 @@ public class OrganizationController {
      * <p/>
      * removes a user from an organization
      *
-     * @param id     the id of organization from which to remove the user
      * @param userId the id of the user to remove
      * @return response status OK if the request was executed successfully, or NOT FOUND if the organization or the user
      * could not be found
@@ -353,44 +289,27 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> deleteMember(@PathVariable Long id, @PathVariable Long userId) {
+    @RESTWrapped
+    public Object deleteMember(@PathVariable Long userId) {
         log.debug("REST request to delete Member : {}", userId);
-        ResponseEntity<?> responseEntity;
-        try {
-            organizationService.deleteMember(userId);
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchEntityException e) {
-            log.error("Could not delete Member : {}", userId, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (NotOwnerOfOrganizationException e) {
-            log.error("Could not delete Member : {}", userId, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (OrganizationNotVerifiedException e) {
-            log.error("Could not delete Member : {}", userId, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+        organizationService.deleteMember(userId);
+        return null;
     }
 
     /**
      * GET  /rest/organizations/{id}/invitableusers -> get all users which can be invited into the given organization
      *
      * @param id the id of the organization
-     * @return response status OK with a list of invitable users
+     * @return list of invitable users
      */
     @RequestMapping(value = "/rest/organizations/{id}/invitableusers",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<UserDTO>> getInvitableUsers(@PathVariable Long id) {
-        List<UserDTO> users = new ArrayList<>();
-
-        for (User user : organizationService.findInvitableUsersByOrgId(id)) {
-            users.add(new UserDTO(user));
-        }
-
-        return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
+    @RESTWrapped
+    public Object getInvitableUsers(@PathVariable Long id) {
+        return organizationService.findInvitableUsersByOrgId(id);
     }
 
     /**
@@ -407,43 +326,30 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> rateOrganization(
+    @RESTWrapped
+    public Object rateOrganization(
         @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
         @PathVariable Long id) {
-        ResponseEntity<?> responseEntity;
-        try {
-            ratingService.rateOrganization(id, ratingRequestDTO.getMatchid(),
-                ratingRequestDTO.getRating(),
-                ratingRequestDTO.getComment());
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchEntityException e) {
-            log.error("Could not rate organization {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (SupporterRatingException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+
+        ratingService.rateOrganization(id, ratingRequestDTO.getMatchid(),
+            ratingRequestDTO.getRating(),
+            ratingRequestDTO.getComment());
+        return null;
     }
 
     /**
      * generates an aggregated rating for the specified organization
      *
      * @param id the id of the organization for which to generate the aggregate rating
-     * @return response status OK and the AggregatedRating for the organization
+     * @return aggregated rating by organization
      */
     @RequestMapping(value = "/rest/organizations/{id}/ratings",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> getAggregatedRating(@PathVariable Long id) {
-        ResponseEntity<?> responseEntity;
-
-        AggregatedRating aggregatedRating = ratingService.getAggregatedRatingByOrganization(id);
-        AggregatedRatingResponseDTO aggregatedRatingResponseDTO = AggregatedRatingResponseDTO
-            .fromEntity(aggregatedRating, null);
-        responseEntity = new ResponseEntity<>(aggregatedRatingResponseDTO, HttpStatus.OK);
-
-        return responseEntity;
+    @RESTWrapped
+    public Object getAggregatedRating(@PathVariable Long id) {
+        return ratingService.getAggregatedRatingByOrganization(id);
     }
 
     /**
@@ -465,45 +371,31 @@ public class OrganizationController {
     /**
      * Allow user to subscribe a specific organization news
      *
-     * @return Error or OK Response Entity
+     * @return null
      */
     @RequestMapping(value = "/rest/organizations/{id}/follow",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity follow(@PathVariable Long id) {
-        ResponseEntity responseEntity;
-
-        try {
-            organizationService.follow(id);
-            responseEntity = new ResponseEntity(HttpStatus.CREATED);
-        } catch (IllegalValueException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-
-        return responseEntity;
+    @RESTWrapped
+    public Object follow(@PathVariable Long id) {
+        organizationService.follow(id);
+        return null;
     }
 
     /**
      * Allow user to un-subscribe a specific organization news
      *
-     * @return Error or OK Response Entity
+     * @return null
      */
     @RequestMapping(value = "/rest/organizations/{id}/unfollow",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity unfollow(@PathVariable Long id) {
-        ResponseEntity responseEntity;
-
-        try {
-            organizationService.unfollow(id);
-            responseEntity = new ResponseEntity(HttpStatus.OK);
-        } catch (IllegalValueException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-
-        return responseEntity;
+    @RESTWrapped
+    public Object unfollow(@PathVariable Long id) {
+        organizationService.unfollow(id);
+        return null;
     }
 
 
@@ -565,21 +457,20 @@ public class OrganizationController {
         postingFeedService.deletePosting(pid);
     }
 
+    /**
+     * update organizations verified status
+     *
+     * @param id organization id
+     * @param verified new verified flag
+     * @return the new organization object
+     */
     @RequestMapping(value = "/rest/organizations/{id}/verify",
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    public ResponseEntity<?> verify(@PathVariable Long id, @RequestBody Boolean verified) {
-        ResponseEntity<?> responseEntity;
-        try {
-            Organization organization = organizationService.verify(id, verified);
-            responseEntity = new ResponseEntity<>(OrganizationResponseDTO.fromEntity(organization, null), HttpStatus.OK);
-        } catch (NoSuchEntityException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        } catch (OperationForbiddenException e) {
-            responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        }
-        return responseEntity;
+    @RESTWrapped
+    public Object verify(@PathVariable Long id, @RequestBody Boolean verified) {
+        return organizationService.verify(id, verified);
     }
 
 
@@ -593,27 +484,16 @@ public class OrganizationController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity getDonatedResources(
+    @RESTWrapped
+    public Object getDonatedResources(
         @PathVariable Long id,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) String fields,
         @RequestParam(required = false) String order) {
 
-        ResponseEntity responseEntity;
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-
-        try {
-            Page<ResourceMatch> resourceMatchesPage = resourceService.getDonatedResourcesForOrganization(id, restParameters);
-            ResourceMatchPaginationResponseDTO dto = ResourceMatchPaginationResponseDTO.createFromPage(resourceMatchesPage, null);
-
-            responseEntity = new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (NoSuchEntityException e) {
-            log.error("Could not update Organization : {}", id, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return responseEntity;
+        return resourceService.getDonatedResourcesForOrganization(id, restParameters);
     }
 
 }

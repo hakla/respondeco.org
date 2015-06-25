@@ -44,13 +44,12 @@ public class OrgJoinRequestService {
      * @param organizationDTO dto object for the organization for which the user should be invited
      * @param userDTO dto object for the user to be invited
      * @return the successfull created orgjoinrequest
-     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException is thrown if the organization doesn't exist
-     * @throws AlreadyInvitedToOrganizationException is thrown if the user is already invited in the organization
-     * @throws OrganizationNotVerifiedException is thrown if the organization is not verified
+     * @throws NoSuchEntityException is thrown if organization or user doesn't exist
+     * @throws OperationForbiddenException is thrown if the user is already invited in the organization
+     * @throws IllegalArgumentException is thrown if the user is not owner of the organization or or he has an open invitation to join the organization
      */
     public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO)
-        throws NoSuchEntityException, AlreadyInvitedToOrganizationException,
-        OrganizationNotVerifiedException {
+        throws NoSuchEntityException, IllegalArgumentException {
         User currentUser = userService.getUserWithAuthorities();
         User user = userRepository.findByIdAndActiveIsTrue(userDTO.getId());
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationDTO.getId());
@@ -61,7 +60,7 @@ public class OrgJoinRequestService {
             throw new NoSuchEntityException("Organization does not exist");
         }
         if(!organization.getVerified()) {
-            throw new OrganizationNotVerifiedException(organization.getId());
+            throw new OperationForbiddenException("Organization (id: " + organization.getId() + ") not verified");
         }
         if(!organization.getOwner().equals(currentUser)) {
             throw new IllegalArgumentException(String.format("Current user %s is not owner of organization", currentUser));
@@ -70,7 +69,7 @@ public class OrgJoinRequestService {
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByUserAndOrganizationAndActiveIsTrue(user, organization);
 
         if (orgJoinRequest != null) {
-            throw new AlreadyInvitedToOrganizationException(String.format("User %s has an open invitation to join organization %s", user, organization));
+            throw new IllegalArgumentException(String.format("User %s has an open invitation to join organization %s", user, organization));
         }
 
         orgJoinRequest = new OrgJoinRequest();
@@ -85,7 +84,7 @@ public class OrgJoinRequestService {
      * gets a list of active orgjoinrequests for the given organization
      * @param id given id of the organization
      * @return a list of orgjoinrequests for the organization
-     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException organization doesn't exist
+     * @throws NoSuchEntityException organization doesn't exist
      */
     public List<OrgJoinRequest> getOrgJoinRequestByOrganization(Long id) throws NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
@@ -202,17 +201,18 @@ public class OrgJoinRequestService {
     /**
      * method to delete an orgjoinrequest; real deletion of orgjoinrequest in the repository
      * @param id given id of the orgjoinrequest to be deleted
-     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException is thrown if the organization doesn't exist
-     * @throws NotOwnerOfOrganizationException is thrown if user is not owner of organization
+     * @throws NoSuchEntityException is thrown if the organization doesn't exist
+     * @throws OperationForbiddenException is thrown if user is not owner of organization
+     * @throws IllegalArgumentException is thrown if user is not member of organization
      */
-    public void delete(Long id) throws NoSuchEntityException, NotOwnerOfOrganizationException {
+    public void delete(Long id) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(id);
         if (orgJoinRequest == null) {
             throw new NoSuchEntityException(String.format("No OrgJoinRequest %s found", id));
         }
         if(currentUser.getOrganization() == null || !currentUser.getOrganization().getOwner().equals(currentUser)) {
-            throw new NotOwnerOfOrganizationException("Current user is not owner of organization");
+            throw new OperationForbiddenException("Current user is not owner of organization");
         }
         if (orgJoinRequest.getOrganization() != currentUser.getOrganization()) {
             throw new IllegalArgumentException("Current user is not owner of organization");

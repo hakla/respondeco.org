@@ -311,10 +311,9 @@ public class OrganizationService {
      * removes a member from the organization
      * @param userId the id of the user to remove
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given user does not belong to an organization
-     * @throws NotOwnerOfOrganizationException if the current user is not the owner of the user's organization
+     * @throws OperationForbiddenException if the current user is not the owner of the user's organization
      */
-    public void deleteMember(Long userId) throws NoSuchEntityException,
-        NotOwnerOfOrganizationException, OrganizationNotVerifiedException {
+    public void deleteMember(Long userId) throws NoSuchEntityException {
         User user = userService.getUserWithAuthorities();
         User member = userRepository.findByIdAndActiveIsTrue(userId);
 
@@ -327,11 +326,11 @@ public class OrganizationService {
             throw new NoSuchEntityException(String.format("Organization %s does not exist",
                 member.getOrganization().getId()));
         }
-        if(organization.getVerified() == false) {
-            throw new OrganizationNotVerifiedException(organization.getId());
+        if(!organization.getVerified()) {
+            throw new OperationForbiddenException("Organization (id: " + organization.getId() + ") not verified.");
         }
-        if(organization.getOwner().equals(user) == false) {
-            throw new NotOwnerOfOrganizationException(String.format("Current User is not owner of Organization %s ",
+        if(!organization.getOwner().equals(user)) {
+            throw new OperationForbiddenException(String.format("Current User is not owner of Organization %s ",
                 organization.getOwner()));
         }
         log.debug("Deleting member from organization", user.getLogin(), organization.getName());

@@ -290,8 +290,8 @@ public class OrganizationServiceTest {
 
     }
 
-    @Test(expected = NotOwnerOfOrganizationException.class)
-    public void testDeleteMember_shouldThrowNotOwnerOrganizationException() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteMember_shouldThrowOperationForbiddenException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService

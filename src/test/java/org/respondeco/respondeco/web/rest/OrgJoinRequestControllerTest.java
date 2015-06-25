@@ -15,7 +15,7 @@ import org.respondeco.respondeco.service.OrgJoinRequestService;
 import org.respondeco.respondeco.service.OrganizationService;
 import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
-import org.respondeco.respondeco.service.exception.NotOwnerOfOrganizationException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.OrgJoinRequestDTO;
@@ -260,7 +260,7 @@ public class OrgJoinRequestControllerTest {
 
     @Test
     public void testDelete_expectNotOwnerOfOrganization() throws Exception {
-        doThrow(NotOwnerOfOrganizationException.class).when(orgJoinRequestService).delete(anyLong());
+        doThrow(OperationForbiddenException.class).when(orgJoinRequestService).delete(anyLong());
         restOrgJoinRequestMockMvc.perform(delete("/app/rest/orgjoinrequests/1")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isForbidden());

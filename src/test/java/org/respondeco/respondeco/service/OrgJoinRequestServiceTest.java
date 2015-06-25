@@ -156,7 +156,7 @@ public class OrgJoinRequestServiceTest {
             OrganizationResponseDTO.fromEntity(defaultOrganization, null), new UserDTO(defaultUser));
     }
 
-    @Test(expected = AlreadyInvitedToOrganizationException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testCreateOrgJoinRequest_AlreadyInvitedToOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -417,7 +417,7 @@ public class OrgJoinRequestServiceTest {
         orgJoinRequestService.delete(orgJoinRequest.getId());
     }
 
-    @Test(expected = NotOwnerOfOrganizationException.class)
+    @Test(expected = OperationForbiddenException.class)
     public void testDeleteOrgJoinRequest_NotOwnerOfOrganization() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
