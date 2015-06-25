@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -25,7 +29,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers"})
+@ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers", "isoCategories"})
 @JsonIgnoreProperties
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
@@ -82,10 +86,13 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Column(name = "website")
     private String website;
 
-
-    public void addMember(User user) {
-        members.add(user);
-    }
+    @ManyToMany
+    @JoinTable(
+        name="T_ORGANIZATION_T_ISO_CATEGORY",
+        joinColumns = {         @JoinColumn(name="ORGANIZATION_ID", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "ISO_CATEGORY_ID", referencedColumnName = "id")}
+    )
+    private List<ISOCategory> isoCategories;
 
     @ManyToMany
     @JoinTable(
@@ -94,4 +101,35 @@ public class Organization extends AbstractAuditingEntity implements Serializable
         inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "id")}
     )
     private List<User> FollowingUsers;
+
+    public void addMember(User user) {
+        members.add(user);
+    }
+
+    /**
+     * arrange categories based on their super category
+     * @return a map whose keys represent super categories and whose values are all the sub categories
+     * that this organization has associated with itself
+     */
+    public List<ISOCategory> getOrderedIsoCategories() {
+        List<ISOCategory> categoryList = new ArrayList<>();
+        Map<ISOCategory,List<ISOCategory>> superCategoryMap = new HashMap<>();
+        for(ISOCategory category : isoCategories) {
+            if(category.getSuperCategory() == null) {
+                if(!superCategoryMap.containsKey(category)) {
+                    superCategoryMap.put(category, new ArrayList<>());
+                }
+            } else {
+                if(!superCategoryMap.containsKey(category.getSuperCategory())) {
+                    superCategoryMap.put(category.getSuperCategory(), new ArrayList<>());
+                }
+                superCategoryMap.get(category.getSuperCategory()).add(category);
+            }
+        }
+        for(Map.Entry<ISOCategory, List<ISOCategory>> entry : superCategoryMap.entrySet()) {
+            entry.getKey().setSubCategories(entry.getValue());
+            categoryList.add(entry.getKey());
+        }
+        return categoryList;
+    }
 }

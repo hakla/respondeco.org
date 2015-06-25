@@ -4,6 +4,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.respondeco.respondeco.domain.ISOCategory;
 import org.respondeco.respondeco.domain.Image;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
@@ -31,5 +32,7 @@ public class OrganizationRequestDTO {
     private UserDTO owner;
 
     private ImageDTO logo;
+
+    private List<ISOCategory> isoCategories;
 
 }

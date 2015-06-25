@@ -22,20 +22,14 @@ public class OrganizationService {
     private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
 
     private OrganizationRepository organizationRepository;
-
     private UserService userService;
-
     private UserRepository userRepository;
-
     private ImageRepository imageRepository;
-
     private ProjectService projectService;
-
     private ProjectRepository projectRepository;
-
     private PostingFeedRepository postingFeedRepository;
-
     private ResourceOfferRepository resourceOfferRepository;
+    private ISOCategoryRepository isoCategoryRepository;
 
     @Inject
     public OrganizationService(OrganizationRepository organizationRepository,
@@ -45,7 +39,8 @@ public class OrganizationService {
                                ProjectService projectService,
                                ProjectRepository projectRepository,
                                PostingFeedRepository postingFeedRepository,
-                               ResourceOfferRepository resourceOfferRepository) {
+                               ResourceOfferRepository resourceOfferRepository,
+                               ISOCategoryRepository isoCategoryRepository) {
         this.organizationRepository = organizationRepository;
         this.userService = userService;
         this.userRepository = userRepository;
@@ -54,6 +49,7 @@ public class OrganizationService {
         this.projectRepository = projectRepository;
         this.postingFeedRepository = postingFeedRepository;
         this.resourceOfferRepository = resourceOfferRepository;
+        this.isoCategoryRepository = isoCategoryRepository;
     }
 
     /**
@@ -101,7 +97,7 @@ public class OrganizationService {
      * @throws OrganizationAlreadyExistsException if an organization with that name already exists
      */
     public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, ImageDTO logo)
+                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
         throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
         Long logoId = null;
 
@@ -109,7 +105,7 @@ public class OrganizationService {
             logoId = logo.getId();
         }
 
-        return createOrganizationInformation(name, description, email, isNpo, logoId);
+        return createOrganizationInformation(name, description, email, isNpo, logoId, isoCategories);
     }
 
     /**
@@ -125,7 +121,7 @@ public class OrganizationService {
      * @throws OrganizationAlreadyExistsException
      */
     public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, Long logoId)
+                                                      Boolean isNpo, Long logoId, List<ISOCategory> isoCategories)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
@@ -140,6 +136,7 @@ public class OrganizationService {
         newOrganization.setDescription(description);
         newOrganization.setEmail(email);
         newOrganization.setIsNpo(isNpo);
+        newOrganization.setIsoCategories(isoCategories);
         if(logoId != null) {
             newOrganization.setLogo(imageRepository.findOne(logoId));
         }
@@ -222,14 +219,15 @@ public class OrganizationService {
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
      */
     public Organization update(String name, String description, String email,
-                               Boolean isNpo, ImageDTO logo, String website) throws NoSuchEntityException {
+                               Boolean isNpo, ImageDTO logo, String website, List<ISOCategory> isoCategories)
+        throws NoSuchEntityException {
         Long logoId = null;
 
         if (logo != null) {
             logoId = logo.getId();
         }
 
-        return update(name, description, email, isNpo, logoId, website);
+        return update(name, description, email, isNpo, logoId, website, isoCategories);
     }
 
     /**
@@ -242,7 +240,8 @@ public class OrganizationService {
      * @param logoId
      * @throws NoSuchOrganizationException
      */
-    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId, String website) throws NoSuchEntityException {
+    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId,
+                               String website, List<ISOCategory> isoCategories) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         if(currentOrganization==null) {
@@ -258,6 +257,7 @@ public class OrganizationService {
         currentOrganization.setIsNpo(isNpo);
         currentOrganization.setOwner(currentUser);
         currentOrganization.setWebsite(website);
+        currentOrganization.setIsoCategories(isoCategories);
         if(logoId != null) {
             currentOrganization.setLogo(imageRepository.findOne(logoId));
         }
@@ -474,5 +474,15 @@ public class OrganizationService {
         List<Organization> followers = currentUser.getFollowOrganizations();
         followers.remove(selected);
         userRepository.save(currentUser);
+    }
+
+    public Page<ISOCategory> getAllSuperCategories() {
+        return isoCategoryRepository.findBySuperCategoryIsNull(null);
+    }
+
+    public Page<ISOCategory> getSubCategoriesOf(Long superCategoryId) {
+        ISOCategory superCategory = new ISOCategory();
+        superCategory.setId(superCategoryId);
+        return isoCategoryRepository.findBySuperCategory(superCategory, null);
     }
 }

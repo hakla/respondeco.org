@@ -1,7 +1,8 @@
 package org.respondeco.respondeco;
 
 import org.respondeco.respondeco.config.Constants;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @ComponentScan(includeFilters = {
-    @ComponentScan.Filter(type = FilterType.ANNOTATION, value = CustomSerializer.class)
+    @ComponentScan.Filter(type = FilterType.ANNOTATION, value = CustomSerializer.class),
+    @ComponentScan.Filter(type = FilterType.ANNOTATION, value = CustomDeserializer.class)
 })
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
 public class Application {

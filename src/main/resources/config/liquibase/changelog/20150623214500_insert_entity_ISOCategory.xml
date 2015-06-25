@@ -30,7 +30,7 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
-            <column name="key" value="isocategory.gesellschaftliche_verantwortung_in_der_wertschoepfungskette_foerdern"/>
+            <column name="key" value="isocategory.gesellschaftliche_verantwortung"/>
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
@@ -71,7 +71,7 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
-            <column name="key" value="isocategory.grundlegende_prinzipien_und_rechte_bei_der_arbeit"/>
+            <column name="key" value="isocategory.grundlegende_prinzipien_und_rechte"/>
         </insert>
 
         <insert tableName="T_ISO_CATEGORY">
@@ -83,7 +83,7 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
-            <column name="key" value="isocategory.schutz_von_gesundheit_und_sicherheit_der_konsumenten"/>
+            <column name="key" value="isocategory.schutz_von_gesundheit_und_sicherheit"/>
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
@@ -91,7 +91,7 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
-            <column name="key" value="isocategory.kundendienst_beschwerdemanagement_und_schlichtungsverfahren"/>
+            <column name="key" value="isocategory.kundendienst_beschwerdemanagement"/>
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
@@ -124,11 +124,11 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
-            <column name="key" value="isocategory.gesundheit_und_sicherheit_am_arbeitsplatz"/>
+            <column name="key" value="isocategory.gesundheit_und_sicherheit"/>
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
-            <column name="key" value="isocategory.menschliche_entwicklung_und_schulung_am_arbeitsplatz"/>
+            <column name="key" value="isocategory.menschliche_entwicklung_und_schulung"/>
         </insert>
 
 
@@ -145,11 +145,11 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.einbindung_und_entwicklung_der_gemeinschaft')"/>
-            <column name="key" value="isocategory.schaffen_von_arbeitsplaetzen_und_berufliche_qualifizierung"/>
+            <column name="key" value="isocategory.schaffen_von_arbeitsplaetzen"/>
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.einbindung_und_entwicklung_der_gemeinschaft')"/>
-            <column name="key" value="isocategory.technologien_entwickeln_und_zugang_dazu_ermoeglichen"/>
+            <column name="key" value="isocategory.technologien_entwickeln"/>
         </insert>
 
 
@@ -166,11 +166,11 @@
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.umwelt')" />
-            <column name="key" value="isocategory.abschwaechung_des_klimawandels_und_anpassung" />
+            <column name="key" value="isocategory.abschwaechung_des_klimawandels" />
         </insert>
         <insert tableName="T_ISO_CATEGORY">
             <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.umwelt')" />
-            <column name="key" value="isocategory.umweltschutz_artenvielfalt_und_wiederherstellung_natuerlicher_lebensraeume"/>
+            <column name="key" value="isocategory.umweltschutz_artenvielfalt"/>
         </insert>
 
 

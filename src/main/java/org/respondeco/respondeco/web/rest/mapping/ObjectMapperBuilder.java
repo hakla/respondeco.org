@@ -6,9 +6,7 @@ import org.respondeco.respondeco.web.rest.parsing.FieldExpressionParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.*;
 import java.util.List;
 
 /**
@@ -36,9 +34,10 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     }
 
     private ObjectMapperImpl initializeDefaultMapper(Class<?> clazz) throws MappingException {
+        log.debug("initializing default mapper for class {}",  clazz);
+        ObjectMapperImpl mapper = new ObjectMapperImpl();
         List<Field> defaultFields = extractor.extractFields(clazz);
         List<Method> defaultMethods = extractor.extractMethods(clazz);
-        ObjectMapperImpl mapper = new ObjectMapperImpl();
         try {
             for (Field field : defaultFields) {
                 mapper.addMapping(createSimpleMapping(clazz, field));
@@ -83,8 +82,9 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
         if(AbstractAuditingEntity.class.isAssignableFrom(returnType)) {
             ObjectMapperImpl childMapper = initializeDefaultMapper(returnType);
             return new NestedFieldMapping(fieldName, field, accessor, childMapper);
-        } else if (field != null && Iterable.class.isAssignableFrom(returnType)) {
-            returnType = (Class) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+        } else if (Iterable.class.isAssignableFrom(returnType)) {
+            ParameterizedType genericReturnType = (ParameterizedType) accessor.getGenericReturnType();
+            returnType = (Class) genericReturnType.getActualTypeArguments()[0];
             ObjectMapperImpl childMapper = initializeDefaultMapper(returnType);
             return new NestedFieldMapping(fieldName, field, accessor, childMapper);
         } else {
@@ -120,7 +120,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
             Class<?> returnType = accessor.getReturnType();
 
             if (Iterable.class.isAssignableFrom(returnType)) {
-                returnType = (Class) ((ParameterizedType) util.getField(clazz, fieldName).getGenericType())
+                returnType = (Class) ((ParameterizedType) accessor.getGenericReturnType())
                     .getActualTypeArguments()[0];
             }
 

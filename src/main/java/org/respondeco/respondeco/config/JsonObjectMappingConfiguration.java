@@ -1,8 +1,10 @@
 package org.respondeco.respondeco.config;
 
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomJsonObjectMapper;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomJsonObjectMapper;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,7 @@ public class JsonObjectMappingConfiguration implements ApplicationContextAware, 
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, Object> serializers = applicationContext.getBeansWithAnnotation(CustomSerializer.class);
+        Map<String, Object> deserializers = applicationContext.getBeansWithAnnotation(CustomDeserializer.class);
 
         List<StdSerializer<?>> stdSerializers = new ArrayList<>();
         for(Object s : serializers.values()) {
@@ -57,6 +61,22 @@ public class JsonObjectMappingConfiguration implements ApplicationContextAware, 
                 stdSerializers.add((StdSerializer<?>)  s);
             }
         }
+        log.debug("Found custom serializers: {}", stdSerializers);
+
+        List<StdDeserializer<?>> stdDeserializers = new ArrayList<>();
+        for(Object d : deserializers.values()) {
+            if (AopUtils.isJdkDynamicProxy(d)) {
+                Advised advised = (Advised) d;
+                try {
+                    d = advised.getTargetSource().getTarget();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            log.debug("deserializer object: {}", d);
+            stdDeserializers.add((StdDeserializer<?>) d);
+        }
+        log.debug("Found custom deserializers: {}", stdDeserializers);
 
         log.debug("looking for MappingJackson2HttpMessageConverter");
         List<HttpMessageConverter<?>> messageConverters = requestMappingHandlerAdapter.getMessageConverters();
@@ -64,7 +84,7 @@ public class JsonObjectMappingConfiguration implements ApplicationContextAware, 
             if (messageConverter instanceof MappingJackson2HttpMessageConverter) {
                 log.debug("MappingJackson2HttpMessageConverter found, setting CustomJsonObjectMapper");
                 MappingJackson2HttpMessageConverter m = (MappingJackson2HttpMessageConverter) messageConverter;
-                m.setObjectMapper(new CustomJsonObjectMapper(stdSerializers));
+                m.setObjectMapper(new CustomJsonObjectMapper(stdSerializers, stdDeserializers));
             }
         }
 

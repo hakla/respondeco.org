@@ -10,7 +10,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

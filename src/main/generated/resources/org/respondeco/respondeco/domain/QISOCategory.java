@@ -44,6 +44,10 @@ public class QISOCategory extends EntityPathBase<ISOCategory> {
     //inherited
     public final DateTimePath<org.joda.time.DateTime> lastModifiedDate = _super.lastModifiedDate;
 
+    public final ListPath<Organization, QOrganization> organizations = this.<Organization, QOrganization>createList("organizations", Organization.class, QOrganization.class, PathInits.DIRECT2);
+
+    public final ListPath<ISOCategory, QISOCategory> subCategories = this.<ISOCategory, QISOCategory>createList("subCategories", ISOCategory.class, QISOCategory.class, PathInits.DIRECT2);
+
     public final QISOCategory superCategory;
 
     public QISOCategory(String variable) {

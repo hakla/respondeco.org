@@ -53,6 +53,7 @@ public class RESTWrapperAspect {
     public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();
+            log.debug("got value to map: {}", result);
             if(result != null) {
                 Object mapped = mapResult(result);
                 return new ResponseEntity<>(mapped, HttpStatus.OK);

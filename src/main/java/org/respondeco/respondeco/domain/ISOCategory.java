@@ -2,10 +2,12 @@ package org.respondeco.respondeco.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Created by clemens on 23/06/15.
@@ -17,11 +19,24 @@ import javax.validation.constraints.Size;
 @Setter
 public class ISOCategory extends AbstractAuditingEntity {
 
-    @OneToOne
-    private ISOCategory superCategory;
-
     @NotNull
     @Size(max = 100)
+    @DefaultReturnValue
     private String key;
+
+    @OneToMany(mappedBy = "superCategory")
+    private List<ISOCategory> subCategories;
+
+    @ManyToOne
+    @JoinColumn(name = "super_category_id")
+    private ISOCategory superCategory;
+
+    @ManyToMany
+    @JoinTable(
+        name="T_ORGANIZATION_T_ISO_CATEGORY",
+        joinColumns = {         @JoinColumn(name="ISO_CATEGORY_ID", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "ORGANIZATION_ID", referencedColumnName = "id")}
+    )
+    private List<Organization> organizations;
 
 }

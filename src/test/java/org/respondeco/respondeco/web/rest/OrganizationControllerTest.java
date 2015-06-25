@@ -266,7 +266,8 @@ public class OrganizationControllerTest {
             organizationRequestDTO.getDescription(),
             organizationRequestDTO.getEmail(),
             organizationRequestDTO.isNpo(),
-            organizationRequestDTO.getLogo());
+            organizationRequestDTO.getLogo(),
+            organizationRequestDTO.getIsoCategories());
 
 
         // Create Organization
@@ -280,13 +281,15 @@ public class OrganizationControllerTest {
             organizationRequestDTO.getDescription(),
             organizationRequestDTO.getEmail(),
             organizationRequestDTO.isNpo(),
-            (ImageDTO) null);
+            (ImageDTO) null,
+            organizationRequestDTO.getIsoCategories());
     }
 
     @Test
     public void testCreateOrganization_expectBAD_REQUEST_serviceThrowsException() throws Exception {
         doThrow(AlreadyInOrganizationException.class).when(organizationServiceMock)
-            .createOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+            .createOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null),
+                eq((List) null));
 
         // Create Organization
         restOrganizationMockMvc.perform(post("/app/rest/organizations")
