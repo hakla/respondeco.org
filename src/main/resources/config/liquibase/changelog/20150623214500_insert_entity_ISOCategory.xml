@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!--
+        Added the entity PropertyTag.
+    -->
+    <changeSet id="20150623213000" author="Clemens Puehringer">
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.organisationsfuehrung"/>
+        </insert>
+
+
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.faire_betriebs_und_geschaeftspraktiken"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
+            <column name="key" value="isocategory.korruptionsbekaempfung"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
+            <column name="key" value="isocategory.verantwortungsbewusste_politische_mitwirkung"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
+            <column name="key" value="isocategory.fairer_wettbewerb"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
+            <column name="key" value="isocategory.gesellschaftliche_verantwortung"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.faire_betriebs_und_geschaeftspraktiken')"/>
+            <column name="key" value="isocategory.eigentumsrechte_achten"/>
+        </insert>
+
+
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.menschenrechte"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.gebuehrende_sorgfalt"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.menschenrechte_in_kritischen_situationen"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.mittaeterschaft_vermeiden"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.missstaende_beseitigen"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.diskriminierung_und_schutzbeduerftige_gruppen"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.buergerliche_und_politische_rechte"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.wirtschaftliche_soziale_und_kulturelle_rechte"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.menschenrechte')"/>
+            <column name="key" value="isocategory.grundlegende_prinzipien_und_rechte"/>
+        </insert>
+
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.konsumentenanliegen"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.faire_werbe_vertriebs_und_vertragspraktiken"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.schutz_von_gesundheit_und_sicherheit"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.nachhaltiger_konsum"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.kundendienst_beschwerdemanagement"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.schutz_und_vertraulichkeit_von_kundendaten"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.sicherung_der_grundversorgung"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.konsumentenanliegen')"/>
+            <column name="key" value="isocategory.verbraucherbildung_und_sensibilisierung"/>
+        </insert>
+
+
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.arbeitspraktiken"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
+            <column name="key" value="isocategory.beschaeftigung_und_beschaeftigungsverhaeltnisse"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
+            <column name="key" value="isocategory.arbeitsbedingungen_und_sozialschutz"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
+            <column name="key" value="isocategory.sozialer_dialog"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
+            <column name="key" value="isocategory.gesundheit_und_sicherheit"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.arbeitspraktiken')"/>
+            <column name="key" value="isocategory.menschliche_entwicklung_und_schulung"/>
+        </insert>
+
+
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.einbindung_und_entwicklung_der_gemeinschaft"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.einbindung_und_entwicklung_der_gemeinschaft')"/>
+            <column name="key" value="isocategory.einbindung_der_gemeinschaft"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.einbindung_und_entwicklung_der_gemeinschaft')"/>
+            <column name="key" value="isocategory.bildung_und_kultur"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.einbindung_und_entwicklung_der_gemeinschaft')"/>
+            <column name="key" value="isocategory.schaffen_von_arbeitsplaetzen"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.einbindung_und_entwicklung_der_gemeinschaft')"/>
+            <column name="key" value="isocategory.technologien_entwickeln"/>
+        </insert>
+
+
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="key" value="isocategory.umwelt"/>
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.umwelt')" />
+            <column name="key" value="isocategory.vermeidung_der_umweltbelastung" />
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.umwelt')" />
+            <column name="key" value="isocategory.nachhaltige_nutzung_von_ressourcen" />
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.umwelt')" />
+            <column name="key" value="isocategory.abschwaechung_des_klimawandels" />
+        </insert>
+        <insert tableName="T_ISO_CATEGORY">
+            <column name="super_category_id" valueComputed="(SELECT id FROM T_ISO_CATEGORY WHERE key='isocategory.umwelt')" />
+            <column name="key" value="isocategory.umweltschutz_artenvielfalt"/>
+        </insert>
+
+
+    </changeSet>
+</databaseChangeLog>

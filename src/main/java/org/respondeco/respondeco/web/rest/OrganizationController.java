@@ -75,7 +75,8 @@ public class OrganizationController {
             newOrganization.getDescription(),
             newOrganization.getEmail(),
             newOrganization.getIsNpo(),
-            newOrganization.getLogo());
+            newOrganization.getLogo(),
+            newOrganization.getIsoCategories());
     }
 
     /**
@@ -165,7 +166,8 @@ public class OrganizationController {
             organization.getEmail(),
             organization.getIsNpo(),
             logoId,
-            organization.getWebsite());
+            organization.getWebsite(),
+            organization.getIsoCategories());
     }
 
     /**
@@ -498,6 +500,22 @@ public class OrganizationController {
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         return resourceService.getDonatedResourcesForOrganization(id, restParameters);
+    }
+
+    @RequestMapping(value = "/rest/isocategories/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RESTWrapped
+    public Object getSubCategoriesOf(@PathVariable Long id) {
+        return organizationService.getSubCategoriesOf(id);
+    }
+
+    @RequestMapping(value = "/rest/isocategories",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RESTWrapped
+    public Object getSuperCategories() {
+        return organizationService.getAllSuperCategories();
     }
 
 }

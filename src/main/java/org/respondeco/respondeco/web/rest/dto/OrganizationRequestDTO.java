@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.respondeco.respondeco.domain.ISOCategory;
 import org.respondeco.respondeco.domain.Image;
 import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.User;
@@ -35,5 +36,7 @@ public class OrganizationRequestDTO {
     private ImageDTO logo;
 
     private String website;
+
+    private List<ISOCategory> isoCategories;
 
 }

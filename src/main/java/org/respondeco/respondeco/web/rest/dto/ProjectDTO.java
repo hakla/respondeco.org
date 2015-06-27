@@ -7,8 +7,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.joda.time.LocalDate;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateDeserializer;
-import org.respondeco.respondeco.web.rest.mapping.serializer.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
