@@ -36,7 +36,7 @@
       return $rootScope._account.organization = value;
     };
     $scope.create = function() {
-      organization.npo = $scope.organization.isNpo || false;
+      organization.isNpo = $scope.organization.isNpo || false;
       organization.name = $scope.organization.name;
       organization.description = $scope.organization.description;
       organization.email = $scope.organization.email;

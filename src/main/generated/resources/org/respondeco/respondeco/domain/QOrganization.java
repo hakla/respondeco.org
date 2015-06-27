@@ -70,6 +70,8 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public final BooleanPath verified = createBoolean("verified");
 
+    public final StringPath website = createString("website");
+
     public QOrganization(String variable) {
         this(Organization.class, forVariable(variable), INITS);
     }

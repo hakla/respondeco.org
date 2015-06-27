@@ -28,10 +28,12 @@ public class OrganizationRequestDTO {
 
     private String email;
 
-    private boolean npo;
+    private Boolean isNpo;
 
     private UserDTO owner;
 
     private ImageDTO logo;
+
+    private String website;
 
 }

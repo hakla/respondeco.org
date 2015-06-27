@@ -74,7 +74,7 @@ public class OrganizationController {
             newOrganization.getName(),
             newOrganization.getDescription(),
             newOrganization.getEmail(),
-            newOrganization.isNpo(),
+            newOrganization.getIsNpo(),
             newOrganization.getLogo());
     }
 
@@ -153,14 +153,18 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object update(@RequestBody Organization organization) {
+    public Object update(@RequestBody @Valid OrganizationRequestDTO organization) {
         log.debug("REST request to update Organization : {}", organization);
+        Long logoId = null;
+        if(organization.getLogo() != null) {
+            logoId = organization.getLogo().getId();
+        }
         return organizationService.update(
             organization.getName(),
             organization.getDescription(),
             organization.getEmail(),
             organization.getIsNpo(),
-            organization.getLogo().getId(),
+            logoId,
             organization.getWebsite());
     }
 

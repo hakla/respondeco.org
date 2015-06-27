@@ -179,7 +179,7 @@ public class OrganizationControllerTest {
         organizationRequestDTO.setName(DEFAULT_ORGNAME);
         organizationRequestDTO.setDescription(DEFAULT_DESCRIPTION);
         organizationRequestDTO.setEmail(DEFAULT_EMAIL);
-        organizationRequestDTO.setNpo(DEFAULT_NPO);
+        organizationRequestDTO.setIsNpo(DEFAULT_NPO);
         organizationRequestDTO.setOwner(defaultUserDTO);
 
         postingFeed = new PostingFeed();
@@ -265,7 +265,7 @@ public class OrganizationControllerTest {
             organizationRequestDTO.getName(),
             organizationRequestDTO.getDescription(),
             organizationRequestDTO.getEmail(),
-            organizationRequestDTO.isNpo(),
+            organizationRequestDTO.getIsNpo(),
             organizationRequestDTO.getLogo());
 
 
@@ -279,7 +279,7 @@ public class OrganizationControllerTest {
             organizationRequestDTO.getName(),
             organizationRequestDTO.getDescription(),
             organizationRequestDTO.getEmail(),
-            organizationRequestDTO.isNpo(),
+            organizationRequestDTO.getIsNpo(),
             (ImageDTO) null);
     }
 
