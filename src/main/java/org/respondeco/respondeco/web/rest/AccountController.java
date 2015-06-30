@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.UserRepository;
@@ -36,6 +37,7 @@ import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing the current user's account.
@@ -89,7 +91,7 @@ public class AccountController {
         ResponseEntity<?> responseEntity;
         User user = userRepository.findByLogin(registerDTO.getEmail());
         if(user != null) {
-            if (user.isActivated() == true) {
+            if (user.isActivated()) {
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
             } else if (user.getOrganization() != null) {
                 // user was invited to join respondeco via an organization
@@ -138,18 +140,9 @@ public class AccountController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<UserDTO> getCurrent() {
-        ResponseEntity<UserDTO> responseEntity;
-        User currentUser = userService.getUserWithAuthorities();
-        if(currentUser != null) {
-            List<String> fields = Arrays.asList("id", "login", "title", "gender", "firstName", "lastName", "email",
-                "description", "langKey", "roles", "organization", "profilePicture", "invited");
-            UserDTO responseDTO = UserDTO.fromEntity(currentUser, fields);
-            responseEntity = new ResponseEntity<UserDTO>(responseDTO, HttpStatus.OK);
-        } else {
-            responseEntity = new ResponseEntity<UserDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return responseEntity;
+    @RESTWrapped
+    public Object getCurrent() {
+        return userService.getUserWithAuthorities();
     }
 
     /**
@@ -171,6 +164,7 @@ public class AccountController {
         method = RequestMethod.DELETE)
     @RolesAllowed(AuthoritiesConstants.USER)
     @Timed
+    @RESTWrapped
     public void delete() {
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser != null) {
@@ -186,12 +180,11 @@ public class AccountController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
+    @RESTWrapped
+    public Object activateAccount(@RequestParam(value = "key") String key) {
         return Optional.ofNullable(userService.activateRegistration(key))
-            .map(user -> new ResponseEntity<String>(
-                    user.getLogin(),
-                    HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            .map(user -> user.getLogin())
+            .orElse(null); // TODO: generic return value for 404
     }
 
     /**
@@ -213,12 +206,11 @@ public class AccountController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> changePassword(@RequestBody String password) {
-        if (StringUtils.isEmpty(password)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+    @RESTWrapped
+    public void changePassword(@RequestBody String password) {
+        if (StringUtils.isEmpty(password))
+            throw new OperationForbiddenException("Password cannot be empty.");
         userService.changePassword(password);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -228,12 +220,11 @@ public class AccountController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<PersistentToken>> getCurrentSessions() {
+    @RESTWrapped
+    public Object getCurrentSessions() {
         return Optional.ofNullable(userRepository.findByLogin(SecurityUtils.getCurrentLogin()))
-            .map(user -> new ResponseEntity<>(
-                persistentTokenRepository.findByUser(user),
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            .map(user -> persistentTokenRepository.findByUser(user))
+            .orElse(null); // TODO: generic return value for 404
     }
 
     /**
@@ -283,10 +274,10 @@ public class AccountController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> leaveOrganization() {
+    @RESTWrapped
+    public void leaveOrganization() {
         log.debug("REST request to leave Organization : {}");
         userService.leaveOrganization();
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -297,18 +288,10 @@ public class AccountController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<List<OrgJoinRequestDTO>> getByCurrentUser() {
+    @RESTWrapped
+    public Object getByCurrentUser() {
         log.debug("REST request to get OrgJoinRequest as User: {}");
-        List<OrgJoinRequest> orgJoinRequests = orgJoinRequestService.getOrgJoinRequestByCurrentUser();
-        ResponseEntity<List<OrgJoinRequestDTO>> entity = new ResponseEntity<>(HttpStatus.OK);
-
-        if (orgJoinRequests.isEmpty() == false) {
-            List<OrgJoinRequestDTO> dtos = new ArrayList<>();
-            orgJoinRequests.forEach(p -> dtos.add(new OrgJoinRequestDTO(p)));
-            entity = new ResponseEntity<>(dtos, HttpStatus.OK);
-        }
-
-        return entity;
+        return orgJoinRequestService.getOrgJoinRequestByCurrentUser();
     }
 
     /**
@@ -322,20 +305,14 @@ public class AccountController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> getNewsFeed(@RequestParam(required = false) Integer page,
-                                         @RequestParam(required = false) Integer pageSize) {
+    @RESTWrapped
+    public Object getNewsFeed(@RequestParam(required = false) Integer page,
+                              @RequestParam(required = false) Integer pageSize) {
         RestParameters restParameters = new RestParameters(page, pageSize);
-        ResponseEntity<PostingPaginationResponseDTO> responseEntity;
-        PostingPaginationResponseDTO responseDTO = new PostingPaginationResponseDTO();
-        List<PostingDTO> postings = new ArrayList<>();
+        List<Posting> postings = new ArrayList<>();
 
         Page<Posting> currentPage = userService.getNewsfeed(restParameters);
-        for(Posting posting : currentPage.getContent()){
-            postings.add(new PostingDTO(posting));
-        }
-        responseDTO.setTotalElements(currentPage.getTotalElements());
-        responseDTO.setPostings(postings);
-        responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        return responseEntity;
+        postings.addAll(currentPage.getContent().stream().collect(Collectors.toList()));
+        return postings;
     }
 }

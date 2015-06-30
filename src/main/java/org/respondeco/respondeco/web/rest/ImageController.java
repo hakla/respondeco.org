@@ -1,8 +1,10 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.Image;
 import org.respondeco.respondeco.repository.ImageRepository;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,20 +42,15 @@ public class ImageController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<ImageDTO> create(@RequestParam("file") MultipartFile file) {
+    @RESTWrapped
+    public Object create(@RequestParam("file") MultipartFile file) throws IOException {
         Image image = new Image();
 
-        try {
-            image.setData(file.getBytes());
-            image.setName(file.getOriginalFilename());
-        } catch (IOException e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        image.setData(file.getBytes());
+        image.setName(file.getOriginalFilename());
 
         log.debug("REST request to save Image : {}", image);
-        image = imageRepository.save(image);
-
-        return new ResponseEntity(transform(image), HttpStatus.CREATED);
+        return imageRepository.save(image).getId();
     }
 
     /**
@@ -63,15 +60,15 @@ public class ImageController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<ImageDTO> getAll() {
+    public Object getAll() {
         log.debug("REST request to get all Images");
-        List<ImageDTO> imageDTOs = new ArrayList<>();
+        List<Long> imageIds = new ArrayList<>();
 
         imageRepository.findAll().forEach((Image image) -> {
-            imageDTOs.add(transform(image));
+            imageIds.add(image.getId());
         });
 
-        return imageDTOs;
+        return imageIds;
     }
 
     /**
@@ -81,13 +78,12 @@ public class ImageController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<ImageDTO> get(@PathVariable Long id) {
+    @RESTWrapped
+    public Object get(@PathVariable Long id) {
         log.debug("REST request to get Image : {}", id);
         return Optional.ofNullable(imageRepository.findOne(id))
-            .map(image -> new ResponseEntity<>(
-                transform(image),
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            .map(image -> image.getId())
+            .orElseThrow(() -> new NoSuchEntityException("There is no image with id " + id));
     }
 
     /**
@@ -97,23 +93,19 @@ public class ImageController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Object> getPhysicalImage(HttpServletRequest request, HttpServletResponse response, @PathVariable Long id) {
+    @RESTWrapped
+    public void getPhysicalImage(HttpServletRequest request, HttpServletResponse response, @PathVariable Long id)
+        throws IOException {
+
         log.debug("REST request to get Image : {}", id);
         Image image = imageRepository.findOne(id);
 
-        if (image == null) {
-            return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-        }
+        if (image == null)
+            throw new NoSuchEntityException("There is no image with id " + id);
 
         response.setHeader("Content-Disposition", "attachment: filename=\"" + image.getName() + "\"");
-        try {
-            response.getOutputStream().write(image.getData());
-            response.getOutputStream().close();
-        } catch (IOException e) {
-            return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<Object>(HttpStatus.OK);
+        response.getOutputStream().write(image.getData());
+        response.getOutputStream().close();
     }
 
     /**
@@ -123,13 +115,10 @@ public class ImageController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    @RESTWrapped
     public void delete(@PathVariable Long id) {
         log.debug("REST request to delete Image : {}", id);
         imageRepository.delete(id);
-    }
-
-    private ImageDTO transform(Image image) {
-        return new ImageDTO(image.getId(), image.getName());
     }
 
 }
