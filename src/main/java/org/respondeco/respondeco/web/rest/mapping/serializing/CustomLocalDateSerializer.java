@@ -1,7 +1,6 @@
-package org.respondeco.respondeco.web.rest.mapping.serializer;
+package org.respondeco.respondeco.web.rest.mapping.serializing;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.joda.time.LocalDate;
@@ -12,9 +11,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * Custom Jackson serializer for displaying Joda Time dates.
+ * Custom Jackson serializing for displaying Joda Time dates.
  */
-@Component
 @CustomSerializer
 public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
 

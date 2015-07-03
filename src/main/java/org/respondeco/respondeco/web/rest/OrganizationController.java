@@ -74,8 +74,9 @@ public class OrganizationController {
             newOrganization.getName(),
             newOrganization.getDescription(),
             newOrganization.getEmail(),
-            newOrganization.isNpo(),
-            newOrganization.getLogo());
+            newOrganization.getIsNpo(),
+            newOrganization.getLogo(),
+            newOrganization.getIsoCategories());
     }
 
     /**
@@ -153,15 +154,20 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object update(@RequestBody Organization organization) {
+    public Object update(@RequestBody @Valid OrganizationRequestDTO organization) {
         log.debug("REST request to update Organization : {}", organization);
+        Long logoId = null;
+        if(organization.getLogo() != null) {
+            logoId = organization.getLogo().getId();
+        }
         return organizationService.update(
             organization.getName(),
             organization.getDescription(),
             organization.getEmail(),
             organization.getIsNpo(),
-            organization.getLogo().getId(),
-            organization.getWebsite());
+            logoId,
+            organization.getWebsite(),
+            organization.getIsoCategories());
     }
 
     /**
@@ -494,6 +500,22 @@ public class OrganizationController {
 
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
         return resourceService.getDonatedResourcesForOrganization(id, restParameters);
+    }
+
+    @RequestMapping(value = "/rest/isocategories/{id}",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RESTWrapped
+    public Object getSubCategoriesOf(@PathVariable Long id) {
+        return organizationService.getSubCategoriesOf(id);
+    }
+
+    @RequestMapping(value = "/rest/isocategories",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RESTWrapped
+    public Object getSuperCategories() {
+        return organizationService.getAllSuperCategories();
     }
 
 }

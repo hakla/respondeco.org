@@ -62,6 +62,9 @@ public class OrgJoinRequestServiceTest {
     @Mock
     private ResourceOfferRepository resourceOfferRepositoryMock;
 
+    @Mock
+    private ISOCategoryRepository isoCategoryRepository;
+
     private OrgJoinRequestService orgJoinRequestService;
 
     private User orgOwner;
@@ -85,7 +88,8 @@ public class OrgJoinRequestServiceTest {
                 projectService,
                 projectRepositoryMock,
                 postingFeedRepository,
-                resourceOfferRepositoryMock);
+                resourceOfferRepositoryMock,
+                isoCategoryRepository);
 
         defaultUser = new User();
         defaultUser.setId(2L);

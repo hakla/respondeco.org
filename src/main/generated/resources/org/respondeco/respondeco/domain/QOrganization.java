@@ -44,6 +44,8 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public final BooleanPath isNpo = createBoolean("isNpo");
 
+    public final ListPath<ISOCategory, QISOCategory> isoCategories = this.<ISOCategory, QISOCategory>createList("isoCategories", ISOCategory.class, QISOCategory.class, PathInits.DIRECT2);
+
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
@@ -69,6 +71,8 @@ public class QOrganization extends EntityPathBase<Organization> {
     public final NumberPath<Long> spokesPerson = createNumber("spokesPerson", Long.class);
 
     public final BooleanPath verified = createBoolean("verified");
+
+    public final StringPath website = createString("website");
 
     public QOrganization(String variable) {
         this(Organization.class, forVariable(variable), INITS);

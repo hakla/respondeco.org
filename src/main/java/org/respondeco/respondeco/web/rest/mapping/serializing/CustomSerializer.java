@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapping.serializer;
+package org.respondeco.respondeco.web.rest.mapping.serializing;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

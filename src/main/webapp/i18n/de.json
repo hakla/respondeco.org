@@ -807,5 +807,48 @@
                 "apiconnection": "Unser Server konnte keine Verbindung mit Xing herstellen. Bitte versuchen Sie es später nochmal!"
             }
         }
+    },
+    "isocategory": {
+        "organisationsfuehrung": "Organisationsführung",
+        "faire_betriebs_und_geschaeftspraktiken": "Faire Betriebs- und Geschäftspraktiken",
+        "korruptionsbekaempfung": "Korruptionsbekämpfung",
+        "verantwortungsbewusste_politische_mitwirkung": "Verantwortungsbewusste politische Mitwirkung",
+        "fairer_wettbewerb": "Fairer Wettbewerb",
+        "gesellschaftliche_verantwortung": "Gesellschaftliche Verantwortung in der Wertschöpfungskette fördern",
+        "eigentumsrechte_achten": "Eigentumsrechte achten",
+        "menschenrechte": "Menschenrechte",
+        "gebuehrende_sorgfalt": "Gebührende Sorgfalt",
+        "menschenrechte_in_kritischen_situationen": "Menschenrechte in kritischen Situationen",
+        "mittaeterschaft_vermeiden": "Mittäterschaft vermeiden",
+        "missstaende_beseitigen": "Missstände beseitigen",
+        "diskriminierung_und_schutzbeduerftige_gruppen": "Diskriminierung und schutzbedürftige Gruppen",
+        "buergerliche_und_politische_rechte": "Bürgerliche und politische Rechte",
+        "wirtschaftliche_soziale_und_kulturelle_rechte": "Wirtschaftliche, soziale und kulturelle Rechte",
+        "grundlegende_prinzipien_und_rechte": "Grundlegende Prinzipien und Rechte bei der Arbeit",
+        "konsumentenanliegen": "Konsumentenanliegen",
+        "faire_werbe_vertriebs_und_vertragspraktiken": "Faire Werbe-, Vertriebs- und Vertragspraktiken sowie sachliche und unverfälschte, nicht irreführende Informationen",
+        "schutz_von_gesundheit_und_sicherheit": "Schutz von Gesundheit und Sicherheit der Konsumenten",
+        "nachhaltiger_konsum": "Nachhaltiger Konsum",
+        "kundendienst_beschwerdemanagement": "Kundendienst, Beschwerdemanagement und Schlichtungsverfahren",
+        "schutz_und_vertraulichkeit_von_kundendaten": "Schutz und Vertraulichkeit von Kundendaten",
+        "sicherung_der_grundversorgung": "Sicherung der Grundversorgung",
+        "verbraucherbildung_und_sensibilisierung": "Verbraucherbildung und Sensibilisierung",
+        "arbeitspraktiken": "Arbeitspraktiken",
+        "beschaeftigung_und_beschaeftigungsverhaeltnisse": "Beschäftigung und Beschäftigungsverhältnisse (Wir wollen unsere Beschäftigungsverhältnisse fair und  flexibel gestalten, der Arbeitsaufwand kann monatlich angepasst werden)",
+        "arbeitsbedingungen_und_sozialschutz": "Arbeitsbedingungen und Sozialschutz",
+        "sozialer_dialog": "Sozialer Dialog",
+        "gesundheit_und_sicherheit": "Gesundheit und Sicherheit am Arbeitsplatz",
+        "menschliche_entwicklung_und_schulung": "Menschliche Entwicklung und Schulung am Arbeitsplatz",
+        "einbindung_und_entwicklung_der_gemeinschaft": "Einbindung und Entwicklung der Gemeinschaft",
+        "einbindung_der_gemeinschaft": "Einbindung der Gemeinschaft",
+        "bildung_und_kultur": "Bildung und Kultur",
+        "schaffen_von_arbeitsplaetzen": "Schaffen von Arbeitsplätzen und berufliche Qualifizierung",
+        "technologien_entwickeln": "Technologien entwickeln und Zugang dazu ermöglichen",
+        "umwelt": "Umwelt",
+        "vermeidung_der_umweltbelastung": "Vermeidung der Umweltbelastung",
+        "nachhaltige_nutzung_von_ressourcen": "Nachhaltige Nutzung von Ressourcen",
+        "abschwaechung_des_klimawandels": "Abschwächung des Klimawandels und Anpassung",
+        "umweltschutz_artenvielfalt": "Umweltschutz, Artenvielfalt und Wiederherstellung natürli­cher Lebensräume"
     }
+
 }

@@ -179,7 +179,7 @@ public class OrganizationControllerTest {
         organizationRequestDTO.setName(DEFAULT_ORGNAME);
         organizationRequestDTO.setDescription(DEFAULT_DESCRIPTION);
         organizationRequestDTO.setEmail(DEFAULT_EMAIL);
-        organizationRequestDTO.setNpo(DEFAULT_NPO);
+        organizationRequestDTO.setIsNpo(DEFAULT_NPO);
         organizationRequestDTO.setOwner(defaultUserDTO);
 
         postingFeed = new PostingFeed();
@@ -265,8 +265,9 @@ public class OrganizationControllerTest {
             organizationRequestDTO.getName(),
             organizationRequestDTO.getDescription(),
             organizationRequestDTO.getEmail(),
-            organizationRequestDTO.isNpo(),
-            organizationRequestDTO.getLogo());
+            organizationRequestDTO.getIsNpo(),
+            organizationRequestDTO.getLogo(),
+            organizationRequestDTO.getIsoCategories());
 
 
         // Create Organization
@@ -279,14 +280,16 @@ public class OrganizationControllerTest {
             organizationRequestDTO.getName(),
             organizationRequestDTO.getDescription(),
             organizationRequestDTO.getEmail(),
-            organizationRequestDTO.isNpo(),
-            (ImageDTO) null);
+            organizationRequestDTO.getIsNpo(),
+            (ImageDTO) null,
+            organizationRequestDTO.getIsoCategories());
     }
 
     @Test
     public void testCreateOrganization_expectBAD_REQUEST_serviceThrowsException() throws Exception {
         doThrow(AlreadyInOrganizationException.class).when(organizationServiceMock)
-            .createOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null));
+            .createOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null),
+                eq((List) null));
 
         // Create Organization
         restOrganizationMockMvc.perform(post("/app/rest/organizations")

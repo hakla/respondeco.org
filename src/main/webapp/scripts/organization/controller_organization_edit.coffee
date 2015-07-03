@@ -5,7 +5,7 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
   organization = {}
   $scope.logo = null
   $scope.organization =
-    npo: false
+    isNpo: false
     owner: false
 
   $scope.onUploadComplete = (fileItem, response) ->
@@ -33,7 +33,7 @@ respondecoApp.controller 'OrganizationControllerEdit', ($scope, $location, $rout
     $rootScope._account.organization = value
 
   $scope.create = ->
-    organization.npo = $scope.organization.isNpo or false
+    organization.isNpo = $scope.organization.isNpo or false
     organization.name = $scope.organization.name
     organization.description = $scope.organization.description
     organization.email = $scope.organization.email

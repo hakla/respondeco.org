@@ -1,9 +1,7 @@
-package org.respondeco.respondeco.web.rest.mapping.serializer;
+package org.respondeco.respondeco.web.rest.mapping.serializing;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -15,6 +13,8 @@ import java.io.IOException;
 /**
  * Created by clemens on 28/11/14.
  */
+@Component
+@CustomDeserializer
 public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
 
     private static DateTimeFormatter formatter =
