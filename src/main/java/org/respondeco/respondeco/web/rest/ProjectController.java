@@ -63,7 +63,7 @@ public class ProjectController {
     /**
      * Organization that apply new resource to a project
      * @param projectApplyDTO data to apply
-     * @return HTPP Status OK: no errors accure, BAD REQUEST: error accures
+     * @return HTTP Status OK: no errors accure, BAD REQUEST: error accures
      */
     @ApiOperation(value = "project apply", notes = "Create a project apply (org donate project)")
     @RolesAllowed(AuthoritiesConstants.USER)

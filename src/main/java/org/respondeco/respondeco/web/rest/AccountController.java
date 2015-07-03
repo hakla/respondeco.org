@@ -308,11 +308,6 @@ public class AccountController {
     @RESTWrapped
     public Object getNewsFeed(@RequestParam(required = false) Integer page,
                               @RequestParam(required = false) Integer pageSize) {
-        RestParameters restParameters = new RestParameters(page, pageSize);
-        List<Posting> postings = new ArrayList<>();
-
-        Page<Posting> currentPage = userService.getNewsfeed(restParameters);
-        postings.addAll(currentPage.getContent().stream().collect(Collectors.toList()));
-        return postings;
+        return userService.getNewsfeed(new RestParameters(page, pageSize));
     }
 }
