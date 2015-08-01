@@ -390,4 +390,17 @@ angular.module('respondecoApp')
                 };
             }
         };
+    }).directive('passwordCheck', function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, elem, attrs, ctrl) {
+                var $elem = $(attrs.passwordCheck);
+                $elem.add(elem).on("keyup", function() {
+                    scope.$apply(function() {
+                        ctrl.$setValidity('pwmatch', elem.val() === $elem.val());
+                    });
+                });
+            }
+        };
     });

@@ -44,8 +44,11 @@ respondecoApp.factory('Organization', function($resource, $http) {
     });
 });
 
+respondecoApp.factory('Register', function ($resource) {
+  return $resource('app/rest/register', {}, {});
+});
 
-respondecoApp.controller('MainController', function($scope, $location, $rootScope, Project, Organization) {
+respondecoApp.controller('MainController', function($scope, $location, $rootScope, Project, Organization, Register) {
   $scope.projects = Project.query({ pageSize: 6, fields: [ "name", "progress", "projectLogo", "propertyTags", "organization", "purpose", "resourceRequirements" ].join(",") }, function() {
     setTimeout(function() {
       App.cubeportfolio();
@@ -58,5 +61,37 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
 
   $scope.goToOrganization = function(id) {
     document.location = '/#/organization/' + id;
-  }
+  };
+
+  $scope.user = {
+    organization: "",
+    email: "",
+    password: "",
+    passwordValidation: ""
+  };
+
+  /*
+   *orgname: null
+    npo: null
+    email: null
+    password: null
+    langKey: 'de'
+   */
+
+  $scope.register = function(isValid) {
+    if (isValid) {
+      console.log($scope.user);
+      var model = {
+        orgname: $scope.user.organization,
+        npo: false,
+        password: $scope.user.password,
+        email: $scope.user.email,
+        langKey: 'de'
+      };
+      
+      Register.save(model, function() {
+        alert("Registered");
+      });
+    }
+  };
 });
