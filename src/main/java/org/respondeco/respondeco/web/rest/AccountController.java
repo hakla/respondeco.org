@@ -121,6 +121,9 @@ public class AccountController {
                 registerDTO.getPassword(), null, null, null, registerDTO.getEmail().toLowerCase(),
                 "UNSPECIFIED", null, registerDTO.getLangKey(), null);
 
+            // #90 create the organization when the user registers
+            Organization organization = organizationService.createOrganizationInformation(registerDTO.getOrganization(), null, registerDTO.getEmail(), false, null, null);
+
             final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
             String content = createHtmlContentFromTemplate(user, locale, request,
                 response, "activationEmail");
@@ -269,7 +272,7 @@ public class AccountController {
         variables.put("user", user);
         variables.put("baseUrl", request.getScheme() + "://" +   // "http" + "://
             request.getServerName() +       // "myhost"
-            ":" + request.getServerPort());
+            ":" + request.getServerPort() + "/app.html");
         IWebContext context = new SpringWebContext(request, response, servletContext,
             locale, variables, applicationContext);
         return templateEngine.process(template, context);

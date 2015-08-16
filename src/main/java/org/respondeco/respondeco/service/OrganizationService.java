@@ -96,17 +96,17 @@ public class OrganizationService {
      * @throws AlreadyInOrganizationException if the user is already in an organization
      * @throws OrganizationAlreadyExistsException if an organization with that name already exists
      */
-    public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
-        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
-        Long logoId = null;
-
-        if (logo != null) {
-            logoId = logo.getId();
-        }
-
-        return createOrganizationInformation(name, description, email, isNpo, logoId, isoCategories);
-    }
+//    public Organization createOrganizationInformation(String name, String description, String email,
+//                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
+//        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
+//        Long logoId = null;
+//
+//        if (logo != null) {
+//            logoId = logo.getId();
+//        }
+//
+//        return createOrganizationInformation(name, description, email, isNpo, logoId, isoCategories);
+//    }
 
     /**
      * {@see OrganizationService#createOrganizationInformation(String,String,String,Boolean,ImageDTO}
@@ -121,14 +121,22 @@ public class OrganizationService {
      * @throws OrganizationAlreadyExistsException
      */
     public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, Long logoId, List<ISOCategory> isoCategories)
+                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
+
         if(organizationRepository.findByName(name)!=null) {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
         if(name == null || name.length() == 0){
             throw new IllegalArgumentException(String.format("Organization name must not be empty"));
         }
+
+        Long logoId = null;
+
+        if (logo != null) {
+            logoId = logo.getId();
+        }
+
         User currentUser = userService.getUserWithAuthorities();
         Organization newOrganization = new Organization();
 
@@ -144,6 +152,7 @@ public class OrganizationService {
         if (organizationRepository.findByOwner(currentUser) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
+
         newOrganization.setOwner(currentUser);
         PostingFeed postingFeed = new PostingFeed();
         postingFeedRepository.save(postingFeed);
@@ -166,7 +175,7 @@ public class OrganizationService {
     }
 
     /**
-     * finds and returns an organization by its namne
+     * finds and returns an organization by its name
      *
      * @param orgName the name of the organization to find
      * @return the organization with the given name

@@ -71,7 +71,7 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
   };
 
   /*
-   *orgname: null
+   *organization: null
     npo: null
     email: null
     password: null
@@ -88,7 +88,7 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
         email: $scope.user.email,
         langKey: 'de'
       };
-      
+
       Register.save(model, function() {
         alert("Registered");
       });

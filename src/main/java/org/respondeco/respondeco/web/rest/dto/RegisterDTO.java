@@ -15,7 +15,7 @@ public class RegisterDTO {
 
     @NotNull
     @Size(min = 3, max = 50)
-    private String orgname;
+    private String organization;
 
     private Boolean npo;
     private String langKey;
