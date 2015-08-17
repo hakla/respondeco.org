@@ -135,30 +135,18 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                 <div class="item" style="background-image: url('images/slide1.jpg')" alt="GTA V"></div>
                 <div class="item" style="background-image: url('images/slide3.jpg')" alt="Mirror Edge"></div>
             </div>
-            <div class="fullscreenbanner-container">
-                <div class="fullscreenbanner">
-                    <ul>
-                        <!-- SLIDE 1 -->
-                        <li data-transition="fade" data-slotamount="5" data-masterspeed="700" data-title="Slide 1">
-                            <!-- MAIN IMAGE -->
-                            <!-- LAYER -->
-                            <!-- LAYERS -->
-                            <div class="tp-caption rs-caption-1 sft start" data-x="center" data-hoffset="0" data-y="100" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300">
-                                Gemeinsam verändern
-                            </div>
-                            <!-- LAYER -->
-                            <div class="tp-caption rs-caption-2 sft" data-x="center" data-hoffset="0" data-y="170" data-speed="800" data-start="1000" data-easing="Back.easeInOut" data-endspeed="300" data-captionhidden="off" style="z-index: 6">
-                                <span>Finde verantwortungsvolle Partner und nachhaltige Projekte</span>
-                                <br>
-                                <a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">So funktionierts</a>
-                                </span>
-                            </div>
-                            <div class="tp-caption rs-caption-3 sft" data-x="center" data-hoffset="0" data-y="450" data-captionhidden="off" style="z-index: 6" <div class="tp-caption rs-caption-3 sfb start" data-x="center" data-hoffset="0" data-y="370" data-speed="800" data-start="2000" data-easing="Power4.easeOut" data-endspeed="0.1" data-endeasing="Power1.easeIn">
-                                <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Projekte anzeigen</a></span>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="tp-bannertimer tp-bottom"></div>
+            <div class="banner">
+                <div class="banner-heading">
+                    Gemeinsam verändern
+                </div>
+                <div class="banner-subheading">
+                    <span>Finde verantwortungsvolle Partner und nachhaltige Projekte</span>
+                    <br>
+                    <a class="btn-u btn-brd btn-brd-hover btn-u-light explanation">So funktionierts</a>
+                    </span>
+                </div>
+                <div class="banner-show-projects">
+                    <span class="page-scroll"><a href="#portfolio" class="btn-u btn-brd btn-brd-hover btn-u-light">Projekte anzeigen</a></span>
                 </div>
             </div>
         </section>
@@ -517,8 +505,6 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <script type="text/javascript" src="unify/one-page/plugins/owl-carousel/owl.carousel.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/sky-forms-pro/skyforms/js/jquery.form.min.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/sky-forms-pro/skyforms/js/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="unify/one-page/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
-        <script type="text/javascript" src="unify/one-page/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
         <script type="text/javascript" src="unify/one-page/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
         <!-- Angular UI -->
         <script src="bower_components/ui-bootstrap/src/typeahead/typeahead.js"></script>
@@ -533,14 +519,12 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
         <script type="text/javascript" src="unify/one-page/js/forms/contact.js"></script>
         <script type="text/javascript" src="unify/one-page/js/plugins/pace-loader.js"></script>
         <script type="text/javascript" src="unify/one-page/js/plugins/owl-carousel.js"></script>
-        <script type="text/javascript" src="unify/one-page/js/plugins/revolution-slider.js"></script>
         <script type="text/javascript" src="unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js"></script>
         <script type="text/javascript">
         jQuery(document).ready(function() {
             App.init();
             LoginForm.initLoginForm();
             ContactForm.initContactForm();
-            RevolutionSlider.initRSfullScreen();
         });
         </script>
         <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>

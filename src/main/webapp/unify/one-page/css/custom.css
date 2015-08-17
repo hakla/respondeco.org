@@ -55,27 +55,27 @@ uploaded-image div,
   border-color: transparent;
 }
 
-.tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light {
+.banner-subheading .btn-u.btn-brd.btn-u-light {
   background: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.8);
 }
 
-.tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+.banner-subheading .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
   background-color: rgba(0, 0, 0, 0.2);
   border-color: transparent;
   color: #fff !important;
 }
 
-.tp-caption.rs-caption-3 .btn-brd {
+.banner-show-projects .btn-u.btn-brd {
   border: transparent;
   background-color: #54922C;
   text-transform: none;
-  padding: 20px 30px;
+  padding: 10px 30px;
   font-size: 20px;
   border-color: transparent;
 }
 
-.tp-caption.rs-caption-3 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+.banner-show-projects .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
   color: #fff !important;
   background-color: #358835;
 }
@@ -84,24 +84,64 @@ uploaded-image div,
   background-color: transparent;
 }
 
-.rs-caption-1 {
-  font-size: 54px !important;
+.banner {
+  height: 100%;
+  text-align: center;
+  position: relative;
+  padding-top: 200px;
+  color: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 200;
+  height: auto;
+  letter-spacing: normal;
+  line-height: 40px;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  text-align: center;
+  visibility: visible;
+  white-space: nowrap;
+  width: auto;
+}
+
+.banner-heading {
+  font-size: 56px !important;
   border-width: 0 !important;
   font-weight: bold;
   text-transform: uppercase;
 }
 
-.rs-caption-1::after,
-.rs-caption-1::before {
+.banner-heading::after,
+.banner-heading::before {
   content: none;
 }
 
-.rs-caption-2 .btn-brd {
+.banner-subheading {
+  font-size: 26px;
+  margin-top: 10px;
+}
+
+.banner-subheading .btn-u.btn-brd {
   font-size: 18px;
+  display: inline-block;
 }
 
-.rs-caption-2:after {
+.banner-subheading:after {
   content: none;
+}
+
+.banner-show-projects {
+  margin-top: 150px;
 }
 
 .circle {
@@ -468,24 +508,24 @@ uploaded-image div,
     padding: 10px 30px;
     border-color: transparent;
   }
-  .tp-caption.rs-caption-2 {
+  .banner-subheading {
       white-space: normal;
       font-size: 20px !important;
       padding: 0 20px !important;
       line-height: 1.2 !important;
       margin-top: 8px !important;
   }
-  .tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light {
+  .banner-subheading .btn-u.btn-brd.btn-u-light {
     background: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.8);
     padding: 10px 38px;
   }
-  .tp-caption.rs-caption-2 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+  .banner-subheading .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
     background-color: rgba(0, 0, 0, 0.2);
     border-color: transparent;
     color: #fff !important;
   }
-  .tp-caption.rs-caption-3 .btn-brd {
+  .banner-show-projects .btn-brd {
     border: transparent;
     background-color: #54922C;
     text-transform: none;
@@ -493,14 +533,14 @@ uploaded-image div,
     font-size: 20px;
     border-color: transparent;
   }
-  .tp-caption.rs-caption-3 .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
+  .banner-show-projects .btn-u.btn-brd.btn-u-light.btn-brd-hover:hover {
     color: #fff !important;
     background-color: #358835;
   }
   .one-page-header {
     background-color: transparent;
   }
-  .rs-caption-1 {
+  .banner-heading {
     font-size: 42px !important;
     border-width: 0 !important;
     font-weight: bold;
@@ -509,24 +549,24 @@ uploaded-image div,
     text-align: center;
     line-height: 1em !important;
   }
-  .rs-caption-1::after,
-  .rs-caption-1::before {
+  .banner-heading::after,
+  .banner-heading::before {
     content: none;
   }
-  .rs-caption-2 .btn-brd {
+  .banner-subheading .btn-brd {
     font-size: 20px;
   }
-  .rs-caption-2:after {
+  .banner-subheading:after {
     content: none;
   }
 }
 
 @media(max-width: 615px) {
-  .rs-caption-1 {
+  .banner-heading {
     margin-top: -70px !important;
   }
 
-  .tp-caption.rs-caption-3 {
+  .banner-show-projects {
     margin-top: 26px !important;
   }
 }
