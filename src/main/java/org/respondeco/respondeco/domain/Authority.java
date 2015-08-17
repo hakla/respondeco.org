@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -22,7 +24,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_AUTHORITY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Authority implements Serializable {
+public class Authority implements Serializable, GrantedAuthority {
 
     @NotNull
     @Size(min = 0, max = 50)
@@ -58,5 +60,10 @@ public class Authority implements Serializable {
         return "Authority{" +
                 "name='" + name + '\'' +
                 "}";
+    }
+
+    @Override
+    public String getAuthority() {
+        return name;
     }
 }
