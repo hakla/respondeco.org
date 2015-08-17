@@ -111,10 +111,13 @@ public class Organization extends AbstractAuditingEntity implements Serializable
      * @return a map whose keys represent super categories and whose values are all the sub categories
      * that this organization has associated with itself
      */
-    @DefaultReturnValue
+    @DefaultReturnValue(useName = "isoCategories")
     public List<ISOCategory> getOrderedIsoCategories() {
         List<ISOCategory> categoryList = new ArrayList<>();
         Map<ISOCategory,List<ISOCategory>> superCategoryMap = new HashMap<>();
+        if(isoCategories == null) {
+            return categoryList;
+        }
         for(ISOCategory category : isoCategories) {
             if(category.getSuperCategory() == null) {
                 if(!superCategoryMap.containsKey(category)) {
