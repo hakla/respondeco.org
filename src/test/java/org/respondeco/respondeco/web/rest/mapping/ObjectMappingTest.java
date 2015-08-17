@@ -9,6 +9,7 @@ import org.respondeco.respondeco.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ public class ObjectMappingTest {
         project.setId(3L);
         project.setName("foobar");
         project.setConcrete(true);
+        project.setResourceRequirements(new ArrayList<>());
         project.setResourceMatches(Arrays.asList(
             new ResourceMatch() {{
                 setId(100L);
@@ -39,6 +41,7 @@ public class ObjectMappingTest {
         project.setOrganization(new Organization() {{
             setName("orgName");
             setId(2L);
+            setIsoCategories(new ArrayList<>());
             setOwner(new User() {{
                 setId(1L);
                 setFirstName("orgOwnerFirstName");

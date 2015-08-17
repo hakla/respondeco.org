@@ -25,6 +25,7 @@ public class ISOCategory extends AbstractAuditingEntity {
     private String key;
 
     @OneToMany(mappedBy = "superCategory")
+    @DefaultReturnValue(maxDepth = 1)
     private List<ISOCategory> subCategories;
 
     @ManyToOne
