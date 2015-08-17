@@ -54,6 +54,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @NotNull
     @ManyToOne
     @JoinColumn(name = "owner")
+    @DefaultReturnValue
     private User owner;
 
     @OneToMany(mappedBy = "organization")

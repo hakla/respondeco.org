@@ -264,19 +264,21 @@
         pageSize: 20,
         page: 0
       }, function(response) {
-        var projects;
+        var projects, ref;
         projects = {};
         $scope.donatedResources = response;
-        response.resourceMatches.map(function(x) {
-          x.project.match = [x];
-          return x.project;
-        }).forEach(function(project) {
-          if (projects[project.id] === void 0) {
-            return projects[project.id] = project;
-          } else {
-            return projects[project.id].match = projects[project.id].match.concat(project.match);
-          }
-        });
+        if ((ref = response.resourceMatches) != null) {
+          ref.map(function(x) {
+            x.project.match = [x];
+            return x.project;
+          }).forEach(function(project) {
+            if (projects[project.id] === void 0) {
+              return projects[project.id] = project;
+            } else {
+              return projects[project.id].match = projects[project.id].match.concat(project.match);
+            }
+          });
+        }
         return $scope.projects = projects;
       });
     };

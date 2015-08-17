@@ -14,8 +14,7 @@
       },
       'getMembers': {
         method: 'GET',
-        url: 'app/rest/organizations/:id/members',
-        isArray: true
+        url: 'app/rest/organizations/:id/members'
       },
       'getOrgJoinRequests': {
         method: 'GET',

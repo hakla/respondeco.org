@@ -186,11 +186,7 @@ public class AccountController {
     @RESTWrapped
     public Object activateAccount(@RequestParam(value = "key") String key) {
         return Optional.ofNullable(userService.activateRegistration(key))
-            .map(user -> {
-
-
-                return user.getLogin();
-            })
+            .map(User::getOrganization)
             .orElse(null); // TODO: generic return value for 404
     }
 

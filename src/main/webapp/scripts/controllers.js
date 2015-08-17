@@ -250,12 +250,13 @@
     };
   });
 
-  respondecoApp.controller('ActivationController', function($scope, $routeParams, Activate) {
+  respondecoApp.controller('ActivationController', function($scope, $routeParams, $location, Activate) {
     return Activate.get({
       key: $routeParams.key
     }, (function(value, responseHeaders) {
       $scope.error = null;
-      return $scope.success = 'OK';
+      $scope.success = 'OK';
+      return $location.path("organization/" + value.id);
     }), function(httpResponse) {
       $scope.success = null;
       return $scope.error = 'ERROR';

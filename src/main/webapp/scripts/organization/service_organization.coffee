@@ -9,7 +9,6 @@ respondecoApp.factory 'Organization', ($resource) ->
     'getMembers':
       method: 'GET'
       url: 'app/rest/organizations/:id/members'
-      isArray: true
     'getOrgJoinRequests':
       method: 'GET'
       url: 'app/rest/organizations/:id/orgjoinrequests'

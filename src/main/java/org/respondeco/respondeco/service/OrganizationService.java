@@ -363,7 +363,7 @@ public class OrganizationService {
      * @return a list of users belonging to the given organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given organization does not exist
      */
-    public List<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
+    public Page<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
 
         if(organization == null) {
@@ -371,9 +371,7 @@ public class OrganizationService {
         }
 
         log.debug("Finding members of organization", organization.getName());
-        List<User> members = userRepository.findUsersByOrganizationId(orgId);
-        members.remove(organization.getOwner());
-        return members;
+        return userRepository.findUsersByOrganizationId(orgId, null);
     }
 
     /**
