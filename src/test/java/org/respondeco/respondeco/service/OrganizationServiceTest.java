@@ -309,21 +309,21 @@ public class OrganizationServiceTest {
 
     }
 
-    @Test
-    public void testGetUserByOrgId() throws Exception {
-        User user3 = new User();
-        user3.setId(3L);
-        user3.setLogin("testUser3");
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
-        defaultUser.setOrganization(organization);
-        user3.setOrganization(organization);
-        when(userRepositoryMock.findUsersByOrganizationId(organization.getId())).thenReturn(Arrays.asList(defaultUser, user3));
-        List<User> members = organizationService.getUserByOrgId(organization.getId());
-        assertTrue(members.size()==2);
-    }
+//    @Test
+//    public void testGetUserByOrgId() throws Exception {
+//        User user3 = new User();
+//        user3.setId(3L);
+//        user3.setLogin("testUser3");
+//
+//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+//        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
+//        defaultUser.setOrganization(organization);
+//        user3.setOrganization(organization);
+//        when(userRepositoryMock.findUsersByOrganizationId(organization.getId())).thenReturn(Arrays.asList(defaultUser, user3));
+//        List<User> members = organizationService.getUserByOrgId(organization.getId());
+//        assertTrue(members.size()==2);
+//    }
 
     @Test(expected = NoSuchEntityException.class)
     public void testGetUserByOrgId_shouldThrowNoSuchOrganizationException() throws Exception {

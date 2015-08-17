@@ -123,6 +123,9 @@ public class AccountController {
                 registerDTO.getPassword(), null, null, null, registerDTO.getEmail().toLowerCase(),
                 "UNSPECIFIED", null, registerDTO.getLangKey(), null);
 
+            // #90 create the organization when the user registers
+            organizationService.createOrganizationInformation(registerDTO.getOrganization(), null, registerDTO.getEmail(), false, null, null, user);
+
             final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
             String content = createHtmlContentFromTemplate(user, locale, request,
                 response, "activationEmail");
@@ -183,7 +186,7 @@ public class AccountController {
     @RESTWrapped
     public Object activateAccount(@RequestParam(value = "key") String key) {
         return Optional.ofNullable(userService.activateRegistration(key))
-            .map(user -> user.getLogin())
+            .map(User::getOrganization)
             .orElse(null); // TODO: generic return value for 404
     }
 

@@ -7,7 +7,7 @@
     organization = {};
     $scope.logo = null;
     $scope.organization = {
-      npo: false,
+      isNpo: false,
       owner: false
     };
     $scope.onUploadComplete = function(fileItem, response) {

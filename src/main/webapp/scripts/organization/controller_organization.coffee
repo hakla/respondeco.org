@@ -232,7 +232,7 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
     }, (response) ->
       projects = {}
       $scope.donatedResources = response
-      response.resourceMatches.map((x) ->
+      response.resourceMatches?.map((x) ->
         x.project.match = [x]
         x.project
       ).forEach (project) ->

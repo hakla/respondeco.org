@@ -121,7 +121,8 @@ public class OrganizationService {
      * @throws OrganizationAlreadyExistsException
      */
     public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
+                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories,
+                                                      User owner)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
 
         if(organizationRepository.findByName(name)!=null) {
@@ -137,7 +138,10 @@ public class OrganizationService {
             logoId = logo.getId();
         }
 
-        User currentUser = userService.getUserWithAuthorities();
+        if (owner == null) {
+            owner = userService.getUserWithAuthorities();
+        }
+
         Organization newOrganization = new Organization();
 
         newOrganization.setName(name);
@@ -149,16 +153,16 @@ public class OrganizationService {
             newOrganization.setLogo(imageRepository.findOne(logoId));
         }
 
-        if (organizationRepository.findByOwner(currentUser) != null) {
+        if (organizationRepository.findByOwner(owner) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
 
-        newOrganization.setOwner(currentUser);
+        newOrganization.setOwner(owner);
         PostingFeed postingFeed = new PostingFeed();
         postingFeedRepository.save(postingFeed);
         newOrganization.setPostingFeed(postingFeed);
-        currentUser.setOrganization(organizationRepository.save(newOrganization));
-        userRepository.save(currentUser);
+        owner.setOrganization(organizationRepository.save(newOrganization));
+        userRepository.save(owner);
 
         try {
             projectService.create("ip", "", false, null, null, null, null);
@@ -172,6 +176,12 @@ public class OrganizationService {
 
         log.debug("Created Information for Organization: {}", newOrganization);
         return newOrganization;
+    }
+
+    public Organization createOrganizationInformation(String name, String description, String email,
+                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
+        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
+        return createOrganizationInformation(name, description, email, isNpo, logo, isoCategories, null);
     }
 
     /**
@@ -353,7 +363,7 @@ public class OrganizationService {
      * @return a list of users belonging to the given organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given organization does not exist
      */
-    public List<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
+    public Page<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
 
         if(organization == null) {
@@ -361,9 +371,7 @@ public class OrganizationService {
         }
 
         log.debug("Finding members of organization", organization.getName());
-        List<User> members = userRepository.findUsersByOrganizationId(orgId);
-        members.remove(organization.getOwner());
-        return members;
+        return userRepository.findUsersByOrganizationId(orgId, null);
     }
 
     /**

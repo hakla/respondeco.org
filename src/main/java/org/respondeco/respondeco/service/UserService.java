@@ -22,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -74,11 +76,19 @@ public class UserService {
 
                 log.debug("Activated user: {}", user);
 
-                // Create user-password token
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
+                /*
+                 * Create authentication token
+                 *
+                 * Because the default PreAuthenticatedAuthenticationProvider checks if the given credentials are not null
+                 * (this isn't necessary because they won't be checked, no idea why they do it) we provide an empty but non-null value
+                 */
+                PreAuthenticatedAuthenticationToken token = new PreAuthenticatedAuthenticationToken(user.getLogin(), "", user.getAuthorities());
 
                 // Get request
                 ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+                // Create a session if there isn't already one
+                attr.getRequest().getSession(true);
 
                 // Set request
                 token.setDetails(new WebAuthenticationDetails(attr.getRequest()));

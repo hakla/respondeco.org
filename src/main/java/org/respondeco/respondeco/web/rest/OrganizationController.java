@@ -2,9 +2,12 @@ package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.apache.catalina.security.SecurityUtil;
 import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -38,6 +41,7 @@ public class OrganizationController {
     private OrgJoinRequestService orgJoinRequestService;
     private RatingService ratingService;
     private PostingFeedService postingFeedService;
+    private UserService userService;
 
     @Inject
     public OrganizationController(OrganizationService organizationService,
@@ -51,6 +55,7 @@ public class OrganizationController {
         this.orgJoinRequestService = orgJoinRequestService;
         this.ratingService = ratingService;
         this.postingFeedService = postingFeedService;
+        this.userService = userService;
     }
 
     /**
@@ -160,14 +165,21 @@ public class OrganizationController {
         if(organization.getLogo() != null) {
             logoId = organization.getLogo().getId();
         }
-        return organizationService.update(
-            organization.getName(),
-            organization.getDescription(),
-            organization.getEmail(),
-            organization.getIsNpo(),
-            logoId,
-            organization.getWebsite(),
-            organization.getIsoCategories());
+
+        User user = userService.getUserWithAuthorities();
+
+        if (organization.getId().equals(user.getOrganization().getId())) {
+            return organizationService.update(
+                organization.getName(),
+                organization.getDescription(),
+                organization.getEmail(),
+                organization.getIsNpo(),
+                logoId,
+                organization.getWebsite(),
+                organization.getIsoCategories());
+        }
+
+        throw new OperationForbiddenException("Cannot update another organization");
     }
 
     /**

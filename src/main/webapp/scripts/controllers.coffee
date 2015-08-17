@@ -198,10 +198,12 @@ respondecoApp.controller 'RegisterController', ($scope, $translate, Register, $l
           $scope.error = 'ERROR'
           $scope.errorUserExists = null
 
-respondecoApp.controller 'ActivationController', ($scope, $routeParams, Activate) ->
+respondecoApp.controller 'ActivationController', ($scope, $routeParams, $location, Activate) ->
   Activate.get { key: $routeParams.key }, ((value, responseHeaders) ->
     $scope.error = null
     $scope.success = 'OK'
+
+    $location.path "organization/#{value.id}"
   ), (httpResponse) ->
     $scope.success = null
     $scope.error = 'ERROR'

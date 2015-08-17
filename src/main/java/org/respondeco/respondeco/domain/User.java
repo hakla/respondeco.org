@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A user.
@@ -48,10 +49,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Size(min = 0, max = 50)
     @Column(name = "first_name", length = 50)
+    @DefaultReturnValue
     private String firstName;
 
     @Size(min = 0, max = 50)
     @Column(name = "last_name", length = 50)
+    @DefaultReturnValue
     private String lastName;
 
     @Size(min = 0, max = 100)
@@ -114,4 +117,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "ORGANIZATION_ID", referencedColumnName = "id")}
     )
     private List<Organization> followOrganizations;
+
+    @DefaultReturnValue
+    public List<String> getRoles() {
+        return authorities
+            .stream()
+            .map(Authority::getAuthority)
+            .collect(Collectors.toList());
+    }
 }

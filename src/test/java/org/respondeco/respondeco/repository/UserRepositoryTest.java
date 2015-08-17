@@ -124,17 +124,17 @@ public class UserRepositoryTest extends AbstractTransactionalJUnit4SpringContext
 
     }
 
-    @Test
-    public void testUsersByOrganizationId() {
-
-        List<User> savedUsers = userRepository.findUsersByOrganizationId(organization.getId());
-
-        assertNotNull(savedUsers);
-        assertFalse(savedUsers.contains(user));
-        assertFalse(savedUsers.contains(user2));
-        assertTrue(savedUsers.contains(user3));
-
-    }
+//    @Test
+//    public void testUsersByOrganizationId() {
+//
+//        List<User> savedUsers = userRepository.findUsersByOrganizationId(organization.getId());
+//
+//        assertNotNull(savedUsers);
+//        assertFalse(savedUsers.contains(user));
+//        assertFalse(savedUsers.contains(user2));
+//        assertTrue(savedUsers.contains(user3));
+//
+//    }
 
     @Test
     public void testFindByLogin() {
