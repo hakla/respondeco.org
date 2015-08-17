@@ -82,7 +82,7 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
     if (isValid) {
       console.log($scope.user);
       var model = {
-        orgname: $scope.user.organization,
+        organization: $scope.user.organization,
         npo: false,
         password: $scope.user.password,
         email: $scope.user.email,

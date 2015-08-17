@@ -16,9 +16,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -53,6 +60,9 @@ public class UserService {
     @Inject
     private PostingFeedRepository postingFeedRepository;
 
+    @Inject
+    AuthenticationManager authenticationManager;
+
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return Optional.ofNullable(userRepository.getUserByActivationKey(key))
@@ -61,7 +71,26 @@ public class UserService {
                 user.setActivated(true);
                 user.setActivationKey(null);
                 userRepository.save(user);
+
                 log.debug("Activated user: {}", user);
+
+                // Create user-password token
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
+
+                // Get request
+                ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+                // Set request
+                token.setDetails(new WebAuthenticationDetails(attr.getRequest()));
+
+                // Create authentication object
+                Authentication authentication = authenticationManager.authenticate(token);
+
+                // Set authentication - user should be logged in now
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                log.debug("User {} is now logged in", user);
+
                 return user;
             })
             .orElse(null);

@@ -99,10 +99,14 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
 
     @DefaultReturnValue
     public BigDecimal getProgress() {
-        return resourceRequirements
-            .stream()
-            .map(r ->
-                    new BigDecimal(1).subtract(r.getAmount().divide(r.getOriginalAmount(), RoundingMode.HALF_UP))
-            ).reduce(new BigDecimal(1), (b1, b2) -> b1.add(b2)).divide(new BigDecimal(resourceRequirements.size()), RoundingMode.HALF_UP);
+        try {
+            return resourceRequirements
+                .stream()
+                .map(r ->
+                        new BigDecimal(1).subtract(r.getAmount().divide(r.getOriginalAmount(), RoundingMode.HALF_UP))
+                ).reduce(new BigDecimal(1), (b1, b2) -> b1.add(b2)).divide(new BigDecimal(resourceRequirements.size()), RoundingMode.HALF_UP);
+        } catch (Exception e) {
+            return BigDecimal.ZERO;
+        }
     }
 }

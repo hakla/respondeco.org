@@ -121,9 +121,6 @@ public class AccountController {
                 registerDTO.getPassword(), null, null, null, registerDTO.getEmail().toLowerCase(),
                 "UNSPECIFIED", null, registerDTO.getLangKey(), null);
 
-            // #90 create the organization when the user registers
-            Organization organization = organizationService.createOrganizationInformation(registerDTO.getOrganization(), null, registerDTO.getEmail(), false, null, null);
-
             final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
             String content = createHtmlContentFromTemplate(user, locale, request,
                 response, "activationEmail");
