@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest.mapping;
 
+import org.respondeco.respondeco.domain.AbstractAuditingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +76,12 @@ public class ReflectionUtil {
     public Annotation getAnnotation(Field field, Class<? extends Annotation> annotationClass)
         throws NoSuchFieldException {
         return field.getAnnotation(annotationClass);
+    }
+
+    public FieldMapping getIdMapping(Class<AbstractAuditingEntity> clazz) throws NoSuchFieldException, NoSuchMethodException {
+        Field field = getField(clazz, "id");
+        Method accessor = getAccessor(clazz, "id");
+        return new FieldMapping("id", field, accessor);
     }
 
 }
