@@ -439,7 +439,7 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
-                        <div class="reg-block">
+                        <form name="registerForm" class="reg-block" ng-submit="register(registerForm.$valid)" novalidate>
                             <div class="reg-block-header">
                                 <h2>Registrieren <small>und engagieren</small></h2>
                                 <ul class="social-icons text-center hidden">
@@ -456,37 +456,38 @@ The data-spy and data-target are part of the built-in Bootstrap scrollspy functi
                                         <a class="rounded-x social_linkedin" data-original-title="Linkedin" href="#"></a>
                                     </li>
                                 </ul>
-                                <small>Bereits angemeldet? Klicken Sie <a class="color-green" href="page_login1.html">Anmelden</a> um sich in Ihrem Account anzumelden.</small>
+                                <small>Bereits angemeldet? Klicken Sie <a class="color-green" href="/app.html#/login">Anmelden</a> um sich in Ihrem Account anzumelden.</small>
                             </div>
                             <div class="input-group margin-bottom-20">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <input type="text" class="form-control" placeholder="Organisationsname">
+                                <input type="text" class="form-control" placeholder="Organisationsname" ng-model="user.organization" required>
                                 <span class="icon-question" popover="Geben Sie hier den Namen Ihrer Organisation ein, so wie er auf Ihrem Profil erscheinen soll" popover-placement="left" popover-trigger="mouseover mouseleave"></span>
                             </div>
                             <div class="input-group margin-bottom-20">
                                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="text" class="form-control" placeholder="Email">
+                                <input type="text" class="form-control" placeholder="Email" ng-model="user.email" required>
                             </div>
                             <div class="input-group margin-bottom-20">
                                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                                <input type="text" class="form-control" placeholder="Passwort">
+                                <input type="password" class="form-control" placeholder="Passwort" ng-model="user.password" id="password">
                             </div>
                             <div class="input-group margin-bottom-30">
                                 <span class="input-group-addon"><i class="fa fa-key"></i></span>
-                                <input type="text" class="form-control" placeholder="Passwort bestätigen">
+                                <input type="password" class="form-control" placeholder="Passwort bestätigen" ng-model="user.passwordValidation" password-check="#password" id="password2">
                             </div>
+                            <p class="alert alert-danger" ng-show="registerForm.$error.pwmatch">Passwörter stimmen nicht überein!</p>
                             <hr>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"> Ich habe die <a target="_blank" href="page_terms.html">Nutzungsbedingungen</a> gelesen
+                                    <input type="checkbox" ng-model="agb" required> Ich habe die <a target="_blank" href="page_terms.html">Nutzungsbedingungen</a> gelesen
                                 </label>
                             </div>
                             <div class="row">
                                 <div class="col-md-10 col-md-offset-1">
-                                    <button type="submit" class="btn-u btn-block">Registrieren</button>
+                                    <button type="submit" class="btn-u btn-block" ng-disabled="registerForm.$invalid">Registrieren</button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
