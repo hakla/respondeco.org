@@ -48,6 +48,7 @@ public class FieldMapping {
 
     public Object map(Object object) throws MappingException {
         try {
+            log.debug("field name: {}, field: {}, accessor: {}", fieldName, field, accessor);
             return accessor.invoke(object);
         } catch (Exception e) {
             throw new MappingException(e);
