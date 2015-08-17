@@ -475,13 +475,4 @@ public class OrganizationService {
         userRepository.save(currentUser);
     }
 
-    public Page<ISOCategory> getAllSuperCategories() {
-        return isoCategoryRepository.findBySuperCategoryIsNull(null);
-    }
-
-    public Page<ISOCategory> getSubCategoriesOf(Long superCategoryId) {
-        ISOCategory superCategory = new ISOCategory();
-        superCategory.setId(superCategoryId);
-        return isoCategoryRepository.findBySuperCategory(superCategory, null);
-    }
 }

@@ -502,20 +502,5 @@ public class OrganizationController {
         return resourceService.getDonatedResourcesForOrganization(id, restParameters);
     }
 
-    @RequestMapping(value = "/rest/isocategories/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @RESTWrapped
-    public Object getSubCategoriesOf(@PathVariable Long id) {
-        return organizationService.getSubCategoriesOf(id);
-    }
-
-    @RequestMapping(value = "/rest/isocategories",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @RESTWrapped
-    public Object getSuperCategories() {
-        return organizationService.getAllSuperCategories();
-    }
 
 }
