@@ -48,7 +48,7 @@ public class ObjectMapperImpl implements ObjectMapper {
     public Map<String, Object> map(Object object) throws MappingException {
         Map<String, Object> result = new HashMap<>();
         for(FieldMapping mapping : mappings) {
-            result.put(mapping.getFieldName(), mapping.map(object));
+            result.put(mapping.getReturnFieldName(), mapping.map(object));
         }
         return result;
     }

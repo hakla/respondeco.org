@@ -49,11 +49,11 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
         Map<Method, DefaultReturnValue> defaultMethods = extractor.extractMethods(clazz);
         try {
             for(Map.Entry<Field, DefaultReturnValue> entry : defaultFields.entrySet()) {
-                Integer submappingRestDepth = Math.min(restDepth-1, entry.getValue().maxDepth());
+                Integer submappingRestDepth = Math.min(restDepth - 1, entry.getValue().maxDepth());
                 mapper.addMapping(createMapping(clazz, entry.getKey(), submappingRestDepth));
             }
             for(Map.Entry<Method, DefaultReturnValue> entry : defaultMethods.entrySet()) {
-                Integer submappingRestDepth = Math.min(restDepth-1, entry.getValue().maxDepth());
+                Integer submappingRestDepth = Math.min(restDepth - 1, entry.getValue().maxDepth());
                 Method method = entry.getKey();
                 String fieldName = null;
                 if (method.getName().startsWith("get")) {
@@ -91,28 +91,49 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     private FieldMapping doCreateMapping(String fieldName, Field field, Method accessor, Integer restDepth)
             throws NoSuchFieldException, NoSuchMethodException {
         Class<?> returnType = accessor.getReturnType();
+        String returnFieldName = fieldName;
+        if(field != null) {
+            DefaultReturnValue annotation = field.getAnnotation(DefaultReturnValue.class);
+            if(annotation != null) {
+                if(annotation.useName().length() > 0) {
+                    returnFieldName = annotation.useName();
+                }
+            }
+        } else if(accessor != null) {
+            DefaultReturnValue annotation = accessor.getAnnotation(DefaultReturnValue.class);
+            if(annotation != null) {
+                if(annotation.useName().length() > 0) {
+                    returnFieldName = annotation.useName();
+                }
+            }
+        }
 
         if(AbstractAuditingEntity.class.isAssignableFrom(returnType)) {
             if(restDepth == 0) {
                 return util.getIdMapping((Class<AbstractAuditingEntity>) returnType);
             } else {
                 ObjectMapperImpl childMapper = initializeDefaultMapper(returnType, restDepth);
-                return new NestedFieldMapping(fieldName, field, accessor, childMapper);
+                return new NestedFieldMapping(fieldName, field, accessor, childMapper, returnFieldName);
             }
         } else if (Iterable.class.isAssignableFrom(returnType)) {
             ParameterizedType genericReturnType = (ParameterizedType) accessor.getGenericReturnType();
             returnType = (Class) genericReturnType.getActualTypeArguments()[0];
             ObjectMapperImpl childMapper;
-            if(restDepth == 0 && AbstractAuditingEntity.class.isAssignableFrom(returnType)) {
-                FieldMapping idMapping = util.getIdMapping((Class<AbstractAuditingEntity>) returnType);
-                childMapper = new ObjectMapperImpl();
-                childMapper.addMapping(idMapping);
+            if(AbstractAuditingEntity.class.isAssignableFrom(returnType)) {
+                if(restDepth == 0) {
+                    FieldMapping idMapping = util.getIdMapping((Class<AbstractAuditingEntity>) returnType);
+                    childMapper = new ObjectMapperImpl();
+                    childMapper.addMapping(idMapping);
+                    return new NestedFieldMapping(fieldName, field, accessor, childMapper, returnFieldName);
+                } else {
+                    childMapper = initializeDefaultMapper(returnType, restDepth);
+                    return new NestedFieldMapping(fieldName, field, accessor, childMapper, returnFieldName);
+                }
             } else {
-                childMapper = initializeDefaultMapper(returnType, restDepth);
+                return new FieldMapping(fieldName, field, accessor, returnFieldName);
             }
-            return new NestedFieldMapping(fieldName, field, accessor, childMapper);
         } else {
-            return new FieldMapping(fieldName, field, accessor);
+            return new FieldMapping(fieldName, field, accessor, returnFieldName);
         }
     }
 
@@ -125,7 +146,7 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
     public void onSimpleExpression(String fieldName) throws ExpressionParsingException {
         try {
             mapper.removeMapping(fieldName);
-            mapper.addMapping(createMapping(fieldName, restDepth-1));
+            mapper.addMapping(createMapping(fieldName, restDepth - 1));
         } catch (Exception e) {
             throw new ExpressionParsingException(e);
         }
@@ -146,6 +167,23 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
             Method accessor = util.getAccessor(clazz, fieldName);
             Class<?> returnType = accessor.getReturnType();
 
+            String returnFieldName = fieldName;
+            if(field != null) {
+                DefaultReturnValue annotation = field.getAnnotation(DefaultReturnValue.class);
+                if(annotation != null) {
+                    if(annotation.useName().length() > 0) {
+                        returnFieldName = annotation.useName();
+                    }
+                }
+            } else if(accessor != null) {
+                DefaultReturnValue annotation = accessor.getAnnotation(DefaultReturnValue.class);
+                if(annotation != null) {
+                    if(annotation.useName().length() > 0) {
+                        returnFieldName = annotation.useName();
+                    }
+                }
+            }
+
             if (Iterable.class.isAssignableFrom(returnType)) {
                 returnType = (Class) ((ParameterizedType) accessor.getGenericReturnType())
                     .getActualTypeArguments()[0];
@@ -154,7 +192,8 @@ public class ObjectMapperBuilder implements FieldExpressionParser.ParserListener
             ObjectMapperBuilder childBuilder = new ObjectMapperBuilder(returnType, restDepth-1);
             subParser.setParserListener(childBuilder);
             subParser.parse();
-            FieldMapping nestedMapping = new NestedFieldMapping(fieldName, field, accessor, childBuilder.getMapper());
+            FieldMapping nestedMapping = new NestedFieldMapping(fieldName, field, accessor, childBuilder.getMapper(),
+                returnFieldName);
             mapper.removeMapping(fieldName);
             mapper.addMapping(nestedMapping);
         } catch (Exception e) {
