@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * A Image.
+ * An Image.
  */
 @Entity
 @Table(name = "T_IMAGE")
