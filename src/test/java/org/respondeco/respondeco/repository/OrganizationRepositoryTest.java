@@ -41,9 +41,6 @@ public class OrganizationRepositoryTest extends AbstractTransactionalJUnit4Sprin
     private OrganizationRepository organizationRepository;
 
     @Inject
-    private ProjectRepository projectRepository;
-
-    @Inject
     private PostingFeedRepository postingFeedRepository;
 
     private User orgAdmin;

@@ -4,6 +4,7 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.service.util.Assert;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,62 +54,6 @@ public class OrganizationService {
     }
 
     /**
-     * register an organization account
-     * @param name name of the organization
-     * @param email email of the organization, used as login
-     * @param password the password for the account
-     * @param npo indicates if the organization is an npo
-     * @param langKey the default language of the account
-     * @return the created organization
-     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
-     */
-    public Organization registerOrganization(String name, String email, String password, Boolean npo, String langKey)
-        throws OrganizationAlreadyExistsException {
-        if(organizationRepository.findByName(name)!=null) {
-            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
-        }
-        User user = userService.createUserInformation(email.toLowerCase(),
-            password, null, null, null, email.toLowerCase(),
-            "UNSPECIFIED", null, langKey, null);
-        Organization organization = new Organization();
-        organization.setName(name);
-        organization.setEmail(email.toLowerCase());
-        organization.setIsNpo(npo);
-        organization.setOwner(user);
-        PostingFeed postingFeed = new PostingFeed();
-        postingFeedRepository.save(postingFeed);
-        organization.setPostingFeed(postingFeed);
-        organizationRepository.save(organization);
-        user.setOrganization(organization);
-        userRepository.save(user);
-        return organization;
-    }
-
-    /**
-     * creates a new organization with the given information
-     *
-     * @param name the name of the new organization
-     * @param description a description of the organization
-     * @param email an official email for the organization
-     * @param isNpo indicator if the organization is an NPO
-     * @param logo a logo dto with the id of the project logo
-     * @return the newly created project
-     * @throws AlreadyInOrganizationException if the user is already in an organization
-     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
-     */
-//    public Organization createOrganizationInformation(String name, String description, String email,
-//                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
-//        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
-//        Long logoId = null;
-//
-//        if (logo != null) {
-//            logoId = logo.getId();
-//        }
-//
-//        return createOrganizationInformation(name, description, email, isNpo, logoId, isoCategories);
-//    }
-
-    /**
      * {@see OrganizationService#createOrganizationInformation(String,String,String,Boolean,ImageDTO}
      *
      * @param name
@@ -120,31 +65,23 @@ public class OrganizationService {
      * @throws AlreadyInOrganizationException
      * @throws OrganizationAlreadyExistsException
      */
-
     public Organization createOrganization(Organization organization)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
+        Assert.isNew(organization);
+        Assert.isValid(organization.getName(), "organization.error.name_empty", "Organization name must not be empty");
+        Assert.notNull(organization.getOwner(), "organization.error.no_owner",
+            "No owner was specified for creating the organization");
 
-        if(organizationRepository.findByName(organization.getName())!=null) {
-            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists",
-                organization.getName()));
-        }
-        if(organization.getName() == null || organization.getName().length() == 0){
-            throw new IllegalArgumentException(String.format("Organization name must not be empty"));
-        }
-
-
-        User currentUser = userService.getUserWithAuthorities();
-
-        if (organizationRepository.findByOwner(currentUser) != null) {
-            throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
+        if(organizationRepository.findByName(organization.getName()) != null) {
+            throw new IllegalValueException("organization.error.exists",
+                String.format("Organization %s already exists", organization.getName()));
         }
 
-        organization.setOwner(currentUser);
         PostingFeed postingFeed = new PostingFeed();
         postingFeedRepository.save(postingFeed);
         organization.setPostingFeed(postingFeed);
-        currentUser.setOrganization(organizationRepository.save(organization));
-        userRepository.save(currentUser);
+        organization.getOwner().setOrganization(organizationRepository.save(organization));
+        userRepository.save(organization.getOwner());
 
         try {
             projectService.create("ip", "", false, null, null, null, null);

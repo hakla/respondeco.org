@@ -1,6 +1,8 @@
 package org.respondeco.respondeco.config;
 
 import org.respondeco.respondeco.security.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -25,6 +27,8 @@ import javax.inject.Inject;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private static Logger log = LoggerFactory.getLogger(SecurityConfiguration.class);
 
     @Inject
     private Environment env;

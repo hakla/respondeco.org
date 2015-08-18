@@ -60,26 +60,6 @@ public class OrganizationController {
     }
 
     /**
-     * POST  /rest/organizations -> Create a new organization.
-     * <p/>
-     * creates a new organization with the given information
-     *
-     * @param newOrganization the values for the new organization
-     * @return response status CREATED if the organization was created successfully, or BAD REQUEST if the request
-     * could not be executed without errors
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations",
-        method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RESTWrapped
-    public Object create(@RequestBody @Valid Organization newOrganization) {
-        log.debug("REST request to save Organization : {}", newOrganization);
-        return organizationService.createOrganization(newOrganization);
-    }
-
-    /**
      * GET  /rest/organizations -> get all the organizations.
      * <p/>
      * by default, get the first 20 of all the organizations, the returned organizations can be filtered via the

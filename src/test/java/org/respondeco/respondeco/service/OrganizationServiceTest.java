@@ -11,11 +11,16 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.testutil.DomainModel;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
@@ -31,7 +36,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
 public class OrganizationServiceTest {
 
     @Mock
@@ -68,6 +72,8 @@ public class OrganizationServiceTest {
     private Organization testOrganization;
     private ArgumentCaptor<Organization> organizationArgumentCaptor;
 
+    private DomainModel model;
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -93,17 +99,18 @@ public class OrganizationServiceTest {
         testOrganization.setFollowingUsers(new ArrayList<>());
         testOrganization.setId(1L);
 
+        model = new DomainModel();
         organizationArgumentCaptor = ArgumentCaptor.forType(Organization.class, 0, false);
     }
 
     @Test
-    public void testCreateOrganization() throws Exception {
+    public void testCreateOrganization_shouldCreateOrganization() throws Exception {
+        Organization organization = model.ORGANIZATION_NEW;
+        organization.setOwner(model.USER_WITH_ID);
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+        organizationService.createOrganization(organization);
 
-        organizationService.createOrganization(testOrganization);
-
-        verify(userServiceMock, times(1)).getUserWithAuthorities();
+        verify(organizationRepositoryMock, times(1)).findByName(organization.getName());
         verify(organizationRepositoryMock, times(1)).save(isA(Organization.class));
     }
 
@@ -196,40 +203,6 @@ public class OrganizationServiceTest {
         assertEquals(organizationPage.getTotalElements(), 2L);
         verify(organizationRepositoryMock, times(1)).findByActiveIsTrue(any(Pageable.class));
     }
-
-//    @Test
-//     public void testUpdateOrganization() throws Exception {
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//
-//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null);
-//        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-//        organizationService.update("testOrg2", "testDescription", "test@email.com", false, null);
-//
-//        when(organizationRepositoryMock.findByName("testOrg2")).thenReturn(organization);
-//        Organization organization2 = organizationService.getOrganizationByName("testOrg2");
-//
-//        verify(organizationRepositoryMock, times(2)).save(organization);
-//        assertEquals(organization2.getName(), "testOrg2");
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void testUpdateOrganization_WithEmptyName() throws Exception {
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//
-//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null);
-//        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-//        organizationService.update("", "testDescription", "test@email.com", false, null);
-//    }
-//
-//    @Test(expected = NoSuchEntityException.class)
-//    public void testUpdateOrganization_NotExisting() throws Exception {
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//
-//        organizationService.update("testOrg1", "testDescription", "test@email.com", false, null);
-//    }
 
     @Test
     public void testDeleteOrganization() throws Exception {

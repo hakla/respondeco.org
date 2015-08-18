@@ -284,23 +284,6 @@ public class OrganizationControllerTest {
     }
 
     @Test
-    public void testCreateOrganization_shouldCreateOrganization() throws Exception {
-        doReturn(model.ORGANIZATION_NEW).when(organizationServiceMock).createOrganization(any(Organization.class));
-
-        // Create Organization
-        MvcResult result = restOrganizationMockMvc.perform(post("/app/rest/organizations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(model.ORGANIZATION_NEW)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value(model.ORGANIZATION_NEW.getName()))
-            .andExpect(jsonPath("$.description").value(model.ORGANIZATION_NEW.getDescription()))
-            .andExpect(jsonPath("$.email").value(model.ORGANIZATION_NEW.getEmail()))
-            .andReturn();
-
-        verify(organizationServiceMock, times(1)).createOrganization(any(Organization.class));
-    }
-
-    @Test
     public void testCreateOrganization_expectBAD_REQUEST_serviceThrowsException() throws Exception {
         doThrow(AlreadyInOrganizationException.class).when(organizationServiceMock)
             .createOrganization(defaultOrganization);
