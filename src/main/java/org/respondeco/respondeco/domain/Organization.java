@@ -40,6 +40,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @DefaultReturnValue
     private String name;
 
+    @Size(max = 2048)
     @Column(length = 2048)
     private String description;
 

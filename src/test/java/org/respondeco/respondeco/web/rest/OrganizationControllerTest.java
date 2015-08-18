@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
@@ -24,6 +25,7 @@ import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
+import org.respondeco.respondeco.web.rest.mapping.ObjectMapperFactory;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -43,6 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -70,7 +74,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class})
-public class OrganizationControllerTest {
+public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests {
 
     private static final Logger log = LoggerFactory.getLogger(OrganizationControllerTest.class);
 
@@ -100,7 +104,6 @@ public class OrganizationControllerTest {
 
     @Mock
     private PostingFeedService postingFeedServiceMock;
-
 
     private MockMvc restOrganizationMockMvc;
 
@@ -138,9 +141,6 @@ public class OrganizationControllerTest {
     private Organization defaultOrganization;
     private OrgJoinRequest orgJoinRequest;
     private User inviteAbleUser;
-
-
-    private Organization newOrganization;
 
     private DomainModel model;
 
@@ -195,17 +195,6 @@ public class OrganizationControllerTest {
 
         postingFeed = new PostingFeed();
         postingFeed.setId(1L);
-
-        newOrganization = new Organization() {{
-            setCreatedDate(null);
-            setCreatedBy(null);
-            setLastModifiedDate(null);
-            setLastModifiedBy(null);
-            setName(DEFAULT_ORGNAME);
-            setDescription(DEFAULT_DESCRIPTION);
-            setEmail(DEFAULT_EMAIL);
-            setIsNpo(DEFAULT_NPO);
-        }};
 
         defaultOrganization = new Organization();
         defaultOrganization.setId(1l);
@@ -284,15 +273,19 @@ public class OrganizationControllerTest {
     }
 
     @Test
-    public void testCreateOrganization_expectBAD_REQUEST_serviceThrowsException() throws Exception {
-        doThrow(AlreadyInOrganizationException.class).when(organizationServiceMock)
-            .createOrganization(defaultOrganization);
-
-        // Create Organization
-        restOrganizationMockMvc.perform(post("/app/rest/organizations")
+    public void testUpdateOrganization_shouldUpdate() throws Exception {
+        when(organizationServiceMock.update(any(Organization.class))).thenReturn(model.ORGANIZATION_N1_COMPLETE);
+        model.ORGANIZATION_N1_COMPLETE.getOwner().setOrganization(null);
+        Object mapped = new ObjectMapperFactory()
+            .createMapper(Organization.class, null)
+            .map(model.ORGANIZATION_N1_COMPLETE);
+        log.debug("mapped: {}", mapped);
+        // Update Organization
+        restOrganizationMockMvc.perform(put("/app/rest/organizations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
-            .andExpect(status().isBadRequest());
+            .content(TestUtil.convertObjectToJsonBytes(mapped)))
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 
     @Test

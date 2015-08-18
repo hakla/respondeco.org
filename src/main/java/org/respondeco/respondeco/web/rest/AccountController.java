@@ -131,7 +131,7 @@ public class AccountController {
             organization.setEmail(registerDTO.getEmail());
             organization.setOwner(user);
             // #90 create the organization when the user registers
-            organizationService.createOrganization(organization);
+            organizationService.create(organization);
 
             final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
             String content = createHtmlContentFromTemplate(user, locale, request,

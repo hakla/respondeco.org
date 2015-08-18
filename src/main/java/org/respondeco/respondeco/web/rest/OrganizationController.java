@@ -60,6 +60,26 @@ public class OrganizationController {
     }
 
     /**
+     * PUT  /rest/organizations -> Update an organization.
+     * <p/>
+     * update an existing organization with the new information
+     *
+     * @param organization new values for the organization, id must not be null
+     * @return response status OK and the updated organization if the update was successful, NOT FOUND if an
+     * organization with the given id could not be found or BAD REQUEST if the update was not executed successfully
+     */
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/organizations",
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RESTWrapped
+    public Object update(@RequestBody @Valid Organization organization) {
+        log.debug("REST request to update Organization : {}", organization);
+        return organizationService.update(organization);
+    }
+
+    /**
      * GET  /rest/organizations -> get all the organizations.
      * <p/>
      * by default, get the first 20 of all the organizations, the returned organizations can be filtered via the
@@ -117,44 +137,6 @@ public class OrganizationController {
     public Object getById(@PathVariable Long id) {
         log.debug("REST request to get Organization : {}", id);
         return organizationService.getById(id);
-    }
-
-    /**
-     * PUT  /rest/organizations -> Update an organization.
-     * <p/>
-     * update an existing organization with the new information
-     *
-     * @param organization new values for the organization, id must not be null
-     * @return response status OK and the updated organization if the update was successful, NOT FOUND if an
-     * organization with the given id could not be found or BAD REQUEST if the update was not executed successfully
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RESTWrapped
-    public Object update(@RequestBody @Valid OrganizationRequestDTO organization) {
-        log.debug("REST request to update Organization : {}", organization);
-        Long logoId = null;
-        if(organization.getLogo() != null) {
-            logoId = organization.getLogo().getId();
-        }
-
-        User user = userService.getUserWithAuthorities();
-
-        if (organization.getId().equals(user.getOrganization().getId())) {
-            return organizationService.update(
-                organization.getName(),
-                organization.getDescription(),
-                organization.getEmail(),
-                organization.getIsNpo(),
-                logoId,
-                organization.getWebsite(),
-                organization.getIsoCategories());
-        }
-
-        throw new OperationForbiddenException("Cannot update another organization");
     }
 
     /**

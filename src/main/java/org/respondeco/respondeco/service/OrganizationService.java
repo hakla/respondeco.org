@@ -5,7 +5,7 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.service.util.Assert;
-import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.service.util.EntityAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,15 @@ import java.util.*;
 @Transactional
 public class OrganizationService {
 
-    private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+    private static final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+
+    private static final String ERROR_KEY = "organization.error";
+    private static final String ERROR_ORGANIZATION_EXISTS = "exists";
+    private static final String ERROR_NAME_EMPTY = "name_empty";
+    private static final String ERROR_NO_OWNER = "no_owner";
+    private static final String ERROR_NOT_OWNER = "not_owner";
+    private static final String ERROR_NAME_CHANGE_AFTER_VERIFICATION = "name_change_after_validation";
+    private static final String ERROR_NPO_CHANGE_AFTER_VERIFICATION = "npo_change_after_validation";
 
     private OrganizationRepository organizationRepository;
     private UserService userService;
@@ -31,6 +39,8 @@ public class OrganizationService {
     private PostingFeedRepository postingFeedRepository;
     private ResourceOfferRepository resourceOfferRepository;
     private ISOCategoryRepository isoCategoryRepository;
+
+    private ExceptionUtil.KeyBuilder errorKey;
 
     @Inject
     public OrganizationService(OrganizationRepository organizationRepository,
@@ -51,6 +61,8 @@ public class OrganizationService {
         this.postingFeedRepository = postingFeedRepository;
         this.resourceOfferRepository = resourceOfferRepository;
         this.isoCategoryRepository = isoCategoryRepository;
+
+        this.errorKey = new ExceptionUtil.KeyBuilder(ERROR_KEY);
     }
 
     /**
@@ -65,15 +77,16 @@ public class OrganizationService {
      * @throws AlreadyInOrganizationException
      * @throws OrganizationAlreadyExistsException
      */
-    public Organization createOrganization(Organization organization)
+    public Organization create(Organization organization)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
-        Assert.isNew(organization);
-        Assert.isValid(organization.getName(), "organization.error.name_empty", "Organization name must not be empty");
-        Assert.notNull(organization.getOwner(), "organization.error.no_owner",
+        EntityAssert.isNew(organization);
+        Assert.isValid(organization.getName(), errorKey.from(ERROR_NAME_EMPTY),
+            "Organization name must not be empty");
+        Assert.notNull(organization.getOwner(), errorKey.from(ERROR_NO_OWNER),
             "No owner was specified for creating the organization");
 
         if(organizationRepository.findByName(organization.getName()) != null) {
-            throw new IllegalValueException("organization.error.exists",
+            throw new IllegalValueException(errorKey.from(ERROR_ORGANIZATION_EXISTS),
                 String.format("Organization %s already exists", organization.getName()));
         }
 
@@ -95,6 +108,41 @@ public class OrganizationService {
 
         log.debug("Created Organization: {}", organization);
         return organization;
+    }
+
+    /**
+     * updates an organization's information with the given data
+     **/
+    public Organization update(Organization updatedOrganization) throws NoSuchEntityException {
+        Assert.notNull(updatedOrganization.getId(), "", "Id must not be null when updating organization information");
+        User currentUser = userService.getUserWithAuthorities();
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
+        //check if the organization belongs to the current user
+        if(currentOrganization == null || !currentOrganization.getId().equals(updatedOrganization.getId())) {
+            throw new OperationForbiddenException(errorKey.from(ERROR_NOT_OWNER),
+                String.format("The current user is not the owner of the organization"));
+        }
+        if(currentOrganization.getVerified()) {
+            if(!currentOrganization.getName().equals(updatedOrganization.getName())) {
+                throw new IllegalValueException(errorKey.from(ERROR_NAME_CHANGE_AFTER_VERIFICATION),
+                    "The organization name can not be changed after it was verified");
+            }
+            if(!currentOrganization.getName().equals(updatedOrganization.getName())) {
+                throw new IllegalValueException(errorKey.from(ERROR_NPO_CHANGE_AFTER_VERIFICATION),
+                    "The NPO status can not be changed after it was verified");
+            }
+        }
+
+        currentOrganization.setName(updatedOrganization.getName());
+        currentOrganization.setDescription(updatedOrganization.getDescription());
+        currentOrganization.setEmail(updatedOrganization.getEmail());
+        currentOrganization.setIsNpo(updatedOrganization.getIsNpo());
+        currentOrganization.setWebsite(updatedOrganization.getWebsite());
+        currentOrganization.setIsoCategories(updatedOrganization.getIsoCategories());
+        currentOrganization.setLogo(updatedOrganization.getLogo());
+
+        log.debug("Changing Information for Organization: {}", currentOrganization);
+        return organizationRepository.save(currentOrganization);
     }
 
     /**
@@ -138,64 +186,6 @@ public class OrganizationService {
     public Page<Organization> get(Pageable pageable) {
         log.debug("get() called");
         return organizationRepository.findByActiveIsTrue(pageable);
-    }
-
-    /**
-     * updates an organization's information with the given data
-     *
-     * @param name a new name for the organization
-     * @param description the new description for the organization
-     * @param email a new organization email
-     * @param isNpo flag if the organization is an NPO
-     * @param logo an ImageDTO containing the id of the organization's logo
-     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
-     */
-    public Organization update(String name, String description, String email,
-                               Boolean isNpo, ImageDTO logo, String website, List<ISOCategory> isoCategories)
-        throws NoSuchEntityException {
-        Long logoId = null;
-
-        if (logo != null) {
-            logoId = logo.getId();
-        }
-
-        return update(name, description, email, isNpo, logoId, website, isoCategories);
-    }
-
-    /**
-     * {@see OrganizationService#update(String,String,String,Boolean,ImageDTO}
-     *
-     * @param name
-     * @param description
-     * @param email
-     * @param isNpo
-     * @param logoId
-     * @throws NoSuchOrganizationException
-     */
-    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId,
-                               String website, List<ISOCategory> isoCategories) throws NoSuchEntityException {
-        User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
-        if(currentOrganization==null) {
-            throw new NoSuchEntityException(String.format("Organization does not exist for %s", currentUser.getLogin()));
-        }
-        if(name.length() == 0) {
-            throw new IllegalArgumentException(String.format("Name must not be an empty string"));
-        }
-
-        currentOrganization.setName(name);
-        currentOrganization.setDescription(description);
-        currentOrganization.setEmail(email);
-        currentOrganization.setIsNpo(isNpo);
-        currentOrganization.setOwner(currentUser);
-        currentOrganization.setWebsite(website);
-        currentOrganization.setIsoCategories(isoCategories);
-        if(logoId != null) {
-            currentOrganization.setLogo(imageRepository.findOne(logoId));
-        }
-
-        log.debug("Changing Information for Organization: {}", currentOrganization);
-        return organizationRepository.save(currentOrganization);
     }
 
     /**
