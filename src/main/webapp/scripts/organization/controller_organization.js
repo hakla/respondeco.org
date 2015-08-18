@@ -50,6 +50,13 @@
         description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
       }
     ];
+    $scope.map = {
+      center: {
+        latitude: 48,
+        longitude: 16
+      },
+      zoom: 8
+    };
     $scope.clearCategory = function(category) {
       $scope._subcategory = null;
       return category;
@@ -80,18 +87,18 @@
     $logo = jQuery('.profile-logo');
     $container = $logo.next('.profile-container');
     $window = jQuery(window).on('scroll', function(event) {
-      if ($window.scrollTop() > 115) {
+      if ($window.scrollTop() > 115 && $window.width() > 991) {
         $logo.css({
           position: 'fixed',
           width: $logo.outerWidth(),
           top: "53px"
         });
-        return $container.addClass('col-xs-offset-2');
+        return $container.addClass('col-xs-offset-3');
       } else {
         $logo[0].style.position = null;
         $logo[0].style.width = null;
         $logo[0].style.top = null;
-        return $container.removeClass('col-xs-offset-2');
+        return $container.removeClass('col-xs-offset-3');
       }
     });
 

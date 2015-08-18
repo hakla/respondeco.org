@@ -4,9 +4,11 @@
 <div class="container content profile">
     <div class="row">
         <!--Left Sidebar-->
-        <div class="col-md-2 md-margin-bottom-40 profile-logo">
-            <img class="img-responsive profile-img margin-bottom-20" logo logo-id="organization.logo.id">
-            <ul class="list-group sidebar-nav-v1 margin-bottom-40" id="sidebar-nav-1">
+        <div class="col-md-3 md-margin-bottom-40 profile-logo">
+            <div class="col-xs-10 col-xs-offset-1 text-center">
+                <img class="img-responsive profile-img margin-bottom-20" logo logo-id="organization.logo.id">
+            </div>
+            <ul class="list-group sidebar-nav-v1 margin-bottom-40 visible-md visible-lg" id="sidebar-nav-1">
                 <li class="list-group-item" ng-class="{active: view == 'about_us'}">
                     <a ng-click="view = 'about_us'"><i class="fa fa-home"></i> Über</a>
                 </li>
@@ -16,14 +18,18 @@
                 <li class="list-group-item" ng-class="{active: view == 'news'}">
                     <a ng-click="view = 'news'"><i class="fa fa-comments"></i> Neuigkeiten</a>
                 </li>
+                <li class="list-group-item" ng-class="{active: view == 'news'}">
+                    <a ng-click="view = 'news'"><i class="fa fa-globe"></i> Kontaktieren</a>
+                </li>
             </ul>
         </div>
         <!--End Left Sidebar-->
         <!-- Profile Content -->
-        <div class="col-md-10 profile-container">
+        <div class="col-xs-12 col-md-9 profile-container">
             <div ng-include="'template/organization/about_us.html'"></div>
             <div ng-include="'template/organization/projects.html'"></div>
             <div ng-include="'template/organization/news.html'"></div>
+            <div ng-include="'template/organization/contact.html'"></div>
         </div>
         <!-- End Profile Content -->
     </div>

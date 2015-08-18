@@ -43,6 +43,12 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
     description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
   ]
 
+  $scope.map =
+    center:
+      latitude: 48
+      longitude: 16
+    zoom: 8
+
   $scope.clearCategory = (category) ->
     $scope._subcategory = null
     category
@@ -64,7 +70,7 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   $logo = jQuery '.profile-logo'
   $container = $logo.next '.profile-container'
   $window = jQuery(window).on 'scroll', (event) ->
-    if $window.scrollTop() > 115
+    if $window.scrollTop() > 115 and $window.width() > 991
       # calculate new position
       $logo.css
         position: 'fixed'
@@ -72,7 +78,7 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
         top: "53px"
 
       # set offset on container
-      $container.addClass 'col-xs-offset-2'
+      $container.addClass 'col-xs-offset-3'
     else
       # reset fixed position
       $logo[0].style.position = null
@@ -80,7 +86,7 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
       $logo[0].style.top = null
 
       # reset offset
-      $container.removeClass 'col-xs-offset-2'
+      $container.removeClass 'col-xs-offset-3'
 
   ###
   #  Gets all active connection for the currently logged in user

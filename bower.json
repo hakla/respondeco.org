@@ -23,7 +23,7 @@
     "angular-ui-select": "",
     "ng-tags-input": "",
     "xdate": "~0.8.1",
-    "angular-google-maps": "~2.0.12",
+    "angular-google-maps": "~2.1.5",
     "moment": "~2.9.0",
     "angular-moment": "~0.9.0",
     "angular-xeditable": "~0.1.9",

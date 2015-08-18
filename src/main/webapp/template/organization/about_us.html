@@ -1,5 +1,5 @@
 <div class="profile-body first">
-    <div class="headline hover-toggle margin-bottom-30">
+    <div class="headline hover-toggle margin-bottom-10">
         <div class="pull-right on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
             <i class="icon-pencil"></i>
             <span class="hover-underline">{{'general.edit' | translate}}</span>
@@ -8,45 +8,41 @@
             <span editable-text="organization.name" e-form="editName" onaftersave="save()">{{organization.name}}</span>
         </h2>
     </div>
+    <div class="subheading margin-bottom-30">
+        <span>Wien, Österreich</span>
+        <span class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+            <span class="rating-counter">13</span>
+        </span>
+    </div>
     <div class="row margin-bottom-30">
-        <div class="col-md-6">
-            <div class="profile-blog">
-                <div class="hover-toggle">
-                    <div ng-hide="organization.email == false">
-                        <span editable-text="organization.email" e-form="editEmail" onaftersave="save()">
-                            {{organization.email || ('organization.email.placeholder' | translate) }}
-                        </span>
-                        <span class="pull-right on-hover link-style" ng-click="editEmail.$show()" ng-hide="editEmail.$visible">
-                            <i class="icon-pencil"></i> <span class="hover-underline">{{'general.edit' | translate}}</span>
-                        </span>
-                    </div>
-                    <div ng-show="organization.email == false">
-                        <span editable-text="organization.email" onaftersave="save()">
-                            {{organization.email || ('organization.email.placeholder' | translate) }}
-                        </span>
-                    </div>
-                </div>
-                <div class="display-block hover-toggle">
-                    <div ng-hide="organization.website == false">
-                        <span editable-text="organization.website" e-form="editWebsite" onaftersave="save()">
-                            {{organization.website || ('organization.website.placeholder' | translate) }}
-                        </span>
-                        <span class="pull-right on-hover link-style" ng-click="editWebsite.$show()" ng-hide="editWebsite.$visible">
-                            <i class="icon-pencil"></i> <span class="hover-underline">{{'general.edit' | translate}}</span>
-                        </span>
-                    </div>
-                    <div ng-show="organization.website == false">
-                        <span editable-text="organization.website" onaftersave="save()">
-                            {{organization.website || ('organization.website.placeholder' | translate) }}
-                        </span>
-                    </div>
-                </div>
-                <br>
-                <a href="#"><i class="rounded-x tw fa fa-twitter"></i> </a>
-                <a href="#"><i class="rounded-x fb fa fa-facebook"></i> </a>
-                <a href="#"><i class="rounded-x sk fa fa-skype"></i> </a>
-                <a href="#"><i class="rounded-x gp fa fa-google-plus"></i> </a>
-                <a href="#"><i class="rounded-x gm fa fa-envelope"></i> </a>
+        <div class="col-md-12 icon-container">
+            <div class="icon">
+                <span class="fa fa-stack fa-1x5 verified">
+                    <i class="fa fa-shield fa-stack-2x"></i>
+                    <i class="fa fa-check fa-stack-1x"></i>
+                </span>
+                <div>Verifiziert</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-cubes fa-3x"></i>
+                <div>3 Projekte</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-gift fa-3x"></i>
+                <div>13 Spenden</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-trophy fa-3x"></i>
+                <div>3 Preise</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-certificate fa-3x"></i>
+                <div>4 Zertifizierungen</div>
             </div>
         </div>
     </div>
@@ -72,7 +68,6 @@
             <div class="panel panel-profile">
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left"><i class="fa fa-mouse-pointer"></i> Hier sind wir aktiv</h2>
-                    <a href="#"><i class="fa fa-cog pull-right"></i></a>
                 </div>
                 <div class="panel-body">
                     <div ng-repeat="category in chosenCategories">

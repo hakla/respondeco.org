@@ -1262,3 +1262,94 @@ li a i {
   font-size: 14px;
   line-height: 1.2;
 }
+
+/* line 1083, ../../scss/organization.scss */
+.subheading {
+  color: #999;
+}
+/* line 1086, ../../scss/organization.scss */
+.subheading .rating {
+  display: inline-block;
+  margin-left: 12px;
+}
+/* line 1090, ../../scss/organization.scss */
+.subheading .rating .fa {
+  color: #ffb400;
+  font-size: 16px;
+  display: inline-block;
+  margin-left: -2px;
+  vertical-align: text-bottom;
+}
+/* line 1099, ../../scss/organization.scss */
+.subheading .rating .rating-counter::before {
+  content: "(";
+  margin-left: 2px;
+}
+/* line 1104, ../../scss/organization.scss */
+.subheading .rating .rating-counter::after {
+  content: ")";
+}
+
+/* icon container */
+/* line 1112, ../../scss/organization.scss */
+.icon-container {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+/* line 1116, ../../scss/organization.scss */
+.icon-container .icon {
+  float: left;
+  text-align: center;
+  color: #666;
+  margin: 0;
+  width: 120px;
+}
+/* line 1124, ../../scss/organization.scss */
+.icon-container .icon:hover .fa-cubes {
+  color: #9C7500;
+}
+/* line 1128, ../../scss/organization.scss */
+.icon-container .icon:hover .fa-gift {
+  color: #8B0000;
+}
+/* line 1132, ../../scss/organization.scss */
+.icon-container .icon:hover .fa-trophy {
+  color: #ffcc00;
+}
+/* line 1136, ../../scss/organization.scss */
+.icon-container .icon:hover .fa-certificate {
+  color: #4444cc;
+}
+/* line 1141, ../../scss/organization.scss */
+.icon-container .icon .fa {
+  color: #999;
+  transition: .2s ease color;
+}
+/* line 1146, ../../scss/organization.scss */
+.icon-container .icon .fa-1x5 {
+  font-size: 1.5em;
+}
+/* line 1151, ../../scss/organization.scss */
+.icon-container .icon .verified .fa-shield {
+  color: #ffb400;
+}
+/* line 1155, ../../scss/organization.scss */
+.icon-container .icon .verified .fa-check {
+  color: #666;
+}
+
+/* line 1162, ../../scss/organization.scss */
+.panel.panel-profile {
+  clear: left;
+  margin-bottom: 20px;
+}
+
+/* line 1167, ../../scss/organization.scss */
+.angular-google-map {
+  margin-bottom: 20px;
+}
+
+/* line 1171, ../../scss/organization.scss */
+.news-logo {
+  max-width: 80px;
+}

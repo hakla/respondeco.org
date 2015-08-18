@@ -80,6 +80,7 @@ h1 i, h2 i, h3 i, h4 i, h5 i, h6 i {
 .headline {
   display: block;
   border-bottom: 1px dotted #e4e9f0;
+  margin-bottom: 20px;
 }
 
 .headline h2 {
