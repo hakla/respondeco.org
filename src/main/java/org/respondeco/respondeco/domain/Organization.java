@@ -1,7 +1,7 @@
 package org.respondeco.respondeco.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +9,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
 import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
+import org.respondeco.respondeco.web.rest.mapping.serializing.fields.OrganizationLogoDeserializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -30,7 +31,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers", "isoCategories"})
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -39,6 +40,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @DefaultReturnValue
     private String name;
 
+    @Size(max = 2048)
     @Column(length = 2048)
     private String description;
 
@@ -51,7 +53,6 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Column(name = "is_npo")
     private Boolean isNpo;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "owner")
     @DefaultReturnValue
@@ -65,6 +66,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 
     @ManyToOne
     @JoinColumn(name = "image_id")
+    @JsonDeserialize(using = OrganizationLogoDeserializer.class)
     private Image logo;
 
     @OneToMany(mappedBy = "organization")
@@ -76,7 +78,6 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @OneToMany(mappedBy = "organization")
     private List<Project> projects;
 
-    @NotNull
     @OneToOne
     @JoinColumn(name = "postingfeed_id")
     private PostingFeed postingFeed;

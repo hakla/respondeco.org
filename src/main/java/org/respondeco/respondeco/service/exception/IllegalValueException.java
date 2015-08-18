@@ -21,4 +21,18 @@ public class IllegalValueException extends RuntimeException {
         return internationalizationKey;
     }
 
+    public ExceptionObject getObject() {
+        return new ExceptionObject(getMessage(), getInternationalizationKey());
+    }
+
+    private static class ExceptionObject {
+        private final String message;
+        private final String key;
+
+        public ExceptionObject(String message, String key) {
+            this.message = message;
+            this.key = key;
+        }
+    }
+
 }
