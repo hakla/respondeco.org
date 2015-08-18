@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter) {
-    var isOwner, mapToDTO, refreshPostings, user;
+    var $container, $logo, $window, isOwner, mapToDTO, refreshPostings, user;
     isOwner = false;
     user = void 0;
     $scope.twitterConnected = false;
@@ -56,7 +56,7 @@
     };
     $scope.currentView = function() {
       var ref;
-      $rootScope.title = ((ref = $scope.organization) != null ? ref.name : void 0) + " " + ($scope.titlesForView[$scope.view]());
+      $rootScope.title = "" + ((ref = $scope.organization) != null ? ref.name : void 0);
       return "/template/organization/" + $scope.view + ".html";
     };
     $scope.update = function(name) {
@@ -77,6 +77,23 @@
         return $scope.getConnections();
       });
     };
+    $logo = jQuery('.profile-logo');
+    $container = $logo.next('.profile-container');
+    $window = jQuery(window).on('scroll', function(event) {
+      if ($window.scrollTop() > 115) {
+        $logo.css({
+          position: 'fixed',
+          width: $logo.outerWidth(),
+          top: "53px"
+        });
+        return $container.addClass('col-xs-offset-2');
+      } else {
+        $logo[0].style.position = null;
+        $logo[0].style.width = null;
+        $logo[0].style.top = null;
+        return $container.removeClass('col-xs-offset-2');
+      }
+    });
 
     /*
      *  Gets all active connection for the currently logged in user

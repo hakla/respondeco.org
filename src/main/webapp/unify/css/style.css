@@ -16,6 +16,7 @@ body {
    color: #333; 
    font-size: 13px;
    line-height: 1.6;
+   background-color: #f9f9f9;
 }
 
 body.header-fixed-space {
@@ -57,7 +58,7 @@ a:hover {
 /*Boxed Layout
 ------------------------------------*/
 .wrapper {
-  background: #fff;
+  background: #f9f9f9;
 }
 
 .boxed-layout {

@@ -48,7 +48,7 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
     category
 
   $scope.currentView = -> 
-    $rootScope.title = "#{$scope.organization?.name} #{$scope.titlesForView[$scope.view]()}"
+    $rootScope.title = "#{$scope.organization?.name}"
     "/template/organization/#{$scope.view}.html"
 
   $scope.update = (name) ->
@@ -60,6 +60,27 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
         isOwner = user != undefined and user.login == $scope.organization.owner?.login
       $scope.getConnections()
     )
+
+  $logo = jQuery '.profile-logo'
+  $container = $logo.next '.profile-container'
+  $window = jQuery(window).on 'scroll', (event) ->
+    if $window.scrollTop() > 115
+      # calculate new position
+      $logo.css
+        position: 'fixed'
+        width: $logo.outerWidth()
+        top: "53px"
+
+      # set offset on container
+      $container.addClass 'col-xs-offset-2'
+    else
+      # reset fixed position
+      $logo[0].style.position = null
+      $logo[0].style.width = null
+      $logo[0].style.top = null
+
+      # reset offset
+      $container.removeClass 'col-xs-offset-2'
 
   ###
   #  Gets all active connection for the currently logged in user

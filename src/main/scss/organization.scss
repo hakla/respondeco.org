@@ -18,8 +18,14 @@ li a i {
 }
 
 .profile .profile-body {
+  margin-top: 30px;
   padding: 20px;
   background: #f7f7f7;
+
+  &.first {
+    margin-top: 0;
+    padding-top: 0;
+  }
 }
 
 /*Scrollbar*/
@@ -571,6 +577,15 @@ li a i {
   border-bottom: none;
 }
 
+.timeline-v2 > li img {
+  border-radius: 70px !important;
+}
+
+.timeline-v2 > li img + div {
+  margin-top: 10px;
+  color: #999;
+}
+
 /*Social Contacts v2*/
 .profile .social-contacts-v2 {
   margin-bottom: 0;
@@ -1033,5 +1048,34 @@ li a i {
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+/* Cube portfolio */
+.cbp-caption-defaultWrap.add-new-member {
+  img {
+    opacity: 0;
+  }
+
+  i.fa.fa-plus {
+    display: block;
+    font-size: 120px;
+    text-align: center;
+    padding-top: 35px;
+    margin-bottom: 35px;
+    color: #ddd;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+.cbp-caption-overlayBottomPush .cbp-l-caption-alignLeft .cbp-l-caption-body {
+  margin: 14px 16px 0;
+
+  .cbp-l-caption-title {
+    text-transform: none;
+    font-size: 14px;
+    line-height: 1.2;
   }
 }

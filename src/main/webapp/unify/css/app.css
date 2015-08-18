@@ -79,12 +79,11 @@ h1 i, h2 i, h3 i, h4 i, h5 i, h6 i {
 /*Block Headline*/
 .headline {
   display: block;
-  margin: 10px 0 25px 0;
   border-bottom: 1px dotted #e4e9f0;
 }
 
 .headline h2 {
-  font-size: 22px;
+  font-size: 32px;
 }
 
 .headline h2, 
