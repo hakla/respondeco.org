@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +112,7 @@ public class ProjectResponseDTO {
     private String name;
     private String purpose;
     private Boolean concrete;
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
     private LocalDate startDate;
     private OrganizationResponseDTO organization;
     private Long organizationId;

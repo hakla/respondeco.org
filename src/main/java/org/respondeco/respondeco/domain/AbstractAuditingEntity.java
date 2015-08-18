@@ -32,12 +32,10 @@ public abstract class AbstractAuditingEntity {
     protected Long id;
 
     @CreatedBy
-    @NotNull
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
     protected String createdBy;
 
     @CreatedDate
-    @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "created_date", nullable = false)
     protected DateTime createdDate = DateTime.now();

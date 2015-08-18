@@ -18,12 +18,15 @@ import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.PostingFeedException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.testutil.DomainModel;
 import org.respondeco.respondeco.testutil.TestUtil;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,6 +40,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
@@ -52,6 +56,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -66,6 +71,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class})
 public class OrganizationControllerTest {
+
+    private static final Logger log = LoggerFactory.getLogger(OrganizationControllerTest.class);
 
     @Mock
     private OrganizationRepository organizationRepositoryMock;
@@ -133,6 +140,10 @@ public class OrganizationControllerTest {
     private User inviteAbleUser;
 
 
+    private Organization newOrganization;
+
+    private DomainModel model;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -184,6 +195,17 @@ public class OrganizationControllerTest {
 
         postingFeed = new PostingFeed();
         postingFeed.setId(1L);
+
+        newOrganization = new Organization() {{
+            setCreatedDate(null);
+            setCreatedBy(null);
+            setLastModifiedDate(null);
+            setLastModifiedBy(null);
+            setName(DEFAULT_ORGNAME);
+            setDescription(DEFAULT_DESCRIPTION);
+            setEmail(DEFAULT_EMAIL);
+            setIsNpo(DEFAULT_NPO);
+        }};
 
         defaultOrganization = new Organization();
         defaultOrganization.setId(1l);
@@ -255,41 +277,33 @@ public class OrganizationControllerTest {
         posting.setInformation("information");
         posting.setPostingfeed(postingFeed);
 
+        model = new DomainModel();
+
         voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);
 
     }
 
     @Test
-    public void testCreateOrganization_expectOK_shouldCreateOrganization() throws Exception {
-        doReturn(defaultOrganization).when(organizationServiceMock).createOrganizationInformation(
-            organizationRequestDTO.getName(),
-            organizationRequestDTO.getDescription(),
-            organizationRequestDTO.getEmail(),
-            organizationRequestDTO.getIsNpo(),
-            organizationRequestDTO.getLogo(),
-            organizationRequestDTO.getIsoCategories());
-
+    public void testCreateOrganization_shouldCreateOrganization() throws Exception {
+        doReturn(model.ORGANIZATION_NEW).when(organizationServiceMock).createOrganization(any(Organization.class));
 
         // Create Organization
-        restOrganizationMockMvc.perform(post("/app/rest/organizations")
+        MvcResult result = restOrganizationMockMvc.perform(post("/app/rest/organizations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organizationRequestDTO)))
-            .andExpect(status().isOk());
+            .content(TestUtil.convertObjectToJsonBytes(model.ORGANIZATION_NEW)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value(model.ORGANIZATION_NEW.getName()))
+            .andExpect(jsonPath("$.description").value(model.ORGANIZATION_NEW.getDescription()))
+            .andExpect(jsonPath("$.email").value(model.ORGANIZATION_NEW.getEmail()))
+            .andReturn();
 
-        verify(organizationServiceMock, times(1)).createOrganizationInformation(
-            organizationRequestDTO.getName(),
-            organizationRequestDTO.getDescription(),
-            organizationRequestDTO.getEmail(),
-            organizationRequestDTO.getIsNpo(),
-            (ImageDTO) null,
-            organizationRequestDTO.getIsoCategories());
+        verify(organizationServiceMock, times(1)).createOrganization(any(Organization.class));
     }
 
     @Test
     public void testCreateOrganization_expectBAD_REQUEST_serviceThrowsException() throws Exception {
         doThrow(AlreadyInOrganizationException.class).when(organizationServiceMock)
-            .createOrganizationInformation(anyString(), anyString(), anyString(), anyBoolean(), eq((ImageDTO) null),
-                eq((List) null));
+            .createOrganization(defaultOrganization);
 
         // Create Organization
         restOrganizationMockMvc.perform(post("/app/rest/organizations")

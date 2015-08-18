@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.ResourceOffer;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeSerializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -102,9 +102,9 @@ public class ResourceOfferResponseDTO {
 
     private Long id;
     private String name;
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
     private LocalDate startDate;
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
     private LocalDate endDate;
     private BigDecimal amount;
     private BigDecimal originalAmount;

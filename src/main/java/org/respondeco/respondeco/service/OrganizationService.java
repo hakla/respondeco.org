@@ -120,49 +120,31 @@ public class OrganizationService {
      * @throws AlreadyInOrganizationException
      * @throws OrganizationAlreadyExistsException
      */
-    public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories,
-                                                      User owner)
+
+    public Organization createOrganization(Organization organization)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
 
-        if(organizationRepository.findByName(name)!=null) {
-            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
+        if(organizationRepository.findByName(organization.getName())!=null) {
+            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists",
+                organization.getName()));
         }
-        if(name == null || name.length() == 0){
+        if(organization.getName() == null || organization.getName().length() == 0){
             throw new IllegalArgumentException(String.format("Organization name must not be empty"));
         }
 
-        Long logoId = null;
 
-        if (logo != null) {
-            logoId = logo.getId();
-        }
+        User currentUser = userService.getUserWithAuthorities();
 
-        if (owner == null) {
-            owner = userService.getUserWithAuthorities();
-        }
-
-        Organization newOrganization = new Organization();
-
-        newOrganization.setName(name);
-        newOrganization.setDescription(description);
-        newOrganization.setEmail(email);
-        newOrganization.setIsNpo(isNpo);
-        newOrganization.setIsoCategories(isoCategories);
-        if(logoId != null) {
-            newOrganization.setLogo(imageRepository.findOne(logoId));
-        }
-
-        if (organizationRepository.findByOwner(owner) != null) {
+        if (organizationRepository.findByOwner(currentUser) != null) {
             throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
         }
 
-        newOrganization.setOwner(owner);
+        organization.setOwner(currentUser);
         PostingFeed postingFeed = new PostingFeed();
         postingFeedRepository.save(postingFeed);
-        newOrganization.setPostingFeed(postingFeed);
-        owner.setOrganization(organizationRepository.save(newOrganization));
-        userRepository.save(owner);
+        organization.setPostingFeed(postingFeed);
+        currentUser.setOrganization(organizationRepository.save(organization));
+        userRepository.save(currentUser);
 
         try {
             projectService.create("ip", "", false, null, null, null, null);
@@ -174,14 +156,8 @@ public class OrganizationService {
             e.printStackTrace();
         }
 
-        log.debug("Created Information for Organization: {}", newOrganization);
-        return newOrganization;
-    }
-
-    public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
-        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
-        return createOrganizationInformation(name, description, email, isNpo, logo, isoCategories, null);
+        log.debug("Created Organization: {}", organization);
+        return organization;
     }
 
     /**

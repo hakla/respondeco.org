@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.apache.catalina.security.SecurityUtil;
 import org.respondeco.respondeco.aop.RESTWrapped;
@@ -73,15 +74,9 @@ public class OrganizationController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object create(@RequestBody @Valid OrganizationRequestDTO newOrganization) {
+    public Object create(@RequestBody @Valid Organization newOrganization) {
         log.debug("REST request to save Organization : {}", newOrganization);
-        return organizationService.createOrganizationInformation(
-            newOrganization.getName(),
-            newOrganization.getDescription(),
-            newOrganization.getEmail(),
-            newOrganization.getIsNpo(),
-            newOrganization.getLogo(),
-            newOrganization.getIsoCategories());
+        return organizationService.createOrganization(newOrganization);
     }
 
     /**

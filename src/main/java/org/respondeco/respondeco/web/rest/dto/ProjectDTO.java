@@ -7,8 +7,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.joda.time.LocalDate;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateDeserializer;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeSerializer;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -41,8 +41,8 @@ public class ProjectDTO {
     private Boolean concrete = false;
 
     @ApiModelProperty(value = "The start date of the project (only needed if concrete is set to true")
-    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateTypeDeserializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
     private LocalDate startDate;
 
     @ApiModelProperty(value = "A list of strings used as property tags")
