@@ -119,7 +119,7 @@ public class OrganizationServiceTest {
         organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, 1L, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testCreateOrganization_NameMustNotBeEmpty() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -294,7 +294,7 @@ public class OrganizationServiceTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testDeleteMember_shouldThrowOperationForbiddenException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);

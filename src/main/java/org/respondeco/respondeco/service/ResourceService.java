@@ -459,10 +459,10 @@ public class ResourceService {
      * @param id resourceOffer id
      * @return ResourceOffer
      */
-    public ResourceOffer getOfferById(Long id) throws GeneralResourceException {
+    public ResourceOffer getOfferById(Long id) throws NoSuchEntityException {
         ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
-        if (resourceOffer.isActive() == false) {
-            throw new GeneralResourceException("resource with given id is not active");
+        if (!resourceOffer.isActive()) {
+            throw new NoSuchEntityException("resource with given id is not active");
         }
 
         return resourceOffer;
@@ -473,23 +473,27 @@ public class ResourceService {
      * @param resourceOfferId id of the claimed resourceoffer
      * @param resourceRequirementId id of the resourcerequirement, where the resourceoffer is used.
      * @return created ResourceMatch for the claimed ResourceOffer
-     * @throws IllegalValueException
-     * @throws MatchAlreadyExistsException
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
-        throws IllegalValueException, MatchAlreadyExistsException {
+        throws IllegalValueException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
         ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(resourceOfferId);
         if(resourceOffer == null) {
-            throw new IllegalValueException("no resourceoffer with id {} found", resourceOfferId.toString());
+            throw new IllegalValueException(
+                "resource.errors.offernotfound",
+                String.format("No resource offer with id %s found", resourceOfferId.toString())
+            );
         }
 
         Organization organization = resourceOffer.getOrganization();
 
         if(organization == null) {
-            throw new IllegalValueException("no organization for resourceoffer {} found", resourceOffer.toString());
+            throw new IllegalValueException(
+                "resource.errors.offer.noorganization",
+                String.format("No organization for resource offer %s found", resourceOffer.toString())
+            );
         }
 
         //check for authorization
@@ -497,23 +501,32 @@ public class ResourceService {
 
         ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(resourceRequirementId);
         if(resourceRequirement == null) {
-            throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirementId.toString());
+            throw new IllegalValueException(
+                "resource.errors.norequirement",
+                String.format("no resourceRequirement with id %s found", resourceRequirementId.toString())
+            );
         }
 
         Project project = resourceRequirement.getProject();
         if(project == null) {
-            throw new IllegalValueException("no project for resourceRequirement {} found", resourceRequirement.toString());
+            throw new IllegalValueException(
+                "resource.errors.norequirementproject",
+                String.format("No project for resourceRequirement %s found", resourceRequirement.toString())
+            );
         }
 
         if(project.getOrganization().getId().equals(organization.getId())) {
-            throw new IllegalValueException("resource.claim.error.ownresource", "cannot claim own resourceoffer" + resourceOffer.toString());
+            throw new IllegalValueException(
+                "resource.errors.claimownres",
+                "cannot claim own resource offer " + resourceOffer.toString()
+            );
         }
 
         List<ResourceMatch> result = resourceMatchRepository
             .findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(resourceOffer,
             resourceRequirement, organization, project);
 
-        if(result.isEmpty() == true) {
+        if(result.isEmpty()) {
             resourceMatch.setResourceOffer(resourceOffer);
             resourceMatch.setResourceRequirement(resourceRequirement);
             resourceMatch.setOrganization(organization);
@@ -522,7 +535,7 @@ public class ResourceService {
 
             resourceMatchRepository.save(resourceMatch);
         } else {
-            throw new MatchAlreadyExistsException("resource.claim.error.matchexists", "match already exists");
+            throw new IllegalValueException("resource.errors.matchexists", "match already exists");
         }
 
         return resourceMatch;
@@ -545,7 +558,7 @@ public class ResourceService {
         }
 
         //has to be the owner of the project's organization or the project manager
-        if(user.equals(organization.getOwner()) == false) {
+        if(!user.equals(organization.getOwner())) {
             throw new OperationForbiddenException("user needs to be the owner of the organization");
         }
     }
@@ -587,7 +600,7 @@ public class ResourceService {
         // set the accepted flag
         resourceMatch.setAccepted(accept);
 
-        if(accept == true) {
+        if(accept) {
             ResourceOffer offer = resourceMatch.getResourceOffer();
             if(offer == null) {
                 throw new IllegalValueException("resourcematch.error.noresourceofferfound", "resourcematch has no resourceoffer: "+ resourceMatch);
@@ -689,20 +702,20 @@ public class ResourceService {
         // Check if user authorized
         ensureUserIsPartOfOrganisation(organization);
 
-        if(hasData.isEmpty() == false){
-            throw new IllegalValueException("resourcematch.error.projectapply.offeralreadyexists", "Current offer has already been donated before");
+        if(!hasData.isEmpty()){
+            throw new OperationForbiddenException("resourcematch.error.projectapply.offeralreadyexists", "Current offer has already been donated before");
         }
 
         if(organization == project.getOrganization()){
-            throw new IllegalValueException("resourcematch.error.projectapply.ownproject", "Organization cannot offer resources to own project");
+            throw new OperationForbiddenException("resourcematch.error.projectapply.ownproject", "Organization cannot offer resources to own project");
         }
         //,check if we need new apply
-        if(resourceRequirement.getAmount().equals(BigDecimal.ZERO) == true){
-            throw new IllegalValueException("resourcematch.error.projectapply.requestfulfilled", "Requirements are already fulfilled");
+        if(resourceRequirement.getAmount().equals(BigDecimal.ZERO)){
+            throw new OperationForbiddenException("resourcematch.error.projectapply.requestfulfilled", "Requirements are already fulfilled");
         }
 
-        if(resourceOffer.getAmount().equals(BigDecimal.ZERO) == true){
-            throw new IllegalValueException("resourcematch.error.projectapply.offerdepleted", "Current Offer already depleted");
+        if(resourceOffer.getAmount().equals(BigDecimal.ZERO)){
+            throw new OperationForbiddenException("resourcematch.error.projectapply.offerdepleted", "Current offer already depleted");
         }
 
         BigDecimal amount;

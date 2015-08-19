@@ -127,7 +127,7 @@ public class OrganizationService {
             throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
         }
         if(name == null || name.length() == 0){
-            throw new IllegalArgumentException(String.format("Organization name must not be empty"));
+            throw new IllegalValueException("organization.error.nameempty", "Organization name must not be empty");
         }
         User currentUser = userService.getUserWithAuthorities();
         Organization newOrganization = new Organization();
@@ -244,11 +244,11 @@ public class OrganizationService {
                                String website, List<ISOCategory> isoCategories) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
-        if(currentOrganization==null) {
+        if (null == currentOrganization) {
             throw new NoSuchEntityException(String.format("Organization does not exist for %s", currentUser.getLogin()));
         }
         if(name.length() == 0) {
-            throw new IllegalArgumentException(String.format("Name must not be an empty string"));
+            throw new IllegalValueException("organization.error.nameempty", "Name must not be an empty string");
         }
 
         currentOrganization.setName(name);
@@ -287,7 +287,7 @@ public class OrganizationService {
         userRepository.save(owner);
         if(currentOrganization.getProjects() != null) {
             for (Project project : currentOrganization.getProjects()) {
-                if (project.getSuccessful() == false) {
+                if (!project.getSuccessful()) {
                     project.setActive(false);
                     projectRepository.save(project);
                 }

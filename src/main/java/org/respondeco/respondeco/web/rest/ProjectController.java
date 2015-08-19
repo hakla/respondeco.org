@@ -63,7 +63,7 @@ public class ProjectController {
     /**
      * Organization that apply new resource to a project
      * @param projectApplyDTO data to apply
-     * @return HTTP Status OK: no errors accure, BAD REQUEST: error accures
+     * @return HTTP Status OK: no errors occur, BAD REQUEST: error accures
      */
     @ApiOperation(value = "project apply", notes = "Create a project apply (org donate project)")
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -71,29 +71,28 @@ public class ProjectController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> projectApplyOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
+    @RESTWrapped
+    public Object projectApplyOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
         log.debug("REST request to projectApplyOffer with dto: {}", projectApplyDTO);
-        ResponseEntity<?> responseEntity;
-        try {
-            ResourceMatch resourceMatch = resourceService.createProjectApplyOffer(
-                projectApplyDTO.getResourceOfferId(),
-                projectApplyDTO.getResourceRequirementId(),
-                projectApplyDTO.getOrganizationId(),
-                projectApplyDTO.getProjectId()
-            );
-
-            log.debug("Resource Match: {}", resourceMatch);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            log.error("Could not save Project apply: {}", projectApplyDTO, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (IllegalValueException e){
-            log.error("Could not save Project apply: {}", projectApplyDTO, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        }
-
-        return responseEntity;
+        ResourceMatch resourceMatch = resourceService.createProjectApplyOffer(
+            projectApplyDTO.getResourceOfferId(),
+            projectApplyDTO.getResourceRequirementId(),
+            projectApplyDTO.getOrganizationId(),
+            projectApplyDTO.getProjectId()
+        );
+        log.debug("Resource Match: {}", resourceMatch);
+//        try {
+//
+//        } catch (ResourceNotFoundException e) {
+//            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+//            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }catch (IllegalValueException e){
+//            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+//            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+//        }
+//
+//        return responseEntity;
+        return resourceMatch;
     }
 
      /**

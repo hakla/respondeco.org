@@ -240,7 +240,7 @@ public class ResourceServiceTest {
                 return tag;
             }).when(resourceTagRepositoryMock).save(isA(tagCl));
         } else {
-            when(resourceTagRepositoryMock.save(isA(tagCl))).thenThrow(new IllegalArgumentException());
+            when(resourceTagRepositoryMock.save(isA(tagCl))).thenThrow(new IllegalValueException("", ""));
         }
     }
 

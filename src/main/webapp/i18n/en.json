@@ -565,7 +565,8 @@
             "nosuchorganization": "There does not exist a organization with given id",
             "alreadyExists": "You can only be owner of one organization",
             "alreadyInOrganization": "You are already in an organization, therefore you can not create a new one",
-            "notverified": "Your organization is not verified yet!"
+            "notverified": "Your organization is not verified yet!",
+            "nameempty": "Organization name must not be empty"
         },
         "verify": {
             "verify": "Verification",
@@ -695,7 +696,15 @@
         "errors": {
             "notfound": "The resource doesn't exist",
             "general": "Ups, an error has occured. The last operation could not be performed",
-            "searcherror": "Data could not be read from server!"
+            "searcherror": "Data could not be read from server!",
+            "notagname": "No name for resource tag defined",
+            "multipletags" : "This formula can only be used with one tag!",
+            "offernotfound": "No resource offer with this id found",
+            "offer.noorganization": "No organization found for this resource offer",
+            "norequirement": "No resource requirement with this id found",
+            "norequirementproject": "No project found for resource requirement",
+            "claimownres": "You cannot claim your own resource offer",
+            "matchexists": "resources already matched"
         }
     },
     "nearProjects": {
@@ -718,7 +727,12 @@
     "orgJoinRequest": {
         "pending": "Pending Invitations",
         "accept": "Accept",
-        "openInvitations": "Open Invitations"
+        "openInvitations": "Open Invitations",
+        "error": {
+            "usermismatch": "User does not match user of OrgJoinRequest",
+            "notowner": "Current user is not owner of organization",
+            "pendinginvitation": "User has an open invitation to join organization"
+        }
     },
     "posting": {
         "showmore": "Show more",

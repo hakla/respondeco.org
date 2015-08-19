@@ -102,7 +102,7 @@ public class TextMessageControllerTest {
     }
 
     /**
-     * test if BAD REQUEST is returned if the service throws an IllegalArgumentException
+     * test if BAD REQUEST is returned if the service throws an IllegalValueException
      */
     @Test
     public void testPOST_expectBAD_REQUEST_serviceThrowsIllegalArgumentException() throws Exception {

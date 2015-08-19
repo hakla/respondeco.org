@@ -3,6 +3,7 @@ package org.respondeco.respondeco.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.TextMessage;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.TextMessageRepository;
@@ -58,21 +59,13 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid TextMessageRequestDTO textMessageRequestDTO) {
+    @RESTWrapped
+    public Object create(@RequestBody @Valid TextMessageRequestDTO textMessageRequestDTO) {
         log.debug("REST request to save TextMessage : {}", textMessageRequestDTO);
-        ResponseEntity<?> responseEntity;
-        try {
-            textMessageService.createTextMessage(textMessageRequestDTO.getReceiver().getId(),
-                textMessageRequestDTO.getContent());
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (NoSuchEntityException e) {
-            log.error("could not save text TextMessage", e);
-            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalValueException e) {
-            log.error("could not save text TextMessage", e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+        return textMessageService.createTextMessage(
+            textMessageRequestDTO.getReceiver().getId(),
+            textMessageRequestDTO.getContent()
+        );
     }
 
     /**
@@ -85,7 +78,8 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public List<TextMessageResponseDTO> getAllForCurrentUser() {
+    @RESTWrapped
+    public List<TextMessageResponseDTO> /* KEEP TYPE ??? */ getAllForCurrentUser() {
         log.debug("REST request to get all TextMessages for current user");
         return textMessageService.getTextMessagesForCurrentUser();
     }
@@ -100,17 +94,10 @@ public class TextMessageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    @RESTWrapped
+    public void delete(@PathVariable Long id) {
         log.debug("REST request to delete TextMessage : {}", id);
-        ResponseEntity<?> responseEntity;
-        try {
-            textMessageService.deleteTextMessage(id);
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalValueException e) {
-            log.error("could not delete text TextMessage", e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+        textMessageService.deleteTextMessage(id);
     }
 
     /**
@@ -122,10 +109,9 @@ public class TextMessageController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<Long> getCountOfNewMessages() {
-        ResponseEntity<Long> responseEntity;
-
-        return new ResponseEntity<>(textMessageService.countNewMessages(userService.getUserWithAuthorities()), HttpStatus.OK);
+    @RESTWrapped
+    public Object getCountOfNewMessages() {
+        return textMessageService.countNewMessages(userService.getUserWithAuthorities());
     }
 
     /**
@@ -138,16 +124,9 @@ public class TextMessageController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity setRead(@PathVariable Long id) {
-        ResponseEntity responseEntity = new ResponseEntity<>(HttpStatus.OK);
-
-        try {
-            textMessageService.setRead(id);
-        } catch (Exception e) {
-            responseEntity = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
-        return responseEntity;
+    @RESTWrapped
+    public void setRead(@PathVariable Long id) {
+        textMessageService.setRead(id);
     }
 
 }
