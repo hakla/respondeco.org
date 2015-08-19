@@ -1,26 +1,31 @@
 <div class="profile-body first">
-    <div class="headline hover-toggle margin-bottom-10">
-        <div class="pull-right on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
-            <i class="icon-pencil"></i>
-            <span class="hover-underline">{{'general.edit' | translate}}</span>
-        </div>
-        <h2>
-            <span editable-text="organization.name" e-form="editName" onaftersave="save()">{{organization.name}}</span>
-        </h2>
-    </div>
-    <div class="subheading margin-bottom-30">
-        <span>Wien, Österreich</span>
-        <span class="rating">
+    <div class="row margin-bottom-30">
+        <div class="col-md-3 profile-logo">
+            <div class="col-xs-6 col-xs-offset-3 text-center">
+                <img class="img-responsive profile-img margin-bottom-10" logo logo-id="organization.logo.id">
+            </div>
+            <div class="headline hover-toggle margin-bottom-10">
+                <div class="pull-right hidden on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
+                    <i class="icon-pencil"></i>
+                    <span class="hover-underline">{{'general.edit' | translate}}</span>
+                </div>
+                <h2>
+                    <span editable-text="organization.name" e-form="editName" onaftersave="save()">{{organization.name}}</span>
+                </h2>
+            </div>
+            <div class="subheading margin-bottom-30">
+                <span>Wien, Österreich</span>
+                <span class="rating">
             <i class="fa fa-star"></i>
             <i class="fa fa-star"></i>
             <i class="fa fa-star"></i>
             <i class="fa fa-star"></i>
             <i class="fa fa-star-half-o"></i>
             <span class="rating-counter">13</span>
-        </span>
-    </div>
-    <div class="row margin-bottom-30">
-        <div class="col-md-12 icon-container">
+                </span>
+            </div>
+        </div>
+        <div class="col-md-9 icon-container text-center">
             <div class="icon">
                 <span class="fa fa-stack fa-1x5 verified">
                     <i class="fa fa-shield fa-stack-2x"></i>
@@ -38,11 +43,7 @@
             </div>
             <div class="icon">
                 <i class="fa fa-trophy fa-3x"></i>
-                <div>3 Preise</div>
-            </div>
-            <div class="icon">
-                <i class="fa fa-certificate fa-3x"></i>
-                <div>4 Zertifizierungen</div>
+                <div>7 Auszeichnungen</div>
             </div>
         </div>
     </div>
@@ -96,6 +97,62 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row hidden">
         <div class="col-md-12">
             <div class="panel panel-profile">
                 <div class="panel-heading overflow-h">

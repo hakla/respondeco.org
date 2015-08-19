@@ -1298,58 +1298,59 @@ li a i {
 }
 /* line 1116, ../../scss/organization.scss */
 .icon-container .icon {
-  float: left;
+  display: inline-block;
   text-align: center;
   color: #666;
   margin: 0;
   width: 120px;
+  margin: 20px 10px;
 }
-/* line 1124, ../../scss/organization.scss */
+/* line 1125, ../../scss/organization.scss */
 .icon-container .icon:hover .fa-cubes {
   color: #9C7500;
 }
-/* line 1128, ../../scss/organization.scss */
+/* line 1129, ../../scss/organization.scss */
 .icon-container .icon:hover .fa-gift {
   color: #8B0000;
 }
-/* line 1132, ../../scss/organization.scss */
+/* line 1133, ../../scss/organization.scss */
 .icon-container .icon:hover .fa-trophy {
   color: #ffcc00;
 }
-/* line 1136, ../../scss/organization.scss */
+/* line 1137, ../../scss/organization.scss */
 .icon-container .icon:hover .fa-certificate {
   color: #4444cc;
 }
-/* line 1141, ../../scss/organization.scss */
+/* line 1142, ../../scss/organization.scss */
 .icon-container .icon .fa {
   color: #999;
   transition: .2s ease color;
 }
-/* line 1146, ../../scss/organization.scss */
+/* line 1147, ../../scss/organization.scss */
 .icon-container .icon .fa-1x5 {
   font-size: 1.5em;
 }
-/* line 1151, ../../scss/organization.scss */
+/* line 1152, ../../scss/organization.scss */
 .icon-container .icon .verified .fa-shield {
   color: #ffb400;
 }
-/* line 1155, ../../scss/organization.scss */
+/* line 1156, ../../scss/organization.scss */
 .icon-container .icon .verified .fa-check {
   color: #666;
 }
 
-/* line 1162, ../../scss/organization.scss */
+/* line 1163, ../../scss/organization.scss */
 .panel.panel-profile {
   clear: left;
   margin-bottom: 20px;
 }
 
-/* line 1167, ../../scss/organization.scss */
+/* line 1168, ../../scss/organization.scss */
 .angular-google-map {
   margin-bottom: 20px;
 }
 
-/* line 1171, ../../scss/organization.scss */
+/* line 1172, ../../scss/organization.scss */
 .news-logo {
   max-width: 80px;
 }

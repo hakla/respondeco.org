@@ -705,3 +705,17 @@ uploaded-image div, [uploaded-image] div {
   position: relative;
   z-index: 1;
 }
+
+/* line 735, ../../scss/main.scss */
+.subheader .navbar.navbar-default {
+  border: none;
+  border-bottom: 1px solid #e7e7e7;
+}
+/* line 739, ../../scss/main.scss */
+.subheader .navbar.navbar-default .logo {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  left: -25px;
+  top: 8px;
+}

@@ -15,16 +15,16 @@
         scrollByPage: false,
         mediaQueries: [{
             width: 1100,
-            cols: 4
+            cols: 8
         }, {
             width: 800,
-            cols: 4
+            cols: 8
         }, {
             width: 500,
-            cols: 4
+            cols: 12
         }, {
             width: 320,
-            cols: 2
+            cols: 1
         }],
         defaultFilter: '*',
         animationType: 'rotateSides',

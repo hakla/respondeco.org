@@ -1114,11 +1114,12 @@ li a i {
   margin-bottom: 40px;
 
   .icon {
-    float: left;
+    display: inline-block;
     text-align: center;
     color: #666;
     margin: 0;
     width: 120px;
+    margin: 20px 10px;
 
     &:hover {
       .fa-cubes {
