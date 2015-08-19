@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.respondeco.respondeco.domain.AbstractAuditingEntity;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
@@ -14,9 +15,12 @@ import org.respondeco.respondeco.web.rest.mapping.ObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +35,7 @@ import java.util.Map;
  */
 
 @Aspect
+@Order(Ordered.LOWEST_PRECEDENCE)
 @Setter
 public class RESTWrapperAspect {
 
@@ -61,6 +66,7 @@ public class RESTWrapperAspect {
 
     @Around("publicMethod() && wrappedMethod() || wrappedClass()")
     public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.debug("current transaction: {}", TransactionAspectSupport.currentTransactionStatus());
         return handleInvocation(new Invocation() {
             @Override
             public Object invoke() throws Throwable {
@@ -77,29 +83,31 @@ public class RESTWrapperAspect {
         });
     }
 
-    public Object handleInvocation(Invocation invocation) {
+    public Object handleInvocation(Invocation invocation) throws Throwable {
         try {
             Object result = invocation.invoke();
             HttpStatus returnStatus = invocation.getReturnStatus();
             log.debug("got value to map: {}", result);
             if(result != null) {
                 Object mapped = mapResult(result);
-                log.debug("mapped: {}", mapped);
                 return new ResponseEntity<>(mapped, returnStatus);
             } else {
                 return new ResponseEntity<>(returnStatus);
             }
         } catch (NoSuchEntityException e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(e.getObject(), HttpStatus.NOT_FOUND);
         } catch (OperationForbiddenException e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(e.getObject(), HttpStatus.FORBIDDEN);
         } catch (IllegalValueException e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new ResponseEntity<>(e.getObject(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Throwable t) {
-            log.debug("throwable: {}", t);
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            IllegalValueException.ExceptionObject exceptionObject =
+                new IllegalValueException.ExceptionObject(null, e.getMessage());
+            return new ResponseEntity<>(exceptionObject, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -110,8 +118,10 @@ public class RESTWrapperAspect {
         }
         if (object instanceof Page) {
             return mapPage((Page) object, fields);
-        } else {
+        } else if(object instanceof AbstractAuditingEntity) {
             return mapObject(object, fields);
+        } else {
+            return object;
         }
     }
 

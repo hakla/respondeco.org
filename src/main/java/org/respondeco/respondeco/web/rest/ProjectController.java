@@ -32,8 +32,8 @@ import java.util.List;
  *
  * This REST-Controller handles all requests for /rest/projects
  */
-@RestController
 @Transactional
+@RestController
 @RequestMapping("/app")
 public class ProjectController {
 
@@ -93,7 +93,7 @@ public class ProjectController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     @RESTWrapped
-    public Object update(@RequestBody @Valid Project project) {
+    public Object update(@RequestBody Project project) {
         log.error("REST request to update Project : {}", project);
         return projectService.update(project);
     }

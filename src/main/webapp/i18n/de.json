@@ -718,7 +718,14 @@
             "isEssential": "Notwendig",
             "tableheader": "Benötigte Ressourcen",
             "name": "Name",
-            "amount": "Menge"
+            "amount": "Menge",
+            "error": {
+                "no_entity": "Eine Resourcenanforderung mit angegebener id konnte nicht gefunden werden",
+                "no_permission": "Sie haben keine Berechtigung um auf diese Resource zuzugreifen",
+                "existing_matches": "Für die Resourcenanforderung bestehen bereits Zuordnungen",
+                "original_amount_modification": "Die Originalmenge kann nachträglich nicht mehr verändert werden",
+                "amount_modification": "Die Menge an benötigten Resourcen kann nicht direkt verändert werden"
+            }
         },
         "offer": {
             "title": "Ressource auswählen",

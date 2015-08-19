@@ -91,15 +91,15 @@ public class ProjectService {
         project.setOrganization(currentUser.getOrganization());
 
         PostingFeed postingFeed = new PostingFeed();
-        postingFeedRepository.save(postingFeed);
+        project.setPostingFeed(postingFeed);
 
         if(project.getResourceRequirements() != null) {
             for(ResourceRequirement requirement : project.getResourceRequirements()) {
                 requirement.setOriginalAmount(requirement.getAmount());
+                requirement.setProject(project);
             }
         }
 
-        project.setPostingFeed(postingFeed);
         return projectRepository.save(project);
     }
 
@@ -139,7 +139,7 @@ public class ProjectService {
             if(!currentUser.equals(organization.getOwner())) {
                 //user is neither project manager nor organization owner
                 throw new OperationForbiddenException(
-                    "Current user does have permission to alter project " + currentProject);
+                    "Current user does not have permission to alter project " + currentProject);
             }
         }
 
@@ -148,54 +148,14 @@ public class ProjectService {
         currentProject.setConcrete(updatedProject.isConcrete());
         currentProject.setStartDate(updatedProject.getStartDate());
         currentProject.setPropertyTags(propertyTagService.getOrCreateTags(updatedProject.getPropertyTags()));
+        currentProject.setResourceRequirements(resourceService
+            .getUpdatedRequirements(currentProject, updatedProject.getResourceRequirements()));
 
-        //get deleted requirements, get all current requirements and remove the ones which are in the
-        //updated requirements, the requirements that are left are those that were deleted in the
-        //updated project
-        if(currentProject.getResourceRequirements() != null) {
-            List<ResourceRequirement> deletedRequirements = currentProject.getResourceRequirements();
-            if(updatedProject.getResourceRequirements() != null) {
-                for (ResourceRequirement req : updatedProject.getResourceRequirements()) {
-                    if (req.getId() != null) {
-                        deletedRequirements.removeIf(new java.util.function.Predicate<ResourceRequirement>() {
-                            @Override
-                            public boolean test(ResourceRequirement resourceRequirement) {
-                                return resourceRequirement.getId().equals(req.getId());
-                            }
-                        });
-                    }
-                }
-            }
-
-            for (ResourceRequirement req : deletedRequirements) {
-                if (req.getResourceMatches() != null && req.getResourceMatches().size() > 0) {
-                    throw new IllegalValueException("resource.errors.delete.match",
-                        "You cannot delete resource requirement %s, it already has a match");
-                }
-            }
-
-            currentProject.setResourceRequirements(updatedProject.getResourceRequirements());
-
-//            for (ResourceRequirement req : deletedRequirements) {
-//                resourceService.deleteRequirement(req.getId());
-//            }
-        }
-
-//        List<ResourceRequirement> requirements = new ArrayList<>();
-//        if(updatedProject.getResourceRequirements() != null) {
-//            for(ResourceRequirement req : updatedProject.getResourceRequirements()) {
-//                //if requirement is new: create, else: update
-//                if(req.getId() != null) {
-//                    requirements.add(resourceService.updateRequirement(req));
-//                } else {
-//                    requirements.add(req);
-//                }
-//            }
-//        }
-
-        log.debug("requirements updated");
-        //currentProject.setResourceRequirements(requirements);
-        return projectRepository.save(currentProject);
+        Project resultProject = projectRepository.saveAndFlush(currentProject);
+        resultProject.getResourceRequirements().removeIf(
+          requirement -> !requirement.isActive()
+        );
+        return resultProject;
     }
 
     /**

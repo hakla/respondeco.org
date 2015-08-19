@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -231,7 +232,8 @@ public class ResourceController {
     @RESTWrapped
     public Object createResourceRequirement(@RequestBody ResourceRequirement resourceRequirement)
         throws Exception {
-        return resourceService.createRequirement(resourceRequirement.getProject(), resourceRequirement);
+        //TODO: check if this method serves a purpose and fix service call
+        return resourceService.getUpdatedRequirements(resourceRequirement.getProject(), Arrays.asList(resourceRequirement));
     }
 
     /**
@@ -246,7 +248,8 @@ public class ResourceController {
     @Timed
     public Object updateResourceRequirement(@PathVariable Long resourceRequirementId,
                                             @RequestBody ResourceRequirement resourceRequirement) {
-        return resourceService.updateRequirement(resourceRequirement);
+        //TODO: check if this method serves a purpose and fix service call
+        return resourceService.getUpdatedRequirements(resourceRequirement.getProject(), Arrays.asList(resourceRequirement));
     }
 
     /**

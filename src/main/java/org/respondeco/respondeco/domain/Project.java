@@ -12,7 +12,7 @@ import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
-import org.respondeco.respondeco.web.rest.mapping.serializing.fields.ProjectPropertyTagsDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.fields.TagListDeserializer;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -61,14 +61,14 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
         inverseJoinColumns = {@JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id")}
     )
     @Lazy(false)
-    @JsonDeserialize(using = ProjectPropertyTagsDeserializer.class)
+    @JsonDeserialize(using = TagListDeserializer.class)
     private List<PropertyTag> propertyTags;
 
     @OneToOne
     @JoinColumn(name = "projectLogo_id")
     private Image projectLogo;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL})
     private List<ResourceRequirement> resourceRequirements;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)

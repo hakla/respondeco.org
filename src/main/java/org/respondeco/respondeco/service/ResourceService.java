@@ -12,8 +12,8 @@ import org.respondeco.respondeco.matching.MatchingImpl;
 import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.service.util.Assert;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
-import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,18 @@ import java.util.stream.Collectors;
 @Service
 public class ResourceService {
 
-    private final Logger log = LoggerFactory.getLogger(ResourceService.class);
+    private static final Logger log = LoggerFactory.getLogger(ResourceService.class);
+
+    private static final String ERROR_REQUIREMENT_KEY = "resource.requirement.error";
+    private static final String ERROR_OFFER_KEY = "resource.offer.error";
+
+    private static final String ERROR_NO_ENTITY = "no_entity";
+    private static final String ERROR_NO_PERMISSION = "no_permision";
+    private static final String ERROR_EXISTING_MATCHES = "existing_matches";
+    private static final String ERROR_AMOUNT_MODIFICATION = "amount_modification";
+    private static final String ERROR_ORIGINAL_AMOUNT_MODIFICATION = "original_amount_modification";
+
+
     private ResourceOfferRepository resourceOfferRepository;
     private ResourceRequirementRepository resourceRequirementRepository;
     private ResourceTagService resourceTagService;
@@ -46,8 +57,10 @@ public class ResourceService {
     private ProjectRepository projectRepository;
     private ResourceMatchRepository resourceMatchRepository;
     private ImageRepository imageRepository;
-
     private UserService userService;
+
+    private ExceptionUtil.KeyBuilder requirementKey = new ExceptionUtil.KeyBuilder(ERROR_REQUIREMENT_KEY);
+    private ExceptionUtil.KeyBuilder offerKey = new ExceptionUtil.KeyBuilder(ERROR_OFFER_KEY);
 
     @Inject
     public ResourceService(ResourceOfferRepository resourceOfferRepository,
@@ -83,31 +96,62 @@ public class ResourceService {
     }
 
     /**
-     * Create a new ResourceRequirement
-     * @return saved ResourceRequirement created resource requirement
-     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource can't be found
-     * @throws NoSuchEntityException if project of the resource can't be found
+     * Creates, updates, or deletes ResourceRequirements of the existing project based on the updated requirements
+     * if an updated requirement has no id, it will be created in the database
+     * if an updated requirement has an id, it will be updated with the new values, only the name, the description
+     * the logo, the tags and the isEssential flag can be updated on an existing requirement, changes to other
+     * members will result in an error
+     * if the project has requirements that are not present in the updated requirements, the requirements will be
+     * deleted from the project if it has no existing matches
+     * if a requirement which has matches is to be deleted, an exception is raised
+     * @param existingProject an existing project, loaded from the database
+     * @param updatedRequirements changed requirements
+     * @return
+     * @throws ResourceNotFoundException
+     * @throws NoSuchEntityException
      */
-    public ResourceRequirement createRequirement(Project project, ResourceRequirement requirement)
-        throws ResourceNotFoundException, NoSuchEntityException {
+    public List<ResourceRequirement> getUpdatedRequirements(Project existingProject,
+                                                            List<ResourceRequirement> updatedRequirements)
+        throws IllegalValueException {
 
-        Project currentProject = projectRepository.findByIdAndActiveIsTrue(project.getId());
-        if(project == null) {
-            throw new NoSuchEntityException(project.getId());
+        List<ResourceRequirement> results = new ArrayList<>();
+        if(updatedRequirements == null) {
+            deleteRequirements(existingProject.getResourceRequirements());
+            return results;
+        }
+        List<ResourceRequirement> toDelete = existingProject.getResourceRequirements();
+        log.debug("starting deletion of removed requirements, {}", toDelete);
+        if(toDelete != null) {
+            for(ResourceRequirement requirement : updatedRequirements) {
+                if(requirement.getId() == null) {
+                    continue;
+                }
+                toDelete.removeIf(
+                    req -> req.getId().equals(requirement.getId())
+                );
+            }
+        }
+        log.debug("filtered removed requirements, deleting {}", toDelete);
+        deleteRequirements(toDelete);
+
+        for(ResourceRequirement requirement : updatedRequirements) {
+            requirement.setProject(existingProject);
+            ResourceRequirement updatedRequirement = null;
+            if(requirement.getId() != null) {
+                updatedRequirement = updateRequirement(requirement);
+            } else {
+                requirement.setOriginalAmount(requirement.getAmount());
+                updatedRequirement = requirement;
+            }
+            updatedRequirement.setProject(existingProject);
+            results.add(updatedRequirement);
         }
 
-        ensureUserIsPartOfOrganisation(project);
-        List<ResourceRequirement> entries = resourceRequirementRepository
-            .findByNameAndProjectAndActiveIsTrue(requirement.getName(), project);
-        if (entries == null || entries.isEmpty() == true) {
-            resourceRequirementRepository.save(requirement);
-        } else {
-            throw new ResourceNotFoundException(
-                String.format("Requirement with name '%s' for the Project %d already exists",
-                    requirement.getName(), project.getId()));
-        }
+        results.forEach(
+            result -> resourceRequirementRepository.save(result)
+        );
 
-        return requirement;
+        return results;
     }
 
     /**
@@ -117,40 +161,50 @@ public class ResourceService {
      * @throws OperationForbiddenException if operation is forbidden
      * @throws NoSuchEntityException if project of the resource requirement can't be found
      */
-    public ResourceRequirement updateRequirement(ResourceRequirement updatedRequirement)
+    private ResourceRequirement updateRequirement(ResourceRequirement updatedRequirement)
         throws IllegalValueException {
-        ResourceRequirement currentRequirement =
+        ResourceRequirement originalRequirement =
             this.resourceRequirementRepository.findByIdAndActiveIsTrue(updatedRequirement.getId());
 
-        Project project = projectRepository.findByIdAndActiveIsTrue(currentRequirement.getProject().getId());
-        if(project == null) {
-            throw new NoSuchEntityException(currentRequirement.getProject().getId());
+        if(originalRequirement == null) {
+            throw new NoSuchEntityException(
+                requirementKey.from(ERROR_NO_ENTITY),
+                String.format("A resource requirement with id %d does not exist.", updatedRequirement.getId()));
         }
-        ensureUserIsPartOfOrganisation(currentRequirement.getProject());
-        BigDecimal matchSum = new BigDecimal(0);
-        if(currentRequirement.getResourceMatches() != null) {
-            for (ResourceMatch match : currentRequirement.getResourceMatches()) {
-                //only take accepted matches into account
-                if (Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
-                    matchSum = matchSum.add(match.getAmount());
-                }
-            }
+        if(!originalRequirement.getProject().equals(updatedRequirement.getProject())) {
+            throw new OperationForbiddenException(
+                requirementKey.from(ERROR_NO_PERMISSION),
+                "You have no permission to modify this resource"
+            );
         }
-        log.debug("MATCH SUM = " + matchSum);
-        currentRequirement.setName(updatedRequirement.getName());
-        currentRequirement.setDescription(updatedRequirement.getDescription());
-        currentRequirement.setIsEssential(updatedRequirement.getIsEssential());
-        currentRequirement.setResourceTags(resourceTagService.getOrCreateTags(updatedRequirement.getResourceTags()));
+        Assert.isEqualOrNull(originalRequirement.getOriginalAmount(), updatedRequirement.getOriginalAmount(),
+            requirementKey.from(ERROR_ORIGINAL_AMOUNT_MODIFICATION),
+            "The original amount of needed resources can not be changed");
+        Assert.isEqualOrNull(originalRequirement.getAmount(), updatedRequirement.getAmount(),
+            requirementKey.from(ERROR_AMOUNT_MODIFICATION),
+            "The amount of needed resources can not be changed directly");
+        originalRequirement.setName(updatedRequirement.getName());
+        originalRequirement.setDescription(updatedRequirement.getDescription());
+        originalRequirement.setLogo(updatedRequirement.getLogo());
+        originalRequirement.setResourceTags(updatedRequirement.getResourceTags());
+        originalRequirement.setIsEssential(updatedRequirement.getIsEssential());
+        originalRequirement.setResourceTags(updatedRequirement.getResourceTags());
 
-        if(updatedRequirement.getAmount().subtract(matchSum).longValue() < 0L) {
-            throw new IllegalValueException("resource.errors.update.negative",
-                "New amount is too low, a higher amount of resources was alredy donated");
-        }
-        currentRequirement.setAmount(updatedRequirement.getAmount().subtract(matchSum));
-        currentRequirement.setOriginalAmount(updatedRequirement.getAmount());
-        resourceRequirementRepository.save(currentRequirement);
+        return originalRequirement;
+    }
 
-        return currentRequirement;
+    private void deleteRequirements(List<ResourceRequirement> requirements) {
+        if(requirements == null) {
+            return;
+        }
+        for(ResourceRequirement requirement : requirements) {
+            Assert.isEmpty(requirement.getResourceMatches(), requirementKey.from(ERROR_EXISTING_MATCHES),
+                String.format("Cannot delete requirement %s with id %d, there are existing matches",
+                    requirement.getName(), requirement.getId()));
+            log.debug("calling ResourceRequirementRepository#save() with argument {}", requirement);
+            requirement.setActive(false);
+            resourceRequirementRepository.save(requirement);
+        }
     }
 
     /**
@@ -183,9 +237,7 @@ public class ResourceService {
      * @return List of ResourceRequirements
      */
     public List<ResourceRequirement> getRequirementsForProject(Long projectId) {
-        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectIdAndActiveIsTrue(projectId);
-
-        return entries;
+        return this.resourceRequirementRepository.findByProjectIdAndActiveIsTrue(projectId);
     }
 
     /**
