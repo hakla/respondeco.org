@@ -86,10 +86,19 @@ public class ProjectService {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
 
+        project.setManager(currentUser);
         project.setPropertyTags(propertyTagService.getOrCreateTags(project.getPropertyTags()));
+        project.setOrganization(currentUser.getOrganization());
 
         PostingFeed postingFeed = new PostingFeed();
         postingFeedRepository.save(postingFeed);
+
+        if(project.getResourceRequirements() != null) {
+            for(ResourceRequirement requirement : project.getResourceRequirements()) {
+                requirement.setOriginalAmount(requirement.getAmount());
+            }
+        }
+
         project.setPostingFeed(postingFeed);
         return projectRepository.save(project);
     }
@@ -140,17 +149,21 @@ public class ProjectService {
         currentProject.setStartDate(updatedProject.getStartDate());
         currentProject.setPropertyTags(propertyTagService.getOrCreateTags(updatedProject.getPropertyTags()));
 
-        //get deleted requirements
+        //get deleted requirements, get all current requirements and remove the ones which are in the
+        //updated requirements, the requirements that are left are those that were deleted in the
+        //updated project
         if(currentProject.getResourceRequirements() != null) {
             List<ResourceRequirement> deletedRequirements = currentProject.getResourceRequirements();
-            for (ResourceRequirement req : updatedProject.getResourceRequirements()) {
-                if (req.getId() != null) {
-                    deletedRequirements.removeIf(new java.util.function.Predicate<ResourceRequirement>() {
-                        @Override
-                        public boolean test(ResourceRequirement resourceRequirement) {
-                            return resourceRequirement.getId().equals(req.getId());
-                        }
-                    });
+            if(updatedProject.getResourceRequirements() != null) {
+                for (ResourceRequirement req : updatedProject.getResourceRequirements()) {
+                    if (req.getId() != null) {
+                        deletedRequirements.removeIf(new java.util.function.Predicate<ResourceRequirement>() {
+                            @Override
+                            public boolean test(ResourceRequirement resourceRequirement) {
+                                return resourceRequirement.getId().equals(req.getId());
+                            }
+                        });
+                    }
                 }
             }
 
@@ -161,25 +174,27 @@ public class ProjectService {
                 }
             }
 
-            for (ResourceRequirement req : deletedRequirements) {
-                resourceService.deleteRequirement(req.getId());
-            }
+            currentProject.setResourceRequirements(updatedProject.getResourceRequirements());
+
+//            for (ResourceRequirement req : deletedRequirements) {
+//                resourceService.deleteRequirement(req.getId());
+//            }
         }
 
-        List<ResourceRequirement> requirements = new ArrayList<>();
-        if(updatedProject.getResourceRequirements() != null) {
-            for(ResourceRequirement req : updatedProject.getResourceRequirements()) {
-                //if requirement is new: create, else: update
-                if(req.getId() != null) {
-                    requirements.add(resourceService.updateRequirement(req));
-                } else {
-                    requirements.add(req);
-                }
-            }
-        }
+//        List<ResourceRequirement> requirements = new ArrayList<>();
+//        if(updatedProject.getResourceRequirements() != null) {
+//            for(ResourceRequirement req : updatedProject.getResourceRequirements()) {
+//                //if requirement is new: create, else: update
+//                if(req.getId() != null) {
+//                    requirements.add(resourceService.updateRequirement(req));
+//                } else {
+//                    requirements.add(req);
+//                }
+//            }
+//        }
 
         log.debug("requirements updated");
-        currentProject.setResourceRequirements(requirements);
+        //currentProject.setResourceRequirements(requirements);
         return projectRepository.save(currentProject);
     }
 

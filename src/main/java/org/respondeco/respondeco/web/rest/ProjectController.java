@@ -73,8 +73,8 @@ public class ProjectController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    @RESTWrapped
-    public Object create(@RequestBody @Valid Project project) {
+    @RESTWrapped(returnStatus = HttpStatus.CREATED)
+    public Object create(@RequestBody Project project) {
         log.debug("REST request to create Project : {}", project);
         return projectService.create(project);
     }

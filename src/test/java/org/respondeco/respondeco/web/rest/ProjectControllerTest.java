@@ -13,16 +13,22 @@ import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.testutil.ResultMapper;
 import org.respondeco.respondeco.testutil.TestUtil;
+import org.respondeco.respondeco.testutil.domain.DomainModel;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectApplyDTO;
 import org.respondeco.respondeco.web.rest.dto.ProjectDTO;
 import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
+import org.respondeco.respondeco.web.rest.mapping.ObjectMapperFactory;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -43,6 +49,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -57,6 +64,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class})
 public class ProjectControllerTest {
+
+    private static final Logger log = LoggerFactory.getLogger(ProjectControllerTest.class);
 
     private static final Long DEFAULT_ID = new Long(1L);
 
@@ -109,7 +118,9 @@ public class ProjectControllerTest {
     @Mock
     private PostingFeedService postingFeedServiceMock;
 
+    @Mock
     private ProjectService projectServiceMock;
+
     private MockMvc restProjectMockMvc;
     private ProjectDTO projectDTO;
     private Project project;
@@ -118,27 +129,23 @@ public class ProjectControllerTest {
     private User orgMember;
     private PostingFeed postingFeed;
 
+    private DomainModel model;
     private ArgumentCaptor<Object> voidInterceptor;
+    private ResultMapper<Project> resultMapper;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        projectServiceMock = spy(new ProjectService(
-            projectRepositoryMock,
-            userServiceMock,
-            userRepositoryMock,
-            propertyTagServiceMock,
-            resourceServiceMock,
-            imageRepositoryMock,
-            resourceMatchRepositoryMock,
-            postingFeedRepositoryMock));
-        ProjectController projectController = new ProjectController(
+        ProjectController projectController = spy(new ProjectController(
             projectServiceMock,
             resourceServiceMock,
             ratingServiceMock,
             userServiceMock,
             postingFeedServiceMock,
-            projectLocationServiceMock);
+            projectLocationServiceMock));
+
+        resultMapper = new ResultMapper<>();
+        doAnswer(resultMapper).when(projectController).update(any(Project.class));
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();
 
@@ -188,7 +195,22 @@ public class ProjectControllerTest {
 
         defaultOrganization.setOwner(orgAdmin);
 
+        model = new DomainModel();
         voidInterceptor = ArgumentCaptor.forType(Object.class, 0, false);
+    }
+
+    @Test
+    public void testCreateProject_shouldCreateSimpleProject() throws Exception {
+        resultMapper.setReturnStatus(HttpStatus.CREATED);
+        when(projectServiceMock.update(any(Project.class))).thenReturn(model.PROJECT_NEW);
+        Object mappedProject = new ObjectMapperFactory().createMapper(Project.class, null).map(model.PROJECT_NEW);
+        log.debug("mapped project: {}", mappedProject);
+        log.debug("json bytes: {}", new String(TestUtil.convertObjectToJsonBytes(mappedProject)));
+        restProjectMockMvc.perform(post("/app/rest/projects")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(mappedProject)))
+            .andDo(print())
+            .andExpect(status().isCreated());
     }
 
     @Test

@@ -47,7 +47,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @NotNull
     @ManyToOne
     private Organization organization;
 
@@ -69,10 +68,10 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @JoinColumn(name = "projectLogo_id")
     private Image projectLogo;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ResourceRequirement> resourceRequirements;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ResourceMatch> resourceMatches;
 
     /**
@@ -81,8 +80,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "is_successful")
     private Boolean successful;
 
-    @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "postingfeed_id")
     private PostingFeed postingFeed;
 

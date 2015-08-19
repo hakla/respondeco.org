@@ -1,9 +1,11 @@
 package org.respondeco.respondeco.aop;
 
+import lombok.Setter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,14 +31,20 @@ import java.util.Map;
  */
 
 @Aspect
+@Setter
 public class RESTWrapperAspect {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    public static interface Invocation {
+        public Object invoke() throws Throwable;
+        public HttpStatus getReturnStatus();
+    }
+
     @Inject
     private ObjectMapperFactory factory;
 
-    @Autowired
+    @Inject
     private HttpServletRequest request;
 
     @Pointcut("@annotation(org.respondeco.respondeco.aop.RESTWrapped)")
@@ -52,30 +61,53 @@ public class RESTWrapperAspect {
 
     @Around("publicMethod() && wrappedMethod() || wrappedClass()")
     public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        return handleInvocation(new Invocation() {
+            @Override
+            public Object invoke() throws Throwable {
+                return joinPoint.proceed();
+            }
+
+            @Override
+            public HttpStatus getReturnStatus() {
+                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+                Method targetMethod = signature.getMethod();
+                RESTWrapped annotation = targetMethod.getAnnotation(RESTWrapped.class);
+                return annotation.returnStatus();
+            }
+        });
+    }
+
+    public Object handleInvocation(Invocation invocation) {
         try {
-            Object result = joinPoint.proceed();
+            Object result = invocation.invoke();
+            HttpStatus returnStatus = invocation.getReturnStatus();
             log.debug("got value to map: {}", result);
             if(result != null) {
                 Object mapped = mapResult(result);
-                return new ResponseEntity<>(mapped, HttpStatus.OK);
+                log.debug("mapped: {}", mapped);
+                return new ResponseEntity<>(mapped, returnStatus);
             } else {
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(returnStatus);
             }
         } catch (NoSuchEntityException e) {
             return new ResponseEntity<>(e.getObject(), HttpStatus.NOT_FOUND);
         } catch (OperationForbiddenException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(e.getObject(), HttpStatus.FORBIDDEN);
         } catch (IllegalValueException e) {
-            log.error("IllegalValueException: {} in {}.{}()", Arrays.toString(joinPoint.getArgs()),
-                joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getObject(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Throwable t) {
+            log.debug("throwable: {}", t);
+            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     private Object mapResult(Object object) {
-        String fields = request.getParameter("fields");
+        String fields = null;
+        if(request != null) {
+            fields = request.getParameter("fields");
+        }
         if (object instanceof Page) {
             return mapPage((Page) object, fields);
         } else {

@@ -12,7 +12,7 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
-import org.respondeco.respondeco.testutil.DomainModel;
+import org.respondeco.respondeco.testutil.domain.DomainModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
@@ -132,11 +132,11 @@ public class OrganizationServiceTest {
 
     @Test
     public void testUpdateOrganization_shouldUpdateValidChanges() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER_N1_COMPLETE);
-        when(organizationRepositoryMock.findByOwner(model.USER_N1_COMPLETE)).thenReturn(model.ORGANIZATION_N1_COMPLETE);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
+        when(organizationRepositoryMock.findByOwner(model.USER1)).thenReturn(model.ORGANIZATION1);
         when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
         Organization organizationClone = new Organization();
-        BeanUtils.copyProperties(model.ORGANIZATION_N1_COMPLETE, organizationClone);
+        BeanUtils.copyProperties(model.ORGANIZATION1, organizationClone);
         organizationClone.setEmail("new@email.foo");
 
         organizationService.update(organizationClone);
@@ -147,11 +147,11 @@ public class OrganizationServiceTest {
 
     @Test(expected = OperationForbiddenException.class)
     public void testUpdateOrganization_shouldThrow_userNotOwner() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER_N1_COMPLETE);
-        when(organizationRepositoryMock.findByOwner(model.USER_N1_COMPLETE)).thenReturn(null);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
+        when(organizationRepositoryMock.findByOwner(model.USER1)).thenReturn(null);
         when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
         Organization organizationClone = new Organization();
-        BeanUtils.copyProperties(model.ORGANIZATION_N1_COMPLETE, organizationClone);
+        BeanUtils.copyProperties(model.ORGANIZATION1, organizationClone);
         organizationClone.setEmail("new@email.foo");
 
         organizationService.update(organizationClone);
