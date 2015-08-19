@@ -39,21 +39,24 @@ public class PropertyTagService {
         return result;
     }
 
-    public List<PropertyTag> getOrCreateTags(List<String> tagNames) {
+    public List<PropertyTag> getOrCreateTags(List<PropertyTag> tags) {
         List<PropertyTag> response = new ArrayList<>();
-        if(tagNames == null) {
+        if(tags == null) {
             return response;
         }
-        PropertyTag tag = null;
-        for(String s : tagNames) {
-            tag = propertyTagRepository.findByName(s);
-            if(tag == null) {
-                tag = new PropertyTag();
-                tag.setName(s);
-                tag = propertyTagRepository.save(tag);
+
+        tags.stream().forEach(
+            tag -> {
+                PropertyTag savedTag = propertyTagRepository.findByName(tag.getName());
+                if(savedTag == null) {
+                    savedTag = new PropertyTag();
+                    savedTag.setName(tag.getName());
+                    savedTag = propertyTagRepository.save(savedTag);
+                }
+                response.add(savedTag);
             }
-            response.add(tag);
-        }
+        );
+
         return response;
     }
 

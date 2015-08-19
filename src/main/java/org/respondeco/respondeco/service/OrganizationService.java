@@ -96,15 +96,15 @@ public class OrganizationService {
         organization.getOwner().setOrganization(organizationRepository.save(organization));
         userRepository.save(organization.getOwner());
 
-        try {
-            projectService.create("ip", "", false, null, null, null, null);
-        } catch (OperationForbiddenException e) {
-            e.printStackTrace();
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalValueException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            projectService.create("ip", "", false, null, null, null, null);
+//        } catch (OperationForbiddenException e) {
+//            e.printStackTrace();
+//        } catch (ResourceNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IllegalValueException e) {
+//            e.printStackTrace();
+//        }
 
         log.debug("Created Organization: {}", organization);
         return organization;

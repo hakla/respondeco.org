@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.ResourceMatch;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
@@ -189,7 +190,6 @@ public class ResourceController {
 
     /**
      * Create a new ResourceOffer
-     * @param resourceOfferDTO contains necessary information for the creation of a new ResourceOffer
      * @return ResponseEntity with HTTPStatus
      * @throws Exception
      */
@@ -198,35 +198,14 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @Valid
-    public ResponseEntity<?> createResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO) throws Exception{
-        ResponseEntity<?> result = null;
-        try {
-            ResourceOffer offer = this.resourceService.createOffer(
-                resourceOfferDTO.getName(),
-                resourceOfferDTO.getAmount(),
-                resourceOfferDTO.getDescription(),
-                resourceOfferDTO.getOrganizationId(),
-                resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getStartDate(),
-                resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags(),
-                resourceOfferDTO.getLogoId(),
-                resourceOfferDTO.getPrice()
-            );
-            resourceOfferDTO.setId(offer.getId());
-            result = new ResponseEntity<>(resourceOfferDTO, HttpStatus.CREATED);
-        } catch (IllegalValueException e) {
-            result = ErrorHelper.buildErrorResponse(e);
-            log.error("Fail to create new Resource offer: {}", e);
-        }
-        return result;
+    @RESTWrapped
+    public Object createResourceOffer(@RequestBody ResourceOffer resourceOffer) throws Exception{
+        return resourceService.createOffer(resourceOffer);
     }
 
     /**
      * Update a ResourceOffer
      * @param id id of the ResourceOffer which will be updated
-     * @param resourceOfferDTO contains information which will be used for updating the ResourceOffer
      * @return ResponseEntity with HTTPStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -234,29 +213,9 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @Valid
-    public ResponseEntity<?> updateResourceOffer(@PathVariable Long id, @RequestBody ResourceOfferDTO resourceOfferDTO) {
-        ResponseEntity<?> result = null;
-        try {
-            this.resourceService.updateOffer(
-                resourceOfferDTO.getId(),
-                resourceOfferDTO.getOrganizationId(),
-                resourceOfferDTO.getName(),
-                resourceOfferDTO.getAmount(),
-                resourceOfferDTO.getDescription(),
-                resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getStartDate(),
-                resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags(),
-                resourceOfferDTO.getLogoId(),
-                resourceOfferDTO.getPrice()
-            );
-            result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalValueException e){
-            result = ErrorHelper.buildErrorResponse(e);
-            log.error("Could not update resource offer : {}", e);
-        }
-        return result;
+    @RESTWrapped
+    public Object updateResourceOffer(@PathVariable Long id, @RequestBody ResourceOffer resourceOffer) {
+        return resourceService.updateOffer(resourceOffer);
     }
 
     /**
@@ -306,7 +265,6 @@ public class ResourceController {
 
     /**
      * Creates a new ResourceRequirement
-     * @param resourceRequirementRequestDTO ResourceRequirement to be saved in the db. Wrapped into RequestDTO.
      * @return ResponseEntity with HttpStatus
      * @throws Exception
      */
@@ -315,32 +273,15 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> createResourceRequirement(@RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) throws Exception {
-        ResourceRequirement requirement = null;
-        ResponseEntity<?> result = null;
-        try {
-            requirement = this.resourceService.createRequirement(
-                resourceRequirementRequestDTO.getName(),
-                resourceRequirementRequestDTO.getOriginalAmount(),
-                resourceRequirementRequestDTO.getDescription(),
-                resourceRequirementRequestDTO.getProjectId(),
-                resourceRequirementRequestDTO.getIsEssential(),
-                resourceRequirementRequestDTO.getResourceTags()
-            );
-            resourceRequirementRequestDTO.setId(requirement.getId());
-            result = new ResponseEntity<>(resourceRequirementRequestDTO, HttpStatus.CREATED);
-
-        } catch (IllegalValueException e){
-            result = ErrorHelper.buildErrorResponse(e);
-            log.error("Could not create resource requirement : {}", e);
-        }
-        return result;
+    @RESTWrapped
+    public Object createResourceRequirement(@RequestBody ResourceRequirement resourceRequirement)
+        throws Exception {
+        return resourceService.createRequirement(resourceRequirement.getProject(), resourceRequirement);
     }
 
     /**
      * Updates a ResourceRequirement
      * @param resourceRequirementId id of the resource requirement
-     * @param resourceRequirementRequestDTO update information for the resource requirement
      * @return ResponseEntity with HttpStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -348,24 +289,9 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> updateResourceRequirement(@PathVariable Long resourceRequirementId, @RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) {
-        ResponseEntity<?> result = null;
-        try {
-            this.resourceService.updateRequirement(
-                resourceRequirementRequestDTO.getId(),
-                resourceRequirementRequestDTO.getName(),
-                resourceRequirementRequestDTO.getOriginalAmount(),
-                resourceRequirementRequestDTO.getDescription(),
-                resourceRequirementRequestDTO.getProjectId(),
-                resourceRequirementRequestDTO.getIsEssential(),
-                resourceRequirementRequestDTO.getResourceTags()
-            );
-            result = new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalValueException e){
-            result = ErrorHelper.buildErrorResponse(e);
-            log.error("Could not update resource requirement : {}", e);
-        }
-        return result;
+    public Object updateResourceRequirement(@PathVariable Long resourceRequirementId,
+                                            @RequestBody ResourceRequirement resourceRequirement) {
+        return resourceService.updateRequirement(resourceRequirement);
     }
 
     /**
