@@ -15,13 +15,13 @@
         scrollByPage: false,
         mediaQueries: [{
             width: 1100,
-            cols: 8
+            cols: 4
         }, {
             width: 800,
-            cols: 8
+            cols: 4
         }, {
             width: 500,
-            cols: 12
+            cols: 4
         }, {
             width: 320,
             cols: 1

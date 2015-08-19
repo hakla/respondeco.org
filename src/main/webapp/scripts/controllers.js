@@ -75,12 +75,14 @@
     });
   });
 
-  respondecoApp.controller('MenuController', function($rootScope, TextMessage) {
+  respondecoApp.controller('MenuController', function($rootScope, TextMessage, Session) {
     var refresh;
     refresh = function() {
-      return TextMessage.countNewMessages(function(amount) {
-        return $rootScope.newMessages = amount[0];
-      });
+      if (Session.valid()) {
+        return TextMessage.countNewMessages(function(amount) {
+          return $rootScope.newMessages = amount[0];
+        });
+      }
     };
     refresh();
     return $rootScope.$on('$routeChangeStart', function(event, next) {

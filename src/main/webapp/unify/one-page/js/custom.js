@@ -52,7 +52,7 @@ respondecoApp.controller('MainController', function($scope, $location, $rootScop
   $scope.projects = Project.query({ pageSize: 6, fields: [ "name", "progress", "projectLogo", "propertyTags", "organization", "purpose", "resourceRequirements" ].join(",") }, function() {
     setTimeout(function() {
       App.cubeportfolio();
-    });
+    }, 0);
   });
   $scope.organizations = Organization.query({
     pageSize: 6,

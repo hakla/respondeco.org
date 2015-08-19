@@ -1,47 +1,12 @@
 'use strict'
-respondecoApp.controller 'OrganizationController', ($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter) ->
+respondecoApp.controller 'OrganizationController', ($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter, Session, IsoCategories) ->
   isOwner = false
   user = undefined
   $scope.twitterConnected = false
   $scope.facebookConnected = false
   $scope.xingConnected = false
-  $rootScope.title = 'Organisation'
   $scope.shownRating = 0
   $scope.ratingCount = 0
-
-  $scope.titlesForView =
-    about_us: -> "- Über die Organisation"
-    members: -> "- Mitarbeiter"
-    news: -> "- Neuigkeiten"
-    transactions: -> "- Transaktionsübersicht"
-    settings: -> "- Einstellungen"
-    prices: -> "- Auszeichnungen"
-    projects: -> "- Projekte"
-
-  $scope.view = 'about_us'
-
-  $scope.categories =
-    "main": [
-        "Organisationsführung",
-        "Faire Betriebs- und Geschäftspraktiken",
-        "Menschenrechte",
-        "Konsumentenanliegen",
-        "Arbeitspraktiken",
-        "Einbindung und Entwicklung der Gemeinschaft",
-        "Umwelt"
-    ],
-    "Faire Betriebs- und Geschäftspraktiken": ["Korruptionsbekämpfung", "Verantwortungsbewusste politische Mitwirkung", "Fairer Wettbewerb", "Gesellschaftliche Verantwortung in der Wertschöpfungskette fördern", "Eigentumsrechte achten"],
-    "Menschenrechte": ["Gebührende Sorgfalt", "Menschenrechte in kritischen Situationen", "Mittäterschaft vermeiden", "Missstände beseitigen", "Diskriminierung und schutzbedürftige Gruppen", "Bürgerliche und politische Rechte", "Wirtschaftliche, soziale und kulturelle Rechte", "Grundlegende Prinzipien und Rechte bei der Arbeit"],
-    "Konsumentenanliegen": ["Faire Werbe-, Vertriebs- und Vertragspraktiken sowie sachliche und unverfälschte, nicht irreführende Informationen", "Schutz von Gesundheit und Sicherheit der Konsumenten", "Nachhaltiger Konsum", "Kundendienst, Beschwerdemanagement und Schlichtungsverfahren", "Schutz und Vertraulichkeit von Kundendaten", "Sicherung der Grundversorgung", "Verbraucherbildung und Sensibilisierung"],
-    "Arbeitspraktiken": ["Beschäftigung und Beschäftigungsverhältnisse", "Arbeitsbedingungen und Sozialschutz", "Sozialer Dialog", "Gesundheit und Sicherheit am Arbeitsplatz", "Menschliche Entwicklung und Schulung am Arbeitsplatz "],
-    "Einbindung und Entwicklung der Gemeinschaft": ["Einbindung der Gemeinschaft", "Bildung und Kultur", "Schaffen von Arbeitsplätzen und berufliche Qualifizierung", "Technologien entwickeln und Zugang dazu ermöglichen"],
-    "Umwelt": ["Vermeidung der Umweltbelastung", "Nachhaltige Nutzung von Ressourcen", "Abschwächung des Klimawandels und Anpassung", "Umweltschutz, Artenvielfalt und Wiederherstellung natürli­cher Lebensräume"]
-
-  $scope.chosenCategories = [
-    main: 0,
-    sub: "Menschenrechte in kritischen Situationen",
-    description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
-  ]
 
   $scope.map =
     center:
@@ -53,17 +18,70 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
     $scope._subcategory = null
     category
 
-  $scope.currentView = -> 
-    $rootScope.title = "#{$scope.organization?.name}"
-    "/template/organization/#{$scope.view}.html"
+  $scope.createGrid = ->
+    gridContainer = $('#grid-container')
+    filtersContainer = $('#filters-container')
+    wrap = undefined
+    filtersCallback = undefined
+
+    ###******************************
+        init cubeportfolio
+    #***************************** 
+    ###
+
+    gridContainer.cubeportfolio
+      layoutMode: 'grid'
+      rewindNav: true
+      scrollByPage: false
+      mediaQueries: [
+        {
+          width: 1100
+          cols: 4
+        }
+        {
+          width: 800
+          cols: 4
+        }
+        {
+          width: 500
+          cols: 4
+        }
+        {
+          width: 320
+          cols: 1
+        }
+      ]
+      defaultFilter: '*'
+      animationType: 'rotateSides'
+      gapHorizontal: 10
+      gapVertical: 10
+      gridAdjustment: 'responsive'
+      caption: 'overlayBottomPush'
+      displayType: 'sequentially'
+      displayTypeSpeed: 100
+      singlePageInlineDelegate: '.cbp-singlePageInline'
+      singlePageInlinePosition: 'below'
+      singlePageInlineInFocus: true
+      singlePageInlineCallback: (url, element) ->
+        # to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
+        @updateSinglePageInline $(element).parents('.cbp-item-wrapper').find('.inline-content').html()
+
+  $scope.isoCategories = IsoCategories.query ->
+    $scope.isoCategories = $scope.isoCategories.isocategorys
 
   $scope.update = (name) ->
-    $scope.organization = Organization.get({ id: name, fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate)),website' }, ->
+    $scope.organization = Organization.get({ id: name, fields: 'logo,projects(name,projectLogo,resourceRequirements(amount,originalAmount)),email,description,members,postingFeed(postings(createdDate)),verified,website' }, ->
       Organization.getMembers { id: $scope.organization.id }, (data) ->
         $scope.members = data
       Account.get null, (account) ->
         user = account
         isOwner = user != undefined and user.login == $scope.organization.owner?.login
+
+      $scope.organization.description = $scope.organization.description || ''
+
+      setTimeout ->
+        $scope.createGrid()
+
       $scope.getConnections()
     )
 
@@ -72,13 +90,13 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   #  and if the connection for the specific provider exists, it
   #  sets the connected variable for the appropriate provider to true.
   ###
-
   $scope.getConnections = ->
-    SocialMedia.getConnections (response) ->
-      response.forEach (connection) ->
-        $scope.twitterConnected = connection.provider is 'twitter'
-        $scope.facebookConnected = connection.provider is 'facebook'
-        $scope.xingConnected = connection.provider is 'xing'
+    if Session.valid()
+      SocialMedia.getConnections (response) ->
+        response.forEach (connection) ->
+          $scope.twitterConnected = connection.provider is 'twitter'
+          $scope.facebookConnected = connection.provider is 'facebook'
+          $scope.xingConnected = connection.provider is 'xing'
 
   $scope.refreshOrganizationRating = ->
     #get new aggregated rating
@@ -124,7 +142,6 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   ###
   # Button Event. Try to follow the current Organization Newsfeed
   ###
-
   $scope.follow = ->
     Organization.follow { id: $scope.organization.id }, null, (result) ->
       $scope.following = true
@@ -132,7 +149,6 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   ###
   # Button Event. Try to un-follow the current Organization Newsfeed
   ###
-
   $scope.unfollow = ->
     Organization.unfollow { id: $scope.organization.id }, (result) ->
       $scope.following = false
@@ -141,7 +157,6 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   # show or hide the Un-Follow Button. Show only if the current organization is being followed by user
   # @returns {boolean} true => show, else hide
   ###
-
   $scope.showUnfollow = ->
     $scope.following == true
     # && $scope.isOwner() == false;
@@ -150,20 +165,19 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   # show or hide the Follow Button. Show only if the current organization is not being followed by user
   # @returns {boolean} true => show, else hide
   ###
-
   $scope.showFollow = ->
     $scope.following == false
     # && $scope.isOwner() == false;
 
-  #Posting
-  #Posting for project
+  # Posting
+  # Posting for project
   $scope.postingPage = -1
   $scope.postingPageSize = 5
   $scope.postingInformation = null
   $scope.postingsTotal = null
   $scope.postings = []
-  #function to refresh postings for the organization in the scope; get postings in the given pagesize
 
+  # function to refresh postings for the organization in the scope; get postings in the given pagesize
   refreshPostings = ->
     Organization.getPostingsByOrgId {
       id: $routeParams.id
@@ -175,20 +189,19 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
 
   $scope.canShowMorePostings = -> $scope.postings.length < $scope.postingsTotal
 
-  #shows more postings by incrementing the postingCount (default 5 + 5)
-
+  # shows more postings by incrementing the postingCount (default 5 + 5)
   $scope.showMorePostings = ->
     $scope.postingPage = $scope.postingPage + 1
     refreshPostings()
 
-  #show first page of postings
+  # show first page of postings
   $scope.showMorePostings()
 
   $scope.addPosting = ->
     if $scope.postingInformation.length < 5 or $scope.postingInformation.length > 2048
       return
     Organization.addPostingForOrganization { id: $routeParams.id }, $scope.postingInformation, (newPosting) ->
-      #add new posting and cut array down to current number of shown postings
+      # add new posting and cut array down to current number of shown postings
       $scope.postings.unshift newPosting
       $scope.postingsTotal = $scope.postingsTotal + 1
       $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize)
@@ -226,10 +239,10 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   ###*
   # Resolve the follow state for the current organization of logged in user
   ###
-
   $scope.followingState = ->
-    Organization.followingState { id: $routeParams.id }, (follow) ->
-      $scope.following = follow.state
+    if Session.valid()
+      Organization.followingState { id: $routeParams.id }, (follow) ->
+        $scope.following = follow.state
 
   $scope.getDonatedResources = ->
     Organization.getDonatedResources { id: $routeParams.id }, {
@@ -260,7 +273,7 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   $scope.save = ->
     Organization.update mapToDTO $scope.organization
 
-  #allow execute follow state only if organization ID is set!
+  # allow execute follow state only if organization ID is set!
   if $routeParams.id != 'new' or $routeParams.id != 'null' or $routeParams.id != 'undefined'
     $scope.followingState()
     $scope.getDonatedResources()

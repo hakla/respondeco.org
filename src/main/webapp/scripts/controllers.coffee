@@ -35,7 +35,6 @@ respondecoApp.controller 'MainController', ($scope, $location, $rootScope) ->
 
 respondecoApp.controller 'AdminController', ($scope) ->
 respondecoApp.controller 'LanguageController', ($scope, $translate, LanguageService, $window, $rootScope) ->
-
   $scope.changeLanguage = (languageKey) ->
     changeLocale languageKey
     LanguageService.getBy(languageKey).then (languages) ->
@@ -50,11 +49,12 @@ respondecoApp.controller 'LanguageController', ($scope, $translate, LanguageServ
     $scope.languages = languages
     changeLocale $translate.use()
 
-respondecoApp.controller 'MenuController', ($rootScope, TextMessage) ->
+respondecoApp.controller 'MenuController', ($rootScope, TextMessage, Session) ->
 
   refresh = ->
-    TextMessage.countNewMessages (amount) ->
-      $rootScope.newMessages = amount[0]
+    if Session.valid()
+      TextMessage.countNewMessages (amount) ->
+        $rootScope.newMessages = amount[0]
 
   refresh()
   # refresh the messages on each route change

@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.respondeco.respondeco.domain.AbstractAuditingEntity;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
@@ -82,8 +83,10 @@ public class RESTWrapperAspect {
         String fields = request.getParameter("fields");
         if (object instanceof Page) {
             return mapPage((Page) object, fields);
-        } else {
+        } else if (object instanceof AbstractAuditingEntity) {
             return mapObject(object, fields);
+        } else {
+            return object;
         }
     }
 

@@ -102,12 +102,6 @@ img {
     border-radius: 2px;
 }
 
-.profile {
-    img {
-        width: 100%;
-    }
-}
-
 .member {
     li {
         padding: 0 5px 7px 5px;
@@ -755,4 +749,11 @@ uploaded-image, [uploaded-image] {
       top: 8px;
     }
   }
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
 }

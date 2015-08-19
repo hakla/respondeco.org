@@ -1,2 +1,8 @@
-<rating max="5" readonly="!canRate" on-leave="overStar = null"
-        ng-click="doRate()" ng-model="currentRating"></rating>
+<div class="rating">
+    <i class="fa" ng-class="{ 'fa-star': rating >= 1, 'fa-star-half-o': rating < 1 && rating >= 0.5, 'fa-star-o': rating < 0.5 }"></i>
+    <i class="fa" ng-class="{ 'fa-star': rating >= 2, 'fa-star-half-o': rating < 2 && rating >= 1.5, 'fa-star-o': rating < 1.5 }"></i>
+    <i class="fa" ng-class="{ 'fa-star': rating >= 3, 'fa-star-half-o': rating < 3 && rating >= 2.5, 'fa-star-o': rating < 2.5 }"></i>
+    <i class="fa" ng-class="{ 'fa-star': rating >= 4, 'fa-star-half-o': rating < 4 && rating >= 3.5, 'fa-star-o': rating < 3.5 }"></i>
+    <i class="fa" ng-class="{ 'fa-star': rating >= 5, 'fa-star-half-o': rating < 5 && rating >= 4.5, 'fa-star-o': rating < 4.5 }"></i>
+    <span class="rating-counter">{{ count }}</span>
+</div>

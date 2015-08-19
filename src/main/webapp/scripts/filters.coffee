@@ -15,6 +15,9 @@ angular.module('respondecoAppFilters', []).filter('logo', ->
     name
 ).filter('linkify', ->
   (link) -> "<a href='#{link}'>#{link}</a>"
+).filter('default', ->
+  (input, __default__) ->
+    if input is null or input is undefined then __default__ else input
 )
 
 # ---

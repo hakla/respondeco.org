@@ -1,55 +1,14 @@
 (function() {
   'use strict';
-  respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter) {
+  respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter, Session, IsoCategories) {
     var isOwner, mapToDTO, refreshPostings, user;
     isOwner = false;
     user = void 0;
     $scope.twitterConnected = false;
     $scope.facebookConnected = false;
     $scope.xingConnected = false;
-    $rootScope.title = 'Organisation';
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
-    $scope.titlesForView = {
-      about_us: function() {
-        return "- Über die Organisation";
-      },
-      members: function() {
-        return "- Mitarbeiter";
-      },
-      news: function() {
-        return "- Neuigkeiten";
-      },
-      transactions: function() {
-        return "- Transaktionsübersicht";
-      },
-      settings: function() {
-        return "- Einstellungen";
-      },
-      prices: function() {
-        return "- Auszeichnungen";
-      },
-      projects: function() {
-        return "- Projekte";
-      }
-    };
-    $scope.view = 'about_us';
-    $scope.categories = {
-      "main": ["Organisationsführung", "Faire Betriebs- und Geschäftspraktiken", "Menschenrechte", "Konsumentenanliegen", "Arbeitspraktiken", "Einbindung und Entwicklung der Gemeinschaft", "Umwelt"],
-      "Faire Betriebs- und Geschäftspraktiken": ["Korruptionsbekämpfung", "Verantwortungsbewusste politische Mitwirkung", "Fairer Wettbewerb", "Gesellschaftliche Verantwortung in der Wertschöpfungskette fördern", "Eigentumsrechte achten"],
-      "Menschenrechte": ["Gebührende Sorgfalt", "Menschenrechte in kritischen Situationen", "Mittäterschaft vermeiden", "Missstände beseitigen", "Diskriminierung und schutzbedürftige Gruppen", "Bürgerliche und politische Rechte", "Wirtschaftliche, soziale und kulturelle Rechte", "Grundlegende Prinzipien und Rechte bei der Arbeit"],
-      "Konsumentenanliegen": ["Faire Werbe-, Vertriebs- und Vertragspraktiken sowie sachliche und unverfälschte, nicht irreführende Informationen", "Schutz von Gesundheit und Sicherheit der Konsumenten", "Nachhaltiger Konsum", "Kundendienst, Beschwerdemanagement und Schlichtungsverfahren", "Schutz und Vertraulichkeit von Kundendaten", "Sicherung der Grundversorgung", "Verbraucherbildung und Sensibilisierung"],
-      "Arbeitspraktiken": ["Beschäftigung und Beschäftigungsverhältnisse", "Arbeitsbedingungen und Sozialschutz", "Sozialer Dialog", "Gesundheit und Sicherheit am Arbeitsplatz", "Menschliche Entwicklung und Schulung am Arbeitsplatz "],
-      "Einbindung und Entwicklung der Gemeinschaft": ["Einbindung der Gemeinschaft", "Bildung und Kultur", "Schaffen von Arbeitsplätzen und berufliche Qualifizierung", "Technologien entwickeln und Zugang dazu ermöglichen"],
-      "Umwelt": ["Vermeidung der Umweltbelastung", "Nachhaltige Nutzung von Ressourcen", "Abschwächung des Klimawandels und Anpassung", "Umweltschutz, Artenvielfalt und Wiederherstellung natürli­cher Lebensräume"]
-    };
-    $scope.chosenCategories = [
-      {
-        main: 0,
-        sub: "Menschenrechte in kritischen Situationen",
-        description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
-      }
-    ];
     $scope.map = {
       center: {
         latitude: 48,
@@ -61,15 +20,59 @@
       $scope._subcategory = null;
       return category;
     };
-    $scope.currentView = function() {
-      var ref;
-      $rootScope.title = "" + ((ref = $scope.organization) != null ? ref.name : void 0);
-      return "/template/organization/" + $scope.view + ".html";
+    $scope.createGrid = function() {
+      var filtersCallback, filtersContainer, gridContainer, wrap;
+      gridContainer = $('#grid-container');
+      filtersContainer = $('#filters-container');
+      wrap = void 0;
+      filtersCallback = void 0;
+
+      /*******************************
+          init cubeportfolio
+      #*****************************
+       */
+      return gridContainer.cubeportfolio({
+        layoutMode: 'grid',
+        rewindNav: true,
+        scrollByPage: false,
+        mediaQueries: [
+          {
+            width: 1100,
+            cols: 4
+          }, {
+            width: 800,
+            cols: 4
+          }, {
+            width: 500,
+            cols: 4
+          }, {
+            width: 320,
+            cols: 1
+          }
+        ],
+        defaultFilter: '*',
+        animationType: 'rotateSides',
+        gapHorizontal: 10,
+        gapVertical: 10,
+        gridAdjustment: 'responsive',
+        caption: 'overlayBottomPush',
+        displayType: 'sequentially',
+        displayTypeSpeed: 100,
+        singlePageInlineDelegate: '.cbp-singlePageInline',
+        singlePageInlinePosition: 'below',
+        singlePageInlineInFocus: true,
+        singlePageInlineCallback: function(url, element) {
+          return this.updateSinglePageInline($(element).parents('.cbp-item-wrapper').find('.inline-content').html());
+        }
+      });
     };
+    $scope.isoCategories = IsoCategories.query(function() {
+      return $scope.isoCategories = $scope.isoCategories.isocategorys;
+    });
     $scope.update = function(name) {
       return $scope.organization = Organization.get({
         id: name,
-        fields: 'logo,projects(name,projectLogo),email,description,members,postingFeed(postings(createdDate)),website'
+        fields: 'logo,projects(name,projectLogo,resourceRequirements(amount,originalAmount)),email,description,members,postingFeed(postings(createdDate)),verified,website'
       }, function() {
         Organization.getMembers({
           id: $scope.organization.id
@@ -81,6 +84,10 @@
           user = account;
           return isOwner = user !== void 0 && user.login === ((ref = $scope.organization.owner) != null ? ref.login : void 0);
         });
+        $scope.organization.description = $scope.organization.description || '';
+        setTimeout(function() {
+          return $scope.createGrid();
+        });
         return $scope.getConnections();
       });
     };
@@ -91,13 +98,15 @@
      *  sets the connected variable for the appropriate provider to true.
      */
     $scope.getConnections = function() {
-      return SocialMedia.getConnections(function(response) {
-        return response.forEach(function(connection) {
-          $scope.twitterConnected = connection.provider === 'twitter';
-          $scope.facebookConnected = connection.provider === 'facebook';
-          return $scope.xingConnected = connection.provider === 'xing';
+      if (Session.valid()) {
+        return SocialMedia.getConnections(function(response) {
+          return response.forEach(function(connection) {
+            $scope.twitterConnected = connection.provider === 'twitter';
+            $scope.facebookConnected = connection.provider === 'facebook';
+            return $scope.xingConnected = connection.provider === 'xing';
+          });
         });
-      });
+      }
     };
     $scope.refreshOrganizationRating = function() {
       return Organization.getAggregatedRating({
@@ -258,11 +267,13 @@
      * Resolve the follow state for the current organization of logged in user
      */
     $scope.followingState = function() {
-      return Organization.followingState({
-        id: $routeParams.id
-      }, function(follow) {
-        return $scope.following = follow.state;
-      });
+      if (Session.valid()) {
+        return Organization.followingState({
+          id: $routeParams.id
+        }, function(follow) {
+          return $scope.following = follow.state;
+        });
+      }
     };
     $scope.getDonatedResources = function() {
       return Organization.getDonatedResources({

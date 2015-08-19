@@ -24,6 +24,14 @@
     return function(link) {
       return "<a href='" + link + "'>" + link + "</a>";
     };
+  }).filter('default', function() {
+    return function(input, __default__) {
+      if (input === null || input === void 0) {
+        return __default__;
+      } else {
+        return input;
+      }
+    };
   });
 
 }).call(this);
