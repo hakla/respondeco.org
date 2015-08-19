@@ -43,12 +43,18 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
     description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
   ]
 
+  $scope.map =
+    center:
+      latitude: 48
+      longitude: 16
+    zoom: 8
+
   $scope.clearCategory = (category) ->
     $scope._subcategory = null
     category
 
   $scope.currentView = -> 
-    $rootScope.title = "#{$scope.organization?.name} #{$scope.titlesForView[$scope.view]()}"
+    $rootScope.title = "#{$scope.organization?.name}"
     "/template/organization/#{$scope.view}.html"
 
   $scope.update = (name) ->

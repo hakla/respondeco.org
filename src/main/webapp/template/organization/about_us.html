@@ -1,69 +1,59 @@
-<div class="profile-body">
+<div class="profile-body first">
     <div class="row margin-bottom-30">
-        <div class="col-md-6">
-            <div class="profile-blog">
-                <div class="headline hover-toggle">
-                    <h2>
-                        <span editable-text="organization.name" e-form="editName" onaftersave="save()">{{organization.name}}</span>
-                    </h2>
-                    <div class="pull-right on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
-                        <i class="icon-pencil"></i>
-                        <span class="hover-underline">{{'general.edit' | translate}}</span>
-                    </div>
+        <div class="col-md-3 profile-logo">
+            <div class="col-xs-6 col-xs-offset-3 text-center">
+                <img class="img-responsive profile-img margin-bottom-10" logo logo-id="organization.logo.id">
+            </div>
+            <div class="headline hover-toggle margin-bottom-10">
+                <div class="pull-right hidden on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
+                    <i class="icon-pencil"></i>
+                    <span class="hover-underline">{{'general.edit' | translate}}</span>
                 </div>
-                <div class="hover-toggle">
-                    <div ng-hide="organization.email == false">
-                        <span editable-text="organization.email" e-form="editEmail" onaftersave="save()">
-                            {{organization.email || ('organization.email.placeholder' | translate) }}
-                        </span>
-                        <span class="pull-right on-hover link-style" ng-click="editEmail.$show()" ng-hide="editEmail.$visible">
-                            <i class="icon-pencil"></i> <span class="hover-underline">{{'general.edit' | translate}}</span>
-                        </span>
-                    </div>
-                    <div ng-show="organization.email == false">
-                        <span editable-text="organization.email" onaftersave="save()">
-                            {{organization.email || ('organization.email.placeholder' | translate) }}
-                        </span>
-                    </div>
+                <h2>
+                    <span editable-text="organization.name" e-form="editName" onaftersave="save()">{{organization.name}}</span>
+                </h2>
+            </div>
+            <div class="subheading margin-bottom-30">
+                <span>Wien, Österreich</span>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-half-o"></i>
+                    <span class="rating-counter">13</span>
                 </div>
-                <div class="display-block hover-toggle">
-                    <div ng-hide="organization.website == false">
-                        <span editable-text="organization.website" e-form="editWebsite" onaftersave="save()">
-                            {{organization.website || ('organization.website.placeholder' | translate) }}
-                        </span>
-                        <span class="pull-right on-hover link-style" ng-click="editWebsite.$show()" ng-hide="editWebsite.$visible">
-                            <i class="icon-pencil"></i> <span class="hover-underline">{{'general.edit' | translate}}</span>
-                        </span>
-                    </div>
-                    <div ng-show="organization.website == false">
-                        <span editable-text="organization.website" onaftersave="save()">
-                            {{organization.website || ('organization.website.placeholder' | translate) }}
-                        </span>
-                    </div>
-                </div>
-                <br>
-                <a href="#"><i class="rounded-x tw fa fa-twitter"></i> </a>
-                <a href="#"><i class="rounded-x fb fa fa-facebook"></i> </a>
-                <a href="#"><i class="rounded-x sk fa fa-skype"></i> </a>
-                <a href="#"><i class="rounded-x gp fa fa-google-plus"></i> </a>
-                <a href="#"><i class="rounded-x gm fa fa-envelope"></i> </a>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="service-block-v3 service-block-u">
-                <i class="icon-badge"></i>
-                <span class="service-heading">Auszeichnungen</span>
-                <span class="counter">8</span>
+        <div class="col-md-9 icon-container text-center">
+            <div class="icon">
+                <span class="fa fa-stack fa-1x5 verified">
+                    <i class="fa fa-shield fa-stack-2x"></i>
+                    <i class="fa fa-check fa-stack-1x"></i>
+                </span>
+                <div>Verifiziert</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-cubes fa-3x"></i>
+                <div>3 Projekte</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-gift fa-3x"></i>
+                <div>13 Spenden</div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-trophy fa-3x"></i>
+                <div>7 Auszeichnungen</div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row margin-bottom-30">
         <div class="col-md-6 sm-margin-bottom-30">
             <!--End Social Icons v3-->
             <!--Skills-->
             <div class="panel panel-profile">
                 <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left"><i class="icon-info"></i> Wir sind nachhaltig weil:</h2>
+                    <h2 class="panel-title heading-sm pull-left"><i class="icon-book-open"></i> Wir sind nachhaltig weil</h2>
                 </div>
                 <div class="panel-body hover-toggle" editable-textarea="organization.description" e-form="editDescription" e-rows="12" e-cols="50" onaftersave="save()">
                     <div class="pull-right on-hover link-style" ng-click="editDescription.$show()" ng-hide="editDescription.$visible">
@@ -75,36 +65,199 @@
             </div>
             <!--End Skills-->
         </div>
-        <div class="col-md-6">
+    </div>
+    <div class="row">
+        <div class="col-md-2">
             <div class="panel panel-profile">
                 <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left"><i class="icon-book-open"></i> Handlungsfelder</h2>
-                    <a href="#"><i class="fa fa-cog pull-right"></i></a>
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
                 </div>
-                <div class="panel-body">
-                    <div ng-repeat="category in chosenCategories">
-                        <p>
-                            <strong>
-                                <a href="#" editable-select="_category" e-ng-options="s for s in categories.main" onaftersave="clearCategory(category)">
-                                    <span ng-show="_category != undefined">{{ _category }}</span>
-                                    <span ng-hide="_category != undefined" translate="organization.category.placeholder"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left">
+                        ISO-Kategorie X
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row hidden">
+        <div class="col-md-12">
+            <div class="panel panel-profile">
+                <div class="panel-heading overflow-h">
+                    <h2 class="panel-title heading-sm pull-left"><i class="icon-users"></i> Mitglieder</h2>
+                </div>
+                <div class="panel-body hover-toggle" editable-textarea="organization.description" e-form="editDescription" e-rows="12" e-cols="50" onaftersave="save()">
+                    <div class="cube-portfolio">
+                        <div id="grid-container" class="cbp-l-grid-gallery">
+                            <div class="cbp-item marketing designer">
+                                <a href="assets/ajax/cube-portfolio/team1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/clemens.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Entwicklung</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Clemens Pühringer</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </a>
-                            </strong>
-                            <br />
-                            <a href="#" editable-select="_subcategory" buttons="no" e-ng-options="s for s in categories[_category]" ng-show="_category != undefined && categories[_category] != undefined">
-                                <span ng-show="_subcategory != undefined">{{ _subcategory }}</span>
-                                <span ng-hide="_subcategory != undefined" translate="organization.subcategory.placeholder"></span>
-                            </a>
-                        </p>
-                        <p class="text-italic">
-                            <span editable-textarea="category.description" e-rows="4" e-cols="40">
-                                {{category.description || ('organization.category.description.placeholder' | translate) }}
-                            </span>
-                        </p>
-                        <hr />
+                            </div>
+                            <div class="cbp-item designer support">
+                                <a href="assets/ajax/cube-portfolio/team2.html" class="cbp-caption cbp-singlePageInline" data-title="Bolt UI<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/klaus.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Entwicklung</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Klaus Harrer</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="cbp-item marketing designer">
+                                <a href="assets/ajax/cube-portfolio/team3.html" class="cbp-caption cbp-singlePageInline" data-title="WhereTO App<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/profile_empty.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Entwicklung</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Mathias Lehnfeld</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="cbp-item designer marketing">
+                                <a href="assets/ajax/cube-portfolio/team4.html" class="cbp-caption cbp-singlePageInline" data-title="iDevices<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/jan.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">All-rounder</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Jan Draxler</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="cbp-item designer developer">
+                                <a href="assets/ajax/cube-portfolio/team5.html" class="cbp-caption cbp-singlePageInline" data-title="Seemple* Music for iPad<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/roland.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Designer</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Roland Spitzlinger</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="cbp-item marketing designer developer">
+                                <a href="assets/ajax/cube-portfolio/team6.html" class="cbp-caption cbp-singlePageInline" data-title="Remind~Me Widget<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/profile_empty.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Finanzen</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Matthias Steinklammer</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="cbp-item designer marketing">
+                                <a href="assets/ajax/cube-portfolio/team7.html" class="cbp-caption cbp-singlePageInline" data-title="Workout Buddy<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap">
+                                        <img src="images/team/profile_empty.jpg" alt="">
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Berater</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Gregor Kappler</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="cbp-item designer marketing">
+                                <a href="assets/ajax/cube-portfolio/team7.html" class="cbp-caption cbp-singlePageInline" data-title="Workout Buddy<br>by Tiberiu Neamu">
+                                    <div class="cbp-caption-defaultWrap add-new-member">
+                                        <img src="images/team/profile_empty.jpg" alt="">
+                                        <i class="fa fa-plus"></i>
+                                    </div>
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignLeft">
+                                            <div class="cbp-l-caption-body">
+                                                <div class="cbp-l-caption-desc">Team verstärken</div>
+                                                <div class="cbp-l-caption-title text-uppercase">Mitglied hinzufügen</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <!--/end Grid Container-->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="unify/js/plugins/cube-portfolio/cube-portfolio-lightbox.js"></script>

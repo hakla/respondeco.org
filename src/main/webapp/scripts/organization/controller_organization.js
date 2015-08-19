@@ -50,13 +50,20 @@
         description: "Lorem ipsum Ut irure aliquip cupidatat est sint sint irure nostrud laboris sint laborum."
       }
     ];
+    $scope.map = {
+      center: {
+        latitude: 48,
+        longitude: 16
+      },
+      zoom: 8
+    };
     $scope.clearCategory = function(category) {
       $scope._subcategory = null;
       return category;
     };
     $scope.currentView = function() {
       var ref;
-      $rootScope.title = ((ref = $scope.organization) != null ? ref.name : void 0) + " " + ($scope.titlesForView[$scope.view]());
+      $rootScope.title = "" + ((ref = $scope.organization) != null ? ref.name : void 0);
       return "/template/organization/" + $scope.view + ".html";
     };
     $scope.update = function(name) {

@@ -1,272 +1,30 @@
-<div class="row project-details">
-    <div class="col-xs-12 pull-left">
-        <div class="clearfix">
-            <div class="col-xs-2">
-                <button class="btn btn-default" ng-click="clear()" translate="general.back">Back</button>
+<!--=== Profile ===-->
+<!-- <page-title>{{organization.name}}</page-title> -->
+<link rel="stylesheet" type="text/css" href="styles/project-details.css">
+<div class="big-image"></div>
+<div class="container content profile">
+    <div class="row">
+        <div class="col-xs-12 profile-container">
+            <div class="col-md-12">
+              <div class="headline hover-toggle margin-bottom-10">
+                  <div class="pull-right hidden on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
+                      <i class="icon-pencil"></i>
+                      <span class="hover-underline">{{'general.edit' | translate}}</span>
+                  </div>
+                  <h2><span editable-text="project.name" e-form="editName" onaftersave="save()">Wir brauchen eine fette Ananas</span></h2>
+              </div>
             </div>
-            <div class="text-right col-xs-10">
-                <button type="button" ng-show="showFollow()&&!editable" name="follow_button" class="btn btn-success ng-hide" ng-click="follow()">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span translate="follow.button" class="ng-scope">Folgen</span>
-                </button>
-                <button type="button" ng-show="showUnfollow()&&!editable" name="unfollow_button" class="btn btn-danger ng-hide" ng-click="unfollow()">
-                    <span class="glyphicon glyphicon-minus"></span>
-                    <span translate="follow.button" class="ng-scope">Folgen</span>
-                </button>
-                <button class="btn btn-primary" ng-click='edit()' translate='general.edit' ng-show="editable">Edit</button>
-            </div>
-        </div>
-        <div class="spacer-top"></div>
-        <div class="col-sm-8 col-xs-12">
-            <h2 class="spacer-top">
-                <span translate="project.details.title" translate-values="{project: '{{project.name}}'}" ng-class="{ 'line-through': remainingDays <= 0 && project.successful == false }">{{project.name}}</span>
-                <div class="spacer-left inline-block" ng-show="remainingDays <= 0">
-                    <i class="glyphicon glyphicon-ok" ng-show="project.successful" popover="{{ 'project.tooltip.success.content'| translate }}" popover-title="{{ 'project.tooltip.success.title'| translate }}" popover-append-to-body="true" popover-popup-delay="500" popover-trigger="mouseenter"></i>
-                    <i class="glyphicon glyphicon-remove" ng-hide="project.successful"popover="{{ 'project.tooltip.failed.content'| translate }}" popover-title="{{ 'project.tooltip.failed.title'| translate }}" popover-append-to-body="true" popover-popup-delay="500" popover-trigger="mouseenter"></i>
-                </div>
-            </h2>
-            <span class="badge" ng-repeat="tag in project.propertyTags">{{ tag.name }}</span>
-            <div class="visible-xs spacer-top-2"></div>
-            <div class="clearfix">
-                <uploaded-image name="project.logo.id" class="project-logo pull-left"></uploaded-image>
-                <h3 translate="project.details.purpose">Project purpose</h3>
-                <div ng-bind-html="purpose"></div>
-            </div>
-            <div class="visible-xs spacer-top-2"></div>
-        </div>
-        <div class="col-sm-4 col-xs-12 spacer-top">
-            <p translate="project.by"></p>
             <div class="row">
-                <resp-organization value="{{project.organizationId}}" class="'organization col-lg-6 col-md-8 col-sm-12 col-xs-8'"></resp-organization>
-            </div>
-        </div>
-    </div>
-    <div class="modal-body">
-        <div class="col-md-8">
-            <div class="rating-container">
-                <div class="row">
-                    <div id="rating" class="col-md-12">
-                        <span>{{ 'project.rating' | translate }}</span>
-                        <rating max="5" readonly="!canRate" on-leave="overStar = null"
-                                ng-click="showRating()" ng-model="shownRating"></rating>
-                    </div>
-                    <div class="row" ng-show="ratingSuccess">
-                        <div class="col-md-12">
-                            <div id="projectRatingSuccess" class="alert alert-success"
-                                 translate="rating.success">
-                                You have successfully rated!
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div ng-show="isRating">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <hr/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <textarea ng-model="rating.comment" cols="30" rows="5" placeholder="{{'rating.placeholder' | translate}}"></textarea>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button class="btn btn-success" ng-click="rateProject()" translate="rating.ratenow">Rate now</button>
-                            <button class="btn btn-default" ng-click="hideRating()" translate="rating.notnow">Not now</button>
-                        </div>
-                    </div>
-                    <div class="row" ng-show="projectRatingError">
-                        <div class="col-md-12">
-                            <div id="projectRatingError" class="alert alert-danger"
-                                 translate="rating.error.general">
-                                <strong>An error has occured!</strong>
-                                Sorry, something went wrong.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="newsfeed">
-                <h3>{{ 'postingfeed.title' | translate }}</h3>
-                <div>
-                    <div ng-repeat="posting in postings">
-                        <resp-posting value="posting" hide-organization="true"></resp-posting>
-                    </div>
-                </div>
-                <a ng-click="showMorePostings()" translate="posting.showmore"
-                   ng-show="canShowMorePostings()">Show more</a>
-                <hr/>
-                <form name="postingform" role="form" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength" show-validation>
-                    <div class="form-group" ng-show="editable">
-                        <div ng-show="editable">
-                            <label ng-show="facebookConnected"><input type="checkbox" ng-model="postOnFacebook"/>Auf Facebook posten</label>
-                            <label ng-show="twitterConnected"><input type="checkbox" ng-model="postOnTwitter"/>Auf Twitter posten</label>
-                            <label ng-show="xingConnected"><input type="checkbox" ng-model="postOnXing"/>Auf Xing posten</label>
-                        </div>
-                        <textarea class="form-control" name="postingInformation" type="text" placeholder="{{'posting.information.placeholder' | translate}}"
-                               ng-minlength="5" ng-maxlength="2048" ng-model="postingInformation" required autocomplete="off"/>
-                        <button type="submit" class="btn btn-success" ng-disabled="postingform.$invalid" ng-click="addPosting()" translate="general.post">Postbutton</button>
-                        <div ng-show="postingform.postingInformation.$dirty && postingform.postingInformation.$invalid">
-                            <p class="help-block"
-                               ng-show="postingform.postingInformation.$error.minlength" translate="global.messages.validate.posting.minlength">
-                                Your Posting is required to be at least 5 characters
-                            </p>
-                            <p class="help-block"
-                               ng-show="postingform.postingInformation.$error.maxlength" translate="global.messages.validate.posting.maxlength">
-                                Your Posting is required to be at max 2048 characters
-                            </p>
-                            <p class="help-block"
-                               ng-show="postingform.postingInformation.$error.required" translate="global.messages.validate.posting.required">
-                                Your Posting is required
-                            </p>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-12">
-            <div class="spacer-top"></div>
-            <div class="remaining">
-                <div class="pull-right"><strong>{{project.startDate | date}}</strong></div>
-                <strong ng-show="project.successful" translate="project.started"></strong>
-                <strong ng-hide="(remainingDays <= 0) || project.concrete == false">{{remainingDays}} {{ 'project.remainingdays' | translate }}</strong>
-            </div>
-            <div class="resources spacer-top">
-                <strong>{{collected}}{{ 'resource.collected' | translate }}</strong>
-                <progressbar class="progress-striped" value="collected"></progressbar>
-                <strong>{{collectedEssential}}{{ 'resource.essentialcollected' | translate }}</strong>
-                <progressbar class="progress-striped" value="collectedEssential"></progressbar>
-            </div>
-            <div class="resource-requirements">
-                <h2>{{ 'project.details.details' | translate}}</h2>
-                <accordion close-others="true">
-                    <accordion-group ng-open="item.id" ng-repeat="item in project.resourceRequirements">
-                        <accordion-heading>
-                            <div style="height: 30px; line-height: 30px;" class="row hover-toggle" ng-click="expandResource(item, $event)">
-                                <div class="pull-right" style="text-align: right;">
-                                    <span>{{item.sum == undefined ? 0 : item.sum + ' / ' + item.originalAmount }}</span>
-                                    <i class="glyphicon" ng-class="{'glyphicon-chevron-down': item.expanded, 'glyphicon-chevron-right': !item.expanded}"></i>
-                                </div>
-                                <div class="ellipsis" tooltip="{{item.name}}">{{item.name}}</div>
-                            </div>
-                        </accordion-heading>
-                        <ul>
-                            <li ng-repeat="match in item.matches">
-                                <img src="images/profile_empty.png" alt="profile-picture" class="pull-left">
-                                <div class="pull-right">{{match.amount}}/{{item.originalAmount}}</div>
-                                <div class="col-md-6 strong">{{match.organization.name}}</div>
-                                <div class="col-md-4">
-                                    <rating max="5" on-leave="overStar = null"
-                                            readonly="!matchRatingPermissions[match.matchId]"
-                                            ng-click="rateMatch(match.matchId)"
-                                            ng-model="organizationRatings[match.organization.id].rating"></rating>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="text-right" title="{{item.sum >= item.originalAmount ? 'project.details.applyrestricted' : '' | translate}}" ng-show="isAllowedToApply() && (item.sum < item.originalAmount)">
-                            <button class="btn btn-primary" ng-disabled="item.sum >= item.originalAmount" type="button" ng-click="projectApply(item, $event)" translate="resource.offer.donate" data-toggle="modal" data-target="#apply">Donate</button>
-                        </div>
-                    </accordion-group>
-
-                </accordion>
-            </div>
-
-            <div class="dynamic-image" style="height: 200px; background-image: url('{{staticMap}}');"></div>
-        </div>
-
-    <div class="modal fade modal-apply" id="apply" tabindex="-1" role="dialog" aria-labelledby="applyLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="clearRequirement()">&times;</button>
-                    <h2 class="modal-title" id="applyLabel" translate="resource.offer.title">Choose resource offer</h2>
-                </div>
-                <div class="modal-body">
-                    <form name="applyForm" role="form" novalidate show-validation class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
-                        <dl class="dl-horizontal">
-                            <dt>{{ 'resource.chosen' | translate }}</dt>
-                            <dd>{{ ProjectApply.selectedRequirement.name }}</dd>
-                            <dt>{{ 'resource.stillneeded' | translate }}</dt>
-                            <dd>{{ ProjectApply.selectedRequirement.amount }}</dd>
-                        </dl>
-                        <div class="resources spacer-top clearfix">
-                            <div ng-click="selectResourceOffer(offer, $event)" class="resource" ng-repeat="offer in resourceOffers">
-                                <div class="col-xs-12 col-sm-6 col-md-4">
-                                    <resp-resource-item resource="offer"></resp-resource-item>
-                                </div>
-                                <div class="visible-xs clearfix"></div>
-                                <div class="visible-xs spacer-top"></div>
-                                <div class="visible-sm clearfix" ng-if="$index % 2 == 1"></div>
-                                <div class="visible-sm spacer-top" ng-if="$index % 2 == 1"></div>
-                                <div class="visible-md visible-lg clearfix" ng-if="$index % 3 == 2"></div>
-                                <div class="visible-md visible-lg spacer-top" ng-if="$index % 3 == 2"></div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button id="resourceCancelButton" type="button" class="btn btn-link" data-dismiss="modal">
-                        {{ 'resource.new.cancelbutton' | translate }}
-                    </button>
-                    <button id="resourceSaveButton" type="button" ng-click="projectApplySubmit($event)" data-dismiss="modal" class="btn btn-success" ng-disabled="applyForm.$invalid">
-                        <span class="glyphicon glyphicon-save"></span> {{ 'resource.new.savebutton' | translate }}
-                    </button>
-                </div>
-                </form>
+              <div class="col-md-8">
+                  <div ng-include="'template/project/about.html'"></div>
+                  <div ng-include="'template/project/news.html'"></div>
+                  <div ng-include="'template/project/contact.html'"></div>
+              </div>
+              <div class="col-md-4">
+                  <div ng-include="'template/project/resources.html'"></div>
+              </div>
             </div>
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="rateMatchModal" tabindex="-1" role="dialog" aria-labelledby="rateMatchModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form name="sendform" role="form" novalidate show-validation
-                  class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                  ng-submit="rateOrganization()">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                            ng-click="clearRating()">&times;</button>
-                    <h4 class="modal-title" id="myTextMessageLabel"
-                        translate="rating.match.dorate">Rate the interaction!</h4>
-                </div>
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label translate="rating.yourrating">Receiver</label>
-                        <rating max="5" on-leave="overStar = null"
-                                readonly="false"
-                                ng-click="dummy = 5"
-                                ng-model="currentOrgRating"></rating>
-
-                    </div>
-                    <div class="form-group">
-                        <label translate="rating.yourcomment">Comment</label>
-                            <textarea name="comment" class="fullwidth form-control"
-                                      ng-model="currentOrgRatingComment" placeholder="{{'rating.placeholder' | translate}}"
-                                      ng-maxlength="2048"></textarea>
-                    </div>
-                    <div id="orgRatingError" class="alert alert-danger" ng-show="orgRatingError"
-                         translate="rating.error.general">
-                        <strong>An error has occured!</strong>
-                        Sorry, something went wrong.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearRating()">
-                        <span class="glyphicon glyphicon-ban-circle"></span>
-                        <span translate="rating.notnow">Not now</span>
-                    </button>
-                    <button type="submit" ng-disabled="sendform.$invalid" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-save"></span>
-                        <span translate="rating.ratenow">Rate now</span>
-                    </button>
-                </div>
-            </form>
-
-
-        </div>
-    </div>
-</div>
+<!--=== End Profile ===-->
