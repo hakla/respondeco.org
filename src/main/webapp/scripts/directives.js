@@ -165,7 +165,7 @@ angular.module('respondecoApp')
     })
     .directive('logo', function() {
         var baseUrl = '/app/rest/images/file/';
-        var placeholder = 'http://placehold.it/300x150/666&text=Leeres+Bild';
+        var placeholder = '/images/logo.png';
 
         return {
             restrict: "A",

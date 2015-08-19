@@ -18,8 +18,14 @@ li a i {
 }
 
 .profile .profile-body {
+  margin-top: 30px;
   padding: 20px;
   background: #f7f7f7;
+
+  &.first {
+    margin-top: 0;
+    padding-top: 0;
+  }
 }
 
 /*Scrollbar*/
@@ -571,6 +577,15 @@ li a i {
   border-bottom: none;
 }
 
+.timeline-v2 > li img {
+  border-radius: 70px !important;
+}
+
+.timeline-v2 > li img + div {
+  margin-top: 10px;
+  color: #999;
+}
+
 /*Social Contacts v2*/
 .profile .social-contacts-v2 {
   margin-bottom: 0;
@@ -1034,4 +1049,126 @@ li a i {
   &:hover {
     text-decoration: underline;
   }
+}
+
+/* Cube portfolio */
+.cbp-caption-defaultWrap.add-new-member {
+  img {
+    opacity: 0;
+  }
+
+  i.fa.fa-plus {
+    display: block;
+    font-size: 120px;
+    text-align: center;
+    padding-top: 35px;
+    margin-bottom: 35px;
+    color: #ddd;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+.cbp-caption-overlayBottomPush .cbp-l-caption-alignLeft .cbp-l-caption-body {
+  margin: 14px 16px 0;
+
+  .cbp-l-caption-title {
+    text-transform: none;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+}
+
+.subheading {
+  color: #999;
+
+  .rating {
+    display: inline-block;
+    margin-left: 12px;
+
+    .fa {
+      color: #ffb400;
+      font-size: 16px;
+      display: inline-block;
+      margin-left: -2px;
+      vertical-align: text-bottom;
+    }
+
+    .rating-counter {
+      &::before {
+        content: "(";
+        margin-left: 2px;
+      }
+
+      &::after {
+        content: ")";
+      }
+    }
+  }
+}
+
+/* icon container */
+.icon-container {
+  margin-top: 20px;
+  margin-bottom: 40px;
+
+  .icon {
+    display: inline-block;
+    text-align: center;
+    color: #666;
+    margin: 0;
+    width: 120px;
+    margin: 20px 10px;
+
+    &:hover {
+      .fa-cubes {
+        color: #9C7500;
+      }
+
+      .fa-gift {
+        color: #8B0000;
+      }
+
+      .fa-trophy {
+        color: #ffcc00;
+      }
+
+      .fa-certificate {
+        color: #4444cc;
+      }
+    }
+
+    .fa {
+      color: #999;
+      transition: .2s ease color;
+    }
+
+    .fa-1x5 {
+      font-size: 1.5em;
+    }
+
+    .verified {
+      .fa-shield {
+        color: #ffb400;
+      }
+
+      .fa-check {
+        color: #666;
+      }
+    }
+  }
+}
+
+.panel.panel-profile {
+  clear: left;
+  margin-bottom: 20px;
+}
+
+.angular-google-map {
+  margin-bottom: 20px;
+}
+
+.news-logo {
+  max-width: 80px;
 }

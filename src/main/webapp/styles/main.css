@@ -705,3 +705,28 @@ uploaded-image div, [uploaded-image] div {
   position: relative;
   z-index: 1;
 }
+
+/* line 735, ../../scss/main.scss */
+.subheader.fixed-menu {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 10;
+}
+/* line 741, ../../scss/main.scss */
+.subheader.fixed-menu + .container {
+  margin-top: 60px;
+}
+/* line 746, ../../scss/main.scss */
+.subheader .navbar.navbar-default {
+  border: none;
+  border-bottom: 1px solid #e7e7e7;
+}
+/* line 750, ../../scss/main.scss */
+.subheader .navbar.navbar-default .logo {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  left: -25px;
+  top: 8px;
+}

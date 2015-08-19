@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Column(name = "is_npo")
     private Boolean isNpo;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "owner")
     @DefaultReturnValue
