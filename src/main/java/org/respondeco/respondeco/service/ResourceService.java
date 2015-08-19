@@ -12,8 +12,8 @@ import org.respondeco.respondeco.matching.MatchingImpl;
 import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.service.util.Assert;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
-import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,18 @@ import java.util.stream.Collectors;
 @Service
 public class ResourceService {
 
-    private final Logger log = LoggerFactory.getLogger(ResourceService.class);
+    private static final Logger log = LoggerFactory.getLogger(ResourceService.class);
+
+    private static final String ERROR_REQUIREMENT_KEY = "resource.requirement.error";
+    private static final String ERROR_OFFER_KEY = "resource.offer.error";
+
+    private static final String ERROR_NO_ENTITY = "no_entity";
+    private static final String ERROR_NO_PERMISSION = "no_permision";
+    private static final String ERROR_EXISTING_MATCHES = "existing_matches";
+    private static final String ERROR_AMOUNT_MODIFICATION = "amount_modification";
+    private static final String ERROR_ORIGINAL_AMOUNT_MODIFICATION = "original_amount_modification";
+
+
     private ResourceOfferRepository resourceOfferRepository;
     private ResourceRequirementRepository resourceRequirementRepository;
     private ResourceTagService resourceTagService;
@@ -46,8 +57,10 @@ public class ResourceService {
     private ProjectRepository projectRepository;
     private ResourceMatchRepository resourceMatchRepository;
     private ImageRepository imageRepository;
-
     private UserService userService;
+
+    private ExceptionUtil.KeyBuilder requirementKey = new ExceptionUtil.KeyBuilder(ERROR_REQUIREMENT_KEY);
+    private ExceptionUtil.KeyBuilder offerKey = new ExceptionUtil.KeyBuilder(ERROR_OFFER_KEY);
 
     @Inject
     public ResourceService(ResourceOfferRepository resourceOfferRepository,
@@ -83,99 +96,115 @@ public class ResourceService {
     }
 
     /**
-     * Create a new ResourceRequirement
-     * @param name name of Resource Requirement
-     * @param amount amount of Resource Requirement
-     * @param description description of Resource Requirement
-     * @param projectId project id belonging to the Resource Requirement
-     * @param isEssential true if requirement is essential for the project, false otherwise
-     * @param resourceTags defined tags for the resource requirement
-     * @return saved ResourceRequirement created resource requirement
-     * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource can't be found
-     * @throws NoSuchEntityException if project of the resource can't be found
+     * Creates, updates, or deletes ResourceRequirements of the existing project based on the updated requirements
+     * if an updated requirement has no id, it will be created in the database
+     * if an updated requirement has an id, it will be updated with the new values, only the name, the description
+     * the logo, the tags and the isEssential flag can be updated on an existing requirement, changes to other
+     * members will result in an error
+     * if the project has requirements that are not present in the updated requirements, the requirements will be
+     * deleted from the project if it has no existing matches
+     * if a requirement which has matches is to be deleted, an exception is raised
+     * @param existingProject an existing project, loaded from the database
+     * @param updatedRequirements changed requirements
+     * @return
+     * @throws ResourceNotFoundException
+     * @throws NoSuchEntityException
      */
-    public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
-                                                 Long projectId, Boolean isEssential, List<String> resourceTags)
-        throws ResourceNotFoundException, NoSuchEntityException {
-        ResourceRequirement newRequirement = null;
+    public List<ResourceRequirement> getUpdatedRequirements(Project existingProject,
+                                                            List<ResourceRequirement> updatedRequirements)
+        throws IllegalValueException {
 
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
-        if(project == null) {
-            throw new NoSuchEntityException(projectId);
+        List<ResourceRequirement> results = new ArrayList<>();
+        if(updatedRequirements == null) {
+            deleteRequirements(existingProject.getResourceRequirements());
+            return results;
+        }
+        List<ResourceRequirement> toDelete = existingProject.getResourceRequirements();
+        log.debug("starting deletion of removed requirements, {}", toDelete);
+        if(toDelete != null) {
+            for(ResourceRequirement requirement : updatedRequirements) {
+                if(requirement.getId() == null) {
+                    continue;
+                }
+                toDelete.removeIf(
+                    req -> req.getId().equals(requirement.getId())
+                );
+            }
+        }
+        log.debug("filtered removed requirements, deleting {}", toDelete);
+        deleteRequirements(toDelete);
+
+        for(ResourceRequirement requirement : updatedRequirements) {
+            requirement.setProject(existingProject);
+            ResourceRequirement updatedRequirement = null;
+            if(requirement.getId() != null) {
+                updatedRequirement = updateRequirement(requirement);
+            } else {
+                requirement.setOriginalAmount(requirement.getAmount());
+                updatedRequirement = requirement;
+            }
+            updatedRequirement.setProject(existingProject);
+            results.add(updatedRequirement);
         }
 
-        ensureUserIsPartOfOrganisation(project);
-        List<ResourceRequirement> entries = resourceRequirementRepository.findByNameAndProjectAndActiveIsTrue(name, project);
-        if (entries == null || entries.isEmpty() == true) {
-            newRequirement = new ResourceRequirement();
-            newRequirement.setName(name);
-            newRequirement.setOriginalAmount(amount);
-            newRequirement.setAmount(amount);
-            newRequirement.setDescription(description);
-            newRequirement.setProject(project);
-            newRequirement.setIsEssential(isEssential);
-            newRequirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-            resourceRequirementRepository.save(newRequirement);
-        } else {
-            throw new ResourceNotFoundException(
-                String.format("Requirement with description '%s' for the Project %d already exists",
-                    description, project.getId()));
-        }
+        results.forEach(
+            result -> resourceRequirementRepository.save(result)
+        );
 
-        return newRequirement;
+        return results;
     }
 
     /**
      * Updates a Resource Requirement
-     * @param id id of required resource
-     * @param name name of required resource
-     * @param amount amount of required resource
-     * @param description description of required resource
-     * @param projectId id of the project which contains the resource
-     * @param isEssential true if resource is essential for the project, false otherwise
-     * @param resourceTags tags of the resource
      * @return updated Resource requirement
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource requirement can't be found
      * @throws OperationForbiddenException if operation is forbidden
      * @throws NoSuchEntityException if project of the resource requirement can't be found
      */
-    public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
-                                                 Long projectId, Boolean isEssential, List<String> resourceTags)
+    private ResourceRequirement updateRequirement(ResourceRequirement updatedRequirement)
         throws IllegalValueException {
-        ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
+        ResourceRequirement originalRequirement =
+            this.resourceRequirementRepository.findByIdAndActiveIsTrue(updatedRequirement.getId());
 
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
-        if(project == null) {
-            throw new NoSuchEntityException(projectId);
+        if(originalRequirement == null) {
+            throw new NoSuchEntityException(
+                requirementKey.from(ERROR_NO_ENTITY),
+                String.format("A resource requirement with id %d does not exist.", updatedRequirement.getId()));
         }
-        if (project.equals(requirement.getProject()) == false) {
-            throw new OperationForbiddenException("cannot modify resource requirements of other projects");
+        if(!originalRequirement.getProject().equals(updatedRequirement.getProject())) {
+            throw new OperationForbiddenException(
+                requirementKey.from(ERROR_NO_PERMISSION),
+                "You have no permission to modify this resource"
+            );
         }
-        ensureUserIsPartOfOrganisation(requirement.getProject());
-        BigDecimal matchSum = new BigDecimal(0);
-        if(requirement.getResourceMatches() != null) {
-            for (ResourceMatch match : requirement.getResourceMatches()) {
-                //only take accepted matches into account
-                if (Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
-                    matchSum = matchSum.add(match.getAmount());
-                }
-            }
-        }
-        log.debug("MATCH SUM = " + matchSum);
-        requirement.setName(name);
-        requirement.setDescription(description);
-        requirement.setIsEssential(isEssential);
-        requirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
+        Assert.isEqualOrNull(originalRequirement.getOriginalAmount(), updatedRequirement.getOriginalAmount(),
+            requirementKey.from(ERROR_ORIGINAL_AMOUNT_MODIFICATION),
+            "The original amount of needed resources can not be changed");
+        Assert.isEqualOrNull(originalRequirement.getAmount(), updatedRequirement.getAmount(),
+            requirementKey.from(ERROR_AMOUNT_MODIFICATION),
+            "The amount of needed resources can not be changed directly");
+        originalRequirement.setName(updatedRequirement.getName());
+        originalRequirement.setDescription(updatedRequirement.getDescription());
+        originalRequirement.setLogo(updatedRequirement.getLogo());
+        originalRequirement.setResourceTags(updatedRequirement.getResourceTags());
+        originalRequirement.setIsEssential(updatedRequirement.getIsEssential());
+        originalRequirement.setResourceTags(updatedRequirement.getResourceTags());
 
-        if(amount.subtract(matchSum).longValue() < 0L) {
-            throw new IllegalValueException("resource.errors.update.negative",
-                "New amount is too low, a higher amount of resources was alredy donated");
-        }
-        requirement.setAmount(amount.subtract(matchSum));
-        requirement.setOriginalAmount(amount);
-        resourceRequirementRepository.save(requirement);
+        return originalRequirement;
+    }
 
-        return requirement;
+    private void deleteRequirements(List<ResourceRequirement> requirements) {
+        if(requirements == null) {
+            return;
+        }
+        for(ResourceRequirement requirement : requirements) {
+            Assert.isEmpty(requirement.getResourceMatches(), requirementKey.from(ERROR_EXISTING_MATCHES),
+                String.format("Cannot delete requirement %s with id %d, there are existing matches",
+                    requirement.getName(), requirement.getId()));
+            log.debug("calling ResourceRequirementRepository#save() with argument {}", requirement);
+            requirement.setActive(false);
+            resourceRequirementRepository.save(requirement);
+        }
     }
 
     /**
@@ -208,51 +237,24 @@ public class ResourceService {
      * @return List of ResourceRequirements
      */
     public List<ResourceRequirement> getRequirementsForProject(Long projectId) {
-        List<ResourceRequirement> entries = this.resourceRequirementRepository.findByProjectIdAndActiveIsTrue(projectId);
-
-        return entries;
+        return this.resourceRequirementRepository.findByProjectIdAndActiveIsTrue(projectId);
     }
 
     /**
      * Create a new ResourceOffer
-     * @param name ResourceOffer name
-     * @param amount ResourceOffer amount
-     * @param description ResourceOffer description
-     * @param organizationId organization id which created the ResourceOffer
-     * @param isCommercial true if ResourceOffer is a commercial Resource, false otherwise
-     * @param startDate available at startDate
-     * @param endDate available until endDate
-     * @param resourceTags Tags describing the ResourceOffer
-     * @param logoId id of the resource logo
-     * @param price
      * @return created ResourceOffer
      */
-    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
-                                     Boolean isCommercial, LocalDate startDate,
-                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
+    public ResourceOffer createOffer(ResourceOffer newOffer)
         throws NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(newOffer.getOrganization().getId());
         if(organization == null) {
-            throw new NoSuchEntityException(organizationId);
+            throw new NoSuchEntityException(newOffer.getOrganization().getId());
         }
         if(organization.getVerified() == false) {
-            throw new OperationForbiddenException("Organization (id: " + organizationId + ") not verified");
-        }
-        ResourceOffer newOffer = new ResourceOffer();
-        newOffer.setName(name);
-        newOffer.setAmount(amount);
-        newOffer.setOriginalAmount(amount);
-        newOffer.setDescription(description);
-        newOffer.setOrganization(organization);
-        newOffer.setIsCommercial(isCommercial);
-        newOffer.setPrice(price);
-        newOffer.setStartDate(startDate);
-        newOffer.setEndDate(endDate);
-        if(logoId != null) {
-            newOffer.setLogo(imageRepository.findOne(logoId));
+            throw new OperationForbiddenException("Organization (id: " + newOffer.getOrganization().getId() + ") not verified");
         }
 
-        newOffer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
+        newOffer.setResourceTags(resourceTagService.getOrCreateTags(newOffer.getResourceTags()));
         this.resourceOfferRepository.save(newOffer);
 
         return newOffer;
@@ -260,49 +262,35 @@ public class ResourceService {
 
     /**
      *
-     * @param offerId id of the resource offer
-     * @param organisationId organization id of the resource offer
-     * @param name name of the resource offer
-     * @param amount amount of the resource
-     * @param description description of the resource offer
-     * @param isCommercial true if the resource is a commercial resource, false otherwise
-     * @param startDate available from
-     * @param endDate available until
-     * @param resourceTags tags belonging to the resource
-     * @param logoId id of the resource logo
-     * @param price
      * @return updated Resource Offer
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource offer with id can't be found
      * @throws ResourceTagException
      * @throws ResourceJoinTagException
      */
-    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount,
-                                     String description, Boolean isCommercial,
-                                     LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
+    public ResourceOffer updateOffer(ResourceOffer updatedOffer)
         throws IllegalValueException {
-        ResourceOffer offer = this.resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
+        ResourceOffer currentOffer = this.resourceOfferRepository.findByIdAndActiveIsTrue(updatedOffer.getId());
 
-        if (offer != null) {
-            ensureUserIsPartOfOrganisation(organizationRepository.findByIdAndActiveIsTrue(organisationId));
+        if (currentOffer != null) {
+            ensureUserIsPartOfOrganisation(organizationRepository.findByIdAndActiveIsTrue(
+                updatedOffer.getOrganization().getId()));
 
-            offer.setName(name);
-            offer.setAmount(amount);
-            offer.setDescription(description);
-            offer.setIsCommercial(isCommercial);
-            offer.setPrice(price);
-            offer.setStartDate(startDate);
-            offer.setEndDate(endDate);
-            offer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-            if(logoId != null) {
-                offer.setLogo(imageRepository.findOne(logoId));
-            }
-            this.resourceOfferRepository.save(offer);
+            currentOffer.setName(updatedOffer.getName());
+            currentOffer.setAmount(updatedOffer.getAmount());
+            currentOffer.setDescription(updatedOffer.getDescription());
+            currentOffer.setIsCommercial(updatedOffer.getIsCommercial());
+            currentOffer.setPrice(updatedOffer.getPrice());
+            currentOffer.setStartDate(updatedOffer.getStartDate());
+            currentOffer.setEndDate(updatedOffer.getEndDate());
+            currentOffer.setResourceTags(resourceTagService.getOrCreateTags(updatedOffer.getResourceTags()));
+            this.resourceOfferRepository.save(currentOffer);
         }
         else{
-            throw new ResourceNotFoundException(String.format("No resource offer found for the id: %d", offerId));
+            throw new ResourceNotFoundException(
+                String.format("No resource offer found for the id: %d", updatedOffer.getId()));
         }
 
-        return offer;
+        return currentOffer;
     }
 
     /**
@@ -459,10 +447,10 @@ public class ResourceService {
      * @param id resourceOffer id
      * @return ResourceOffer
      */
-    public ResourceOffer getOfferById(Long id) throws GeneralResourceException {
+    public ResourceOffer getOfferById(Long id) throws NoSuchEntityException {
         ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
-        if (resourceOffer.isActive() == false) {
-            throw new GeneralResourceException("resource with given id is not active");
+        if (!resourceOffer.isActive()) {
+            throw new NoSuchEntityException("resource with given id is not active");
         }
 
         return resourceOffer;
@@ -473,23 +461,27 @@ public class ResourceService {
      * @param resourceOfferId id of the claimed resourceoffer
      * @param resourceRequirementId id of the resourcerequirement, where the resourceoffer is used.
      * @return created ResourceMatch for the claimed ResourceOffer
-     * @throws IllegalValueException
-     * @throws MatchAlreadyExistsException
      */
     public ResourceMatch createClaimResourceRequest(Long resourceOfferId, Long resourceRequirementId)
-        throws IllegalValueException, MatchAlreadyExistsException {
+        throws IllegalValueException {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
         ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(resourceOfferId);
         if(resourceOffer == null) {
-            throw new IllegalValueException("no resourceoffer with id {} found", resourceOfferId.toString());
+            throw new IllegalValueException(
+                "resource.errors.offernotfound",
+                String.format("No resource offer with id %s found", resourceOfferId.toString())
+            );
         }
 
         Organization organization = resourceOffer.getOrganization();
 
         if(organization == null) {
-            throw new IllegalValueException("no organization for resourceoffer {} found", resourceOffer.toString());
+            throw new IllegalValueException(
+                "resource.errors.offer.noorganization",
+                String.format("No organization for resource offer %s found", resourceOffer.toString())
+            );
         }
 
         //check for authorization
@@ -497,23 +489,32 @@ public class ResourceService {
 
         ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(resourceRequirementId);
         if(resourceRequirement == null) {
-            throw new IllegalValueException("no resourceRequirement with id {} found", resourceRequirementId.toString());
+            throw new IllegalValueException(
+                "resource.errors.norequirement",
+                String.format("no resourceRequirement with id %s found", resourceRequirementId.toString())
+            );
         }
 
         Project project = resourceRequirement.getProject();
         if(project == null) {
-            throw new IllegalValueException("no project for resourceRequirement {} found", resourceRequirement.toString());
+            throw new IllegalValueException(
+                "resource.errors.norequirementproject",
+                String.format("No project for resourceRequirement %s found", resourceRequirement.toString())
+            );
         }
 
         if(project.getOrganization().getId().equals(organization.getId())) {
-            throw new IllegalValueException("resource.claim.error.ownresource", "cannot claim own resourceoffer" + resourceOffer.toString());
+            throw new IllegalValueException(
+                "resource.errors.claimownres",
+                "cannot claim own resource offer " + resourceOffer.toString()
+            );
         }
 
         List<ResourceMatch> result = resourceMatchRepository
             .findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(resourceOffer,
             resourceRequirement, organization, project);
 
-        if(result.isEmpty() == true) {
+        if(result.isEmpty()) {
             resourceMatch.setResourceOffer(resourceOffer);
             resourceMatch.setResourceRequirement(resourceRequirement);
             resourceMatch.setOrganization(organization);
@@ -522,7 +523,7 @@ public class ResourceService {
 
             resourceMatchRepository.save(resourceMatch);
         } else {
-            throw new MatchAlreadyExistsException("resource.claim.error.matchexists", "match already exists");
+            throw new IllegalValueException("resource.errors.matchexists", "match already exists");
         }
 
         return resourceMatch;
@@ -545,7 +546,7 @@ public class ResourceService {
         }
 
         //has to be the owner of the project's organization or the project manager
-        if(user.equals(organization.getOwner()) == false) {
+        if(!user.equals(organization.getOwner())) {
             throw new OperationForbiddenException("user needs to be the owner of the organization");
         }
     }
@@ -587,7 +588,7 @@ public class ResourceService {
         // set the accepted flag
         resourceMatch.setAccepted(accept);
 
-        if(accept == true) {
+        if(accept) {
             ResourceOffer offer = resourceMatch.getResourceOffer();
             if(offer == null) {
                 throw new IllegalValueException("resourcematch.error.noresourceofferfound", "resourcematch has no resourceoffer: "+ resourceMatch);
@@ -689,20 +690,20 @@ public class ResourceService {
         // Check if user authorized
         ensureUserIsPartOfOrganisation(organization);
 
-        if(hasData.isEmpty() == false){
-            throw new IllegalValueException("resourcematch.error.projectapply.offeralreadyexists", "Current offer has already been donated before");
+        if(!hasData.isEmpty()){
+            throw new OperationForbiddenException("resourcematch.error.projectapply.offeralreadyexists", "Current offer has already been donated before");
         }
 
         if(organization == project.getOrganization()){
-            throw new IllegalValueException("resourcematch.error.projectapply.ownproject", "Organization cannot offer resources to own project");
+            throw new OperationForbiddenException("resourcematch.error.projectapply.ownproject", "Organization cannot offer resources to own project");
         }
         //,check if we need new apply
-        if(resourceRequirement.getAmount().equals(BigDecimal.ZERO) == true){
-            throw new IllegalValueException("resourcematch.error.projectapply.requestfulfilled", "Requirements are already fulfilled");
+        if(resourceRequirement.getAmount().equals(BigDecimal.ZERO)){
+            throw new OperationForbiddenException("resourcematch.error.projectapply.requestfulfilled", "Requirements are already fulfilled");
         }
 
-        if(resourceOffer.getAmount().equals(BigDecimal.ZERO) == true){
-            throw new IllegalValueException("resourcematch.error.projectapply.offerdepleted", "Current Offer already depleted");
+        if(resourceOffer.getAmount().equals(BigDecimal.ZERO)){
+            throw new OperationForbiddenException("resourcematch.error.projectapply.offerdepleted", "Current offer already depleted");
         }
 
         BigDecimal amount;

@@ -148,7 +148,7 @@ public class OrgJoinRequestServiceTest {
         orgJoinRequestService.createOrgJoinRequest(new OrganizationResponseDTO(), new UserDTO(defaultUser));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testCreateOrgJoinRequest_NotOwnerOfOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
@@ -160,7 +160,7 @@ public class OrgJoinRequestServiceTest {
             OrganizationResponseDTO.fromEntity(defaultOrganization, null), new UserDTO(defaultUser));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testCreateOrgJoinRequest_AlreadyInvitedToOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -311,7 +311,7 @@ public class OrgJoinRequestServiceTest {
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testAcceptOrgJoinRequest_UserNotOfOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
@@ -367,7 +367,7 @@ public class OrgJoinRequestServiceTest {
         orgJoinRequestService.declineRequest(orgJoinRequest.getId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testDeclineOrgJoinRequest_UserNotOfOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);

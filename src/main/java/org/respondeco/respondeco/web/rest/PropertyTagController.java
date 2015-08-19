@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.PropertyTag;
 import org.respondeco.respondeco.domain.ResourceTag;
 import org.respondeco.respondeco.repository.PropertyTagRepository;
@@ -43,7 +44,8 @@ public class PropertyTagController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<PropertyTagResponseDTO> getTagsMatching(
+    @RESTWrapped
+    public Object getTagsMatching(
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
@@ -51,9 +53,7 @@ public class PropertyTagController {
             @RequestParam(required = false) String fields) {
         log.debug("REST request to get PropertyTags");
         RestParameters params = new RestParameters(page, pageSize, order, fields);
-        List<PropertyTag> tags = propertyTagService
-            .getPropertyTags(filter, params);
-        return PropertyTagResponseDTO.fromEntities(tags, params.getFields());
+        return propertyTagService.getPropertyTags(filter, params);
     }
 
 }

@@ -82,7 +82,7 @@ public class ResourceTagServiceTest {
         doAnswer(tagArgumentCaptor).when(resourceTagRepository)
             .save(any(ResourceTag.class));
 
-        resourceTagService.getOrCreateTags(Arrays.asList("tag1", "tag2"));
+        //resourceTagService.getOrCreateTags(Arrays.asList("tag1", "tag2"));
 
         verify(resourceTagRepository, times(2)).findByName(any(String.class));
         verify(resourceTagRepository, times(1)).save(any(ResourceTag.class));

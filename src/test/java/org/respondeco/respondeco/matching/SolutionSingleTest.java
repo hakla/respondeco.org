@@ -3,6 +3,7 @@ package org.respondeco.respondeco.matching;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,7 +51,7 @@ public class SolutionSingleTest {
      * This solution can only calculate possibilities for one given tag
      * @throws Exception
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalValueException.class)
     public void testEvaluate_shouldThrowInvalidArgumentException() throws Exception {
         // add a second tag
         V.add(matchingTag);

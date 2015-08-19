@@ -45,7 +45,7 @@ public class ProjectService {
     private ImageRepository imageRepository;
     private ResourceMatchRepository resourceMatchRepository;
     private PostingFeedRepository postingFeedRepository;
-    private ProjectLocationRepository projectLocationRepository;
+//    private ProjectLocationRepository projectLocationRepository;
     private ResourceOfferRepository resourceOfferRepository;
 
     private RestUtil restUtil;
@@ -57,8 +57,7 @@ public class ProjectService {
                           ResourceService resourceService,
                           ImageRepository imageRepository,
                           ResourceMatchRepository resourceMatchRepository,
-                          PostingFeedRepository postingFeedRepository,
-                          ProjectLocationRepository projectLocationRepository) {
+                          PostingFeedRepository postingFeedRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.userRepository = userRepository;
@@ -68,18 +67,10 @@ public class ProjectService {
         this.resourceMatchRepository = resourceMatchRepository;
         this.restUtil = new RestUtil();
         this.postingFeedRepository = postingFeedRepository;
-        this.projectLocationRepository = projectLocationRepository;
     }
 
     /**
      * creates a new project based on the given values
-     * @param name the name of the project
-     * @param purpose the purpose of the project
-     * @param isConcrete indicates if the project has a startDate on which it will really begin
-     * @param startDate the date on which the project will start
-     * @param propertyTags a list of tags for the project
-     * @param resourceRequirements a list of requirements for the project
-     * @param imageId the id of the image associated with the project
      * @return the newly created project
      * @throws OperationForbiddenException if the current user does not belong to an organization
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if a resource requirement could not be created,
@@ -87,63 +78,33 @@ public class ProjectService {
      * @throws IllegalValueException if the given parameters are inconsistent, e.g. the project is concrete, but start
      * or end date are not given
      */
-    public Project create(String name, String purpose, boolean isConcrete, LocalDate startDate,
-                          List<String> propertyTags,
-                          List<ResourceRequirementRequestDTO> resourceRequirements, Long imageId)
+    public Project create(Project project)
         throws IllegalValueException {
-        sanityCheckDate(isConcrete, startDate);
+        sanityCheckDate(project.isConcrete(), project.getStartDate());
         User currentUser = userService.getUserWithAuthorities();
         if(currentUser.getOrganization() == null) {
             throw new OperationForbiddenException("Current user does not belong to an Organization");
         }
-//        if(currentUser.getOrganization().getVerified() == false) {
-//            throw new OperationForbiddenException(
-//                "Organization (id: " + currentUser.getOrganization().getId() + ") not verified");
-//        }
 
-        Project newProject = new Project();
-        newProject.setManager(currentUser);
-        newProject.setOrganization(currentUser.getOrganization());
-        newProject.setName(name);
-        newProject.setPurpose(purpose);
-        newProject.setConcrete(isConcrete);
-        newProject.setStartDate(startDate);
+        project.setManager(currentUser);
+        project.setPropertyTags(propertyTagService.getOrCreateTags(project.getPropertyTags()));
+        project.setOrganization(currentUser.getOrganization());
 
-        List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
-        if(imageId != null) {
-            newProject.setProjectLogo(imageRepository.findOne(imageId));
-        }
-        newProject.setPropertyTags(tags);
         PostingFeed postingFeed = new PostingFeed();
-        postingFeedRepository.save(postingFeed);
-        newProject.setPostingFeed(postingFeed);
-        projectRepository.save(newProject);
+        project.setPostingFeed(postingFeed);
 
-        List<ResourceRequirement> requirements = new ArrayList<>();
-        if(resourceRequirements != null) {
-            for(ResourceRequirementRequestDTO req : resourceRequirements) {
-                requirements.add(resourceService.createRequirement(req.getName(), req.getOriginalAmount(),
-                    req.getDescription(), newProject.getId(),
-                    req.getIsEssential(), req.getResourceTags()));
+        if(project.getResourceRequirements() != null) {
+            for(ResourceRequirement requirement : project.getResourceRequirements()) {
+                requirement.setOriginalAmount(requirement.getAmount());
+                requirement.setProject(project);
             }
         }
-        newProject.setResourceRequirements(requirements);
 
-        projectRepository.save(newProject);
-
-        return newProject;
+        return projectRepository.save(project);
     }
 
     /**
      * updates a project
-     * @param id the id of the project to alter
-     * @param name the possibly updated name of the project
-     * @param purpose the possibly updated purpose of the project
-     * @param isConcrete indicates if the project has a startDate on which it will really begin
-     * @param startDate the date on which the project will start
-     * @param imageId the id of the image associated with the project
-     * @param propertyTags a list of tags for the project
-     * @param resourceRequirements a list of requirements for the project
      * @return the updated project
      * @throws OperationForbiddenException if the user's organization and the project's organization do not match or
      * the user is neither the manager of the project nor the owner of the project's organization
@@ -151,13 +112,11 @@ public class ProjectService {
      * @throws IllegalValueException if no id was given or the project with the given id could not be found,
      * or if the given parameters are inconsistent, e.g. the project is concrete, but start or end date are not given
      */
-    public Project update(Long id, String name, String purpose, boolean isConcrete, LocalDate startDate,
-                        Long imageId, List<String> propertyTags,
-                        List<ResourceRequirementRequestDTO> resourceRequirements)
+    public Project update(Project updatedProject)
         throws IllegalValueException {
 
-        sanityCheckDate(isConcrete, startDate);
-        if(id == null) {
+        sanityCheckDate(updatedProject.isConcrete(), updatedProject.getStartDate());
+        if(updatedProject.getId() == null) {
             throw new IllegalValueException("project.error.idnull", "Project id must not be null");
         }
         User currentUser = userService.getUserWithAuthorities();
@@ -166,79 +125,37 @@ public class ProjectService {
         if(organization == null) {
             throw new NoSuchEntityException("current user does not belong to an organization");
         }
-        Project project = projectRepository.findByIdAndActiveIsTrue(id);
-        if(project == null) {
+        Project currentProject = projectRepository.findByIdAndActiveIsTrue(updatedProject.getId());
+        if(currentProject == null) {
             //no project found
-            throw new NoSuchEntityException(id);
+            throw new NoSuchEntityException(updatedProject.getId());
         }
-        if(project.getOrganization().equals(organization) == false) {
+        if(!currentProject.getOrganization().equals(organization)) {
             //project's org does not match user's org
-            throw new OperationForbiddenException("Project " + project +
+            throw new OperationForbiddenException("Project " + currentProject +
                     " is not a project from organization " + organization);
         }
-        if(currentUser.equals(project.getManager()) == false) {
-            if(currentUser.equals(organization.getOwner()) == false) {
+        if(!currentUser.equals(currentProject.getManager())) {
+            if(!currentUser.equals(organization.getOwner())) {
                 //user is neither project manager nor organization owner
-                throw new OperationForbiddenException("Current user does have permission to alter project " + project);
+                throw new OperationForbiddenException(
+                    "Current user does not have permission to alter project " + currentProject);
             }
         }
 
-        project.setName(name);
-        project.setPurpose(purpose);
-        project.setConcrete(isConcrete);
-        project.setStartDate(startDate);
-        List<PropertyTag> tags = propertyTagService.getOrCreateTags(propertyTags);
-        project.setPropertyTags(tags);
-        if(imageId != null) {
-            project.setProjectLogo(imageRepository.findOne(imageId));
-        }
+        currentProject.setName(updatedProject.getName());
+        currentProject.setPurpose(updatedProject.getPurpose());
+        currentProject.setConcrete(updatedProject.isConcrete());
+        currentProject.setStartDate(updatedProject.getStartDate());
+        currentProject.setPropertyTags(propertyTagService.getOrCreateTags(updatedProject.getPropertyTags()));
+        currentProject.setResourceRequirements(resourceService
+            .getUpdatedRequirements(currentProject, updatedProject.getResourceRequirements()));
 
-        log.debug("updating requirements: {}", resourceRequirements);
-
-        //get deleted requirements
-        if(project.getResourceRequirements() != null) {
-            List<ResourceRequirement> deletedRequirements = project.getResourceRequirements();
-            for (ResourceRequirementRequestDTO req : resourceRequirements) {
-                if (req.getId() != null) {
-                    deletedRequirements.removeIf(new java.util.function.Predicate<ResourceRequirement>() {
-                        @Override
-                        public boolean test(ResourceRequirement resourceRequirement) {
-                            return resourceRequirement.getId().equals(req.getId());
-                        }
-                    });
-                }
-            }
-
-            for (ResourceRequirement req : deletedRequirements) {
-                if (req.getResourceMatches() != null && req.getResourceMatches().size() > 0) {
-                    throw new IllegalValueException("resource.errors.delete.match",
-                        "You cannot delete resource requirement %s, it already has a match");
-                }
-            }
-
-            for (ResourceRequirement req : deletedRequirements) {
-                resourceService.deleteRequirement(req.getId());
-            }
-        }
-
-        List<ResourceRequirement> requirements = new ArrayList<>();
-        if(resourceRequirements != null) {
-            for(ResourceRequirementRequestDTO req : resourceRequirements) {
-                //if requirement is new: create, else: update
-                if(req.getId() == null) {
-                    requirements.add(resourceService.createRequirement(req.getName(), req.getOriginalAmount(),
-                        req.getDescription(), project.getId(), req.getIsEssential(), req.getResourceTags()));
-                } else {
-                    requirements.add(resourceService.updateRequirement(req.getId(), req.getName(), req.getOriginalAmount(),
-                        req.getDescription(), project.getId(), req.getIsEssential(), req.getResourceTags()));
-                }
-            }
-        }
-
-        log.debug("requirements updated");
-        project.setResourceRequirements(requirements);
-        projectRepository.save(project);
-        return project;
+        Project resultProject = projectRepository.saveAndFlush(currentProject);
+        resultProject.getResourceRequirements().removeIf(
+          requirement -> !requirement.isActive()
+        );
+        return resultProject;
     }
 
     /**
@@ -300,11 +217,6 @@ public class ProjectService {
             }
         }
 
-        ProjectLocation projectLocation = projectLocationRepository.findByProjectId(id);
-        if(projectLocation != null) {
-            projectLocation.setActive(false);
-            projectLocationRepository.save(projectLocation);
-        }
         project.setActive(false);
 
         projectRepository.save(project);
