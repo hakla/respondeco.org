@@ -13,5 +13,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface DefaultReturnValue {
     int maxDepth() default Integer.MAX_VALUE;
+    String useName() default "";
 }
 

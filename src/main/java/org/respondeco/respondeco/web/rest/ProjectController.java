@@ -61,6 +61,44 @@ public class ProjectController {
     }
 
     /**
+     * POST  /rest/projects -> Creates a new project from the values sent in the request body.
+     *
+     * @param project the ProjectRequestDTO containing the values to create a new project
+     * @return status CREATED with the newly created project as ProjectResponseDTO, or if the request was not successful,
+     * an error response status and a potential error message
+     */
+    @ApiOperation(value = "Create a project", notes = "Create a new project")
+    @RequestMapping(value = "/rest/projects",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RESTWrapped
+    public Object create(@RequestBody @Valid Project project) {
+        log.debug("REST request to create Project : {}", project);
+        return projectService.create(project);
+    }
+
+    /**
+     * PUT  /rest/projects -> Updates an existing project with new information
+     * @param project the new information to save, the project id must be present in order to update the
+     *                existing project
+     * @return status OK with the updated project as ProjectResponseDTO, or if the request was not successful,
+     * an error response status and a potential error message
+     */
+    @ApiOperation(value = "Update a project", notes = "Update an existing project")
+    @RequestMapping(value = "/rest/projects",
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RESTWrapped
+    public Object update(@RequestBody @Valid Project project) {
+        log.error("REST request to update Project : {}", project);
+        return projectService.update(project);
+    }
+
+    /**
      * Organization that apply new resource to a project
      * @param projectApplyDTO data to apply
      * @return HTTP Status OK: no errors occur, BAD REQUEST: error accures
@@ -95,91 +133,6 @@ public class ProjectController {
         return resourceMatch;
     }
 
-     /**
-     * POST  /rest/projects -> Creates a new project from the values sent in the request body.
-     *
-     * @param project the ProjectRequestDTO containing the values to create a new project
-     * @return status CREATED with the newly created project as ProjectResponseDTO, or if the request was not successful,
-     * an error response status and a potential error message
-     */
-    @ApiOperation(value = "Create a project", notes = "Create a new project")
-    @RequestMapping(value = "/rest/projects",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
-        log.debug("REST request to create Project : {}", project);
-        ResponseEntity<?> responseEntity;
-        try {
-            Project newProject = projectService.create(
-                project.getName(),
-                project.getPurpose(),
-                project.getConcrete(),
-                project.getStartDate(),
-                project.getPropertyTags(),
-                project.getResourceRequirements(),
-                project.getLogo() != null ? project.getLogo().getId() : null);
-
-            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
-
-            if(projectLocationDTO != null) {
-                projectLocationService.createProjectLocation(newProject.getId(), projectLocationDTO.getAddress(),
-                    projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
-            }
-
-            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(newProject, null);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-        } catch(IllegalValueException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
-    }
-
-    /**
-     * PUT  /rest/projects -> Updates an existing project with new information
-     * @param project the new information to save, the project id must be present in order to update the
-     *                existing project
-     * @return status OK with the updated project as ProjectResponseDTO, or if the request was not successful,
-     * an error response status and a potential error message
-     */
-    @ApiOperation(value = "Update a project", notes = "Update an existing project")
-    @RequestMapping(value = "/rest/projects",
-            method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid ProjectDTO project) {
-        log.error("REST request to update Project : {}", project);
-        ResponseEntity<?> responseEntity;
-        try {
-            Project updatedProject = projectService.update(
-                    project.getId(),
-                    project.getName(),
-                    project.getPurpose(),
-                    project.getConcrete(),
-                    project.getStartDate(),
-                    project.getLogo() != null ? project.getLogo().getId() : null,
-                    project.getPropertyTags(),
-                    project.getResourceRequirements());
-
-            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
-
-            if(projectLocationDTO != null) {
-                ProjectLocation location = projectLocationService.updateProjectLocation(projectLocationDTO.getProjectId(),
-                    projectLocationDTO.getAddress(), projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
-            }
-
-            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(updatedProject, null);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch(IllegalValueException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
-    }
-
     /**
      * PUT  /rest/projects/{id}/manager -> Change project manager of a project
      * @param id the id of the project of which to change the manager, given by the REST path
@@ -193,18 +146,10 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> changeManager(@PathVariable Long id, @RequestBody Long newManagerId) {
+    @RESTWrapped
+    public Object changeManager(@PathVariable Long id, @RequestBody Long newManagerId) {
         log.debug("REST request to change project manager of project {} to {}", id, newManagerId);
-        ResponseEntity<?> responseEntity;
-        try {
-            Project project = projectService.setManager(id, newManagerId);
-            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(project, null);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch(IllegalValueException e) {
-            log.error("Could not set manager of project {} to {}", id, newManagerId, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        }
-        return responseEntity;
+        return projectService.setManager(id, newManagerId);
     }
 
     /**
@@ -323,29 +268,12 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
-    public ResponseEntity<ProjectResponseDTO> get(
+    @RESTWrapped
+    public Object get(
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {
-        log.debug("REST redkkdkquest to get Project : {}", id);
-        Project project = projectService.findProjectById(id);
-        ResponseEntity<ProjectResponseDTO> response;
-        RestParameters restParameters = new RestParameters(null, null, null, fields);
-        if(project != null) {
-            ProjectResponseDTO responseDTO = ProjectResponseDTO
-                    .fromEntity(project, restParameters.getFields());
-
-            //project location
-            ProjectLocation projectLocation = projectLocationService.getProjectLocation(project.getId());
-            if(projectLocation != null) {
-                ProjectLocationResponseDTO dto = ProjectLocationResponseDTO.fromEntity(projectLocation, null);
-                responseDTO.setProjectLocation(dto);
-            }
-
-            response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return response;
+        log.debug("REST request to get Project : {}", id);
+        return projectService.findProjectById(id);
     }
 
     /**
@@ -590,23 +518,6 @@ public class ProjectController {
 
         return responseEntity;
     }
-    /**
-     * Returns all Project Locations
-     * @return ResponseEntity containing a List of ProjectLocationResponse DTOs
-     */
-    @RequestMapping(value = "/rest/locations",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<ProjectLocationResponseDTO>> getAllProjectLocations() {
-
-        List<ProjectLocation> projectLocations = projectLocationService.getAllLocations();
-
-        List<ProjectLocationResponseDTO> projectLocationResponseDTOs = ProjectLocationResponseDTO.fromEntities(projectLocations, null);
-
-        return new ResponseEntity<>(projectLocationResponseDTOs, HttpStatus.OK);
-    }
-
 
     /**
      * Return projects which are in a specific radius from the given coordinates
@@ -622,11 +533,13 @@ public class ProjectController {
         @RequestParam(required = true) Float radius) {
         log.debug("REST Request to get near projects: (latitude: " + latitude +" , longitude: " + longitude + "), radius: " + radius );
 
+        //TODO: FIX
+
         ResponseEntity<?> responseEntity = null;
 
         try{
-            List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
-            responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
+            List<Address> projects = new ArrayList<>();
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchEntityException e) {
             log.debug("Can not find project for projectLocation");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);

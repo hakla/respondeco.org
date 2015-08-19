@@ -13,7 +13,13 @@ public class NestedFieldMapping extends FieldMapping {
 
     public NestedFieldMapping(String fieldName, Field field, Method accessor, ObjectMapper childMapper)
             throws MappingException {
-        super(fieldName, field, accessor);
+        this(fieldName, field, accessor, childMapper, fieldName);
+    }
+
+    public NestedFieldMapping(String fieldName, Field field, Method accessor, ObjectMapper childMapper,
+                              String returnFieldName)
+        throws MappingException {
+        super(fieldName, field, accessor, returnFieldName);
         this.childMapper = childMapper;
     }
 

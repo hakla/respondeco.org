@@ -1,7 +1,7 @@
 package org.respondeco.respondeco.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,7 +30,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers", "isoCategories"})
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Organization extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
@@ -39,6 +39,7 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @DefaultReturnValue
     private String name;
 
+    @Size(max = 2048)
     @Column(length = 2048)
     private String description;
 
@@ -51,9 +52,9 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Column(name = "is_npo")
     private Boolean isNpo;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "owner")
+    @DefaultReturnValue
     private User owner;
 
     @OneToMany(mappedBy = "organization")
@@ -75,7 +76,6 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @OneToMany(mappedBy = "organization")
     private List<Project> projects;
 
-    @NotNull
     @OneToOne
     @JoinColumn(name = "postingfeed_id")
     private PostingFeed postingFeed;
@@ -102,6 +102,8 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     )
     private List<User> FollowingUsers;
 
+    private Address address;
+
     public void addMember(User user) {
         members.add(user);
     }
@@ -111,9 +113,13 @@ public class Organization extends AbstractAuditingEntity implements Serializable
      * @return a map whose keys represent super categories and whose values are all the sub categories
      * that this organization has associated with itself
      */
+    @DefaultReturnValue(useName = "isoCategories")
     public List<ISOCategory> getOrderedIsoCategories() {
         List<ISOCategory> categoryList = new ArrayList<>();
         Map<ISOCategory,List<ISOCategory>> superCategoryMap = new HashMap<>();
+        if(isoCategories == null) {
+            return categoryList;
+        }
         for(ISOCategory category : isoCategories) {
             if(category.getSuperCategory() == null) {
                 if(!superCategoryMap.containsKey(category)) {

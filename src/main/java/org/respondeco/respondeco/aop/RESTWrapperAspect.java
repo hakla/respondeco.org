@@ -62,7 +62,7 @@ public class RESTWrapperAspect {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         } catch (NoSuchEntityException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getObject(), HttpStatus.NOT_FOUND);
         } catch (OperationForbiddenException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (IllegalValueException e) {

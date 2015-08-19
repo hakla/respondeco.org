@@ -119,9 +119,19 @@ public class AccountController {
                 responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            user = userService.createUserInformation(registerDTO.getEmail().toLowerCase(),
-                registerDTO.getPassword(), null, null, null, registerDTO.getEmail().toLowerCase(),
-                "UNSPECIFIED", null, registerDTO.getLangKey(), null);
+            user = new User();
+            user.setLogin(registerDTO.getEmail().toLowerCase());
+            user.setEmail(registerDTO.getEmail().toLowerCase());
+            user.setPassword(registerDTO.getPassword());
+            user.setLangKey(registerDTO.getLangKey());
+            user = userService.createUser(user);
+
+            Organization organization = new Organization();
+            organization.setName(registerDTO.getOrganization());
+            organization.setEmail(registerDTO.getEmail());
+            organization.setOwner(user);
+            // #90 create the organization when the user registers
+            organizationService.create(organization);
 
             final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
             String content = createHtmlContentFromTemplate(user, locale, request,
@@ -183,7 +193,7 @@ public class AccountController {
     @RESTWrapped
     public Object activateAccount(@RequestParam(value = "key") String key) {
         return Optional.ofNullable(userService.activateRegistration(key))
-            .map(user -> user.getLogin())
+            .map(User::getOrganization)
             .orElse(null); // TODO: generic return value for 404
     }
 
@@ -260,7 +270,7 @@ public class AccountController {
         variables.put("user", user);
         variables.put("baseUrl", request.getScheme() + "://" +   // "http" + "://
             request.getServerName() +       // "myhost"
-            ":" + request.getServerPort());
+            ":" + request.getServerPort() + "/app.html");
         IWebContext context = new SpringWebContext(request, response, servletContext,
             locale, variables, applicationContext);
         return templateEngine.process(template, context);

@@ -4,7 +4,8 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.web.rest.dto.ImageDTO;
+import org.respondeco.respondeco.service.util.Assert;
+import org.respondeco.respondeco.service.util.EntityAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,15 @@ import java.util.*;
 @Transactional
 public class OrganizationService {
 
-    private final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+    private static final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+
+    private static final String ERROR_KEY = "organization.error";
+    private static final String ERROR_ORGANIZATION_EXISTS = "exists";
+    private static final String ERROR_NAME_EMPTY = "name_empty";
+    private static final String ERROR_NO_OWNER = "no_owner";
+    private static final String ERROR_NOT_OWNER = "not_owner";
+    private static final String ERROR_NAME_CHANGE_AFTER_VERIFICATION = "name_change_after_validation";
+    private static final String ERROR_NPO_CHANGE_AFTER_VERIFICATION = "npo_change_after_validation";
 
     private OrganizationRepository organizationRepository;
     private UserService userService;
@@ -30,6 +39,8 @@ public class OrganizationService {
     private PostingFeedRepository postingFeedRepository;
     private ResourceOfferRepository resourceOfferRepository;
     private ISOCategoryRepository isoCategoryRepository;
+
+    private ExceptionUtil.KeyBuilder errorKey;
 
     @Inject
     public OrganizationService(OrganizationRepository organizationRepository,
@@ -50,62 +61,8 @@ public class OrganizationService {
         this.postingFeedRepository = postingFeedRepository;
         this.resourceOfferRepository = resourceOfferRepository;
         this.isoCategoryRepository = isoCategoryRepository;
-    }
 
-    /**
-     * register an organization account
-     * @param name name of the organization
-     * @param email email of the organization, used as login
-     * @param password the password for the account
-     * @param npo indicates if the organization is an npo
-     * @param langKey the default language of the account
-     * @return the created organization
-     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
-     */
-    public Organization registerOrganization(String name, String email, String password, Boolean npo, String langKey)
-        throws OrganizationAlreadyExistsException {
-        if(organizationRepository.findByName(name)!=null) {
-            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
-        }
-        User user = userService.createUserInformation(email.toLowerCase(),
-            password, null, null, null, email.toLowerCase(),
-            "UNSPECIFIED", null, langKey, null);
-        Organization organization = new Organization();
-        organization.setName(name);
-        organization.setEmail(email.toLowerCase());
-        organization.setIsNpo(npo);
-        organization.setOwner(user);
-        PostingFeed postingFeed = new PostingFeed();
-        postingFeedRepository.save(postingFeed);
-        organization.setPostingFeed(postingFeed);
-        organizationRepository.save(organization);
-        user.setOrganization(organization);
-        userRepository.save(user);
-        return organization;
-    }
-
-    /**
-     * creates a new organization with the given information
-     *
-     * @param name the name of the new organization
-     * @param description a description of the organization
-     * @param email an official email for the organization
-     * @param isNpo indicator if the organization is an NPO
-     * @param logo a logo dto with the id of the project logo
-     * @return the newly created project
-     * @throws AlreadyInOrganizationException if the user is already in an organization
-     * @throws OrganizationAlreadyExistsException if an organization with that name already exists
-     */
-    public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, ImageDTO logo, List<ISOCategory> isoCategories)
-        throws AlreadyInOrganizationException, OrganizationAlreadyExistsException {
-        Long logoId = null;
-
-        if (logo != null) {
-            logoId = logo.getId();
-        }
-
-        return createOrganizationInformation(name, description, email, isNpo, logoId, isoCategories);
+        this.errorKey = new ExceptionUtil.KeyBuilder(ERROR_KEY);
     }
 
     /**
@@ -120,53 +77,76 @@ public class OrganizationService {
      * @throws AlreadyInOrganizationException
      * @throws OrganizationAlreadyExistsException
      */
-    public Organization createOrganizationInformation(String name, String description, String email,
-                                                      Boolean isNpo, Long logoId, List<ISOCategory> isoCategories)
+    public Organization create(Organization organization)
             throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
-        if(organizationRepository.findByName(name)!=null) {
-            throw new OrganizationAlreadyExistsException(String.format("Organization %s already exists", name));
-        }
-        if(name == null || name.length() == 0){
-            throw new IllegalValueException("organization.error.nameempty", "Organization name must not be empty");
-        }
-        User currentUser = userService.getUserWithAuthorities();
-        Organization newOrganization = new Organization();
+        EntityAssert.isNew(organization);
+        Assert.isValid(organization.getName(), errorKey.from(ERROR_NAME_EMPTY),
+            "Organization name must not be empty");
+        Assert.notNull(organization.getOwner(), errorKey.from(ERROR_NO_OWNER),
+            "No owner was specified for creating the organization");
 
-        newOrganization.setName(name);
-        newOrganization.setDescription(description);
-        newOrganization.setEmail(email);
-        newOrganization.setIsNpo(isNpo);
-        newOrganization.setIsoCategories(isoCategories);
-        if(logoId != null) {
-            newOrganization.setLogo(imageRepository.findOne(logoId));
+        if(organizationRepository.findByName(organization.getName()) != null) {
+            throw new IllegalValueException(errorKey.from(ERROR_ORGANIZATION_EXISTS),
+                String.format("Organization %s already exists", organization.getName()));
         }
 
-        if (organizationRepository.findByOwner(currentUser) != null) {
-            throw new AlreadyInOrganizationException(String.format("Current User is already owner of an organization"));
-        }
-        newOrganization.setOwner(currentUser);
         PostingFeed postingFeed = new PostingFeed();
         postingFeedRepository.save(postingFeed);
-        newOrganization.setPostingFeed(postingFeed);
-        currentUser.setOrganization(organizationRepository.save(newOrganization));
-        userRepository.save(currentUser);
+        organization.setPostingFeed(postingFeed);
+        organization.getOwner().setOrganization(organizationRepository.save(organization));
+        userRepository.save(organization.getOwner());
 
-        try {
-            projectService.create("ip", "", false, null, null, null, null);
-        } catch (OperationForbiddenException e) {
-            e.printStackTrace();
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalValueException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            projectService.create("ip", "", false, null, null, null, null);
+//        } catch (OperationForbiddenException e) {
+//            e.printStackTrace();
+//        } catch (ResourceNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IllegalValueException e) {
+//            e.printStackTrace();
+//        }
 
-        log.debug("Created Information for Organization: {}", newOrganization);
-        return newOrganization;
+        log.debug("Created Organization: {}", organization);
+        return organization;
     }
 
     /**
-     * finds and returns an organization by its namne
+     * updates an organization's information with the given data
+     **/
+    public Organization update(Organization updatedOrganization) throws NoSuchEntityException {
+        Assert.notNull(updatedOrganization.getId(), "", "Id must not be null when updating organization information");
+        User currentUser = userService.getUserWithAuthorities();
+        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
+        //check if the organization belongs to the current user
+        if(currentOrganization == null || !currentOrganization.getId().equals(updatedOrganization.getId())) {
+            throw new OperationForbiddenException(errorKey.from(ERROR_NOT_OWNER),
+                String.format("The current user is not the owner of the organization"));
+        }
+        if(currentOrganization.getVerified()) {
+            if(!currentOrganization.getName().equals(updatedOrganization.getName())) {
+                throw new IllegalValueException(errorKey.from(ERROR_NAME_CHANGE_AFTER_VERIFICATION),
+                    "The organization name can not be changed after it was verified");
+            }
+            if(!currentOrganization.getName().equals(updatedOrganization.getName())) {
+                throw new IllegalValueException(errorKey.from(ERROR_NPO_CHANGE_AFTER_VERIFICATION),
+                    "The NPO status can not be changed after it was verified");
+            }
+        }
+
+        currentOrganization.setName(updatedOrganization.getName());
+        currentOrganization.setDescription(updatedOrganization.getDescription());
+        currentOrganization.setEmail(updatedOrganization.getEmail());
+        currentOrganization.setIsNpo(updatedOrganization.getIsNpo());
+        currentOrganization.setWebsite(updatedOrganization.getWebsite());
+        currentOrganization.setIsoCategories(updatedOrganization.getIsoCategories());
+        currentOrganization.setLogo(updatedOrganization.getLogo());
+
+        log.debug("Changing Information for Organization: {}", currentOrganization);
+        return organizationRepository.save(currentOrganization);
+    }
+
+    /**
+     * finds and returns an organization by its name
      *
      * @param orgName the name of the organization to find
      * @return the organization with the given name
@@ -206,64 +186,6 @@ public class OrganizationService {
     public Page<Organization> get(Pageable pageable) {
         log.debug("get() called");
         return organizationRepository.findByActiveIsTrue(pageable);
-    }
-
-    /**
-     * updates an organization's information with the given data
-     *
-     * @param name a new name for the organization
-     * @param description the new description for the organization
-     * @param email a new organization email
-     * @param isNpo flag if the organization is an NPO
-     * @param logo an ImageDTO containing the id of the organization's logo
-     * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
-     */
-    public Organization update(String name, String description, String email,
-                               Boolean isNpo, ImageDTO logo, String website, List<ISOCategory> isoCategories)
-        throws NoSuchEntityException {
-        Long logoId = null;
-
-        if (logo != null) {
-            logoId = logo.getId();
-        }
-
-        return update(name, description, email, isNpo, logoId, website, isoCategories);
-    }
-
-    /**
-     * {@see OrganizationService#update(String,String,String,Boolean,ImageDTO}
-     *
-     * @param name
-     * @param description
-     * @param email
-     * @param isNpo
-     * @param logoId
-     * @throws NoSuchOrganizationException
-     */
-    public Organization update(String name, String description, String email, Boolean isNpo, Long logoId,
-                               String website, List<ISOCategory> isoCategories) throws NoSuchEntityException {
-        User currentUser = userService.getUserWithAuthorities();
-        Organization currentOrganization = organizationRepository.findByOwner(currentUser);
-        if (null == currentOrganization) {
-            throw new NoSuchEntityException(String.format("Organization does not exist for %s", currentUser.getLogin()));
-        }
-        if(name.length() == 0) {
-            throw new IllegalValueException("organization.error.nameempty", "Name must not be an empty string");
-        }
-
-        currentOrganization.setName(name);
-        currentOrganization.setDescription(description);
-        currentOrganization.setEmail(email);
-        currentOrganization.setIsNpo(isNpo);
-        currentOrganization.setOwner(currentUser);
-        currentOrganization.setWebsite(website);
-        currentOrganization.setIsoCategories(isoCategories);
-        if(logoId != null) {
-            currentOrganization.setLogo(imageRepository.findOne(logoId));
-        }
-
-        log.debug("Changing Information for Organization: {}", currentOrganization);
-        return organizationRepository.save(currentOrganization);
     }
 
     /**
@@ -344,7 +266,7 @@ public class OrganizationService {
      * @return a list of users belonging to the given organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given organization does not exist
      */
-    public List<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
+    public Page<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
 
         if(organization == null) {
@@ -352,9 +274,7 @@ public class OrganizationService {
         }
 
         log.debug("Finding members of organization", organization.getName());
-        List<User> members = userRepository.findUsersByOrganizationId(orgId);
-        members.remove(organization.getOwner());
-        return members;
+        return userRepository.findUsersByOrganizationId(orgId, null);
     }
 
     /**
@@ -475,13 +395,4 @@ public class OrganizationService {
         userRepository.save(currentUser);
     }
 
-    public Page<ISOCategory> getAllSuperCategories() {
-        return isoCategoryRepository.findBySuperCategoryIsNull(null);
-    }
-
-    public Page<ISOCategory> getSubCategoriesOf(Long superCategoryId) {
-        ISOCategory superCategory = new ISOCategory();
-        superCategory.setId(superCategoryId);
-        return isoCategoryRepository.findBySuperCategory(superCategory, null);
-    }
 }

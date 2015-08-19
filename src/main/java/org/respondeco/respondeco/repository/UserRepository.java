@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.organization is null")
     List<User> findInvitableUsers();
 
-    List<User> findUsersByOrganizationId(Long orgId);
+    Page<User> findUsersByOrganizationId(Long orgId, Pageable pageable);
 
     User findByLogin(String userlogin);
 

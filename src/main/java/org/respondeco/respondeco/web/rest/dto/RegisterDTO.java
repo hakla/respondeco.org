@@ -1,5 +1,6 @@
 package org.respondeco.respondeco.web.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 
@@ -11,11 +12,12 @@ import javax.validation.constraints.Size;
  */
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RegisterDTO {
 
     @NotNull
     @Size(min = 3, max = 50)
-    private String orgname;
+    private String organization;
 
     private Boolean npo;
     private String langKey;

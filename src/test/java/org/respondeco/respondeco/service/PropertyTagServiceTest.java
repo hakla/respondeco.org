@@ -83,7 +83,7 @@ public class PropertyTagServiceTest {
         doAnswer(tagArgumentCaptor).when(propertyTagRepository)
             .save(any(PropertyTag.class));
 
-        propertyTagService.getOrCreateTags(Arrays.asList("tag1", "tag2"));
+        //propertyTagService.getOrCreateTags(Arrays.asList("tag1", "tag2"));
 
         verify(propertyTagRepository, times(2)).findByName(any(String.class));
         verify(propertyTagRepository, times(1)).save(any(PropertyTag.class));

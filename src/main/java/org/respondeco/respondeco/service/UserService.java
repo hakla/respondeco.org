@@ -16,9 +16,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -53,6 +62,9 @@ public class UserService {
     @Inject
     private PostingFeedRepository postingFeedRepository;
 
+    @Inject
+    AuthenticationManager authenticationManager;
+
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return Optional.ofNullable(userRepository.getUserByActivationKey(key))
@@ -61,53 +73,63 @@ public class UserService {
                 user.setActivated(true);
                 user.setActivationKey(null);
                 userRepository.save(user);
+
                 log.debug("Activated user: {}", user);
+
+                /*
+                 * Create authentication token
+                 *
+                 * Because the default PreAuthenticatedAuthenticationProvider checks if the given credentials are not null
+                 * (this isn't necessary because they won't be checked, no idea why they do it) we provide an empty but non-null value
+                 */
+                PreAuthenticatedAuthenticationToken token = new PreAuthenticatedAuthenticationToken(user.getLogin(), "", user.getAuthorities());
+
+                // Get request
+                ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+                // Create a session if there isn't already one
+                attr.getRequest().getSession(true);
+
+                // Set request
+                token.setDetails(new WebAuthenticationDetails(attr.getRequest()));
+
+                // Create authentication object
+                Authentication authentication = authenticationManager.authenticate(token);
+
+                // Set authentication - user should be logged in now
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                log.debug("User {} is now logged in", user);
+
                 return user;
             })
             .orElse(null);
     }
 
-    public User createUserInformation(String login, String password, String title, String firstName, String lastName,
-                                       String email, String gender, String description, String langKey, ImageDTO profilePicture) {
-        return createUserInformation(login, password, title, firstName, lastName, email, gender, description, langKey, profilePicture, false);
+    public User createUser(User user) {
+        return createUser(user, false);
     }
 
-    public User createUserInformation(String login, String password, String title, String firstName, String lastName,
-                                      String email, String gender, String description, String langKey, ImageDTO profilePicture, Boolean invited) {
-        User newUser = new User();
+    public User createUser(User user, Boolean invited) {
         Authority authority = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
-        String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(login);
-        newUser.setOrganization(null);
-        newUser.setPassword(encryptedPassword);
-        newUser.setTitle(title);
-        if(gender == null) {
-            newUser.setGender(Gender.UNSPECIFIED);
-        } else {
-            newUser.setGender(Gender.valueOf(gender));
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        if(user.getGender() == null) {
+            user.setGender(Gender.UNSPECIFIED);
         }
 
-        if (profilePicture != null && profilePicture.getId() != null) {
-            Image image = imageRepository.findOne(profilePicture.getId());
-            newUser.setProfilePicture(image);
-        }
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setEmail(email);
-        newUser.setDescription(description);
-        newUser.setLangKey(langKey);
         // new user is not active
-        newUser.setActivated(false);
+        user.setActivated(false);
         // new user gets registration key
-        newUser.setActivationKey(RandomUtil.generateActivationKey());
+        user.setActivationKey(RandomUtil.generateActivationKey());
         authorities.add(authority);
-        newUser.setAuthorities(authorities);
+        user.setAuthorities(authorities);
         // user can be invited by an organization
-        newUser.setInvited(invited);
-        userRepository.save(newUser);
-        log.debug("Created Information for User: {}", newUser);
-        return newUser;
+        user.setInvited(invited);
+        userRepository.save(user);
+        log.debug("Created User: {}", user);
+        return user;
     }
 
     public void updateUserInformation(String title, String gender, String firstName, String lastName, String email,

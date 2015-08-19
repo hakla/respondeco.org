@@ -20,4 +20,8 @@ public class NoSuchEntityException extends IllegalValueException {
         super(KEY, message);
     }
 
+    public NoSuchEntityException(String key, String message) {
+        super(key, message);
+    }
+
 }

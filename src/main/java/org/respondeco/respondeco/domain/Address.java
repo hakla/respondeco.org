@@ -1,0 +1,26 @@
+package org.respondeco.respondeco.domain;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Embeddable;
+
+/**
+ * Created by Clemens Puehringer on 18/08/15.
+ */
+@Getter
+@Setter
+@Embeddable
+public class Address {
+
+    private String country;
+    private String zipCode;
+    private String city;
+    private String street;
+    private Integer streetNumber;
+    private String extra;
+
+    private Double latitude;
+    private Double longitude;
+
+}

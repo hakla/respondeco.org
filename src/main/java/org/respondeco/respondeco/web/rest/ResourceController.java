@@ -159,7 +159,6 @@ public class ResourceController {
 
     /**
      * Create a new ResourceOffer
-     * @param resourceOfferDTO contains necessary information for the creation of a new ResourceOffer
      * @return ResponseEntity with HTTPStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -167,27 +166,14 @@ public class ResourceController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @Valid
     @RESTWrapped
-    public Object createResourceOffer(@RequestBody ResourceOfferDTO resourceOfferDTO) {
-        return this.resourceService.createOffer(
-                resourceOfferDTO.getName(),
-                resourceOfferDTO.getAmount(),
-                resourceOfferDTO.getDescription(),
-                resourceOfferDTO.getOrganizationId(),
-                resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getStartDate(),
-                resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags(),
-                resourceOfferDTO.getLogoId(),
-                resourceOfferDTO.getPrice()
-            );
+    public Object createResourceOffer(@RequestBody ResourceOffer resourceOffer) throws Exception{
+        return resourceService.createOffer(resourceOffer);
     }
 
     /**
      * Update a ResourceOffer
      * @param id id of the ResourceOffer which will be updated
-     * @param resourceOfferDTO contains information which will be used for updating the ResourceOffer
      * @return ResponseEntity with HTTPStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -195,22 +181,9 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @Valid
     @RESTWrapped
-    public Object updateResourceOffer(@PathVariable Long id /* ??? */, @RequestBody ResourceOfferDTO resourceOfferDTO) {
-        return this.resourceService.updateOffer(
-                resourceOfferDTO.getId(),
-                resourceOfferDTO.getOrganizationId(),
-                resourceOfferDTO.getName(),
-                resourceOfferDTO.getAmount(),
-                resourceOfferDTO.getDescription(),
-                resourceOfferDTO.getIsCommercial(),
-                resourceOfferDTO.getStartDate(),
-                resourceOfferDTO.getEndDate(),
-                resourceOfferDTO.getResourceTags(),
-                resourceOfferDTO.getLogoId(),
-                resourceOfferDTO.getPrice()
-            );
+    public Object updateResourceOffer(@PathVariable Long id, @RequestBody ResourceOffer resourceOffer) {
+        return resourceService.updateOffer(resourceOffer);
     }
 
     /**
@@ -247,7 +220,6 @@ public class ResourceController {
 
     /**
      * Creates a new ResourceRequirement
-     * @param resourceRequirementRequestDTO ResourceRequirement to be saved in the db. Wrapped into RequestDTO.
      * @return ResponseEntity with HttpStatus
      * @throws Exception
      */
@@ -257,21 +229,14 @@ public class ResourceController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object createResourceRequirement(@RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) {
-        return this.resourceService.createRequirement(
-            resourceRequirementRequestDTO.getName(),
-            resourceRequirementRequestDTO.getOriginalAmount(),
-            resourceRequirementRequestDTO.getDescription(),
-            resourceRequirementRequestDTO.getProjectId(),
-            resourceRequirementRequestDTO.getIsEssential(),
-            resourceRequirementRequestDTO.getResourceTags()
-        );
+    public Object createResourceRequirement(@RequestBody ResourceRequirement resourceRequirement)
+        throws Exception {
+        return resourceService.createRequirement(resourceRequirement.getProject(), resourceRequirement);
     }
 
     /**
      * Updates a ResourceRequirement
      * @param resourceRequirementId id of the resource requirement
-     * @param resourceRequirementRequestDTO update information for the resource requirement
      * @return ResponseEntity with HttpStatus
      */
     @RolesAllowed(AuthoritiesConstants.USER)
@@ -279,17 +244,9 @@ public class ResourceController {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RESTWrapped
-    public Object updateResourceRequirement(@PathVariable Long resourceRequirementId /* ??? */, @RequestBody ResourceRequirementRequestDTO resourceRequirementRequestDTO) {
-        return this.resourceService.updateRequirement(
-            resourceRequirementRequestDTO.getId(),
-            resourceRequirementRequestDTO.getName(),
-            resourceRequirementRequestDTO.getOriginalAmount(),
-            resourceRequirementRequestDTO.getDescription(),
-            resourceRequirementRequestDTO.getProjectId(),
-            resourceRequirementRequestDTO.getIsEssential(),
-            resourceRequirementRequestDTO.getResourceTags()
-        );
+    public Object updateResourceRequirement(@PathVariable Long resourceRequirementId,
+                                            @RequestBody ResourceRequirement resourceRequirement) {
+        return resourceService.updateRequirement(resourceRequirement);
     }
 
     /**

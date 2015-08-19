@@ -598,6 +598,13 @@
                 "title": "Non-Profit-Organisation",
                 "content": "Bei diesem Unternehmen handelt es sich um eine Non-Profit-Organisation"
             }
+        },
+        "error": {
+            "name_empty": "Der Organisationsname darf nicht leer sein",
+            "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
+            "exists": "Eine Organisation mit diesem namen existiert bereits.",
+            "already_member": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
+            "notverified": "Ihre Organisation wurde noch nicht verifiziert!"
         }
     },
     "resourcematch": {
@@ -727,7 +734,7 @@
             "general": "Ups, es wurde ein unbehandelter Fehler entdeckt. Die aktuelle Operation konnte nicht ausgeführt werden",
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
             "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden",
-            "delete.match": "Eine oder mehrere der gelöschten Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden"
+            "delete.match": "Eine oder mehrere der gelöschten Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden",
             "notagname" : "Kein Name für Ressourcen-Tag definiert",
             "multipletags" : "Diese Formel kann nur mit einem Tag benützt werden",
             "offernotfound": "Angebot nicht gefunden",

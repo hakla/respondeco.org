@@ -10,7 +10,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -40,13 +40,13 @@ public class ResourceOffer extends ResourceBase implements Serializable {
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
     @Column(name = "end_date")
     private LocalDate endDate;
 

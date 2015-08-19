@@ -1,10 +1,14 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.apache.catalina.security.SecurityUtil;
 import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
+import org.respondeco.respondeco.security.SecurityUtils;
 import org.respondeco.respondeco.service.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.web.rest.dto.*;
@@ -38,6 +42,7 @@ public class OrganizationController {
     private OrgJoinRequestService orgJoinRequestService;
     private RatingService ratingService;
     private PostingFeedService postingFeedService;
+    private UserService userService;
 
     @Inject
     public OrganizationController(OrganizationService organizationService,
@@ -51,32 +56,27 @@ public class OrganizationController {
         this.orgJoinRequestService = orgJoinRequestService;
         this.ratingService = ratingService;
         this.postingFeedService = postingFeedService;
+        this.userService = userService;
     }
 
     /**
-     * POST  /rest/organizations -> Create a new organization.
+     * PUT  /rest/organizations -> Update an organization.
      * <p/>
-     * creates a new organization with the given information
+     * update an existing organization with the new information
      *
-     * @param newOrganization the values for the new organization
-     * @return response status CREATED if the organization was created successfully, or BAD REQUEST if the request
-     * could not be executed without errors
+     * @param organization new values for the organization, id must not be null
+     * @return response status OK and the updated organization if the update was successful, NOT FOUND if an
+     * organization with the given id could not be found or BAD REQUEST if the update was not executed successfully
      */
     @RolesAllowed(AuthoritiesConstants.USER)
     @RequestMapping(value = "/rest/organizations",
-        method = RequestMethod.POST,
+        method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object create(@RequestBody @Valid OrganizationRequestDTO newOrganization) {
-        log.debug("REST request to save Organization : {}", newOrganization);
-        return organizationService.createOrganizationInformation(
-            newOrganization.getName(),
-            newOrganization.getDescription(),
-            newOrganization.getEmail(),
-            newOrganization.getIsNpo(),
-            newOrganization.getLogo(),
-            newOrganization.getIsoCategories());
+    public Object update(@RequestBody @Valid Organization organization) {
+        log.debug("REST request to update Organization : {}", organization);
+        return organizationService.update(organization);
     }
 
     /**
@@ -137,37 +137,6 @@ public class OrganizationController {
     public Object getById(@PathVariable Long id) {
         log.debug("REST request to get Organization : {}", id);
         return organizationService.getById(id);
-    }
-
-    /**
-     * PUT  /rest/organizations -> Update an organization.
-     * <p/>
-     * update an existing organization with the new information
-     *
-     * @param organization new values for the organization, id must not be null
-     * @return response status OK and the updated organization if the update was successful, NOT FOUND if an
-     * organization with the given id could not be found or BAD REQUEST if the update was not executed successfully
-     */
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/organizations",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RESTWrapped
-    public Object update(@RequestBody @Valid OrganizationRequestDTO organization) {
-        log.debug("REST request to update Organization : {}", organization);
-        Long logoId = null;
-        if(organization.getLogo() != null) {
-            logoId = organization.getLogo().getId();
-        }
-        return organizationService.update(
-            organization.getName(),
-            organization.getDescription(),
-            organization.getEmail(),
-            organization.getIsNpo(),
-            logoId,
-            organization.getWebsite(),
-            organization.getIsoCategories());
     }
 
     /**
@@ -502,20 +471,5 @@ public class OrganizationController {
         return resourceService.getDonatedResourcesForOrganization(id, restParameters);
     }
 
-    @RequestMapping(value = "/rest/isocategories/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @RESTWrapped
-    public Object getSubCategoriesOf(@PathVariable Long id) {
-        return organizationService.getSubCategoriesOf(id);
-    }
-
-    @RequestMapping(value = "/rest/isocategories",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @RESTWrapped
-    public Object getSuperCategories() {
-        return organizationService.getAllSuperCategories();
-    }
 
 }

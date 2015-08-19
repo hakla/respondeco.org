@@ -84,77 +84,52 @@ public class ResourceService {
 
     /**
      * Create a new ResourceRequirement
-     * @param name name of Resource Requirement
-     * @param amount amount of Resource Requirement
-     * @param description description of Resource Requirement
-     * @param projectId project id belonging to the Resource Requirement
-     * @param isEssential true if requirement is essential for the project, false otherwise
-     * @param resourceTags defined tags for the resource requirement
      * @return saved ResourceRequirement created resource requirement
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource can't be found
      * @throws NoSuchEntityException if project of the resource can't be found
      */
-    public ResourceRequirement createRequirement(String name, BigDecimal amount, String description,
-                                                 Long projectId, Boolean isEssential, List<String> resourceTags)
+    public ResourceRequirement createRequirement(Project project, ResourceRequirement requirement)
         throws ResourceNotFoundException, NoSuchEntityException {
-        ResourceRequirement newRequirement = null;
 
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        Project currentProject = projectRepository.findByIdAndActiveIsTrue(project.getId());
         if(project == null) {
-            throw new NoSuchEntityException(projectId);
+            throw new NoSuchEntityException(project.getId());
         }
 
         ensureUserIsPartOfOrganisation(project);
-        List<ResourceRequirement> entries = resourceRequirementRepository.findByNameAndProjectAndActiveIsTrue(name, project);
+        List<ResourceRequirement> entries = resourceRequirementRepository
+            .findByNameAndProjectAndActiveIsTrue(requirement.getName(), project);
         if (entries == null || entries.isEmpty() == true) {
-            newRequirement = new ResourceRequirement();
-            newRequirement.setName(name);
-            newRequirement.setOriginalAmount(amount);
-            newRequirement.setAmount(amount);
-            newRequirement.setDescription(description);
-            newRequirement.setProject(project);
-            newRequirement.setIsEssential(isEssential);
-            newRequirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-            resourceRequirementRepository.save(newRequirement);
+            resourceRequirementRepository.save(requirement);
         } else {
             throw new ResourceNotFoundException(
-                String.format("Requirement with description '%s' for the Project %d already exists",
-                    description, project.getId()));
+                String.format("Requirement with name '%s' for the Project %d already exists",
+                    requirement.getName(), project.getId()));
         }
 
-        return newRequirement;
+        return requirement;
     }
 
     /**
      * Updates a Resource Requirement
-     * @param id id of required resource
-     * @param name name of required resource
-     * @param amount amount of required resource
-     * @param description description of required resource
-     * @param projectId id of the project which contains the resource
-     * @param isEssential true if resource is essential for the project, false otherwise
-     * @param resourceTags tags of the resource
      * @return updated Resource requirement
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource requirement can't be found
      * @throws OperationForbiddenException if operation is forbidden
      * @throws NoSuchEntityException if project of the resource requirement can't be found
      */
-    public ResourceRequirement updateRequirement(Long id, String name, BigDecimal amount, String description,
-                                                 Long projectId, Boolean isEssential, List<String> resourceTags)
+    public ResourceRequirement updateRequirement(ResourceRequirement updatedRequirement)
         throws IllegalValueException {
-        ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
+        ResourceRequirement currentRequirement =
+            this.resourceRequirementRepository.findByIdAndActiveIsTrue(updatedRequirement.getId());
 
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        Project project = projectRepository.findByIdAndActiveIsTrue(currentRequirement.getProject().getId());
         if(project == null) {
-            throw new NoSuchEntityException(projectId);
+            throw new NoSuchEntityException(currentRequirement.getProject().getId());
         }
-        if (project.equals(requirement.getProject()) == false) {
-            throw new OperationForbiddenException("cannot modify resource requirements of other projects");
-        }
-        ensureUserIsPartOfOrganisation(requirement.getProject());
+        ensureUserIsPartOfOrganisation(currentRequirement.getProject());
         BigDecimal matchSum = new BigDecimal(0);
-        if(requirement.getResourceMatches() != null) {
-            for (ResourceMatch match : requirement.getResourceMatches()) {
+        if(currentRequirement.getResourceMatches() != null) {
+            for (ResourceMatch match : currentRequirement.getResourceMatches()) {
                 //only take accepted matches into account
                 if (Boolean.TRUE.equals(match.getAccepted()) && (match.getAmount() != null)) {
                     matchSum = matchSum.add(match.getAmount());
@@ -162,20 +137,20 @@ public class ResourceService {
             }
         }
         log.debug("MATCH SUM = " + matchSum);
-        requirement.setName(name);
-        requirement.setDescription(description);
-        requirement.setIsEssential(isEssential);
-        requirement.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
+        currentRequirement.setName(updatedRequirement.getName());
+        currentRequirement.setDescription(updatedRequirement.getDescription());
+        currentRequirement.setIsEssential(updatedRequirement.getIsEssential());
+        currentRequirement.setResourceTags(resourceTagService.getOrCreateTags(updatedRequirement.getResourceTags()));
 
-        if(amount.subtract(matchSum).longValue() < 0L) {
+        if(updatedRequirement.getAmount().subtract(matchSum).longValue() < 0L) {
             throw new IllegalValueException("resource.errors.update.negative",
                 "New amount is too low, a higher amount of resources was alredy donated");
         }
-        requirement.setAmount(amount.subtract(matchSum));
-        requirement.setOriginalAmount(amount);
-        resourceRequirementRepository.save(requirement);
+        currentRequirement.setAmount(updatedRequirement.getAmount().subtract(matchSum));
+        currentRequirement.setOriginalAmount(updatedRequirement.getAmount());
+        resourceRequirementRepository.save(currentRequirement);
 
-        return requirement;
+        return currentRequirement;
     }
 
     /**
@@ -215,44 +190,19 @@ public class ResourceService {
 
     /**
      * Create a new ResourceOffer
-     * @param name ResourceOffer name
-     * @param amount ResourceOffer amount
-     * @param description ResourceOffer description
-     * @param organizationId organization id which created the ResourceOffer
-     * @param isCommercial true if ResourceOffer is a commercial Resource, false otherwise
-     * @param startDate available at startDate
-     * @param endDate available until endDate
-     * @param resourceTags Tags describing the ResourceOffer
-     * @param logoId id of the resource logo
-     * @param price
      * @return created ResourceOffer
      */
-    public ResourceOffer createOffer(String name, BigDecimal amount, String description, Long organizationId,
-                                     Boolean isCommercial, LocalDate startDate,
-                                     LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
+    public ResourceOffer createOffer(ResourceOffer newOffer)
         throws NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = organizationRepository.findByIdAndActiveIsTrue(newOffer.getOrganization().getId());
         if(organization == null) {
-            throw new NoSuchEntityException(organizationId);
+            throw new NoSuchEntityException(newOffer.getOrganization().getId());
         }
         if(organization.getVerified() == false) {
-            throw new OperationForbiddenException("Organization (id: " + organizationId + ") not verified");
-        }
-        ResourceOffer newOffer = new ResourceOffer();
-        newOffer.setName(name);
-        newOffer.setAmount(amount);
-        newOffer.setOriginalAmount(amount);
-        newOffer.setDescription(description);
-        newOffer.setOrganization(organization);
-        newOffer.setIsCommercial(isCommercial);
-        newOffer.setPrice(price);
-        newOffer.setStartDate(startDate);
-        newOffer.setEndDate(endDate);
-        if(logoId != null) {
-            newOffer.setLogo(imageRepository.findOne(logoId));
+            throw new OperationForbiddenException("Organization (id: " + newOffer.getOrganization().getId() + ") not verified");
         }
 
-        newOffer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
+        newOffer.setResourceTags(resourceTagService.getOrCreateTags(newOffer.getResourceTags()));
         this.resourceOfferRepository.save(newOffer);
 
         return newOffer;
@@ -260,49 +210,35 @@ public class ResourceService {
 
     /**
      *
-     * @param offerId id of the resource offer
-     * @param organisationId organization id of the resource offer
-     * @param name name of the resource offer
-     * @param amount amount of the resource
-     * @param description description of the resource offer
-     * @param isCommercial true if the resource is a commercial resource, false otherwise
-     * @param startDate available from
-     * @param endDate available until
-     * @param resourceTags tags belonging to the resource
-     * @param logoId id of the resource logo
-     * @param price
      * @return updated Resource Offer
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource offer with id can't be found
      * @throws ResourceTagException
      * @throws ResourceJoinTagException
      */
-    public ResourceOffer updateOffer(Long offerId, Long organisationId, String name, BigDecimal amount,
-                                     String description, Boolean isCommercial,
-                                     LocalDate startDate, LocalDate endDate, List<String> resourceTags, Long logoId, BigDecimal price)
+    public ResourceOffer updateOffer(ResourceOffer updatedOffer)
         throws IllegalValueException {
-        ResourceOffer offer = this.resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
+        ResourceOffer currentOffer = this.resourceOfferRepository.findByIdAndActiveIsTrue(updatedOffer.getId());
 
-        if (offer != null) {
-            ensureUserIsPartOfOrganisation(organizationRepository.findByIdAndActiveIsTrue(organisationId));
+        if (currentOffer != null) {
+            ensureUserIsPartOfOrganisation(organizationRepository.findByIdAndActiveIsTrue(
+                updatedOffer.getOrganization().getId()));
 
-            offer.setName(name);
-            offer.setAmount(amount);
-            offer.setDescription(description);
-            offer.setIsCommercial(isCommercial);
-            offer.setPrice(price);
-            offer.setStartDate(startDate);
-            offer.setEndDate(endDate);
-            offer.setResourceTags(resourceTagService.getOrCreateTags(resourceTags));
-            if(logoId != null) {
-                offer.setLogo(imageRepository.findOne(logoId));
-            }
-            this.resourceOfferRepository.save(offer);
+            currentOffer.setName(updatedOffer.getName());
+            currentOffer.setAmount(updatedOffer.getAmount());
+            currentOffer.setDescription(updatedOffer.getDescription());
+            currentOffer.setIsCommercial(updatedOffer.getIsCommercial());
+            currentOffer.setPrice(updatedOffer.getPrice());
+            currentOffer.setStartDate(updatedOffer.getStartDate());
+            currentOffer.setEndDate(updatedOffer.getEndDate());
+            currentOffer.setResourceTags(resourceTagService.getOrCreateTags(updatedOffer.getResourceTags()));
+            this.resourceOfferRepository.save(currentOffer);
         }
         else{
-            throw new ResourceNotFoundException(String.format("No resource offer found for the id: %d", offerId));
+            throw new ResourceNotFoundException(
+                String.format("No resource offer found for the id: %d", updatedOffer.getId()));
         }
 
-        return offer;
+        return currentOffer;
     }
 
     /**

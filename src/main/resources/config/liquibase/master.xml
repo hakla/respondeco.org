@@ -40,6 +40,10 @@
     <include file="classpath:config/liquibase/changelog/20150623213000_added_entity_ISOCategory.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150623214500_insert_entity_ISOCategory.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20150624200000_added_table_Organization_ISOCategory.xml" relativeToChangelogFile="false"/>
-    <!-- JHipster will add liquibase changelogs here -->
+
+    <include file="classpath:config/liquibase/changelog/20150819121200_added_columns_Organization_Address.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20150819121200_added_columns_Project_Address.xml" relativeToChangelogFile="false"/>
+
+    <!--JHipster will add liquibase changelogs here -->
 
 </databaseChangeLog>

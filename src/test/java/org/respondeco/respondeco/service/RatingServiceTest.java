@@ -67,9 +67,6 @@ public class RatingServiceTest {
     @Mock
     private PostingFeedRepository postingFeedRepository;
 
-    @Mock
-    private ProjectLocationRepository projectLocationRepositoryMock;
-
 
     private RatingService ratingService;
 
@@ -92,8 +89,7 @@ public class RatingServiceTest {
             resourceService,
             imageRepositoryMock,
             resourceMatchRepositoryMock,
-            postingFeedRepository,
-            projectLocationRepositoryMock);
+            postingFeedRepository);
         ratingService = new RatingService(ratingRepositoryMock, resourceMatchRepositoryMock, projectRepositoryMock,
             organizationRepositoryMock, userService, projectService);
 

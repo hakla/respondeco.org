@@ -23,7 +23,7 @@ public class ResourceMatchResponseDTO {
 
     RatingResponseDTO supporterRating;
 
-    ProjectResponseDTO project;
+//    ProjectResponseDTO project;
 
     String matchDirection;
 
@@ -46,9 +46,9 @@ public class ResourceMatchResponseDTO {
         if (fieldNames.contains("matchId")) {
             responseDTO.setMatchId(match.getId());
         }
-        if (fieldNames.contains("project")) {
-            responseDTO.setProject(ProjectResponseDTO.fromEntity(match.getProject(), null));
-        }
+//        if (fieldNames.contains("project")) {
+//            responseDTO.setProject(ProjectResponseDTO.fromEntity(match.getProject(), null));
+//        }
         if (fieldNames.contains("organization")) {
             responseDTO.setOrganization(OrganizationResponseDTO.fromEntity(match.getOrganization(), null));
         }

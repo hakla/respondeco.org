@@ -3,7 +3,9 @@ package org.respondeco.respondeco.web.rest.mapping;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by clemens on 22/03/15.
@@ -11,13 +13,14 @@ import java.util.List;
 public class DefaultReturnValueExtractor implements ReturnValueExtractor {
 
     @Override
-    public List<Field> extractFields(Class<?> clazz) {
-        List<Field> fields = new ArrayList<>();
+    public Map<Field, DefaultReturnValue> extractFields(Class<?> clazz) {
+        Map<Field, DefaultReturnValue> fields = new HashMap<>();
         Class<?> currentClass = clazz;
         while(currentClass != Object.class && currentClass != null) {
             for(Field field : currentClass.getDeclaredFields()) {
-                if(field.isAnnotationPresent(DefaultReturnValue.class)) {
-                    fields.add(field);
+                DefaultReturnValue annotation = field.getAnnotation(DefaultReturnValue.class);
+                if(annotation != null) {
+                    fields.put(field, annotation);
                 }
             }
             currentClass = currentClass.getSuperclass();
@@ -26,13 +29,14 @@ public class DefaultReturnValueExtractor implements ReturnValueExtractor {
     }
 
     @Override
-    public List<Method> extractMethods(Class<?> clazz) {
-        List<Method> methods = new ArrayList<>();
+    public Map<Method, DefaultReturnValue> extractMethods(Class<?> clazz) {
+        Map<Method, DefaultReturnValue> methods = new HashMap<>();
         Class<?> currentClass = clazz;
         while(currentClass != Object.class && currentClass != null) {
             for(Method method : currentClass.getDeclaredMethods()) {
-                if(method.isAnnotationPresent(DefaultReturnValue.class)) {
-                    methods.add(method);
+                DefaultReturnValue annotation = method.getAnnotation(DefaultReturnValue.class);
+                if(annotation != null) {
+                    methods.put(method, annotation);
                 }
             }
             currentClass = currentClass.getSuperclass();

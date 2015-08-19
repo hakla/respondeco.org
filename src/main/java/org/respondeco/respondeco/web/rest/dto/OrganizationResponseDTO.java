@@ -65,10 +65,10 @@ public class OrganizationResponseDTO {
         if (fieldNames.contains("spokesperson")) {
             responseDTO.setSpokesperson(organization.getSpokesPerson());
         }
-        if(fieldNames.contains("projects")) {
-            responseDTO.setProjects(ProjectResponseDTO
-                    .fromEntities(organization.getProjects(),null));
-        }
+//        if(fieldNames.contains("projects")) {
+//            responseDTO.setProjects(ProjectResponseDTO
+//                    .fromEntities(organization.getProjects(),null));
+//        }
         /*
         if(fieldNames.contains("postings")) {
             responseDTO.setPostings(PostingDTO
@@ -98,7 +98,7 @@ public class OrganizationResponseDTO {
     private Boolean isNpo;
     private UserDTO owner;
     private Long ownerId;
-    private List<ProjectResponseDTO> projects;
+//    private List<ProjectResponseDTO> projects;
     private ImageDTO logo;
     private List<UserDTO> members;
     private Long spokesperson;

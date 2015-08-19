@@ -365,6 +365,7 @@ a:hover {
 
 .intro-section {
   background: #222;
+  height: 775px;
 }
 
 .intro-section:after {

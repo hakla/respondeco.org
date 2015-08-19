@@ -175,15 +175,7 @@
 			"file": "src/main/webapp/scripts/organization/controller_organization.coffee",
 			"settings":
 			{
-				"buffer_size": 7172,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/Applications/MAMP/htdocs/club50/conf.php",
-			"settings":
-			{
-				"buffer_size": 6369,
+				"buffer_size": 9640,
 				"line_ending": "Unix"
 			}
 		},
@@ -191,7 +183,7 @@
 			"file": "src/main/webapp/scripts/organization/controller_organization_edit.coffee",
 			"settings":
 			{
-				"buffer_size": 4896,
+				"buffer_size": 4901,
 				"line_ending": "Unix"
 			}
 		},
@@ -199,8 +191,58 @@
 			"file": "src/main/webapp/template/organization/about_us.html",
 			"settings":
 			{
-				"buffer_size": 2465,
+				"buffer_size": 6479,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/image/setup.sql",
+			"settings":
+			{
+				"buffer_size": 747,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Package Control Messages\n========================\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n",
+			"settings":
+			{
+				"buffer_size": 12019,
+				"line_ending": "Windows",
+				"name": "Package Control Messages",
+				"scratch": true
+			}
+		},
+		{
+			"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/5_layouts/clean-blog/master.json",
+			"settings":
+			{
+				"buffer_size": 484,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "{\n    \"xs\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }],\n    \"sm\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }],\n    \"md\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }],\n    \"lg\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }]\n}\n",
+			"settings":
+			{
+				"buffer_size": 2215,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/Klaus/Dropbox/Wichtig/EPU/t5-agile-anforderungen.md",
+			"settings":
+			{
+				"buffer_size": 1145,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/insert.sql",
+			"settings":
+			{
+				"buffer_size": 62954,
+				"line_ending": "Windows"
 			}
 		},
 		{
@@ -239,7 +281,7 @@
 			"file": "src/main/scss/organization.scss",
 			"settings":
 			{
-				"buffer_size": 16385,
+				"buffer_size": 16633,
 				"line_ending": "Unix"
 			}
 		},
@@ -247,7 +289,7 @@
 			"file": "src/main/webapp/views/organization.html",
 			"settings":
 			{
-				"buffer_size": 2178,
+				"buffer_size": 1981,
 				"line_ending": "Unix"
 			}
 		},
@@ -255,7 +297,7 @@
 			"file": "src/main/resources/config/liquibase/master.xml",
 			"settings":
 			{
-				"buffer_size": 4456,
+				"buffer_size": 5014,
 				"line_ending": "Unix"
 			}
 		},
@@ -263,15 +305,25 @@
 			"file": "src/main/webapp/index.html",
 			"settings":
 			{
-				"buffer_size": 35143,
+				"buffer_size": 35825,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Searching 156 files for \"Was wir tun\"\n\nC:\\Users\\Klaus\\projects\\respondeco.org\\src\\main\\webapp\\template\\organization\\about_us.html:\n   64              <div class=\"panel panel-profile\">\n   65                  <div class=\"panel-heading overflow-h\">\n   66:                     <h2 class=\"panel-title heading-sm pull-left\"><i class=\"icon-info\"></i> Was wir tun</h2>\n   67                  </div>\n   68                  <div class=\"panel-body hover-toggle\" editable-textarea=\"organization.description\" e-form=\"editDescription\" e-rows=\"12\" e-cols=\"50\" onaftersave=\"save()\">\n\n1 match in 1 file\n",
+			"settings":
+			{
+				"buffer_size": 586,
+				"line_ending": "Windows",
+				"name": "Find Results",
+				"scratch": true
 			}
 		},
 		{
 			"file": "src/main/webapp/template/organization/summary.html",
 			"settings":
 			{
-				"buffer_size": 1539,
+				"buffer_size": 1525,
 				"line_ending": "Unix"
 			}
 		}
@@ -283,10 +335,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 255.0,
-		"last_filter": "",
+		"height": 337.0,
+		"last_filter": "json",
 		"selected_items":
 		[
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
 			[
 				"scss",
 				"Set Syntax: SCSS"
@@ -306,10 +362,6 @@
 			[
 				"pre",
 				"HTMLPrettify: Set Prettify Preferences"
-			],
-			[
-				"json",
-				"Set Syntax: JSON"
 			],
 			[
 				"packa",
@@ -568,7 +620,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 475.0
+		"width": 528.0
 	},
 	"console":
 	{
@@ -589,16 +641,21 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/klaus.harrer/projects/prv/respondeco.org",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/changelog"
+		"/C/Users/Klaus/projects/respondeco.org"
 	],
 	"file_history":
 	[
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/update_dev4_kh.sql",
+		"/C/ProgramData/Ableton/Live 9 Suite/Program/Installation.cfg",
+		"/E/Temp/Ableton/Ableton.Live.Suite.v9.1.1.WiN64-IO/io.nfo",
+		"/E/Music/LOOPMASTERS EXCITE PROMO 2015/1.INFO/INSTALLATION INSTRUCTIONS.txt",
+		"/E/Daniel/Hard Disk 3/Recovered FAT Partition @ 478768/FC52A850.0D4",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/create.sql",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/dat/qPage/layout/master/clean-blog/html/index.html",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/dat/qPage/layout/master/clean-blog/variations.json",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/dat/qPage/layout/master/clean-blog/master.json",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/bower_components/angular-file-upload/bower.json",
+		"/Applications/MAMP/htdocs/club50/conf.php",
 		"/Applications/MAMP/htdocs/login.html",
 		"/Applications/MAMP/htdocs/club50/index.php",
 		"/Users/klaus.harrer/projects/prv/klugtouristik/club50/db/d0106c3e.sql",
@@ -715,18 +772,7 @@
 		"/Users/klaus.harrer/car2go/4.json",
 		"/Users/klaus.harrer/car2go/3.json",
 		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/fonts/glyphicons-halflings-regular.svg",
-		"/Users/klaus.harrer/projects/prv/respondeco/Gruntfile.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/test/java/org/respondeco/respondeco/web/rest/OrganizationControllerTest.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/test/javascript/spec/organization/organization_controllerOverviewSpec.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/web/rest/OrganizationController.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/organization.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/views/organization-edit.html",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/organization/controller_organization.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/project/controller_project_location.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/java/org/respondeco/respondeco/repository/ProjectRepository.java",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/textmessage/controller_textmessage.js",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/scripts/organization/controller_organization_edit.js",
-		"/Users/klaus.harrer/projects/oeamtc/mobito/mobito-web/conf/routes"
+		"/Users/klaus.harrer/projects/prv/respondeco/Gruntfile.js"
 	],
 	"find":
 	{
@@ -737,6 +783,7 @@
 		"height": 90.0,
 		"where_history":
 		[
+			"*html",
 			"*xml",
 			"",
 			"*js",
@@ -760,6 +807,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"qp",
+			"p",
+			"Was wir tun",
 			"weil",
 			"Weil",
 			"addColumn",
@@ -884,10 +934,7 @@
 			"routeProvider",
 			"Organisation",
 			"h2",
-			"tr",
-			"account",
-			");\n",
-			"Factory"
+			"tr"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -910,7 +957,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 7,
 			"sheets":
 			[
 				{
@@ -919,20 +966,124 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7172,
+						"buffer_size": 9640,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1364,
-								1364
+								0,
+								0
 							]
 						],
 						"settings":
 						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
 							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
@@ -941,54 +1092,24 @@
 						"translation.y": 107.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "/Applications/MAMP/htdocs/club50/conf.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6369,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5736,
-								5736
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/PHP/PHP.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1386.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "src/main/webapp/scripts/organization/controller_organization_edit.coffee",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4896,
+						"buffer_size": 4901,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4375,
-								4375
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1002,32 +1123,328 @@
 						"translation.y": 1305.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 2,
 					"file": "src/main/webapp/template/organization/about_us.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2465,
+						"buffer_size": 6479,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								248,
-								248
+								4311,
+								4311
 							]
 						],
 						"settings":
 						{
 							"auto_complete": false,
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
 							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 443.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/image/setup.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 747,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/SQL/SQL.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12019,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12019,
+								12019
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/5_layouts/clean-blog/master.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 484,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								482,
+								482
+							]
+						],
+						"settings":
+						{
+							"encoding_helper_encoding": "UTF-8",
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
@@ -1038,7 +1455,407 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 6,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2215,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1404,
+								1404
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 252.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/C/Users/Klaus/Dropbox/Wichtig/EPU/t5-agile-anforderungen.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1145,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								796,
+								796
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/Markdown/Markdown.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/insert.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 62954,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/SQL/SQL.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 7828.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
 					"file": "src/main/webapp/template/organization/prices.html",
 					"semi_transient": false,
 					"settings":
@@ -1066,11 +1883,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 10,
 					"file": "src/main/webapp/template/organization/projects.html",
 					"semi_transient": false,
 					"settings":
@@ -1098,11 +1915,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 11,
 					"file": "src/main/webapp/template/organization/members.html",
 					"semi_transient": false,
 					"settings":
@@ -1130,11 +1947,11 @@
 						"translation.y": 1.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 12,
 					"file": "src/main/webapp/template/organization/news.html",
 					"semi_transient": false,
 					"settings":
@@ -1162,24 +1979,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 13,
 					"file": "src/main/scss/organization.scss",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16385,
+						"buffer_size": 16633,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								16385,
-								16385
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1194,24 +2011,24 @@
 						"translation.y": 14487.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 14,
 					"file": "src/main/webapp/views/organization.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2178,
+						"buffer_size": 1981,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1684,
-								1684
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1226,29 +2043,133 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 15,
 					"file": "src/main/resources/config/liquibase/master.xml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4456,
+						"buffer_size": 5014,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4299,
-								4337
+								0,
+								0
 							]
 						],
 						"settings":
 						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
 							"syntax": "Packages/XML/XML.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
@@ -1257,56 +2178,312 @@
 						"translation.y": 166.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 16,
 					"file": "src/main/webapp/index.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 35143,
+						"buffer_size": 35825,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								22039,
-								22039
+								30458,
+								30458
 							]
 						],
 						"settings":
 						{
 							"auto_complete": false,
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
 							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5032.0,
+						"translation.y": 6038.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 17,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 586,
+						"regions":
+						{
+							"match":
+							{
+								"flags": 112,
+								"regions":
+								[
+									[
+										344,
+										355
+									]
+								],
+								"scope": ""
+							}
+						},
+						"selection":
+						[
+							[
+								349,
+								349
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"detect_indentation": false,
+							"encoding_helper_encoding": "",
+							"line_numbers": false,
+							"output_tag": 1,
+							"result_base_dir": "",
+							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"sublime_auto_complete": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
 					"file": "src/main/webapp/template/organization/summary.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1539,
+						"buffer_size": 1525,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								483,
-								483
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1321,7 +2498,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 14,
 					"type": "text"
 				}
 			]
@@ -1379,6 +2556,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"index.html",
+				"src\\main\\webapp\\index.html"
+			],
 			[
 				"projects.html",
 				"src/main/webapp/template/organization/projects.html"
@@ -1886,10 +3067,6 @@
 			[
 				"organijs",
 				"src/main/webapp/scripts/organization/controller_organization.js"
-			],
-			[
-				"organizationh",
-				"src/main/webapp/views/organization.html"
 			]
 		],
 		"width": 0.0

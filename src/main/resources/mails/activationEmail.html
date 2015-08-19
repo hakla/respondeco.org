@@ -12,7 +12,7 @@
             Ihr respondeco.org Account wurde erfolgreich erstellt, um die Registrierung abzuschließen klicken Sie bitte auf den Aktivierungslink.
         </p>
         <p>
-            <a th:href="@{|${baseUrl}/#/activate?key=${user.activationKey}|}">Aktivierungslink</a>
+            <a th:href="@{|${baseUrl}#/activate?key=${user.activationKey}|}">Aktivierungslink</a>
         </p>
         <p>
             <span th:text="#{email.activation.text2}">lg</span>

@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.respondeco.respondeco.testutil.TestUtil;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -50,7 +49,7 @@ public class AccountControllerTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserService userService;
+    private UserService userServiceMock;
 
     private MockMvc restUserMockMvc;
 
@@ -64,7 +63,7 @@ public class AccountControllerTest {
         MockitoAnnotations.initMocks(this);
         AccountController accountController = new AccountController();
         ReflectionTestUtils.setField(accountController, "userRepository", userRepository);
-        ReflectionTestUtils.setField(accountController, "userService", userService);
+        ReflectionTestUtils.setField(accountController, "userService", userServiceMock);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
 
         adminAuthorities = new HashSet<>();
@@ -90,22 +89,6 @@ public class AccountControllerTest {
 
     }
 
-    /**
-    @Test
-    public void testCRUDAccountResource() throws Exception {
-
-        when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
-        // Update Account
-        defaultAdmin.setFirstName("jane");
-        defaultAdmin.setDescription("just a regular everyday normal girl");
-
-        restUserMockMvc.perform(post("/app/rest/account")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(defaultAdmin)))
-                .andExpect(status().isOk());
-    }
-     */
-
     @Test
     public void testNonAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/app/rest/authenticate")
@@ -129,7 +112,7 @@ public class AccountControllerTest {
 
     @Test
     public void testGetExistingAccount() throws Exception {
-        when(userService.getUserWithAuthorities()).thenReturn(defaultAdmin);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultAdmin);
 
         restUserMockMvc.perform(get("/app/rest/account")
                 .accept(MediaType.APPLICATION_JSON))
@@ -146,8 +129,8 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testGetUnknownAccount() throws Exception {
-        when(userService.getUserWithAuthorities()).thenReturn(null);
+    public void testRegisterNewAccount_shouldCreateUserAndOrganization() throws Exception {
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(null);
 
         restUserMockMvc.perform(get("/app/rest/account")
                 .accept(MediaType.APPLICATION_JSON))

@@ -6,11 +6,10 @@ spring:
 
     datasource:
         dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
-        url: jdbc:mysql://localhost:3306/respondeco
-        databaseName: respondeco
+        url: jdbc:mysql://localhost:3306/respondeco-test
         serverName: localhost
         username: root
-        password:
+        password: 
         cachePrepStmts: true
 
     jpa:
@@ -29,7 +28,7 @@ spring:
             hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
 
     mail:
-        baseUrl: http://test.respondeco.org
+        baseUrl: http://test.respondeco.org/app.html
         host: mail.respondeco.org
         port: 587
         user: system@respondeco.org

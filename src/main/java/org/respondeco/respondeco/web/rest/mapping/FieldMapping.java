@@ -30,16 +30,26 @@ public class FieldMapping {
     private final Logger log = LoggerFactory.getLogger(FieldMapping.class);
 
     private ReflectionUtil util;
+    private String returnFieldName;
     private String fieldName;
     private Field field;
     private Method accessor;
 
-    public FieldMapping(String fieldName, Field field, Method accessor) throws MappingException {
+    public FieldMapping(String fieldName, Field field, Method accessor, String returnFieldName) throws MappingException {
         this.util = new ReflectionUtil();
+        this.returnFieldName = returnFieldName;
         this.fieldName = fieldName;
         this.field = field;
         this.accessor = accessor;
         checkAccess();
+    }
+
+    public FieldMapping(String fieldName, Field field, Method accessor) throws MappingException {
+        this(fieldName, field, accessor, fieldName);
+    }
+
+    public String getReturnFieldName() {
+        return returnFieldName;
     }
 
     public String getFieldName() {
@@ -48,6 +58,7 @@ public class FieldMapping {
 
     public Object map(Object object) throws MappingException {
         try {
+            log.debug("field name: {}, field: {}, accessor: {}", fieldName, field, accessor);
             return accessor.invoke(object);
         } catch (Exception e) {
             throw new MappingException(e);

@@ -27,6 +27,8 @@ public class QOrganization extends EntityPathBase<Organization> {
     //inherited
     public final BooleanPath active = _super.active;
 
+    public final QAddress address;
+
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
@@ -92,6 +94,7 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public QOrganization(Class<? extends Organization> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.address = inits.isInitialized("address") ? new QAddress(forProperty("address")) : null;
         this.logo = inits.isInitialized("logo") ? new QImage(forProperty("logo")) : null;
         this.owner = inits.isInitialized("owner") ? new QUser(forProperty("owner"), inits.get("owner")) : null;
         this.postingFeed = inits.isInitialized("postingFeed") ? new QPostingFeed(forProperty("postingFeed")) : null;
