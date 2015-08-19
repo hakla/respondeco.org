@@ -1,4 +1,4 @@
-package org.respondeco.respondeco.web.rest.mapping.serializing;
+package org.respondeco.respondeco.web.rest.mapping.serializing.types;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -14,13 +14,13 @@ import java.io.IOException;
  * Created by clemens on 28/11/14.
  */
 @Component
-@CustomDeserializer
-public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
+@CustomTypeDeserializer
+public class LocalDateTypeDeserializer extends StdDeserializer<LocalDate> {
 
     private static DateTimeFormatter formatter =
             DateTimeFormat.forPattern("yyyy-MM-dd");
 
-    public CustomLocalDateDeserializer() {
+    public LocalDateTypeDeserializer() {
         super(LocalDate.class);
     }
 

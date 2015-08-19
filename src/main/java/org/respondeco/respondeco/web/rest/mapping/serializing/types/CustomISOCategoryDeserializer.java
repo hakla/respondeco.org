@@ -1,12 +1,9 @@
-package org.respondeco.respondeco.web.rest.mapping.serializing;
+package org.respondeco.respondeco.web.rest.mapping.serializing.types;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.respondeco.respondeco.domain.ISOCategory;
 
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.io.IOException;
 /**
  * Created by clemens on 24/06/15.
  */
-@CustomDeserializer
 public class CustomISOCategoryDeserializer  extends StdDeserializer<ISOCategory> {
 
     public CustomISOCategoryDeserializer() {

@@ -1,3 +1,4 @@
+
 package org.respondeco.respondeco.service;
 
 import org.junit.Before;
@@ -11,6 +12,8 @@ import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.testutil.DomainModel;
+import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -68,6 +71,8 @@ public class OrganizationServiceTest {
     private Organization testOrganization;
     private ArgumentCaptor<Organization> organizationArgumentCaptor;
 
+    private DomainModel model;
+
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -93,49 +98,63 @@ public class OrganizationServiceTest {
         testOrganization.setFollowingUsers(new ArrayList<>());
         testOrganization.setId(1L);
 
+        model = new DomainModel();
         organizationArgumentCaptor = ArgumentCaptor.forType(Organization.class, 0, false);
     }
 
     @Test
-    public void testCreateOrganization() throws Exception {
+    public void testCreateOrganization_shouldCreateOrganization() throws Exception {
+        Organization organization = model.ORGANIZATION_NEW;
+        organization.setOwner(model.USER_WITH_ID);
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+        organizationService.create(organization);
 
-        organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, null, null);
-
-        verify(userServiceMock, times(1)).getUserWithAuthorities();
+        verify(organizationRepositoryMock, times(1)).findByName(organization.getName());
         verify(organizationRepositoryMock, times(1)).save(isA(Organization.class));
     }
 
-    @Test(expected = OrganizationAlreadyExistsException.class)
-    public void testCreateOrganization_OrgNameAlreadyExists() throws Exception {
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-
-        Organization organization = organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, null, null);
-
-        when(organizationRepositoryMock.findByName("testOrg")).thenReturn(organization);
-
-        organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, null, null);
+    @Test(expected = IllegalValueException.class)
+    public void testCreateOrganization_shouldThrow_orgNameAlreadyExists() throws Exception {
+        when(organizationRepositoryMock.findByName(model.ORGANIZATION_NEW.getName()))
+            .thenReturn(model.ORGANIZATION_NEW);
+        organizationService.create(model.ORGANIZATION_NEW);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateOrganization_NameMustNotBeEmpty() throws Exception {
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-
-        organizationService.createOrganizationInformation("","testDescription","test@email.com",false, null, null);
+    @Test(expected = IllegalValueException.class)
+    public void testCreateOrganization_shouldThrow_nameMustNotBeEmpty() throws Exception {
+        organizationService.create(model.ORGANIZATION_NAME_EMPTY);
     }
 
-    @Test(expected = AlreadyInOrganizationException.class)
-    public void testCreateOrganization_AlreadyOwnerOfAnotherOrganization() throws Exception {
+    @Test(expected = IllegalValueException.class)
+    public void testCreateOrganization_shouldThrow_ownerMustNotBeEmpty() throws Exception {
+        organizationService.create(model.ORGANIZATION_NAME_EMPTY);
+    }
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
+    @Test
+    public void testUpdateOrganization_shouldUpdateValidChanges() throws Exception {
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER_N1_COMPLETE);
+        when(organizationRepositoryMock.findByOwner(model.USER_N1_COMPLETE)).thenReturn(model.ORGANIZATION_N1_COMPLETE);
+        when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
+        Organization organizationClone = new Organization();
+        BeanUtils.copyProperties(model.ORGANIZATION_N1_COMPLETE, organizationClone);
+        organizationClone.setEmail("new@email.foo");
 
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+        organizationService.update(organizationClone);
 
-        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-        organizationService.createOrganizationInformation("testOrg2","testDescription","test@email.com",false, null, null);
+        Organization savedOrganization = organizationArgumentCaptor.getValue();
+        assertEquals("new@email.foo", savedOrganization.getEmail());
+    }
+
+    @Test(expected = OperationForbiddenException.class)
+    public void testUpdateOrganization_shouldThrow_userNotOwner() throws Exception {
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER_N1_COMPLETE);
+        when(organizationRepositoryMock.findByOwner(model.USER_N1_COMPLETE)).thenReturn(null);
+        when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
+        Organization organizationClone = new Organization();
+        BeanUtils.copyProperties(model.ORGANIZATION_N1_COMPLETE, organizationClone);
+        organizationClone.setEmail("new@email.foo");
+
+        organizationService.update(organizationClone);
     }
 
     @Test
@@ -143,7 +162,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        Organization organization = organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
 
         when(organizationRepositoryMock.findByName("testOrg")).thenReturn(organization);
         organizationService.getOrganizationByName("testOrg");
@@ -156,19 +175,19 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
-        Organization organization = organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
 
         when(organizationRepositoryMock.findByName("testOrg")).thenReturn(organization);
         organizationService.getOrganizationByName("test");
     }
 
     @Test
-     public void testGetOrganization() throws Exception {
+    public void testGetOrganization() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         when(userRepositoryMock.exists(null)).thenReturn(true);
 
-        Organization organization = organizationService.createOrganizationInformation("testOrg","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
 
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
 
@@ -182,11 +201,11 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization1 = organizationService
-            .createOrganizationInformation("testOrg1", "testDescription", "test@email.com", false, null, null);
+            .create(testOrganization);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         Organization organization2 = organizationService
-            .createOrganizationInformation("testOrg2", "testDescription", "test@email.com", false, null, null);
+            .create(testOrganization);
 
         Page<Organization> orgPage = new PageImpl<Organization>(Arrays.asList(organization1,organization2));
         when(organizationRepositoryMock.findByActiveIsTrue(any(Pageable.class))).thenReturn(orgPage);
@@ -197,47 +216,13 @@ public class OrganizationServiceTest {
         verify(organizationRepositoryMock, times(1)).findByActiveIsTrue(any(Pageable.class));
     }
 
-//    @Test
-//     public void testUpdateOrganization() throws Exception {
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//
-//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null);
-//        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-//        organizationService.update("testOrg2", "testDescription", "test@email.com", false, null);
-//
-//        when(organizationRepositoryMock.findByName("testOrg2")).thenReturn(organization);
-//        Organization organization2 = organizationService.getOrganizationByName("testOrg2");
-//
-//        verify(organizationRepositoryMock, times(2)).save(organization);
-//        assertEquals(organization2.getName(), "testOrg2");
-//    }
-//
-//    @Test(expected = IllegalArgumentException.class)
-//    public void testUpdateOrganization_WithEmptyName() throws Exception {
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//
-//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null);
-//        when(organizationRepositoryMock.findByOwner(orgOwner)).thenReturn(organization);
-//        organizationService.update("", "testDescription", "test@email.com", false, null);
-//    }
-//
-//    @Test(expected = NoSuchEntityException.class)
-//    public void testUpdateOrganization_NotExisting() throws Exception {
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//
-//        organizationService.update("testOrg1", "testDescription", "test@email.com", false, null);
-//    }
-
     @Test
     public void testDeleteOrganization() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
 
         Organization organization = organizationService
-            .createOrganizationInformation("testOrg1", "testDescription", "test@email.com", false, null, null);
+            .create(testOrganization);
 
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(any(Long.class))).thenReturn(organization);
         doAnswer(organizationArgumentCaptor).when(organizationRepositoryMock).save(any(Organization.class));
@@ -260,7 +245,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService
-            .createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+            .create(testOrganization);
         organization.setVerified(true);
         defaultUser.setOrganization(organization);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
@@ -274,7 +259,7 @@ public class OrganizationServiceTest {
     public void testDeleteMember_shouldThrowNoSuchUserException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
         defaultUser.setOrganization(organization);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
@@ -286,7 +271,7 @@ public class OrganizationServiceTest {
     public void testDeleteMember_shouldThrowNoSuchOrganizationException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
         defaultUser.setOrganization(organization);
         when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(null);
@@ -299,7 +284,7 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService
-            .createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+            .create(testOrganization);
         organization.setVerified(true);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         defaultUser.setOrganization(organization);
@@ -309,27 +294,11 @@ public class OrganizationServiceTest {
 
     }
 
-//    @Test
-//    public void testGetUserByOrgId() throws Exception {
-//        User user3 = new User();
-//        user3.setId(3L);
-//        user3.setLogin("testUser3");
-//
-//        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-//        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
-//        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
-//        defaultUser.setOrganization(organization);
-//        user3.setOrganization(organization);
-//        when(userRepositoryMock.findUsersByOrganizationId(organization.getId())).thenReturn(Arrays.asList(defaultUser, user3));
-//        List<User> members = organizationService.getUserByOrgId(organization.getId());
-//        assertTrue(members.size()==2);
-//    }
-
     @Test(expected = NoSuchEntityException.class)
     public void testGetUserByOrgId_shouldThrowNoSuchOrganizationException() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(null);
         organizationService.getUserByOrgId(organization.getId());
     }
@@ -341,7 +310,7 @@ public class OrganizationServiceTest {
         user3.setLogin("testUser3");
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.createOrganizationInformation("testOrg1","testDescription","test@email.com",false, null, null);
+        Organization organization = organizationService.create(testOrganization);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
         when(userRepositoryMock.findInvitableUsers()).thenReturn(Arrays.asList(defaultUser,user3));
         List<User> users = organizationService.findInvitableUsersByOrgId(organization.getId());

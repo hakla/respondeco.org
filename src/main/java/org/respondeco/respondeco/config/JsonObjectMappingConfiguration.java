@@ -2,9 +2,9 @@ package org.respondeco.respondeco.config;
 
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomDeserializer;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomJsonObjectMapper;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.CustomTypeDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.CustomJsonObjectMapper;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.CustomTypeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +44,8 @@ public class JsonObjectMappingConfiguration implements ApplicationContextAware, 
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Map<String, Object> serializers = applicationContext.getBeansWithAnnotation(CustomSerializer.class);
-        Map<String, Object> deserializers = applicationContext.getBeansWithAnnotation(CustomDeserializer.class);
+        Map<String, Object> serializers = applicationContext.getBeansWithAnnotation(CustomTypeSerializer.class);
+        Map<String, Object> deserializers = applicationContext.getBeansWithAnnotation(CustomTypeDeserializer.class);
 
         List<StdSerializer<?>> stdSerializers = new ArrayList<>();
         for(Object s : serializers.values()) {

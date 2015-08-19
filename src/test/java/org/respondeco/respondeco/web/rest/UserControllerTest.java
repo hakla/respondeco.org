@@ -42,9 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerTest {
 
-    @Inject
-    private UserRepository userRepository;
-
     private MockMvc restUserMockMvc;
 
     @Mock

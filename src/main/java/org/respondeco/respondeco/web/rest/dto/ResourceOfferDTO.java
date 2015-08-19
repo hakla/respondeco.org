@@ -10,8 +10,8 @@ import lombok.Setter;
 import org.joda.time.LocalDate;
 import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceTag;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateDeserializer;
-import org.respondeco.respondeco.web.rest.mapping.serializing.CustomLocalDateSerializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeDeserializer;
+import org.respondeco.respondeco.web.rest.mapping.serializing.types.LocalDateTypeSerializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ public class ResourceOfferDTO {
 
     private BigDecimal price;
 
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
+    @JsonDeserialize(using = LocalDateTypeDeserializer.class)
     private LocalDate startDate;
 
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateTypeSerializer.class)
+    @JsonDeserialize(using = LocalDateTypeDeserializer.class)
     private LocalDate endDate;
 
     private List<String> resourceTags;

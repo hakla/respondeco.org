@@ -119,12 +119,19 @@ public class AccountController {
                 responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            user = userService.createUserInformation(registerDTO.getEmail().toLowerCase(),
-                registerDTO.getPassword(), null, null, null, registerDTO.getEmail().toLowerCase(),
-                "UNSPECIFIED", null, registerDTO.getLangKey(), null);
+            user = new User();
+            user.setLogin(registerDTO.getEmail().toLowerCase());
+            user.setEmail(registerDTO.getEmail().toLowerCase());
+            user.setPassword(registerDTO.getPassword());
+            user.setLangKey(registerDTO.getLangKey());
+            user = userService.createUser(user);
 
+            Organization organization = new Organization();
+            organization.setName(registerDTO.getOrganization());
+            organization.setEmail(registerDTO.getEmail());
+            organization.setOwner(user);
             // #90 create the organization when the user registers
-            organizationService.createOrganizationInformation(registerDTO.getOrganization(), null, registerDTO.getEmail(), false, null, null, user);
+            organizationService.create(organization);
 
             final Locale locale = Locale.forLanguageTag(registerDTO.getLangKey());
             String content = createHtmlContentFromTemplate(user, locale, request,

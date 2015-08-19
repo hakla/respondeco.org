@@ -106,47 +106,30 @@ public class UserService {
             .orElse(null);
     }
 
-    public User createUserInformation(String login, String password, String title, String firstName, String lastName,
-                                       String email, String gender, String description, String langKey, ImageDTO profilePicture) {
-        return createUserInformation(login, password, title, firstName, lastName, email, gender, description, langKey, profilePicture, false);
+    public User createUser(User user) {
+        return createUser(user, false);
     }
 
-    public User createUserInformation(String login, String password, String title, String firstName, String lastName,
-                                      String email, String gender, String description, String langKey, ImageDTO profilePicture, Boolean invited) {
-        User newUser = new User();
+    public User createUser(User user, Boolean invited) {
         Authority authority = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
-        String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(login);
-        newUser.setOrganization(null);
-        newUser.setPassword(encryptedPassword);
-        newUser.setTitle(title);
-        if(gender == null) {
-            newUser.setGender(Gender.UNSPECIFIED);
-        } else {
-            newUser.setGender(Gender.valueOf(gender));
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        if(user.getGender() == null) {
+            user.setGender(Gender.UNSPECIFIED);
         }
 
-        if (profilePicture != null && profilePicture.getId() != null) {
-            Image image = imageRepository.findOne(profilePicture.getId());
-            newUser.setProfilePicture(image);
-        }
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setEmail(email);
-        newUser.setDescription(description);
-        newUser.setLangKey(langKey);
         // new user is not active
-        newUser.setActivated(false);
+        user.setActivated(false);
         // new user gets registration key
-        newUser.setActivationKey(RandomUtil.generateActivationKey());
+        user.setActivationKey(RandomUtil.generateActivationKey());
         authorities.add(authority);
-        newUser.setAuthorities(authorities);
+        user.setAuthorities(authorities);
         // user can be invited by an organization
-        newUser.setInvited(invited);
-        userRepository.save(newUser);
-        log.debug("Created Information for User: {}", newUser);
-        return newUser;
+        user.setInvited(invited);
+        userRepository.save(user);
+        log.debug("Created User: {}", user);
+        return user;
     }
 
     public void updateUserInformation(String title, String gender, String firstName, String lastName, String email,
