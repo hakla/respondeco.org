@@ -3,7 +3,7 @@
 
   /* Controllers */
   respondecoApp.controller('MainController', function($scope, $location, $rootScope) {
-    var linkToOrganization;
+    var $menu, $window, linkToOrganization;
     $scope.main = function() {
       return $location.path() === '' || $location.path() === '/';
     };
@@ -43,7 +43,15 @@
     $scope.isActive = function(viewLocation) {
       return viewLocation === $location.path();
     };
-    return $rootScope.title = 'Organization';
+    $rootScope.title = 'Organization';
+    $menu = jQuery('.subheader');
+    return $window = jQuery(window).on('scroll', function(event) {
+      if ($window.scrollTop() > 87) {
+        return $menu.addClass('fixed-menu');
+      } else {
+        return $menu.removeClass('fixed-menu');
+      }
+    });
   });
 
   respondecoApp.controller('AdminController', function($scope) {});

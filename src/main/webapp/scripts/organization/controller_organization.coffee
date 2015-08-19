@@ -67,27 +67,6 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
       $scope.getConnections()
     )
 
-  $logo = jQuery '.profile-logo'
-  $container = $logo.next '.profile-container'
-  $window = jQuery(window).on 'scroll', (event) ->
-    # if $window.scrollTop() > 115 and $window.width() > 991
-    #   # calculate new position
-    #   $logo.css
-    #     position: 'fixed'
-    #     width: $logo.outerWidth()
-    #     top: "53px"
-
-    #   # set offset on container
-    #   $container.addClass 'col-xs-offset-3'
-    # else
-    #   # reset fixed position
-    #   $logo[0].style.position = null
-    #   $logo[0].style.width = null
-    #   $logo[0].style.top = null
-
-    #   # reset offset
-    #   $container.removeClass 'col-xs-offset-3'
-
   ###
   #  Gets all active connection for the currently logged in user
   #  and if the connection for the specific provider exists, it

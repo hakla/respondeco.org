@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   respondecoApp.controller('OrganizationController', function($scope, $location, $routeParams, Organization, Account, SocialMedia, AuthenticationSharedService, $rootScope, $filter) {
-    var $container, $logo, $window, isOwner, mapToDTO, refreshPostings, user;
+    var isOwner, mapToDTO, refreshPostings, user;
     isOwner = false;
     user = void 0;
     $scope.twitterConnected = false;
@@ -84,9 +84,6 @@
         return $scope.getConnections();
       });
     };
-    $logo = jQuery('.profile-logo');
-    $container = $logo.next('.profile-container');
-    $window = jQuery(window).on('scroll', function(event) {});
 
     /*
      *  Gets all active connection for the currently logged in user

@@ -26,6 +26,13 @@ respondecoApp.controller 'MainController', ($scope, $location, $rootScope) ->
 
   $rootScope.title = 'Organization'
 
+  $menu = jQuery '.subheader'
+  $window = jQuery(window).on 'scroll', (event) ->
+    if $window.scrollTop() > 87
+      $menu.addClass 'fixed-menu'
+    else
+      $menu.removeClass 'fixed-menu'
+
 respondecoApp.controller 'AdminController', ($scope) ->
 respondecoApp.controller 'LanguageController', ($scope, $translate, LanguageService, $window, $rootScope) ->
 

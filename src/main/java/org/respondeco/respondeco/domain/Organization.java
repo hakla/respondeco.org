@@ -51,8 +51,8 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @Column(name = "is_npo")
     private Boolean isNpo;
 
-    @Column(name = "address")
-    private String address;
+//    @Column(name = "address")
+//    private String address;
 
     @NotNull
     @ManyToOne

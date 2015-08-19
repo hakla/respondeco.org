@@ -15,14 +15,14 @@
             </div>
             <div class="subheading margin-bottom-30">
                 <span>Wien, Österreich</span>
-                <span class="rating">
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star-half-o"></i>
-            <span class="rating-counter">13</span>
-                </span>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-half-o"></i>
+                    <span class="rating-counter">13</span>
+                </div>
             </div>
         </div>
         <div class="col-md-9 icon-container text-center">
@@ -64,36 +64,6 @@
                 </div>
             </div>
             <!--End Skills-->
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left"><i class="fa fa-mouse-pointer"></i> Hier sind wir aktiv</h2>
-                </div>
-                <div class="panel-body">
-                    <div ng-repeat="category in chosenCategories">
-                        <p>
-                            <strong>
-                                <a href="#" editable-select="_category" e-ng-options="s for s in categories.main" onaftersave="clearCategory(category)">
-                                    <span ng-show="_category != undefined">{{ _category }}</span>
-                                    <span ng-hide="_category != undefined" translate="organization.category.placeholder"></span>
-                                </a>
-                            </strong>
-                            <br />
-                            <a href="#" editable-select="_subcategory" buttons="no" e-ng-options="s for s in categories[_category]" ng-show="_category != undefined && categories[_category] != undefined">
-                                <span ng-show="_subcategory != undefined">{{ _subcategory }}</span>
-                                <span ng-hide="_subcategory != undefined" translate="organization.subcategory.placeholder"></span>
-                            </a>
-                        </p>
-                        <p class="text-italic">
-                            <span editable-textarea="category.description" e-rows="4" e-cols="40">
-                                {{category.description || ('organization.category.description.placeholder' | translate) }}
-                            </span>
-                        </p>
-                        <hr />
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <div class="row">
