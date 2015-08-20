@@ -5,14 +5,22 @@ angular.module('respondecoAppFilters', []).filter('logo', ->
   (input) ->
     (Math.round(input * 10) / 10).toString().replace '.', ','
 ).filter('formatUser', ->
-  (user) ->
+  (user, length) ->
+    length = length or 'long'
     name = ''
-    if user != null
-      if user.lastName != undefined and user.firstName != undefined
-        name = user.firstName + ' ' + user.lastName + ' (' + user.login + ')'
-      else if user.name == undefined or user.firstName == undefined
-        name = user.login
+    if user isnt null and user isnt undefined
+      if length is 'long'
+        if user.lastName isnt undefined and user.firstName isnt undefined
+          name = user.firstName + ' ' + user.lastName + ' (' + user.login + ')'
+      else if length is 'login' then name = user.login
+      else if length is 'short' then name = "#{user.firstName} #{user.lastName}"
+      else if length is 'first' then name = user.firstName
+      else if length is 'last' then name = user.lastName
     name
+).filter('userImage', ->
+  (user) ->
+    if user?.profilePicture isnt null and user?.profilePicture isnt undefined then "/app/rest/images/file/#{user.profilePicture.id}"
+    else '/images/profile_empty.png'
 ).filter('linkify', ->
   (link) -> "<a href='#{link}'>#{link}</a>"
 ).filter('default', ->

@@ -9,6 +9,10 @@
     $scope.xingConnected = false;
     $scope.shownRating = 0;
     $scope.ratingCount = 0;
+    $scope.posting = {};
+    $scope.user = function() {
+      return user;
+    };
     $scope.map = {
       center: {
         latitude: 48,

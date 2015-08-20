@@ -1,13 +1,37 @@
 <div class="profile-body">
     <h2><i class="fa fa-comments"></i> Neuigkeiten</h2>
     <ul class="timeline-v2">
+        <li>
+            <div class="cbp_tmlabel">
+                <h2 editable-text="posting.title" e-form="editTitle" ng-click="editTitle.$show()" ng-hide="editTitle.$visible">{{ posting.title || ('posting.title.placeholder' | translate) }}</h2>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-2 col-md-2 news-logo">
+                        <img class="img-responsive" ng-src="{{ user() | userImage }}" alt="">
+                        <div class="md-margin-top-10 text-center">{{ user() | formatUser:'first' }}</div>
+                        <div class="md-margin-bottom-20"></div>
+                    </div>
+                    <div class="col-md-10 hover-toggle" editable-textarea="posting.information" e-form="editInformation" e-rows="12" e-cols="50">
+                        <div class="pull-right on-hover link-style" ng-click="editInformation.$show()" ng-hide="editInformation.$visible">
+                            <i class="icon-pencil"></i>
+                            <span class="hover-underline">{{'general.edit' | translate}}</span>
+                        </div>
+                        <p ng-click="editInformation.$show" ng-hide="editInformation.$visible">{{ posting.information || ('posting.information.placeholder' | translate) }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
         <li ng-repeat="posting in organization.postingFeed.postings">
             <time class="cbp_tmtime" datetime=""><span>{{ posting.createdDate | date }}</span></time>
             <i class="cbp_tmicon rounded-x hidden-xs"></i>
             <div class="cbp_tmlabel">
                 <h2>{{ posting.title }}</h2>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-xs-4 col-sm-2 col-md-2 news-logo">
+                        <img class="img-responsive" uploaded-image name="posting.author.profilePicture | userImage" alt="">
+                        <div class="md-margin-top-10 text-center">{{ posting.author | formatUser }}</div>
+                        <div class="md-margin-bottom-20"></div>
+                    </div>
+                    <div class="col-md-10">
                         <p>{{ posting.information }}</p>
                     </div>
                 </div>

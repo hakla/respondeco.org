@@ -82,6 +82,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "imageId")
+    @DefaultReturnValue
     private Image profilePicture;
 
     @JsonIgnore

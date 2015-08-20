@@ -7,6 +7,9 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   $scope.xingConnected = false
   $scope.shownRating = 0
   $scope.ratingCount = 0
+  $scope.posting = {}
+
+  $scope.user = -> user
 
   $scope.map =
     center:

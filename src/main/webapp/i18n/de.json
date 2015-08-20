@@ -756,6 +756,9 @@
         "showmore": "Mehr anzeigen",
         "posted": "postet: ",
         "delete": "Diesen Post löschen",
+        "title": {
+            "placeholder": "Titel"
+        },
         "information": {
             "placeholder": "Was gibt's neues?"
         }

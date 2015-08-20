@@ -578,7 +578,9 @@ li a i {
 }
 
 .timeline-v2 > li img {
-  border-radius: 70px !important;
+  border-radius: 50% !important;
+  height: 50px;
+  width: 50px;
 }
 
 .timeline-v2 > li img + div {
