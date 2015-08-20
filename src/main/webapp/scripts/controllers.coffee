@@ -80,16 +80,17 @@ respondecoApp.controller 'SettingsController', ($scope, $location, Account, Auth
 
   $scope.onComplete = (fileItem, response) ->
     $scope.settingsAccount.profilePicture = response
-    $scope.profilePicture = response.id
-    $scope.save()
+    $scope.profilePicture = response
+    
+    Account.setProfilePicture parseInt(response)
 
   $scope.success = null
   $scope.error = null
   $scope.fullName = null
   $scope.settingsAccount = {}
-  Account.get (account) ->
+  Account.get { fields: 'organization' }, (account) ->
     #account is an organization account, redirect to organization page
-    if account.id == account.organization.ownerId
+    if account.id == account.organization?.ownerId
       # $location.path("/organization/" + account.organization.id);
     else
       $scope.settingsAccount = account

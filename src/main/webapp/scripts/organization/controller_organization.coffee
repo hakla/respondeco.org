@@ -200,32 +200,33 @@ respondecoApp.controller 'OrganizationController', ($scope, $location, $routePar
   # show first page of postings
   $scope.showMorePostings()
 
-  $scope.addPosting = ->
-    if $scope.postingInformation.length < 5 or $scope.postingInformation.length > 2048
+  $scope.post = (posting) ->
+    if posting.information?.length < 5 or posting.title?.length < 5
       return
-    Organization.addPostingForOrganization { id: $routeParams.id }, $scope.postingInformation, (newPosting) ->
+
+    Organization.addPostingForOrganization { id: $routeParams.id }, posting, (newPosting) ->
       # add new posting and cut array down to current number of shown postings
       $scope.postings.unshift newPosting
       $scope.postingsTotal = $scope.postingsTotal + 1
       $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize)
-      $scope.postingInformation = null
+      $scope.posting = {}
       $scope.postingform.$setPristine()
 
-    urlPath = $location.url()
+    # urlPath = $location.url()
 
-    if $scope.postOnTwitter
-      SocialMedia.createTwitterPost
-        urlPath: urlPath
-        post: $scope.postingInformation
-    else if $scope.postOnFacebook
-      SocialMedia.createFacebookPost
-        urlPath: urlPath
-        post: $scope.postingInformation
-    else if $scope.postOnXing
-      SocialMedia.createXingPost
-        urlPath: urlPath
-        post: $scope.postingInformation
-    $scope.focused = false
+    # if $scope.postOnTwitter
+    #   SocialMedia.createTwitterPost
+    #     urlPath: urlPath
+    #     post: $scope.postingInformation
+    # else if $scope.postOnFacebook
+    #   SocialMedia.createFacebookPost
+    #     urlPath: urlPath
+    #     post: $scope.postingInformation
+    # else if $scope.postOnXing
+    #   SocialMedia.createXingPost
+    #     urlPath: urlPath
+    #     post: $scope.postingInformation
+    # $scope.focused = false
 
   $scope.deletePosting = (id) ->
     Organization.deletePosting {

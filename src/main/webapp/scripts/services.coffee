@@ -24,12 +24,16 @@ respondecoApp.factory 'Activate', ($resource) ->
 
 respondecoApp.factory 'Account', ($resource) ->
   $resource 'app/rest/account', {},
-    'leaveOrganization':
+    leaveOrganization:
       method: 'POST'
       url: 'app/rest/account/leaveorganization'
-    'getNewsfeed':
+    getNewsfeed:
       method: 'GET'
       url: 'app/rest/account/newsfeed'
+    setProfilePicture:
+      method: 'POST'
+      url: 'app/rest/account/profilepicture'
+
 respondecoApp.factory 'Password', ($resource) ->
   $resource 'app/rest/account/change_password', {}, {}
 
@@ -39,12 +43,14 @@ respondecoApp.factory 'Sessions', ($resource) ->
     isArray: true
 
 respondecoApp.factory 'Session', ->
-  @create = (login, firstName, lastName, email, userRoles) ->
-    @login = login
-    @firstName = firstName
-    @lastName = lastName
-    @email = email
-    @userRoles = userRoles
+  # TODO remove everything except account
+  @create = (account) ->
+    @login = account.login
+    @firstName = account.firstName
+    @lastName = account.lastName
+    @email = account.email
+    @userRoles = account.roles
+    @profilePicture = account.profilePicture
 
   @invalidate = ->
     @login = null
@@ -65,7 +71,7 @@ respondecoApp.factory 'AuthenticationSharedService', ($rootScope, $http, authSer
       ignoreAuthModule: 'ignoreAuthModule').success((data, status, headers, config) ->
       Account.get (data) ->
         if data.login != 'anonymousUser'
-          Session.create data.login, data.firstName, data.lastName, data.email, data.roles
+          Session.create data
           $rootScope.account = Session
           $rootScope._account = data
           authService.loginConfirmed data
@@ -76,7 +82,7 @@ respondecoApp.factory 'AuthenticationSharedService', ($rootScope, $http, authSer
   @refresh= ->
     Account.get (data) ->
       if data.login != 'anonymousUser'
-        Session.create data.login, data.firstName, data.lastName, data.email, data.roles
+        Session.create data
         $rootScope.account = Session
         $rootScope._account = data
 
@@ -85,7 +91,7 @@ respondecoApp.factory 'AuthenticationSharedService', ($rootScope, $http, authSer
       if !Session.login
         Account.get (data) ->
           if data.login != 'anonymousUser'
-            Session.create data.login, data.firstName, data.lastName, data.email, data.roles
+            Session.create data
             $rootScope.account = Session
             $rootScope._account = data
             $rootScope.authenticated = true

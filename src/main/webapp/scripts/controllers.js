@@ -110,15 +110,18 @@
     var getCurrentOrgJoinRequests, reloadOrganization;
     $scope.onComplete = function(fileItem, response) {
       $scope.settingsAccount.profilePicture = response;
-      $scope.profilePicture = response.id;
-      return $scope.save();
+      $scope.profilePicture = response;
+      return Account.setProfilePicture(parseInt(response));
     };
     $scope.success = null;
     $scope.error = null;
     $scope.fullName = null;
     $scope.settingsAccount = {};
-    Account.get(function(account) {
-      if (account.id === account.organization.ownerId) {
+    Account.get({
+      fields: 'organization'
+    }, function(account) {
+      var ref;
+      if (account.id === ((ref = account.organization) != null ? ref.ownerId : void 0)) {
 
       } else {
         $scope.settingsAccount = account;

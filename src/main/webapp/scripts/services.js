@@ -36,13 +36,17 @@
 
   respondecoApp.factory('Account', function($resource) {
     return $resource('app/rest/account', {}, {
-      'leaveOrganization': {
+      leaveOrganization: {
         method: 'POST',
         url: 'app/rest/account/leaveorganization'
       },
-      'getNewsfeed': {
+      getNewsfeed: {
         method: 'GET',
         url: 'app/rest/account/newsfeed'
+      },
+      setProfilePicture: {
+        method: 'POST',
+        url: 'app/rest/account/profilepicture'
       }
     });
   });
@@ -61,12 +65,13 @@
   });
 
   respondecoApp.factory('Session', function() {
-    this.create = function(login, firstName, lastName, email, userRoles) {
-      this.login = login;
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.email = email;
-      return this.userRoles = userRoles;
+    this.create = function(account) {
+      this.login = account.login;
+      this.firstName = account.firstName;
+      this.lastName = account.lastName;
+      this.email = account.email;
+      this.userRoles = account.roles;
+      return this.profilePicture = account.profilePicture;
     };
     this.invalidate = function() {
       this.login = null;
@@ -93,7 +98,7 @@
       }).success(function(data, status, headers, config) {
         return Account.get(function(data) {
           if (data.login !== 'anonymousUser') {
-            Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+            Session.create(data);
             $rootScope.account = Session;
             $rootScope._account = data;
             return authService.loginConfirmed(data);
@@ -107,7 +112,7 @@
     this.refresh = function() {
       return Account.get(function(data) {
         if (data.login !== 'anonymousUser') {
-          Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+          Session.create(data);
           $rootScope.account = Session;
           return $rootScope._account = data;
         }
@@ -120,7 +125,7 @@
         if (!Session.login) {
           Account.get(function(data) {
             if (data.login !== 'anonymousUser') {
-              Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+              Session.create(data);
               $rootScope.account = Session;
               $rootScope._account = data;
               $rootScope.authenticated = true;

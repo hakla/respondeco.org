@@ -219,38 +219,20 @@
       return refreshPostings();
     };
     $scope.showMorePostings();
-    $scope.addPosting = function() {
-      var urlPath;
-      if ($scope.postingInformation.length < 5 || $scope.postingInformation.length > 2048) {
+    $scope.post = function(posting) {
+      var ref, ref1;
+      if (((ref = posting.information) != null ? ref.length : void 0) < 5 || ((ref1 = posting.title) != null ? ref1.length : void 0) < 5) {
         return;
       }
-      Organization.addPostingForOrganization({
+      return Organization.addPostingForOrganization({
         id: $routeParams.id
-      }, $scope.postingInformation, function(newPosting) {
+      }, posting, function(newPosting) {
         $scope.postings.unshift(newPosting);
         $scope.postingsTotal = $scope.postingsTotal + 1;
         $scope.postings = $scope.postings.slice(0, ($scope.postingPage + 1) * $scope.postingPageSize);
-        $scope.postingInformation = null;
+        $scope.posting = {};
         return $scope.postingform.$setPristine();
       });
-      urlPath = $location.url();
-      if ($scope.postOnTwitter) {
-        SocialMedia.createTwitterPost({
-          urlPath: urlPath,
-          post: $scope.postingInformation
-        });
-      } else if ($scope.postOnFacebook) {
-        SocialMedia.createFacebookPost({
-          urlPath: urlPath,
-          post: $scope.postingInformation
-        });
-      } else if ($scope.postOnXing) {
-        SocialMedia.createXingPost({
-          urlPath: urlPath,
-          post: $scope.postingInformation
-        });
-      }
-      return $scope.focused = false;
     };
     $scope.deletePosting = function(id) {
       Organization.deletePosting({
