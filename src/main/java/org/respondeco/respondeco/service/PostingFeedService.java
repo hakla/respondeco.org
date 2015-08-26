@@ -88,7 +88,7 @@ public class PostingFeedService {
         NoSuchEntityException,
             PostingFeedException {
         User currentUser = userService.getUserWithAuthorities();
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = organizationRepository.findOne(organizationId);
         if(organization == null) {
             throw new NoSuchEntityException(organizationId);
         }
@@ -120,7 +120,7 @@ public class PostingFeedService {
      */
     public Page<Posting> getPostingsForOrganization(Long organizationId, Pageable pageable) throws
         NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = organizationRepository.findOne(organizationId);
         if(organization == null) {
             throw new NoSuchEntityException(organizationId);
         }

@@ -246,7 +246,7 @@ public class ResourceService {
      */
     public ResourceOffer createOffer(ResourceOffer newOffer)
         throws NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(newOffer.getOrganization().getId());
+        Organization organization = organizationRepository.findOne(newOffer.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchEntityException(newOffer.getOrganization().getId());
         }
@@ -272,7 +272,7 @@ public class ResourceService {
         ResourceOffer currentOffer = this.resourceOfferRepository.findByIdAndActiveIsTrue(updatedOffer.getId());
 
         if (currentOffer != null) {
-            ensureUserIsPartOfOrganisation(organizationRepository.findByIdAndActiveIsTrue(
+            ensureUserIsPartOfOrganisation(organizationRepository.findOne(
                 updatedOffer.getOrganization().getId()));
 
             currentOffer.setName(updatedOffer.getName());
@@ -680,7 +680,7 @@ public class ResourceService {
         // get the linked property partners
         ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
         ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(requirementId);
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = organizationRepository.findOne(organizationId);
         Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
 
         List<ResourceMatch> hasData = resourceMatchRepository.

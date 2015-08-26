@@ -187,7 +187,7 @@ public class ProjectServiceTest {
     public void testCreateProject_shouldCreateConcreteProject() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
 //        projectServiceMocked.create(
 //                "test project",
@@ -210,7 +210,7 @@ public class ProjectServiceTest {
     public void testCreateProject_shouldThrowExceptionBecauseIsConcreteAndStartDateIsNull() throws Exception {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
 //        projectServiceMocked.create(
 //                "test project",
@@ -226,7 +226,7 @@ public class ProjectServiceTest {
     @Test(expected = IllegalValueException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseIsConcreteAndStartDateIsNull() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
 //        projectServiceMocked.update(basicProject.getId(),
@@ -243,7 +243,7 @@ public class ProjectServiceTest {
     @Test(expected = NoSuchEntityException.class)
     public void testUpdateProject_shouldThrowExceptionBecauseProjectDoesNotExist() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(1L)).thenReturn(null);
 
 //        projectServiceMocked.update(1L,
@@ -267,7 +267,7 @@ public class ProjectServiceTest {
         basicProject.setManager(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         Project modifiedProject = new Project();
@@ -292,7 +292,7 @@ public class ProjectServiceTest {
         basicProject.setManager(defaultUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         Project modifiedProject = new Project();
@@ -319,8 +319,8 @@ public class ProjectServiceTest {
         otherUser.setOrganization(defaultOrganization);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(otherUser.getId())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(userRepositoryMock.findOne(otherUser.getId())).thenReturn(otherUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
@@ -339,7 +339,7 @@ public class ProjectServiceTest {
         otherUser.setOrganization(defaultOrganization);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
@@ -354,8 +354,8 @@ public class ProjectServiceTest {
         otherUser.setOrganization(defaultOrganization);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(otherUser.getId())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(userRepositoryMock.findOne(otherUser.getId())).thenReturn(otherUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
         projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
 
@@ -376,8 +376,8 @@ public class ProjectServiceTest {
         basicProject.setManager(thirdUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(otherUser.getId())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(userRepositoryMock.findOne(otherUser.getId())).thenReturn(otherUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
@@ -397,8 +397,8 @@ public class ProjectServiceTest {
         otherOrg.setOwner(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(otherUser.getId())).thenReturn(otherUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(userRepositoryMock.findOne(otherUser.getId())).thenReturn(otherUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
@@ -408,7 +408,7 @@ public class ProjectServiceTest {
     @Test
     public void testDelete_shouldDeleteIfCurrentUserIsManager() throws Exception {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.delete(basicProject.getId());
@@ -431,7 +431,7 @@ public class ProjectServiceTest {
         basicProject.setManager(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.delete(basicProject.getId());
@@ -457,7 +457,7 @@ public class ProjectServiceTest {
         otherOrg.setOwner(otherUser);
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(otherUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
         projectServiceMocked.delete(basicProject.getId());

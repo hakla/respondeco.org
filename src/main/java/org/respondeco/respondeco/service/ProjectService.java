@@ -167,7 +167,7 @@ public class ProjectService {
      * of the project's organization
      */
     public Project setManager(Long id, Long newManagerId) throws IllegalValueException {
-        User newManager = userRepository.findByIdAndActiveIsTrue(newManagerId);
+        User newManager = userRepository.findOne(newManagerId);
         if(newManager == null) {
             throw new NoSuchEntityException("no such user: " + id);
         }

@@ -13,17 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -221,11 +217,11 @@ public class UserService {
     }
 
     public Page<User> findUsersByNameLike(String usernamePart, RestParameters restParameters) {
-        return userRepository.findUsersByNameLike(usernamePart, restParameters.buildPageRequest());
+        return userRepository.findByLoginLike(usernamePart, restParameters.buildPageRequest());
     }
 
     public User getUser(Long id) throws NoSuchEntityException {
-        User user = userRepository.findByIdAndActiveIsTrue(id);
+        User user = userRepository.findOne(id);
         if(user == null) {
             throw new NoSuchEntityException(id);
         }
@@ -233,7 +229,7 @@ public class UserService {
     }
 
     public void setOrganization(User user, Long id) {
-        user.setOrganization(organizationRepository.findByIdAndActiveIsTrue(id));
+        user.setOrganization(organizationRepository.findOne(id));
         userRepository.save(user);
     }
 

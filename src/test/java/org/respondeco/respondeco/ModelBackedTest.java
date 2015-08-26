@@ -2,6 +2,14 @@ package org.respondeco.respondeco;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.respondeco.respondeco.repository.OrganizationRepository;
+import org.respondeco.respondeco.repository.ProjectRepository;
+import org.respondeco.respondeco.repository.UserRepository;
+import org.respondeco.respondeco.service.OrganizationService;
+import org.respondeco.respondeco.service.ProjectService;
+import org.respondeco.respondeco.service.UserService;
 import org.respondeco.respondeco.testutil.domain.DomainModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +29,19 @@ public class ModelBackedTest extends AbstractJUnit4SpringContextTests {
 
     protected Logger log = LoggerFactory.getLogger(this.getClass());
 
-    protected DomainModel model;
+    @Mock public UserRepository userRepositoryMock;
+    @Mock public OrganizationRepository organizationRepositoryMock;
+    @Mock public ProjectRepository projectRepositoryMock;
+
+    @Mock public UserService userServiceMock;
+    @Mock public OrganizationService organizationServiceMock;
+    @Mock public ProjectService projectServiceMock;
+
+    public DomainModel model;
 
     @Before
     public void baseSetup() {
+        MockitoAnnotations.initMocks(this);
         model = new DomainModel();
     }
 

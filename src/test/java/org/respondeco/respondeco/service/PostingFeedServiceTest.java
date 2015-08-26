@@ -151,7 +151,7 @@ public class PostingFeedServiceTest {
     @Test
     public void testAddPostingForOrganization() throws NoSuchEntityException, PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
         postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
@@ -163,7 +163,7 @@ public class PostingFeedServiceTest {
     public void testAddPostingForOrganization_NoSuchOrganization() throws NoSuchEntityException,
             PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId())).thenReturn(null);
+        when(organizationRepositoryMock.findOne(projectOrganization.getId())).thenReturn(null);
 
         postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting1");
 
@@ -173,7 +173,7 @@ public class PostingFeedServiceTest {
     public void testAddPostingForOrganization_NotOwnerOfOrganization() throws NoSuchEntityException,
             PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(projectManager);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
         postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
@@ -183,7 +183,7 @@ public class PostingFeedServiceTest {
     @Test(expected = PostingFeedException.class)
     public void testAddPostingForOrganization_PostingIsEmpty() throws NoSuchEntityException, PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
         postingFeedService.createPostingForOrganization(projectOrganization.getId(), "");
@@ -196,7 +196,7 @@ public class PostingFeedServiceTest {
 
         projectOrganization.setPostingFeed(null);
 
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
         postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
@@ -205,7 +205,7 @@ public class PostingFeedServiceTest {
 
     @Test
     public void testGetPostingsForOrganization() throws NoSuchEntityException {
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
         RestParameters restParameters = new RestParameters(null, null, null, null);
         postingFeedService.getPostingsForOrganization(projectOrganization.getId(), restParameters.buildPageRequest());
@@ -215,7 +215,7 @@ public class PostingFeedServiceTest {
 
     @Test(expected = NoSuchEntityException.class)
     public void testGetPostingsForOrganization_NoSuchOrganization() throws NoSuchEntityException {
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(null);
 
         postingFeedService.getPostingsForOrganization(projectOrganization.getId(), null);

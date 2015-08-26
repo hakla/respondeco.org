@@ -16,43 +16,38 @@ public class DomainModel {
     public User USER_NEW;
     public User USER_SAVED_MINIMAL;
     public User USER1_OWNS_ORG1_MANAGES_P1;
+    public User USER2_OWNS_ORG2_MANAGES_P2;
 
     public Organization ORGANIZATION_NEW;
     public Organization ORGANIZATION_SAVED_MINIMAL;
     public Organization ORGANIZATION1_GOVERNS_P1;
+    public Organization ORGANIZATION2_GOVERNS_P2;
 
     public Project PROJECT_NEW;
     public Project PROJECT_NEW_COMPLETE;
     public Project PROJECT1;
-
-    public List<User> USERS = new ArrayList<>();
-    public List<Organization> ORGANIZATIONS = new ArrayList<>();
-    public List<Project> PROJECTS = new ArrayList<>();
+    public Project PROJECT2;
 
     public DomainModel() {
         USER_NEW = TestUtil.clone(Users.NEW_MINIMAL);
         USER_SAVED_MINIMAL = TestUtil.clone(Users.SAVED_MINIMAL);
-        USER_SAVED_MINIMAL.setAuthorities(TestUtil.clone(Authorities.USER));
         USER1_OWNS_ORG1_MANAGES_P1 = TestUtil.clone(Users.SAVED_COMPLETE);
-        USER1_OWNS_ORG1_MANAGES_P1.setAuthorities(TestUtil.clone(Authorities.USER));
-        USERS.add(USER_NEW);
-        USERS.add(USER_SAVED_MINIMAL);
-        USERS.add(USER1_OWNS_ORG1_MANAGES_P1);
+        USER2_OWNS_ORG2_MANAGES_P2 = TestUtil.clone(Users.SAVED_COMPLETE);
+        USER2_OWNS_ORG2_MANAGES_P2.setLogin("user2_complete@respondeco.org");
+        USER2_OWNS_ORG2_MANAGES_P2.setActivationKey("activation_key_user2");
 
         ORGANIZATION_NEW = TestUtil.clone(Organizations.NEW_MINIMAL);
         ORGANIZATION_SAVED_MINIMAL = TestUtil.clone(Organizations.SAVED_MINIMAL);
         ORGANIZATION1_GOVERNS_P1 = TestUtil.clone(Organizations.SAVED_MINIMAL);
         ORGANIZATION1_GOVERNS_P1.setName("organization1");
-        ORGANIZATIONS.add(ORGANIZATION_NEW);
-        ORGANIZATIONS.add(ORGANIZATION_SAVED_MINIMAL);
-        ORGANIZATIONS.add(ORGANIZATION1_GOVERNS_P1);
+        ORGANIZATION2_GOVERNS_P2 = TestUtil.clone(Organizations.SAVED_MINIMAL);
+        ORGANIZATION2_GOVERNS_P2.setName("organization2");
 
         PROJECT_NEW = TestUtil.clone(Projects.NEW_MINIMAL);
         PROJECT_NEW_COMPLETE = TestUtil.clone(Projects.NEW_COMPLETE);
         PROJECT1 = TestUtil.clone(Projects.SAVED_COMPLETE);
-        PROJECTS.add(PROJECT_NEW);
-        PROJECTS.add(PROJECT_NEW_COMPLETE);
-        PROJECTS.add(PROJECT1);
+        PROJECT2 = TestUtil.clone(Projects.SAVED_COMPLETE);
+        PROJECT2.setName("project2");
 
         USER_SAVED_MINIMAL.setOrganization(ORGANIZATION_SAVED_MINIMAL);
         ORGANIZATION_SAVED_MINIMAL.setOwner(USER_SAVED_MINIMAL);
@@ -64,6 +59,14 @@ public class DomainModel {
         ORGANIZATION1_GOVERNS_P1.setProjects(projects);
         PROJECT1.setOrganization(ORGANIZATION1_GOVERNS_P1);
         PROJECT1.setManager(USER1_OWNS_ORG1_MANAGES_P1);
+
+        USER2_OWNS_ORG2_MANAGES_P2.setOrganization(ORGANIZATION2_GOVERNS_P2);
+        ORGANIZATION2_GOVERNS_P2.setOwner(USER2_OWNS_ORG2_MANAGES_P2);
+        projects = new ArrayList<>();
+        projects.add(PROJECT2);
+        ORGANIZATION2_GOVERNS_P2.setProjects(projects);
+        PROJECT2.setOrganization(ORGANIZATION2_GOVERNS_P2);
+        PROJECT2.setManager(USER2_OWNS_ORG2_MANAGES_P2);
     }
 
 

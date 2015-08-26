@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Spring Data JPA repository for the Project entity.
  */
-public interface ProjectRepository extends JpaRepository<Project, Long>, QueryDslPredicateExecutor {
+public interface ProjectRepository extends AbstractEntityRepository<Project, Long>, QueryDslPredicateExecutor {
 
     public Page<Project> findByActiveIsTrue(Pageable pageable);
 

@@ -138,7 +138,7 @@ public class ResourceServiceTest {
         resourceTags.add(expResourceTag);
 
         when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(expOffer.getId())).thenReturn(expOffer);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(expOffer.getOrganization().getId())).
+        when(organizationRepositoryMock.findOne(expOffer.getOrganization().getId())).
             thenReturn(expOffer.getOrganization());
 
         //Step 1 Check if the same ResourceRequirement exists, by Project ID and Description
@@ -402,7 +402,7 @@ public class ResourceServiceTest {
         List<String> tags = this.prepareCreateOffer();
 
         expOffer.getOrganization().setVerified(true);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(expOffer.getOrganization().getId())).
+        when(organizationRepositoryMock.findOne(expOffer.getOrganization().getId())).
             thenReturn(expOffer.getOrganization());
 
 //        //save without any tags
@@ -426,7 +426,7 @@ public class ResourceServiceTest {
         }
 
         verify(resourceOfferRepositoryMock, times(1)).save(isA(offerCl));
-        verify(organizationRepositoryMock, times(1)).findByIdAndActiveIsTrue(expOffer.getOrganization().getId());
+        verify(organizationRepositoryMock, times(1)).findOne(expOffer.getOrganization().getId());
     }
 
     @Test(expected = ResourceNotFoundException.class)
@@ -470,7 +470,7 @@ public class ResourceServiceTest {
 
         verify(resourceOfferRepositoryMock, times(1)).save(isA(offerCl));
         verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(expOffer.getId());
-        verify(organizationRepositoryMock, times(1)).findByIdAndActiveIsTrue(expOffer.getOrganization().getId());
+        verify(organizationRepositoryMock, times(1)).findOne(expOffer.getOrganization().getId());
         //No tags has been added
         verify(resourceTagServiceMock, times(1)).getOrCreateTags(any());
     }
@@ -576,7 +576,7 @@ public class ResourceServiceTest {
         // mocks that defines our result
         when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(offerId)).thenReturn(offer);
         when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(requirementId)).thenReturn(req);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organizationId)).thenReturn(org);
+        when(organizationRepositoryMock.findOne(organizationId)).thenReturn(org);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(projectId)).thenReturn(project);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgUser);
 
@@ -617,7 +617,7 @@ public class ResourceServiceTest {
 
         verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(offerId);
         verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(requirementId);
-        verify(organizationRepositoryMock, times(1)).findByIdAndActiveIsTrue(organizationId);
+        verify(organizationRepositoryMock, times(1)).findOne(organizationId);
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(projectId);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }
@@ -659,7 +659,7 @@ public class ResourceServiceTest {
 
         verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(offerId);
         verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(requirementId);
-        verify(organizationRepositoryMock, times(1)).findByIdAndActiveIsTrue(organizationId);
+        verify(organizationRepositoryMock, times(1)).findOne(organizationId);
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(projectId);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }

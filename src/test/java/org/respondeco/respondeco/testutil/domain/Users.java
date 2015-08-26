@@ -15,6 +15,7 @@ public class Users {
     public static final User SAVED_MINIMAL;
     public static final User SAVED_COMPLETE;
     public static final User SAVED_INACTIVE;
+    public static final User ADMIN_COMPLETE;
 
     static {
         NEW_MINIMAL = blank(User.class);
@@ -28,6 +29,7 @@ public class Users {
         SAVED_MINIMAL.setEmail("newminimal@respondeco.org");
         SAVED_MINIMAL.setPassword("newminimal");
         SAVED_MINIMAL.setGender(Gender.MALE);
+        SAVED_MINIMAL.setAuthorities(Authorities.USER);
 
         SAVED_COMPLETE = new User();
         SAVED_COMPLETE.setId(1001L);
@@ -39,8 +41,10 @@ public class Users {
         SAVED_COMPLETE.setLastName("ross");
         SAVED_COMPLETE.setGender(Gender.MALE);
         SAVED_COMPLETE.setDescription("a short description");
+        SAVED_COMPLETE.setActivationKey("abcdefghijklm");
         SAVED_COMPLETE.setActive(true);
         SAVED_COMPLETE.setActivated(true);
+        SAVED_COMPLETE.setAuthorities(Authorities.USER);
 
         SAVED_INACTIVE = new User();
         SAVED_INACTIVE.setId(1002L);
@@ -54,6 +58,21 @@ public class Users {
         SAVED_INACTIVE.setDescription("a short description");
         SAVED_INACTIVE.setActive(false);
         SAVED_INACTIVE.setActivated(true);
+        SAVED_INACTIVE.setAuthorities(Authorities.USER);
+
+        ADMIN_COMPLETE = new User();
+        ADMIN_COMPLETE.setId(1003L);
+        ADMIN_COMPLETE.setLogin("admin@respondeco.org");
+        ADMIN_COMPLETE.setEmail("admin@respondeco.org");
+        ADMIN_COMPLETE.setPassword("admin");
+        ADMIN_COMPLETE.setTitle("Dr.");
+        ADMIN_COMPLETE.setFirstName("admin");
+        ADMIN_COMPLETE.setLastName("administrator");
+        ADMIN_COMPLETE.setGender(Gender.MALE);
+        ADMIN_COMPLETE.setDescription("lorem ipsum");
+        ADMIN_COMPLETE.setActive(true);
+        ADMIN_COMPLETE.setActivated(true);
+        ADMIN_COMPLETE.setAuthorities(Authorities.ADMIN);
     }
 
 }

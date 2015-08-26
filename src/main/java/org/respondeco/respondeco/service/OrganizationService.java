@@ -174,7 +174,7 @@ public class OrganizationService {
     public Organization getById(Long id) {
         log.debug("getOfferById() with id " + id + " called");
         Optional<Organization> nullableOrganization =
-            Optional.ofNullable(organizationRepository.findByIdAndActiveIsTrue(id));
+            Optional.ofNullable(organizationRepository.findOne(id));
         nullableOrganization.orElseThrow(() -> new NoSuchEntityException(id));
         return nullableOrganization.get();
     }
@@ -185,7 +185,7 @@ public class OrganizationService {
      */
     public Page<Organization> get(Pageable pageable) {
         log.debug("get() called");
-        return organizationRepository.findByActiveIsTrue(pageable);
+        return organizationRepository.findAll(pageable);
     }
 
     /**
@@ -194,38 +194,33 @@ public class OrganizationService {
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
      */
     public void delete(Long id) throws NoSuchEntityException {
-        Organization currentOrganization = organizationRepository.findByIdAndActiveIsTrue(id);
+        Organization currentOrganization = organizationRepository.findOne(id);
         if(currentOrganization==null) {
             throw new NoSuchEntityException(String.format("Organization %d does not exist", id));
         }
         if(currentOrganization.getMembers() != null) {
             for (User user : currentOrganization.getMembers()) {
-                user.setActive(false);
-                userRepository.save(user);
+                userRepository.delete(user);
             }
         }
         User owner = currentOrganization.getOwner();
-        owner.setActive(false);
-        userRepository.save(owner);
+        userRepository.delete(currentOrganization.getOwner());
         if(currentOrganization.getProjects() != null) {
             for (Project project : currentOrganization.getProjects()) {
                 if (!project.getSuccessful()) {
-                    project.setActive(false);
-                    projectRepository.save(project);
+                    projectRepository.delete(project);
                 }
             }
         }
         if(currentOrganization.getResourceOffers() != null) {
             for (ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
                 if (resourceOffer.getResourceMatches() == null) {
-                    resourceOffer.setActive(false);
-                    resourceOfferRepository.save(resourceOffer);
+                    resourceOfferRepository.delete(resourceOffer);
                 }
             }
         }
 
-        currentOrganization.setActive(false);
-        organizationRepository.save(currentOrganization);
+        organizationRepository.delete(currentOrganization);
         log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
 
@@ -237,13 +232,13 @@ public class OrganizationService {
      */
     public void deleteMember(Long userId) throws NoSuchEntityException {
         User user = userService.getUserWithAuthorities();
-        User member = userRepository.findByIdAndActiveIsTrue(userId);
+        User member = userRepository.findOne(userId);
 
         if(member == null) {
             throw new NoSuchEntityException(String.format("User %s does not exist", userId));
         }
         System.out.println(member);
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(member.getOrganization().getId());
+        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
         if(organization == null) {
             throw new NoSuchEntityException(String.format("Organization %s does not exist",
                 member.getOrganization().getId()));
@@ -267,45 +262,14 @@ public class OrganizationService {
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given organization does not exist
      */
     public Page<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
+        Organization organization = organizationRepository.findOne(orgId);
 
         if(organization == null) {
             throw new NoSuchEntityException(String.format("Organization %s does not exist", orgId));
         }
 
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUsersByOrganizationId(orgId, null);
-    }
-
-    /**
-     * finds users which can be invited by the given organization
-     * @param orgId the organization for which to search users
-     * @return a list of users which can be invited by the given organization
-     */
-    public List<User> findInvitableUsersByOrgId(Long orgId) {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
-
-        // if there is no organization than all users should be returned
-        if(organization != null) {
-            List<User> users = userRepository.findInvitableUsers();
-            User owner = null;
-
-            // find the owner and remove him from the list
-            // @TODO set the orgId of the owner when set as owner
-            for (User user: users) {
-                if (organization.getOwner().equals(user)) {
-                    owner = user;
-                    break;
-                }
-            }
-
-            if (owner != null) {
-                users.remove(owner);
-            }
-
-            return users;
-        }
-        return userRepository.findAll();
+        return userRepository.findByOrganization(organization, null);
     }
 
     /**
@@ -323,7 +287,7 @@ public class OrganizationService {
             throw new OperationForbiddenException(
                 String.format("Current user %s does not have administration authorities", currentUser.getLogin()));
         }
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
+        Organization organization = organizationRepository.findOne(id);
         if(organization == null) {
             throw new NoSuchEntityException(id);
         }
@@ -360,7 +324,7 @@ public class OrganizationService {
             throw new IllegalValueException("follow.organization.rejected.error", "Cannot follow an organization that already marked as followed");
         }
 
-        Organization selected = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization selected = organizationRepository.findOne(organizationId);
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated

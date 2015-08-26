@@ -1,6 +1,9 @@
 package org.respondeco.respondeco;
 
 import org.junit.Before;
+import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.Project;
+import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
@@ -12,6 +15,10 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -35,31 +42,44 @@ public class DatabaseBackedTest extends ModelBackedTest {
     }
 
     private void saveUsers() {
-        model.USER_SAVED_MINIMAL.setId(null);
-        model.USER_SAVED_MINIMAL.setOrganization(null);
-        model.USER1_OWNS_ORG1_MANAGES_P1.setId(null);
-        model.USER1_OWNS_ORG1_MANAGES_P1.setOrganization(null);
-        userRepository.save(model.USER_SAVED_MINIMAL);
-        userRepository.save(model.USER1_OWNS_ORG1_MANAGES_P1);
-        assertNotNull(model.USER_SAVED_MINIMAL.getId());
-        assertNotNull(model.USER1_OWNS_ORG1_MANAGES_P1.getId());
-        model.USER_SAVED_MINIMAL.setOrganization(model.ORGANIZATION_SAVED_MINIMAL);
-        model.USER1_OWNS_ORG1_MANAGES_P1.setOrganization(model.ORGANIZATION1_GOVERNS_P1);
+        List<User> users = Arrays.asList(
+            model.USER_SAVED_MINIMAL,
+            model.USER1_OWNS_ORG1_MANAGES_P1,
+            model.USER2_OWNS_ORG2_MANAGES_P2
+        );
+        for(User user : users) {
+            Organization organization = user.getOrganization();
+            user.setId(null);
+            user.setOrganization(null);
+            userRepository.save(user);
+            assertNotNull(user.getId());
+            user.setOrganization(organization);
+        }
     }
 
     private void saveOrganizations() {
-        model.ORGANIZATION_SAVED_MINIMAL.setId(null);
-        model.ORGANIZATION1_GOVERNS_P1.setId(null);
-        organizationRepository.save(model.ORGANIZATION_SAVED_MINIMAL);
-        organizationRepository.save(model.ORGANIZATION1_GOVERNS_P1);
-        assertNotNull(model.ORGANIZATION_SAVED_MINIMAL.getId());
-        assertNotNull(model.ORGANIZATION1_GOVERNS_P1.getId());
+        List<Organization> organizations = Arrays.asList(
+            model.ORGANIZATION_SAVED_MINIMAL,
+            model.ORGANIZATION1_GOVERNS_P1,
+            model.ORGANIZATION2_GOVERNS_P2
+        );
+        for(Organization organization : organizations) {
+            organization.setId(null);
+            organizationRepository.save(organization);
+            assertNotNull(organization.getId());
+        }
     }
 
     private void saveProjects() {
-        model.PROJECT1.setId(null);
-        projectRepository.save(model.PROJECT1);
-        assertNotNull(model.PROJECT1.getId());
+        List<Project> projects = Arrays.asList(
+            model.PROJECT1,
+            model.PROJECT2
+        );
+        for(Project project : projects) {
+            project.setId(null);
+            projectRepository.save(project);
+            assertNotNull(project.getId());
+        }
     }
 
 }
