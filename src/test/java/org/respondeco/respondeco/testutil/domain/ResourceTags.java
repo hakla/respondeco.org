@@ -6,24 +6,27 @@ import org.respondeco.respondeco.testutil.TestUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.respondeco.respondeco.testutil.TestUtil.blank;
+
 /**
  * Created by clemens on 19/08/15.
  */
 public class ResourceTags {
 
-    public static final ResourceTag BLANK = new ResourceTag();
-    public static final List<ResourceTag> NEW_LIST = new ArrayList<>();
-    public static final List<ResourceTag> SAVED_LIST = new ArrayList<>();
-    public static final List<ResourceTag> MIXED_LIST = new ArrayList<>();
+    public static final ResourceTag BLANK;
+    public static final ArrayList<ResourceTag> NEW_LIST = new ArrayList<>();
+    public static final ArrayList<ResourceTag> SAVED_LIST = new ArrayList<>();
+    public static final ArrayList<ResourceTag> MIXED_LIST = new ArrayList<>();
 
     static {
+        BLANK = blank(ResourceTag.class);
         BLANK.setName("");
 
-        ResourceTag newTag1 = new ResourceTag();
+        ResourceTag newTag1 = blank(ResourceTag.class);
         newTag1.setName("newTag1");
-        ResourceTag newTag2 = new ResourceTag();
+        ResourceTag newTag2 = blank(ResourceTag.class);
         newTag2.setName("newTag2");
-        ResourceTag newTag3 = new ResourceTag();
+        ResourceTag newTag3 = blank(ResourceTag.class);
         newTag3.setName("newTag3");
         NEW_LIST.add(newTag1);
         NEW_LIST.add(newTag2);

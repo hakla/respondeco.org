@@ -20,13 +20,13 @@ import java.util.Set;
  * Created by Roman Kern on 13.11.14.
  * Enable create resources offer
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 @Entity
 @Table(name = "T_RESOURCE")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Getter
-@Setter
-@ToString
-public class ResourceBase extends AbstractAuditingEntity implements Serializable, MatchingEntity {
+public class ResourceBase extends AbstractAuditingEntity implements MatchingEntity {
 
     @NotNull
     @Column(length = 50)

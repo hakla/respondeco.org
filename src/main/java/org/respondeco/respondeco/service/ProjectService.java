@@ -10,7 +10,6 @@ import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.web.rest.dto.ResourceRequirementRequestDTO;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.respondeco.respondeco.web.rest.util.RestUtil;
 import org.slf4j.Logger;
@@ -153,7 +152,7 @@ public class ProjectService {
 
         Project resultProject = projectRepository.saveAndFlush(currentProject);
         resultProject.getResourceRequirements().removeIf(
-          requirement -> !requirement.isActive()
+          requirement -> !requirement.getActive()
         );
         return resultProject;
     }
@@ -237,7 +236,7 @@ public class ProjectService {
             project.getResourceRequirements().removeIf(new java.util.function.Predicate<ResourceRequirement>() {
                 @Override
                 public boolean test(ResourceRequirement resourceRequirement) {
-                    return resourceRequirement.isActive() == false;
+                    return resourceRequirement.getActive() == false;
                 }
             });
         }
@@ -468,7 +467,7 @@ public class ProjectService {
 
         // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
         // an exception if project is deactivated
-        if(selected == null || selected.isActive() == false){
+        if(selected == null || selected.getActive() == false){
             throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", projectId));
         }
 
@@ -489,7 +488,7 @@ public class ProjectService {
 
         // check if project exists and is active. "Removed" projects will cause some confusion for users, so throw
         // an exception if project is deactivated
-        if(selected == null || selected.isActive() == false){
+        if(selected == null || selected.getActive() == false){
             throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", projectId));
         }
 

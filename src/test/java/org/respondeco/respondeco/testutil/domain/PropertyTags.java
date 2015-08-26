@@ -6,24 +6,27 @@ import org.respondeco.respondeco.testutil.TestUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.respondeco.respondeco.testutil.TestUtil.blank;
+
 /**
  * Created by clemens on 19/08/15.
  */
 public class PropertyTags {
 
-    public static final PropertyTag BLANK = new PropertyTag();
-    public static final List<PropertyTag> NEW_LIST = new ArrayList<>();
-    public static final List<PropertyTag> SAVED_LIST = new ArrayList<>();
-    public static final List<PropertyTag> MIXED_LIST = new ArrayList<>();
+    public static final PropertyTag BLANK;
+    public static final ArrayList<PropertyTag> NEW_LIST = new ArrayList<>();
+    public static final ArrayList<PropertyTag> SAVED_LIST = new ArrayList<>();
+    public static final ArrayList<PropertyTag> MIXED_LIST = new ArrayList<>();
 
     static {
+        BLANK = blank(PropertyTag.class);
         BLANK.setName("");
 
-        PropertyTag newTag1 = new PropertyTag();
+        PropertyTag newTag1 = blank(PropertyTag.class);
         newTag1.setName("newTag1");
-        PropertyTag newTag2 = new PropertyTag();
+        PropertyTag newTag2 = blank(PropertyTag.class);
         newTag2.setName("newTag2");
-        PropertyTag newTag3 = new PropertyTag();
+        PropertyTag newTag3 = blank(PropertyTag.class);
         newTag3.setName("newTag3");
         NEW_LIST.add(newTag1);
         NEW_LIST.add(newTag2);

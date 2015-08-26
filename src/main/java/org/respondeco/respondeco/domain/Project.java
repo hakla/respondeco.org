@@ -2,6 +2,7 @@ package org.respondeco.respondeco.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,13 +28,14 @@ import java.util.Set;
 /**
  * A Project
  */
+@Getter
+@Setter
+@ToString(callSuper = true,
+    exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo", "FollowingUsers"})
 @Entity
 @Table(name = "T_PROJECT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString(exclude = {"organization", "manager", "propertyTags", "resourceRequirements", "projectLogo", "FollowingUsers"})
-public class Project extends AbstractAuditingNamedEntity implements Serializable, MatchingEntity {
+public class Project extends AbstractAuditingNamedEntity implements MatchingEntity {
 
     @Column(name = "purpose", length = 2048)
     @DefaultReturnValue

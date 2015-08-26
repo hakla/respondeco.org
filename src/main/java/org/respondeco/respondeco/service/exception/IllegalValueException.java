@@ -20,14 +20,11 @@ public class IllegalValueException extends RuntimeException {
         this.internationalizationKey = key;
     }
 
-    public String getInternationalizationKey() {
-        return internationalizationKey;
-    }
-
     public ExceptionObject getObject() {
         return new ExceptionObject(getInternationalizationKey(), getMessage());
     }
 
+    @Getter
     public static class ExceptionObject {
         private final String key;
         private final String message;
@@ -35,14 +32,6 @@ public class IllegalValueException extends RuntimeException {
         public ExceptionObject(String key, String message) {
             this.key = key;
             this.message = message;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public String getMessage() {
-            return message;
         }
     }
 

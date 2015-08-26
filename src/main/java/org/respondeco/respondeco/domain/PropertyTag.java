@@ -1,6 +1,8 @@
 package org.respondeco.respondeco.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -15,12 +17,13 @@ import java.util.List;
 /**
  * A PropertyTag.
  */
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = "projects")
 @Entity
 @Table(name = "T_PROPERTYTAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Data
-@ToString(exclude = "projects")
-public class PropertyTag extends AbstractAuditingEntity implements Serializable, MatchingTag {
+public class PropertyTag extends AbstractAuditingEntity implements MatchingTag {
 
     @Column(name = "name")
     @NotNull

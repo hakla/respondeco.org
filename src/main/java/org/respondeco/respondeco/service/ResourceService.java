@@ -449,7 +449,7 @@ public class ResourceService {
      */
     public ResourceOffer getOfferById(Long id) throws NoSuchEntityException {
         ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
-        if (!resourceOffer.isActive()) {
+        if (!resourceOffer.getActive()) {
             throw new NoSuchEntityException("resource with given id is not active");
         }
 

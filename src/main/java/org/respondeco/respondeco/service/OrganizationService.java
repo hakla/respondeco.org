@@ -364,7 +364,7 @@ public class OrganizationService {
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated
-        if(selected == null || selected.isActive() == false){
+        if(selected == null || selected.getActive() == false){
             throw new IllegalValueException("follow.organization.rejected.notfound", String.format("Could not find Organization with ID: %d", organizationId));
         }
 
@@ -385,7 +385,7 @@ public class OrganizationService {
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated
-        if(selected == null || selected.isActive() == false){
+        if(selected == null || selected.getActive() == false){
             throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", organizationId));
         }
 

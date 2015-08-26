@@ -945,7 +945,7 @@ public class ResourceServiceTest {
         assertEquals(resourceMatch.getAccepted(), true);
         assertEquals(resourceMatch.getAmount(), new BigDecimal(5));
         assertEquals(resourceMatch.getResourceOffer().getAmount(), new BigDecimal(5));
-        assertEquals(resourceMatch.getResourceOffer().isActive(), true);
+        assertEquals(resourceMatch.getResourceOffer().getActive(), true);
     }
 
     @Test
@@ -975,7 +975,7 @@ public class ResourceServiceTest {
         assertEquals(resourceMatch.getAccepted(), true);
         assertEquals(resourceMatch.getAmount(), new BigDecimal(5));
         assertEquals(resourceMatch.getResourceRequirement().getAmount(), new BigDecimal(4));
-        assertEquals(resourceMatch.getResourceOffer().isActive(), false);
+        assertEquals(resourceMatch.getResourceOffer().getActive(), false);
     }
 
     @Test(expected = IllegalValueException.class)

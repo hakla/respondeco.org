@@ -21,11 +21,16 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     Organization findByIdAndActiveIsTrue(Long id);
 
 
-    @Query ("SELECT p FROM Organization p INNER JOIN p.FollowingUsers u" +
-        " WHERE u.id = :user_id AND p.id = :organization_id AND u.active = 1 AND p.active = 1"
+    @Query(
+        "SELECT p " +
+        "FROM Organization p INNER JOIN p.FollowingUsers u " +
+            "WHERE u.id = :userId " +
+            "AND p.id = :organizationId " +
+            "AND u.active = 1 " +
+            "AND p.active = 1"
     )
     public Organization findByUserIdAndOrganizationId(
-        @Param("user_id") Long user_id,
-        @Param("organization_id") Long organization_id
+        @Param("userId") Long userId,
+        @Param("organizationId") Long organizationId
     );
 }

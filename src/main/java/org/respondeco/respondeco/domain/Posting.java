@@ -18,14 +18,13 @@ import java.util.List;
 /**
  * A Posting.
  */
-
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"author","postingfeed"})
 @Entity
 @Table(name = "T_POSTING")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString(exclude = {"author","postingfeed"})
-public class Posting extends AbstractAuditingEntity implements Serializable {
+public class Posting extends AbstractAuditingEntity {
 
     @NotNull
     @Column(length = 2048)

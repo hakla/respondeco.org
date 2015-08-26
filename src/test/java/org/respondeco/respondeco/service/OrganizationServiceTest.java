@@ -105,7 +105,7 @@ public class OrganizationServiceTest {
     @Test
     public void testCreateOrganization_shouldCreateOrganization() throws Exception {
         Organization organization = model.ORGANIZATION_NEW;
-        organization.setOwner(model.USER_WITH_ID);
+        organization.setOwner(model.USER_SAVED_MINIMAL);
 
         organizationService.create(organization);
 
@@ -122,21 +122,22 @@ public class OrganizationServiceTest {
 
     @Test(expected = IllegalValueException.class)
     public void testCreateOrganization_shouldThrow_nameMustNotBeEmpty() throws Exception {
-        organizationService.create(model.ORGANIZATION_NAME_EMPTY);
+        model.ORGANIZATION1_GOVERNS_P1.setName("");
+        organizationService.create(model.ORGANIZATION1_GOVERNS_P1);
     }
 
     @Test(expected = IllegalValueException.class)
     public void testCreateOrganization_shouldThrow_ownerMustNotBeEmpty() throws Exception {
-        organizationService.create(model.ORGANIZATION_NAME_EMPTY);
+        organizationService.create(model.ORGANIZATION_NEW);
     }
 
     @Test
     public void testUpdateOrganization_shouldUpdateValidChanges() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
-        when(organizationRepositoryMock.findByOwner(model.USER1)).thenReturn(model.ORGANIZATION1);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1_OWNS_ORG1_MANAGES_P1);
+        when(organizationRepositoryMock.findByOwner(model.USER1_OWNS_ORG1_MANAGES_P1)).thenReturn(model.ORGANIZATION1_GOVERNS_P1);
         when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
         Organization organizationClone = new Organization();
-        BeanUtils.copyProperties(model.ORGANIZATION1, organizationClone);
+        BeanUtils.copyProperties(model.ORGANIZATION1_GOVERNS_P1, organizationClone);
         organizationClone.setEmail("new@email.foo");
 
         organizationService.update(organizationClone);
@@ -147,11 +148,11 @@ public class OrganizationServiceTest {
 
     @Test(expected = OperationForbiddenException.class)
     public void testUpdateOrganization_shouldThrow_userNotOwner() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
-        when(organizationRepositoryMock.findByOwner(model.USER1)).thenReturn(null);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1_OWNS_ORG1_MANAGES_P1);
+        when(organizationRepositoryMock.findByOwner(model.USER1_OWNS_ORG1_MANAGES_P1)).thenReturn(null);
         when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
         Organization organizationClone = new Organization();
-        BeanUtils.copyProperties(model.ORGANIZATION1, organizationClone);
+        BeanUtils.copyProperties(model.ORGANIZATION1_GOVERNS_P1, organizationClone);
         organizationClone.setEmail("new@email.foo");
 
         organizationService.update(organizationClone);
@@ -229,7 +230,7 @@ public class OrganizationServiceTest {
 
         organizationService.delete(organization.getId());
 
-        assertEquals(organizationArgumentCaptor.getValue().isActive(), false);
+        assertEquals(organizationArgumentCaptor.getValue().getActive(), false);
     }
 
     @Test(expected = NoSuchEntityException.class)

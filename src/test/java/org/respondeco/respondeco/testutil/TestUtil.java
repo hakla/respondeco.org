@@ -1,9 +1,12 @@
 package org.respondeco.respondeco.testutil;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import org.apache.commons.lang.SerializationUtils;
+import org.respondeco.respondeco.domain.AbstractAuditingEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 
@@ -20,28 +23,28 @@ public class TestUtil {
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
-
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public static <T> T clone(T entity) {
-        T newEntity = null;
+    public static <T extends Serializable> T clone(T entity) {
+        return (T) SerializationUtils.clone(entity);
+    }
+
+    public static <T extends AbstractAuditingEntity> T blank(Class<T> clazz) {
         try {
-            newEntity = (T) entity.getClass().newInstance();
-            BeanUtils.copyProperties(entity, newEntity);
+            T entity = clazz.newInstance();
+            entity.setId(null);
+            entity.setCreatedBy(null);
+            entity.setCreatedDate(null);
+            entity.setLastModifiedBy(null);
+            entity.setLastModifiedDate(null);
+            entity.setActive(null);
+            return entity;
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return newEntity;
-    }
-
-    public static <T> List<T> clone(List<T> entityList) {
-        List<T> cloned = new ArrayList<>();
-        for(T entity : entityList) {
-            cloned.add(clone(entity));
-        }
-        return cloned;
+        return null;
     }
 
     /**

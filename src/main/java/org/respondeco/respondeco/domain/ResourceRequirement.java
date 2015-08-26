@@ -15,14 +15,14 @@ import java.util.List;
 /**
  * A ResourceRequirement.
  */
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"resourceMatches", "project"})
 @Entity
 @Table(name = "T_RESOURCEREQUIREMENT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @PrimaryKeyJoinColumn(name = "resource_id", referencedColumnName = "id")
-@Getter
-@Setter
-@ToString(callSuper = true, exclude = {"resourceMatches", "project"})
-public class ResourceRequirement extends ResourceBase implements Serializable {
+public class ResourceRequirement extends ResourceBase {
 
     @ManyToOne
     @JoinColumn(name = "project_id")

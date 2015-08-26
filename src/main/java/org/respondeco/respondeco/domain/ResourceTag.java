@@ -13,14 +13,14 @@ import java.util.List;
 /**
  * A ResourceTag.
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor
 @Entity
 @Table(name = "T_RESOURCETAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-public class ResourceTag extends AbstractAuditingEntity implements Serializable, MatchingTag {
+public class ResourceTag extends AbstractAuditingEntity implements MatchingTag {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;

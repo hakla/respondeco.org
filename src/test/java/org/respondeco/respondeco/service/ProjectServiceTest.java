@@ -16,7 +16,6 @@ import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.testutil.domain.DomainModel;
-import org.respondeco.respondeco.testutil.domain.Projects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -152,7 +151,7 @@ public class ProjectServiceTest {
     @Test
     public void testCreateProject_shouldCreateBasicProject() throws Exception {
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1_OWNS_ORG1_MANAGES_P1);
 
         projectServiceMocked.create(model.PROJECT_NEW);
 
@@ -166,15 +165,15 @@ public class ProjectServiceTest {
 
     @Test
     public void testCreateProjectH2_shouldCreateRequirements() throws Exception {
-        model.USER1.setOrganization(null);
-        model.USER1 = userRepository.save(model.USER1);
-        model.ORGANIZATION1.setOwner(model.USER1);
-        model.ORGANIZATION1.setProjects(null);
-        model.ORGANIZATION1 = organizationRepository.save(model.ORGANIZATION1);
-        model.USER1.setOrganization(model.ORGANIZATION1);
-        userRepository.save(model.USER1);
+        model.USER1_OWNS_ORG1_MANAGES_P1.setOrganization(null);
+        model.USER1_OWNS_ORG1_MANAGES_P1 = userRepository.save(model.USER1_OWNS_ORG1_MANAGES_P1);
+        model.ORGANIZATION1_GOVERNS_P1.setOwner(model.USER1_OWNS_ORG1_MANAGES_P1);
+        model.ORGANIZATION1_GOVERNS_P1.setProjects(null);
+        model.ORGANIZATION1_GOVERNS_P1 = organizationRepository.save(model.ORGANIZATION1_GOVERNS_P1);
+        model.USER1_OWNS_ORG1_MANAGES_P1.setOrganization(model.ORGANIZATION1_GOVERNS_P1);
+        userRepository.save(model.USER1_OWNS_ORG1_MANAGES_P1);
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1_OWNS_ORG1_MANAGES_P1);
         Project saved = projectServiceH2.create(model.PROJECT_NEW_COMPLETE);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
 
@@ -418,7 +417,7 @@ public class ProjectServiceTest {
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(basicProject.getId());
         verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
-        assertFalse(basicProject.isActive());
+        assertFalse(basicProject.getActive());
 
     }
 
@@ -441,7 +440,7 @@ public class ProjectServiceTest {
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(basicProject.getId());
         verify(projectRepositoryMock, times(1)).save(isA(Project.class));
 
-        assertFalse(basicProject.isActive());
+        assertFalse(basicProject.getActive());
 
     }
 
