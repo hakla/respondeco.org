@@ -29,12 +29,12 @@ import java.util.List;
 
 /**
  * REST controller for managing Project.
- *
+ * <p/>
  * This REST-Controller handles all requests for /rest/projects
  */
-@Transactional
 @RestController
 @RequestMapping("/app")
+@Transactional
 public class ProjectController {
 
     private final Logger log = LoggerFactory.getLogger(ProjectController.class);
@@ -51,7 +51,7 @@ public class ProjectController {
                              RatingService ratingService,
                              UserService userService,
                              PostingFeedService postingFeedService,
-                            ProjectLocationService projectLocationService) {
+                             ProjectLocationService projectLocationService) {
 
         this.projectService = projectService;
         this.resourceService = resourceService;
@@ -81,6 +81,7 @@ public class ProjectController {
 
     /**
      * PUT  /rest/projects -> Updates an existing project with new information
+     *
      * @param project the new information to save, the project id must be present in order to update the
      *                existing project
      * @return status OK with the updated project as ProjectResponseDTO, or if the request was not successful,
@@ -100,6 +101,7 @@ public class ProjectController {
 
     /**
      * Organization that apply new resource to a project
+     *
      * @param projectApplyDTO data to apply
      * @return HTTP Status OK: no errors occur, BAD REQUEST: error accures
      */
@@ -135,15 +137,16 @@ public class ProjectController {
 
     /**
      * PUT  /rest/projects/{id}/manager -> Change project manager of a project
-     * @param id the id of the project of which to change the manager, given by the REST path
+     *
+     * @param id           the id of the project of which to change the manager, given by the REST path
      * @param newManagerId The id of the new project manager
      * @return status OK with the updated project as ProjectResponseDTO, or if the request was not successful,
      * an error response status and a potential error message
      */
     @ApiOperation(value = "Change manager", notes = "Change the manager of a project")
     @RequestMapping(value = "/rest/projects/{id}/manager",
-            method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     @RESTWrapped
@@ -154,45 +157,45 @@ public class ProjectController {
 
     /**
      * GET  /rest/projects -> if not specified otherwise, returns all projects.
-     *
+     * <p/>
      * optional parameters filter and tags are combined via OR, which means that if both parameters are
      * given, projects matching the name OR are associated with one or more tags are returned.
-     *
+     * <p/>
      * page and pageSize work as follows, supposed that there are 50 projects in the database, if page = 2 and
      * pageSize = 15, database entries 16-30 will be returned, the offset and limit can be computed as follows:
      * offset = (page - 1) * pageSize
      * limit = pageSize
      *
-     * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
-     *               will be returned
-     * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
-     *             pageSize, dafault is 1 (first page)
+     * @param filter   optional parameter, if not null or empty, projects containing the filter string in their name
+     *                 will be returned
+     * @param page     optional parameter indicating the page of projects to be returned, works in conjunction with
+     *                 pageSize, dafault is 1 (first page)
      * @param pageSize optional parameter indicating the size of the pages of projects to be returned
-     * @param fields optional parameter indicating the fields of the responses to be returned, if specified, only the
-     *               corresponding fields in the response DTO will be set.
-     *               example: fields=id,name
-     *               response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
-     * @param order optional parameter indicating the order of the returned values, orders can be specified as follows:
-     *              fieldname: orders the responses by the fieldname ascending,
-     *              +fieldname: same as fieldname,
-     *              -fieldname: orders the responses by the fieldname descending
-     *              example: order=-id,+name orders by id descending and name ascending
+     * @param fields   optional parameter indicating the fields of the responses to be returned, if specified, only the
+     *                 corresponding fields in the response DTO will be set.
+     *                 example: fields=id,name
+     *                 response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
+     * @param order    optional parameter indicating the order of the returned values, orders can be specified as follows:
+     *                 fieldname: orders the responses by the fieldname ascending,
+     *                 +fieldname: same as fieldname,
+     *                 -fieldname: orders the responses by the fieldname descending
+     *                 example: order=-id,+name orders by id descending and name ascending
      * @return a ProjectPaginationResponseDTO
      */
     @ApiOperation(value = "Get projects", notes = "Get projects by name and tags, " +
         "or get all projects if the two paramters are not given")
     @RequestMapping(value = "/rest/projects",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
     @RESTWrapped
     public Object getAll(
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize,
-            @RequestParam(required = false) String fields,
-            @RequestParam(required = false) String order) {
+        @RequestParam(required = false) String filter,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
         log.debug("REST request to get projects");
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
 
@@ -201,49 +204,49 @@ public class ProjectController {
 
     /**
      * GET  /rest/organizations/{id}/projects -> if not specified otherwise, returns all projects from an organization.
-     *
+     * <p/>
      * optional parameters filter and tags are combined via OR, which means that if both parameters are
      * given, projects matching the name OR are associated with one or more tags are returned.
-     *
+     * <p/>
      * page and pageSize work as follows, supposed that there are 50 projects in the database, if page = 2 and
      * pageSize = 15, database entries 16-30 will be returned, the offset and limit can be computed as follows:
      * offset = (page - 1) * pageSize
      * limit = pageSize
      *
      * @param organizationId REST path variable indicating the organization of which to query the projects
-     * @param filter optional parameter, if not null or empty, projects containing the filter string in their name
-     *               will be returned
-     * @param page optional parameter indicating the page of projects to be returned, works in conjunction with
-     *             pageSize, dafault is 1 (first page)
-     * @param pageSize optional parameter indicating the size of the pages of projects to be returned
-     * @param fields optional parameter indicating the fields of the responses to be returned, if specified, only the
-     *               corresponding fields in the response DTO will be set.
-     *               example: fields=id,name
-     *               response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
-     * @param order optional parameter indicating the order of the returned values, orders can be specified as follows:
-     *              fieldname: orders the responses by the fieldname ascending,
-     *              +fieldname: same as fieldname,
-     *              -fieldname: orders the responses by the fieldname descending
-     *              example: order=-id,+name orders by id descending and name ascending
+     * @param filter         optional parameter, if not null or empty, projects containing the filter string in their name
+     *                       will be returned
+     * @param page           optional parameter indicating the page of projects to be returned, works in conjunction with
+     *                       pageSize, dafault is 1 (first page)
+     * @param pageSize       optional parameter indicating the size of the pages of projects to be returned
+     * @param fields         optional parameter indicating the fields of the responses to be returned, if specified, only the
+     *                       corresponding fields in the response DTO will be set.
+     *                       example: fields=id,name
+     *                       response: [{id: 0, name: "example1"}, {id: 1, name: "ex2"}, ...]
+     * @param order          optional parameter indicating the order of the returned values, orders can be specified as follows:
+     *                       fieldname: orders the responses by the fieldname ascending,
+     *                       +fieldname: same as fieldname,
+     *                       -fieldname: orders the responses by the fieldname descending
+     *                       example: order=-id,+name orders by id descending and name ascending
      * @return a list of response DTOs matching the given criteria
      */
     @ApiOperation(value = "Get projects", notes = "Get projects by organization, name and tags")
     @RequestMapping(value = "/rest/organizations/{organizationId}/projects",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
     public ResponseEntity<ProjectPaginationResponseDTO> getByOrganizationAndNameAndTags(
-            @PathVariable Long organizationId,
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize,
-            @RequestParam(required = false) String fields,
-            @RequestParam(required = false) String order) {
+        @PathVariable Long organizationId,
+        @RequestParam(required = false) String filter,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String fields,
+        @RequestParam(required = false) String order) {
         log.debug("REST request to get projects for organization {}", organizationId);
         RestParameters restParameters = new RestParameters(page, pageSize, order, fields);
-        Page<Project> resultPage =  projectService
-                .findProjectsFromOrganization(organizationId, filter, restParameters);
+        Page<Project> resultPage = projectService
+            .findProjectsFromOrganization(organizationId, filter, restParameters);
 
         ProjectPaginationResponseDTO projectPaginationResponseDTO = ProjectPaginationResponseDTO.createFromPage(resultPage, restParameters.getFields());
 
@@ -254,7 +257,8 @@ public class ProjectController {
 
     /**
      * GET  /rest/project/{id} -> get the project with the given id
-     * @param id the id of the project ot get
+     *
+     * @param id     the id of the project ot get
      * @param fields optional parameter indicating the fields of the responses to be returned, if specified, only the
      *               corresponding fields in the response DTO will be set.
      *               example: fields=id,name
@@ -264,28 +268,29 @@ public class ProjectController {
      */
     @ApiOperation(value = "Get project", notes = "Get a project by its id")
     @RequestMapping(value = "/rest/projects/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
     @RESTWrapped
     public Object get(
-            @PathVariable Long id,
-            @RequestParam(required = false) String fields) {
+        @PathVariable Long id,
+        @RequestParam(required = false) String fields) {
         log.debug("REST request to get Project : {}", id);
         return projectService.findProjectById(id);
     }
 
     /**
      * DELETE  /rest/project/{id} -> delete the project with the given id.
+     *
      * @param id the id of the project to delete
      * @return status OK if the request was successful, or if the request was not successful,
      * an error response status and a potential error message
      */
     @ApiOperation(value = "Delete project", notes = "Delete a project by its id")
     @RequestMapping(value = "/rest/projects/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
     @Timed
     public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -294,7 +299,7 @@ public class ProjectController {
         try {
             projectService.delete(id);
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch(IllegalValueException e) {
+        } catch (IllegalValueException e) {
             log.error("Could not delete project {}", id, e);
             responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
         }
@@ -303,6 +308,7 @@ public class ProjectController {
 
     /**
      * Get all resource requirements for a specific project given by project id
+     *
      * @param id project id
      * @return list of ResourceRequirements wrapped into DTO
      */
@@ -324,6 +330,7 @@ public class ProjectController {
 
     /**
      * Get Resource Matches for a specific Project given by id
+     *
      * @param id Project id
      * @return List of ResourceMatches wrapped into DTO
      */
@@ -335,7 +342,7 @@ public class ProjectController {
         ResponseEntity<List<ResourceMatchResponseDTO>> responseEntity;
 
         List<ResourceMatch> resourceMatches = resourceService.getResourceMatchesForProject(id);
-        if(resourceMatches.isEmpty() == false) {
+        if (resourceMatches.isEmpty() == false) {
             List<ResourceMatchResponseDTO> resourceMatchResponseDTO = ResourceMatchResponseDTO.fromEntities(resourceMatches, null);
             responseEntity = new ResponseEntity<>(resourceMatchResponseDTO, HttpStatus.OK);
         } else {
@@ -349,24 +356,24 @@ public class ProjectController {
      * POST  /rest/project/{id}/ratings -> Create a new projectrating for the project with the given id.
      *
      * @param ratingRequestDTO DTO containing the rating
-     * @param id REST path variable indicating the project for which the rating is meant
+     * @param id               REST path variable indicating the project for which the rating is meant
      * @return status OK if the request was successful, or if the request was not successful,
      * an error response status and a potential error message
      */
     @RequestMapping(value = "/rest/projects/{id}/ratings",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     public ResponseEntity<?> rateProject(
-            @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
-            @PathVariable Long id) {
+        @RequestBody @Valid RatingRequestDTO ratingRequestDTO,
+        @PathVariable Long id) {
         ResponseEntity<?> responseEntity;
         try {
-            ratingService.rateProject(id,ratingRequestDTO.getMatchid(),
-                ratingRequestDTO.getRating(),ratingRequestDTO.getComment());
+            ratingService.rateProject(id, ratingRequestDTO.getMatchid(),
+                ratingRequestDTO.getRating(), ratingRequestDTO.getComment());
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchEntityException e ) {
+        } catch (NoSuchEntityException e) {
             log.error("Could not rate project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ProjectRatingException e) {
@@ -378,22 +385,23 @@ public class ProjectController {
     /**
      * get an aggregated rating for a project, or get a rating permission indicator indicating if the project can be
      * rated by the current user
-     * @param id the id of the project in question
+     *
+     * @param id         the id of the project in question
      * @param permission flag, if present, check if the current user is allowed to rate the project and return a
      *                   RatingPermissionResponseDTO
      * @return a ResponseEntity containing either and AggregatedRatingResponseDTO or
      * a RatingPermissionResponseDTO object
      */
     @RequestMapping(value = "/rest/projects/{id}/ratings",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<?> getAggregatedRating(@PathVariable Long id,
                                                  @RequestParam(required = false) String permission,
                                                  @RequestParam(required = false) List<Long> matches) {
         ResponseEntity<?> responseEntity;
-        if(permission != null) {
-            if("matches".equals(permission)) {
+        if (permission != null) {
+            if ("matches".equals(permission)) {
                 List<RatingPermission> permissions = null;
                 try {
                     permissions = ratingService.checkPermissionsForMatches(matches);
@@ -422,6 +430,7 @@ public class ProjectController {
 
     /**
      * Checks if the currently authenticated user is allowed to edit a project
+     *
      * @return
      */
     @RequestMapping(value = "/rest/projects/{id}/editable",
@@ -463,6 +472,7 @@ public class ProjectController {
 
     /**
      * Get the Follow State for the current Project given by ID
+     *
      * @return Error or OK Response Entity {true/false} as result
      */
     @RequestMapping(value = "/rest/projects/{id}/followingstate",
@@ -477,6 +487,7 @@ public class ProjectController {
 
     /**
      * Allow user to subscribe a specific project news
+     *
      * @return Error or OK Response Entity
      */
     @RequestMapping(value = "/rest/projects/{id}/follow",
@@ -489,8 +500,7 @@ public class ProjectController {
         try {
             projectService.follow(id);
             responseEntity = new ResponseEntity(HttpStatus.CREATED);
-        }
-        catch (IllegalValueException e){
+        } catch (IllegalValueException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
 
@@ -499,6 +509,7 @@ public class ProjectController {
 
     /**
      * Allow user to un-subscribe a specific project news
+     *
      * @return Error or OK Response Entity
      */
     @RequestMapping(value = "/rest/projects/{id}/unfollow",
@@ -511,8 +522,7 @@ public class ProjectController {
         try {
             projectService.unfollow(id);
             responseEntity = new ResponseEntity(HttpStatus.OK);
-        }
-        catch (IllegalValueException e){
+        } catch (IllegalValueException e) {
             responseEntity = ErrorHelper.buildErrorResponse(e);
         }
 
@@ -521,6 +531,7 @@ public class ProjectController {
 
     /**
      * Return projects which are in a specific radius from the given coordinates
+     *
      * @return ResponseEntity which contains a list of ProjectLocationResponseDTOs
      */
     @RequestMapping(value = "/rest/nearprojects",
@@ -531,13 +542,13 @@ public class ProjectController {
         @RequestParam(required = true) Float latitude,
         @RequestParam(required = true) Float longitude,
         @RequestParam(required = true) Float radius) {
-        log.debug("REST Request to get near projects: (latitude: " + latitude +" , longitude: " + longitude + "), radius: " + radius );
+        log.debug("REST Request to get near projects: (latitude: " + latitude + " , longitude: " + longitude + "), radius: " + radius);
 
         //TODO: FIX
 
         ResponseEntity<?> responseEntity = null;
 
-        try{
+        try {
             List<Address> projects = new ArrayList<>();
             responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchEntityException e) {
@@ -552,8 +563,9 @@ public class ProjectController {
 
     /**
      * creates a post for the project in the postingfeed
+     *
      * @param information the string which contains the information of the posting
-     * @param id the id of the project for which to create the posting
+     * @param id          the id of the project for which to create the posting
      * @return response status OK if no exception has been thrown; NOT_FOUND if the project doesn't exist;
      * BAD_REQUEST if a PostingFeedException has been thrown (reason defined in the PostingFeedService)
      */
@@ -563,45 +575,46 @@ public class ProjectController {
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     @RESTWrapped
-    public Object createPostingForProject(  @RequestBody String information,
-                                            @PathVariable Long id) {
+    public Object createPostingForProject(@RequestBody String information,
+                                          @PathVariable Long id) {
         return postingFeedService.addPostingForProjects(id, information);
     }
 
     /**
      * GET gets the postings of the given project as a page of postings defined by page and pagesize
      *
-     * @param id given id of the project
-     * @param page the page which is used for the pagerequest (0 by default)
+     * @param id       given id of the project
+     * @param page     the page which is used for the pagerequest (0 by default)
      * @param pageSize the pagesize (elements of the page) used for the pagerequest
      * @return OK and PostingPaginationResponseDTO with found postings; NOT_FOUND if project doesn't exist
      */
     @RequestMapping(value = "/rest/projects/{id}/postings",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object getPostingsForProject(    @PathVariable Long id,
-                                            @RequestParam(required = false) Integer page,
-                                            @RequestParam(required = false) Integer pageSize) {
+    public Object getPostingsForProject(@PathVariable Long id,
+                                        @RequestParam(required = false) Integer page,
+                                        @RequestParam(required = false) Integer pageSize) {
         RestParameters restParameters = new RestParameters(page, pageSize);
         return postingFeedService.getPostingsForProject(id, restParameters.buildPageRequest());
     }
 
     /**
      * deletes posting by setting active flag false
+     *
      * @param pid posting id to find in repository
-     * @param id project id for path completeness
+     * @param id  project id for path completeness
      * @return ok if posting has been deleted; bad request if not
      */
     @RequestMapping(value = "/rest/projects/{id}/postings/{pid}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     @RESTWrapped
-    public void deletePostingForProject(   @PathVariable Long id,
-                                           @PathVariable Long pid) {
+    public void deletePostingForProject(@PathVariable Long id,
+                                        @PathVariable Long pid) {
         postingFeedService.deletePosting(pid);
     }
 

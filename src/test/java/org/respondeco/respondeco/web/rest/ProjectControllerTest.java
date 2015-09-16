@@ -131,7 +131,7 @@ public class ProjectControllerTest {
 
     private DomainModel model;
     private ArgumentCaptor<Object> voidInterceptor;
-    private ResultMapper<Project> resultMapper;
+    private ResultMapper resultMapper;
 
     @Before
     public void setup() {
@@ -144,7 +144,7 @@ public class ProjectControllerTest {
             postingFeedServiceMock,
             projectLocationServiceMock));
 
-        resultMapper = new ResultMapper<>();
+        resultMapper = new ResultMapper();
         doAnswer(resultMapper).when(projectController).update(any(Project.class));
 
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectController).build();

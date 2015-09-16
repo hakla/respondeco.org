@@ -2,21 +2,31 @@ package org.respondeco.respondeco.testutil;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang.SerializationUtils;
 import org.respondeco.respondeco.domain.AbstractAuditingEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.Advised;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Utility class for testing REST controllers.
  */
 public class TestUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(TestUtil.class);
 
     /** MediaType for JSON UTF8 */
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(
@@ -60,6 +70,17 @@ public class TestUtil {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper.writeValueAsBytes(object);
+    }
+
+    public static void inject(Object target, String fieldName, Object value)
+        throws Exception {
+        log.debug("injecting {} into field {} of object {}", value, fieldName, target);
+        if (AopUtils.isAopProxy(target) && target instanceof Advised) {
+            log.debug("target is an AOP proxy, unwrapping...");
+            target = ((Advised) target).getTargetSource().getTarget();
+        }
+        log.debug("final target object: {}", target);
+        ReflectionTestUtils.setField(target, fieldName, value);
     }
 
     public static List<String> getAscendingStrings(int number) {

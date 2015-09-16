@@ -139,7 +139,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
 
     private OrganizationController organizationController;
     private DomainModel model;
-    private ResultMapper<Organization> resultMapper;
+    private ResultMapper resultMapper;
 
     @Before
     public void setup() {
@@ -264,7 +264,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
         posting.setPostingfeed(postingFeed);
 
         model = new DomainModel();
-        resultMapper = new ResultMapper<>();
+        resultMapper = new ResultMapper();
         doAnswer(resultMapper).when(organizationController).update(any(Organization.class));
 
         voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);

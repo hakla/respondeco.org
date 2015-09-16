@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 /**
  * Created by clemens on 19/08/15.
  */
-public class ResultMapper<T> implements Answer {
+public class ResultMapper implements Answer {
 
     private RESTWrapperAspect aspect = new RESTWrapperAspect();
     private HttpStatus returnStatus;

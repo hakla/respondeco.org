@@ -1,32 +1,17 @@
 package org.respondeco.respondeco.web.rest;
 
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.Gender;
-import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.*;
+import org.respondeco.respondeco.MVCTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.respondeco.respondeco.service.TextMessageService;
-import org.respondeco.respondeco.service.UserService;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,69 +20,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see UserController
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 
-public class UserControllerTest {
+public class UserControllerTest extends MVCTest {
 
-    private MockMvc restUserMockMvc;
-
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private OrganizationRepository organizationRepository;
-
-    @Mock
-    private PersistentTokenRepository persistentTokenRepository;
-
-    @Mock
-    private AuthorityRepository authorityRepository;
-
-    @Mock
-    private TextMessageService textMessageService;
-
-    private User user;
+    private MockMvc userMockMvc;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        UserController userController = new UserController(userService);
-        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-
-        user = new User();
-        user.setId(1L);
-        user.setLogin("testuser");
-        user.setActivated(true);
-        user.setAuthorities(new HashSet<>());
-        user.setEmail("test@test.at");
-        user.setFollowOrganizations(new ArrayList<>());
-        user.setFollowProjects(new ArrayList<>());
-        user.setGender(Gender.UNSPECIFIED);
-        user.setActive(true);
+        this.userMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
     @Test
     public void testGetExistingUser() throws Exception {
-        doReturn(user).when(userService).getUser(user.getId());
-        restUserMockMvc.perform(get("/app/rest/users/1")
-                .accept(MediaType.APPLICATION_JSON))
+        setAuthorities(model.USER_ADMIN.getAuthorities());
+        doReturn(model.USER_SAVED_MINIMAL).when(userServiceMock).getUser(model.USER_SAVED_MINIMAL.getId());
+        userMockMvc.perform(get("/app/rest/users/" + model.USER_SAVED_MINIMAL.getId())
+            .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.login").value("testuser"));
+                .andExpect(jsonPath("$.login").value(model.USER_SAVED_MINIMAL.getLogin()));
     }
 
 
     @Test
     public void testGetUnknownUser() throws Exception {
-        doReturn(null).when(userService).getUser(200L);
-        restUserMockMvc.perform(get("/app/rest/users/200")
-                .accept(MediaType.APPLICATION_JSON))
+        setAuthorities(model.USER_ADMIN.getAuthorities());
+        Long unknownUserId = 99999999L;
+        doThrow(NoSuchEntityException.class).when(userServiceMock).getUser(unknownUserId);
+        userMockMvc.perform(get("/app/rest/users/" + unknownUserId)
+            .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 

@@ -14,6 +14,7 @@ import org.respondeco.respondeco.testutil.domain.DomainModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,6 +25,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
  */
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("dev")
 public class ModelBackedTest extends AbstractJUnit4SpringContextTests {
 
@@ -40,7 +42,7 @@ public class ModelBackedTest extends AbstractJUnit4SpringContextTests {
     public DomainModel model;
 
     @Before
-    public void baseSetup() {
+    public void setupBase() {
         MockitoAnnotations.initMocks(this);
         model = new DomainModel();
     }

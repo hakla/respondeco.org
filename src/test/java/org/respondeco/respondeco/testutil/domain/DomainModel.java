@@ -13,6 +13,8 @@ import java.util.Set;
  */
 public class DomainModel {
 
+    public User USER_ADMIN;
+
     public User USER_NEW;
     public User USER_SAVED_MINIMAL;
     public User USER1_OWNS_ORG1_MANAGES_P1;
@@ -29,6 +31,8 @@ public class DomainModel {
     public Project PROJECT2;
 
     public DomainModel() {
+        USER_ADMIN = TestUtil.clone(Users.ADMIN_COMPLETE);
+
         USER_NEW = TestUtil.clone(Users.NEW_MINIMAL);
         USER_SAVED_MINIMAL = TestUtil.clone(Users.SAVED_MINIMAL);
         USER1_OWNS_ORG1_MANAGES_P1 = TestUtil.clone(Users.SAVED_COMPLETE);

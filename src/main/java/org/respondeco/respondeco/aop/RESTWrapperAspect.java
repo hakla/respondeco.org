@@ -20,7 +20,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +55,9 @@ public class RESTWrapperAspect {
 
     @Inject
     private HttpServletRequest request;
+
+    @Inject
+    private PlatformTransactionManager platformTransactionManager;
 
     @Pointcut("@annotation(org.respondeco.respondeco.aop.RESTWrapped)")
     public void wrappedClass() {
@@ -95,19 +102,28 @@ public class RESTWrapperAspect {
                 return new ResponseEntity<>(returnStatus);
             }
         } catch (NoSuchEntityException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            setTransactionRollback();
             return new ResponseEntity<>(e.getObject(), HttpStatus.NOT_FOUND);
         } catch (OperationForbiddenException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            setTransactionRollback();
             return new ResponseEntity<>(e.getObject(), HttpStatus.FORBIDDEN);
         } catch (IllegalValueException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            setTransactionRollback();
             return new ResponseEntity<>(e.getObject(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            setTransactionRollback();
             IllegalValueException.ExceptionObject exceptionObject =
                 new IllegalValueException.ExceptionObject(null, e.getMessage());
             return new ResponseEntity<>(exceptionObject, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void setTransactionRollback() {
+        log.info("setting rollback on active transaction");
+        if(TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        } else {
+            log.debug("no active transaction found");
         }
     }
 
