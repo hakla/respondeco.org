@@ -26,8 +26,6 @@ public interface ProjectRepository extends AbstractEntityRepository<Project, Lon
 
     public Page<Project> findByActiveIsTrue(Pageable pageable);
 
-    public Project findByIdAndActiveIsTrue(Long id);
-
     public List<Project> findByManager(User user);
 
     @Query("SELECT DISTINCT p " +
@@ -75,7 +73,7 @@ public interface ProjectRepository extends AbstractEntityRepository<Project, Lon
 
     public List<Project> findByStartDate(LocalDate date);
 
-    @Query ("SELECT p FROM Project p INNER JOIN p.FollowingUsers u" +
+    @Query ("SELECT p FROM Project p INNER JOIN p.followingUsers u" +
             " WHERE u.id = :user_id AND p.id = :project_id AND u.active = 1 AND p.active = 1"
     )
     public Project findByUserIdAndProjectId(

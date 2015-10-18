@@ -1,75 +1,52 @@
 package org.respondeco.respondeco.service;
 
-import org.respondeco.respondeco.Application;
-import org.respondeco.respondeco.domain.PersistentToken;
-import org.respondeco.respondeco.domain.User;
-import org.respondeco.respondeco.repository.PersistentTokenRepository;
-import org.respondeco.respondeco.repository.UserRepository;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.respondeco.respondeco.ServiceLayerTest;
+import org.respondeco.respondeco.domain.User;
+import org.respondeco.respondeco.testutil.ArgumentCaptor;
+import org.respondeco.respondeco.testutil.TestUtil;
 
-import javax.inject.Inject;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for the UserService.
  *
  * @see UserService
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
+public class UserServiceTest extends ServiceLayerTest {
 
-@Transactional
-public class UserServiceTest {
+    public ArgumentCaptor<User> userArgumentCaptor;
 
-    @Inject
-    private PersistentTokenRepository persistentTokenRepository;
-
-    @Inject
-    private UserRepository userRepository;
-
-    @Inject
-    private UserService userService;
-
-    @Test
-    public void testRemoveOldPersistentTokens() {
-        User admin = userRepository.findByLogin("admin");
-        int existingCount = persistentTokenRepository.findByUser(admin).size();
-        generateUserToken(admin, "1111-1111", new LocalDate());
-        LocalDate now = new LocalDate();
-        generateUserToken(admin, "2222-2222", now.minusDays(32));
-        assertThat(persistentTokenRepository.findByUser(admin)).hasSize(existingCount + 2);
-        userService.removeOldPersistentTokens();
-        assertThat(persistentTokenRepository.findByUser(admin)).hasSize(existingCount + 1);
+    @Before
+    public void setupUserTest() {
+        userArgumentCaptor = ArgumentCaptor.forType(User.class, 0, false);
     }
 
     @Test
-    public void testFindNotActivatedUsersByCreationDateBefore() {
-        userService.removeNotActivatedUsers();
-        DateTime now = new DateTime();
-        List<User> users = userRepository.findNotActivatedUsersByCreationDateBefore(now.minusDays(3));
-        assertThat(users).isEmpty();
+    public void testActivateRegistration_shouldSaveRegisteredUser() throws Exception {
+        String activationKey = "someactivationkey";
+        doReturn(model.USER_SAVED_MINIMAL).when(userRepositoryMock).getUserByActivationKey(activationKey);
+        doAnswer(userArgumentCaptor).when(userRepositoryMock).save(any(User.class));
+        userService.activateRegistration(activationKey);
+        assertEquals(true, userArgumentCaptor.getValue().isActivated());
+        verify(userRepositoryMock, times(1)).save(any(User.class));
     }
 
-    private void generateUserToken(User user, String tokenSeries, LocalDate localDate) {
-        PersistentToken token = new PersistentToken();
-        token.setSeries(tokenSeries);
-        token.setUser(user);
-        token.setTokenValue(tokenSeries + "-data");
-        token.setTokenDate(localDate);
-        token.setIpAddress("127.0.0.1");
-        token.setUserAgent("Test agent");
-        persistentTokenRepository.saveAndFlush(token);
+    @Test
+    public void testUpdateUserInformation_shouldUpdateValidValues() throws Exception {
+        loginAs(model.USER_SAVED_MINIMAL);
+        doAnswer(userArgumentCaptor).when(userRepositoryMock).save(any(User.class));
+        String newDescription = "new description";
+        String newFirstName = "newfirstname";
+        User updatedUser = TestUtil.clone(model.USER_SAVED_MINIMAL);
+        updatedUser.setDescription(newDescription);
+        updatedUser.setFirstName(newFirstName);
+        userService.update(updatedUser);
+        User savedUser = userArgumentCaptor.getValue();
+        assertEquals(newDescription, savedUser.getDescription());
+        assertEquals(newFirstName, savedUser.getFirstName());
     }
 }

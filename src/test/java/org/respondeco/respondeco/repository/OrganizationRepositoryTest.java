@@ -1,8 +1,7 @@
 package org.respondeco.respondeco.repository;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.respondeco.respondeco.DatabaseBackedTest;
+import org.respondeco.respondeco.RepositoryLayerTest;
 import org.respondeco.respondeco.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +16,7 @@ import static org.junit.Assert.*;
  * Created by Clemens Puehringer on 21/11/14.
  */
 
-public class OrganizationRepositoryTest extends DatabaseBackedTest {
+public class OrganizationRepositoryTest extends RepositoryLayerTest {
 
     @Test
     public void testDeleteId_shouldSetActiveFalse() throws Exception {

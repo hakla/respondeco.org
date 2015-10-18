@@ -11,68 +11,46 @@ import static org.respondeco.respondeco.testutil.TestUtil.blank;
  */
 public class Users {
 
-    public static final User NEW_MINIMAL;
-    public static final User SAVED_MINIMAL;
-    public static final User SAVED_COMPLETE;
-    public static final User SAVED_INACTIVE;
-    public static final User ADMIN_COMPLETE;
+    public static User newMinimalUser() {
+        User user = blank(User.class);
+        user.setLogin(Strings.randomLowercaseLetters());
+        user.setEmail(Strings.lastRandomLowercaseLetters());
+        user.setPassword(Strings.randomLowercaseLetters());
+        return user;
+    }
 
-    static {
-        NEW_MINIMAL = blank(User.class);
-        NEW_MINIMAL.setLogin("newuser@respondeco.org");
-        NEW_MINIMAL.setEmail("newuser@respondeco.org");
-        NEW_MINIMAL.setPassword("newuser");
+    public static User savedMinimalUser() {
+        User user = new User();
+        user.setId(Numerics.nextId());
+        user.setLogin(Strings.randomLowercaseLetters());
+        user.setEmail(Strings.lastRandomLowercaseLetters());
+        user.setPassword(Strings.randomLowercaseLetters());
+        user.setGender(Gender.UNSPECIFIED);
+        user.setAuthorities(Authorities.userAuthorities());
+        return user;
+    }
 
-        SAVED_MINIMAL = new User();
-        SAVED_MINIMAL.setId(1000L);
-        SAVED_MINIMAL.setLogin("newminimal@respondeco.org");
-        SAVED_MINIMAL.setEmail("newminimal@respondeco.org");
-        SAVED_MINIMAL.setPassword("newminimal");
-        SAVED_MINIMAL.setGender(Gender.MALE);
-        SAVED_MINIMAL.setAuthorities(Authorities.USER);
+    public static User savedCompleteUser() {
+        User user = savedMinimalUser();
+        user.setFirstName(Strings.randomLowercaseLetters());
+        user.setLastName(Strings.randomLowercaseLetters());
+        user.setDescription(Strings.randomLowercaseLetters(10, 200));
+        user.setActivationKey(Strings.randomLowercaseLetters());
+        user.setActivated(true);
+        user.setActive(true);
+        return user;
+    }
 
-        SAVED_COMPLETE = new User();
-        SAVED_COMPLETE.setId(1001L);
-        SAVED_COMPLETE.setLogin("complete@respondeco.org");
-        SAVED_COMPLETE.setEmail("complete@respondeco.org");
-        SAVED_COMPLETE.setPassword("complete");
-        SAVED_COMPLETE.setTitle("Dr.");
-        SAVED_COMPLETE.setFirstName("bob");
-        SAVED_COMPLETE.setLastName("ross");
-        SAVED_COMPLETE.setGender(Gender.MALE);
-        SAVED_COMPLETE.setDescription("a short description");
-        SAVED_COMPLETE.setActivationKey("abcdefghijklm");
-        SAVED_COMPLETE.setActive(true);
-        SAVED_COMPLETE.setActivated(true);
-        SAVED_COMPLETE.setAuthorities(Authorities.USER);
+    public static User savedInactiveUser() {
+        User user = savedCompleteUser();
+        user.setActive(false);
+        return user;
+    }
 
-        SAVED_INACTIVE = new User();
-        SAVED_INACTIVE.setId(1002L);
-        SAVED_INACTIVE.setLogin("complete_inactive@respondeco.org");
-        SAVED_INACTIVE.setEmail("complete_inactive@respondeco.org");
-        SAVED_INACTIVE.setPassword("complete_inactive");
-        SAVED_INACTIVE.setTitle("Dr.");
-        SAVED_INACTIVE.setFirstName("totally");
-        SAVED_INACTIVE.setLastName("deactivated");
-        SAVED_INACTIVE.setGender(Gender.MALE);
-        SAVED_INACTIVE.setDescription("a short description");
-        SAVED_INACTIVE.setActive(false);
-        SAVED_INACTIVE.setActivated(true);
-        SAVED_INACTIVE.setAuthorities(Authorities.USER);
-
-        ADMIN_COMPLETE = new User();
-        ADMIN_COMPLETE.setId(1003L);
-        ADMIN_COMPLETE.setLogin("admin@respondeco.org");
-        ADMIN_COMPLETE.setEmail("admin@respondeco.org");
-        ADMIN_COMPLETE.setPassword("admin");
-        ADMIN_COMPLETE.setTitle("Dr.");
-        ADMIN_COMPLETE.setFirstName("admin");
-        ADMIN_COMPLETE.setLastName("administrator");
-        ADMIN_COMPLETE.setGender(Gender.MALE);
-        ADMIN_COMPLETE.setDescription("lorem ipsum");
-        ADMIN_COMPLETE.setActive(true);
-        ADMIN_COMPLETE.setActivated(true);
-        ADMIN_COMPLETE.setAuthorities(Authorities.ADMIN);
+    public static User newAdmin() {
+        User user = savedCompleteUser();
+        user.setAuthorities(Authorities.adminAuthorities());
+        return user;
     }
 
 }

@@ -16,6 +16,4 @@ public interface ResourceRequirementRepository extends AbstractEntityRepository<
 
     List<ResourceRequirement> findByNameAndProjectAndActiveIsTrue(String name, Project project);
     List<ResourceRequirement> findByProjectIdAndActiveIsTrue(Long projectId);
-    ResourceRequirement findByIdAndActiveIsTrue(Long id);
-    List<ResourceRequirement> findByActiveIsTrue();
 }

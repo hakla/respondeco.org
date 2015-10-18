@@ -2,7 +2,7 @@ package org.respondeco.respondeco.repository;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.respondeco.respondeco.DatabaseBackedTest;
+import org.respondeco.respondeco.RepositoryLayerTest;
 import org.respondeco.respondeco.domain.*;
 import org.springframework.data.domain.Page;
 
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Clemens Puehringer on 02/12/14.
  */
-public class UserRepositoryTest extends DatabaseBackedTest {
+public class UserRepositoryTest extends RepositoryLayerTest {
 
     @Test
     public void testGetUserByActivationKey() {
@@ -78,8 +78,12 @@ public class UserRepositoryTest extends DatabaseBackedTest {
 
     @Test
     public void testFindByLoginLike_shouldReturnActiveUsers() throws Exception {
+        model.USER1_OWNS_ORG1_MANAGES_P1.setLogin("respondecouser1");
+        userRepository.save(model.USER1_OWNS_ORG1_MANAGES_P1);
+        model.USER2_OWNS_ORG2_MANAGES_P2.setLogin("respondecouser2");
+        userRepository.save(model.USER2_OWNS_ORG2_MANAGES_P2);
         Page<User> users = userRepository.findByLoginLike("respondeco", null);
-        assertTrue(users.getContent().size() >= 3);
+        assertTrue(users.getContent().size() >= 2);
     }
 
     @Test

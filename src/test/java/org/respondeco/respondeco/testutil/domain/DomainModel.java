@@ -31,14 +31,12 @@ public class DomainModel {
     public Project PROJECT2;
 
     public DomainModel() {
-        USER_ADMIN = TestUtil.clone(Users.ADMIN_COMPLETE);
+        USER_ADMIN = Users.newAdmin();
 
-        USER_NEW = TestUtil.clone(Users.NEW_MINIMAL);
-        USER_SAVED_MINIMAL = TestUtil.clone(Users.SAVED_MINIMAL);
-        USER1_OWNS_ORG1_MANAGES_P1 = TestUtil.clone(Users.SAVED_COMPLETE);
-        USER2_OWNS_ORG2_MANAGES_P2 = TestUtil.clone(Users.SAVED_COMPLETE);
-        USER2_OWNS_ORG2_MANAGES_P2.setLogin("user2_complete@respondeco.org");
-        USER2_OWNS_ORG2_MANAGES_P2.setActivationKey("activation_key_user2");
+        USER_NEW = Users.newMinimalUser();
+        USER_SAVED_MINIMAL = Users.savedMinimalUser();
+        USER1_OWNS_ORG1_MANAGES_P1 = Users.savedCompleteUser();
+        USER2_OWNS_ORG2_MANAGES_P2 = Users.savedCompleteUser();
 
         ORGANIZATION_NEW = TestUtil.clone(Organizations.NEW_MINIMAL);
         ORGANIZATION_SAVED_MINIMAL = TestUtil.clone(Organizations.SAVED_MINIMAL);

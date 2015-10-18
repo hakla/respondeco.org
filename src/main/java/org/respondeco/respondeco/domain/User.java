@@ -35,7 +35,7 @@ public class User extends AbstractAuditingEntity {
     private String login;
 
     @JsonIgnore
-    @Size(min = 0, max = 100)
+    @Size(min = 8, max = 100)
     @Column(length = 100)
     private String password;
 

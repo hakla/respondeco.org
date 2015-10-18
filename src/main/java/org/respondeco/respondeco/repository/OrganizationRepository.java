@@ -22,15 +22,15 @@ public interface OrganizationRepository extends AbstractEntityRepository<Organiz
     Organization findByName(@Param("name") String orgName);
 
     @Query(
-        "SELECT p " +
-        "FROM Organization p INNER JOIN p.FollowingUsers u " +
-            "WHERE u.id = :userId " +
-            "AND p.id = :organizationId " +
+        "SELECT o " +
+        "FROM Organization o INNER JOIN o.FollowingUsers u " +
+            "WHERE u = :user " +
+            "AND o.id = :organizationId " +
             "AND u.active = 1 " +
-            "AND p.active = 1"
+            "AND o.active = 1"
     )
-    public Organization findByUserIdAndOrganizationId(
-        @Param("userId") Long userId,
+    public Organization findOrganizationIfUserFollows(
+        @Param("user") User user,
         @Param("organizationId") Long organizationId
     );
 }

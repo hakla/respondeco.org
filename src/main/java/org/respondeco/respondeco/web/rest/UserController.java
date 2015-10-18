@@ -50,7 +50,6 @@ public class UserController {
     @RESTWrapped
     public Object getUser(@PathVariable Long id) {
         log.debug("REST request to get User : {}", id);
-        log.debug("userService is {}", userService);
         return userService.getUser(id);
     }
 

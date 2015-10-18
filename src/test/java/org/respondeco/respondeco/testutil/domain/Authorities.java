@@ -13,25 +13,28 @@ import java.util.Set;
  */
 public class Authorities {
 
-    public static final Authority ROLE_ADMIN;
-    public static final Authority ROLE_USER;
+    public static final String ADMIN_ROLE_ID = "ROLE_ADMIN";
+    public static final String USER_ROLE_ID = "ROLE_USER";
 
-    public static final HashSet<Authority> ADMIN;
-    public static final HashSet<Authority> USER;
+    public static Authority userAuthority() {
+        return new Authority(USER_ROLE_ID);
+    }
 
-    static {
-        ROLE_ADMIN = new Authority();
-        ROLE_ADMIN.setName("ROLE_ADMIN");
+    public static Authority adminAuthority() {
+        return new Authority(ADMIN_ROLE_ID);
+    }
 
-        ROLE_USER = new Authority();
-        ROLE_USER.setName("ROLE_USER");
+    public static Set<Authority> userAuthorities() {
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(userAuthority());
+        return authorities;
+    }
 
-        ADMIN = new HashSet<>();
-        ADMIN.add(TestUtil.clone(ROLE_ADMIN));
-        ADMIN.add(TestUtil.clone(ROLE_USER));
-
-        USER = new HashSet<>();
-        USER.add(TestUtil.clone(ROLE_USER));
+    public static Set<Authority> adminAuthorities() {
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(userAuthority());
+        authorities.add(adminAuthority());
+        return authorities;
     }
 
 }

@@ -2,6 +2,7 @@ package org.respondeco.respondeco.testutil;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.nio.charset.Charset;
@@ -75,12 +76,28 @@ public class TestUtil {
     public static void inject(Object target, String fieldName, Object value)
         throws Exception {
         log.debug("injecting {} into field {} of object {}", value, fieldName, target);
-        if (AopUtils.isAopProxy(target) && target instanceof Advised) {
-            log.debug("target is an AOP proxy, unwrapping...");
-            target = ((Advised) target).getTargetSource().getTarget();
-        }
+        target = unwrap(target);
         log.debug("final target object: {}", target);
         ReflectionTestUtils.setField(target, fieldName, value);
+    }
+
+    public static Object unwrap(Object object) throws Exception {
+        if (AopUtils.isAopProxy(object) && object instanceof Advised) {
+            log.debug("target is an AOP proxy, unwrapping...");
+            return ((Advised) object).getTargetSource().getTarget();
+        }
+        return object;
+    }
+
+    public static <A extends Annotation> A getAnnotation(Class<?> type, Class<A> annotationType) {
+        while(type != Object.class) {
+            Annotation annotation = type.getAnnotation(annotationType);
+            if(annotation != null) {
+                return (A) annotation;
+            }
+            type = type.getSuperclass();
+        }
+        return null;
     }
 
     public static List<String> getAscendingStrings(int number) {

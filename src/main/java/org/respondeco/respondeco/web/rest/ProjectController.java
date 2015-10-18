@@ -292,18 +292,11 @@ public class ProjectController {
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
+    @RESTWrapped
     @Timed
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         log.debug("REST request to delete Project : {}", id);
-        ResponseEntity<?> responseEntity = null;
-        try {
-            projectService.delete(id);
-            responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalValueException e) {
-            log.error("Could not delete project {}", id, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        }
-        return responseEntity;
+        projectService.delete(id);
     }
 
     /**
@@ -376,8 +369,6 @@ public class ProjectController {
         } catch (NoSuchEntityException e) {
             log.error("Could not rate project {}", id, e);
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ProjectRatingException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
         return responseEntity;
     }
@@ -494,17 +485,13 @@ public class ProjectController {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity follow(@PathVariable Long id) {
-        ResponseEntity responseEntity;
-
-        try {
-            projectService.follow(id);
-            responseEntity = new ResponseEntity(HttpStatus.CREATED);
-        } catch (IllegalValueException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e);
+    @RESTWrapped(returnsRawReturnStatus = true)
+    public Object follow(@PathVariable Long id) {
+        if(projectService.follow(id)) {
+            return HttpStatus.CREATED;
+        } else {
+            return HttpStatus.OK;
         }
-
-        return responseEntity;
     }
 
     /**
@@ -555,7 +542,7 @@ public class ProjectController {
             log.debug("Can not find project for projectLocation");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalValueException e) {
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         return responseEntity;

@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest.util;
 
 import org.respondeco.respondeco.service.exception.IllegalValueException;
+import org.respondeco.respondeco.service.exception.ServiceException;
 import org.respondeco.respondeco.web.rest.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,12 @@ public class ErrorHelper {
         return new ResponseEntity<ErrorResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
     }
 
-    public static ResponseEntity<ErrorResponseDTO> buildErrorResponse(IllegalValueException exception) {
-        ErrorResponseDTO responseDTO = new ErrorResponseDTO(exception.getInternationalizationKey(), exception.getMessage());
-        return new ResponseEntity<ErrorResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
+    public static ResponseEntity<ServiceException.Details> buildErrorResponse(ServiceException exception) {
+        return new ResponseEntity<>(exception.getDetails(), HttpStatus.BAD_REQUEST);
+    }
+
+    public static ResponseEntity<String> buildErrorResponse(Exception exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

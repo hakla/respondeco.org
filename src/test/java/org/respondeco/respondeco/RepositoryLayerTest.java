@@ -5,34 +5,32 @@ import org.respondeco.respondeco.domain.Organization;
 import org.respondeco.respondeco.domain.Project;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.repository.OrganizationRepository;
+import org.respondeco.respondeco.repository.PersistentTokenRepository;
 import org.respondeco.respondeco.repository.ProjectRepository;
 import org.respondeco.respondeco.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Created by Clemens Puehringer on 25/08/15.
+ * Created by clemens on 18/09/15.
  */
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
-public class DatabaseBackedTest extends ModelBackedTest {
+public class RepositoryLayerTest extends AbstractBaseTest {
 
-    @Inject protected UserRepository userRepository;
-    @Inject protected OrganizationRepository organizationRepository;
-    @Inject protected ProjectRepository projectRepository;
+    @Inject public PersistentTokenRepository persistentTokenRepository;
+    @Inject public UserRepository userRepository;
+    @Inject public OrganizationRepository organizationRepository;
+    @Inject public ProjectRepository projectRepository;
 
     @Before
     public void setupDatabase() {
@@ -83,3 +81,5 @@ public class DatabaseBackedTest extends ModelBackedTest {
     }
 
 }
+
+

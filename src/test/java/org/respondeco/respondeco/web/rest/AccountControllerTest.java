@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import org.respondeco.respondeco.Application;
+import org.respondeco.respondeco.ControllerLayerTest;
 import org.respondeco.respondeco.domain.Authority;
 import org.respondeco.respondeco.domain.Gender;
 import org.respondeco.respondeco.domain.User;
@@ -38,60 +39,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see UserService
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class AccountControllerTest extends ControllerLayerTest {
 
-public class AccountControllerTest {
-
-    @Inject
-    private UserRepository userRepository;
-
-    @Mock
-    private UserService userServiceMock;
-
-    private MockMvc restUserMockMvc;
-
-    private User defaultAdmin;
-    private User defaultUser;
-    private Set<Authority> adminAuthorities;
-    private Set<Authority> userAuthorities;
+    public MockMvc accountMockMvc;
 
     @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        AccountController accountController = new AccountController();
-        ReflectionTestUtils.setField(accountController, "userRepository", userRepository);
-        ReflectionTestUtils.setField(accountController, "userService", userServiceMock);
-        this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
-
-        adminAuthorities = new HashSet<>();
-        userAuthorities = new HashSet<>();
-        Authority authority = new Authority();
-        authority.setName(AuthoritiesConstants.USER);
-        userAuthorities.add(authority);
-        authority = new Authority();
-        authority.setName(AuthoritiesConstants.ADMIN);
-        adminAuthorities.add(authority);
-        this.defaultAdmin = new User();
-        this.defaultAdmin.setCreatedDate(null);
-        this.defaultAdmin.setLastModifiedDate(null);
-        this.defaultAdmin.setLogin("testadmin");
-        this.defaultAdmin.setCreatedBy(this.defaultAdmin.getLogin());
-        this.defaultAdmin.setTitle("Dr.");
-        this.defaultAdmin.setGender(Gender.MALE);
-        this.defaultAdmin.setFirstName("john");
-        this.defaultAdmin.setLastName("doe");
-        this.defaultAdmin.setEmail("john.doe@jhipter.com");
-        this.defaultAdmin.setDescription("just a regular everyday normal guy");
-        this.defaultAdmin.setAuthorities(adminAuthorities);
-
+    public void setupMockMvc() {
+        accountMockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
     }
 
     @Test
     public void testNonAuthenticatedUser() throws Exception {
-        restUserMockMvc.perform(get("/app/rest/authenticate")
+        accountMockMvc.perform(get("/app/rest/authenticate")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
@@ -100,7 +59,7 @@ public class AccountControllerTest {
 
     @Test
     public void testAuthenticatedUser() throws Exception {
-        restUserMockMvc.perform(get("/app/rest/authenticate")
+        accountMockMvc.perform(get("/app/rest/authenticate")
                 .with(request -> {
                     request.setRemoteUser("test");
                     return request;

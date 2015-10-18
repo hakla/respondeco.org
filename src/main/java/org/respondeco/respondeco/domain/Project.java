@@ -42,7 +42,7 @@ public class Project extends AbstractAuditingNamedEntity implements MatchingEnti
     private String purpose;
 
     @Column(name = "is_concrete")
-    private boolean concrete = false;
+    private Boolean concrete = false;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -80,7 +80,7 @@ public class Project extends AbstractAuditingNamedEntity implements MatchingEnti
      * If the project was started successfully (all essential resources were donated by the project start)
      */
     @Column(name = "is_successful")
-    private Boolean successful;
+    private Boolean successful = false;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "postingfeed_id")
@@ -92,7 +92,7 @@ public class Project extends AbstractAuditingNamedEntity implements MatchingEnti
         joinColumns = {@JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")}
     )
-    private List<User> FollowingUsers;
+    private List<User> followingUsers;
 
     private Address address;
 

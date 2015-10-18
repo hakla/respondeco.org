@@ -42,6 +42,7 @@
         <metrics-spring.version>3.0.1</metrics-spring.version>
         <run.addResources>false</run.addResources>
         <sonar-maven-plugin.version>2.2</sonar-maven-plugin.version>
+        <spring-mvc-router.version>1.2.0</spring-mvc-router.version>
         <swagger-springmvc.version>0.8.8</swagger-springmvc.version>
         <usertype-core.version>3.2.0.GA</usertype-core.version>
         <querydsl.version>3.6.0</querydsl.version>
@@ -360,6 +361,11 @@
             <artifactId>junit-benchmarks</artifactId>
             <version>${junit-benchmarks.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.resthub</groupId>
+            <artifactId>springmvc-router</artifactId>
+            <version>${spring-mvc-router.version}</version>
         </dependency>
     </dependencies>
     <build>

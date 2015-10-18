@@ -29,9 +29,6 @@ public class ResourceTag extends AbstractAuditingEntity implements MatchingTag {
     private List<ResourceBase> resources;
 
     public void setName(@NonNull String name) {
-        if(name.trim().isEmpty()){
-            throw new IllegalValueException("resource.errors.notagname", "No name for resource tag defined");
-        }
         this.name = name.trim();
     }
 

@@ -40,14 +40,21 @@ public class ResourceService {
 
     private static final Logger log = LoggerFactory.getLogger(ResourceService.class);
 
-    private static final String ERROR_REQUIREMENT_KEY = "resource.requirement.error";
-    private static final String ERROR_OFFER_KEY = "resource.offer.error";
+    public static final ServiceException.ErrorPrefix ERROR_REQUIREMENT_PREFIX =
+        new ServiceException.ErrorPrefix("resource.requirement");
+    public static final ServiceException.ErrorPrefix ERROR_OFFER_PREFIX =
+        new ServiceException.ErrorPrefix("resource.offer");
+    public static final ServiceException.ErrorPrefix ERROR_MATCH_PREFIX =
+        new ServiceException.ErrorPrefix("resource.match");
 
-    private static final String ERROR_NO_ENTITY = "no_entity";
-    private static final String ERROR_NO_PERMISSION = "no_permision";
-    private static final String ERROR_EXISTING_MATCHES = "existing_matches";
-    private static final String ERROR_AMOUNT_MODIFICATION = "amount_modification";
-    private static final String ERROR_ORIGINAL_AMOUNT_MODIFICATION = "original_amount_modification";
+    public static final String ERROR_AMOUNT_MODIFICATION           = "amount_modification";
+    public static final String ERROR_CLAIM_OWN_OFFER               = "claim_own_offer";
+    public static final String ERROR_EXISTING_MATCHES              = "existing_matches";
+    public static final String ERROR_ID_NULL                       = "id_null";
+    public static final String ERROR_NO_AUTHORITY                  = "no_authority";
+    public static final String ERROR_OFFER_DEPLETED                = "offer_depleted";
+    public static final String ERROR_ORIGINAL_AMOUNT_MODIFICATION  = "original_amount_modification";
+    public static final String ERROR_REQUIREMENT_FULFILLED         = "requirement_fulfilled";
 
 
     private ResourceOfferRepository resourceOfferRepository;
@@ -58,9 +65,6 @@ public class ResourceService {
     private ResourceMatchRepository resourceMatchRepository;
     private ImageRepository imageRepository;
     private UserService userService;
-
-    private ExceptionUtil.KeyBuilder requirementKey = new ExceptionUtil.KeyBuilder(ERROR_REQUIREMENT_KEY);
-    private ExceptionUtil.KeyBuilder offerKey = new ExceptionUtil.KeyBuilder(ERROR_OFFER_KEY);
 
     @Inject
     public ResourceService(ResourceOfferRepository resourceOfferRepository,
@@ -164,25 +168,38 @@ public class ResourceService {
     private ResourceRequirement updateRequirement(ResourceRequirement updatedRequirement)
         throws IllegalValueException {
         ResourceRequirement originalRequirement =
-            this.resourceRequirementRepository.findByIdAndActiveIsTrue(updatedRequirement.getId());
+            this.resourceRequirementRepository.findOne(updatedRequirement.getId());
 
         if(originalRequirement == null) {
-            throw new NoSuchEntityException(
-                requirementKey.from(ERROR_NO_ENTITY),
-                String.format("A resource requirement with id %d does not exist.", updatedRequirement.getId()));
+            throw new NoSuchEntityException(ERROR_REQUIREMENT_PREFIX, updatedRequirement.getId(),
+                ResourceRequirement.class);
         }
-        if(!originalRequirement.getProject().equals(updatedRequirement.getProject())) {
-            throw new OperationForbiddenException(
-                requirementKey.from(ERROR_NO_PERMISSION),
-                "You have no permission to modify this resource"
+        User currentUser = userService.getUserWithAuthorities();
+        if(currentUser == null) {
+            throw new OperationForbiddenException(ERROR_REQUIREMENT_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user (not logged in) has no authority to modify resource %1 (%2).",
+                Arrays.asList("resourceRequirementId", "resourceRequirementName"),
+                Arrays.asList(originalRequirement.getId(), originalRequirement.getName())
+            );
+        }
+        if(!originalRequirement.getProject().getManager().equals(currentUser)) {
+            throw new OperationForbiddenException(ERROR_REQUIREMENT_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user (%2) has no authority to modify resource %3 (%4).",
+                Arrays.asList("userId", "userLogin", "resourceRequirementId", "resourceRequirementName"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin(), originalRequirement.getId(),
+                    originalRequirement.getName())
             );
         }
         Assert.isEqualOrNull(originalRequirement.getOriginalAmount(), updatedRequirement.getOriginalAmount(),
-            requirementKey.from(ERROR_ORIGINAL_AMOUNT_MODIFICATION),
-            "The original amount of needed resources can not be changed");
+            ERROR_REQUIREMENT_PREFIX.join(ERROR_ORIGINAL_AMOUNT_MODIFICATION),
+            "The original amount of needed resources (%1) can not be changed to %2",
+            Arrays.asList("savedOriginalAmount", "modifiedOriginalAmount"),
+            Arrays.asList(originalRequirement.getOriginalAmount(), updatedRequirement.getOriginalAmount()));
         Assert.isEqualOrNull(originalRequirement.getAmount(), updatedRequirement.getAmount(),
-            requirementKey.from(ERROR_AMOUNT_MODIFICATION),
-            "The amount of needed resources can not be changed directly");
+            ERROR_REQUIREMENT_PREFIX.join(ERROR_AMOUNT_MODIFICATION),
+            "The amount of needed resources can not be changed directly",
+            Arrays.asList("savedAmount", "modifiedAmount"),
+            Arrays.asList(originalRequirement.getAmount(), updatedRequirement.getAmount()));
         originalRequirement.setName(updatedRequirement.getName());
         originalRequirement.setDescription(updatedRequirement.getDescription());
         originalRequirement.setLogo(updatedRequirement.getLogo());
@@ -197,10 +214,11 @@ public class ResourceService {
         if(requirements == null) {
             return;
         }
+        List<String> errorKeys = Arrays.asList("resourceRequirementId", "resourceRequirementName");
         for(ResourceRequirement requirement : requirements) {
-            Assert.isEmpty(requirement.getResourceMatches(), requirementKey.from(ERROR_EXISTING_MATCHES),
-                String.format("Cannot delete requirement %s with id %d, there are existing matches",
-                    requirement.getName(), requirement.getId()));
+            Assert.isEmpty(requirement.getResourceMatches(), ERROR_REQUIREMENT_PREFIX.join(ERROR_EXISTING_MATCHES),
+                "Cannot delete requirement %1 (%2), there are existing matches",
+                errorKeys, Arrays.asList(requirement.getId(), requirement.getName()));
             log.debug("calling ResourceRequirementRepository#save() with argument {}", requirement);
             requirement.setActive(false);
             resourceRequirementRepository.save(requirement);
@@ -213,7 +231,7 @@ public class ResourceService {
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if the resource requirement can't be found
      */
     public void deleteRequirement(Long id) throws ResourceNotFoundException {
-        ResourceRequirement requirement = this.resourceRequirementRepository.findByIdAndActiveIsTrue(id);
+        ResourceRequirement requirement = this.resourceRequirementRepository.findOne(id);
         if (requirement != null) {
             ensureUserIsPartOfOrganisation(requirement.getProject());
             requirement.setActive(false);
@@ -228,7 +246,7 @@ public class ResourceService {
      * @return list or resource requirements
      */
     public List<ResourceRequirement> getRequirements() {
-        return resourceRequirementRepository.findByActiveIsTrue();
+        return resourceRequirementRepository.findAll();
     }
 
     /**
@@ -244,14 +262,18 @@ public class ResourceService {
      * Create a new ResourceOffer
      * @return created ResourceOffer
      */
-    public ResourceOffer createOffer(ResourceOffer newOffer)
-        throws NoSuchEntityException {
+    public ResourceOffer createOffer(ResourceOffer newOffer) {
         Organization organization = organizationRepository.findOne(newOffer.getOrganization().getId());
         if(organization == null) {
-            throw new NoSuchEntityException(newOffer.getOrganization().getId());
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, newOffer.getOrganization().getId(),
+                Organization.class);
         }
         if(organization.getVerified() == false) {
-            throw new OperationForbiddenException("Organization (id: " + newOffer.getOrganization().getId() + ") not verified");
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_VERIFIED),
+                "Cannot create offer, organization %1 (%2) is not yet verified",
+                Arrays.asList("organizationId", "organizationName"),
+                Arrays.asList(organization.getId(), organization.getName()));
         }
 
         newOffer.setResourceTags(resourceTagService.getOrCreateTags(newOffer.getResourceTags()));
@@ -264,12 +286,10 @@ public class ResourceService {
      *
      * @return updated Resource Offer
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if resource offer with id can't be found
-     * @throws ResourceTagException
-     * @throws ResourceJoinTagException
      */
     public ResourceOffer updateOffer(ResourceOffer updatedOffer)
         throws IllegalValueException {
-        ResourceOffer currentOffer = this.resourceOfferRepository.findByIdAndActiveIsTrue(updatedOffer.getId());
+        ResourceOffer currentOffer = this.resourceOfferRepository.findOne(updatedOffer.getId());
 
         if (currentOffer != null) {
             ensureUserIsPartOfOrganisation(organizationRepository.findOne(
@@ -299,7 +319,7 @@ public class ResourceService {
      * @throws org.respondeco.respondeco.service.exception.ResourceNotFoundException if offer can't be found
      */
     public void deleteOffer(Long offerId) throws IllegalValueException {
-        ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
+        ResourceOffer resourceOffer = resourceOfferRepository.findOne(offerId);
 
         if(resourceOffer == null) {
             throw new ResourceNotFoundException(String.format("No resource offer found for the id: %d", offerId));
@@ -383,7 +403,7 @@ public class ResourceService {
             Page<Project> organizations = projectRepository.findByOrganization(orgId, new RestParameters(0, 100000).buildPageRequest());
 
             if (organizations != null) {
-                List<Project> projects = organizations.getContent().stream().filter(p -> !p.isConcrete() || p.getStartDate().isBefore(LocalDate.now()) == false).collect(Collectors.toList());
+                List<Project> projects = organizations.getContent().stream().filter(p -> !p.getConcrete() || p.getStartDate().isBefore(LocalDate.now()) == false).collect(Collectors.toList());
 
                 // add all projects of the organization to the matchingEntities
                 // only add projects which are currently active and haven't started yet (projects which aren't concrete or the start date is in the future)
@@ -450,7 +470,7 @@ public class ResourceService {
     public ResourceOffer getOfferById(Long id) throws NoSuchEntityException {
         ResourceOffer resourceOffer = resourceOfferRepository.getOne(id);
         if (!resourceOffer.getActive()) {
-            throw new NoSuchEntityException("resource with given id is not active");
+            throw new NoSuchEntityException(ERROR_OFFER_PREFIX, id, ResourceOffer.class);
         }
 
         return resourceOffer;
@@ -467,47 +487,27 @@ public class ResourceService {
 
         ResourceMatch resourceMatch = new ResourceMatch();
 
-        ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(resourceOfferId);
+        ResourceOffer resourceOffer = resourceOfferRepository.findOne(resourceOfferId);
         if(resourceOffer == null) {
-            throw new IllegalValueException(
-                "resource.errors.offernotfound",
-                String.format("No resource offer with id %s found", resourceOfferId.toString())
-            );
+            throw new NoSuchEntityException(ERROR_OFFER_PREFIX, resourceOfferId, ResourceOffer.class);
         }
 
         Organization organization = resourceOffer.getOrganization();
 
-        if(organization == null) {
-            throw new IllegalValueException(
-                "resource.errors.offer.noorganization",
-                String.format("No organization for resource offer %s found", resourceOffer.toString())
-            );
-        }
-
         //check for authorization
-        //checkAuthoritiesForResourceMatch(organization);
-
-        ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(resourceRequirementId);
+        //checkAuthoritiesForResourceRequestAnswer(organization);
+        ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(resourceRequirementId);
         if(resourceRequirement == null) {
-            throw new IllegalValueException(
-                "resource.errors.norequirement",
-                String.format("no resourceRequirement with id %s found", resourceRequirementId.toString())
-            );
+            throw new NoSuchEntityException(ERROR_REQUIREMENT_PREFIX, resourceRequirementId, ResourceRequirement.class);
         }
 
         Project project = resourceRequirement.getProject();
-        if(project == null) {
-            throw new IllegalValueException(
-                "resource.errors.norequirementproject",
-                String.format("No project for resourceRequirement %s found", resourceRequirement.toString())
-            );
-        }
-
         if(project.getOrganization().getId().equals(organization.getId())) {
-            throw new IllegalValueException(
-                "resource.errors.claimownres",
-                "cannot claim own resource offer " + resourceOffer.toString()
-            );
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_CLAIM_OWN_OFFER),
+                "A resource offer (%1, %2) cannot be claimed by the same organization that offered it (%3, %4)",
+                Arrays.asList("resourceOfferId", "resourceOfferName", "organizationId", "organizationName"),
+                Arrays.asList(resourceOffer.getId(), resourceOffer.getName(), organization.getId(),
+                    organization.getName()));
         }
 
         List<ResourceMatch> result = resourceMatchRepository
@@ -523,7 +523,12 @@ public class ResourceService {
 
             resourceMatchRepository.save(resourceMatch);
         } else {
-            throw new IllegalValueException("resource.errors.matchexists", "match already exists");
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_EXISTING_MATCHES),
+                "A match already exists between offer %1 (%2) and requirement %3 (%4)",
+                Arrays.asList("resourceOfferId", "resourceOfferName", "resourceRequirementId",
+                    "resourceRequirementName"),
+                Arrays.asList(resourceOffer.getId(), resourceOffer.getName(), resourceRequirement.getId(),
+                    resourceRequirement.getName()));
         }
 
         return resourceMatch;
@@ -535,19 +540,27 @@ public class ResourceService {
      * @return
      * @throws OperationForbiddenException
      */
-    private void checkAuthoritiesForResourceMatch(Organization organization) throws OperationForbiddenException{
+    private void checkAuthoritiesForResourceRequestAnswer(Organization organization) throws OperationForbiddenException{
         User user = userService.getUserWithAuthorities();
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user (not logged in) has no authority to access resource matches.",
+                null, null);
         }
-
         if(user.getOrganization() == null) {
-            throw new OperationForbiddenException("user is no member of any organization");
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user %1 (%2) does not belong to an organization and has no authority to access " +
+                    "resource matches.",
+                Arrays.asList("userId", "userLogin"),
+                Arrays.asList(user.getId(), user.getLogin()));
         }
-
         //has to be the owner of the project's organization or the project manager
         if(!user.equals(organization.getOwner())) {
-            throw new OperationForbiddenException("user needs to be the owner of the organization");
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user %1 (%2) is not the owner of organization %3 (%4) and has no authority to access " +
+                    "its resource matches.",
+                Arrays.asList("userId", "userLogin", "organizationId", "organizationName"),
+                Arrays.asList(user.getId(), user.getLogin(), organization.getId(), organization.getName()));
         }
     }
 
@@ -560,27 +573,23 @@ public class ResourceService {
     public ResourceMatch answerResourceRequest(Long resourceMatchId, boolean accept)
         throws IllegalValueException {
 
+        if(resourceMatchId == null) {
+            throw new IllegalValueException(ERROR_MATCH_PREFIX.join(ERROR_ID_NULL), "ResourceMatch id must not be null",
+                null, null);
+        }
+
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(resourceMatchId);
 
-        if(resourceMatchId == null) {
-            throw new IllegalValueException("resourcematch.error.idnull", "Resourcematch id must not be null");
-        }
         if(resourceMatch == null) {
-            throw new NoSuchEntityException(resourceMatchId);
+            throw new NoSuchEntityException(ERROR_MATCH_PREFIX, resourceMatchId, ResourceMatch.class);
         }
 
         Project project = resourceMatch.getProject();
         Organization organization = resourceMatch.getOrganization();
 
-        if(project == null) {
-            throw new NoSuchEntityException("can't find project for match with matchId " + resourceMatchId);
-        }
-
-        User user = userService.getUserWithAuthorities();
-
         //check if user authorized to change data
         if(resourceMatch.getMatchDirection() == MatchDirection.ORGANIZATION_CLAIMED) {
-            checkAuthoritiesForResourceMatch(organization);
+            checkAuthoritiesForResourceRequestAnswer(organization);
         }else{
             ensureUserIsPartOfOrganisation(project);
         }
@@ -590,13 +599,7 @@ public class ResourceService {
 
         if(accept) {
             ResourceOffer offer = resourceMatch.getResourceOffer();
-            if(offer == null) {
-                throw new IllegalValueException("resourcematch.error.noresourceofferfound", "resourcematch has no resourceoffer: "+ resourceMatch);
-            }
             ResourceRequirement req = resourceMatch.getResourceRequirement();
-            if(req == null) {
-                throw new IllegalValueException("resourcematch.error.noresourcerequirementfound","resourcematch has no resourcerequirement: "+ resourceMatch);
-            }
 
             //check if resourceOffer amount is completely consumed by resourceRequirement
             //offer greater req amount -> keep offer active and lower amount
@@ -678,32 +681,47 @@ public class ResourceService {
         ResourceMatch resourceMatch = new ResourceMatch();
 
         // get the linked property partners
-        ResourceOffer resourceOffer = resourceOfferRepository.findByIdAndActiveIsTrue(offerId);
-        ResourceRequirement resourceRequirement = resourceRequirementRepository.findByIdAndActiveIsTrue(requirementId);
+        ResourceOffer resourceOffer = resourceOfferRepository.findOne(offerId);
+        ResourceRequirement resourceRequirement = resourceRequirementRepository.findOne(requirementId);
         Organization organization = organizationRepository.findOne(organizationId);
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        Project project = projectRepository.findOne(projectId);
 
-        List<ResourceMatch> hasData = resourceMatchRepository.
+        List<ResourceMatch> existingMatches = resourceMatchRepository.
             findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(resourceOffer,
                 resourceRequirement, organization, project);
 
         // Check if user authorized
         ensureUserIsPartOfOrganisation(organization);
 
-        if(!hasData.isEmpty()){
-            throw new OperationForbiddenException("resourcematch.error.projectapply.offeralreadyexists", "Current offer has already been donated before");
+        if(!existingMatches.isEmpty()){
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_EXISTING_MATCHES),
+                "A match already exists between offer %1 (%2) and requirement %3 (%4)",
+                Arrays.asList("resourceOfferId", "resourceOfferName", "resourceRequirementId",
+                    "resourceRequirementName"),
+                Arrays.asList(resourceOffer.getId(), resourceOffer.getName(), resourceRequirement.getId(),
+                    resourceRequirement.getName()));
         }
 
-        if(organization == project.getOrganization()){
-            throw new OperationForbiddenException("resourcematch.error.projectapply.ownproject", "Organization cannot offer resources to own project");
+        if(project.getOrganization().equals(organization)){
+            throw new OperationForbiddenException(ERROR_MATCH_PREFIX.join(ERROR_CLAIM_OWN_OFFER),
+                "A resource offer (%1, %2) cannot be claimed by the same organization that offered it (%3, %4)",
+                Arrays.asList("resourceOfferId", "resourceOfferName", "organizationId", "organizationName"),
+                Arrays.asList(resourceOffer.getId(), resourceOffer.getName(), organization.getId(),
+                    organization.getName()));
         }
         //,check if we need new apply
         if(resourceRequirement.getAmount().equals(BigDecimal.ZERO)){
-            throw new OperationForbiddenException("resourcematch.error.projectapply.requestfulfilled", "Requirements are already fulfilled");
+            throw new OperationForbiddenException(ERROR_REQUIREMENT_PREFIX.join(ERROR_REQUIREMENT_FULFILLED),
+                "Resource requirement %1 (%2) is already fulfilled.",
+                Arrays.asList("resourceRequirementId", "resourceRequirementName"),
+                Arrays.asList(resourceRequirement.getId(), resourceRequirement.getName()));
         }
 
         if(resourceOffer.getAmount().equals(BigDecimal.ZERO)){
-            throw new OperationForbiddenException("resourcematch.error.projectapply.offerdepleted", "Current offer already depleted");
+            throw new OperationForbiddenException(ERROR_OFFER_PREFIX.join(ERROR_OFFER_DEPLETED),
+                "Resource offer %1 (%2) is already depleted.",
+                Arrays.asList("resourceOfferId", "resourceOfferName"),
+                Arrays.asList(resourceOffer.getId(), resourceOffer.getName()));
         }
 
         BigDecimal amount;
@@ -753,7 +771,7 @@ public class ResourceService {
 
         Organization organization = organizationRepository.findOne(orgId);
         if (organization == null) {
-            throw new NoSuchEntityException("organization with id " + orgId + "can't be found");
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, orgId, Organization.class);
         }
 
         Page<ResourceMatch> resourceMatches =
@@ -773,7 +791,7 @@ public class ResourceService {
 
         Organization organization = organizationRepository.findOne(orgId);
         if (organization == null) {
-            throw new NoSuchEntityException("organization with id " + orgId + "can't be found");
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, orgId, Organization.class);
         }
 
         Page<ResourceMatch> resourceMatches =

@@ -2,26 +2,13 @@ package org.respondeco.respondeco.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.respondeco.respondeco.Application;
+import org.respondeco.respondeco.RepositoryLayerTest;
 import org.respondeco.respondeco.domain.*;
-import org.respondeco.respondeco.testutil.TestUtil;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -29,13 +16,7 @@ import static org.junit.Assert.*;
  * Created by Clemens Puehringer on 21/11/14.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class })
-public class ProjectRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class ProjectRepositoryTest extends RepositoryLayerTest {
 
     @Inject
     private UserRepository userRepository;
