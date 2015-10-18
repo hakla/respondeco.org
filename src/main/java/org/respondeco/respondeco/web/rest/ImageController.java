@@ -100,8 +100,9 @@ public class ImageController {
         log.debug("REST request to get Image : {}", id);
         Image image = imageRepository.findOne(id);
 
-        if (image == null)
+        if (null == image) {
             throw new NoSuchEntityException("There is no image with id " + id);
+        }
 
         response.setHeader("Content-Disposition", "attachment: filename=\"" + image.getName() + "\"");
         response.getOutputStream().write(image.getData());

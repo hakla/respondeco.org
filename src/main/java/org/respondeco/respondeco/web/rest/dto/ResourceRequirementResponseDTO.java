@@ -44,10 +44,10 @@ public class ResourceRequirementResponseDTO {
             if (fieldNames.contains("description")) {
                 responseDTO.setDescription(resourceRequirement.getDescription());
             }
-            if (fieldNames.contains("project")) {
-                responseDTO.setProjectResponseDTO(ProjectResponseDTO
-                    .fromEntity(resourceRequirement.getProject(), null));
-            }
+//            if (fieldNames.contains("project")) {
+//                responseDTO.setProjectResponseDTO(ProjectResponseDTO
+//                    .fromEntity(resourceRequirement.getProject(), null));
+//            }
             if (fieldNames.contains("projectId")) {
                 responseDTO.setProjectId(resourceRequirement.getProject().getId());
             }
@@ -83,7 +83,7 @@ public class ResourceRequirementResponseDTO {
 
     private Long id;
     private Long projectId;
-    private ProjectResponseDTO projectResponseDTO;
+    //private ProjectResponseDTO projectResponseDTO;
     private String name;
     private BigDecimal amount;
     private BigDecimal originalAmount;

@@ -21,7 +21,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "resource_id", referencedColumnName = "id")
 @Getter
 @Setter
-@ToString(exclude = {"resourceMatches", "project"})
+@ToString(callSuper = true, exclude = {"resourceMatches", "project"})
 public class ResourceRequirement extends ResourceBase implements Serializable {
 
     @ManyToOne

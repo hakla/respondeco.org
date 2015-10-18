@@ -27,6 +27,8 @@ public class QProject extends EntityPathBase<Project> {
     //inherited
     public final BooleanPath active = _super.active;
 
+    public final QAddress address;
+
     public final BooleanPath concrete = createBoolean("concrete");
 
     //inherited
@@ -87,6 +89,7 @@ public class QProject extends EntityPathBase<Project> {
 
     public QProject(Class<? extends Project> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.address = inits.isInitialized("address") ? new QAddress(forProperty("address")) : null;
         this.manager = inits.isInitialized("manager") ? new QUser(forProperty("manager"), inits.get("manager")) : null;
         this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization"), inits.get("organization")) : null;
         this.postingFeed = inits.isInitialized("postingFeed") ? new QPostingFeed(forProperty("postingFeed")) : null;

@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.respondeco.respondeco.matching.MatchingTag;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,8 +29,8 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable,
     private List<ResourceBase> resources;
 
     public void setName(@NonNull String name) {
-        if(name.trim().isEmpty() == true){
-            throw new IllegalArgumentException("Kein Name für resource Tag definiert");
+        if(name.trim().isEmpty()){
+            throw new IllegalValueException("resource.errors.notagname", "No name for resource tag defined");
         }
         this.name = name.trim();
     }

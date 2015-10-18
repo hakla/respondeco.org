@@ -1,5 +1,7 @@
 package org.respondeco.respondeco.matching;
 
+import org.respondeco.respondeco.service.exception.IllegalValueException;
+
 import java.util.Set;
 
 /**
@@ -12,7 +14,9 @@ public class SolutionSingle extends Solution {
         @Override
         public double evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
             if (V.size() != 1) {
-                throw new IllegalArgumentException("This formula can only be used with one tag!");
+                throw new IllegalValueException(
+                    "resource.errors.multipletags",
+                    "This formula can only be used with one tag!");
             }
 
             // get the actual tag
@@ -30,7 +34,9 @@ public class SolutionSingle extends Solution {
         @Override
         public double evaluate(MatchingTag t, Set<MatchingTag> V, long N_E, long N_T, double aPriori, CountFunction count) {
             if (V.size() != 1) {
-                throw new IllegalArgumentException("This formula can only be used with one tag!");
+                throw new IllegalValueException(
+                    "resource.errors.multipletags",
+                    "This formula can only be used with one tag!");
             }
 
             // get the actual tag

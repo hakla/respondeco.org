@@ -1,6 +1,7 @@
 package org.respondeco.respondeco.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.SocialMediaConnection;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.SocialMediaService;
@@ -52,17 +53,9 @@ public class SocialMediaController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> connectFacebook(){
-
-        ResponseEntity<?> responseEntity;
-
-        String authorizeUrl = socialMediaService.createFacebookAuthorizationURL();
-        //angular needs a wrapper for strings
-        StringDTO url = new StringDTO(authorizeUrl);
-
-        responseEntity = new ResponseEntity<>(url, HttpStatus.OK);
-
-        return responseEntity;
+    @RESTWrapped
+    public Object connectFacebook(){
+        return socialMediaService.createFacebookAuthorizationURL();
     }
 
     /**
@@ -171,12 +164,9 @@ public class SocialMediaController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<?> connectTwitter() {
-
-        String url = socialMediaService.createTwitterAuthorizationURL();
-        StringDTO urlDTO = new StringDTO(url);
-
-        return new ResponseEntity<Object>(urlDTO, HttpStatus.OK);
+    @RESTWrapped
+    public Object connectTwitter() {
+        return socialMediaService.createTwitterAuthorizationURL();
     }
 
     /**
@@ -255,12 +245,9 @@ public class SocialMediaController {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<StringDTO> connectXing() {
-
-        String url = socialMediaService.createXingAuthorizationURL();
-        StringDTO urlDTO = new StringDTO(url);
-
-        return new ResponseEntity<>(urlDTO, HttpStatus.OK);
+    @RESTWrapped
+    public Object connectXing() {
+        return socialMediaService.createXingAuthorizationURL();
     }
 
     /**
@@ -347,19 +334,9 @@ public class SocialMediaController {
     @RequestMapping(value="/rest/connections",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SocialMediaConnectionResponseDTO>> getConnections() {
-        ResponseEntity<List<SocialMediaConnectionResponseDTO>> responseEntity;
-
-        try {
-            List<SocialMediaConnection> connections = socialMediaService.getConnectionsForUser();
-            List<SocialMediaConnectionResponseDTO> dtos = SocialMediaConnectionResponseDTO.fromEntities(connections, null);
-
-            responseEntity = new ResponseEntity<>(dtos, HttpStatus.OK);
-        } catch (OperationForbiddenException e) {
-            responseEntity = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
-        return responseEntity;
+    @RESTWrapped
+    public Object getConnections() {
+        return socialMediaService.getConnectionsForUser();
     }
 
 }

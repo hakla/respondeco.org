@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.respondeco.respondeco.Application;
@@ -14,14 +13,14 @@ import org.respondeco.respondeco.repository.OrganizationRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.*;
-import org.respondeco.respondeco.service.exception.AlreadyInOrganizationException;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.PostingFeedException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
-import org.respondeco.respondeco.testutil.DomainModel;
+import org.respondeco.respondeco.testutil.ResultCaptor;
+import org.respondeco.respondeco.testutil.ResultMapper;
+import org.respondeco.respondeco.testutil.domain.DomainModel;
 import org.respondeco.respondeco.testutil.TestUtil;
-import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.respondeco.respondeco.web.rest.dto.OrganizationRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.RatingRequestDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
@@ -34,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -43,10 +43,8 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -55,7 +53,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.isA;
@@ -142,20 +139,22 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
     private OrgJoinRequest orgJoinRequest;
     private User inviteAbleUser;
 
+    private OrganizationController organizationController;
     private DomainModel model;
+    private ResultMapper<Organization> resultMapper;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        OrganizationController organizationController =
-            new OrganizationController(
+        organizationController =
+            spy(new OrganizationController(
                 organizationServiceMock,
                 userServiceMock,
                 resourceServiceMock,
                 orgJoinRequestServiceMock,
                 ratingServiceMock,
-                postingFeedServiceMock);
+                postingFeedServiceMock));
 
         userAuthorities = new HashSet<>();
         Authority authority = new Authority();
@@ -267,6 +266,8 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
         posting.setPostingfeed(postingFeed);
 
         model = new DomainModel();
+        resultMapper = new ResultMapper<>();
+        doAnswer(resultMapper).when(organizationController).update(any(Organization.class));
 
         voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);
 
@@ -274,11 +275,10 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
 
     @Test
     public void testUpdateOrganization_shouldUpdate() throws Exception {
-        when(organizationServiceMock.update(any(Organization.class))).thenReturn(model.ORGANIZATION_N1_COMPLETE);
-        model.ORGANIZATION_N1_COMPLETE.getOwner().setOrganization(null);
+        when(organizationServiceMock.update(any(Organization.class))).thenReturn(model.ORGANIZATION1);
         Object mapped = new ObjectMapperFactory()
             .createMapper(Organization.class, null)
-            .map(model.ORGANIZATION_N1_COMPLETE);
+            .map(model.ORGANIZATION1);
         log.debug("mapped: {}", mapped);
         // Update Organization
         restOrganizationMockMvc.perform(put("/app/rest/organizations")

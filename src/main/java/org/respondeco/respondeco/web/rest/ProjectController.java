@@ -32,8 +32,8 @@ import java.util.List;
  *
  * This REST-Controller handles all requests for /rest/projects
  */
-@RestController
 @Transactional
+@RestController
 @RequestMapping("/app")
 public class ProjectController {
 
@@ -61,42 +61,6 @@ public class ProjectController {
     }
 
     /**
-     * Organization that apply new resource to a project
-     * @param projectApplyDTO data to apply
-     * @return HTPP Status OK: no errors accure, BAD REQUEST: error accures
-     */
-    @ApiOperation(value = "project apply", notes = "Create a project apply (org donate project)")
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RequestMapping(value = "/rest/projects/apply",
-        method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<?> projectApplyOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
-        log.debug("REST request to projectApplyOffer with dto: {}", projectApplyDTO);
-        ResponseEntity<?> responseEntity;
-        try {
-            ResourceMatch resourceMatch = resourceService.createProjectApplyOffer(
-                projectApplyDTO.getResourceOfferId(),
-                projectApplyDTO.getResourceRequirementId(),
-                projectApplyDTO.getOrganizationId(),
-                projectApplyDTO.getProjectId()
-            );
-
-            log.debug("Resource Match: {}", resourceMatch);
-
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            log.error("Could not save Project apply: {}", projectApplyDTO, e);
-            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (IllegalValueException e){
-            log.error("Could not save Project apply: {}", projectApplyDTO, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        }
-
-        return responseEntity;
-    }
-
-     /**
      * POST  /rest/projects -> Creates a new project from the values sent in the request body.
      *
      * @param project the ProjectRequestDTO containing the values to create a new project
@@ -105,37 +69,14 @@ public class ProjectController {
      */
     @ApiOperation(value = "Create a project", notes = "Create a new project")
     @RequestMapping(value = "/rest/projects",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> create(@RequestBody @Valid ProjectDTO project) {
+    @RESTWrapped(returnStatus = HttpStatus.CREATED)
+    public Object create(@RequestBody Project project) {
         log.debug("REST request to create Project : {}", project);
-        ResponseEntity<?> responseEntity;
-        try {
-            Project newProject = projectService.create(
-                project.getName(),
-                project.getPurpose(),
-                project.getConcrete(),
-                project.getStartDate(),
-                project.getPropertyTags(),
-                project.getResourceRequirements(),
-                project.getLogo() != null ? project.getLogo().getId() : null);
-
-            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
-
-            if(projectLocationDTO != null) {
-                projectLocationService.createProjectLocation(newProject.getId(), projectLocationDTO.getAddress(),
-                    projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
-            }
-
-            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(newProject, null);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-        } catch(IllegalValueException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+        return projectService.create(project);
     }
 
     /**
@@ -147,38 +88,49 @@ public class ProjectController {
      */
     @ApiOperation(value = "Update a project", notes = "Update an existing project")
     @RequestMapping(value = "/rest/projects",
-            method = RequestMethod.PUT,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> update(@RequestBody @Valid ProjectDTO project) {
+    @RESTWrapped
+    public Object update(@RequestBody Project project) {
         log.error("REST request to update Project : {}", project);
-        ResponseEntity<?> responseEntity;
-        try {
-            Project updatedProject = projectService.update(
-                    project.getId(),
-                    project.getName(),
-                    project.getPurpose(),
-                    project.getConcrete(),
-                    project.getStartDate(),
-                    project.getLogo() != null ? project.getLogo().getId() : null,
-                    project.getPropertyTags(),
-                    project.getResourceRequirements());
+        return projectService.update(project);
+    }
 
-            ProjectLocationDTO projectLocationDTO = project.getProjectLocation();
-
-            if(projectLocationDTO != null) {
-                ProjectLocation location = projectLocationService.updateProjectLocation(projectLocationDTO.getProjectId(),
-                    projectLocationDTO.getAddress(), projectLocationDTO.getLatitude(), projectLocationDTO.getLongitude());
-            }
-
-            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(updatedProject, null);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch(IllegalValueException e) {
-            log.error("Could not save Project : {}", project, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e);
-        }
-        return responseEntity;
+    /**
+     * Organization that apply new resource to a project
+     * @param projectApplyDTO data to apply
+     * @return HTTP Status OK: no errors occur, BAD REQUEST: error accures
+     */
+    @ApiOperation(value = "project apply", notes = "Create a project apply (org donate project)")
+    @RolesAllowed(AuthoritiesConstants.USER)
+    @RequestMapping(value = "/rest/projects/apply",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RESTWrapped
+    public Object projectApplyOffer(@RequestBody ProjectApplyDTO projectApplyDTO) {
+        log.debug("REST request to projectApplyOffer with dto: {}", projectApplyDTO);
+        ResourceMatch resourceMatch = resourceService.createProjectApplyOffer(
+            projectApplyDTO.getResourceOfferId(),
+            projectApplyDTO.getResourceRequirementId(),
+            projectApplyDTO.getOrganizationId(),
+            projectApplyDTO.getProjectId()
+        );
+        log.debug("Resource Match: {}", resourceMatch);
+//        try {
+//
+//        } catch (ResourceNotFoundException e) {
+//            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+//            responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }catch (IllegalValueException e){
+//            log.error("Could not save Project apply: {}", projectApplyDTO, e);
+//            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+//        }
+//
+//        return responseEntity;
+        return resourceMatch;
     }
 
     /**
@@ -194,18 +146,10 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<?> changeManager(@PathVariable Long id, @RequestBody Long newManagerId) {
+    @RESTWrapped
+    public Object changeManager(@PathVariable Long id, @RequestBody Long newManagerId) {
         log.debug("REST request to change project manager of project {} to {}", id, newManagerId);
-        ResponseEntity<?> responseEntity;
-        try {
-            Project project = projectService.setManager(id, newManagerId);
-            ProjectResponseDTO responseDTO = ProjectResponseDTO.fromEntity(project, null);
-            responseEntity = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } catch(IllegalValueException e) {
-            log.error("Could not set manager of project {} to {}", id, newManagerId, e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
-        }
-        return responseEntity;
+        return projectService.setManager(id, newManagerId);
     }
 
     /**
@@ -324,29 +268,12 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @PermitAll
-    public ResponseEntity<ProjectResponseDTO> get(
+    @RESTWrapped
+    public Object get(
             @PathVariable Long id,
             @RequestParam(required = false) String fields) {
-        log.debug("REST redkkdkquest to get Project : {}", id);
-        Project project = projectService.findProjectById(id);
-        ResponseEntity<ProjectResponseDTO> response;
-        RestParameters restParameters = new RestParameters(null, null, null, fields);
-        if(project != null) {
-            ProjectResponseDTO responseDTO = ProjectResponseDTO
-                    .fromEntity(project, restParameters.getFields());
-
-            //project location
-            ProjectLocation projectLocation = projectLocationService.getProjectLocation(project.getId());
-            if(projectLocation != null) {
-                ProjectLocationResponseDTO dto = ProjectLocationResponseDTO.fromEntity(projectLocation, null);
-                responseDTO.setProjectLocation(dto);
-            }
-
-            response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
-        } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return response;
+        log.debug("REST request to get Project : {}", id);
+        return projectService.findProjectById(id);
     }
 
     /**
@@ -591,23 +518,6 @@ public class ProjectController {
 
         return responseEntity;
     }
-    /**
-     * Returns all Project Locations
-     * @return ResponseEntity containing a List of ProjectLocationResponse DTOs
-     */
-    @RequestMapping(value = "/rest/locations",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed(AuthoritiesConstants.USER)
-    public ResponseEntity<List<ProjectLocationResponseDTO>> getAllProjectLocations() {
-
-        List<ProjectLocation> projectLocations = projectLocationService.getAllLocations();
-
-        List<ProjectLocationResponseDTO> projectLocationResponseDTOs = ProjectLocationResponseDTO.fromEntities(projectLocations, null);
-
-        return new ResponseEntity<>(projectLocationResponseDTOs, HttpStatus.OK);
-    }
-
 
     /**
      * Return projects which are in a specific radius from the given coordinates
@@ -623,11 +533,13 @@ public class ProjectController {
         @RequestParam(required = true) Float radius) {
         log.debug("REST Request to get near projects: (latitude: " + latitude +" , longitude: " + longitude + "), radius: " + radius );
 
+        //TODO: FIX
+
         ResponseEntity<?> responseEntity = null;
 
         try{
-            List<ProjectLocation> projects = projectLocationService.getNearProjects(latitude, longitude, radius);
-            responseEntity = new ResponseEntity<List<ProjectLocationResponseDTO>>(ProjectLocationResponseDTO.fromEntities(projects, null), HttpStatus.OK);
+            List<Address> projects = new ArrayList<>();
+            responseEntity = new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchEntityException e) {
             log.debug("Can not find project for projectLocation");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);

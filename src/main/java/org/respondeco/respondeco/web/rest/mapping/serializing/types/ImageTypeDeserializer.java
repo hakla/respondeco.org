@@ -1,19 +1,25 @@
-package org.respondeco.respondeco.web.rest.mapping.serializing.fields;
+package org.respondeco.respondeco.web.rest.mapping.serializing.types;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import org.respondeco.respondeco.domain.ISOCategory;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.respondeco.respondeco.domain.Image;
 
 import java.io.IOException;
 
 /**
- * Created by Clemens Puehringer on 17/08/15.
+ * Created by Clemens Puehringer on 18/08/15.
  */
-public class OrganizationLogoDeserializer extends JsonDeserializer<Image> {
+@CustomTypeDeserializer
+public class ImageTypeDeserializer extends StdDeserializer<Image> {
+
+    public ImageTypeDeserializer() {
+        super(Image.class);
+    }
+
     @Override
     public Image deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
         throws IOException, JsonProcessingException {

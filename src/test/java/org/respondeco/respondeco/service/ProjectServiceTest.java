@@ -1,7 +1,6 @@
 package org.respondeco.respondeco.service;
 
 import com.mysema.query.types.Predicate;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +15,10 @@ import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.testutil.domain.DomainModel;
+import org.respondeco.respondeco.testutil.domain.Projects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,14 +44,22 @@ import static org.mockito.Mockito.*;
 @WebAppConfiguration
 public class ProjectServiceTest {
 
+    private static final Logger log = LoggerFactory.getLogger(ProjectServiceTest.class);
+
     @Mock
     private ProjectRepository projectRepositoryMock;
+    @Inject
+    private ProjectRepository projectRepository;
 
     @Mock
     private UserRepository userRepositoryMock;
+    @Inject
+    private UserRepository userRepository;
 
     @Mock
     private OrganizationRepository organizationRepositoryMock;
+    @Inject
+    private OrganizationRepository organizationRepository;
 
     @Mock
     private PropertyTagService propertyTagServiceMock;
@@ -59,37 +71,47 @@ public class ProjectServiceTest {
     private UserService userServiceMock;
 
     @Mock
-    private ResourceService resourceService;
+    private ResourceService resourceServiceMock;
 
     @Mock
-    private ResourceMatchRepository resourceMatchRepository;
+    private ResourceMatchRepository resourceMatchRepositoryMock;
 
     @Mock
-    private PostingFeedRepository postingFeedRepository;
+    private PostingFeedRepository postingFeedRepositoryMock;
 
-    @Mock
-    private ProjectLocationRepository projectLocationRepositoryMock;
-
-    private ProjectService projectService;
+    private ProjectService projectServiceMocked;
+    private ProjectService projectServiceH2;
     private Project basicProject;
     private User defaultUser;
     private User orgOwner;
     private Organization defaultOrganization;
 
+    private DomainModel model;
 
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        projectService = new ProjectService(
-                projectRepositoryMock,
-                userServiceMock,
-                userRepositoryMock,
-                propertyTagServiceMock,
-                resourceService,
-                imageRepositoryMock,
-                resourceMatchRepository,
-                postingFeedRepository,
-                projectLocationRepositoryMock);
+        projectServiceMocked = new ProjectService(
+            projectRepositoryMock,
+            userServiceMock,
+            userRepositoryMock,
+            propertyTagServiceMock,
+            resourceServiceMock,
+            imageRepositoryMock,
+            resourceMatchRepositoryMock,
+            postingFeedRepositoryMock);
+
+        projectServiceH2 = new ProjectService(
+            projectRepository,
+            userServiceMock,
+            userRepository,
+            propertyTagServiceMock,
+            resourceServiceMock,
+            imageRepositoryMock,
+            resourceMatchRepositoryMock,
+            postingFeedRepositoryMock);
+
+        model = new DomainModel();
 
 
         defaultOrganization = new Organization();
@@ -130,17 +152,36 @@ public class ProjectServiceTest {
     @Test
     public void testCreateProject_shouldCreateBasicProject() throws Exception {
 
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
 
-        projectService.create("test project", "test purpose", false, null,  null, null, null);
+        projectServiceMocked.create(model.PROJECT_NEW);
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
 
         // Check if called two times
         // One time to create the project and one time after the requirements have been created
         // A requirement needs a project id. That's why there should be two invocations
-        verify(projectRepositoryMock, times(2)).save(isA(Project.class));
+        verify(projectRepositoryMock, times(1)).save(isA(Project.class));
+    }
+
+    @Test
+    public void testCreateProjectH2_shouldCreateRequirements() throws Exception {
+        model.USER1.setOrganization(null);
+        model.USER1 = userRepository.save(model.USER1);
+        model.ORGANIZATION1.setOwner(model.USER1);
+        model.ORGANIZATION1.setProjects(null);
+        model.ORGANIZATION1 = organizationRepository.save(model.ORGANIZATION1);
+        model.USER1.setOrganization(model.ORGANIZATION1);
+        userRepository.save(model.USER1);
+
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
+        Project saved = projectServiceH2.create(model.PROJECT_NEW_COMPLETE);
+        verify(userServiceMock, times(1)).getUserWithAuthorities();
+
+        assertNotEquals(0, saved.getResourceRequirements().size());
+        assertEquals(
+            model.PROJECT_NEW_COMPLETE.getResourceRequirements().size(), saved.getResourceRequirements().size());
+        log.debug(saved.getResourceRequirements() + "");
     }
 
     @Test
@@ -149,14 +190,14 @@ public class ProjectServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
-        projectService.create(
-                "test project",
-                "test purpose",
-                true,
-                LocalDate.now(),
-                null,
-                null,
-                null);
+//        projectServiceMocked.create(
+//                "test project",
+//                "test purpose",
+//                true,
+//                LocalDate.now(),
+//                null,
+//                null,
+//                null);
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
 
@@ -172,14 +213,14 @@ public class ProjectServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
-        projectService.create(
-                "test project",
-                "test purpose",
-                true,
-                null,
-                null,
-                null,
-                null);
+//        projectServiceMocked.create(
+//                "test project",
+//                "test purpose",
+//                true,
+//                null,
+//                null,
+//                null,
+//                null);
 
     }
 
@@ -189,14 +230,14 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.update(basicProject.getId(),
-            "modified name",
-            "modified name",
-            true,
-            null,
-            null,
-            null,
-            null);
+//        projectServiceMocked.update(basicProject.getId(),
+//            "modified name",
+//            "modified name",
+//            true,
+//            null,
+//            null,
+//            null,
+//            null);
 
     }
 
@@ -206,14 +247,14 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(1L)).thenReturn(null);
 
-        projectService.update(1L,
-                "modified name",
-                "modified name",
-                false,
-                null,
-                null,
-                null,
-                null);
+//        projectServiceMocked.update(1L,
+//                "modified name",
+//                "modified name",
+//                false,
+//                null,
+//                null,
+//                null,
+//                null);
     }
 
     @Test(expected = OperationForbiddenException.class)
@@ -236,14 +277,14 @@ public class ProjectServiceTest {
         modifiedProject.setPurpose("modified name");
         modifiedProject.setConcrete(basicProject.isConcrete());
 
-        projectService.update(basicProject.getId(),
-                "modified name",
-                "modified name",
-                false,
-                null,
-                null,
-                null,
-                null);
+//        projectServiceMocked.update(basicProject.getId(),
+//                "modified name",
+//                "modified name",
+//                false,
+//                null,
+//                null,
+//                null,
+//                null);
     }
 
     @Test
@@ -261,14 +302,14 @@ public class ProjectServiceTest {
         modifiedProject.setPurpose("modified name");
         modifiedProject.setConcrete(basicProject.isConcrete());
 
-        projectService.update(basicProject.getId(),
-                "modified name",
-                "modified name",
-                false,
-                null,
-                null,
-                null,
-                null);
+//        projectServiceMocked.update(basicProject.getId(),
+//                "modified name",
+//                "modified name",
+//                false,
+//                null,
+//                null,
+//                null,
+//                null);
     }
 
     @Test
@@ -283,7 +324,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.setManager(defaultOrganization.getId(), otherUser.getId());
+        projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(basicProject.getId());
@@ -302,7 +343,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.setManager(defaultOrganization.getId(), otherUser.getId());
+        projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
 
     }
 
@@ -317,7 +358,7 @@ public class ProjectServiceTest {
         when(userRepositoryMock.findByIdAndActiveIsTrue(otherUser.getId())).thenReturn(otherUser);
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
 
-        projectService.setManager(defaultOrganization.getId(), otherUser.getId());
+        projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
 
     }
 
@@ -340,7 +381,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.setManager(defaultOrganization.getId(), otherUser.getId());
+        projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
 
     }
 
@@ -361,7 +402,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.setManager(defaultOrganization.getId(), otherUser.getId());
+        projectServiceMocked.setManager(defaultOrganization.getId(), otherUser.getId());
 
     }
 
@@ -371,7 +412,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.delete(basicProject.getId());
+        projectServiceMocked.delete(basicProject.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(basicProject.getId());
@@ -394,7 +435,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.delete(basicProject.getId());
+        projectServiceMocked.delete(basicProject.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(basicProject.getId());
@@ -420,7 +461,7 @@ public class ProjectServiceTest {
         when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(defaultOrganization);
         when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
 
-        projectService.delete(basicProject.getId());
+        projectServiceMocked.delete(basicProject.getId());
 
     }
 
@@ -442,7 +483,7 @@ public class ProjectServiceTest {
         when(projectRepositoryMock.findAll(any(Predicate.class), any(Pageable.class)))
                 .thenReturn(page);
 
-        List<Project> projects = projectService.findProjects(name, null).getContent();
+        List<Project> projects = projectServiceMocked.findProjects(name, null).getContent();
 
         verify(projectRepositoryMock, times(1)).findAll(any(Predicate.class), any(Pageable.class));
     }
@@ -462,7 +503,7 @@ public class ProjectServiceTest {
         when(projectRepositoryMock.findAll(any(Predicate.class), any(Pageable.class)))
             .thenReturn(new PageImpl<Project>(Arrays.asList(basicProject, secondProject)));
 
-        List<Project> projects = projectService
+        List<Project> projects = projectServiceMocked
                 .findProjectsFromOrganization(defaultOrganization.getId(), name, null).getContent();
 
         verify(projectRepositoryMock, times(1))
@@ -474,7 +515,7 @@ public class ProjectServiceTest {
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
-        Boolean testObject = projectService.followingState(basicProject.getId());
+        Boolean testObject = projectServiceMocked.followingState(basicProject.getId());
 
         verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
@@ -487,7 +528,7 @@ public class ProjectServiceTest {
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         doReturn(null).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
-        Boolean testObject = projectService.followingState(basicProject.getId());
+        Boolean testObject = projectServiceMocked.followingState(basicProject.getId());
 
         verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
@@ -509,7 +550,7 @@ public class ProjectServiceTest {
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
-        projectService.follow(basicProject.getId());
+        projectServiceMocked.follow(basicProject.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
@@ -524,7 +565,7 @@ public class ProjectServiceTest {
         // we need here returns null, else we won't be able to add new follower
         doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
-        projectService.follow(basicProject.getId());
+        projectServiceMocked.follow(basicProject.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -539,7 +580,7 @@ public class ProjectServiceTest {
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
-        projectService.follow(basicProject.getId());
+        projectServiceMocked.follow(basicProject.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -555,7 +596,7 @@ public class ProjectServiceTest {
         // this trigger our Exception for Project NULL Value
         doReturn(basicProject).when(projectRepositoryMock).findByIdAndActiveIsTrue(basicProject.getId());
 
-        projectService.follow(basicProject.getId());
+        projectServiceMocked.follow(basicProject.getId());
     }
 
     @Test
@@ -572,7 +613,7 @@ public class ProjectServiceTest {
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
-        projectService.unfollow(basicProject.getId());
+        projectServiceMocked.unfollow(basicProject.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(projectRepositoryMock, times(1)).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
@@ -585,7 +626,7 @@ public class ProjectServiceTest {
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new folldefaultUser.getId(), basicProject.getId());
 
-        projectService.follow(basicProject.getId());
+        projectServiceMocked.follow(basicProject.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -598,7 +639,7 @@ public class ProjectServiceTest {
         // we need here returns null, else we won't be able to add new follower
         doReturn(basicProject).when(projectRepositoryMock).findByUserIdAndProjectId(defaultUser.getId(), basicProject.getId());
 
-        projectService.unfollow(basicProject.getId());
+        projectServiceMocked.unfollow(basicProject.getId());
     }
 
 }

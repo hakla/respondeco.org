@@ -54,21 +54,23 @@ public class ResourceTagService {
      * @param tagNames list of tags
      * @return list of ResourceTags found or created
      */
-    public List<ResourceTag> getOrCreateTags(List<String> tagNames) {
+    public List<ResourceTag> getOrCreateTags(List<ResourceTag> tags) {
         List<ResourceTag> response = new ArrayList<>();
-        if(tagNames == null) {
+        if(tags == null) {
             return response;
         }
-        ResourceTag tag = null;
-        for(String s : tagNames) {
-            tag = resourceTagRepository.findByName(s);
-            if(tag == null) {
-                tag = new ResourceTag();
-                tag.setName(s);
-                tag = resourceTagRepository.save(tag);
+        tags.stream().forEach(
+            tag -> {
+                ResourceTag savedTag = resourceTagRepository.findByName(tag.getName());
+                if(savedTag == null) {
+                    savedTag = new ResourceTag();
+                    savedTag.setName(tag.getName());
+                    savedTag = resourceTagRepository.save(savedTag);
+                }
+                response.add(savedTag);
             }
-            response.add(tag);
-        }
+        );
+
         return response;
     }
 

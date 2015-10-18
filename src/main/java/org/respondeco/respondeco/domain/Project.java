@@ -12,6 +12,7 @@ import org.joda.time.LocalDate;
 import org.respondeco.respondeco.matching.MatchingEntity;
 import org.respondeco.respondeco.matching.MatchingTag;
 import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
+import org.respondeco.respondeco.web.rest.mapping.serializing.fields.TagListDeserializer;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -46,7 +47,6 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @NotNull
     @ManyToOne
     private Organization organization;
 
@@ -61,16 +61,17 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
         inverseJoinColumns = {@JoinColumn(name = "PROPERTYTAG_ID", referencedColumnName = "id")}
     )
     @Lazy(false)
+    @JsonDeserialize(using = TagListDeserializer.class)
     private List<PropertyTag> propertyTags;
 
     @OneToOne
     @JoinColumn(name = "projectLogo_id")
     private Image projectLogo;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL})
     private List<ResourceRequirement> resourceRequirements;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ResourceMatch> resourceMatches;
 
     /**
@@ -79,8 +80,7 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
     @Column(name = "is_successful")
     private Boolean successful;
 
-    @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "postingfeed_id")
     private PostingFeed postingFeed;
 
@@ -91,6 +91,8 @@ public class Project extends AbstractAuditingNamedEntity implements Serializable
         inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")}
     )
     private List<User> FollowingUsers;
+
+    private Address address;
 
     @Override
     public Set<MatchingTag> getTags() {

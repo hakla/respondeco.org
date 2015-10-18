@@ -50,6 +50,7 @@ public class LocaleDateTimeEditor extends PropertyEditorSupport {
      * @param text the text to format
      * @throws IllegalArgumentException
      */
+    @Override
     public void setAsText( String text ) throws IllegalArgumentException {
         if ( allowEmpty && !StringUtils.hasText(text) ) {
             // Treat empty String as null value.

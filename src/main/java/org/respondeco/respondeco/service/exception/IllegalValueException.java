@@ -1,10 +1,13 @@
 package org.respondeco.respondeco.service.exception;
 
+import lombok.Getter;
+
 /**
  * Created by clemens on 29/11/14.
  */
 public class IllegalValueException extends RuntimeException {
 
+    @Getter
     private String internationalizationKey;
 
     public IllegalValueException(String key, String message) {
@@ -22,16 +25,24 @@ public class IllegalValueException extends RuntimeException {
     }
 
     public ExceptionObject getObject() {
-        return new ExceptionObject(getMessage(), getInternationalizationKey());
+        return new ExceptionObject(getInternationalizationKey(), getMessage());
     }
 
-    private static class ExceptionObject {
-        private final String message;
+    public static class ExceptionObject {
         private final String key;
+        private final String message;
 
-        public ExceptionObject(String message, String key) {
-            this.message = message;
+        public ExceptionObject(String key, String message) {
             this.key = key;
+            this.message = message;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 

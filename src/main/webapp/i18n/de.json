@@ -574,6 +574,13 @@
         "donated": "Gespendet",
         "toProject": "Zum Projekt",
         "posted": "postet: ",
+        "error": {
+            "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
+            "alreadyExists": "Du kannst nur eine Organisation besitzen",
+            "alreadyInOrganization": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",
+            "notverified": "Ihre Organisation wurde noch nicht verifiziert!",
+            "nameempty": "Organisationsname darf nicht leer sein"
+        },
         "verify": {
             "verify": "Verifizieren",
             "unverify": "Verfizierung löschen",
@@ -711,7 +718,14 @@
             "isEssential": "Notwendig",
             "tableheader": "Benötigte Ressourcen",
             "name": "Name",
-            "amount": "Menge"
+            "amount": "Menge",
+            "error": {
+                "no_entity": "Eine Resourcenanforderung mit angegebener id konnte nicht gefunden werden",
+                "no_permission": "Sie haben keine Berechtigung um auf diese Resource zuzugreifen",
+                "existing_matches": "Für die Resourcenanforderung bestehen bereits Zuordnungen",
+                "original_amount_modification": "Die Originalmenge kann nachträglich nicht mehr verändert werden",
+                "amount_modification": "Die Menge an benötigten Resourcen kann nicht direkt verändert werden"
+            }
         },
         "offer": {
             "title": "Ressource auswählen",
@@ -727,7 +741,15 @@
             "general": "Ups, es wurde ein unbehandelter Fehler entdeckt. Die aktuelle Operation konnte nicht ausgeführt werden",
             "searcherror": "Die Daten konnten nicht vom Server abgerufen werden!",
             "update.negative": "Sie können die Ressourcen-Anzahl nicht so weit heruntersetzen, da bereits mehr gespendet wurden",
-            "delete.match": "Eine oder mehrere der gelöschten Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden"
+            "delete.match": "Eine oder mehrere der gelöschten Ressourcen-Anforderungen sind bereits mit einem Angebot verknüpft, sie können nicht gelöscht werden",
+            "notagname" : "Kein Name für Ressourcen-Tag definiert",
+            "multipletags" : "Diese Formel kann nur mit einem Tag benützt werden",
+            "offernotfound": "Angebot nicht gefunden",
+            "offer.noorganization": "Zu diesem Angebot wurde keine Organisation gefunden",
+            "norequirement": "Keine Ressourcenanforderung mit dieser Id gefunden",
+            "norequirementproject": "Kein Projekt zu dieser Ressourcenanforderung gefunden",
+            "claimownres": "Eigene Angebote können nicht angenommen werden",
+            "matchexists": "Resourcen bereits gematcht"
         }
     },
     "nearProjects": {
@@ -750,7 +772,12 @@
     "orgJoinRequest": {
         "pending": "Ausstehende Einladungen",
         "accept": "Annehmen",
-        "openInvitations": "Offene Einladungen"
+        "openInvitations": "Offene Einladungen",
+        "error": {
+            "usermismatch": "Benutzer stimmt nicht mit dem von OrgJoinRequest überein",
+            "notowner": "Aktueller Benutzer ist nicht Leiter der Organisation",
+            "pendinginvitation": "Aktueller Benutzer hat eine offene Einladung, der Organisation beizutreten"
+        }
     },
     "posting": {
         "showmore": "Mehr anzeigen",

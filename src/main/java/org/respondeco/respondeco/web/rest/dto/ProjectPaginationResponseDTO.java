@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class ProjectPaginationResponseDTO {
 
-    private List<ProjectResponseDTO> projects;
+//    private List<ProjectResponseDTO> projects;
     private Long totalItems;
 
     /**
@@ -30,7 +30,7 @@ public class ProjectPaginationResponseDTO {
         dto.setTotalItems(page.getTotalElements());
 
         List<Project> projects = page.getContent();
-        dto.setProjects(ProjectResponseDTO.fromEntities(projects, fieldNames));
+//        dto.setProjects(ProjectResponseDTO.fromEntities(projects, fieldNames));
 
         return dto;
     }

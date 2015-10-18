@@ -46,10 +46,10 @@ public class OrgJoinRequestService {
      * @return the successfull created orgjoinrequest
      * @throws NoSuchEntityException is thrown if organization or user doesn't exist
      * @throws OperationForbiddenException is thrown if the user is already invited in the organization
-     * @throws IllegalArgumentException is thrown if the user is not owner of the organization or or he has an open invitation to join the organization
+     * @throws IllegalValueException is thrown if the user is not owner of the organization or or he has an open invitation to join the organization
      */
     public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO)
-        throws NoSuchEntityException, IllegalArgumentException {
+        throws IllegalValueException {
         User currentUser = userService.getUserWithAuthorities();
         User user = userRepository.findByIdAndActiveIsTrue(userDTO.getId());
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationDTO.getId());
@@ -63,13 +63,18 @@ public class OrgJoinRequestService {
             throw new OperationForbiddenException("Organization (id: " + organization.getId() + ") not verified");
         }
         if(!organization.getOwner().equals(currentUser)) {
-            throw new IllegalArgumentException(String.format("Current user %s is not owner of organization", currentUser));
+            throw new IllegalValueException("orgJoinRequest.error.notowner",
+                String.format("Current user %s is not owner of organization", currentUser)
+            );
         }
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByUserAndOrganizationAndActiveIsTrue(user, organization);
 
         if (orgJoinRequest != null) {
-            throw new IllegalArgumentException(String.format("User %s has an open invitation to join organization %s", user, organization));
+            throw new IllegalValueException(
+                "orgJoinRequest.error.pendinginvitation",
+                String.format("User %s has an open invitation to join organization %s", user, organization)
+            );
         }
 
         orgJoinRequest = new OrgJoinRequest();
@@ -154,15 +159,18 @@ public class OrgJoinRequestService {
      */
     public void acceptRequest(Long requestId, User user) throws NoSuchEntityException {
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByIdAndActiveIsTrue(requestId);
-        if(orgJoinRequest==null) {
-            throw new NoSuchEntityException(String.format("OrgJoinRequest does not exist"));
+        if(null == orgJoinRequest) {
+            throw new NoSuchEntityException("OrgJoinRequest does not exist");
         }
         if(!user.equals(orgJoinRequest.getUser())) {
-            throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser()));
+            throw new IllegalValueException(
+                "orgJoinRequest.error.usermismatch",
+                String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser())
+            );
         }
         Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgJoinRequest.getOrganization().getId());
         if(organization == null) {
-            throw new NoSuchEntityException(String.format("Organization does not exist"));
+            throw new NoSuchEntityException("Organization does not exist");
         }
 
         user.setOrganization(organization);
@@ -190,8 +198,11 @@ public class OrgJoinRequestService {
         if(orgJoinRequest==null) {
             throw new NoSuchEntityException(String.format("OrgJoinRequest does not exist"));
         }
-        if(user.equals(orgJoinRequest.getUser())==false) {
-            throw new IllegalArgumentException(String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser()));
+        if(!user.equals(orgJoinRequest.getUser())) {
+            throw new IllegalValueException(
+                "orgJoinRequest.error.usermismatch",
+                String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser())
+            );
         }
         orgJoinRequest.setActive(false);
         orgJoinRequestRepository.save(orgJoinRequest);
@@ -203,7 +214,6 @@ public class OrgJoinRequestService {
      * @param id given id of the orgjoinrequest to be deleted
      * @throws NoSuchEntityException is thrown if the organization doesn't exist
      * @throws OperationForbiddenException is thrown if user is not owner of organization
-     * @throws IllegalArgumentException is thrown if user is not member of organization
      */
     public void delete(Long id) throws NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
@@ -215,7 +225,9 @@ public class OrgJoinRequestService {
             throw new OperationForbiddenException("Current user is not owner of organization");
         }
         if (orgJoinRequest.getOrganization() != currentUser.getOrganization()) {
-            throw new IllegalArgumentException("Current user is not owner of organization");
+            throw new IllegalValueException(
+                "OrgJoinRequest.error.notowner",
+                "Current user is not owner of organization");
         }
         orgJoinRequestRepository.delete(id);
         log.debug("Deleted OrgJoinRequest: {}", id);

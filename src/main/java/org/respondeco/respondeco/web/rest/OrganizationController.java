@@ -60,6 +60,17 @@ public class OrganizationController {
         this.userService = userService;
     }
 
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
+    @RequestMapping(value = "/rest/organizations",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RESTWrapped
+    public Object create(@RequestBody @Valid Organization organization) {
+        log.debug("REST request to update Organization : {}", organization);
+        return organizationService.create(organization);
+    }
+
     /**
      * PUT  /rest/organizations -> Update an organization.
      * <p/>

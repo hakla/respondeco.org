@@ -10,7 +10,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
 import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
-import org.respondeco.respondeco.web.rest.mapping.serializing.fields.OrganizationLogoDeserializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -67,7 +66,6 @@ public class Organization extends AbstractAuditingEntity implements Serializable
 
     @ManyToOne
     @JoinColumn(name = "image_id")
-    @JsonDeserialize(using = OrganizationLogoDeserializer.class)
     private Image logo;
 
     @OneToMany(mappedBy = "organization")
@@ -104,6 +102,8 @@ public class Organization extends AbstractAuditingEntity implements Serializable
         inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "id")}
     )
     private List<User> FollowingUsers;
+
+    private Address address;
 
     public void addMember(User user) {
         members.add(user);

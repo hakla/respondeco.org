@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,6 +22,28 @@ public class TestUtil {
 
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    public static <T> T clone(T entity) {
+        T newEntity = null;
+        try {
+            newEntity = (T) entity.getClass().newInstance();
+            BeanUtils.copyProperties(entity, newEntity);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return newEntity;
+    }
+
+    public static <T> List<T> clone(List<T> entityList) {
+        List<T> cloned = new ArrayList<>();
+        for(T entity : entityList) {
+            cloned.add(clone(entity));
+        }
+        return cloned;
+    }
+
     /**
      * Convert an object to JSON byte array.
      *
