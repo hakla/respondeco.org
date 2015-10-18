@@ -22,3 +22,11 @@ trim_trailing_whitespace = false
 [{package,bower}.json]
 indent_style = space
 indent_size = 2
+
+[*.coffee]
+indent_style = space
+indent_size = 2
+
+[*.styl]
+indent_style = space
+indent_size = 2

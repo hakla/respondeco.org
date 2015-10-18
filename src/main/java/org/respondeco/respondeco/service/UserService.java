@@ -305,7 +305,7 @@ public class UserService {
     public User update(User user) {
         Assert.notNull(user.getId(), "", "Id must not be null when updating organization information");
 
-        if (user.getId() != getUserWithAuthorities().getId()) {
+        if (!user.getId().equals(getUserWithAuthorities().getId())) {
             throw new OperationForbiddenException(errorKey.from("notcurrentuser"), "The current user isn't the same as the one to update");
         }
 
