@@ -29,6 +29,7 @@ import org.thymeleaf.spring4.context.SpringWebContext;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.print.attribute.standard.Media;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -162,6 +163,14 @@ public class AccountController {
     @Timed
     public void update(@RequestBody User newUserData) {
         userService.update(newUserData);
+    }
+
+    @RequestMapping(value = "/rest/account/profilepicture",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @RESTWrapped
+    public Object update(@RequestBody Long imageId) {
+        return userService.updateProfilePicture(imageId);
     }
 
     /**

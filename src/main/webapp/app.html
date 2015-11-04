@@ -12,42 +12,37 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <title>respondeco</title>
-        <!-- unify begin -->
-        <!-- Web Fonts -->
-        <link rel="shortcut" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=cyrillic,latin">
-        <link rel="stylesheet" href="unify/plugins/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="unify/css/style.css">
-        <!-- CSS Header and Footer -->
-        <link rel="stylesheet" href="unify/css/headers/header-default.css">
-        <link rel="stylesheet" href="unify/css/footers/footer-v1.css">
-        <!-- CSS Implementing Plugins -->
-        <link rel="stylesheet" href="unify/plugins/animate.css">
-        <link rel="stylesheet" href="unify/plugins/line-icons/line-icons.css">
-        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
-        <link rel="stylesheet" href="unify/plugins/cube-portfolio/css/cubeportfolio.min.css">
-        <link rel="stylesheet" href="unify/plugins/cube-portfolio/custom/custom-cubeportfolio.css">
-        <!-- CSS Theme -->
-        <link rel="stylesheet" href="unify/css/theme-colors/default.css">
-        <!-- CSS Login -->
-        <link rel="stylesheet" href="unify/css/pages/page_log_reg_v1.css">
-        <!-- unify end -->
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <!-- build:css(.tmp) styles/main.css -->
-        <link href="bower_components/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
-        <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.css">
-        <link rel="stylesheet" href="styles/main.css">
-        <link rel="stylesheet" href="styles/textmessages.css">
+        <!-- build:js scripts/lib.css -->
+        <!-- bower:css -->
+        <link rel="stylesheet" href="/bower_components/angular-ui-select/dist/select.css" />
+        <link rel="stylesheet" href="/bower_components/ng-tags-input/ng-tags-input.min.css" />
+        <link rel="stylesheet" href="/bower_components/angular-xeditable/dist/css/xeditable.css" />
+        <!-- endbower -->
+        <!-- unify:css -->
+        <link rel="stylesheet" href="/unify/app/stylesheets/animate.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/app.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/blocks.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/default.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/footer-v1.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/header-default.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/ie8.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/page_log_reg_v1.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/plugins.css">
+        <link rel="stylesheet" href="/unify/app/stylesheets/style.css">
+        <link rel="stylesheet" href="/unify/app/plugins/line-icons/line-icons.css">
+        <link rel="stylesheet" href="/unify/app/plugins/line-icons/style.css">
+        <link rel="stylesheet" href="/unify/app/plugins/bootstrap/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/unify/app/plugins/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/unify/app/plugins/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="/unify/app/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/unify/app/plugins/cube-portfolio/css/cubeportfolio.css">
+        <link rel="stylesheet" href="/unify/app/plugins/cube-portfolio/custom/custom-cubeportfolio.css">
+        <!-- endinject -->
         <!-- endbuild -->
-        <!-- build:js(.tmp) scripts/lib.js -->
-        <script src="bower_components/modernizr/modernizr.js"></script>
-        <script src="bower_components/jquery/dist/jquery.js"></script>
-        <script src="bower_components/angular/angular.js"></script>
-        <script src="bower_components/angular-route/angular-route.js"></script>
-        <script src="bower_components/angular-resource/angular-resource.js"></script>
-        <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-        <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-        <script src="bower_components/angular-translate/angular-translate.js"></script>
-        <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+        <!-- build:css styles/main.css -->
+        <!-- app:css -->
+        <link rel="stylesheet" href="/stylesheets/app/stylesheets/main.css">
+        <!-- endinject -->
         <!-- endbuild -->
     </head>
 
@@ -58,8 +53,8 @@
         <div class="wrapper">
             <div class="header">
                 <div class="container">
-                    <a class="logo" href="#">
-                        <img src="images/logo-small.png" alt="Logo">
+                    <a class="logo" href="/">
+                        <img src="/images/logo-small.png" alt="Logo">
                     </a>
                     <div class="topbar" ng-switch="authenticated">
                         <ul class="loginbar pull-right">
@@ -202,17 +197,17 @@
                     <div class="container">
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav pull-right">
-                                <li ng-class="{active: view == 'about_us'}">
-                                    <a ng-click="view = 'about_us'"><img class="logo" src="/images/logo.png" alt=""> respondeco.org</a>
+                                <li>
+                                    <a><img class="logo" src="/images/logo.png" alt=""> respondeco.org</a>
                                 </li>
-                                <li ng-class="{active: view == 'projects'}">
-                                    <a ng-click="view = 'projects'"><i class="fa fa-heart"></i> Engagement</a>
+                                <li>
+                                    <a><i class="fa fa-heart"></i> Engagement</a>
                                 </li>
-                                <li ng-class="{active: view == 'news'}">
-                                    <a ng-click="view = 'news'"><i class="fa fa-comments"></i> Neuigkeiten</a>
+                                <li>
+                                    <a><i class="fa fa-comments"></i> Neuigkeiten</a>
                                 </li>
-                                <li ng-class="{active: view == 'news'}">
-                                    <a ng-click="view = 'news'"><i class="fa fa-globe"></i> Kontaktieren</a>
+                                <li>
+                                    <a><i class="fa fa-globe"></i> Kontaktieren</a>
                                 </li>
                             </ul>
                         </div>
@@ -237,77 +232,88 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>-->
-        <!--[if lt IE 9]>
-            <script src="unify/plugins/respond.js"></script>
-            <script src="unify/plugins/html5shiv.js"></script>
-            <script src="unify/plugins/placeholder-IE-fixes.js"></script>
-        <![endif]-->
         <!-- build:js scripts/scripts.js -->
-        <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-        <script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
-        <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-        <script src="scripts/http-auth-interceptor.js"></script>
-        <script src="scripts/truncate.js"></script>
-        <script src="scripts/app.js"></script>
-        <script src="scripts/constants.js"></script>
-        <script src="scripts/controllers.js"></script>
-        <script src="scripts/services.js"></script>
-        <script src="scripts/directives.js"></script>
-        <script src="scripts/filters.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
-        <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
-        <script src="bower_components/angular-file-upload/angular-file-upload.min.js"></script>
-        <script src="scripts/vendor/xdate.js"></script>
-        <script src="bower_components/ui-bootstrap/src/typeahead/typeahead.js"></script>
-        <script src="bower_components/ui-bootstrap/src/position/position.js"></script>
-        <script src="bower_components/ui-bootstrap/src/bindHtml/bindHtml.js"></script>
-        <script src="bower_components/ui-bootstrap/src/datepicker/datepicker.js"></script>
-        <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-        <script src="bower_components/ng-tags-input/ng-tags-input.js"></script>
-        <script src="bower_components/moment/moment.js"></script>
-        <script src="bower_components/angular-moment/angular-moment.js"></script>
-        <script src="bower_components/moment/locale/de.js"></script>
-        <script src="unify/plugins/cube-portfolio/js/jquery.cubeportfolio.min.js"></script>
-        <script src="scripts/resource/router_resource.js"></script>
-        <script src="scripts/resource/controller_resource.js"></script>
-        <script src="scripts/resource/service_resource.js"></script>
-        <script src="scripts/image/service_image.js"></script>
-        <script src="scripts/textmessage/router_textmessage.js"></script>
-        <script src="scripts/textmessage/controller_textmessage.js"></script>
-        <script src="scripts/textmessage/service_textmessage.js"></script>
-        <script src="scripts/organization/router_organization.js"></script>
-        <script src="scripts/organization/controller_organization.js"></script>
-        <script src="scripts/organization/controller_organizations.js"></script>
-        <script src="scripts/organization/controller_organization_edit.js"></script>
-        <script src="scripts/organization/controller_organization_verify.js"></script>
-        <script src="scripts/organization/service_organization.js"></script>
-        <script src="scripts/orgjoinrequest/service_orgjoinrequest.js"></script>
-        <script src="scripts/project/router_project.js"></script>
-        <script src="scripts/project/controller_project.js"></script>
-        <script src="scripts/project/service_project.js"></script>
-        <script src="scripts/project/controller_project_search.js"></script>
-        <script src="scripts/project/controller_project_location.js"></script>
-        <script src="scripts/newsfeed/controller_newsfeed.js"></script>
-        <script src="scripts/newsfeed/router_newsfeed.js"></script>
-        <script src="scripts/socialmedia/controller_socialmedia.js"></script>
-        <script src="scripts/socialmedia/router_socialmedia.js"></script>
-        <script src="scripts/socialmedia/service_socialmedia.js"></script>
-        <script src="scripts/service_names.js"></script>
-        <script src="scripts/service_user.js"></script>
+        <!-- bower:js -->
+        <script src="/bower_components/es5-shim/es5-shim.js"></script>
+        <script src="/bower_components/jquery/dist/jquery.js"></script>
+        <script src="/bower_components/modernizr/modernizr.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
+        <script src="/bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js"></script>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/json3/lib/json3.js"></script>
+        <script src="/bower_components/angular-route/angular-route.js"></script>
+        <script src="/bower_components/angular-resource/angular-resource.js"></script>
+        <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+        <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="/bower_components/angular-translate/angular-translate.js"></script>
+        <script src="/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+        <script src="/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+        <script src="/bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
+        <script src="/bower_components/angular-file-upload/angular-file-upload.js"></script>
+        <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="/bower_components/angular-ui-select/dist/select.js"></script>
+        <script src="/bower_components/ng-tags-input/ng-tags-input.min.js"></script>
+        <script src="/bower_components/xdate/src/xdate.js"></script>
+        <script src="/bower_components/lodash/lodash.js"></script>
+        <script src="/bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
+        <script src="/bower_components/moment/moment.js"></script>
+        <script src="/bower_components/angular-moment/angular-moment.js"></script>
+        <script src="/bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+        <script src="/bower_components/jquery-backstretch/jquery.backstretch.js"></script>
+        <!-- endbower -->
         <script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false&language=en&v=3.17"></script>
-        <script src="bower_components/lodash/lodash.js"></script>
-        <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
+        <!-- lib:js -->
+        <script src="/unify/app/plugins/line-icons/icons-lte-ie7.js"></script>
+        <script src="/unify/app/plugins/bootstrap/js/bootstrap.js"></script>
+        <script src="/unify/app/plugins/cube-portfolio/js/jquery.cubeportfolio.js"></script>
+        <!-- endinject -->
+        <!-- inject:js -->
+        <script src="/javascripts/app/javascripts/app.js"></script>
+        <script src="/javascripts/app/javascripts/textmessage/service_textmessage.js"></script>
+        <script src="/javascripts/app/javascripts/socialmedia/service_socialmedia.js"></script>
+        <script src="/javascripts/app/javascripts/socialmedia/router_socialmedia.js"></script>
+        <script src="/javascripts/app/javascripts/socialmedia/controller_socialmedia.js"></script>
+        <script src="/javascripts/app/javascripts/project/controller_project.js"></script>
+        <script src="/javascripts/app/javascripts/organization/service_organization.js"></script>
+        <script src="/javascripts/app/javascripts/organization/router_organization.js"></script>
+        <script src="/javascripts/app/javascripts/organization/controller_organizations.js"></script>
+        <script src="/javascripts/app/javascripts/organization/controller_organization_edit.js"></script>
+        <script src="/javascripts/app/javascripts/organization/controller_organization.js"></script>
+        <script src="/javascripts/app/javascripts/isocategories/service_isocategories.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_sessions.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_session.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_register.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_password.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_language.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_authenticationshared.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_activate.js"></script>
+        <script src="/javascripts/app/javascripts/application/service_account.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_settings.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_sessions.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_register.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_password.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_menu.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_main.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_logout.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_login.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_language.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_admin.js"></script>
+        <script src="/javascripts/app/javascripts/application/controller_activation.js"></script>
+        <script src="/javascripts/app/javascripts/truncate.js"></script>
+        <script src="/javascripts/app/javascripts/http-auth-interceptor.js"></script>
+        <script src="/javascripts/app/javascripts/filters.js"></script>
+        <script src="/javascripts/app/javascripts/constants.js"></script>
+        <!-- endinject -->
         <!-- endbuild -->
     </body>
 

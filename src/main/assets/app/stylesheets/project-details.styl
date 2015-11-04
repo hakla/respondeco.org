@@ -1,4 +1,4 @@
-$link-color: #72c02c;
+link-color = #72c02c
 
 li a i {
   display: inline-block;
@@ -30,7 +30,7 @@ li a i {
 
 /*Scrollbar*/
 .mCustomScrollbar {
-  height: 320px; 
+  height: 320px;
 }
 
 /*Panel Title Box*/
@@ -231,11 +231,11 @@ li a i {
   display: block;
 }
 
-.profile .table > thead > tr > th, 
-.profile .table > tbody > tr > th, 
-.profile .table > tfoot > tr > th, 
-.profile .table > thead > tr > td, 
-.profile .table > tbody > tr > td, 
+.profile .table > thead > tr > th,
+.profile .table > tbody > tr > th,
+.profile .table > tfoot > tr > th,
+.profile .table > thead > tr > td,
+.profile .table > tbody > tr > td,
 .profile .table > tfoot > tr > td {
   padding: 11px;
 }
@@ -439,23 +439,23 @@ li a i {
 }
 
 .alert-blocks-pending {
-  background: #fffdcc; 
+  background: #fffdcc;
 }
 
 .alert-blocks-success {
-  background: #e1febc; 
+  background: #e1febc;
 }
 
 .alert-blocks-pending {
-  background: #fffdcc; 
+  background: #fffdcc;
 }
 
 .alert-blocks-error {
-  background: #fee0e0; 
+  background: #fee0e0;
 }
 
 .alert-blocks-info {
-  background: #e0f3fe; 
+  background: #e0f3fe;
 }
 
 .alert-blocks.alert-dismissable {
@@ -851,8 +851,8 @@ li a i {
 }
 
 @media (max-width: 768px) {
-  .profile .tab-v1 .nav-tabs { 
-      border-bottom: none;   
+  .profile .tab-v1 .nav-tabs {
+      border-bottom: none;
   }
 }
 
@@ -871,7 +871,7 @@ li a i {
   padding: 0;
   list-style: none;
   position: relative;
-} 
+}
 
 /* The line */
 .timeline-v2 > li{
@@ -946,7 +946,7 @@ li a i {
 }
 */
 
-.timeline-v2 > li .cbp_tmlabel h2 { 
+.timeline-v2 > li .cbp_tmlabel h2 {
   margin-top: 0px;
   font-size: 21px;
   padding: 0 0 5px;
@@ -1028,11 +1028,13 @@ li a i {
     float: right;
     position: relative;
     margin: -55px 5px 0 0px;
-  } 
+  }
 }
 
 
 .headline {
+  border-bottom: 0;
+
   .icon-pencil {
     font-size: 14px;
     color: $link-color;
@@ -1080,37 +1082,62 @@ li a i {
   }
 }
 
-.subheading {
-  color: #999;
+.about-heading {
+  position: relative;
+  margin-top: 20px;
 
-  .rating {
+  h3 {
     display: inline-block;
-    margin-left: 12px;
+  }
+}
 
-    .fa {
-      color: #ffb400;
-      font-size: 16px;
-      display: inline-block;
-      margin-left: -2px;
-      vertical-align: text-bottom;
+.img-responsive.profile-logo {
+  width: 64px;
+  float: left;
+}
+
+.rating {
+  display: inline-block;
+  margin-left: 12px;
+  color: #999;
+  vertical-align: text-bottom;
+
+  // position: absolute;
+  // top: -10px;
+  // right: 0;
+
+  a {
+    display: block;
+    font-size: 16px;
+    margin: 8px 0 -2px;
+  }
+
+  .fa {
+    color: #ffb400;
+    font-size: 16px;
+    display: inline-block;
+    margin-left: -2px;
+    vertical-align: text-bottom;
+  }
+
+  .rating-counter {
+    &::before {
+      content: "(";
+      margin-left: 2px;
     }
 
-    .rating-counter {
-      &::before {
-        content: "(";
-        margin-left: 2px;
-      }
-
-      &::after {
-        content: ")";
-      }
+    &::after {
+      content: ")";
     }
   }
 }
 
+.subheading {
+  color: #999;
+}
+
 /* icon container */
 .icon-container {
-  margin-top: 20px;
   margin-bottom: 40px;
 
   .icon {
@@ -1119,7 +1146,6 @@ li a i {
     color: #666;
     margin: 0;
     width: 120px;
-    margin: 20px 10px;
 
     &:hover {
       .fa-cubes {
@@ -1142,6 +1168,7 @@ li a i {
     .fa {
       color: #999;
       transition: .2s ease color;
+      margin-bottom: 5px;
     }
 
     .fa-1x5 {
@@ -1157,12 +1184,36 @@ li a i {
         color: #666;
       }
     }
+
+    .profile-logo {
+      height: 45px;
+      width: 45px;
+      margin: 0 auto 5px auto;
+    }
   }
 }
 
-.panel.panel-profile {
+.panel.panel-resources {
   clear: left;
   margin-bottom: 20px;
+
+  .button-support {
+    border-bottom: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 10px;
+
+    .btn-u {
+      padding: 10px 0;
+    }
+  }
+}
+
+.row-top {
+  margin-bottom: 75px;
+}
+
+.panel-description {
+  margin-top: 20px;
 }
 
 .angular-google-map {
@@ -1171,4 +1222,27 @@ li a i {
 
 .news-logo {
   max-width: 80px;
+}
+
+.big-image {
+  position: absolute;
+  top: 138px;
+  left: 0px;
+  height: 500px;
+  background-image: url('/images/project/ananas.jpg');
+  background-attachment: fixed;
+  width: 100%;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.profile {
+  margin-top: 500px;
+}
+
+.hero {
+  padding: 20px;
+  background-color: #eaeaea;
+  border: 1px solid #ddd;
+  margin: 20px 0;
 }

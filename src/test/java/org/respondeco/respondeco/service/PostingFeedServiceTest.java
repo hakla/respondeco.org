@@ -154,7 +154,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), new Posting());
 
         verify(postingRepositoryMock, times(1)).save(isA(Posting.class));
     }
@@ -165,7 +165,7 @@ public class PostingFeedServiceTest {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(organizationRepositoryMock.findOne(projectOrganization.getId())).thenReturn(null);
 
-        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting1");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), new Posting());
 
     }
 
@@ -176,7 +176,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), new Posting());
 
     }
 
@@ -186,7 +186,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), new Posting());
 
     }
 
@@ -199,7 +199,7 @@ public class PostingFeedServiceTest {
         when(organizationRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(projectOrganization);
 
-        postingFeedService.createPostingForOrganization(projectOrganization.getId(), "posting2");
+        postingFeedService.createPostingForOrganization(projectOrganization.getId(), new Posting());
 
     }
 

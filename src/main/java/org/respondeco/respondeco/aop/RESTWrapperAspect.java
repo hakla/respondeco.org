@@ -71,7 +71,6 @@ public class RESTWrapperAspect {
 
     @Around("publicMethod() && wrappedMethod() || wrappedClass()")
     public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.debug("current transaction: {}", TransactionAspectSupport.currentTransactionStatus());
         return handleInvocation(new Invocation() {
             private RESTWrapped annotation = ((MethodSignature) joinPoint.getSignature()).getMethod()
                 .getAnnotation(RESTWrapped.class);

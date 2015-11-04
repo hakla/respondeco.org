@@ -543,7 +543,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
         posting.setInformation("posting1");
         posting.setCreatedDate(DateTime.now());
 
-        doReturn(posting).when(postingFeedServiceMock).createPostingForOrganization(any(Long.class), any(String.class));
+        doReturn(posting).when(postingFeedServiceMock).createPostingForOrganization(any(Long.class), any(Posting.class));
 
         restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -553,7 +553,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
 
     @Test
     public void testPostingForOrganization_expectBAD_REQUEST_serviceThrowsPostingFeedException() throws Exception {
-        doThrow(PostingFeedException.class).when(postingFeedServiceMock).createPostingForOrganization(anyLong(), anyString());
+        doThrow(PostingFeedException.class).when(postingFeedServiceMock).createPostingForOrganization(anyLong(), any(Posting.class));
 
         restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -563,7 +563,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
 
     @Test
     public void testPostingForOrganization_expectNOT_FOUND_serviceThrowsNoSuchOrganizationException() throws Exception {
-        doThrow(NoSuchEntityException.class).when(postingFeedServiceMock).createPostingForOrganization(anyLong(), anyString());
+        doThrow(NoSuchEntityException.class).when(postingFeedServiceMock).createPostingForOrganization(anyLong(), any(Posting.class));
 
         restOrganizationMockMvc.perform(post("/app/rest/organizations/{id}/postings", defaultOrganization.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

@@ -287,24 +287,28 @@ angular.module('respondecoApp')
             },
             controller: function($scope) {
                 $scope.canRate = $scope.canRateExpression();
-                $scope.currentRating = 0;
+                $scope.rating = 0;
+                $scope.count = 0;
                 if(!$scope.ratingValue) {
                     if($scope.organization) {
-                        Organization.getAggregatedRating({id: $scope.organization}, function(rating) {
-                           $scope.currentRating = rating.rating;
+                        Organization.getAggregatedRating({id: $scope.organization.id}, function(rating) {
+                           $scope.rating = rating.rating;
+                           $scope.count = rating.count;
                         });
                     } else if($scope.project) {
                         Project.getAggregatedRating({pid: $scope.project}, function(rating) {
-                            $scope.currentRating = rating.rating;
+                            $scope.rating = rating.rating;
+                            $scope.count = rating.count;
                         });
                     }
                 } else {
-                    $scope.currentRating = $scope.ratingValue;
+                    $scope.rating = $scope.ratingValue;
+                    $scope.count = rating.count;
                 }
 
                 $scope.doRate = function() {
                     if($scope.canRate && $scope.onRate) {
-                        $scope.onRate($scope.currentRating);
+                        $scope.onRate($scope.rating);
                     }
                 }
             }

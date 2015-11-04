@@ -6,6 +6,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import org.apache.catalina.security.SecurityUtil;
 import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.Organization;
+import org.respondeco.respondeco.domain.Posting;
 import org.respondeco.respondeco.domain.User;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
@@ -405,8 +406,8 @@ public class OrganizationController {
     @RolesAllowed(AuthoritiesConstants.USER)
     @RESTWrapped
     public Object createPostingForOrganization( @PathVariable Long id,
-                                                @RequestBody String information) {
-        return postingFeedService.createPostingForOrganization(id, information);
+                                                @RequestBody Posting posting) {
+        return postingFeedService.createPostingForOrganization(id, posting);
     }
 
     /**

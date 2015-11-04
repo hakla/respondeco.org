@@ -78,37 +78,42 @@ public class PostingFeedService {
     /**
      * method to add a posting to the postingfeed of the given organization
      * @param organizationId the id of the organization for which the posting should be added
-     * @param information information of the posting
+     * @param posting the posting
      * @return returns the added posting
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException is thrown if organization doesn't exist
      * @throws PostingFeedException is thrown if user is not owner, information of posting is empty or
      * organization doesn't have a postingfeed
      */
-    public Posting createPostingForOrganization(Long organizationId, String information) throws
-        NoSuchEntityException,
-            PostingFeedException {
+    public Posting createPostingForOrganization(Long organizationId, Posting posting) throws NoSuchEntityException, PostingFeedException {
         User currentUser = userService.getUserWithAuthorities();
         Organization organization = organizationRepository.findOne(organizationId);
         if(organization == null) {
             throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, organizationId, Organization.class);
         }
-        if(currentUser.equals(organization.getOwner()) == false) {
+
+        if (currentUser.equals(organization.getOwner()) == false) {
             throw new PostingFeedException(".notowneroforganization", String.format("User is not owner of organization"));
         }
-        if(information.length() == 0) {
-            throw new PostingFeedException(".emptyinformation",String.format("Information must not be empty"));
-        }
-        PostingFeed postingFeed = organization.getPostingFeed();
-        if(postingFeed == null) {
-            throw new PostingFeedException(".nopostingfeed",
-                    String.format("Organization %s does not have a postingfeed", organizationId));
-        }
-        Posting posting = new Posting();
-        posting.setInformation(information);
-        posting.setAuthor(currentUser);
-        posting.setPostingfeed(postingFeed);
 
-        return postingRepository.save(posting);
+        if (posting.getInformation().length() == 0) {
+            throw new PostingFeedException(".emptyinformation", String.format("Information must not be empty"));
+        }
+
+        PostingFeed postingFeed = organization.getPostingFeed();
+
+        if (postingFeed == null) {
+            throw new PostingFeedException(".nopostingfeed", String.format("Organization %s does not have a postingfeed", organizationId));
+        }
+
+        // Create a new posting and apply white-listing
+        Posting update = new Posting();
+
+        update.setTitle(posting.getTitle());
+        update.setInformation(posting.getInformation());
+        update.setAuthor(currentUser);
+        update.setPostingfeed(postingFeed);
+
+        return postingRepository.save(update);
     }
 
     /**

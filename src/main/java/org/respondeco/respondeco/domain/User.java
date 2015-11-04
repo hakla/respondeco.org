@@ -82,6 +82,7 @@ public class User extends AbstractAuditingEntity {
 
     @ManyToOne
     @JoinColumn(name = "imageId")
+    @DefaultReturnValue
     private Image profilePicture;
 
     @JsonIgnore

@@ -37,13 +37,16 @@
                     <h2 class="panel-title heading-sm pull-left"><i class="icon-bulb"></i> Projektidee</h2>
                 </div>
                 <div class="panel-body hover-toggle">
-                    <div class="col-md-12">
-                        <p>Winter purslane courgette pumpkin quandong komatsuna fennel green bean cucumber watercress. Pea sprouts wattle seed rutabaga okra yarrow cress avocado grape.</p>
-                        <p>Cabbage lentil cucumber chickpea sorrel gram garbanzo plantain lotus root bok choy squash cress potato.</p>
+                    <div class="col-md-12" editable-textarea="project.purpose" e-form="editPurpose" e-rows="12" e-cols="50" onaftersave="save()">
+                        <div class="pull-right on-hover link-style" ng-click="editPurpose.$show()" ng-hide="editPurpose.$visible">
+                            <i class="icon-pencil"></i>
+                            <span class="hover-underline">{{'general.edit' | translate}}</span>
+                        </div>
+                        {{ project.purpose || ('project.purpose.description.placeholder' | translate) }}
                     </div>
                 </div>
             </div>
-                        <div class="panel panel-profile panel-description">
+            <div class="panel panel-profile panel-description">
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left"><i class="icon-picture"></i> Projektbilder</h2>
                 </div>

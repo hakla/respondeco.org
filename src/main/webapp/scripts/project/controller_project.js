@@ -335,7 +335,7 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
 
     /**
      * Calculate percentage of already collected resources compared to the needed amout
-     * of resources set in the resourcerequirements. Calculates two values, namely 
+     * of resources set in the resourcerequirements. Calculates two values, namely
      * collected percentage of all resourcerequirements and collected percentage of
      * essential resourcerequirements.
      */
@@ -549,8 +549,8 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     /**
-     * 
-     * @param id - 
+     *
+     * @param id -
      */
     $scope.rateMatch = function(id) {
         if(!$scope.matchRatingPermissions[id]) {
@@ -831,6 +831,13 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
     };
 
     /**
+     * redirect to project creation page
+     */
+    $scope.redirectToNewProject = function() {
+        $location.path('projects/edit/new');
+    };
+
+    /**
      * set expanded to true or false for CSS manipulation
      * @param resource to expand or close
      * @param $event that was fired
@@ -845,12 +852,5 @@ respondecoApp.controller('ProjectController', function($scope, Project, Organiza
                 item.expanded = !item.expanded;
             }
         }
-    };
-
-    /**
-     * redirect to project creation page
-     */
-    $scope.redirectToNewProject = function() {
-        $location.path('projects/edit/new');
     };
 });

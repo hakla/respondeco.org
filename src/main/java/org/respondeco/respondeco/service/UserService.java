@@ -4,6 +4,8 @@ import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.security.SecurityUtils;
+import org.respondeco.respondeco.service.exception.ExceptionUtil;
+import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.service.exception.ServiceException.ErrorPrefix;
@@ -66,6 +68,12 @@ public class UserService {
 
     @Inject
     AuthenticationManager authenticationManager;
+
+    private ExceptionUtil.KeyBuilder errorKey;
+
+    public UserService() {
+        errorKey = new ExceptionUtil.KeyBuilder("user");
+    }
 
     public User activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
@@ -132,23 +140,6 @@ public class UserService {
         userRepository.save(user);
         log.debug("Created User: {}", user);
         return user;
-    }
-
-    public void update(User updatedUser) {
-        User currentUser = getUserWithAuthorities();
-        if(updatedUser.getGender() == null) {
-            currentUser.setGender(Gender.UNSPECIFIED);
-        } else {
-            currentUser.setGender(updatedUser.getGender());
-        }
-        currentUser.setTitle(updatedUser.getTitle());
-        currentUser.setFirstName(updatedUser.getFirstName());
-        currentUser.setLastName(updatedUser.getLastName());
-        currentUser.setEmail(updatedUser.getEmail());
-        currentUser.setDescription(updatedUser.getDescription());
-        currentUser.setProfilePicture(updatedUser.getProfilePicture());
-        userRepository.save(currentUser);
-        log.debug("Changed Information for User: {}", currentUser);
     }
 
     public void delete(User user) {
@@ -315,5 +306,43 @@ public class UserService {
         }
 
         return posts;
+    }
+
+    public User update(User user) {
+        Assert.notNull(user.getId(), "", "Id must not be null when updating user information");
+
+        if (!user.getId().equals(getUserWithAuthorities().getId())) {
+            throw new OperationForbiddenException(errorKey.from("notcurrentuser"), "The current user isn't the same as the one to update");
+        }
+
+        User update = new User();
+        update.setFirstName(user.getFirstName());
+        update.setLastName(user.getLastName());
+        update.setDescription(user.getDescription());
+        update.setTitle(user.getTitle());
+        update.setGender(user.getGender());
+        update.setEmail(user.getEmail());
+
+        log.debug("Updating user {}\nNew values: {}", user, update);
+        return userRepository.save(update);
+    }
+
+    public User updateProfilePicture(Long imageId) {
+        User user = getUserWithAuthorities();
+
+        if (user == null) {
+            throw new OperationForbiddenException(errorKey.from("notsignedin"), "No user is signed in");
+        }
+
+        Image profilePicture = user.getProfilePicture();
+
+        if (profilePicture != null) {
+            imageRepository.delete(profilePicture);
+        }
+
+        user.setProfilePicture(imageRepository.findOne(imageId));
+
+        log.debug("Set profile picture for user {} to: {}", user, imageId);
+        return user;
     }
 }

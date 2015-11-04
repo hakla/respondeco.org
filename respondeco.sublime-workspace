@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"updateSingle",
+				"updateSinglePageInline"
+			],
+			[
+				"intercepto",
+				"interceptor"
+			],
+			[
 				"Be",
 				"Beratungsangebote"
 			],
@@ -172,84 +180,18 @@
 	"buffers":
 	[
 		{
+			"file": "src/main/webapp/scripts/isocategories/service_isocategories.coffee",
+			"settings":
+			{
+				"buffer_size": 144,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "src/main/webapp/scripts/organization/controller_organization.coffee",
 			"settings":
 			{
-				"buffer_size": 9640,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/scripts/organization/controller_organization_edit.coffee",
-			"settings":
-			{
-				"buffer_size": 4901,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/template/organization/about_us.html",
-			"settings":
-			{
-				"buffer_size": 6479,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/image/setup.sql",
-			"settings":
-			{
-				"buffer_size": 747,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "Package Control Messages\n========================\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n\n\nPackage Control:\n---------------\n\n  Version 3.0 Release Notes\n  \n  \n  **** Windows Sublime Text 3 Users ****\n  \n  Due to a bug in Package Control 2.0, Windows ST3 users will need to open the\n  Sublime Text console (ctrl+`) and execute the following Python to properly\n  upgrade. All other users may ignore this part of the message.\n  \n  Make sure NOT to copy the leading two spaces, or an \"unexpected indent\" error\n  will occur.\n  \n  import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')\n  \n  ********\n  \n  \n  Package Control 3.0 adds a bunch of polish, improving the Sublime Text\n  experience for users and package developers:\n  \n   - improved upgrades of themes, color schemes and syntaxes\n   - dependency support\n   - SSL for Linux\n   - new secondary Windows HTTP backend\n   - patches for Python in Sublime Text 2 on Windows\n   - commands to easily remove channels and repositories\n   - an events API for packages\n   - improved documentation\n  \n  \n  As of July 2014, I now work for myself. This has allowed me to spend more time\n  working on open source software, including Package Control. If you appreciate\n  the work I've done, please consider a small donation. If even 5% of regular\n  users donated the price of a coffee or beer, that would cover quite a bit of\n  my development time! See https://packagecontrol.io/about for options.\n  \n  \n  Some recent Package Control stats:\n  \n   - every weekday over 1M JSON requests hit the channel server\n   - in December, the channel server will transmit 4TB+ of compressed JSON\n   - users have installed, upgraded or removed 85M+ packages since late 2011\n  \n  \n  Read more about the release at:\n  \n  https://packagecontrol.io/news#2014-12-23-Package_Control_30_Released\n  \n",
-			"settings":
-			{
-				"buffer_size": 12019,
-				"line_ending": "Windows",
-				"name": "Package Control Messages",
-				"scratch": true
-			}
-		},
-		{
-			"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/5_layouts/clean-blog/master.json",
-			"settings":
-			{
-				"buffer_size": 484,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "{\n    \"xs\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }],\n    \"sm\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }],\n    \"md\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }],\n    \"lg\": [{\n        \"id\": \"3C1B\",\n        \"row\": 0,\n        \"size\": 12,\n        \"offset\": 0,\n        \"parts\": [{\n            \"id\": \"6931\",\n            \"row\": 0,\n            \"size\": 12,\n            \"offset\": 0,\n            \"type\": \"H1\"\n        }, {\n            \"id\": \"9FCA\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"text\"\n        }, {\n            \"id\": \"5045\",\n            \"row\": 1,\n            \"size\": 6,\n            \"offset\": 0,\n            \"type\": \"image\"\n        }],\n        \"wrapper\": null\n    }]\n}\n",
-			"settings":
-			{
-				"buffer_size": 2215,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Klaus/Dropbox/Wichtig/EPU/t5-agile-anforderungen.md",
-			"settings":
-			{
-				"buffer_size": 1145,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/insert.sql",
-			"settings":
-			{
-				"buffer_size": 62954,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "src/main/webapp/template/organization/prices.html",
-			"settings":
-			{
-				"buffer_size": 4179,
+				"buffer_size": 8776,
 				"line_ending": "Unix"
 			}
 		},
@@ -257,15 +199,7 @@
 			"file": "src/main/webapp/template/organization/projects.html",
 			"settings":
 			{
-				"buffer_size": 518,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/template/organization/members.html",
-			"settings":
-			{
-				"buffer_size": 859,
+				"buffer_size": 5780,
 				"line_ending": "Unix"
 			}
 		},
@@ -273,7 +207,7 @@
 			"file": "src/main/webapp/template/organization/news.html",
 			"settings":
 			{
-				"buffer_size": 605,
+				"buffer_size": 6705,
 				"line_ending": "Unix"
 			}
 		},
@@ -281,49 +215,47 @@
 			"file": "src/main/scss/organization.scss",
 			"settings":
 			{
-				"buffer_size": 16633,
+				"buffer_size": 18587,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/main/webapp/views/organization.html",
+			"file": "src/main/webapp/i18n/de.json",
 			"settings":
 			{
-				"buffer_size": 1981,
+				"buffer_size": 39352,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/main/resources/config/liquibase/master.xml",
+			"file": "src/main/webapp/template/organization/about_us.html",
 			"settings":
 			{
-				"buffer_size": 5014,
+				"buffer_size": 3085,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/main/webapp/index.html",
+			"file": "src/main/webapp/scripts/filters.coffee",
 			"settings":
 			{
-				"buffer_size": 35825,
+				"buffer_size": 1231,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "Searching 156 files for \"Was wir tun\"\n\nC:\\Users\\Klaus\\projects\\respondeco.org\\src\\main\\webapp\\template\\organization\\about_us.html:\n   64              <div class=\"panel panel-profile\">\n   65                  <div class=\"panel-heading overflow-h\">\n   66:                     <h2 class=\"panel-title heading-sm pull-left\"><i class=\"icon-info\"></i> Was wir tun</h2>\n   67                  </div>\n   68                  <div class=\"panel-body hover-toggle\" editable-textarea=\"organization.description\" e-form=\"editDescription\" e-rows=\"12\" e-cols=\"50\" onaftersave=\"save()\">\n\n1 match in 1 file\n",
+			"file": "src/main/webapp/scripts/directives.js",
 			"settings":
 			{
-				"buffer_size": 586,
-				"line_ending": "Windows",
-				"name": "Find Results",
-				"scratch": true
+				"buffer_size": 15314,
+				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/main/webapp/template/organization/summary.html",
+			"file": "src/main/scss/main.scss",
 			"settings":
 			{
-				"buffer_size": 1525,
+				"buffer_size": 12184,
 				"line_ending": "Unix"
 			}
 		}
@@ -335,10 +267,18 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 337.0,
-		"last_filter": "json",
+		"height": 400.0,
+		"last_filter": "close",
 		"selected_items":
 		[
+			[
+				"close",
+				"File: Close All"
+			],
+			[
+				"closeall",
+				"File: Close All"
+			],
 			[
 				"json",
 				"Set Syntax: JSON"
@@ -620,7 +560,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 528.0
+		"width": 544.0
 	},
 	"console":
 	{
@@ -641,10 +581,88 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Klaus/projects/respondeco.org"
+		"/C/Users/Klaus/projects/respondeco.org",
+		"/C/Users/Klaus/projects/respondeco.org/src",
+		"/C/Users/Klaus/projects/respondeco.org/src/main",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/textmessage"
 	],
 	"file_history":
 	[
+		"/C/Users/Klaus/projects/respondeco.org/src/main/scss/project-details.scss",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/services.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/about_us.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/organization/service_organization.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/directives.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/rating.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/views/organization.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/scss/organization.scss",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/organization/controller_organization.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/isocategories/service_isocategories.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/project/about.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/projects.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/index.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/scss/main.scss",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/one-page/js/custom.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/views/projects_details.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/filters.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/http-auth-interceptor.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/textmessage/service_textmessage.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/controllers.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/services.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/app.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/isocategories",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/assets/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/one-page/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/one-page/js/one.app.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/js/app.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/app.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/controllers.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/textmessage/service_textmessage.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/project/contact.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/project/news.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/project/resources.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/css/style.css",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/unify/css/app.css",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/news.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/styles/project-details.css",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/ajax/cube-portfolio/team5.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/contact.html",
+		"/C/Users/Klaus/projects/respondeco.org/Unify-v1.8/HTML/page_contact1.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/bower_components/swagger-ui/src/test/swagger-ui-spec.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/Unify-v1.8/HTML/assets/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/views/projectsnearyou.html",
+		"/C/Users/Klaus/projects/respondeco.org/bower.json",
+		"/C/Users/Klaus/projects/respondeco.org/Unify-v1.8/HTML/assets/plugins/gmap/gmap.js",
+		"/C/Users/Klaus/projects/respondeco.org/Unify-v1.8/HTML/assets/js/pages/page_contacts.js",
+		"/C/Users/Klaus/projects/respondeco.org/Unify-v1.8/HTML/assets/js/forms/contact.js",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/ajax/cube-portfolio/team4.html",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/ajax/cube-portfolio/team1.html",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/ajax/cube-portfolio/team2.html",
+		"/C/Users/Klaus/projects/respondeco.org/Unify-v1.8/Changelog.txt",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/bower_components/font-awesome/css/font-awesome.min.css",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/bower_components/font-awesome/css/font-awesome.css",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/scripts/organization/controller_organization_edit.coffee",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/page_about_our_team1.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/views/activate.html",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/insert.sql",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/prices.html",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/shortcode_timeline2.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/resources/config/liquibase/master.xml",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/summary.html",
+		"/C/Users/Klaus/projects/respondeco.org/src/main/webapp/template/organization/members.html",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/js/app.js",
+		"/C/Users/Klaus/projects/respondeco.org/unify-1.7/Unify-v1.7/HTML/assets/js/custom.js",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/Impressum/setup.sql",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/backgroundImage/setup.sql",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/logo/setup.sql",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/Newsletteranmeldung/setup.sql",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/image/setup.sql",
+		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/5_layouts/clean-blog/master.json",
+		"/C/Users/Klaus/Dropbox/Wichtig/EPU/t5-agile-anforderungen.md",
 		"/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/update_dev4_kh.sql",
 		"/C/ProgramData/Ableton/Live 9 Suite/Program/Installation.cfg",
 		"/E/Temp/Ableton/Ableton.Live.Suite.v9.1.1.WiN64-IO/io.nfo",
@@ -699,80 +717,7 @@
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/custom.css",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/index.html",
 		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/application-sql.yml",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/master.xml",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/onepage.html",
-		"/Users/klaus.harrer/Documents/test.html",
-		"/Users/klaus.harrer/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/one.style.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/css/custom.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/jquery/src/css/curCSS.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/template/project.html",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/documentation/css/reset.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/documentation/index.html",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.min.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/cubeportfolio/custom/custom-cubeportfolio.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/cubeportfolio/css/cubeportfolio.min.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/cubeportfolio/css/cubeportfolio.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-0.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-10.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-2.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-3.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-4.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-carousel.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-cols.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-lightbox.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/modernizr/feature-detects/css-userselect.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/revolution-slider.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/forms/review.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/views/resources.html",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/.jsbeautifyrc",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/documentation/css/prettify.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/java/org/respondeco/respondeco/service/exception/ProjectRatingException.java",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-scenario/jstd-scenario-adapter.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/jquery/dist/jquery.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/service_project.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/services.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/controller_project.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/project/controller_project_location.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/controller_organization_edit.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/organization/service_organization.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/custom.js",
-		"/Users/klaus.harrer/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/.tmp/styles/main.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/gmap/gmap.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/css/app.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_en-pg.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/modernizr.custom.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-4-fw-tx.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/css/app.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/application-prod.yml",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/scrollbar/css/jquery.mCustomScrollbar.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_pl-pl.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/angular-i18n/angular-locale_pt-pt.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/ui-bootstrap/misc/demo/assets/app.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/i18n/de.json",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/templates/file-upload.html",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/java/org/respondeco/respondeco/web/rest/UserController.java",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/scripts/resource/controller_resource.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/unify/one-page/plugins/cube-portfolio/documentation/js/main.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/font-awesome/css/font-awesome.css",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/webapp/bower_components/moment/locale/fo.js",
-		"/Users/klaus.harrer/projects/prv/respondeco.org/bower.json",
-		"/Users/klaus.harrer/car2go/index.html",
-		"/Users/klaus.harrer/car2go/6.json",
-		"/Users/klaus.harrer/car2go/7.json",
-		"/Users/klaus.harrer/car2go/8.json",
-		"/Users/klaus.harrer/car2go/9.json",
-		"/Users/klaus.harrer/car2go/10.json",
-		"/Users/klaus.harrer/car2go/11.json",
-		"/Users/klaus.harrer/car2go/12.json",
-		"/Users/klaus.harrer/car2go/5.json",
-		"/Users/klaus.harrer/car2go/4.json",
-		"/Users/klaus.harrer/car2go/3.json",
-		"/Users/klaus.harrer/projects/prv/respondeco/src/main/webapp/fonts/glyphicons-halflings-regular.svg",
-		"/Users/klaus.harrer/projects/prv/respondeco/Gruntfile.js"
+		"/Users/klaus.harrer/projects/prv/respondeco.org/src/main/resources/config/liquibase/master.xml"
 	],
 	"find":
 	{
@@ -783,6 +728,11 @@
 		"height": 90.0,
 		"where_history":
 		[
+			"",
+			"*html",
+			"*js",
+			"*css",
+			"*coffee",
 			"*html",
 			"*xml",
 			"",
@@ -807,6 +757,86 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"img ",
+			"user",
+			"AuthenticationSh",
+			"uploaded-image",
+			"posting",
+			"editName",
+			"editDescription",
+			"organisation beschreiben",
+			"countRatings",
+			"$scope.",
+			".title",
+			"title",
+			"project",
+			"<script src=\"/unify/js/plugins/cube-portfolio/cube-portfolio-lightbox.js\"></script>",
+			"member",
+			"cols: 8",
+			"App.cube",
+			"App = ",
+			"App",
+			"cubeportfolio",
+			"cubepor",
+			"cube",
+			"editDescription",
+			"organization",
+			"$scope.update",
+			"currentRating",
+			" fa-star",
+			"rating",
+			"= (",
+			":",
+			"countNew",
+			"countNewMessage",
+			"unread",
+			"Clemens",
+			"panel-profile",
+			"panel-body",
+			"div",
+			"a",
+			"xs",
+			"height: 50px",
+			"profile-logo",
+			"h2",
+			"logo",
+			"content",
+			"<h2 class=\"panel-title heading-sm pull-left\">",
+			"row",
+			"col-md-9",
+			"pull-right",
+			"headline",
+			"col-xs-4 col-sm-2 col-md-2",
+			"col-md-2",
+			"col-md",
+			"headline",
+			".headline",
+			"sky-space",
+			"our contacts",
+			"i",
+			"fa-",
+			"panel-body",
+			"p>",
+			"&",
+			".headline",
+			"f7f7f7",
+			"div",
+			"body",
+			"heading",
+			"was wir tun",
+			"col",
+			"assets/img/team/img8-md",
+			".cbp-l-caption-title",
+			"md-margin",
+			"col-md-3",
+			"timeline",
+			"cube",
+			"cube-portfolio",
+			"col--",
+			"title",
+			"redirect",
+			"activat",
+			"register",
 			"qp",
 			"p",
 			"Was wir tun",
@@ -854,87 +884,7 @@
 			"portfolio.",
 			".cubeportfolio(",
 			"cube",
-			"#grid-container",
-			"uploaded-image",
-			"image",
-			"']);",
-			"BSc,",
-			"1120",
-			",",
-			"<script",
-			"show",
-			"app",
-			"app/rest/resourceoffers",
-			"resourceOffers",
-			"projectApply",
-			"target",
-			"$($event.target)",
-			"resource",
-			"tooltip",
-			"h3",
-			"h1",
-			"h4",
-			"modalInstance",
-			"newresourceform",
-			"account",
-			"table",
-			"recurrent",
-			"rating",
-			"div",
-			"h2",
-			"sub",
-			"div",
-			"sup",
-			"div",
-			"\"resource\":",
-			"\"resource\"",
-			"xs",
-			"User",
-			"get",
-			"orgjoin",
-			"menu.",
-			"\"organization\":",
-			".get",
-			"images",
-			"nav",
-			"main\"",
-			"/img",
-			"nav",
-			"img/",
-			"MainController",
-			".otherwise(",
-			".when(",
-			"when(",
-			".when({",
-			"main.html",
-			"font",
-			"scripts",
-			"$scope.organization = ",
-			"npo",
-			"isNpo",
-			"isnpo",
-			"promise",
-			".then",
-			"location",
-			"delete",
-			"user",
-			"event",
-			"owner",
-			"event:auth-notAuthorized",
-			"x",
-			"open invitations",
-			"h2",
-			"h4",
-			"h2",
-			"div",
-			"settings",
-			"'User'",
-			"User",
-			"server",
-			"routeProvider",
-			"Organisation",
-			"h2",
-			"tr"
+			"#grid-container"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -957,24 +907,24 @@
 	"groups":
 	[
 		{
-			"selected": 7,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/main/webapp/scripts/organization/controller_organization.coffee",
+					"file": "src/main/webapp/scripts/isocategories/service_isocategories.coffee",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9640,
+						"buffer_size": 144,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								144,
+								144
 							]
 						],
 						"settings":
@@ -1089,7 +1039,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 107.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 9,
@@ -1097,55 +1047,158 @@
 				},
 				{
 					"buffer": 1,
-					"file": "src/main/webapp/scripts/organization/controller_organization_edit.coffee",
+					"file": "src/main/webapp/scripts/organization/controller_organization.coffee",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4901,
+						"buffer_size": 8776,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								444,
+								444
 							]
 						],
 						"settings":
 						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
 							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1305.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 18,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "src/main/webapp/template/organization/about_us.html",
+					"file": "src/main/webapp/template/organization/projects.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6479,
+						"buffer_size": 5780,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4311,
-								4311
+								4557,
+								4516
 							]
 						],
 						"settings":
 						{
-							"auto_complete": false,
 							"codeintel": true,
 							"codeintel_config":
 							{
@@ -1256,54 +1309,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 443.0,
+						"translation.y": 546.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/1_source/plugins/qPage/image/setup.sql",
+					"file": "src/main/webapp/template/organization/news.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 747,
+						"buffer_size": 6705,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/SQL/SQL.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12019,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								12019,
-								12019
+								664,
+								664
 							]
 						],
 						"settings":
@@ -1411,39 +1437,445 @@
 								"Python Django": "Python"
 							},
 							"codeintel_tooltips": "popup",
-							"encoding_helper_encoding": "",
+							"encoding_helper_encoding": "UTF-8",
 							"sublime_auto_complete": true,
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"word_wrap": true
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/5_layouts/clean-blog/master.json",
+					"buffer": 4,
+					"file": "src/main/scss/organization.scss",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 484,
+						"buffer_size": 18587,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								482,
-								482
+								9197,
+								9197
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/SCSS/SCSS.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 7658.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/main/webapp/i18n/de.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 39352,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								32680,
+								32680
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 10114.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/main/webapp/template/organization/about_us.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3085,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2480,
+								2595
 							]
 						],
 						"settings":
 						{
 							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/main/webapp/scripts/filters.coffee",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1231,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								788,
+								788
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"encoding_helper_encoding": "UTF-8",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/Better CoffeeScript/CoffeeScript.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -1455,1050 +1887,169 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 8,
+					"file": "src/main/webapp/scripts/directives.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2215,
+						"buffer_size": 15314,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1404,
-								1404
+								6087,
+								6114
 							]
 						],
 						"settings":
 						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"encoding_helper_encoding": "",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 252.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "/C/Users/Klaus/Dropbox/Wichtig/EPU/t5-agile-anforderungen.md",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1145,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								796,
-								796
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/Markdown/Markdown.tmLanguage",
-							"tab_size": 2,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1610.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "/C/Users/Klaus/xampp/htdocs/epupoint_workingFeature/2_database/insert.sql",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 62954,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"encoding_helper_encoding": "UTF-8",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/SQL/SQL.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 7828.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 9,
-					"file": "src/main/webapp/template/organization/prices.html",
+					"file": "src/main/scss/main.scss",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4179,
+						"buffer_size": 12184,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4171,
-								4171
+								4517,
+								4517
 							]
 						],
 						"settings":
 						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 11,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "src/main/webapp/template/organization/projects.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 518,
-						"regions":
-						{
-						},
-						"selection":
-						[
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
 							[
-								26,
-								26
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "src/main/webapp/template/organization/members.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 859,
-						"regions":
-						{
-						},
-						"selection":
-						[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
 							[
-								859,
-								859
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "src/main/webapp/template/organization/news.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 605,
-						"regions":
-						{
-						},
-						"selection":
-						[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
 							[
-								361,
-								361
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
 							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 13,
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"file": "src/main/scss/organization.scss",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 16633,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"encoding_helper_encoding": "UTF-8",
-							"open_with_edit": true,
+							"sublime_auto_complete": true,
 							"syntax": "Packages/SCSS/SCSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 14487.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 16,
-					"type": "text"
-				},
-				{
-					"buffer": 14,
-					"file": "src/main/webapp/views/organization.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1981,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 3472.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
-					"type": "text"
-				},
-				{
-					"buffer": 15,
-					"file": "src/main/resources/config/liquibase/master.xml",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5014,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"encoding_helper_encoding": "UTF-8",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/XML/XML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 166.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 17,
-					"type": "text"
-				},
-				{
-					"buffer": 16,
-					"file": "src/main/webapp/index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 35825,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								30458,
-								30458
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"encoding_helper_encoding": "UTF-8",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 6038.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 17,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 586,
-						"regions":
-						{
-							"match":
-							{
-								"flags": 112,
-								"regions":
-								[
-									[
-										344,
-										355
-									]
-								],
-								"scope": ""
-							}
-						},
-						"selection":
-						[
-							[
-								349,
-								349
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"detect_indentation": false,
-							"encoding_helper_encoding": "",
-							"line_numbers": false,
-							"output_tag": 1,
-							"result_base_dir": "",
-							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
-							"result_line_regex": "^ +([0-9]+):",
-							"scroll_past_end": true,
-							"sublime_auto_complete": true,
-							"syntax": "Packages/Default/Find Results.hidden-tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 18,
-					"file": "src/main/webapp/template/organization/summary.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1525,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"encoding_helper_encoding": "UTF-8",
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 14,
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -2506,7 +2057,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 22.0
+		"height": 38.0
 	},
 	"input":
 	{
@@ -2557,12 +2108,328 @@
 		"selected_items":
 		[
 			[
+				"proscss",
+				"src\\main\\scss\\project-details.scss"
+			],
+			[
+				"orscss",
+				"src\\main\\scss\\organization.scss"
+			],
+			[
+				"services.c",
+				"src\\main\\webapp\\scripts\\services.coffee"
+			],
+			[
+				"main.scs",
+				"src\\main\\scss\\main.scss"
+			],
+			[
+				"de.json",
+				"src\\main\\webapp\\i18n\\de.json"
+			],
+			[
+				"controlor",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"about_us",
+				"src\\main\\webapp\\template\\organization\\about_us.html"
+			],
+			[
+				"dire",
+				"src\\main\\webapp\\scripts\\directives.js"
+			],
+			[
+				"filterco",
+				"src\\main\\webapp\\scripts\\filters.coffee"
+			],
+			[
+				"news.html",
+				"src\\main\\webapp\\template\\organization\\news.html"
+			],
+			[
+				"projects.html",
+				"src\\main\\webapp\\template\\organization\\projects.html"
+			],
+			[
+				"main.scss",
+				"src\\main\\scss\\main.scss"
+			],
+			[
+				"controlleror",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"servicecoffee",
+				"src\\main\\webapp\\scripts\\organization\\service_organization.coffee"
+			],
+			[
+				"serviceiso",
+				"src\\main\\webapp\\scripts\\isocategories\\service_isocategories.coffee"
+			],
+			[
+				"directives.js",
+				"src\\main\\webapp\\scripts\\directives.js"
+			],
+			[
+				"rating.html",
+				"src\\main\\webapp\\template\\rating.html"
+			],
+			[
+				"aboutus",
+				"src\\main\\webapp\\template\\organization\\about_us.html"
+			],
+			[
+				"organization.html",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"app.html",
+				"src\\main\\webapp\\app.html"
+			],
+			[
 				"index.html",
 				"src\\main\\webapp\\index.html"
 			],
 			[
-				"projects.html",
-				"src/main/webapp/template/organization/projects.html"
+				"lightbox",
+				"src\\main\\webapp\\unify\\js\\plugins\\cube-portfolio\\cube-portfolio-lightbox.js"
+			],
+			[
+				"about_us.html",
+				"src\\main\\webapp\\template\\organization\\about_us.html"
+			],
+			[
+				"cube-pligh",
+				"src\\main\\webapp\\assets\\js\\plugins\\cube-portfolio\\cube-portfolio-lightbox.js"
+			],
+			[
+				"one.app",
+				"src\\main\\webapp\\unify\\one-page\\js\\one.app.js"
+			],
+			[
+				"app.js",
+				"src\\main\\webapp\\unify\\js\\app.js"
+			],
+			[
+				"custom.js",
+				"src\\main\\webapp\\unify\\one-page\\js\\custom.js"
+			],
+			[
+				"indexhtml",
+				"src\\main\\webapp\\index.html"
+			],
+			[
+				"projedetailshtml",
+				"src\\main\\webapp\\views\\projects_details.html"
+			],
+			[
+				"projec",
+				"src\\main\\webapp\\template\\organization\\projects.html"
+			],
+			[
+				"about.html",
+				"src\\main\\webapp\\template\\project\\about.html"
+			],
+			[
+				"filterc",
+				"src\\main\\webapp\\scripts\\filters.coffee"
+			],
+			[
+				"dirc",
+				"src\\main\\webapp\\scripts\\directives.js"
+			],
+			[
+				"httpautth",
+				"src\\main\\webapp\\scripts\\http-auth-interceptor.js"
+			],
+			[
+				"contorg",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"services.",
+				"src\\main\\webapp\\scripts\\services.js"
+			],
+			[
+				"controllers",
+				"src\\main\\webapp\\scripts\\controllers.coffee"
+			],
+			[
+				"controller_org",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"orghtml",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"contact.html",
+				"src\\main\\webapp\\template\\project\\contact.html"
+			],
+			[
+				"projdetailshtml",
+				"src\\main\\webapp\\views\\projects_details.html"
+			],
+			[
+				"projecscss",
+				"src\\main\\scss\\project-details.scss"
+			],
+			[
+				"style.css",
+				"src\\main\\webapp\\unify\\css\\style.css"
+			],
+			[
+				"appcss",
+				"src\\main\\webapp\\unify\\css\\app.css"
+			],
+			[
+				"index",
+				"src\\main\\webapp\\index.html"
+			],
+			[
+				"conorg",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"controllers.c",
+				"src\\main\\webapp\\scripts\\controllers.coffee"
+			],
+			[
+				"orgn",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"projdetails",
+				"src\\main\\webapp\\views\\projects_details.html"
+			],
+			[
+				"",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"orgscss",
+				"src\\main\\scss\\organization.scss"
+			],
+			[
+				"app.css",
+				"src\\main\\webapp\\unify\\css\\app.css"
+			],
+			[
+				"main",
+				"src\\main\\scss\\main.scss"
+			],
+			[
+				"project.html",
+				"src\\main\\webapp\\views\\projects_details.html"
+			],
+			[
+				"aboutsus",
+				"src\\main\\webapp\\bower_components\\swagger-ui\\src\\test\\swagger-ui-spec.coffee"
+			],
+			[
+				"cube-porlightbox",
+				"src\\main\\webapp\\unify\\js\\plugins\\cube-portfolio\\cube-portfolio-lightbox.js"
+			],
+			[
+				"cuporligh",
+				"Unify-v1.8\\HTML\\assets\\js\\plugins\\cube-portfolio\\cube-portfolio-lightbox.js"
+			],
+			[
+				"nes.html",
+				"src\\main\\webapp\\template\\organization\\news.html"
+			],
+			[
+				"bower.json",
+				"bower.json"
+			],
+			[
+				"near.html",
+				"src\\main\\webapp\\views\\projectsnearyou.html"
+			],
+			[
+				"contact",
+				"src\\main\\webapp\\template\\organization\\contact.html"
+			],
+			[
+				"gmap.js",
+				"Unify-v1.8\\HTML\\assets\\plugins\\gmap\\gmap.js"
+			],
+			[
+				"page_contacts.js",
+				"Unify-v1.8\\HTML\\assets\\js\\pages\\page_contacts.js"
+			],
+			[
+				"contact.js",
+				"Unify-v1.8\\HTML\\assets\\js\\forms\\contact.js"
+			],
+			[
+				"pagecontact1",
+				"Unify-v1.8\\HTML\\page_contact1.html"
+			],
+			[
+				"orhtml",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"proje",
+				"src\\main\\webapp\\template\\organization\\projects.html"
+			],
+			[
+				"orgnhtml",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"directive",
+				"src\\main\\webapp\\scripts\\directives.js"
+			],
+			[
+				"organicoffe",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"direct",
+				"src\\main\\webapp\\scripts\\directives.js"
+			],
+			[
+				"apphtml",
+				"src\\main\\webapp\\app.html"
+			],
+			[
+				"cubepli",
+				"src\\main\\webapp\\unify\\js\\plugins\\cube-portfolio\\cube-portfolio-lightbox.js"
+			],
+			[
+				"member",
+				"src\\main\\webapp\\template\\organization\\members.html"
+			],
+			[
+				"mem",
+				"src\\main\\webapp\\template\\organization\\members.html"
+			],
+			[
+				"organiztionhtml",
+				"src\\main\\webapp\\views\\organization.html"
+			],
+			[
+				"orgnews",
+				"src\\main\\webapp\\template\\organization\\news.html"
+			],
+			[
+				"controllerorgan",
+				"src\\main\\webapp\\scripts\\organization\\controller_organization.coffee"
+			],
+			[
+				"controllers.coff",
+				"src\\main\\webapp\\scripts\\controllers.coffee"
+			],
+			[
+				"activ",
+				"src\\main\\webapp\\views\\activate.html"
+			],
+			[
+				"serviceorgani",
+				"src\\main\\webapp\\scripts\\organization\\service_organization.coffee"
 			],
 			[
 				"summ",
@@ -2575,10 +2442,6 @@
 			[
 				"sum",
 				"src/main/webapp/template/organization/summary.html"
-			],
-			[
-				"indexhtml",
-				"src/main/webapp/index.html"
 			],
 			[
 				"mas",
@@ -2609,10 +2472,6 @@
 				"src/main/webapp/views/organization.html"
 			],
 			[
-				"organization.html",
-				"src/main/webapp/template/organization.html"
-			],
-			[
 				"prices",
 				"src/main/webapp/template/organization/prices.html"
 			],
@@ -2629,10 +2488,6 @@
 				"src/main/webapp/templates/organization-members.html"
 			],
 			[
-				"dire",
-				"src/main/webapp/scripts/directives.js"
-			],
-			[
 				"employ",
 				"src/main/webapp/template/organization/employees.html"
 			],
@@ -2641,20 +2496,12 @@
 				".tmp/styles/organization.css"
 			],
 			[
-				"main.scs",
-				"src/main/scss/main.scss"
-			],
-			[
 				"about",
 				"src/main/webapp/template/organization/about_us.html"
 			],
 			[
 				"orgcss",
 				".tmp/styles/organization.css"
-			],
-			[
-				"aboutus",
-				"src/main/webapp/template/organization/about_us.html"
 			],
 			[
 				"conedico",
@@ -2689,14 +2536,6 @@
 				"src/main/webapp/scripts/controllers.js"
 			],
 			[
-				"apphtml",
-				"src/main/webapp/app.html"
-			],
-			[
-				"app.js",
-				"src/main/webapp/scripts/app.js"
-			],
-			[
 				"appjs",
 				"src/main/webapp/unify/js/app.js"
 			],
@@ -2727,10 +2566,6 @@
 			[
 				"application-sql",
 				"src/main/resources/config/application-sql.yml"
-			],
-			[
-				"index",
-				"src/main/webapp/index.html"
 			],
 			[
 				"cuscss",
@@ -2783,290 +2618,6 @@
 			[
 				"cubeporligh",
 				"src/main/webapp/unify/js/plugins/cube-portfolio/cube-portfolio-lightbox.js"
-			],
-			[
-				"one.app.js",
-				"src/main/webapp/unify/one-page/js/one.app.js"
-			],
-			[
-				"jquery.cubepor",
-				"src/main/webapp/unify/one-page/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.js"
-			],
-			[
-				"custom.js",
-				"src/main/webapp/unify/js/custom.js"
-			],
-			[
-				"oneappjs",
-				"src/main/webapp/unify/one-page/js/one.app.js"
-			],
-			[
-				"main.css",
-				".tmp/styles/main.css"
-			],
-			[
-				"main.scss",
-				"src/main/scss/main.scss"
-			],
-			[
-				"directi",
-				"src/main/webapp/scripts/directives.js"
-			],
-			[
-				"font-awe",
-				"src/main/webapp/bower_components/font-awesome/css/font-awesome.css"
-			],
-			[
-				"onepageh",
-				"src/main/webapp/onepage.html"
-			],
-			[
-				"gruntfile",
-				"Gruntfile.js"
-			],
-			[
-				"organizationctrljs",
-				"src/main/webapp/scripts/organization/controller_organization.js"
-			],
-			[
-				"main.s",
-				"src/main/scss/main.scss"
-			],
-			[
-				"applprod",
-				"target/classes/config/application-prod.yml"
-			],
-			[
-				"appldev",
-				"src/main/resources/config/application-dev.yml"
-			],
-			[
-				"project",
-				"src/main/webapp/template/project.html"
-			],
-			[
-				"projedetail",
-				"src/main/webapp/views/projects_details.html"
-			],
-			[
-				"projectcreate",
-				"src/main/webapp/views/projects_create.html"
-			],
-			[
-				"",
-				"src/main/webapp/templates/file-upload.html"
-			],
-			[
-				"serproj",
-				"src/main/webapp/scripts/project/service_project.js"
-			],
-			[
-				"service_or",
-				"src/main/webapp/scripts/organization/service_organization.js"
-			],
-			[
-				"servicere",
-				"src/main/webapp/scripts/resource/service_resource.js"
-			],
-			[
-				"mainscs",
-				"src/main/scss/main.scss"
-			],
-			[
-				"fileupl",
-				"src/main/webapp/templates/file-upload.html"
-			],
-			[
-				"reosur",
-				"src/main/webapp/views/resources.html"
-			],
-			[
-				"conorgeid",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"controlre",
-				"src/main/webapp/scripts/resource/controller_resource.js"
-			],
-			[
-				"resournew",
-				"src/main/webapp/views/resource-new.html"
-			],
-			[
-				"fileuplo",
-				"src/main/webapp/templates/file-upload.html"
-			],
-			[
-				"resourcehtml",
-				"src/main/webapp/views/resources.html"
-			],
-			[
-				"organizationedit",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
-				"projcreate",
-				"src/main/webapp/views/projects_create.html"
-			],
-			[
-				"apjs",
-				"src/main/webapp/scripts/app.js"
-			],
-			[
-				"filters.js",
-				"src/main/webapp/scripts/filters.js"
-			],
-			[
-				"filter.js",
-				"node_modules/bower/node_modules/mout/array/filter.js"
-			],
-			[
-				"direct",
-				"src/main/webapp/scripts/directives.js"
-			],
-			[
-				"rating.html",
-				"src/main/webapp/template/rating.html"
-			],
-			[
-				"de.sjon",
-				"src/main/webapp/i18n/de.json"
-			],
-			[
-				"projectdetail",
-				"src/main/webapp/views/projects_details.html"
-			],
-			[
-				"controllerproject",
-				"src/main/webapp/scripts/project/controller_project.js"
-			],
-			[
-				"mainscss",
-				"src/main/scss/main.scss"
-			],
-			[
-				"projecdetail",
-				"src/main/webapp/views/projects_details.html"
-			],
-			[
-				"projecthtml",
-				"src/main/webapp/template/project.html"
-			],
-			[
-				"dejson",
-				"src/main/webapp/i18n/de.json"
-			],
-			[
-				"conorgedit",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"organedit",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
-				"controller_re",
-				"src/main/webapp/scripts/resource/controller_resource.js"
-			],
-			[
-				"de.json",
-				"src/main/webapp/i18n/de.json"
-			],
-			[
-				"resourceh",
-				"src/main/webapp/views/resources.html"
-			],
-			[
-				"resspec",
-				"src/test/javascript/spec/resource/resource_controllerSpec.js"
-			],
-			[
-				"orgconspec",
-				"src/test/javascript/spec/organization/controllerEditSpec.js"
-			],
-			[
-				"projectspec",
-				"src/test/javascript/spec/project/projectControllerSpec.js"
-			],
-			[
-				"karmaconf",
-				"src/test/javascript/karma.conf.js"
-			],
-			[
-				"projspecjs",
-				"src/test/javascript/spec/project/projectControllerSpec.js"
-			],
-			[
-				"organiedit",
-				"src/main/webapp/views/organization-edit.html"
-			],
-			[
-				"organizationmeme",
-				"src/main/webapp/templates/organization-members.html"
-			],
-			[
-				"directivesjs",
-				"src/main/webapp/scripts/directives.js"
-			],
-			[
-				"serviceorgan",
-				"src/main/webapp/scripts/organization/service_organization.js"
-			],
-			[
-				"contorgedit",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"projecteid",
-				"src/main/webapp/views/projects_edit.html"
-			],
-			[
-				"controller_proj",
-				"src/main/webapp/scripts/project/controller_project.js"
-			],
-			[
-				"controllerorg",
-				"src/main/webapp/scripts/organization/controller_organization.js"
-			],
-			[
-				"orghtml",
-				"src/main/webapp/views/organization.html"
-			],
-			[
-				"organizationshtml",
-				"src/main/webapp/views/organizations.html"
-			],
-			[
-				"organizationeditjs",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"controllerjs",
-				"src/main/webapp/scripts/controllers.js"
-			],
-			[
-				"directivejs",
-				"src/main/webapp/scripts/directives.js"
-			],
-			[
-				"settingshtml",
-				"src/main/webapp/views/settings.html"
-			],
-			[
-				"controllers",
-				"src/main/webapp/scripts/controllers.js"
-			],
-			[
-				"mainhtml",
-				"src/main/webapp/views/main.html"
-			],
-			[
-				"conedit",
-				"src/main/webapp/scripts/organization/controller_organization_edit.js"
-			],
-			[
-				"organijs",
-				"src/main/webapp/scripts/organization/controller_organization.js"
 			]
 		],
 		"width": 0.0
@@ -3100,7 +2651,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": false,
+	"side_bar_visible": true,
 	"side_bar_width": 249.0,
 	"status_bar_visible": true,
 	"template_settings":

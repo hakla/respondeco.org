@@ -67,7 +67,7 @@ public abstract class ServiceException extends RuntimeException {
             this.key = key;
             this.message = message;
             this.details = new HashMap<>();
-            if(detailKeys == null && detailValues == null) {
+            if(detailKeys != null && detailValues != null) {
                 if (detailKeys.size() != detailValues.size()) {
                     throw new IllegalArgumentException("detail keys and values cannot be of different size");
                 }

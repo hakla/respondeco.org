@@ -46,7 +46,6 @@ public class Organization extends AbstractAuditingNamedEntity {
     @Column(name = "is_npo")
     private Boolean isNpo;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "owner")
     @DefaultReturnValue

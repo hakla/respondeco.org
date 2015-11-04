@@ -1,11 +1,11 @@
 <div class="profile-body first">
     <div class="row margin-bottom-30">
-        <div class="col-md-3 profile-logo">
-            <div class="col-xs-6 col-xs-offset-3 text-center">
+        <div class="col-md-6 profile-logo">
+            <div class="col-xs-3 text-center">
                 <img class="img-responsive profile-img margin-bottom-10" logo logo-id="organization.logo.id">
             </div>
             <div class="headline hover-toggle margin-bottom-10">
-                <div class="pull-right hidden on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
+                <div class="pull-right on-hover link-style margin-top-8" ng-click="editName.$show()" ng-hide="editName.$visible">
                     <i class="icon-pencil"></i>
                     <span class="hover-underline">{{'general.edit' | translate}}</span>
                 </div>
@@ -15,42 +15,33 @@
             </div>
             <div class="subheading margin-bottom-30">
                 <span>Wien, Österreich</span>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-half-o"></i>
-                    <span class="rating-counter">13</span>
-                </div>
+                <resp-rating organization="organization"></resp-rating>
             </div>
         </div>
-        <div class="col-md-9 icon-container text-center">
-            <div class="icon">
+        <div class="col-md-6 icon-container text-center">
+            <div class="icon" ng-if="organization.verified">
                 <span class="fa fa-stack fa-1x5 verified">
                     <i class="fa fa-shield fa-stack-2x"></i>
                     <i class="fa fa-check fa-stack-1x"></i>
                 </span>
                 <div>Verifiziert</div>
             </div>
-            <div class="icon">
+            <div class="icon" ng-if="organization.projects.length > 0">
                 <i class="fa fa-cubes fa-3x"></i>
-                <div>3 Projekte</div>
+                <div>{{ organization.projects.length }} Projekte</div>
             </div>
-            <div class="icon">
+            <div class="icon" ng-if="organization.donations.length > 0">
                 <i class="fa fa-gift fa-3x"></i>
-                <div>13 Spenden</div>
+                <div>{{ organization.donations.length }} Spenden</div>
             </div>
-            <div class="icon">
+            <div class="icon" ng-if="organization.prices.length > 0">
                 <i class="fa fa-trophy fa-3x"></i>
-                <div>7 Auszeichnungen</div>
+                <div>{{ organization.prices.length }} Auszeichnungen</div>
             </div>
         </div>
     </div>
     <div class="row margin-bottom-30">
         <div class="col-md-6 sm-margin-bottom-30">
-            <!--End Social Icons v3-->
-            <!--Skills-->
             <div class="panel panel-profile">
                 <div class="panel-heading overflow-h">
                     <h2 class="panel-title heading-sm pull-left"><i class="icon-book-open"></i> Wir sind nachhaltig weil</h2>
@@ -63,201 +54,6 @@
                     {{ organization.description || ('organization.description.placeholder' | translate) }}
                 </div>
             </div>
-            <!--End Skills-->
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left">
-                        ISO-Kategorie X
-                    </h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left">
-                        ISO-Kategorie X
-                    </h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left">
-                        ISO-Kategorie X
-                    </h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left">
-                        ISO-Kategorie X
-                    </h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left">
-                        ISO-Kategorie X
-                    </h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left">
-                        ISO-Kategorie X
-                    </h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row hidden">
-        <div class="col-md-12">
-            <div class="panel panel-profile">
-                <div class="panel-heading overflow-h">
-                    <h2 class="panel-title heading-sm pull-left"><i class="icon-users"></i> Mitglieder</h2>
-                </div>
-                <div class="panel-body hover-toggle" editable-textarea="organization.description" e-form="editDescription" e-rows="12" e-cols="50" onaftersave="save()">
-                    <div class="cube-portfolio">
-                        <div id="grid-container" class="cbp-l-grid-gallery">
-                            <div class="cbp-item marketing designer">
-                                <a href="assets/ajax/cube-portfolio/team1.html" class="cbp-caption cbp-singlePageInline" data-title="World Clock Widget<br>by Paul Flavius Nechita">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/clemens.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Entwicklung</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Clemens Pühringer</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item designer support">
-                                <a href="assets/ajax/cube-portfolio/team2.html" class="cbp-caption cbp-singlePageInline" data-title="Bolt UI<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/klaus.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Entwicklung</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Klaus Harrer</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item marketing designer">
-                                <a href="assets/ajax/cube-portfolio/team3.html" class="cbp-caption cbp-singlePageInline" data-title="WhereTO App<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/profile_empty.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Entwicklung</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Mathias Lehnfeld</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item designer marketing">
-                                <a href="assets/ajax/cube-portfolio/team4.html" class="cbp-caption cbp-singlePageInline" data-title="iDevices<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/jan.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">All-rounder</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Jan Draxler</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item designer developer">
-                                <a href="assets/ajax/cube-portfolio/team5.html" class="cbp-caption cbp-singlePageInline" data-title="Seemple* Music for iPad<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/roland.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Designer</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Roland Spitzlinger</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item marketing designer developer">
-                                <a href="assets/ajax/cube-portfolio/team6.html" class="cbp-caption cbp-singlePageInline" data-title="Remind~Me Widget<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/profile_empty.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Finanzen</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Matthias Steinklammer</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item designer marketing">
-                                <a href="assets/ajax/cube-portfolio/team7.html" class="cbp-caption cbp-singlePageInline" data-title="Workout Buddy<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap">
-                                        <img src="images/team/profile_empty.jpg" alt="">
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Berater</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Gregor Kappler</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="cbp-item designer marketing">
-                                <a href="assets/ajax/cube-portfolio/team7.html" class="cbp-caption cbp-singlePageInline" data-title="Workout Buddy<br>by Tiberiu Neamu">
-                                    <div class="cbp-caption-defaultWrap add-new-member">
-                                        <img src="images/team/profile_empty.jpg" alt="">
-                                        <i class="fa fa-plus"></i>
-                                    </div>
-                                    <div class="cbp-caption-activeWrap">
-                                        <div class="cbp-l-caption-alignLeft">
-                                            <div class="cbp-l-caption-body">
-                                                <div class="cbp-l-caption-desc">Team verstärken</div>
-                                                <div class="cbp-l-caption-title text-uppercase">Mitglied hinzufügen</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <!--/end Grid Container-->
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-<script src="unify/js/plugins/cube-portfolio/cube-portfolio-lightbox.js"></script>
