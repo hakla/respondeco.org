@@ -77,9 +77,8 @@ Main = ($rootScope, $location, $http, AuthenticationSharedService, Session, USER
 
   checkInitialConditions = (showMessage) ->
     account = $rootScope._account
-    if account == null
-      return
-    if account.invited == false and account.organization == null
+
+    if account?.invited == false and account?.organization == null
       if showMessage != false and $rootScope.globalAlerts.indexOf(regMessage) < 0
         $rootScope.globalAlerts.push regMessage
       return true
@@ -96,10 +95,10 @@ Main = ($rootScope, $location, $http, AuthenticationSharedService, Session, USER
       AuthenticationSharedService.valid next.access.authorizedRoles
 
     $rootScope.globalAlerts.splice $rootScope.globalAlerts.indexOf(regMessageOrganization), 1
-    route = if next.$$route != null then next.$$route.originalPath else null
+    route = if next.$$route != null then next.$$route?.originalPath else null
 
     if route != null
-# If the user navigates to another site than the the organization/edit/new site
+      # If the user navigates to another site than the the organization/edit/new site
       if route == '/organization/edit/:id' and next.pathParams.id == 'new' or route == '/organization/edit/new'
         if checkInitialConditions(false)
           $rootScope.globalAlerts.splice $rootScope.globalAlerts.indexOf(regMessage), 1

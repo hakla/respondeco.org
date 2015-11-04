@@ -8,14 +8,14 @@ del = require("del")
 series = require("stream-series")
 
 config =
-  apiPath: "/api"
+  apiPath: "/app/"
   app: "src/main/webapp"
   assets: "src/main/assets"
   dist: "src/main/webapp"
   host: "localhost"
   main: "src/main"
   port: 9000
-  proxyPath: "http://localhost:8081"
+  proxyPath: "http://localhost:8081/app/"
   serverPath: "http://localhost:8081/app"
 
 paths = {}
@@ -59,9 +59,7 @@ vendor = ->
 
   # css sources
   unifyCSS = gulp.src ["#{paths.dist.app.unify}/**/*.css"], {read: false}
-  appCSS = gulp.src ["#{paths.dist.app.stylesheets}/**/*.css"], {read: false}
-
-  unifyCSS.pipe _.debug()
+  appCSS = gulp.src ["#{paths.dist.app.stylesheets}/stylesheets/main.css"], {read: false}
 
   gulp.src "#{config.assets}/app.html"
   .pipe wiredep({
@@ -125,11 +123,13 @@ gulp.task "copy", ["copy-javascripts", "copy-assets", "copy-html"]
 # compile javascripts
 javascripts = ->
   gulp.src paths.assets2compile.javascripts
+  .pipe _.sourcemaps.init()
   .pipe _.coffee()
   .pipe _.ngAnnotate()
+  .pipe _.sourcemaps.write "./"
 # .pipe _.rev()
-  .pipe gulp.dest "#{paths.dist.javascripts}"
-  .pipe _.filesize()
+  .pipe gulp.dest paths.dist.javascripts
+#  .pipe _.filesize()
 
 # compile stylesheets
 stylesheets = ->

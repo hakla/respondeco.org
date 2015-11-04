@@ -66,7 +66,6 @@ public class RESTWrapperAspect {
 
     @Around("publicMethod() && wrappedMethod() || wrappedClass()")
     public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.debug("current transaction: {}", TransactionAspectSupport.currentTransactionStatus());
         return handleInvocation(new Invocation() {
             @Override
             public Object invoke() throws Throwable {
