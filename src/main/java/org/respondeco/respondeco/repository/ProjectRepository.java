@@ -22,11 +22,9 @@ import java.util.Set;
 /**
  * Spring Data JPA repository for the Project entity.
  */
-public interface ProjectRepository extends JpaRepository<Project, Long>, QueryDslPredicateExecutor {
+public interface ProjectRepository extends AbstractEntityRepository<Project, Long>, QueryDslPredicateExecutor {
 
     public Page<Project> findByActiveIsTrue(Pageable pageable);
-
-    public Project findByIdAndActiveIsTrue(Long id);
 
     public List<Project> findByManager(User user);
 
@@ -75,7 +73,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, QueryDs
 
     public List<Project> findByStartDate(LocalDate date);
 
-    @Query ("SELECT p FROM Project p INNER JOIN p.FollowingUsers u" +
+    @Query ("SELECT p FROM Project p INNER JOIN p.followingUsers u" +
             " WHERE u.id = :user_id AND p.id = :project_id AND u.active = 1 AND p.active = 1"
     )
     public Project findByUserIdAndProjectId(

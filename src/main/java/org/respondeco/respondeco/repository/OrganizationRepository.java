@@ -13,19 +13,24 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the Organization entity.
  */
-public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+public interface OrganizationRepository extends AbstractEntityRepository<Organization, Long> {
 
-    Organization findByOwner(User owner);
-    Organization findByName(String orgName);
-    Page<Organization> findByActiveIsTrue(Pageable pageable);
-    Organization findByIdAndActiveIsTrue(Long id);
+    @Query("SELECT o FROM Organization o WHERE o.owner = :owner AND o.active = TRUE")
+    Organization findByOwner(@Param("owner") User owner);
 
+    @Query("SELECT o FROM Organization o WHERE o.name = :name AND o.active = TRUE")
+    Organization findByName(@Param("name") String orgName);
 
-    @Query ("SELECT p FROM Organization p INNER JOIN p.FollowingUsers u" +
-        " WHERE u.id = :user_id AND p.id = :organization_id AND u.active = 1 AND p.active = 1"
+    @Query(
+        "SELECT o " +
+        "FROM Organization o INNER JOIN o.FollowingUsers u " +
+            "WHERE u = :user " +
+            "AND o.id = :organizationId " +
+            "AND u.active = 1 " +
+            "AND o.active = 1"
     )
-    public Organization findByUserIdAndOrganizationId(
-        @Param("user_id") Long user_id,
-        @Param("organization_id") Long organization_id
+    public Organization findOrganizationIfUserFollows(
+        @Param("user") User user,
+        @Param("organizationId") Long organizationId
     );
 }

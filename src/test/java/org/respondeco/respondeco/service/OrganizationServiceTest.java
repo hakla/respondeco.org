@@ -23,7 +23,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -76,16 +75,16 @@ public class OrganizationServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        organizationService = new OrganizationService(
-            organizationRepositoryMock,
-            userServiceMock,
-            userRepositoryMock,
-            imageRepositoryMock,
-            projectServiceMock,
-            projectRepositoryMock,
-            postingFeedRepositoryMock,
-            resourceOfferRepositoryMock,
-            isoCategoryRepository);
+//        organizationService = new OrganizationService(
+//            organizationRepositoryMock,
+//            userServiceMock,
+//            userRepositoryMock,
+//            imageRepositoryMock,
+//            projectServiceMock,
+//            projectRepositoryMock,
+//            postingFeedRepositoryMock,
+//            resourceOfferRepositoryMock,
+//            isoCategoryRepository);
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testUser");
@@ -105,7 +104,7 @@ public class OrganizationServiceTest {
     @Test
     public void testCreateOrganization_shouldCreateOrganization() throws Exception {
         Organization organization = model.ORGANIZATION_NEW;
-        organization.setOwner(model.USER_WITH_ID);
+        organization.setOwner(model.USER_SAVED_MINIMAL);
 
         organizationService.create(organization);
 
@@ -122,21 +121,22 @@ public class OrganizationServiceTest {
 
     @Test(expected = IllegalValueException.class)
     public void testCreateOrganization_shouldThrow_nameMustNotBeEmpty() throws Exception {
-        organizationService.create(model.ORGANIZATION_NAME_EMPTY);
+        model.ORGANIZATION1_GOVERNS_P1.setName("");
+        organizationService.create(model.ORGANIZATION1_GOVERNS_P1);
     }
 
     @Test(expected = IllegalValueException.class)
     public void testCreateOrganization_shouldThrow_ownerMustNotBeEmpty() throws Exception {
-        organizationService.create(model.ORGANIZATION_NAME_EMPTY);
+        organizationService.create(model.ORGANIZATION_NEW);
     }
 
     @Test
     public void testUpdateOrganization_shouldUpdateValidChanges() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
-        when(organizationRepositoryMock.findByOwner(model.USER1)).thenReturn(model.ORGANIZATION1);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1_OWNS_ORG1_MANAGES_P1);
+        when(organizationRepositoryMock.findByOwner(model.USER1_OWNS_ORG1_MANAGES_P1)).thenReturn(model.ORGANIZATION1_GOVERNS_P1);
         when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
         Organization organizationClone = new Organization();
-        BeanUtils.copyProperties(model.ORGANIZATION1, organizationClone);
+        BeanUtils.copyProperties(model.ORGANIZATION1_GOVERNS_P1, organizationClone);
         organizationClone.setEmail("new@email.foo");
 
         organizationService.update(organizationClone);
@@ -147,11 +147,11 @@ public class OrganizationServiceTest {
 
     @Test(expected = OperationForbiddenException.class)
     public void testUpdateOrganization_shouldThrow_userNotOwner() throws Exception {
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1);
-        when(organizationRepositoryMock.findByOwner(model.USER1)).thenReturn(null);
+        when(userServiceMock.getUserWithAuthorities()).thenReturn(model.USER1_OWNS_ORG1_MANAGES_P1);
+        when(organizationRepositoryMock.findByOwner(model.USER1_OWNS_ORG1_MANAGES_P1)).thenReturn(null);
         when(organizationRepositoryMock.save(any(Organization.class))).thenAnswer(organizationArgumentCaptor);
         Organization organizationClone = new Organization();
-        BeanUtils.copyProperties(model.ORGANIZATION1, organizationClone);
+        BeanUtils.copyProperties(model.ORGANIZATION1_GOVERNS_P1, organizationClone);
         organizationClone.setEmail("new@email.foo");
 
         organizationService.update(organizationClone);
@@ -189,7 +189,7 @@ public class OrganizationServiceTest {
 
         Organization organization = organizationService.create(testOrganization);
 
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
+        when(organizationRepositoryMock.findOne(organization.getId())).thenReturn(organization);
 
         Organization organization2 = organizationService.getById(organization.getId());
 
@@ -208,12 +208,12 @@ public class OrganizationServiceTest {
             .create(testOrganization);
 
         Page<Organization> orgPage = new PageImpl<Organization>(Arrays.asList(organization1,organization2));
-        when(organizationRepositoryMock.findByActiveIsTrue(any(Pageable.class))).thenReturn(orgPage);
+        when(organizationRepositoryMock.findAll(any(Pageable.class))).thenReturn(orgPage);
 
         Page<Organization> organizationPage = organizationService.get(null);
 
         assertEquals(organizationPage.getTotalElements(), 2L);
-        verify(organizationRepositoryMock, times(1)).findByActiveIsTrue(any(Pageable.class));
+        verify(organizationRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -224,12 +224,12 @@ public class OrganizationServiceTest {
         Organization organization = organizationService
             .create(testOrganization);
 
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(any(Long.class))).thenReturn(organization);
+        when(organizationRepositoryMock.findOne(any(Long.class))).thenReturn(organization);
         doAnswer(organizationArgumentCaptor).when(organizationRepositoryMock).save(any(Organization.class));
 
         organizationService.delete(organization.getId());
 
-        assertEquals(organizationArgumentCaptor.getValue().isActive(), false);
+        assertEquals(organizationArgumentCaptor.getValue().getActive(), false);
     }
 
     @Test(expected = NoSuchEntityException.class)
@@ -248,8 +248,8 @@ public class OrganizationServiceTest {
             .create(testOrganization);
         organization.setVerified(true);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
         organizationService.deleteMember(defaultUser.getId());
 
         verify(userRepositoryMock, times(1)).save(defaultUser);
@@ -261,8 +261,8 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.create(testOrganization);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
         organizationService.deleteMember(100L);
 
     }
@@ -273,8 +273,8 @@ public class OrganizationServiceTest {
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.create(testOrganization);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(null);
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(null);
         organizationService.deleteMember(defaultUser.getId());
 
     }
@@ -288,8 +288,8 @@ public class OrganizationServiceTest {
         organization.setVerified(true);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(defaultUser);
         defaultUser.setOrganization(organization);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getOrganization().getId())).thenReturn(organization);
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultUser.getOrganization().getId())).thenReturn(organization);
         organizationService.deleteMember(defaultUser.getId());
 
     }
@@ -299,34 +299,19 @@ public class OrganizationServiceTest {
 
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
         Organization organization = organizationService.create(testOrganization);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(null);
+        when(organizationRepositoryMock.findOne(organization.getId())).thenReturn(null);
         organizationService.getUserByOrgId(organization.getId());
     }
-
-    @Test
-    public void testFindInvitableUsersByOrgId() throws Exception {
-        User user3 = new User();
-        user3.setId(3L);
-        user3.setLogin("testUser3");
-
-        when(userServiceMock.getUserWithAuthorities()).thenReturn(orgOwner);
-        Organization organization = organizationService.create(testOrganization);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(organization.getId())).thenReturn(organization);
-        when(userRepositoryMock.findInvitableUsers()).thenReturn(Arrays.asList(defaultUser,user3));
-        List<User> users = organizationService.findInvitableUsersByOrgId(organization.getId());
-        assertTrue(users.size()==2);
-    }
-
 
 
     @Test
     public void testFollowingState_TRUE() throws Exception{
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        doReturn(testOrganization).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         Boolean testObject = organizationService.followingState(testOrganization.getId());
 
-        verify(organizationRepositoryMock, times(1)).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
 
         assertTrue(testObject);
@@ -335,11 +320,11 @@ public class OrganizationServiceTest {
     @Test
     public void testFollowingState_FALSE() throws Exception{
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         Boolean testObject = organizationService.followingState(testOrganization.getId());
 
-        verify(organizationRepositoryMock, times(1)).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         assertFalse(testObject);
     }
@@ -354,16 +339,16 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
-        doReturn(testOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
         organizationService.follow(testOrganization.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(organizationRepositoryMock, times(1)).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
-        verify(organizationRepositoryMock, times(1)).findByIdAndActiveIsTrue(testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOne(testOrganization.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -372,7 +357,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(testOrganization).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         organizationService.follow(testOrganization.getId());
     }
@@ -383,9 +368,9 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         // this trigger our Exception for Project NULL Value
-        doReturn(null).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOne(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
@@ -401,9 +386,9 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         // this trigger our Exception for Project NULL Value
-        doReturn(testOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
 
         organizationService.follow(testOrganization.getId());
     }
@@ -417,15 +402,15 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(testOrganization).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
-        doReturn(testOrganization).when(organizationRepositoryMock).findByIdAndActiveIsTrue(testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
 
         organizationService.unfollow(testOrganization.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(organizationRepositoryMock, times(1)).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -433,7 +418,7 @@ public class OrganizationServiceTest {
 
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        // we need here returns null, else we won't be able to add new folldefaultUser.getId(), basicProject.getId());
+        // we need here returns null, else we won't be able to add new folldefaultUser, basicProject.getId());
 
         organizationService.unfollow(testOrganization.getId());
     }
@@ -446,7 +431,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(testOrganization).when(organizationRepositoryMock).findByUserIdAndOrganizationId(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         organizationService.unfollow(testOrganization.getId());
     }

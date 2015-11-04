@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.respondeco.respondeco.Application;
 import org.respondeco.respondeco.domain.*;
+import org.respondeco.respondeco.domain.QResourceOffer;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

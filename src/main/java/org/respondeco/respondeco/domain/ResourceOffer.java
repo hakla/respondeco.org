@@ -20,14 +20,14 @@ import javax.persistence.*;
 /**
  * A ResourceOffer.
  */
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"resourceMatches", "organization"})
 @Entity
 @Table(name = "T_RESOURCEOFFER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @PrimaryKeyJoinColumn(name = "resource_id", referencedColumnName = "id")
-@Getter
-@Setter
-@ToString(exclude = {"resourceMatches", "organization"})
-public class ResourceOffer extends ResourceBase implements Serializable {
+public class ResourceOffer extends ResourceBase {
 
     @ManyToOne
     @JoinColumn(name = "organization_id")

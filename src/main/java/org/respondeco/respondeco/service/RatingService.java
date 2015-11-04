@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,6 +23,16 @@ import java.util.List;
 public class RatingService {
 
     private final Logger log = LoggerFactory.getLogger(RatingService.class);
+
+    public static final ServiceException.ErrorPrefix ERROR_PREFIX = new ServiceException.ErrorPrefix("rating");
+    public static final String ERROR_ALREADY_RATED                  = "already_rated";
+    public static final String ERROR_MATCH_NOT_ACCEPTED             = "match_not_accepted";
+    public static final String ERROR_NOT_STARTED                    = "not_started";
+    public static final String ERROR_NO_AUTHORITY                   = "no_authority";
+    public static final String ERROR_NO_START_DATE                  = "no_start_date";
+    public static final String ERROR_ORGANIZATIONS_NOT_MATCHING     = "organizations_not_matching";
+    public static final String ERROR_PROJECTS_NOT_MATCHING          = "projects_not_matching";
+
 
     private RatingRepository ratingRepository;
 
@@ -57,57 +68,81 @@ public class RatingService {
      * @param comment string for commentary of rating
      * @throws NoSuchEntityException resource match or project doesn't exist in repository
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException organization doesn't exist (user is not a member of an organization)
-     * @throws ProjectRatingException project hasn't been started yet, project is not concrete, match hasn't been
      * accepted yet (no resource exchange so far), user is not owner of organization, organization doesn't match
      * the organization from the resourcematch, the project doesn't match the resourcematch, the match has already
      * been rated
      */
     public void rateProject(Long projectId, Long matchId, Integer ratingValue, String comment)
-            throws NoSuchEntityException,
-            ProjectRatingException {
+            throws NoSuchEntityException {
         User user = userService.getUserWithAuthorities();
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        if(user == null) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user (not logged in) has no authority to rate project %1.",
+                Arrays.asList("projectId"),
+                Arrays.asList(projectId));
+        }
         Organization organization = user.getOrganization();
-        if(project == null) {
-            throw new NoSuchEntityException(String.format("Project doesn't exist"));
-        }
-        if(project.isConcrete() == false) {
-            throw new ProjectRatingException(".notconcrete", "The project cannot be rated" +
-                " as it does not have a start date");
-        }
-        if(project.getSuccessful() == false) {
-            throw new ProjectRatingException(".notstarted", "The project has not started yet");
-        }
         if(organization == null) {
-            throw new NoSuchEntityException(String.format("Organization doesn't exist"));
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of an Organization",
+                Arrays.asList("userId", "userLogin"),
+                Arrays.asList(user.getId(), user.getLogin()));
+        }
+        Project project = projectRepository.findOne(projectId);
+        if(project == null) {
+            throw new NoSuchEntityException(ProjectService.ERROR_PREFIX, projectId, Project.class);
         }
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(matchId);
         if(resourceMatch == null) {
-            throw new NoSuchEntityException(String.format("ResourceMatch doesn't exist"));
+            throw new NoSuchEntityException(ResourceService.ERROR_MATCH_PREFIX, matchId, ResourceMatch.class);
         }
-        if(resourceMatch.getAccepted() == false) {
-            throw new ProjectRatingException(".notaccepted",
-                    String.format("Rating this match %s is not accepted" , resourceMatch.getId()));
+        if(!project.getConcrete()) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NO_START_DATE),
+                "Project %1 (%2) can not be rated as it does not have a start date.",
+                Arrays.asList("projectId", "projectName"),
+                Arrays.asList(project.getId(), project.getName()));
         }
-        if(organization.getOwner().equals(user) == false) {
-            throw new ProjectRatingException(".notowneroforganization",
-                    String.format("You are not the owner of organization %s", organization.getId()));
+        if(!project.getSuccessful()) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_STARTED),
+                "Project %1 (%2) can not be rated as it has not started yet.",
+                Arrays.asList("projectId", "projectName"),
+                Arrays.asList(project.getId(), project.getName()));
         }
-        if(organization.equals(resourceMatch.getOrganization()) == false) {
-            throw new ProjectRatingException(".notsameorganization",
-                String.format("The user's organization and the match's organization do not match, " +
-                    "user's organization: %s, match's organization: %s",
-                    organization, resourceMatch.getOrganization()));
+        if(!resourceMatch.getAccepted()) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_MATCH_NOT_ACCEPTED),
+                "Project %1 (%2) can not be rated, the resource match %3 has not been accepted yet.",
+                Arrays.asList("projectId", "projectName", "resourceMatchId"),
+                Arrays.asList(project.getId(), project.getName(), resourceMatch.getId()));
         }
-        if(project.equals(resourceMatch.getProject()) == false) {
-            throw new ProjectRatingException(".notsameproject",
-                String.format("The given project and the match's project do not match, " +
-                        "given project: %s, match's project: %s",
-                    project, resourceMatch.getProject()));
+        if(!organization.getOwner().equals(user)) {
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of Organization %3 (%4).",
+                Arrays.asList("userId", "userLogin", "organizationId", "organizationName"),
+                Arrays.asList(user.getId(), user.getLogin(), organization.getId(), organization.getName()));
+        }
+        if(!organization.equals(resourceMatch.getOrganization())) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_ORGANIZATIONS_NOT_MATCHING),
+                "The user's organization (%1, %2) and the match's organization (%3, %4) do not match.",
+                Arrays.asList("userOrganizationId", "userOrganizationName", "matchOrganizationId",
+                    "matchOrganizationName"),
+                Arrays.asList(organization.getId(), organization.getName(), resourceMatch.getOrganization().getId(),
+                    resourceMatch.getOrganization().getName()));
+        }
+        if(!project.equals(resourceMatch.getProject())) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_PROJECTS_NOT_MATCHING),
+                "The given project (%1, %2) and the match's project (%3, %4) do not match.",
+                Arrays.asList("givenProjectId", "givenProjectName", "matchProjectId",
+                    "matchProjectName"),
+                Arrays.asList(project.getId(), project.getName(), resourceMatch.getProject().getId(),
+                    resourceMatch.getProject().getName()));
         }
         if(resourceMatch.getProjectRating() != null) {
-            throw new ProjectRatingException(".project.allreadyrated",
-                    String.format("You have already rated for this match %s" , resourceMatch.getId()));
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_ALREADY_RATED),
+                "The match %1 has already been rated",
+                Arrays.asList("resourceMatchId"),
+                Arrays.asList(resourceMatch.getId()));
         }
         Rating rating = new Rating();
         rating.setRating(ratingValue);
@@ -141,14 +176,11 @@ public class RatingService {
         User user = userService.getUserWithAuthorities();
         ResourceMatch resourceMatch = resourceMatchRepository.findOne(matchId);
         if(resourceMatch == null) {
-            throw new NoSuchEntityException(String.format("ResourceMatch doesn't exist"));
+            throw new NoSuchEntityException(ResourceService.ERROR_MATCH_PREFIX, matchId, ResourceMatch.class);
         }
         Project project = resourceMatch.getProject();
         Organization organization = resourceMatch.getOrganization();
-        if(project == null) {
-            throw new NoSuchEntityException(String.format("Project doesn't exist"));
-        }
-        if(project.isConcrete() == false) {
+        if(!project.getConcrete()) {
             throw new SupporterRatingException(".notconcrete", "The project cannot be rated" +
                 " as it does not have a start date");
         }
@@ -156,7 +188,7 @@ public class RatingService {
             throw new SupporterRatingException(".notstarted", "The project has not started yet");
         }
         if(organization == null || organization.getId().equals(orgId) == false) {
-            throw new NoSuchEntityException(String.format("Organization doesn't exist"));
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, orgId, Organization.class);
         }
         if(project.getManager().equals(user) == false) {
             throw new SupporterRatingException(".notmanagerofproject", String
@@ -191,7 +223,7 @@ public class RatingService {
     public RatingPermission checkPermissionForProject(Long projectId) throws NoSuchEntityException {
         Project project = projectService.findProjectById(projectId);
         if(project == null) {
-            throw new NoSuchEntityException(projectId);
+            throw new NoSuchEntityException(ProjectService.ERROR_PREFIX, projectId, Project.class);
         }
         User currentUser = userService.getUserWithAuthorities();
         RatingPermission permission = new RatingPermission();
@@ -231,7 +263,7 @@ public class RatingService {
         for(Long id : matchIds) {
             match = resourceMatchRepository.findOne(id);
             if(match == null) {
-                throw new NoSuchEntityException(id);
+                throw new NoSuchEntityException(ResourceService.ERROR_MATCH_PREFIX, id, ResourceMatch.class);
             }
             permission = new RatingPermission();
             permission.setResourceMatch(match);

@@ -7,6 +7,9 @@ import org.respondeco.respondeco.repository.TextMessageRepository;
 import org.respondeco.respondeco.repository.UserRepository;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.service.exception.ServiceException;
+import org.respondeco.respondeco.service.util.Assert;
 import org.respondeco.respondeco.web.rest.dto.TextMessageResponseDTO;
 import org.respondeco.respondeco.web.rest.dto.UserDTO;
 import org.slf4j.Logger;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,6 +31,11 @@ import java.util.List;
 public class TextMessageService {
 
     private final Logger log = LoggerFactory.getLogger(TextMessageService.class);
+
+    public static final ServiceException.ErrorPrefix ERROR_PREFIX = new ServiceException.ErrorPrefix("textmessage");
+    public static final String ERROR_NO_AUTHORITY   = "no_authority";
+    public static final String ERROR_NO_CONTENT     = "no_content";
+    public static final String ERROR_SEND_TO_SELF   = "send_to_self";
 
     private TextMessageRepository textMessageRepository;
     private UserService userService;
@@ -41,18 +50,19 @@ public class TextMessageService {
     }
 
     public TextMessage createTextMessage(Long receiverId, String content) throws IllegalValueException {
-        if(content == null || content.length() <= 0) {
-            throw new IllegalValueException("global.textmessages.error.contentlength", "Content must not be empty");
-        }
+        Assert.isValid(content, ERROR_PREFIX.join(ERROR_NO_CONTENT), "The content of a message must not be empty",
+            null, null);
         User currentUser = userService.getUserWithAuthorities();
         User receivingUser = userService.getUser(receiverId);
         if(currentUser.equals(receivingUser)) {
-            throw new IllegalValueException("global.textmessages.error.receivercurrentuser",
-                String.format("Receiver cannot be equal to sender: %s", receiverId));
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_SEND_TO_SELF),
+                "The sender of a message (%2) can not be equal to the receiver",
+                Arrays.asList("userId", "userLogin"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin()));
         }
 
         if(receivingUser == null) {
-            throw new NoSuchEntityException(String.format("Receiver %s does not exist", receiverId));
+            throw new NoSuchEntityException(UserService.ERROR_PREFIX, receiverId, User.class);
         }
 
         TextMessage newTextMessage = new TextMessage();
@@ -82,13 +92,20 @@ public class TextMessageService {
     public TextMessage deleteTextMessage(Long id) throws IllegalValueException {
         TextMessage textMessage = textMessageRepository.findOne(id);
         if(textMessage == null) {
-            throw new IllegalValueException("global.textmessages.error.usernotfound",
-                String.format("A text message with id %d does not exist", id));
+            throw new NoSuchEntityException(ERROR_PREFIX, id, TextMessage.class);
         }
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser.equals(textMessage.getReceiver()) == false) {
-            throw new IllegalValueException("global.textmessages.error.notreceiver",
-                    String.format("User %s is not the receiver of the text message %d", currentUser.getLogin(), id));
+        if(currentUser == null) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user (not logged in) has no authority to delete textmessage %1",
+                Arrays.asList("textMessageId"),
+                Arrays.asList(textMessage.getId()));
+        }
+        if(!textMessage.getReceiver().equals(currentUser)) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NO_AUTHORITY),
+                "Current user (%2) has no authority to delete textmessage %3",
+                Arrays.asList("userId", "userLogin", "textMessageId"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin(), textMessage.getId()));
         }
         textMessage.setActive(false);
         textMessageRepository.save(textMessage);

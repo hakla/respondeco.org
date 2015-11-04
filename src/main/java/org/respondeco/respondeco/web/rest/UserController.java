@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,6 +27,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/app")
+@Transactional
 public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -38,7 +40,7 @@ public class UserController {
     }
 
     /**
-     * GET  /rest/users/:login -> get the "login" user.
+     * GET  /rest/users/:id -> get the "id" user.
      */
     @RequestMapping(value = "/rest/users/{id}",
         method = RequestMethod.GET,
@@ -55,17 +57,17 @@ public class UserController {
      * GET  /rest/users -> get users where the name matches the filter parameter
      */
     @RequestMapping(value = "/rest/users",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(AuthoritiesConstants.USER)
     @RESTWrapped
     public Object getMatchingUsers(
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize,
-            @RequestParam(required = false) String order,
-            @RequestParam(required = false) String fields) {
+        @RequestParam(required = false) String filter,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize,
+        @RequestParam(required = false) String order,
+        @RequestParam(required = false) String fields) {
         log.debug("REST request to get usernames matching : {}", filter);
         RestParameters restParameters = new RestParameters(page, pageSize, order);
         return userService.findUsersByNameLike(filter, restParameters);

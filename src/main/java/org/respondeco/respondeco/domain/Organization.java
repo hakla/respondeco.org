@@ -24,21 +24,14 @@ import java.util.Map;
 /**
  * A Organization.
  */
-
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"owner", "members", "logo", "projects", "FollowingUsers", "isoCategories"})
 @Entity
 @Table(name = "T_ORGANIZATION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString(exclude = {"owner", "members", "logo", "projects", "FollowingUsers", "isoCategories"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Organization extends AbstractAuditingEntity implements Serializable {
-
-    @NotNull
-    @Size(min = 3, max = 255)
-    @Column(length = 255)
-    @DefaultReturnValue
-    private String name;
+public class Organization extends AbstractAuditingNamedEntity {
 
     @Size(max = 2048)
     @Column(length = 2048)

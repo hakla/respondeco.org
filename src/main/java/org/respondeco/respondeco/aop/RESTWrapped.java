@@ -15,5 +15,6 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RESTWrapped {
+    boolean returnsRawReturnStatus() default false;
     HttpStatus returnStatus() default HttpStatus.OK;
 }

@@ -10,22 +10,23 @@ import org.respondeco.respondeco.domain.AbstractAuditingEntity;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.OperationForbiddenException;
+import org.respondeco.respondeco.service.exception.ServiceException;
 import org.respondeco.respondeco.web.rest.mapping.ObjectMapper;
 import org.respondeco.respondeco.web.rest.mapping.ObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class RESTWrapperAspect {
 
     public static interface Invocation {
         public Object invoke() throws Throwable;
+        public Boolean returnsRawReturnStatus();
         public HttpStatus getReturnStatus();
     }
 
@@ -51,6 +53,9 @@ public class RESTWrapperAspect {
 
     @Inject
     private HttpServletRequest request;
+
+    @Inject
+    private PlatformTransactionManager platformTransactionManager;
 
     @Pointcut("@annotation(org.respondeco.respondeco.aop.RESTWrapped)")
     public void wrappedClass() {
@@ -67,16 +72,21 @@ public class RESTWrapperAspect {
     @Around("publicMethod() && wrappedMethod() || wrappedClass()")
     public Object wrapAround(ProceedingJoinPoint joinPoint) throws Throwable {
         return handleInvocation(new Invocation() {
+            private RESTWrapped annotation = ((MethodSignature) joinPoint.getSignature()).getMethod()
+                .getAnnotation(RESTWrapped.class);
+
             @Override
             public Object invoke() throws Throwable {
                 return joinPoint.proceed();
             }
 
             @Override
+            public Boolean returnsRawReturnStatus() {
+                return annotation.returnsRawReturnStatus();
+            }
+
+            @Override
             public HttpStatus getReturnStatus() {
-                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-                Method targetMethod = signature.getMethod();
-                RESTWrapped annotation = targetMethod.getAnnotation(RESTWrapped.class);
                 return annotation.returnStatus();
             }
         });
@@ -85,28 +95,41 @@ public class RESTWrapperAspect {
     public Object handleInvocation(Invocation invocation) throws Throwable {
         try {
             Object result = invocation.invoke();
-            HttpStatus returnStatus = invocation.getReturnStatus();
-            log.debug("got value to map: {}", result);
-            if(result != null) {
-                Object mapped = mapResult(result);
-                return new ResponseEntity<>(mapped, returnStatus);
+            if(invocation.returnsRawReturnStatus()) {
+                return new ResponseEntity<>((HttpStatus) result);
             } else {
-                return new ResponseEntity<>(returnStatus);
+                HttpStatus returnStatus = invocation.getReturnStatus();
+                log.debug("got value to map: {}", result);
+                if (result != null) {
+                    Object mapped = mapResult(result);
+                    return new ResponseEntity<>(mapped, returnStatus);
+                } else {
+                    return new ResponseEntity<>(returnStatus);
+                }
             }
         } catch (NoSuchEntityException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(e.getObject(), HttpStatus.NOT_FOUND);
+            setTransactionRollback();
+            return new ResponseEntity<>(e.getDetails(), HttpStatus.NOT_FOUND);
         } catch (OperationForbiddenException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(e.getObject(), HttpStatus.FORBIDDEN);
+            setTransactionRollback();
+            return new ResponseEntity<>(e.getDetails(), HttpStatus.FORBIDDEN);
         } catch (IllegalValueException e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return new ResponseEntity<>(e.getObject(), HttpStatus.BAD_REQUEST);
+            setTransactionRollback();
+            return new ResponseEntity<>(e.getDetails(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            setTransactionRollback();
+            ServiceException.Details details =
+                new ServiceException.Details(null, e.getMessage(), null, null);
+            return new ResponseEntity<>(details, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void setTransactionRollback() {
+        log.info("setting rollback on active transaction");
+        if(TransactionSynchronizationManager.isActualTransactionActive()) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            IllegalValueException.ExceptionObject exceptionObject =
-                new IllegalValueException.ExceptionObject(null, e.getMessage());
-            return new ResponseEntity<>(exceptionObject, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            log.debug("no active transaction found");
         }
     }
 

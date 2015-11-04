@@ -601,6 +601,7 @@
         },
         "error": {
             "name_empty": "Der Organisationsname darf nicht leer sein",
+            "id_null": "Es muss eine id angegeben werden",
             "nosuchorganization": "Es konnte keine Organisation mit dieser id gefunden werden",
             "exists": "Eine Organisation mit diesem namen existiert bereits.",
             "already_member": "Du bist bereits in einer Organisation, deshalb kannst du keine neue anlegen",

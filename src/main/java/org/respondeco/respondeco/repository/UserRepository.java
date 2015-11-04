@@ -14,24 +14,21 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the User entity.
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends AbstractEntityRepository<User, Long> {
 
-    @Query("select u from User u where u.activationKey = ?1")
-    User getUserByActivationKey(String activationKey);
+    @Query("SELECT u FROM User u WHERE u.activationKey = :activationKey")
+    User getUserByActivationKey(@Param("activationKey") String activationKey);
 
-    @Query("select u from User u where u.activated = false and u.createdDate > ?1")
-    List<User> findNotActivatedUsersByCreationDateBefore(DateTime dateTime);
+    @Query("SELECT u FROM User u WHERE u.activated = FALSE AND u.createdDate < :date")
+    List<User> findNotActivatedUsersByCreationDateBefore(@Param("date") DateTime dateTime);
 
-    @Query("select u from User u where u.organization is null")
-    List<User> findInvitableUsers();
+    @Query("SELECT u FROM User u WHERE u.organization = :organization AND u.active = TRUE")
+    Page<User> findByOrganization(@Param("organization") Organization organization, Pageable pageable);
 
-    Page<User> findUsersByOrganizationId(Long orgId, Pageable pageable);
+    @Query("SELECT u FROM User u WHERE u.login = :login AND u.active = TRUE")
+    User findByLogin(@Param("login") String login);
 
-    User findByLogin(String userlogin);
-
-    @Query("select u from User u where u.login like %:filter%")
-    Page<User> findUsersByNameLike(@Param("filter") String filter, Pageable pageable);
-
-    User findByIdAndActiveIsTrue(Long id);
+    @Query("SELECT u FROM User u WHERE u.login LIKE %:filter% AND u.active = TRUE")
+    Page<User> findByLoginLike(@Param("filter") String filter, Pageable pageable);
 
 }

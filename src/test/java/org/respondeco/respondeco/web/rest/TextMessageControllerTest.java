@@ -115,7 +115,7 @@ public class TextMessageControllerTest {
         textMessageRequestDTO.setContent(DEFAULT_CONTENT);
 
         IllegalValueException illegalValueException = new IllegalValueException(
-            "test.illegalvalue", "Test IllegalValueException");
+            "test.illegalvalue", "Test IllegalValueException", Arrays.asList(), Arrays.asList());
         doThrow(illegalValueException).when(textMessageServiceMock).createTextMessage(anyLong(), anyString());
 
         // Create TextMessage
@@ -196,7 +196,8 @@ public class TextMessageControllerTest {
     @Test
     public void testDELETE_expectBAD_REQUEST_cannotDeleteForeignMessages() throws Exception {
         IllegalValueException illegalValueException = new IllegalValueException(
-            "test.notreceiver", "Current user is not authorized to delete this message.");
+            "test.notreceiver", "Current user is not authorized to delete this message.",
+            Arrays.asList(), Arrays.asList());
         doThrow(illegalValueException).when(textMessageServiceMock).deleteTextMessage(100L);
 
         restTextMessageMockMvc.perform(delete("/app/rest/textmessages/{id}", 100L))

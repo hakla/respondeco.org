@@ -16,7 +16,7 @@ public class SolutionSingle extends Solution {
             if (V.size() != 1) {
                 throw new IllegalValueException(
                     "resource.errors.multipletags",
-                    "This formula can only be used with one tag!");
+                    "This formula can only be used with one tag!", null, null);
             }
 
             // get the actual tag
@@ -36,7 +36,7 @@ public class SolutionSingle extends Solution {
             if (V.size() != 1) {
                 throw new IllegalValueException(
                     "resource.errors.multipletags",
-                    "This formula can only be used with one tag!");
+                    "This formula can only be used with one tag!", null, null);
             }
 
             // get the actual tag

@@ -74,22 +74,22 @@ public class OrgJoinRequestServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        orgJoinRequestService = new OrgJoinRequestService(
-                orgJoinRequestRepositoryMock,
-                userService,
-                userRepositoryMock,
-                organizationRepositoryMock);
-
-        organizationService = new OrganizationService(
-                organizationRepositoryMock,
-                userService,
-                userRepositoryMock,
-                imageRepositoryMock,
-                projectService,
-                projectRepositoryMock,
-                postingFeedRepository,
-                resourceOfferRepositoryMock,
-                isoCategoryRepository);
+//        orgJoinRequestService = new OrgJoinRequestService(
+//                orgJoinRequestRepositoryMock,
+//                userService,
+//                userRepositoryMock,
+//                organizationRepositoryMock);
+//
+//        organizationService = new OrganizationService(
+//                organizationRepositoryMock,
+//                userService,
+//                userRepositoryMock,
+//                imageRepositoryMock,
+//                projectService,
+//                projectRepositoryMock,
+//                postingFeedRepository,
+//                resourceOfferRepositoryMock,
+//                isoCategoryRepository);
 
         defaultUser = new User();
         defaultUser.setId(2L);
@@ -112,8 +112,8 @@ public class OrgJoinRequestServiceTest {
     public void testCreateOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -129,8 +129,8 @@ public class OrgJoinRequestServiceTest {
     public void testCreateOrgJoinRequest_NotExistingUser() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(null);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(null);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         orgJoinRequestService.createOrgJoinRequest(
@@ -142,8 +142,8 @@ public class OrgJoinRequestServiceTest {
     public void testCreateOrgJoinRequest_NotExistingOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(null);
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(null);
 
         orgJoinRequestService.createOrgJoinRequest(new OrganizationResponseDTO(), new UserDTO(defaultUser));
     }
@@ -152,8 +152,8 @@ public class OrgJoinRequestServiceTest {
     public void testCreateOrgJoinRequest_NotOwnerOfOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         orgJoinRequestService.createOrgJoinRequest(
@@ -164,8 +164,8 @@ public class OrgJoinRequestServiceTest {
     public void testCreateOrgJoinRequest_AlreadyInvitedToOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -181,14 +181,14 @@ public class OrgJoinRequestServiceTest {
     public void testGetOrgJoinRequestByOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
             OrganizationResponseDTO.fromEntity(defaultOrganization, null), new UserDTO(defaultUser));
 
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
         when(orgJoinRequestRepositoryMock.findByOrganizationAndActiveIsTrue(defaultOrganization))
             .thenReturn(Arrays.asList(orgJoinRequest));
@@ -204,14 +204,14 @@ public class OrgJoinRequestServiceTest {
     @Test(expected = NoSuchEntityException.class)
     public void testGetOrgJoinRequestByOrganization_NoSuchOrganization() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService
             .createOrgJoinRequest(new OrganizationResponseDTO(), new UserDTO(defaultUser));
 
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(null);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(null);
 
         orgJoinRequestService.getOrgJoinRequestByOrganization(defaultOrganization.getId());
 
@@ -221,8 +221,8 @@ public class OrgJoinRequestServiceTest {
      public void testGetOrgJoinRequestByCurrentUser() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -241,8 +241,8 @@ public class OrgJoinRequestServiceTest {
     public void testGetAllOrgJoinRequests() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -259,8 +259,8 @@ public class OrgJoinRequestServiceTest {
     public void testAcceptOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -270,7 +270,7 @@ public class OrgJoinRequestServiceTest {
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(orgJoinRequestRepositoryMock.findByIdAndActiveIsTrue(orgJoinRequest.getId()))
             .thenReturn(orgJoinRequest);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
         verify(userRepositoryMock, times(1)).save(isA(User.class));
@@ -280,8 +280,8 @@ public class OrgJoinRequestServiceTest {
     @Test(expected = NoSuchEntityException.class)
     public void testAcceptOrgJoinRequest_NotExistingOrgJoinRequest() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -297,8 +297,8 @@ public class OrgJoinRequestServiceTest {
     public void testAcceptOrgJoinRequest_NotExistingOrganization() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -307,7 +307,7 @@ public class OrgJoinRequestServiceTest {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(orgJoinRequestRepositoryMock.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId())).thenReturn(null);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId())).thenReturn(null);
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
     }
 
@@ -315,8 +315,8 @@ public class OrgJoinRequestServiceTest {
     public void testAcceptOrgJoinRequest_UserNotOfOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -325,7 +325,7 @@ public class OrgJoinRequestServiceTest {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(orgJoinRequestRepositoryMock.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
     }
@@ -334,8 +334,8 @@ public class OrgJoinRequestServiceTest {
     public void testDeclineOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -344,7 +344,7 @@ public class OrgJoinRequestServiceTest {
 
         when(userService.getUserWithAuthorities()).thenReturn(defaultUser);
         when(orgJoinRequestRepositoryMock.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
         orgJoinRequestService.declineRequest(orgJoinRequest.getId());
 
@@ -354,8 +354,8 @@ public class OrgJoinRequestServiceTest {
     @Test(expected = NoSuchEntityException.class)
     public void testDeclineOrgJoinRequest_NotExistingOrgJoinRequest() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -371,8 +371,8 @@ public class OrgJoinRequestServiceTest {
     public void testDeclineOrgJoinRequest_UserNotOfOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -381,7 +381,7 @@ public class OrgJoinRequestServiceTest {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
         when(orgJoinRequestRepositoryMock.findByIdAndActiveIsTrue(orgJoinRequest.getId())).thenReturn(orgJoinRequest);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
         orgJoinRequestService.acceptRequest(orgJoinRequest.getId());
     }
@@ -390,8 +390,8 @@ public class OrgJoinRequestServiceTest {
     public void testDeleteOrgJoinRequest() throws Exception {
 
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -409,8 +409,8 @@ public class OrgJoinRequestServiceTest {
     @Test(expected = NoSuchEntityException.class)
     public void testDeleteOrgJoinRequest_NotExistingOrgJoinRequest() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(
@@ -424,8 +424,8 @@ public class OrgJoinRequestServiceTest {
     @Test(expected = OperationForbiddenException.class)
     public void testDeleteOrgJoinRequest_NotOwnerOfOrganization() throws Exception {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(userRepositoryMock.findByIdAndActiveIsTrue(defaultUser.getId())).thenReturn(defaultUser);
-        when(organizationRepositoryMock.findByIdAndActiveIsTrue(defaultOrganization.getId()))
+        when(userRepositoryMock.findOne(defaultUser.getId())).thenReturn(defaultUser);
+        when(organizationRepositoryMock.findOne(defaultOrganization.getId()))
             .thenReturn(defaultOrganization);
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestService.createOrgJoinRequest(

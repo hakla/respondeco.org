@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Base abstract class for entities which will hold definitions for created, last modified by and created,
@@ -25,7 +26,7 @@ import javax.validation.constraints.NotNull;
 @MappedSuperclass
 @Audited
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AbstractAuditingEntity {
+public abstract class AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +53,7 @@ public abstract class AbstractAuditingEntity {
 
     @JsonIgnore
     @Column(name = "is_active")
-    protected boolean active= true;
+    protected Boolean active = true;
 
     @Override
     public int hashCode() {

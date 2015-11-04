@@ -1,6 +1,9 @@
 package org.respondeco.respondeco.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -11,11 +14,13 @@ import java.io.Serializable;
 /**
  * A OrgJoinRequest.
  */
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
 @Entity
 @Table(name = "T_ORGJOINREQUEST")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class OrgJoinRequest extends AbstractAuditingEntity implements Serializable {
+public class OrgJoinRequest extends AbstractAuditingEntity {
 
     @NotNull
     @ManyToOne

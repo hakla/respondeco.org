@@ -284,22 +284,6 @@ public class OrganizationController {
     }
 
     /**
-     * GET  /rest/organizations/{id}/invitableusers -> get all users which can be invited into the given organization
-     *
-     * @param id the id of the organization
-     * @return list of invitable users
-     */
-    @RequestMapping(value = "/rest/organizations/{id}/invitableusers",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    @RolesAllowed(AuthoritiesConstants.USER)
-    @RESTWrapped
-    public Object getInvitableUsers(@PathVariable Long id) {
-        return organizationService.findInvitableUsersByOrgId(id);
-    }
-
-    /**
      * rate an organization based on a resource match
      *
      * @param ratingRequestDTO the rating,containing the actual rating value [0-5], a match id indicating the

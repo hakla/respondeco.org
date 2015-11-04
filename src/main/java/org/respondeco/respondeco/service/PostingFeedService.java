@@ -52,9 +52,9 @@ public class PostingFeedService {
     public Posting addPostingForProjects(Long projectId, String information) throws
         PostingFeedException, NoSuchEntityException {
         User currentUser = userService.getUserWithAuthorities();
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        Project project = projectRepository.findOne(projectId);
         if(project == null) {
-            throw new NoSuchEntityException(projectId);
+            throw new NoSuchEntityException(ProjectService.ERROR_PREFIX, projectId, Project.class);
         }
         if(currentUser.equals(project.getManager()) == false) {
             throw new PostingFeedException(".notmanagerofproject", String.format("User is not manager of project"));
@@ -86,10 +86,9 @@ public class PostingFeedService {
      */
     public Posting createPostingForOrganization(Long organizationId, Posting posting) throws NoSuchEntityException, PostingFeedException {
         User currentUser = userService.getUserWithAuthorities();
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
-
-        if (organization == null) {
-            throw new NoSuchEntityException(organizationId);
+        Organization organization = organizationRepository.findOne(organizationId);
+        if(organization == null) {
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, organizationId, Organization.class);
         }
 
         if (currentUser.equals(organization.getOwner()) == false) {
@@ -126,9 +125,9 @@ public class PostingFeedService {
      */
     public Page<Posting> getPostingsForOrganization(Long organizationId, Pageable pageable) throws
         NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationId);
+        Organization organization = organizationRepository.findOne(organizationId);
         if(organization == null) {
-            throw new NoSuchEntityException(organizationId);
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, organizationId, Organization.class);
         }
         return postingFeedRepository.getPostingsForOrganization(organizationId, pageable);
     }
@@ -142,9 +141,9 @@ public class PostingFeedService {
      */
     public Page<Posting> getPostingsForProject(Long projectId, Pageable pageable) throws
             NoSuchEntityException {
-        Project project = projectRepository.findByIdAndActiveIsTrue(projectId);
+        Project project = projectRepository.findOne(projectId);
         if(project == null) {
-            throw new NoSuchEntityException(projectId);
+            throw new NoSuchEntityException(ProjectService.ERROR_PREFIX, projectId, Project.class);
         }
         return postingFeedRepository.getPostingsForProject(projectId, pageable);
     }
