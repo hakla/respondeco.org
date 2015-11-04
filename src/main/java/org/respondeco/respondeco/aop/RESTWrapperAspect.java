@@ -14,6 +14,7 @@ import org.respondeco.respondeco.web.rest.mapping.ObjectMapper;
 import org.respondeco.respondeco.web.rest.mapping.ObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,6 @@ public class RESTWrapperAspect {
 
     public static interface Invocation {
         public Object invoke() throws Throwable;
-
         public HttpStatus getReturnStatus();
     }
 
@@ -87,7 +88,7 @@ public class RESTWrapperAspect {
             Object result = invocation.invoke();
             HttpStatus returnStatus = invocation.getReturnStatus();
             log.debug("got value to map: {}", result);
-            if (result != null) {
+            if(result != null) {
                 Object mapped = mapResult(result);
                 return new ResponseEntity<>(mapped, returnStatus);
             } else {
@@ -112,12 +113,12 @@ public class RESTWrapperAspect {
 
     private Object mapResult(Object object) {
         String fields = null;
-        if (request != null) {
+        if(request != null) {
             fields = request.getParameter("fields");
         }
         if (object instanceof Page) {
             return mapPage((Page) object, fields);
-        } else if (object instanceof AbstractAuditingEntity) {
+        } else if(object instanceof AbstractAuditingEntity) {
             return mapObject(object, fields);
         } else {
             return object;
