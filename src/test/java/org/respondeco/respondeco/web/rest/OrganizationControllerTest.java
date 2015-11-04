@@ -17,7 +17,6 @@ import org.respondeco.respondeco.service.exception.IllegalValueException;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
 import org.respondeco.respondeco.service.exception.PostingFeedException;
 import org.respondeco.respondeco.testutil.ArgumentCaptor;
-import org.respondeco.respondeco.testutil.ResultCaptor;
 import org.respondeco.respondeco.testutil.ResultMapper;
 import org.respondeco.respondeco.testutil.domain.DomainModel;
 import org.respondeco.respondeco.testutil.TestUtil;
@@ -33,7 +32,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -141,7 +139,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
 
     private OrganizationController organizationController;
     private DomainModel model;
-    private ResultMapper<Organization> resultMapper;
+    private ResultMapper resultMapper;
 
     @Before
     public void setup() {
@@ -266,7 +264,7 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
         posting.setPostingfeed(postingFeed);
 
         model = new DomainModel();
-        resultMapper = new ResultMapper<>();
+        resultMapper = new ResultMapper();
         doAnswer(resultMapper).when(organizationController).update(any(Organization.class));
 
         voidInterceptor = ArgumentCaptor.forType(Object.class, -1, false);
@@ -275,10 +273,10 @@ public class OrganizationControllerTest extends AbstractJUnit4SpringContextTests
 
     @Test
     public void testUpdateOrganization_shouldUpdate() throws Exception {
-        when(organizationServiceMock.update(any(Organization.class))).thenReturn(model.ORGANIZATION1);
+        when(organizationServiceMock.update(any(Organization.class))).thenReturn(model.ORGANIZATION1_GOVERNS_P1);
         Object mapped = new ObjectMapperFactory()
             .createMapper(Organization.class, null)
-            .map(model.ORGANIZATION1);
+            .map(model.ORGANIZATION1_GOVERNS_P1);
         log.debug("mapped: {}", mapped);
         // Update Organization
         restOrganizationMockMvc.perform(put("/app/rest/organizations")

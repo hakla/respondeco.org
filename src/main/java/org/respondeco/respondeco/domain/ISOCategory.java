@@ -2,6 +2,7 @@ package org.respondeco.respondeco.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.respondeco.respondeco.web.rest.mapping.DefaultReturnValue;
 
 import javax.persistence.*;
@@ -12,11 +13,11 @@ import java.util.List;
 /**
  * Created by clemens on 23/06/15.
  */
-
-@Entity
-@Table(name = "T_ISO_CATEGORY")
 @Getter
 @Setter
+@ToString(callSuper = true)
+@Entity
+@Table(name = "T_ISO_CATEGORY")
 public class ISOCategory extends AbstractAuditingEntity {
 
     @NotNull

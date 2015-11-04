@@ -115,7 +115,7 @@ public class SocialMediaController {
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (SocialMediaPermissionRevokedException e) {
             log.error("Social media permission for facebook got revoked: " + e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         }
 
         return responseEntity;
@@ -227,7 +227,7 @@ public class SocialMediaController {
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (SocialMediaPermissionRevokedException e) {
             log.error("Social media permission for twitter got revoked: " + e);
-            responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+            responseEntity = ErrorHelper.buildErrorResponse(e);
         } catch (SocialMediaApiConnectionException e) {
             log.error("Twitter API Error: " + e);
             responseEntity = ErrorHelper.buildErrorResponse("spring.social.error.twitter.apiconnection", "twitter api error occured");
@@ -314,7 +314,7 @@ public class SocialMediaController {
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } catch (SocialMediaPermissionRevokedException e) {
                 log.error("Social media permission for xing got revoked: " + e);
-                responseEntity = ErrorHelper.buildErrorResponse(e.getInternationalizationKey(), e.getMessage());
+                responseEntity = ErrorHelper.buildErrorResponse(e);
             } catch (SocialMediaApiConnectionException e) {
                 log.error("XING API Error: " + e);
                 responseEntity = ErrorHelper.buildErrorResponse("spring.social.error.xing.apiconnection", "xing api error occured");

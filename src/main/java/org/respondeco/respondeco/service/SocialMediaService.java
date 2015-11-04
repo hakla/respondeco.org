@@ -44,6 +44,9 @@ public class SocialMediaService {
 
     private final Logger log = LoggerFactory.getLogger(SocialMediaService.class);
 
+    public static final ServiceException.ErrorPrefix ERROR_PREFIX = new ServiceException.ErrorPrefix("socialmedia");
+    public static final String ERROR_NOT_LOGGED_IN = "not_logged_in";
+
     private Environment env;
     private SocialMediaRepository socialMediaRepository;
 
@@ -100,7 +103,8 @@ public class SocialMediaService {
         throws OperationForbiddenException, ConnectionAlreadyExistsException {
         User user = userService.getUserWithAuthorities();
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
 
         //check if connection already exists
@@ -138,12 +142,13 @@ public class SocialMediaService {
 
         User user = userService.getUserWithAuthorities();
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
         if(socialMediaConnection == null) {
-            throw new NoSuchEntityException("no connection found for user with id: " + user.getId());
+            throw new NoSuchEntityException(ERROR_PREFIX, user.getLogin() + "+facebook", SocialMediaConnection.class);
         }
 
         //create connection with help of socialMediaConnection
@@ -178,7 +183,7 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "facebook");
         if(socialMediaConnection == null) {
-            throw new NoSuchEntityException("user is not connected with facebook");
+            throw new NoSuchEntityException(ERROR_PREFIX, user.getLogin() + "+facebook", SocialMediaConnection.class);
         }
 
         RestTemplate restTemplate = new RestTemplate();
@@ -218,7 +223,8 @@ public class SocialMediaService {
         //check if user is logged in
         User user = userService.getUserWithAuthorities();
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
 
         //check if connection already exists
@@ -258,12 +264,13 @@ public class SocialMediaService {
         User user = userService.getUserWithAuthorities();
 
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
         if(socialMediaConnection == null) {
-            throw new NoSuchEntityException("no connection found for user with id: " + user.getId());
+            throw new NoSuchEntityException(ERROR_PREFIX, user.getLogin() + "+twitter", SocialMediaConnection.class);
         }
 
         Connection<Twitter> connection = twitterConnectionFactory.createConnection(new ConnectionData(
@@ -296,7 +303,7 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProvider(user, "twitter");
         if(socialMediaConnection == null) {
-            throw new NoSuchEntityException("user is not connected with twitter");
+            throw new NoSuchEntityException(ERROR_PREFIX, user.getLogin() + "+facebook", SocialMediaConnection.class);
         }
 
         socialMediaRepository.delete(socialMediaConnection);
@@ -342,7 +349,8 @@ public class SocialMediaService {
         //check if user is logged in
         User user = userService.getUserWithAuthorities();
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
 
         //check if connection already exists
@@ -380,12 +388,13 @@ public class SocialMediaService {
         User user = userService.getUserWithAuthorities();
 
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProviderAndActiveIsTrue(user, "xing");
         if(socialMediaConnection == null) {
-            throw new NoSuchEntityException("no connection found for user with id: " + user.getId());
+            throw new NoSuchEntityException(ERROR_PREFIX, user.getLogin() + "+xing", SocialMediaConnection.class);
         }
 
         Token accessToken = new Token(socialMediaConnection.getToken(), socialMediaConnection.getSecret());
@@ -426,7 +435,7 @@ public class SocialMediaService {
 
         SocialMediaConnection socialMediaConnection = socialMediaRepository.findByUserAndProviderAndActiveIsTrue(user, "xing");
         if(socialMediaConnection == null) {
-            throw new NoSuchEntityException("user is not connected with xing");
+            throw new NoSuchEntityException(ERROR_PREFIX, user.getLogin() + "+facebook", SocialMediaConnection.class);
         }
 
         socialMediaRepository.delete(socialMediaConnection);
@@ -443,7 +452,8 @@ public class SocialMediaService {
 
         User user = userService.getUserWithAuthorities();
         if(user == null) {
-            throw new OperationForbiddenException("no current user found");
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_LOGGED_IN),
+                "You are currently not logged in.", null, null);
         }
         List<SocialMediaConnection> connections = socialMediaRepository.findByUserAndActiveIsTrue(user);
 

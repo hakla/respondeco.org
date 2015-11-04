@@ -7,18 +7,12 @@ import org.respondeco.respondeco.domain.ResourceOffer;
 import org.respondeco.respondeco.domain.ResourceRequirement;
 import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.ResourceService;
-import org.respondeco.respondeco.service.exception.GeneralResourceException;
 import org.respondeco.respondeco.service.exception.IllegalValueException;
-import org.respondeco.respondeco.service.exception.MatchAlreadyExistsException;
+import org.respondeco.respondeco.service.exception.OperationForbiddenException;
 import org.respondeco.respondeco.web.rest.dto.ResourceMatchRequestDTO;
-import org.respondeco.respondeco.web.rest.dto.ResourceOfferDTO;
-import org.respondeco.respondeco.service.exception.*;
-import org.respondeco.respondeco.web.rest.dto.*;
-import org.respondeco.respondeco.web.rest.util.ErrorHelper;
 import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +22,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * ResourceController
@@ -116,7 +107,7 @@ public class ResourceController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RESTWrapped
-    public Object claimResourceOffer(@RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) throws MatchAlreadyExistsException {
+    public Object claimResourceOffer(@RequestBody ResourceMatchRequestDTO resourceMatchRequestDTO) {
         log.debug("REST request to claim ResourceOffer : " + resourceMatchRequestDTO);
 
         ResourceMatch resourceMatch = null;

@@ -22,7 +22,7 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public static final QOrganization organization = new QOrganization("organization");
 
-    public final QAbstractAuditingEntity _super = new QAbstractAuditingEntity(this);
+    public final QAbstractAuditingNamedEntity _super = new QAbstractAuditingNamedEntity(this);
 
     //inherited
     public final BooleanPath active = _super.active;
@@ -58,7 +58,8 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     public final ListPath<User, QUser> members = this.<User, QUser>createList("members", User.class, QUser.class, PathInits.DIRECT2);
 
-    public final StringPath name = createString("name");
+    //inherited
+    public final StringPath name = _super.name;
 
     public final QUser owner;
 

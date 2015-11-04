@@ -18,7 +18,6 @@ import org.respondeco.respondeco.web.rest.util.RestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +36,6 @@ import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing the current user's account.
@@ -124,7 +122,7 @@ public class AccountController {
             user.setEmail(registerDTO.getEmail().toLowerCase());
             user.setPassword(registerDTO.getPassword());
             user.setLangKey(registerDTO.getLangKey());
-            user = userService.createUser(user);
+            user = userService.create(user);
 
             Organization organization = new Organization();
             organization.setName(registerDTO.getOrganization());
@@ -159,12 +157,11 @@ public class AccountController {
      * POST  /rest/account -> update the current user information.
      */
     @RequestMapping(value = "/rest/account",
-        method = RequestMethod.POST,
+        method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void update(@RequestBody UserDTO userDTO) {
-        userService.updateUserInformation(userDTO.getTitle(), userDTO.getGender(), userDTO.getFirstName(),
-            userDTO.getLastName(), userDTO.getEmail(), userDTO.getDescription(), userDTO.getProfilePicture());
+    public void update(@RequestBody User newUserData) {
+        userService.update(newUserData);
     }
 
     /**
@@ -177,10 +174,7 @@ public class AccountController {
     @RESTWrapped
     public void delete() {
         User currentUser = userService.getUserWithAuthorities();
-        if(currentUser != null) {
-            currentUser.setActive(false);
-            userRepository.save(currentUser);
-        }
+        userService.delete(currentUser);
     }
 
     /**
@@ -218,8 +212,6 @@ public class AccountController {
     @Timed
     @RESTWrapped
     public void changePassword(@RequestBody String password) {
-        if (StringUtils.isEmpty(password))
-            throw new OperationForbiddenException("Password cannot be empty.");
         userService.changePassword(password);
     }
 

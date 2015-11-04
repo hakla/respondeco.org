@@ -16,10 +16,9 @@ import java.util.List;
  * Spring Data JPA repository for the ResourceOffer entity.
  */
 @Transactional
-public interface ResourceOfferRepository extends JpaRepository<ResourceOffer, Long>, QueryDslPredicateExecutor  {
+public interface ResourceOfferRepository extends AbstractEntityRepository<ResourceOffer, Long>, QueryDslPredicateExecutor {
     List<ResourceOffer> findByNameAndActiveIsTrue(String name, Pageable pageable);
     Page<ResourceOffer> findByActiveIsTrue(Pageable pageable);
     List<ResourceOffer> findByOrganizationIdAndActiveIsTrue(Long id);
-    ResourceOffer findByIdAndActiveIsTrue(Long id);
     Page<ResourceOffer> findByOrganizationNotAndActiveIsTrue(Organization organization, Pageable pageable);
 }

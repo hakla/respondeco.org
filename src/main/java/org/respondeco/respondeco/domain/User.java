@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 /**
  * A user.
  */
-@Entity
 @Getter
 @Setter
+@ToString(callSuper = true, exclude = {"persistentTokens", "authorities", "organization"}) // otherwise there will be errors in the log because authorities is lazy loaded
+@Entity
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@ToString(callSuper = true, exclude = {"persistentTokens", "authorities", "organization"}) // otherwise there will be errors in the log because authorities is lazy loaded
-public class User extends AbstractAuditingEntity implements Serializable {
+public class User extends AbstractAuditingEntity {
 
     @NotNull
     @Size(min = 0, max = 50)
@@ -35,7 +35,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private String login;
 
     @JsonIgnore
-    @Size(min = 0, max = 100)
+    @Size(min = 8, max = 100)
     @Column(length = 100)
     private String password;
 

@@ -7,25 +7,27 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.respondeco.respondeco.testutil.TestUtil.blank;
+
 /**
- * Created by clemens on 19/08/15.
+ * Created by Clemens Puehringer on 19/08/15.
  */
 public class ResourceRequirements {
 
-    public static final List<ResourceRequirement> NEW_MINIMAL_LIST = new ArrayList<>();
-    public static final List<ResourceRequirement> SAVED_MINIMAL_LIST = new ArrayList<>();
-    public static final List<ResourceRequirement> MIXED_MINIMAL_LIST = new ArrayList<>();
+    public static final ArrayList<ResourceRequirement> NEW_MINIMAL_LIST = new ArrayList<>();
+    public static final ArrayList<ResourceRequirement> SAVED_MINIMAL_LIST = new ArrayList<>();
+    public static final ArrayList<ResourceRequirement> MIXED_MINIMAL_LIST = new ArrayList<>();
 
     static {
-        ResourceRequirement newRequirement1 = new ResourceRequirement();
+        ResourceRequirement newRequirement1 = blank(ResourceRequirement.class);
         newRequirement1.setName("newRequirement1");
         newRequirement1.setDescription("newRequirement1Description");
         newRequirement1.setAmount(new BigDecimal(10));
-        ResourceRequirement newRequirement2 = new ResourceRequirement();
+        ResourceRequirement newRequirement2 = blank(ResourceRequirement.class);
         newRequirement2.setName("newRequirement2");
         newRequirement2.setDescription("newRequirement2Description");
         newRequirement2.setAmount(new BigDecimal(20));
-        ResourceRequirement newRequirement3 = new ResourceRequirement();
+        ResourceRequirement newRequirement3 = blank(ResourceRequirement.class);
         newRequirement3.setName("newRequirement3");
         newRequirement3.setDescription("newRequirement3Description");
         newRequirement3.setAmount(new BigDecimal(30));

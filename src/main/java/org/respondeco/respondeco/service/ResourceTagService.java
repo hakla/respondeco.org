@@ -51,7 +51,7 @@ public class ResourceTagService {
     /**
      * Return Tags. If the tag exists get him from the database, otherwise
      * create a new Tag and save the tag in the database.
-     * @param tagNames list of tags
+     * @param tags list of tags
      * @return list of ResourceTags found or created
      */
     public List<ResourceTag> getOrCreateTags(List<ResourceTag> tags) {

@@ -280,7 +280,7 @@ public class ResourceControllerTest {
     public void testDeleteOffer_FAIL() throws Exception{
         ResourceOfferDTO dto = this.bindOfferDTOMockData(2);
 
-        doThrow(new IllegalValueException("", "")).when(resourceService).
+        doThrow(new IllegalValueException("", "", Arrays.asList(), Arrays.asList())).when(resourceService).
             deleteOffer(dto.getId());
         restMockMvc.perform(delete("/app/rest/resourceoffers/{id}", resourceOffer.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -434,7 +434,7 @@ public class ResourceControllerTest {
         requestDTO.setResourceOfferId(1L);
         requestDTO.setResourceRequirementId(1L);
 
-        doThrow(MatchAlreadyExistsException.class).when(resourceService).createClaimResourceRequest(requestDTO.getResourceOfferId(), requestDTO.getResourceRequirementId());
+        doThrow(IllegalArgumentException.class).when(resourceService).createClaimResourceRequest(requestDTO.getResourceOfferId(), requestDTO.getResourceRequirementId());
 
         restMockMvc.perform(post("/app/rest/resourcerequests")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

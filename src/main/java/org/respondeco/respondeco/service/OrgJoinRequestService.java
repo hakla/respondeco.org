@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -23,20 +24,25 @@ public class OrgJoinRequestService {
 
     private final Logger log = LoggerFactory.getLogger(OrgJoinRequestService.class);
 
-    private OrgJoinRequestRepository orgJoinRequestRepository;
-
-    private UserService userService;
-
-    private UserRepository userRepository;
+    public static final ServiceException.ErrorPrefix ERROR_PREFIX = new ServiceException.ErrorPrefix("orgjoinrequest");
+    public static final String ERROR_INVITATION_PENDING = "invitation_pending";
+    public static final String ERROR_NO_AUTHORITY       = "no_authority";
 
     private OrganizationRepository organizationRepository;
+    private OrgJoinRequestRepository orgJoinRequestRepository;
+
+    private UserRepository userRepository;
+    private UserService userService;
 
     @Inject
-    public OrgJoinRequestService(OrgJoinRequestRepository orgJoinRequestRepository, UserService userService, UserRepository userRepository, OrganizationRepository organizationRepository) {
-        this.orgJoinRequestRepository=orgJoinRequestRepository;
-        this.userService=userService;
-        this.userRepository=userRepository;
+    public OrgJoinRequestService(OrganizationRepository organizationRepository,
+                                 OrgJoinRequestRepository orgJoinRequestRepository,
+                                 UserRepository userRepository,
+                                 UserService userService) {
         this.organizationRepository=organizationRepository;
+        this.orgJoinRequestRepository=orgJoinRequestRepository;
+        this.userRepository=userRepository;
+        this.userService=userService;
     }
 
     /**
@@ -51,30 +57,38 @@ public class OrgJoinRequestService {
     public OrgJoinRequest createOrgJoinRequest(OrganizationResponseDTO organizationDTO, UserDTO userDTO)
         throws IllegalValueException {
         User currentUser = userService.getUserWithAuthorities();
-        User user = userRepository.findByIdAndActiveIsTrue(userDTO.getId());
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(organizationDTO.getId());
+        User user = userRepository.findOne(userDTO.getId());
+        Organization organization = organizationRepository.findOne(organizationDTO.getId());
         if(user == null) {
-            throw new NoSuchEntityException("User does not exist");
+            throw new NoSuchEntityException(UserService.ERROR_PREFIX, userDTO.getId(), User.class);
         }
         if(organization == null) {
-            throw new NoSuchEntityException("Organization does not exist");
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, organizationDTO.getId(),
+                Organization.class);
         }
         if(!organization.getVerified()) {
-            throw new OperationForbiddenException("Organization (id: " + organization.getId() + ") not verified");
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_VERIFIED),
+                "Cannot create organization join request, organization %1 (%2) is not yet verified",
+                Arrays.asList("organizationId", "organizationName"),
+                Arrays.asList(organization.getId(), organization.getName()));
         }
         if(!organization.getOwner().equals(currentUser)) {
-            throw new IllegalValueException("orgJoinRequest.error.notowner",
-                String.format("Current user %s is not owner of organization", currentUser)
-            );
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of Organization %3 (%4)",
+                Arrays.asList("userId", "userLogin", "organizationId", "organizationName"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin(), organization.getId(),
+                    organization.getName()));
         }
 
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByUserAndOrganizationAndActiveIsTrue(user, organization);
 
         if (orgJoinRequest != null) {
-            throw new IllegalValueException(
-                "orgJoinRequest.error.pendinginvitation",
-                String.format("User %s has an open invitation to join organization %s", user, organization)
-            );
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_INVITATION_PENDING),
+                "An invitation from organization %1 (%2) to user %3 (%4) is already pending.",
+                Arrays.asList("organizationId", "organizationName", "userId", "userLogin"),
+                Arrays.asList(organization.getId(), organization.getName(), user.getId(), user.getLogin()));
         }
 
         orgJoinRequest = new OrgJoinRequest();
@@ -92,10 +106,10 @@ public class OrgJoinRequestService {
      * @throws NoSuchEntityException organization doesn't exist
      */
     public List<OrgJoinRequest> getOrgJoinRequestByOrganization(Long id) throws NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
+        Organization organization = organizationRepository.findOne(id);
 
         if(organization == null) {
-            throw new NoSuchEntityException(String.format("Organization does not exist: %d", id));
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, id, Organization.class);
         }
         log.debug("Found List of OrgJoinRequest by OrgName");
 
@@ -160,17 +174,18 @@ public class OrgJoinRequestService {
     public void acceptRequest(Long requestId, User user) throws NoSuchEntityException {
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByIdAndActiveIsTrue(requestId);
         if(null == orgJoinRequest) {
-            throw new NoSuchEntityException("OrgJoinRequest does not exist");
+            throw new NoSuchEntityException(ERROR_PREFIX, requestId, OrgJoinRequest.class);
         }
         if(!user.equals(orgJoinRequest.getUser())) {
-            throw new IllegalValueException(
-                "orgJoinRequest.error.usermismatch",
-                String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser())
-            );
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NO_AUTHORITY),
+                "User %1 (%2) has no authority to accept request %3",
+                Arrays.asList("userId", "userLogin", "orgJoinRequestId"),
+                Arrays.asList(user.getId(), user.getLogin(), requestId));
         }
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgJoinRequest.getOrganization().getId());
+        Organization organization = organizationRepository.findOne(orgJoinRequest.getOrganization().getId());
         if(organization == null) {
-            throw new NoSuchEntityException("Organization does not exist");
+            throw new NoSuchEntityException(OrganizationService.ERROR_PREFIX, orgJoinRequest.getOrganization().getId(),
+                Organization.class);
         }
 
         user.setOrganization(organization);
@@ -196,13 +211,13 @@ public class OrgJoinRequestService {
         User user = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findByIdAndActiveIsTrue(requestId);
         if(orgJoinRequest==null) {
-            throw new NoSuchEntityException(String.format("OrgJoinRequest does not exist"));
+            throw new NoSuchEntityException(ERROR_PREFIX, requestId, OrgJoinRequest.class);
         }
         if(!user.equals(orgJoinRequest.getUser())) {
-            throw new IllegalValueException(
-                "orgJoinRequest.error.usermismatch",
-                String.format("User %s does not match user of OrgJoinRequest", orgJoinRequest.getUser())
-            );
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NO_AUTHORITY),
+                "User %1 (%2) has no authority to accept request %3",
+                Arrays.asList("userId", "userLogin", "orgJoinRequestId"),
+                Arrays.asList(user.getId(), user.getLogin(), requestId));
         }
         orgJoinRequest.setActive(false);
         orgJoinRequestRepository.save(orgJoinRequest);
@@ -219,15 +234,30 @@ public class OrgJoinRequestService {
         User currentUser = userService.getUserWithAuthorities();
         OrgJoinRequest orgJoinRequest = orgJoinRequestRepository.findOne(id);
         if (orgJoinRequest == null) {
-            throw new NoSuchEntityException(String.format("No OrgJoinRequest %s found", id));
+            throw new NoSuchEntityException(ERROR_PREFIX, id, OrgJoinRequest.class);
         }
-        if(currentUser.getOrganization() == null || !currentUser.getOrganization().getOwner().equals(currentUser)) {
-            throw new OperationForbiddenException("Current user is not owner of organization");
+        if(currentUser.getOrganization() == null) {
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of an Organization",
+                Arrays.asList("userId", "userLogin"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin()));
+        }
+        if(!currentUser.equals(currentUser.getOrganization().getOwner())) {
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of Organization %3 (%4)",
+                Arrays.asList("userId", "userLogin", "organizationId", "organizationName"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin(), currentUser.getOrganization().getId(),
+                    currentUser.getOrganization().getName()));
         }
         if (orgJoinRequest.getOrganization() != currentUser.getOrganization()) {
-            throw new IllegalValueException(
-                "OrgJoinRequest.error.notowner",
-                "Current user is not owner of organization");
+            throw new OperationForbiddenException(
+                OrganizationService.ERROR_PREFIX.join(OrganizationService.ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of Organization %3 (%4)",
+                Arrays.asList("userId", "userLogin", "organizationId", "organizationName"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin(), orgJoinRequest.getOrganization().getId(),
+                    orgJoinRequest.getOrganization().getName()));
         }
         orgJoinRequestRepository.delete(id);
         log.debug("Deleted OrgJoinRequest: {}", id);

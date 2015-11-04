@@ -13,13 +13,12 @@ import javax.validation.constraints.Min;
 /**
  * Created by clemens on 07/12/14.
  */
-
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"resourceMatch"})
 @Entity
 @Table(name = "T_RATING")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString(exclude = {"resourceMatch"})
 public class Rating extends AbstractAuditingEntity {
 
     @Min(0)

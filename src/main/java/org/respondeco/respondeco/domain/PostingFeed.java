@@ -15,14 +15,13 @@ import java.util.List;
 /**
  * A Posting.
  */
-
+@Getter
+@Setter
+@ToString(callSuper = true)
 @Entity
 @Table(name = "T_POSTINGFEED")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString
-public class PostingFeed extends AbstractAuditingEntity implements Serializable {
+public class PostingFeed extends AbstractAuditingEntity {
 
     @OneToMany(mappedBy = "postingfeed")
     private List<Posting> postings;

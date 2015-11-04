@@ -1,6 +1,8 @@
 package org.respondeco.respondeco.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -12,12 +14,13 @@ import java.io.Serializable;
 /**
  * An Image.
  */
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = { "data" })
 @Entity
 @Table(name = "T_IMAGE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Data
-@ToString(exclude = { "data" })
-public class Image extends AbstractAuditingNamedEntity implements Serializable {
+public class Image extends AbstractAuditingNamedEntity {
 
     @Column(name = "data")
     @Lob

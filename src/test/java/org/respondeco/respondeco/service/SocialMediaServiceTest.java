@@ -345,7 +345,7 @@ public class SocialMediaServiceTest {
         verify(socialMediaRepositoryMock, times(1)).save(any(SocialMediaConnection.class));
         assertEquals(socialMediaConnection.getProvider(), "xing");
         assertEquals(socialMediaConnection.getUser().getId().longValue(), 1L);
-        assertEquals(socialMediaConnection.isActive(), true);
+        assertEquals(socialMediaConnection.getActive(), true);
         assertEquals(socialMediaConnection.getToken(), "accesstoken");
         assertEquals(socialMediaConnection.getSecret(), "verifier");
     }

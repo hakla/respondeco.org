@@ -2,8 +2,8 @@ package org.respondeco.respondeco.service;
 
 import org.respondeco.respondeco.domain.*;
 import org.respondeco.respondeco.repository.*;
-import org.respondeco.respondeco.security.AuthoritiesConstants;
 import org.respondeco.respondeco.service.exception.*;
+import org.respondeco.respondeco.service.exception.ServiceException.ErrorPrefix;
 import org.respondeco.respondeco.service.util.Assert;
 import org.respondeco.respondeco.service.util.EntityAssert;
 import org.slf4j.Logger;
@@ -22,51 +22,48 @@ public class OrganizationService {
 
     private static final Logger log = LoggerFactory.getLogger(OrganizationService.class);
 
-    private static final String ERROR_KEY = "organization.error";
-    private static final String ERROR_ORGANIZATION_EXISTS = "exists";
-    private static final String ERROR_NAME_EMPTY = "name_empty";
-    private static final String ERROR_NO_OWNER = "no_owner";
-    private static final String ERROR_NOT_OWNER = "not_owner";
-    private static final String ERROR_NAME_CHANGE_AFTER_VERIFICATION = "name_change_after_validation";
-    private static final String ERROR_NPO_CHANGE_AFTER_VERIFICATION = "npo_change_after_validation";
+    public static final ErrorPrefix ERROR_PREFIX                    = new ErrorPrefix("organization");
+    public static final String ERROR_ID_NULL                        = "id_null";
+    public static final String ERROR_NAME_CHANGE_AFTER_VALIDATION   = "name_change_after_validation";
+    public static final String ERROR_NOT_ADMIN                      = "not_admin";
+    public static final String ERROR_NOT_OWNER                      = "not_owner";
+    public static final String ERROR_NOT_VERIFIED                   = "not_verified";
+    public static final String ERROR_NPO_CHANGE_AFTER_VERIFICATION  = "npo_change_after_validation";
+    public static final String ERROR_ORGANIZATION_EXISTS            = "exists";
 
-    private OrganizationRepository organizationRepository;
-    private UserService userService;
-    private UserRepository userRepository;
     private ImageRepository imageRepository;
-    private ProjectService projectService;
-    private ProjectRepository projectRepository;
-    private PostingFeedRepository postingFeedRepository;
-    private ResourceOfferRepository resourceOfferRepository;
     private ISOCategoryRepository isoCategoryRepository;
-
-    private ExceptionUtil.KeyBuilder errorKey;
+    private OrganizationRepository organizationRepository;
+    private PostingFeedRepository postingFeedRepository;
+    private ProjectRepository projectRepository;
+    private ProjectService projectService;
+    private ResourceOfferRepository resourceOfferRepository;
+    private UserRepository userRepository;
+    private UserService userService;
 
     @Inject
-    public OrganizationService(OrganizationRepository organizationRepository,
-                               UserService userService,
-                               UserRepository userRepository,
-                               ImageRepository imageRepository,
-                               ProjectService projectService,
-                               ProjectRepository projectRepository,
+    public OrganizationService(ImageRepository imageRepository,
+                               ISOCategoryRepository isoCategoryRepository,
+                               OrganizationRepository organizationRepository,
                                PostingFeedRepository postingFeedRepository,
+                               ProjectRepository projectRepository,
+                               ProjectService projectService,
                                ResourceOfferRepository resourceOfferRepository,
-                               ISOCategoryRepository isoCategoryRepository) {
-        this.organizationRepository = organizationRepository;
-        this.userService = userService;
-        this.userRepository = userRepository;
+                               UserRepository userRepository,
+                               UserService userService) {
         this.imageRepository = imageRepository;
-        this.projectService = projectService;
-        this.projectRepository = projectRepository;
-        this.postingFeedRepository = postingFeedRepository;
-        this.resourceOfferRepository = resourceOfferRepository;
         this.isoCategoryRepository = isoCategoryRepository;
-
-        this.errorKey = new ExceptionUtil.KeyBuilder(ERROR_KEY);
+        this.organizationRepository = organizationRepository;
+        this.postingFeedRepository = postingFeedRepository;
+        this.projectRepository = projectRepository;
+        this.projectService = projectService;
+        this.resourceOfferRepository = resourceOfferRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /**
-     * {@see OrganizationService#createOrganizationInformation(String,String,String,Boolean,ImageDTO}
+     * {@see OrganizationService#createOrganizationInformation(String, String, String, Boolean, ImageDTO}
      *
      * @param name
      * @param description
@@ -77,17 +74,14 @@ public class OrganizationService {
      * @throws AlreadyInOrganizationException
      * @throws OrganizationAlreadyExistsException
      */
-    public Organization create(Organization organization)
-            throws AlreadyInOrganizationException, OrganizationAlreadyExistsException{
-        EntityAssert.isNew(organization);
-        Assert.isValid(organization.getName(), errorKey.from(ERROR_NAME_EMPTY),
-            "Organization name must not be empty");
-        Assert.notNull(organization.getOwner(), errorKey.from(ERROR_NO_OWNER),
-            "No owner was specified for creating the organization");
+    public Organization create(Organization organization) {
+        EntityAssert.Organization.isNew(organization, ERROR_PREFIX);
 
-        if(organizationRepository.findByName(organization.getName()) != null) {
-            throw new IllegalValueException(errorKey.from(ERROR_ORGANIZATION_EXISTS),
-                String.format("Organization %s already exists", organization.getName()));
+        Organization existing = organizationRepository.findByName(organization.getName());
+        if (existing != null) {
+            throw new IllegalValueException(ERROR_PREFIX.join(ERROR_ORGANIZATION_EXISTS),
+                "An organization with the name %1 already exists.",
+                Arrays.asList("name"), Arrays.asList(organization.getName()));
         }
 
         PostingFeed postingFeed = new PostingFeed();
@@ -112,24 +106,28 @@ public class OrganizationService {
 
     /**
      * updates an organization's information with the given data
-     **/
+     */
     public Organization update(Organization updatedOrganization) throws NoSuchEntityException {
-        Assert.notNull(updatedOrganization.getId(), "", "Id must not be null when updating organization information");
+        Assert.notNull(updatedOrganization.getId(), ERROR_PREFIX.join(ERROR_ID_NULL),
+            "Id must not be null when updating organization information {%1}",
+            Arrays.asList("organization"), Arrays.asList(updatedOrganization));
         User currentUser = userService.getUserWithAuthorities();
         Organization currentOrganization = organizationRepository.findByOwner(currentUser);
         //check if the organization belongs to the current user
-        if(currentOrganization == null || !currentOrganization.getId().equals(updatedOrganization.getId())) {
-            throw new OperationForbiddenException(errorKey.from(ERROR_NOT_OWNER),
-                String.format("The current user is not the owner of the organization"));
+        if (currentOrganization == null || !currentOrganization.getId().equals(updatedOrganization.getId())) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_OWNER),
+                String.format("The current user (%1) is not the owner of organization %2"),
+                Arrays.asList("user", "organization"),
+                Arrays.asList(currentUser.getLogin(), updatedOrganization.getName()));
         }
-        if(currentOrganization.getVerified()) {
-            if(!currentOrganization.getName().equals(updatedOrganization.getName())) {
-                throw new IllegalValueException(errorKey.from(ERROR_NAME_CHANGE_AFTER_VERIFICATION),
-                    "The organization name can not be changed after it was verified");
+        if (currentOrganization.getVerified()) {
+            if (!currentOrganization.getName().equals(updatedOrganization.getName())) {
+                throw new IllegalValueException(ERROR_PREFIX.join(ERROR_NAME_CHANGE_AFTER_VALIDATION),
+                    "The organization name can not be changed after it was verified", null, null);
             }
-            if(!currentOrganization.getName().equals(updatedOrganization.getName())) {
-                throw new IllegalValueException(errorKey.from(ERROR_NPO_CHANGE_AFTER_VERIFICATION),
-                    "The NPO status can not be changed after it was verified");
+            if (!currentOrganization.getName().equals(updatedOrganization.getName())) {
+                throw new IllegalValueException(ERROR_PREFIX.join(ERROR_NPO_CHANGE_AFTER_VERIFICATION),
+                    "The NPO status can not be changed after the organization was verified", null, null);
             }
         }
 
@@ -157,8 +155,8 @@ public class OrganizationService {
         log.debug("getOrganizationByName(organization) called");
 
         Organization currentOrganization = organizationRepository.findByName(orgName);
-        if(currentOrganization == null) {
-            throw new NoSuchEntityException(String.format("Organization does not exist: %s", orgName));
+        if (currentOrganization == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, orgName, Organization.class);
         }
 
         log.debug("Found Information for Organization: {}", currentOrganization);
@@ -167,6 +165,7 @@ public class OrganizationService {
 
     /**
      * Get Organization by Id
+     *
      * @param id organization id
      * @return organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if organization with id could not be found
@@ -174,18 +173,19 @@ public class OrganizationService {
     public Organization getById(Long id) {
         log.debug("getOfferById() with id " + id + " called");
         Optional<Organization> nullableOrganization =
-            Optional.ofNullable(organizationRepository.findByIdAndActiveIsTrue(id));
-        nullableOrganization.orElseThrow(() -> new NoSuchEntityException(id));
+            Optional.ofNullable(organizationRepository.findOne(id));
+        nullableOrganization.orElseThrow(() -> new NoSuchEntityException(ERROR_PREFIX, id, Organization.class));
         return nullableOrganization.get();
     }
 
     /**
      * Returns all Organizations
+     *
      * @return a list of all active organizations
      */
     public Page<Organization> get(Pageable pageable) {
         log.debug("get() called");
-        return organizationRepository.findByActiveIsTrue(pageable);
+        return organizationRepository.findAll(pageable);
     }
 
     /**
@@ -194,138 +194,105 @@ public class OrganizationService {
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the user is not the owner of any organization
      */
     public void delete(Long id) throws NoSuchEntityException {
-        Organization currentOrganization = organizationRepository.findByIdAndActiveIsTrue(id);
-        if(currentOrganization==null) {
-            throw new NoSuchEntityException(String.format("Organization %d does not exist", id));
+        Organization currentOrganization = organizationRepository.findOne(id);
+        if (currentOrganization == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, id, Organization.class);
         }
-        if(currentOrganization.getMembers() != null) {
+        if (currentOrganization.getMembers() != null) {
             for (User user : currentOrganization.getMembers()) {
-                user.setActive(false);
-                userRepository.save(user);
+                userRepository.delete(user);
             }
         }
         User owner = currentOrganization.getOwner();
-        owner.setActive(false);
-        userRepository.save(owner);
-        if(currentOrganization.getProjects() != null) {
+        userRepository.delete(currentOrganization.getOwner());
+        if (currentOrganization.getProjects() != null) {
             for (Project project : currentOrganization.getProjects()) {
                 if (!project.getSuccessful()) {
-                    project.setActive(false);
-                    projectRepository.save(project);
+                    projectRepository.delete(project);
                 }
             }
         }
-        if(currentOrganization.getResourceOffers() != null) {
+        if (currentOrganization.getResourceOffers() != null) {
             for (ResourceOffer resourceOffer : currentOrganization.getResourceOffers()) {
                 if (resourceOffer.getResourceMatches() == null) {
-                    resourceOffer.setActive(false);
-                    resourceOfferRepository.save(resourceOffer);
+                    resourceOfferRepository.delete(resourceOffer);
                 }
             }
         }
 
-        currentOrganization.setActive(false);
-        organizationRepository.save(currentOrganization);
+        organizationRepository.delete(currentOrganization);
         log.debug("Deleted Information for Organization: {}", currentOrganization);
     }
 
     /**
      * removes a member from the organization
+     *
      * @param userId the id of the user to remove
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given user does not belong to an organization
-     * @throws OperationForbiddenException if the current user is not the owner of the user's organization
+     * @throws OperationForbiddenException                                       if the current user is not the owner of the user's organization
      */
     public void deleteMember(Long userId) throws NoSuchEntityException {
-        User user = userService.getUserWithAuthorities();
-        User member = userRepository.findByIdAndActiveIsTrue(userId);
+        User currentUser = userService.getUserWithAuthorities();
+        User member = userRepository.findOne(userId);
 
-        if(member == null) {
-            throw new NoSuchEntityException(String.format("User %s does not exist", userId));
+        if (member == null) {
+            throw new NoSuchEntityException(UserService.ERROR_PREFIX, userId, User.class);
         }
         System.out.println(member);
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(member.getOrganization().getId());
-        if(organization == null) {
-            throw new NoSuchEntityException(String.format("Organization %s does not exist",
-                member.getOrganization().getId()));
+        Organization organization = organizationRepository.findOne(member.getOrganization().getId());
+        if (organization == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, member.getOrganization().getId(), Organization.class);
         }
-        if(!organization.getVerified()) {
-            throw new OperationForbiddenException("Organization (id: " + organization.getId() + ") not verified.");
+        if (!organization.getOwner().equals(currentUser)) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_OWNER),
+                "Current User (%1, %2) is not owner of Organization %3 (%4)",
+                Arrays.asList("userId", "userLogin", "organizationId", "organizationName"),
+                Arrays.asList(currentUser.getId(), currentUser.getLogin(), organization.getId(),
+                    organization.getName()));
         }
-        if(!organization.getOwner().equals(user)) {
-            throw new OperationForbiddenException(String.format("Current User is not owner of Organization %s ",
-                organization.getOwner()));
-        }
-        log.debug("Deleting member from organization", user.getLogin(), organization.getName());
+        log.debug("Deleting member from organization", currentUser.getLogin(), organization.getName());
         member.setOrganization(null);
         userRepository.save(member);
     }
 
     /**
      * searches users by their organization
+     *
      * @param orgId the id of the organization to search the users for
      * @return a list of users belonging to the given organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the given organization does not exist
      */
     public Page<User> getUserByOrgId(Long orgId) throws NoSuchEntityException {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
+        Organization organization = organizationRepository.findOne(orgId);
 
-        if(organization == null) {
-            throw new NoSuchEntityException(String.format("Organization %s does not exist", orgId));
+        if (organization == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, orgId, Organization.class);
         }
 
         log.debug("Finding members of organization", organization.getName());
-        return userRepository.findUsersByOrganizationId(orgId, null);
-    }
-
-    /**
-     * finds users which can be invited by the given organization
-     * @param orgId the organization for which to search users
-     * @return a list of users which can be invited by the given organization
-     */
-    public List<User> findInvitableUsersByOrgId(Long orgId) {
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(orgId);
-
-        // if there is no organization than all users should be returned
-        if(organization != null) {
-            List<User> users = userRepository.findInvitableUsers();
-            User owner = null;
-
-            // find the owner and remove him from the list
-            // @TODO set the orgId of the owner when set as owner
-            for (User user: users) {
-                if (organization.getOwner().equals(user)) {
-                    owner = user;
-                    break;
-                }
-            }
-
-            if (owner != null) {
-                users.remove(owner);
-            }
-
-            return users;
-        }
-        return userRepository.findAll();
+        return userRepository.findByOrganization(organization, null);
     }
 
     /**
      * verify or un-verify an organization
-     * @param id the id of the organization
+     *
+     * @param id    the id of the organization
      * @param value the value of the verified flag
      * @return the updated organization
      * @throws org.respondeco.respondeco.service.exception.NoSuchEntityException if the organization with the given id could not be found
-     * @throws OperationForbiddenException if the current user is not administrator
+     * @throws OperationForbiddenException                                       if the current user is not administrator
      */
     public Organization verify(Long id, Boolean value) throws NoSuchEntityException, OperationForbiddenException {
         User currentUser = userService.getUserWithAuthorities();
         //if current user is not admin
-        if(currentUser.getAuthorities().stream().noneMatch(auth -> auth.getName().equals(AuthoritiesConstants.ADMIN))) {
-            throw new OperationForbiddenException(
-                String.format("Current user %s does not have administration authorities", currentUser.getLogin()));
+        if (!userService.isAdmin(currentUser)) {
+            throw new OperationForbiddenException(ERROR_PREFIX.join(ERROR_NOT_ADMIN),
+                "Current user (%1) does not have administration authorities",
+                Arrays.asList("user"), Arrays.asList(currentUser.getLogin()));
         }
-        Organization organization = organizationRepository.findByIdAndActiveIsTrue(id);
-        if(organization == null) {
-            throw new NoSuchEntityException(id);
+        Organization organization = organizationRepository.findOne(id);
+        if (organization == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, id, Organization.class);
         }
         organization.setVerified(value);
         organizationRepository.save(organization);
@@ -335,58 +302,54 @@ public class OrganizationService {
     /**
      * Get the current Following State of the Organization, instead of loading all Users manually.
      * Returns TRUE: if user already follow the Organization
+     *
      * @param organizationId of which we need the following state
      * @return Boolean
      */
-    public Boolean followingState(Long organizationId){
+    public Boolean followingState(Long organizationId) {
 
         User currentUser = userService.getUserWithAuthorities();
 
-        return organizationRepository.findByUserIdAndOrganizationId(currentUser.getId(), organizationId) != null;
+        return organizationRepository.findOrganizationIfUserFollows(currentUser, organizationId) != null;
     }
 
     /**
      * Allow user to mark the given Organization as followed. If this become true, all newsfeed from organization
      * will be displayed in users dashboard
+     *
      * @param organizationId (organization) that user would like to follow (add to subscripotion)
      */
-    public void follow(Long organizationId) throws IllegalValueException{
+    public void follow(Long organizationId) {
         User currentUser = userService.getUserWithAuthorities();
-
-        // check if organization already exists for the current user and given project id.
-        // if true, we will allow an duplicate entry that will cause primary key constraint.
-        // Better to throw an exception
-        if(organizationRepository.findByUserIdAndOrganizationId(currentUser.getId(), organizationId) != null){
-            throw new IllegalValueException("follow.organization.rejected.error", "Cannot follow an organization that already marked as followed");
-        }
-
-        Organization selected = organizationRepository.findByIdAndActiveIsTrue(organizationId);
-
+        Organization selected = organizationRepository.findOne(organizationId);
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated
-        if(selected == null || selected.isActive() == false){
-            throw new IllegalValueException("follow.organization.rejected.notfound", String.format("Could not find Organization with ID: %d", organizationId));
+        if (selected == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, organizationId, Organization.class);
         }
-
-        // add new follower
+        // if the user does not already follow the organization, add the organization to the organizations which the
+        // user follows
         List<Organization> followers = currentUser.getFollowOrganizations();
-        followers.add(selected);
-        userRepository.save(currentUser);
+        if (!followers.contains(selected)) {
+            followers.add(selected);
+            userRepository.save(currentUser);
+        }
     }
 
     /**
      * Remove user from follower List and stop propagate the news from sepcific organization
+     *
      * @param organizationId (organization) to un-follow or remove newsfeed subscription
      */
-    public void unfollow(Long organizationId) throws IllegalValueException{
+    public void unfollow(Long organizationId) throws IllegalValueException {
         User currentUser = userService.getUserWithAuthorities();
 
-        Organization selected = organizationRepository.findByUserIdAndOrganizationId(currentUser.getId(), organizationId);
+        Organization selected = organizationRepository.findOrganizationIfUserFollows(currentUser, organizationId);
 
         // check if organization exists and is active. "Removed" organization will cause some confusion for users, so throw
         // an exception if organization is deactivated
-        if(selected == null || selected.isActive() == false){
-            throw new IllegalValueException("follow.project.rejected.notfound", String.format("Could not find Project with ID: %d", organizationId));
+        if (selected == null) {
+            throw new NoSuchEntityException(ERROR_PREFIX, organizationId, Organization.class);
         }
 
         // add new follower

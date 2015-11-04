@@ -13,14 +13,14 @@ import java.util.List;
 /**
  * A ResourceTag.
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor
 @Entity
 @Table(name = "T_RESOURCETAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-public class ResourceTag extends AbstractAuditingEntity implements Serializable, MatchingTag {
+public class ResourceTag extends AbstractAuditingEntity implements MatchingTag {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -29,9 +29,6 @@ public class ResourceTag extends AbstractAuditingEntity implements Serializable,
     private List<ResourceBase> resources;
 
     public void setName(@NonNull String name) {
-        if(name.trim().isEmpty()){
-            throw new IllegalValueException("resource.errors.notagname", "No name for resource tag defined");
-        }
         this.name = name.trim();
     }
 

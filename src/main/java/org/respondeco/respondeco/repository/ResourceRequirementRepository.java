@@ -12,10 +12,8 @@ import java.util.List;
  * Spring Data JPA repository for the ResourceRequirement entity.
  */
 @Transactional
-public interface ResourceRequirementRepository extends JpaRepository<ResourceRequirement, Long> {
+public interface ResourceRequirementRepository extends AbstractEntityRepository<ResourceRequirement, Long> {
 
     List<ResourceRequirement> findByNameAndProjectAndActiveIsTrue(String name, Project project);
     List<ResourceRequirement> findByProjectIdAndActiveIsTrue(Long projectId);
-    ResourceRequirement findByIdAndActiveIsTrue(Long id);
-    List<ResourceRequirement> findByActiveIsTrue();
 }

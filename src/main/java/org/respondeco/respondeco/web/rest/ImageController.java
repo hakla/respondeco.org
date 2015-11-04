@@ -5,6 +5,7 @@ import org.respondeco.respondeco.aop.RESTWrapped;
 import org.respondeco.respondeco.domain.Image;
 import org.respondeco.respondeco.repository.ImageRepository;
 import org.respondeco.respondeco.service.exception.NoSuchEntityException;
+import org.respondeco.respondeco.service.exception.ServiceException;
 import org.respondeco.respondeco.web.rest.dto.ImageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class ImageController {
         log.debug("REST request to get Image : {}", id);
         return Optional.ofNullable(imageRepository.findOne(id))
             .map(image -> image.getId())
-            .orElseThrow(() -> new NoSuchEntityException("There is no image with id " + id));
+            .orElseThrow(() -> new NoSuchEntityException(new ServiceException.ErrorPrefix("image.error"), id, Image.class));
     }
 
     /**
@@ -101,7 +102,7 @@ public class ImageController {
         Image image = imageRepository.findOne(id);
 
         if (null == image) {
-            throw new NoSuchEntityException("There is no image with id " + id);
+            throw new NoSuchEntityException(new ServiceException.ErrorPrefix("image.error"), id, Image.class);
         }
 
         response.setHeader("Content-Disposition", "attachment: filename=\"" + image.getName() + "\"");

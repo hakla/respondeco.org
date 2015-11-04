@@ -13,16 +13,14 @@ import java.math.BigDecimal;
 /**
  * Created by Clemens Puehringer on 07/12/14.
  */
-
-
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"projectRating", "supporterRating", "resourceOffer",
+    "resourceRequirement", "organization", "project"})
 @Entity
 @Table(name = "T_RESOURCE_MATCH")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Getter
-@Setter
-@ToString(exclude = {"projectRating", "supporterRating", "resourceOffer",
-    "resourceRequirement", "organization", "project"})
-public class ResourceMatch extends AbstractAuditingEntity implements Serializable {
+public class ResourceMatch extends AbstractAuditingEntity {
 
     private BigDecimal amount;
 

@@ -159,7 +159,7 @@ public class TextMessageServiceTest {
 
         verify(textMessageRepositoryMock, times(1)).save(isA(TextMessage.class));
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        assertFalse(savedMessage.isActive());
+        assertFalse(savedMessage.getActive());
     }
 
     @Test(expected = IllegalValueException.class)

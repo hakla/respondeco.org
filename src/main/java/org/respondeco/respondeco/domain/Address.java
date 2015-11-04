@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 /**
  * Created by Clemens Puehringer on 18/08/15.
@@ -11,7 +12,7 @@ import javax.persistence.Embeddable;
 @Getter
 @Setter
 @Embeddable
-public class Address {
+public class Address implements Serializable {
 
     private String country;
     private String zipCode;
