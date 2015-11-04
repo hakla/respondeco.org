@@ -102,7 +102,7 @@ public class PostingFeedServiceTest {
     @Test
      public void testAddPostingForProject() throws NoSuchEntityException, PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(projectManager);
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
+        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(basicProject);
 
         postingFeedService.addPostingForProjects(basicProject.getId(),"posting1");
 
@@ -112,7 +112,7 @@ public class PostingFeedServiceTest {
     @Test(expected = NoSuchEntityException.class)
     public void testAddPostingForProject_NoSuchProject() throws NoSuchEntityException, PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(projectManager);
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(null);
+        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(null);
 
         postingFeedService.addPostingForProjects(basicProject.getId(),"posting1");
 
@@ -121,7 +121,7 @@ public class PostingFeedServiceTest {
     @Test(expected = PostingFeedException.class)
     public void testAddPostingForProject_NotManagerOfProject() throws NoSuchEntityException, PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
+        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(basicProject);
 
         postingFeedService.addPostingForProjects(basicProject.getId(),"posting1");
 
@@ -130,7 +130,7 @@ public class PostingFeedServiceTest {
     @Test(expected = PostingFeedException.class)
     public void testAddPostingForProject_PostingIsEmpty() throws NoSuchEntityException, PostingFeedException {
         when(userService.getUserWithAuthorities()).thenReturn(projectManager);
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
+        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(basicProject);
 
         postingFeedService.addPostingForProjects(basicProject.getId(),"");
 
@@ -142,7 +142,7 @@ public class PostingFeedServiceTest {
 
         basicProject.setPostingFeed(null);
 
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId())).thenReturn(basicProject);
+        when(projectRepositoryMock.findOne(basicProject.getId())).thenReturn(basicProject);
 
         postingFeedService.addPostingForProjects(basicProject.getId(),"posting1");
 
@@ -223,7 +223,7 @@ public class PostingFeedServiceTest {
 
     @Test
     public void testGetPostingsForProject() throws NoSuchEntityException {
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(projectOrganization.getId()))
+        when(projectRepositoryMock.findOne(projectOrganization.getId()))
                 .thenReturn(basicProject);
         RestParameters restParameters = new RestParameters(null, null, null, null);
         postingFeedService.getPostingsForProject(basicProject.getId(), restParameters.buildPageRequest());
@@ -233,7 +233,7 @@ public class PostingFeedServiceTest {
 
     @Test(expected = NoSuchEntityException.class)
     public void testGetPostingsForProject_NoSuchOrganization() throws NoSuchEntityException {
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(basicProject.getId()))
+        when(projectRepositoryMock.findOne(basicProject.getId()))
                 .thenReturn(null);
 
         postingFeedService.getPostingsForProject(basicProject.getId(), null);
@@ -244,11 +244,11 @@ public class PostingFeedServiceTest {
         posting1.setPostingfeed(postingFeedProject);
         postingRepositoryMock.save(posting1);
         when(userService.getUserWithAuthorities()).thenReturn(projectManager);
-        when(postingRepositoryMock.findByIdAndActiveIsTrue(posting1.getId())).thenReturn(posting1);
+        when(postingRepositoryMock.findOne(posting1.getId())).thenReturn(posting1);
 
         postingFeedService.deletePosting(posting1.getId());
 
-        verify(postingRepositoryMock, times(1)).findByIdAndActiveIsTrue(posting1.getId());
+        verify(postingRepositoryMock, times(1)).findOne(posting1.getId());
     }
 
     @Test(expected = PostingException.class)
@@ -256,7 +256,7 @@ public class PostingFeedServiceTest {
         posting1.setPostingfeed(postingFeedProject);
         postingRepositoryMock.save(posting1);
         when(userService.getUserWithAuthorities()).thenReturn(projectManager);
-        when(postingRepositoryMock.findByIdAndActiveIsTrue(posting1.getId())).thenReturn(null);
+        when(postingRepositoryMock.findOne(posting1.getId())).thenReturn(null);
 
         postingFeedService.deletePosting(posting1.getId());
     }
@@ -266,7 +266,7 @@ public class PostingFeedServiceTest {
         posting1.setPostingfeed(postingFeedProject);
         postingRepositoryMock.save(posting1);
         when(userService.getUserWithAuthorities()).thenReturn(orgOwner);
-        when(postingRepositoryMock.findByIdAndActiveIsTrue(posting1.getId())).thenReturn(posting1);
+        when(postingRepositoryMock.findOne(posting1.getId())).thenReturn(posting1);
 
         postingFeedService.deletePosting(posting1.getId());
     }

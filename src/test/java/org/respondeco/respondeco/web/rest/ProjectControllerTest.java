@@ -295,13 +295,13 @@ public class ProjectControllerTest {
 
         verify(projectServiceMock, times(1)).delete(project.getId());
 
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(1000L)).thenReturn(null);
+        when(projectRepositoryMock.findOne(1000L)).thenReturn(null);
         // Read nonexisting Project
         restProjectMockMvc.perform(get("/app/rest/projects/{id}", 1000L)
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isNotFound());
 
-        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(1000L);
+        verify(projectRepositoryMock, times(1)).findOne(1000L);
 
     }
 
@@ -433,7 +433,8 @@ public class ProjectControllerTest {
         ProjectApplyDTO expected = new ProjectApplyDTO();
 
         when(resourceServiceMock.createProjectApplyOffer(expected.getResourceOfferId(), expected.getResourceRequirementId(),
-            expected.getOrganizationId(), expected.getProjectId())).thenThrow(new IllegalValueException("rest.test.item", "Error Accure"));
+            expected.getOrganizationId(), expected.getProjectId())).thenThrow(new IllegalValueException("rest.test.item",
+            "Error Accure", Arrays.asList(""), Arrays.asList()));
 
         restProjectMockMvc.perform(post("/app//rest/projects/apply")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -544,7 +545,7 @@ public class ProjectControllerTest {
         ratingRequestDTO.setComment("foobar");
         ratingRequestDTO.setMatchid(100L);
 
-        doThrow(ProjectRatingException.class).when(ratingServiceMock)
+        doThrow(IllegalArgumentException.class).when(ratingServiceMock)
             .rateProject(anyLong(), anyLong(), anyInt(), anyString());
 
         restProjectMockMvc.perform(post("/app/rest/projects/1/ratings")

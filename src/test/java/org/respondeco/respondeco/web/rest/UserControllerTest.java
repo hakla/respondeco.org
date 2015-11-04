@@ -23,18 +23,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class UserControllerTest extends ControllerLayerTest {
 
-    private MockMvc userMockMvc;
-
-    @Before
-    public void setupMockMvc() {
-        this.userMockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+    @Override
+    public Object getController() {
+        return userController;
     }
 
     @Test
     public void testGetExistingUser() throws Exception {
         loginAsAdmin();
         doReturn(model.USER_SAVED_MINIMAL).when(userServiceMock).getUser(model.USER_SAVED_MINIMAL.getId());
-        userMockMvc.perform(get("/app/rest/users/" + model.USER_SAVED_MINIMAL.getId())
+        mockMvc.perform(get("/app/rest/users/" + model.USER_SAVED_MINIMAL.getId())
             .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
@@ -47,7 +45,7 @@ public class UserControllerTest extends ControllerLayerTest {
         loginAsAdmin();
         Long unknownUserId = 99999999L;
         doThrow(NoSuchEntityException.class).when(userServiceMock).getUser(unknownUserId);
-        userMockMvc.perform(get("/app/rest/users/" + unknownUserId)
+        mockMvc.perform(get("/app/rest/users/" + unknownUserId)
             .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         verify(userServiceMock, times(1)).getUser(unknownUserId);
@@ -56,9 +54,9 @@ public class UserControllerTest extends ControllerLayerTest {
     @Test
     public void testGetUserAsUser_shouldBeUnauthorized() throws Exception {
         try {
-            userMockMvc.perform(get("/app/rest/users/" + model.USER_SAVED_MINIMAL.getId())
+            mockMvc.perform(get("/app/rest/users/" + model.USER_SAVED_MINIMAL.getId())
                 .accept(MediaType.APPLICATION_JSON));
-                //following line is never reached because userMockMvc throws the exception instead of
+                //following line is never reached because mockMvc throws the exception instead of
                 //sending the error via http
                 //.andExpect(status().isUnauthorized());
         } catch(ServletException e) {

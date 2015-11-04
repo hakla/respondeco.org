@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
-public class RepositoryLayerTest extends AbstractBaseTest {
+public abstract class RepositoryLayerTest extends AbstractBaseTest {
 
     @Inject public PersistentTokenRepository persistentTokenRepository;
     @Inject public UserRepository userRepository;

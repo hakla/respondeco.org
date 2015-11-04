@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -34,7 +36,7 @@ import static org.mockito.Mockito.doReturn;
  * Created by clemens on 15/09/15.
  */
 @MockServices
-public class ControllerLayerTest extends ServiceLayerTest {
+public abstract class ControllerLayerTest extends ServiceLayerTest {
 
     @Rule public TestWatcher annotationWatcher = new MockServicesAnnotationWatcher();
     private ServiceMocker serviceMocker;
@@ -48,12 +50,21 @@ public class ControllerLayerTest extends ServiceLayerTest {
     @Mock public OrganizationService organizationServiceMock;
     @Mock public ProjectService projectServiceMock;
 
+    public MockMvc mockMvc;
+
     @Before
     public void setupServiceMocking() {
         MockitoAnnotations.initMocks(this);
         serviceMocker = new ServiceMocker(methodLevelMockServicesAnnotation);
         serviceMocker.tryMockServices();
     }
+
+    @Before
+    public void setupControllerMvc() {
+        mockMvc = MockMvcBuilders.standaloneSetup(getController()).build();
+    }
+
+    public abstract Object getController();
 
     @Override
     protected void loginAs(User user) {

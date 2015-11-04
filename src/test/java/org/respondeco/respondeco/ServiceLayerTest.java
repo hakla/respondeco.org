@@ -34,7 +34,7 @@ import static org.mockito.Mockito.doReturn;
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
 @MockRepositories
-public class ServiceLayerTest extends RepositoryLayerTest {
+public abstract class ServiceLayerTest extends RepositoryLayerTest {
 
     @Rule public TestWatcher annotationWatcher = new MockRepositoriesAnnotationWatcher();
     private RepositoryMocker repositoryMocker;

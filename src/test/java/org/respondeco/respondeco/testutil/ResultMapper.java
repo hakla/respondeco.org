@@ -32,6 +32,11 @@ public class ResultMapper implements Answer {
             }
 
             @Override
+            public Boolean returnsRawReturnStatus() {
+                return false;
+            }
+
+            @Override
             public HttpStatus getReturnStatus() {
                 return returnStatus;
             }

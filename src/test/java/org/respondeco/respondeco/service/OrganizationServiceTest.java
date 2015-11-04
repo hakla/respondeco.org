@@ -75,16 +75,16 @@ public class OrganizationServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        organizationService = new OrganizationService(
-            organizationRepositoryMock,
-            userServiceMock,
-            userRepositoryMock,
-            imageRepositoryMock,
-            projectServiceMock,
-            projectRepositoryMock,
-            postingFeedRepositoryMock,
-            resourceOfferRepositoryMock,
-            isoCategoryRepository);
+//        organizationService = new OrganizationService(
+//            organizationRepositoryMock,
+//            userServiceMock,
+//            userRepositoryMock,
+//            imageRepositoryMock,
+//            projectServiceMock,
+//            projectRepositoryMock,
+//            postingFeedRepositoryMock,
+//            resourceOfferRepositoryMock,
+//            isoCategoryRepository);
         defaultUser = new User();
         defaultUser.setId(1L);
         defaultUser.setLogin("testUser");
@@ -307,11 +307,11 @@ public class OrganizationServiceTest {
     @Test
     public void testFollowingState_TRUE() throws Exception{
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         Boolean testObject = organizationService.followingState(testOrganization.getId());
 
-        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
 
         assertTrue(testObject);
@@ -320,11 +320,11 @@ public class OrganizationServiceTest {
     @Test
     public void testFollowingState_FALSE() throws Exception{
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         Boolean testObject = organizationService.followingState(testOrganization.getId());
 
-        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         assertFalse(testObject);
     }
@@ -339,7 +339,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
@@ -347,7 +347,7 @@ public class OrganizationServiceTest {
         organizationService.follow(testOrganization.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         verify(organizationRepositoryMock, times(1)).findOne(testOrganization.getId());
     }
 
@@ -357,7 +357,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         organizationService.follow(testOrganization.getId());
     }
@@ -368,7 +368,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         // this trigger our Exception for Project NULL Value
         doReturn(null).when(organizationRepositoryMock).findOne(testOrganization.getId());
         //ignore
@@ -386,7 +386,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(null).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         // this trigger our Exception for Project NULL Value
         doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
 
@@ -402,7 +402,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
         doReturn(testOrganization).when(organizationRepositoryMock).findOne(testOrganization.getId());
         //ignore
         //doReturn(null).when(userRepositoryMock).save(defaultUser);
@@ -410,7 +410,7 @@ public class OrganizationServiceTest {
         organizationService.unfollow(testOrganization.getId());
 
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        verify(organizationRepositoryMock, times(1)).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
     }
 
     @Test(expected = IllegalValueException.class)
@@ -418,7 +418,7 @@ public class OrganizationServiceTest {
 
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
-        // we need here returns null, else we won't be able to add new folldefaultUser.getId(), basicProject.getId());
+        // we need here returns null, else we won't be able to add new folldefaultUser, basicProject.getId());
 
         organizationService.unfollow(testOrganization.getId());
     }
@@ -431,7 +431,7 @@ public class OrganizationServiceTest {
         //config the results for some checks
         doReturn(defaultUser).when(userServiceMock).getUserWithAuthorities();
         // we need here returns null, else we won't be able to add new follower
-        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser.getId(), testOrganization.getId());
+        doReturn(testOrganization).when(organizationRepositoryMock).findOrganizationIfUserFollows(defaultUser, testOrganization.getId());
 
         organizationService.unfollow(testOrganization.getId());
     }

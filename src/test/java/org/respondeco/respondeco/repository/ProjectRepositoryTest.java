@@ -89,7 +89,7 @@ public class ProjectRepositoryTest extends RepositoryLayerTest {
     public void testFindByIdAndActiveIsTrue_shouldReturnActiveProject() throws Exception {
         projectRepository.save(project);
 
-        Project savedProject = projectRepository.findByIdAndActiveIsTrue(project.getId());
+        Project savedProject = projectRepository.findOne(project.getId());
         assertTrue(savedProject.equals(project));
 
     }
@@ -99,7 +99,7 @@ public class ProjectRepositoryTest extends RepositoryLayerTest {
         project.setActive(false);
         projectRepository.save(project);
 
-        Project savedProject = projectRepository.findByIdAndActiveIsTrue(project.getId());
+        Project savedProject = projectRepository.findOne(project.getId());
         assertNull(savedProject);
 
     }

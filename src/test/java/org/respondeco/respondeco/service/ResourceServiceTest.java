@@ -24,10 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import scala.Console;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -137,7 +134,7 @@ public class ResourceServiceTest {
 
         resourceTags.add(expResourceTag);
 
-        when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(expOffer.getId())).thenReturn(expOffer);
+        when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
         when(organizationRepositoryMock.findOne(expOffer.getOrganization().getId())).
             thenReturn(expOffer.getOrganization());
 
@@ -240,7 +237,8 @@ public class ResourceServiceTest {
                 return tag;
             }).when(resourceTagRepositoryMock).save(isA(tagCl));
         } else {
-            when(resourceTagRepositoryMock.save(isA(tagCl))).thenThrow(new IllegalValueException("", ""));
+            when(resourceTagRepositoryMock.save(isA(tagCl))).thenThrow(new IllegalValueException("", "",
+                Arrays.asList(""), Arrays.asList()));
         }
     }
 
@@ -249,7 +247,7 @@ public class ResourceServiceTest {
         this.prepareUser();
         List<String> tags = this.prepareCreateRequirement();
 
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(anyLong())).thenReturn(expectedReq.getProject());
+        when(projectRepositoryMock.findOne(anyLong())).thenReturn(expectedReq.getProject());
 
 //        //save without any tags
 //        ResourceRequirement actual = this.resourceService
@@ -274,7 +272,7 @@ public class ResourceServiceTest {
         //verifying user authorities has been called.
         verify(userServiceMock, times(1)).getUserWithAuthorities();
         verify(organizationRepositoryMock, times(0)).findOne(isA(longCl));
-        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(anyLong());
+        verify(projectRepositoryMock, times(1)).findOne(anyLong());
 
         verify(resourceRequirementRepositoryMock, times(1)).save(isA(reqCl));
     }
@@ -293,8 +291,8 @@ public class ResourceServiceTest {
         this.prepareUser();
         List<String> tags = this.prepareCreateRequirement();
 
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(anyLong())).thenReturn(expectedReq.getProject());
-        when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(expectedReq.getId())).thenReturn(expectedReq);
+        when(projectRepositoryMock.findOne(anyLong())).thenReturn(expectedReq.getProject());
+        when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
         //save without any tags
 //        ResourceRequirement actual = this.resourceService.updateRequirement(expectedReq.getId(),
 //            expectedReq.getName(), expectedReq.getAmount(), expectedReq.getDescription(), expectedReq.getProject().getId(), //just to make the project run
@@ -314,7 +312,7 @@ public class ResourceServiceTest {
         }
         //verifying user authorities has been called.
         verify(userServiceMock, times(1)).getUserWithAuthorities();
-        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(anyLong());
+        verify(projectRepositoryMock, times(1)).findOne(anyLong());
 
         verify(resourceRequirementRepositoryMock, times(1)).save(isA(reqCl));
     }
@@ -324,10 +322,10 @@ public class ResourceServiceTest {
         this.prepareUser();
         List<String> tags = this.prepareCreateRequirement();
 
-        when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(expectedReq.getId())).thenReturn(expectedReq);
+        when(resourceRequirementRepositoryMock.findOne(expectedReq.getId())).thenReturn(expectedReq);
         this.resourceService.deleteRequirement(expectedReq.getId());
 
-        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(isA(longCl));
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(isA(longCl));
     }
 
     @Test
@@ -345,7 +343,7 @@ public class ResourceServiceTest {
             item2.setProject(expProject);
             items.add(item2);
             return items;
-        }).when(resourceRequirementRepositoryMock).findByActiveIsTrue();
+        }).when(resourceRequirementRepositoryMock).findAll();
         Long expected = 1L;
         int listSize = 2;
         List<ResourceRequirement> items = this.resourceService.getRequirements();
@@ -357,7 +355,7 @@ public class ResourceServiceTest {
             expected += 9L;
         }
 
-        verify(this.resourceRequirementRepositoryMock, times(1)).findByActiveIsTrue();
+        verify(this.resourceRequirementRepositoryMock, times(1)).findAll();
     }
 
     @Test
@@ -469,7 +467,7 @@ public class ResourceServiceTest {
 //        }
 
         verify(resourceOfferRepositoryMock, times(1)).save(isA(offerCl));
-        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(expOffer.getId());
+        verify(resourceOfferRepositoryMock, times(1)).findOne(expOffer.getId());
         verify(organizationRepositoryMock, times(1)).findOne(expOffer.getOrganization().getId());
         //No tags has been added
         verify(resourceTagServiceMock, times(1)).getOrCreateTags(any());
@@ -479,10 +477,10 @@ public class ResourceServiceTest {
     public void testDeleteOffer() throws Exception {
         this.prepareUser();
         List<String> tags = this.prepareCreateOffer();
-        when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(expOffer.getId())).thenReturn(expOffer);
+        when(resourceOfferRepositoryMock.findOne(expOffer.getId())).thenReturn(expOffer);
         this.resourceService.deleteOffer(expOffer.getId());
 
-        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(isA(longCl));
+        verify(resourceOfferRepositoryMock, times(1)).findOne(isA(longCl));
     }
 
     @Test
@@ -574,10 +572,10 @@ public class ResourceServiceTest {
 
 
         // mocks that defines our result
-        when(resourceOfferRepositoryMock.findByIdAndActiveIsTrue(offerId)).thenReturn(offer);
-        when(resourceRequirementRepositoryMock.findByIdAndActiveIsTrue(requirementId)).thenReturn(req);
+        when(resourceOfferRepositoryMock.findOne(offerId)).thenReturn(offer);
+        when(resourceRequirementRepositoryMock.findOne(requirementId)).thenReturn(req);
         when(organizationRepositoryMock.findOne(organizationId)).thenReturn(org);
-        when(projectRepositoryMock.findByIdAndActiveIsTrue(projectId)).thenReturn(project);
+        when(projectRepositoryMock.findOne(projectId)).thenReturn(project);
         when(userServiceMock.getUserWithAuthorities()).thenReturn(orgUser);
 
 
@@ -615,10 +613,10 @@ public class ResourceServiceTest {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getAmount(), actual.getAmount());
 
-        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(offerId);
-        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(requirementId);
+        verify(resourceOfferRepositoryMock, times(1)).findOne(offerId);
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(requirementId);
         verify(organizationRepositoryMock, times(1)).findOne(organizationId);
-        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(projectId);
+        verify(projectRepositoryMock, times(1)).findOne(projectId);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }
 
@@ -657,10 +655,10 @@ public class ResourceServiceTest {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getAmount(), actual.getAmount());
 
-        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(offerId);
-        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(requirementId);
+        verify(resourceOfferRepositoryMock, times(1)).findOne(offerId);
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(requirementId);
         verify(organizationRepositoryMock, times(1)).findOne(organizationId);
-        verify(projectRepositoryMock, times(1)).findByIdAndActiveIsTrue(projectId);
+        verify(projectRepositoryMock, times(1)).findOne(projectId);
         verify(userServiceMock, times(1)).getUserWithAuthorities();
     }
 
@@ -752,7 +750,7 @@ public class ResourceServiceTest {
             offer.setOrganization(organization);
 
             return offer;
-        }).when(resourceOfferRepositoryMock).findByIdAndActiveIsTrue(anyLong());
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -767,7 +765,7 @@ public class ResourceServiceTest {
             requirement.setProject(project);
 
             return requirement;
-        }).when(resourceRequirementRepositoryMock).findByIdAndActiveIsTrue(anyLong());
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
 
         doAnswer(invocation -> {
             return new ArrayList<ResourceMatch>();
@@ -775,8 +773,8 @@ public class ResourceServiceTest {
 
         ResourceMatch resourceMatch = resourceService.createClaimResourceRequest(1L, 2L);
 
-        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(1L);
-        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(2L);
+        verify(resourceOfferRepositoryMock, times(1)).findOne(1L);
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(2L);
         verify(resourceMatchRepositoryMock, times(1)).findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(), any(), any(), any());
 
         assertTrue(resourceMatch.getResourceOffer().getId().equals(1L));
@@ -836,7 +834,7 @@ public class ResourceServiceTest {
         resourceService.createClaimResourceRequest(1L, 2L);
     }
 
-    @Test(expected = MatchAlreadyExistsException.class)
+    @Test(expected = IllegalValueException.class)
     public void testCreateClaimResourceRequest_shouldThrowExceptionBecauseMatchAlreadyExists() throws Exception {
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -848,7 +846,7 @@ public class ResourceServiceTest {
             offer.setOrganization(organization);
 
             return offer;
-        }).when(resourceOfferRepositoryMock).findByIdAndActiveIsTrue(anyLong());
+        }).when(resourceOfferRepositoryMock).findOne(anyLong());
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -863,7 +861,7 @@ public class ResourceServiceTest {
             requirement.setProject(project);
 
             return requirement;
-        }).when(resourceRequirementRepositoryMock).findByIdAndActiveIsTrue(anyLong());
+        }).when(resourceRequirementRepositoryMock).findOne(anyLong());
 
         doAnswer(invocation -> {
             List<ResourceMatch> matches = new ArrayList<ResourceMatch>();
@@ -876,8 +874,8 @@ public class ResourceServiceTest {
 
         resourceService.createClaimResourceRequest(1L, 2L);
 
-        verify(resourceOfferRepositoryMock, times(1)).findByIdAndActiveIsTrue(anyLong());
-        verify(resourceRequirementRepositoryMock, times(1)).findByIdAndActiveIsTrue(anyLong());
+        verify(resourceOfferRepositoryMock, times(1)).findOne(anyLong());
+        verify(resourceRequirementRepositoryMock, times(1)).findOne(anyLong());
         verify(resourceMatchRepositoryMock, times(1)).
             findByResourceOfferAndResourceRequirementAndOrganizationAndProjectAndActiveIsTrue(any(ResourceOffer.class),
                 any(ResourceRequirement.class), any(Organization.class), any(Project.class));

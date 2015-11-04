@@ -74,22 +74,22 @@ public class OrgJoinRequestServiceTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        orgJoinRequestService = new OrgJoinRequestService(
-                orgJoinRequestRepositoryMock,
-                userService,
-                userRepositoryMock,
-                organizationRepositoryMock);
-
-        organizationService = new OrganizationService(
-                organizationRepositoryMock,
-                userService,
-                userRepositoryMock,
-                imageRepositoryMock,
-                projectService,
-                projectRepositoryMock,
-                postingFeedRepository,
-                resourceOfferRepositoryMock,
-                isoCategoryRepository);
+//        orgJoinRequestService = new OrgJoinRequestService(
+//                orgJoinRequestRepositoryMock,
+//                userService,
+//                userRepositoryMock,
+//                organizationRepositoryMock);
+//
+//        organizationService = new OrganizationService(
+//                organizationRepositoryMock,
+//                userService,
+//                userRepositoryMock,
+//                imageRepositoryMock,
+//                projectService,
+//                projectRepositoryMock,
+//                postingFeedRepository,
+//                resourceOfferRepositoryMock,
+//                isoCategoryRepository);
 
         defaultUser = new User();
         defaultUser.setId(2L);
