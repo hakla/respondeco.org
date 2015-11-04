@@ -8,6 +8,10 @@ import java.util.List;
  */
 public class OperationForbiddenException extends ServiceException {
 
+    public OperationForbiddenException(String key, String message) {
+        super(key, message, null, null);
+    }
+
     public OperationForbiddenException(String key, String message,
                                        List<String> detailKeys, List<Serializable> detailValues) {
         super(key, message, detailKeys, detailValues);

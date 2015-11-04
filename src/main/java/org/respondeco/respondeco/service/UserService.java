@@ -142,23 +142,6 @@ public class UserService {
         return user;
     }
 
-    public void update(User updatedUser) {
-        User currentUser = getUserWithAuthorities();
-        if(updatedUser.getGender() == null) {
-            currentUser.setGender(Gender.UNSPECIFIED);
-        } else {
-            currentUser.setGender(updatedUser.getGender());
-        }
-        currentUser.setTitle(updatedUser.getTitle());
-        currentUser.setFirstName(updatedUser.getFirstName());
-        currentUser.setLastName(updatedUser.getLastName());
-        currentUser.setEmail(updatedUser.getEmail());
-        currentUser.setDescription(updatedUser.getDescription());
-        currentUser.setProfilePicture(updatedUser.getProfilePicture());
-        userRepository.save(currentUser);
-        log.debug("Changed Information for User: {}", currentUser);
-    }
-
     public void delete(User user) {
         User currentUser = getUserWithAuthorities();
         if(currentUser == null) {
@@ -326,7 +309,7 @@ public class UserService {
     }
 
     public User update(User user) {
-        Assert.notNull(user.getId(), "", "Id must not be null when updating organization information");
+        Assert.notNull(user.getId(), "", "Id must not be null when updating user information");
 
         if (!user.getId().equals(getUserWithAuthorities().getId())) {
             throw new OperationForbiddenException(errorKey.from("notcurrentuser"), "The current user isn't the same as the one to update");
@@ -348,7 +331,7 @@ public class UserService {
         User user = getUserWithAuthorities();
 
         if (user == null) {
-            throw new OperationForbiddenException(errorKey.from("notsignedin"));
+            throw new OperationForbiddenException(errorKey.from("notsignedin"), "No user is signed in");
         }
 
         Image profilePicture = user.getProfilePicture();

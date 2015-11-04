@@ -21,6 +21,10 @@ public class Assert {
         }
     }
 
+    public static void notNull(Object object, String key, String message) {
+        notNull(object, key, message, null, null);
+    }
+
     public static void notNull(Object object, String key, String message,
                                List<String> detailKeys, List<Serializable> detailValues) {
         if(object == null) {
