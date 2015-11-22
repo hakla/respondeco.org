@@ -8,22 +8,21 @@ del = require("del")
 series = require("stream-series")
 
 config =
-  apiPath: "/app/"
-  app: "src/main/webapp"
-  assets: "src/main/assets"
-  dist: "src/main/webapp"
+  apiPath: "/"
+  app: "app"
+  assets: "app/assets"
+  dist: "public"
   host: "localhost"
-  main: "src/main"
-  port: 9000
-  proxyPath: "http://localhost:8081/app/"
-  serverPath: "http://localhost:8081/app"
+  port: 9005
+  proxyPath: "http://localhost:9000/"
+  serverPath: "http://localhost:9000/"
 
 paths = {}
 
 # application itself, one-page landing page
 modules = [
   'app'
-  'one-page'
+  'index'
 ].join ','
 
 setPaths = ->
@@ -32,9 +31,9 @@ setPaths = ->
     app:
       javascripts: "#{config.assets}/#{modules}/javascripts/**/*.js"
       templates: "#{config.app}/#{modules}/templates/**/*.html"
-      unify: "#{config.main}/unify/{#{modules}}/**/*"
+      unify: "#{config.dist}/unify/{#{modules}}/**/*"
     assets2compile:
-      html: "#{config.assets}/*.html"
+      html: "#{config.app}/views/*.html"
       javascripts: "#{config.assets}/{#{modules}}/javascripts/**/*.coffee"
       stylesheets: "#{config.assets}/{#{modules}}/stylesheets/**/*.styl"
     dist:
@@ -52,6 +51,9 @@ setPaths = ->
 
 setPaths()
 
+transformStylesheets = (filePath) -> "<link href='@routes.Assets.versioned(\"#{filePath}\")' rel='stylesheet' />"
+transformScripts = (filePath) -> "<script src='@routes.Assets.versioned(\"#{filePath}\")'></script>"
+
 vendor = ->
 # js sources
   vendorJS = gulp.src ["#{paths.dist.app.jsVendor}/**/*.js", "#{paths.dist.app.unify}/**/*.js"], {read: false}
@@ -61,24 +63,30 @@ vendor = ->
   unifyCSS = gulp.src ["#{paths.dist.app.unify}/**/*.css"], {read: false}
   appCSS = gulp.src ["#{paths.dist.app.stylesheets}/stylesheets/main.css"], {read: false}
 
-  gulp.src "#{config.assets}/app.html"
-  .pipe wiredep({
-    ignorePath: "../webapp"
-  })
-  .pipe _.inject(appCSS, {ignorePath: "/#{config.dist}/", name: "app"})
-  .pipe _.inject(unifyCSS, {ignorePath: "/#{config.dist}/", name: "unify"})
-  .pipe _.inject(vendorJS, {ignorePath: "/#{config.dist}/", name: "lib"})
-  .pipe _.inject(appJS, {ignorePath: "/#{config.dist}/"})
-  .pipe gulp.dest(config.dist)
+  gulp.src "#{config.app}/views/app.scala.html"
+  .pipe wiredep
+    ignorePath: '../../public/'
+    fileTypes:
+      html:
+        detect:
+          js: /<script.*src=['"]([^'"]+)/gi,
+          css: /<link.*href=['"]([^'"]+)/gi
+        replace:
+          js: "<script src='@routes.Assets.versioned(\"{{filePath}}\")'></script>"
+          css: "<link rel='stylesheet' href='@routes.Assets.versioned(\"{{filePath}}\")' />"
+  .pipe _.inject(appCSS, {ignorePath: "/#{config.dist}/", name: "app", transform: transformStylesheets})
+  .pipe _.inject(unifyCSS, {ignorePath: "/#{config.dist}/", name: "unify", transform: transformStylesheets})
+  .pipe _.inject(vendorJS, {ignorePath: "/#{config.dist}/", name: "lib", transform: transformScripts})
+  .pipe _.inject(appJS, {ignorePath: "/#{config.dist}/", transform: transformScripts})
+  .pipe gulp.dest("#{config.app}/views/prod")
   .pipe _.filesize()
   .pipe _.connect.reload()
 
 gulp.src = ->
   _gulpsrc.apply(gulp, arguments)
-  .pipe(_.plumber
+  .pipe _.plumber
       errorHandler: (err) ->
         console.log err
-  )
 
 gulp.task "connect", ["vendor"], ->
   _.connect.server
@@ -113,7 +121,7 @@ gulp.task "copy-assets", ->
 # copy assets without filesize
 #   gulp.src paths.app.assets
 #   .pipe gulp.dest paths.dist.assets
-  copy paths.app.unify, paths.dist.unify
+#  copy paths.app.unify, paths.dist.unify
 
 gulp.task "copy-html-watch", ["copy-html"], ->
   vendor()

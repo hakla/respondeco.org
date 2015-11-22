@@ -18,3 +18,10 @@ coverage
 *.map
 unify*
 respondeco.sublime-workspace
+logs
+.idea_modules
+RUNNING_PID
+activator*
+respondeco.ipr
+respondeco.iws
+.java-version
