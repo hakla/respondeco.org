@@ -105,6 +105,11 @@ gulp.task "connect", ["vendor"], ->
 
 gulp.task "clean", (cb) ->
 #del config.dist, cb
+  del [
+    'public/javascripts',
+    'public/stylesheets',
+    'app/views/prod'
+  ]
 
 copy = (from, to) ->
   gulp.src from

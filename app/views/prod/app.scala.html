@@ -5,9 +5,6 @@
         <title>respondeco.org</title>
             <!-- build:js scripts/lib.css -->
             <!-- bower:css -->
-            <link rel='stylesheet' href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.css")' />
-            <link rel='stylesheet' href='@routes.Assets.versioned("bower_components/ng-tags-input/ng-tags-input.min.css")' />
-            <link rel='stylesheet' href='@routes.Assets.versioned("bower_components/angular-xeditable/dist/css/xeditable.css")' />
             <!-- endbower -->
             <!-- unify:css -->
             <link href='@routes.Assets.versioned("/unify/app/stylesheets/animate.css")' rel='stylesheet' />
@@ -36,123 +33,19 @@
             <!-- endinject -->
             <!-- endbuild -->
     </head>
-    <body ng-app="respondecoApp" ng-controller="MainController" ng-cloak>
+    <body ng-app="respondeco">
             <!--[if lt IE 10]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <div class="wrapper">
             <div class="header">
                 <div class="container">
-                    <a class="logo" href="/">
+                    <a class="logo" href="/app">
                         <img src="/images/logo-small.png" alt="Logo">
                     </a>
                     <div class="topbar" ng-switch="authenticated">
                         <ul class="loginbar pull-right">
-                            <li class="hoverSelector topbar-account-header" ng-class="{ highlight: newMessages > 0 }" ng-controller="MenuController">
-                                <i class="fa fa-user"></i>
-                                <span ng-switch-when="false" class="hidden-tablet" translate="global.menu.account.main">Account</span>
-                                <span ng-switch-when="true" class="hidden-tablet">{{ username }}</span>
-                                <ul class="languages topbar-account hoverSelectorBlock">
-                                    <li ng-switch-when="true">
-                                        <a href="#/textmessages">
-                                            <span class="glyphicon glyphicon-envelope"></span> &#xA0;
-                                            <span translate="global.menu.account.messages">Messages</span>
-                                            <span class="badge" ng-show="newMessages > 0">{{ newMessages }}</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/newsfeed">
-                                            <span class="glyphicon glyphicon-cloud"></span> &#xA0;
-                                            <span translate="global.menu.account.newsfeed">Newsfeed</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true" ng-hide="isOrganizationUser()">
-                                        <a href="#/settings">
-                                            <span class="glyphicon glyphicon-wrench"></span> &#xA0;
-                                            <span translate="global.menu.account.settings">Settings</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true" ng-show="isOrganizationUser()">
-                                        <a ng-click="redirectToOwnOrganization()">
-                                            <span class="glyphicon glyphicon-briefcase"></span> &#xA0;
-                                            <span translate="global.menu.account.organization">My organization</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true" ng-show="isOrganizationUser()">
-                                        <a ng-click="redirectToOwnProjects()">
-                                            <span class="glyphicon glyphicon-leaf"></span> &#xA0;
-                                            <span translate="global.menu.account.projects">My projects</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/ownresource">
-                                            <span class="glyphicon glyphicon-tree-deciduous"></span> &#xA0;
-                                            <span translate="global.menu.account.myresources">Resource management</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/resourcemessages">
-                                            <span class="glyphicon glyphicon-inbox"></span> &#xA0;
-                                            <span translate="global.menu.account.resourcerequests">Resource requests</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/social-networks">
-                                            <span class="glyphicon glyphicon-link"></span> &#xA0;
-                                            <span translate="global.menu.account.social-networks">Social networks</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/password">
-                                            <span class="glyphicon glyphicon-lock"></span> &#xA0;
-                                            <span translate="global.menu.account.password">Password</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="true">
-                                        <a href="#/logout">
-                                            <span class="glyphicon glyphicon-log-out"></span> &#xA0;
-                                            <span translate="global.menu.account.logout">Log out</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="false">
-                                        <a href="#/login">
-                                            <span class="glyphicon glyphicon-log-in"></span> &#xA0;
-                                            <span translate="global.menu.account.login">Authenticate</span>
-                                        </a>
-                                    </li>
-                                    <li ng-switch-when="false">
-                                        <a href="#/register">
-                                            <span class="glyphicon glyphicon-plus-sign"></span> &#xA0;
-                                            <span translate="global.menu.account.register">Register</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="hoverSelector" ng-controller="LanguageController">
-                                <i class="fa fa-globe"></i>
-                                <span class="hidden-tablet" translate="global.menu.language">Language</span>
-                                <ul class="languages hoverSelectorBlock">
-                                    <li active-menu="{{key}}" ng-repeat="(key, language) in languages">
-                                        <a href="javascript:;" ng-click="changeLanguage(key)">{{language}}</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="hoverSelector" ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" ng-controller="AdminController">
-                                <span class="glyphicon glyphicon-tower"></span>
-                                <span class="hidden-tablet" translate="global.menu.admin">Admin</span>
-                                <ul class="languages hoverSelectorBlock">
-                                    <li>
-                                        <a href="#/docs">
-                                            <span translate="global.menu.account.apidocs">API Docs</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#/admin/organization/verify">
-                                            <span translate="global.menu.admin.verify">Verify</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            <li></li>
                         </ul>
                     </div>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
@@ -182,75 +75,16 @@
                     </div>
                 </nav>
             </div>
-            <div class="subheader">
-                <nav class="navbar navbar-default">
-                    <div class="container">
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                            <ul class="nav navbar-nav pull-right">
-                                <li>
-                                    <a><img class="logo" src="/images/logo.png" alt=""> respondeco.org</a>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-heart"></i> Engagement</a>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-comments"></i> Neuigkeiten</a>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-globe"></i> Kontaktieren</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-            <div class="container error-container">
-                <alert ng-repeat="alert in globalAlerts" type="{{alert.type}}" close="closeAlert($index)">
-                    <resp-bind content="alert.msg"></resp-bind>
-                </alert>
-            </div>
-            <div ng-class="main() ? 'container-landing-page' : 'container content'">
-                <div ng-class="main() ? '' : ''" ng-view ng-cloak></div>
-            </div>
+            <div ng-view></div>
         </div>
             <!-- build:js scripts/scripts.js -->
             <!-- bower:js -->
-            <script src='@routes.Assets.versioned("bower_components/es5-shim/es5-shim.js")'></script>
             <script src='@routes.Assets.versioned("bower_components/jquery/dist/jquery.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/modernizr/modernizr.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js")'></script>
             <script src='@routes.Assets.versioned("bower_components/angular/angular.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/json3/lib/json3.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-route/angular-route.js")'></script>
             <script src='@routes.Assets.versioned("bower_components/angular-resource/angular-resource.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-cookies/angular-cookies.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-sanitize/angular-sanitize.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-translate/angular-translate.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-file-upload/angular-file-upload.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-bootstrap/ui-bootstrap-tpls.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/ng-tags-input/ng-tags-input.min.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/xdate/src/xdate.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/lodash/lodash.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-google-maps/dist/angular-google-maps.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/moment/moment.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-moment/angular-moment.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/angular-xeditable/dist/js/xeditable.js")'></script>
-            <script src='@routes.Assets.versioned("bower_components/jquery-backstretch/jquery.backstretch.js")'></script>
+            <script src='@routes.Assets.versioned("bower_components/bootstrap/dist/js/bootstrap.js")'></script>
+            <script src='@routes.Assets.versioned("bower_components/velocity/velocity.js")'></script>
+            <script src='@routes.Assets.versioned("bower_components/velocity/velocity.ui.js")'></script>
             <!-- endbower -->
             <!-- lib:js -->
             <script src='@routes.Assets.versioned("/unify/app/plugins/line-icons/icons-lte-ie7.js")'></script>
@@ -258,41 +92,6 @@
             <script src='@routes.Assets.versioned("/unify/app/plugins/cube-portfolio/js/jquery.cubeportfolio.js")'></script>
             <!-- endinject -->
             <!-- inject:js -->
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/vendor/xdate.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/textmessage/service_textmessage.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/socialmedia/service_socialmedia.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/socialmedia/router_socialmedia.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/socialmedia/controller_socialmedia.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/project/controller_project.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/isocategories/service_isocategories.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/organization/service_organization.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/organization/router_organization.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/organization/controller_organizations.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/organization/controller_organization_edit.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/organization/controller_organization.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_sessions.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_session.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_register.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_password.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_language.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_authenticationshared.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_activate.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/service_account.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_settings.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_sessions.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_register.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_password.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_menu.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_main.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_logout.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_login.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_language.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_admin.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/application/controller_activation.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/truncate.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/http-auth-interceptor.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/filters.js")'></script>
-            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/constants.js")'></script>
             <script src='@routes.Assets.versioned("/javascripts/app/javascripts/app.js")'></script>
             <!-- endinject -->
             <!-- endbuild -->

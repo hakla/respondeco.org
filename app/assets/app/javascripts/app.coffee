@@ -1,2 +1,2 @@
 angular
-  .module('respondeco', ['ngResource']);
+  .module('respondeco', ['ngResource', 'ui.router']);
