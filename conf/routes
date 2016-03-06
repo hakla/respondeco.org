@@ -6,10 +6,13 @@
 GET         /                        controllers.Application.index
 GET         /app                     controllers.Application.app
 
+# Account CRUD
+POST        /account                controllers.AccountCtrl.create
+GET         /account/*id            controllers.AccountCtrl.findById(id: Long)
+
 # Organization CRUD
 GET         /organization            controllers.OrganizationCtrl.findAll
 GET         /organization/*id        controllers.OrganizationCtrl.findById(id: Long)
-POST        /organization            controllers.OrganizationCtrl.insert
 PUT         /organization            controllers.OrganizationCtrl.update
 
 # Map static resources from the /public folder to the /assets URL path

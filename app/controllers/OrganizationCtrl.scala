@@ -11,27 +11,20 @@ class OrganizationCtrl extends Controller {
     }
 
     def findById(id: Long) = Action {
-        Ok(Json.toJson(Organization.findById(id)))
-    }
-
-    def insert = Action(parse.json) { request =>
-        request.body.validate[OrganizationInsert].fold(
-            errors => BadRequest(JsError.toFlatJson(errors)),
-            organization => {
-                val x = Organization.insert(organization)
-
-                Ok(Json.toJson(x))
-            }
-        )
+        Organization.findById(id) match {
+            case Some(org) => Ok(Json.toJson(org))
+            case None => BadRequest("No such Organization")
+        }
     }
 
     def update = Action(parse.json) { request =>
         request.body.validate[Organization].fold(
             errors => BadRequest(JsError.toFlatJson(errors)),
             organization => {
-                val x = Organization.update(organization)
-
-                Ok(Json.toJson(x))
+                Organization.update(organization) match {
+                    case Some(org) => Ok(Json.toJson(org))
+                    case None => BadRequest("Could not update")
+                }
             }
         )
     }

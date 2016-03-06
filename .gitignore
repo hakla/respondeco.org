@@ -25,3 +25,5 @@ activator*
 respondeco.ipr
 respondeco.iws
 .java-version
+.sbtserver*
+respondeco.sublime-*
