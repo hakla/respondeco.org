@@ -7,7 +7,9 @@ GET         /                        controllers.Application.index
 GET         /app                     controllers.Application.app
 
 # Account CRUD
-POST        /account                controllers.AccountCtrl.create
+POST        /account                controllers.AccountCtrl.register
+GET         /account/login          controllers.AccountCtrl.login
+GET         /account/logout         controllers.AccountCtrl.logout
 GET         /account/*id            controllers.AccountCtrl.findById(id: Long)
 
 # Organization CRUD
