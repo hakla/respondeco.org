@@ -16,4 +16,8 @@ class Application extends Controller {
         BadRequest("asdf")
     }
 
+    def test = Action {
+        Ok(""""test"""").withHeaders(("Content-type", "application/json"))
+    }
+
 }

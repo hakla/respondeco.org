@@ -75,7 +75,8 @@
                     </div>
                 </nav>
             </div>
-            <div ng-view></div>
+            <div ui-view="nav"></div>
+            <div ui-view></div>
         </div>
             <!-- build:js scripts/scripts.js -->
             <!-- bower:js -->
@@ -85,6 +86,7 @@
             <script src='@routes.Assets.versioned("bower_components/bootstrap/dist/js/bootstrap.js")'></script>
             <script src='@routes.Assets.versioned("bower_components/velocity/velocity.js")'></script>
             <script src='@routes.Assets.versioned("bower_components/velocity/velocity.ui.js")'></script>
+            <script src='@routes.Assets.versioned("bower_components/angular-ui-router/release/angular-ui-router.js")'></script>
             <!-- endbower -->
             <!-- lib:js -->
             <script src='@routes.Assets.versioned("/unify/app/plugins/line-icons/icons-lte-ie7.js")'></script>
@@ -93,6 +95,7 @@
             <!-- endinject -->
             <!-- inject:js -->
             <script src='@routes.Assets.versioned("/javascripts/app/javascripts/app.js")'></script>
+            <script src='@routes.Assets.versioned("/javascripts/app/javascripts/config.js")'></script>
             <!-- endinject -->
             <!-- endbuild -->
         <script>document.write("<script src='http://"
