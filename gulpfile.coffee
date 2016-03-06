@@ -108,7 +108,7 @@ gulp.task "clean", (cb) ->
   del [
     'public/javascripts',
     'public/stylesheets',
-    'app/views/prod'
+    'app/views/prod/app.scala.html'
   ]
 
 copy = (from, to) ->

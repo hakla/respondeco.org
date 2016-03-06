@@ -6,6 +6,8 @@
 GET         /                        controllers.Application.index
 GET         /app                     controllers.Application.app
 
+GET         /test                   controllers.Application.test
+
 # Account CRUD
 POST        /account                controllers.AccountCtrl.create
 GET         /account/*id            controllers.AccountCtrl.findById(id: Long)
