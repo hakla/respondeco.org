@@ -39,7 +39,7 @@ object Organization {
         }
     }
 
-    def insert(organization: OrganizationInsert)(implicit connection: Connection) = {
+    def create(organization: OrganizationInsert)(implicit connection: Connection) : Option[Organization] = {
         SQL("insert into Organization (name) values({name})").on(
         'name -> organization.name
         ).executeInsert().asInstanceOf[Option[Long]].map { id =>

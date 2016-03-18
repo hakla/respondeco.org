@@ -1,9 +1,12 @@
 package services
 
+import java.sql.Connection
+
 import exceptions.IllegalValueException
 import models._
 import play.api.db.DB
 import play.api.Play.current
+import play.db.Database
 
 import scala.util.Try
 
@@ -12,7 +15,7 @@ import scala.util.Try
   */
 class AccountService {
 
-    def create(account: AccountCreate): Try[AccountPublic] = {
+    def create(account: AccountNew): Try[Account] = {
         Try({
             Account.findByEmail(account.email) match {
                 case Some(acc) => throw new IllegalValueException("Account already exists")
@@ -22,23 +25,19 @@ class AccountService {
                 case Some(org) => throw new IllegalArgumentException("Organization already exists")
                 case _ => true
             }
-            DB.withTransaction { implicit connection =>
-                val organization = Organization.insert(OrganizationInsert(account.organizationName)) match {
-                    case None => throw new IllegalArgumentException("Could not insert organization")
-                    case Some(org) => org
+            DB.withTransaction { connection =>
+                val organization : Organization = {
+                    Organization.create(OrganizationInsert(account.organizationName))(connection) match {
+                        case None => throw new IllegalArgumentException("Could not insert organization")
+                        case Some(org) => org
+                    }
                 }
-                Account.create(AccountInsert(account.email, account.password, organization.id)) match {
+                Account.create(account.email, account.password, organization.id)(connection) match {
                     case None => throw new IllegalArgumentException("Could not insert account")
                     case Some(acc) => acc
                 }
             }
         })
     }
-
-//    def update(account: AccountUpdate): Try[AccountPublic] = {
-//        Try({
-//            Account
-//        })
-//    }
 
 }
