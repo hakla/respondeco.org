@@ -1,6 +1,7 @@
 package authentication
 
-import anorm.{SqlParser, RowParser}
+import anorm.{RowParser, SqlParser}
+import play.api.libs.json.Json
 
 /**
   * Created by Clemens Puehringer on 06/03/16.

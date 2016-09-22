@@ -39,7 +39,7 @@ object Organization {
         }
     }
 
-    def create(organization: OrganizationInsert)(implicit connection: Connection) : Option[Organization] = {
+    def create(organization: OrganizationInsert) : Option[Organization] = DB.withConnection { implicit c =>
         SQL("insert into Organization (name) values({name})").on(
         'name -> organization.name
         ).executeInsert().asInstanceOf[Option[Long]].map { id =>
@@ -47,13 +47,13 @@ object Organization {
         }
     }
 
-    def update(organization: Organization): Option[Organization] = DB.withConnection { implicit c =>
+    def update(id: Long, organization: OrganizationInsert): Option[Organization] = DB.withConnection { implicit c =>
         SQL("update Organization set name = {name} where id = {id}").on(
-            'id -> organization.id,
+            'id -> id,
             'name -> organization.name
         ).executeUpdate() match {
-            case 0 => Organization.findById(organization.id)
-            case _ => Some(organization)
+            case 1 => Organization.findById(id)
+            case _ => None
         }
     }
 

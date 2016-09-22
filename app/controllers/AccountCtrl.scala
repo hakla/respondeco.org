@@ -34,13 +34,19 @@ class AccountCtrl extends Controller with LoginLogout with Play2AuthConfig {
         Ok
     }
 
+    def findAll = Action {
+        Ok(Json.toJson(
+            accountService.findAll().map(AccountPublic.from)
+        ))
+    }
+
     def create = Action(parse.json) {
         request =>
             request.body.validate[AccountNew].fold(
-                errors => BadRequest(JsError.toFlatJson(errors)),
+                errors => BadRequest(JsError.toJson(errors)),
                 account => {
                     accountService.create(account) match {
-                        case Success(account) => Ok(Json.toJson(AccountPublic from account))
+                        case Success(_account) => Ok(Json.toJson(AccountPublic from _account))
                         case Failure(ex) => BadRequest(ex.getMessage)
                     }
                 }
@@ -54,4 +60,15 @@ class AccountCtrl extends Controller with LoginLogout with Play2AuthConfig {
         }
     }
 
+    def update(id: Long) = Action(parse.json) { request =>
+        request.body.validate[AccountPublic].fold(
+            errors => BadRequest(JsError.toJson(errors)),
+            account => {
+                accountService.update(id, account) match {
+                    case Success(_account) => Ok(Json.toJson(AccountPublic from _account))
+                    case Failure(ex) => BadRequest(ex.getMessage)
+                }
+            }
+        )
+    }
 }

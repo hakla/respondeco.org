@@ -1,6 +1,7 @@
 package controllers
 
-import models.{OrganizationInsert, Organization}
+import com.google.inject.Inject
+import models.{Organization, OrganizationInsert}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 
@@ -17,13 +18,25 @@ class OrganizationCtrl extends Controller {
         }
     }
 
-    def update = Action(parse.json) { request =>
-        request.body.validate[Organization].fold(
-            errors => BadRequest(JsError.toFlatJson(errors)),
+    def update(id: Long) = Action(parse.json) { request =>
+        request.body.validate[OrganizationInsert].fold(
+            errors => BadRequest(JsError.toJson(errors)),
             organization => {
-                Organization.update(organization) match {
+                Organization.update(id, organization) match {
                     case Some(org) => Ok(Json.toJson(org))
                     case None => BadRequest("Could not update")
+                }
+            }
+        )
+    }
+
+    def create = Action(parse.json) { request =>
+        request.body.validate[OrganizationInsert].fold(
+            errors => BadRequest(JsError.toJson(errors)),
+            organization => {
+                Organization.create(organization) match {
+                    case Some(org) => Ok(Json.toJson(org))
+                    case None => BadRequest("Could not create")
                 }
             }
         )

@@ -15,11 +15,11 @@ import scala.concurrent.Future
 /**
   * Created by Clemens Puehringer on 28/11/15.
   */
-case class Account(id: Long, email: String, password: String, organizationId: Long, role: Role)
+case class Account(id: Long, email: String, password: String, role: Role)
 
-case class AccountNew(email : String, password : String, organizationName : String)
+case class AccountNew(email : String, password : String)
 
-case class AccountPublic(id: Long, email: String, organizationId: Long)
+case class AccountPublic(id: Long, email: String)
 
 object Account {
 
@@ -27,23 +27,20 @@ object Account {
         SqlParser.get[Long]("id") ~
         SqlParser.get[String]("email") ~
         SqlParser.get[String]("password") ~
-        SqlParser.get[Long]("organizationId") ~
         Role.parser map {
-            case id~email~pwd~orgId~role => Account(id,email,pwd,orgId,role)
+            case id ~ email ~ pwd ~ role => Account(id, email, pwd, role)
         }
     }
     val queries = new Queries[Account]("Account", parser)
 
-    def create(email: String, password: String, organizationId: Long)(implicit connection: Connection):
-    Option[Account] = {
-        SQL("insert into Account (email, password, organizationId, role) " +
-            "values({email}, {password}, {organizationId}, {role})").on(
+    def create(email: String, password: String)(implicit connection: Connection) : Option[Account] = {
+        SQL("insert into Account (email, password, role) " +
+            "values({email}, {password}, {role})").on(
                 'email -> email,
                 'password -> password,
-                'organizationId -> organizationId,
                 'role -> User.value
         ).executeInsert().asInstanceOf[Option[Long]].map { id =>
-            Account(id, email, password, organizationId, User)
+            Account(id, email, password, User)
         }
     }
 
@@ -69,6 +66,24 @@ object Account {
         }
     }
 
+    def findAll (): Seq[Account] = {
+        DB.withConnection { implicit  c =>
+            SQL("SELECT * FROM Account").executeQuery().as(parser.*)
+        }
+    }
+
+    def update (id: Long, account: AccountPublic): Option[Account] = {
+        DB.withConnection { implicit c =>
+            SQL("update Account set email = {email} where id = {id}").on(
+                'id -> id,
+                'email -> account.email
+            ).executeUpdate() match {
+                case 1 => Account.findById(id)
+                case _ => None
+            }
+        }
+    }
+
 }
 
 object AccountNew {
@@ -78,7 +93,7 @@ object AccountPublic {
     implicit val formatter = Json.format[AccountPublic]
 
     def from(a: Account): AccountPublic = {
-        AccountPublic(a.id, a.email, a.organizationId)
+        AccountPublic(a.id, a.email)
     }
 }
 //
