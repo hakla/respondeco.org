@@ -3,22 +3,25 @@
 # ~~~~
 
 # Home page
-GET         /                        controllers.Application.index
-GET         /app                     controllers.Application.app
+GET         /                         controllers.Application.index
+GET         /app                      controllers.Application.app
 
 # Account CRUD
-POST        /account                controllers.AccountCtrl.register
-GET         /account/login          controllers.AccountCtrl.login
-GET         /account/logout         controllers.AccountCtrl.logout
-GET         /account/*id            controllers.AccountCtrl.findById(id: Long)
+GET         /accounts                 controllers.AccountCtrl.findAll
+POST        /accounts                 controllers.AccountCtrl.create
+POST        /accounts/login           controllers.AccountCtrl.login
+GET         /accounts/logout          controllers.AccountCtrl.logout
+GET         /accounts/*id             controllers.AccountCtrl.findById(id: Long)
+PUT         /accounts/*id             controllers.AccountCtrl.update(id: Long)
 
 # Organization CRUD
-GET         /organization            controllers.OrganizationCtrl.findAll
-GET         /organization/*id        controllers.OrganizationCtrl.findById(id: Long)
-PUT         /organization            controllers.OrganizationCtrl.update
+GET         /organizations            controllers.OrganizationCtrl.findAll
+GET         /organizations/*id        controllers.OrganizationCtrl.findById(id: Long)
+PUT         /organizations/*id        controllers.OrganizationCtrl.update(id: Long)
+POST        /organizations            controllers.OrganizationCtrl.create
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file            controllers.Assets.versioned(path="/public", file: Asset)
-GET         /i18n/*file              controllers.Assets.at(path="/public/i18n", file)
-GET         /views/*file             controllers.Assets.at(path="/public/views", file)
-GET         /images/*file            controllers.Assets.at(path="/public/images", file)
+GET         /assets/*file             controllers.Assets.versioned(path="/public", file: Asset)
+GET         /i18n/*file               controllers.Assets.at(path="/public/i18n", file)
+GET         /views/*file              controllers.Assets.at(path="/public/views", file)
+GET         /images/*file             controllers.Assets.at(path="/public/images", file)
