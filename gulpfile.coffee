@@ -23,6 +23,7 @@ paths = {}
 modules = [
   'app'
   'index'
+  'admin'
 ].join ','
 
 setPaths = ->
@@ -33,6 +34,7 @@ setPaths = ->
       templates: "#{config.app}/#{modules}/templates/**/*.html"
       unify: "#{config.dist}/unify/{#{modules}}/**/*"
     assets2compile:
+      babel: "#{config.assets}/{#{modules}}/javascripts/**/*.js"
       html: "#{config.app}/views/*.html"
       javascripts: "#{config.assets}/{#{modules}}/javascripts/**/*.coffee"
       stylesheets: "#{config.assets}/{#{modules}}/stylesheets/**/*.styl"
@@ -45,6 +47,7 @@ setPaths = ->
         templates: "#{config.dist}/templates/app"
         unify: "#{config.dist}/unify/app"
       assets: "#{config.dist}"
+      babel: "#{config.dist}/javascripts"
       javascripts: "#{config.dist}/javascripts"
       stylesheets: "#{config.dist}/stylesheets"
       unify: "#{config.dist}/unify"
@@ -55,7 +58,7 @@ transformStylesheets = (filePath) -> "<link href='@routes.Assets.versioned(\"#{f
 transformScripts = (filePath) -> "<script src='@routes.Assets.versioned(\"#{filePath}\")'></script>"
 
 vendor = ->
-# js sources
+  # js sources
   vendorJS = gulp.src ["#{paths.dist.app.jsVendor}/**/*.js", "#{paths.dist.app.unify}/**/*.js"], {read: false}
   appJS = gulp.src(["#{paths.dist.app.jsApp}/**/*.js", "!#{paths.dist.app.jsApp}/vendor/**/*"]).pipe _.angularFilesort()
 
@@ -63,24 +66,24 @@ vendor = ->
   unifyCSS = gulp.src ["#{paths.dist.app.unify}/**/*.css"], {read: false}
   appCSS = gulp.src ["#{paths.dist.app.stylesheets}/stylesheets/main.css"], {read: false}
 
-  gulp.src "#{config.app}/views/app.scala.html"
-  .pipe wiredep
-    ignorePath: '../../public/'
-    fileTypes:
-      html:
-        detect:
-          js: /<script.*src=['"]([^'"]+)/gi,
-          css: /<link.*href=['"]([^'"]+)/gi
-        replace:
-          js: "<script src='@routes.Assets.versioned(\"{{filePath}}\")'></script>"
-          css: "<link rel='stylesheet' href='@routes.Assets.versioned(\"{{filePath}}\")' />"
-  .pipe _.inject(appCSS, {ignorePath: "/#{config.dist}/", name: "app", transform: transformStylesheets})
-  .pipe _.inject(unifyCSS, {ignorePath: "/#{config.dist}/", name: "unify", transform: transformStylesheets})
-  .pipe _.inject(vendorJS, {ignorePath: "/#{config.dist}/", name: "lib", transform: transformScripts})
-  .pipe _.inject(appJS, {ignorePath: "/#{config.dist}/", transform: transformScripts})
-  .pipe gulp.dest("#{config.app}/views/prod")
-  .pipe _.filesize()
-  .pipe _.connect.reload()
+  gulp.src "#{config.app}/views/#{module}.scala.html"
+    .pipe wiredep
+      ignorePath: '../../public/'
+      fileTypes:
+        html:
+          detect:
+            js: /<script.*src=['"]([^'"]+)/gi,
+            css: /<link.*href=['"]([^'"]+)/gi
+          replace:
+            js: "<script src='@routes.Assets.versioned(\"{{filePath}}\")'></script>"
+            css: "<link rel='stylesheet' href='@routes.Assets.versioned(\"{{filePath}}\")' />"
+    .pipe _.inject(appCSS, {ignorePath: "/#{config.dist}/", name: "app", transform: transformStylesheets})
+    .pipe _.inject(unifyCSS, {ignorePath: "/#{config.dist}/", name: "unify", transform: transformStylesheets})
+    .pipe _.inject(vendorJS, {ignorePath: "/#{config.dist}/", name: "lib", transform: transformScripts})
+    .pipe _.inject(appJS, {ignorePath: "/#{config.dist}/", transform: transformScripts})
+    .pipe gulp.dest("#{config.app}/views/prod")
+    .pipe _.filesize()
+    .pipe _.connect.reload()
 
 gulp.src = ->
   _gulpsrc.apply(gulp, arguments)
@@ -144,6 +147,13 @@ javascripts = ->
   .pipe gulp.dest paths.dist.javascripts
 #  .pipe _.filesize()
 
+  gulp.src paths.assets2compile.babel
+  .pipe _.sourcemaps.init()
+  .pipe _.babel()
+  .pipe _.ngAnnotate()
+  .pipe _.sourcemaps.write "./"
+  .pipe gulp.dest paths.dist.babel
+
 # compile stylesheets
 stylesheets = ->
   gulp.src paths.assets2compile.stylesheets
@@ -170,6 +180,7 @@ gulp.task "minify", ["vendor"], ->
 gulp.task "watch", ->
   gulp.watch [paths.assets2compile.html, paths.app.templates], ["vendor-watch"]
   gulp.watch [paths.assets2compile.javascripts], ["javascripts"]
+  gulp.watch [paths.assets2compile.babel], ["javascripts"]
   gulp.watch [paths.assets2compile.stylesheets], ["stylesheets"]
 
 gulp.task "default", ["connect", "watch"]

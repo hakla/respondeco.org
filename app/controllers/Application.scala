@@ -12,8 +12,8 @@ class Application extends Controller {
         Ok(views.html.prod.app())
     }
 
-    def asdf = Action {
-        BadRequest("asdf")
+    def admin = Action {
+        Ok(views.html.admin())
     }
 
     def test = Action {
