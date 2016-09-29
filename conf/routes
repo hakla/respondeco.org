@@ -6,7 +6,7 @@
 GET         /                         controllers.Application.index
 GET         /app                      controllers.Application.app
 
-GET         /test                   controllers.Application.test
+GET         /test                     controllers.Application.test
 
 # Account CRUD
 GET         /accounts                 controllers.AccountCtrl.findAll
