@@ -1,9 +1,9 @@
 package authentication
 
+import business.accounts.Account
 import jp.t2v.lab.play2.auth.AuthConfig
-import models.Account
 import play.Routes
-import play.api.mvc.{Results, Result, RequestHeader}
+import play.api.mvc.{RequestHeader, Result, Results}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
@@ -22,8 +22,6 @@ trait Play2AuthConfig extends AuthConfig {
     val idTag: ClassTag[Id] = scala.reflect.classTag[Id]
 
     val sessionTimeoutInSeconds: Int = 3600
-
-    def resolveUser(id: Id)(implicit ctx : ExecutionContext): Future[Option[User]] = Future(Account.findByEmail(id))
 
     def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
         Future.successful(Results.Redirect("/"))
