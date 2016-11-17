@@ -1,11 +1,12 @@
 package models
 
 import java.sql.Connection
+import javax.inject.Inject
 
 import anorm._
 import persistence.Queries
 import play.api.Play.current
-import play.api.db.DB
+import play.api.db.{DB, DBApi}
 import play.api.libs.json.Json
 
 case class Organization(id: Long, name: String)

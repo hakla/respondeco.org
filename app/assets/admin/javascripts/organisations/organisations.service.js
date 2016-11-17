@@ -1,19 +1,21 @@
-(() => {
+import BaseService from '../base/service';
 
-    class OrganisationsService {
+export default class OrganisationsService extends BaseService {
 
-        constructor($http) {
-            this.$http = $http;
-        }
-
-        all() {
-            return this.$http.get('/organizations').then(result => result.data);
-        }
-
+    constructor($http) {
+        super($http);
     }
 
-    angular
-        .module('respondeco.admin.organisations')
-        .service('OrganisationsService', OrganisationsService);
+    all() {
+        return super.get('/organisations');
+    }
 
-})();
+    get(id) {
+        return super.get('/organisations/:id', { id });
+    }
+
+    post(organisation) {
+        return super.post('/organisations/:id', organisation, { id: organisation.id })
+    }
+
+}

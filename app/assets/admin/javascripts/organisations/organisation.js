@@ -1,15 +1,17 @@
-(() => {
+export default class Organisation {
 
-    class Organisation {
+    constructor(OrganisationsService, organisation) {
+        let newOrganisation = {
+            id: null,
+            name: 'Neue Organisation anlegen'
+        };
 
-        constructor(organisation) {
-            this.organisation = organisation;
-        }
-
+        this.organisationsService = OrganisationsService;
+        this.organisation = organisation || newOrganisation;
     }
 
-    angular
-        .module('respondeco.admin.organisations')
-        .controller('Organisation', Organisation);
+    submit(organisation) {
+        this.organisationsService.post(organisation).then((e) => console.log(e));
+    }
 
-})();
+}

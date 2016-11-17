@@ -1,17 +1,7 @@
-(() => {
+export default class Organisations {
 
-    function Organisations(organisations) {
-
-        let vm = this;
-
-        vm.organisations = organisations;
-
-        return vm;
-
+    constructor (organisations) {
+        this.organisations = organisations;
     }
 
-    angular
-        .module('respondeco.admin.organisations')
-        .controller('Organisations', Organisations);
-
-})();
+}

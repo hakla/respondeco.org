@@ -1,17 +1,5 @@
-(() => {
+export default function Config ($urlRouterProvider) {
 
-    class Config {
+    $urlRouterProvider.otherwise('organisations');
 
-        constructor($urlRouterProvider) {
-
-            $urlRouterProvider.otherwise('/organisations');
-
-        }
-
-    }
-
-    angular
-        .module('respondeco.admin')
-        .config(Config);
-
-})();
+}

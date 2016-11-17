@@ -3,13 +3,24 @@
   "version": "0.0.1",
   "description": "Description for respondeco",
   "repository": "https://github.com/hakla/respondeco.org",
-  "dependencies": {},
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-ui-router": "^0.3.1",
+    "babel-polyfill": "^6.16.0",
+    "bootstrap": "^3.3.7",
+    "gentelella": "^1.3.0",
+    "jquery": "^3.1.1",
+    "ng-annotate-loader": "^0.2.0"
+  },
   "devDependencies": {
+    "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.16.0",
     "bower": "1.3.5",
     "coffee-script": "^1.10.0",
+    "css-loader": "^0.25.0",
     "del": "^2.0.2",
     "event-stream": "3.1.5",
+    "file-loader": "^0.9.0",
     "gulp": "^3.9.0",
     "gulp-angular-filesort": "^1.1.1",
     "gulp-babel": "^6.1.2",
@@ -33,8 +44,12 @@
     "gulp-uglify": "^1.2.0",
     "gulp-usemin": "^0.3.11",
     "gulp-watch": "^4.2.4",
+    "html-loader": "^0.4.4",
     "proxy-middleware": "^0.14.0",
     "stream-series": "^0.1.1",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
     "wiredep": "^2.2.2"
   },
   "engines": {

@@ -5,11 +5,11 @@ import play.api.mvc._
 class Application extends Controller {
 
     def index = Action {
-        Ok(views.html.prod.index())
+        Ok(views.html.index())
     }
 
     def app = Action {
-        Ok(views.html.prod.app())
+        Ok(views.html.app())
     }
 
     def admin = Action {

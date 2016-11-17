@@ -17,7 +17,9 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <p>Blabla</p>
+                    <form ng-submit="vm.submit(vm.organisation)" novalidate>
+                        <input type="text" class="form-control" ng-model="vm.organisation.name">
+                    </form>
                 </div>
             </div>
         </div>
