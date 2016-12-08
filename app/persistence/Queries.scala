@@ -1,28 +1,68 @@
 package persistence
 
 import anorm._
+import common.Database
 
-import java.sql.Connection
+import scala.reflect.{ClassTag, _}
 
 /**
   * Created by Clemens Puehringer on 28/11/15.
   */
-class Queries[T](table: String, parser: RowParser[T]) {
+abstract class Queries[A: ClassTag] {
 
-    def findById(id: Long)(implicit connection: Connection): Option[T] = {
-        Statements.FIND_BY_ID.on(
-            'id -> id,
-            'table -> table
-        ).executeQuery().as(parser.*) match {
-            case x::_ => Some(x)
+    implicit val parser: RowParser[A]
+    implicit val db: Database
+    val table: String = classTag[A].runtimeClass.getSimpleName.toLowerCase()
+
+    def all(namedParameter: NamedParameter*): List[A] = db.withConnection { implicit connection =>
+        where(namedParameter).executeQuery().as(parser.*)
+    }
+
+    def first(parameters: NamedParameter*): Option[A] = db.withConnection { implicit connection =>
+        where(parameters).executeQuery().as(parser.*) match {
+            case x :: _ => Some(x)
             case _ => None
         }
     }
+
+    def byId(id: Long): Option[A] = db.withConnection { implicit connection =>
+        first(
+            'id -> id
+        )
+    }
+
+    private def where(parameters: NamedParameter*): SimpleSql[Row] = {
+        where(parameters)
+    }
+
+    private def where(parameters: Seq[NamedParameter]): SimpleSql[Row] = {
+        val statement: String = s"SELECT * FROM $table" + (parameters.nonEmpty match {
+            case true =>
+                val x: Seq[String] = parameters.map { x =>
+                    s"${x.name} = {${x.name}}"
+                }
+
+                val and = x.mkString(" AND ")
+
+                s" WHERE $and"
+            case false => ""
+        })
+
+        var query: SimpleSql[Row] = SQL(statement)
+
+        parameters.foldLeft(query)((query, b) => query.on(b))
+    }
+
+}
+
+object Where {
 
 }
 
 object Statements {
 
-    def FIND_BY_ID = SQL("SELECT * FROM {table} WHERE id = {id}")
+    def FIND_BY_ID = SQL"SELECT * FROM {table} WHERE id = {id}"
+
+    def FIND_ALL = SQL"SELECT * FROM {table}"
 
 }

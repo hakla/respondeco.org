@@ -1,6 +1,5 @@
 package common
 
-import business.organisations.Organisation
 import play.api.http.{ContentTypes, Writeable}
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Codec

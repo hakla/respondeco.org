@@ -1,20 +1,20 @@
 package authentication
 
-import javax.inject.Inject
-
 import business.accounts.AccountService
-import jp.t2v.lab.play2.auth.LoginLogout
-import play.api.mvc.Controller
+import jp.t2v.lab.play2.auth.{AuthElement, LoginLogout}
+import play.api.mvc._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Created by Klaus on 18.11.2016.
-  */
-trait AuthenticatedController extends Controller with LoginLogout with Play2AuthConfig {
+trait AuthenticatedController extends Controller with LoginLogout with AuthConfigImpl with AuthElement {
 
     val accountService: AccountService
 
     def resolveUser(id: Id)(implicit context: ExecutionContext): Future[Option[User]] = Future(accountService.findByEmail(id))
 
+    override def gotoLoginSucceeded(userId: String)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
+        super.gotoLoginSucceeded(userId, Future.successful(play.api.mvc.Results.Ok))
+    }
 }
+

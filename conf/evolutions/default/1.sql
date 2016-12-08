@@ -1,18 +1,19 @@
+# noinspection SqlNoDataSourceInspectionForFile
 # --- !Ups
 
-CREATE TABLE Organization (
+CREATE TABLE organisation (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Project (
+CREATE TABLE project (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Account (
+CREATE TABLE account (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     email VARCHAR(255),
     password VARCHAR(255),
@@ -22,6 +23,6 @@ CREATE TABLE Account (
 
 # --- !Downs
 
-DROP TABLE Account;
-DROP TABLE Organization;
-DROP TABLE Project;
+DROP TABLE account;
+DROP TABLE organization;
+DROP TABLE project;

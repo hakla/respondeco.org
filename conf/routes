@@ -7,24 +7,25 @@ GET         /                         common.Application.index
 GET         /app                      common.Application.app
 GET         /admin                    common.Application.admin
 
-GET         /test                     common.Application.test
-
-# Account CRUD
-GET         /accounts                 business.accounts.AccountCtrl.findAll
-POST        /accounts                 business.accounts.AccountCtrl.create
-POST        /accounts/login           business.accounts.AccountCtrl.login
-GET         /accounts/logout          business.accounts.AccountCtrl.logout
-GET         /accounts/*id             business.accounts.AccountCtrl.findById(id: Long)
-PUT         /accounts/*id             business.accounts.AccountCtrl.update(id: Long)
-
-# Organization CRUD
-GET         /organisations            business.organisations.OrganisationCtrl.findAll
-GET         /organisations/*id        business.organisations.OrganisationCtrl.findById(id: Long)
-PUT         /organisations/*id        business.organisations.OrganisationCtrl.update(id: Long)
-POST        /organisations            business.organisations.OrganisationCtrl.create
-
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file             controllers.Assets.versioned(path="/public", file: Asset)
 GET         /i18n/*file               controllers.Assets.at(path="/public/i18n", file)
 GET         /views/*file              controllers.Assets.at(path="/public/views", file)
 GET         /images/*file             controllers.Assets.at(path="/public/images", file)
+
+# API stuff
+## Account CRUD
+GET         /api/accounts                 business.accounts.AccountCtrl.findAll
+POST        /api/accounts                 business.accounts.AccountCtrl.create
+GET         /api/accounts/*id             business.accounts.AccountCtrl.findById(id: Long)
+PUT         /api/accounts/*id             business.accounts.AccountCtrl.update(id: Long)
+
+## Authentication
+POST        /api/auth/login               authentication.AuthController.handleLogin
+POST        /api/auth/logout              authentication.AuthController.handleLogout
+
+## Organization CRUD
+GET         /api/organisations            business.organisations.OrganisationCtrl.findAll
+GET         /api/organisations/*id        business.organisations.OrganisationCtrl.findById(id: Long)
+PUT         /api/organisations/*id        business.organisations.OrganisationCtrl.update(id: Long)
+POST        /api/organisations            business.organisations.OrganisationCtrl.create

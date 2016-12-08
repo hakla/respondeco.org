@@ -1,7 +1,8 @@
 package authentication
 
 import business.accounts.Account
-import jp.t2v.lab.play2.auth.AuthConfig
+import common.AuthTokenAccessor
+import jp.t2v.lab.play2.auth.{AuthConfig, TokenAccessor}
 import play.Routes
 import play.api.mvc.{RequestHeader, Result, Results}
 
@@ -11,7 +12,7 @@ import scala.reflect.ClassTag
 /**
   * Created by Clemens Puehringer on 06/03/16.
   */
-trait Play2AuthConfig extends AuthConfig {
+trait AuthConfigImpl extends AuthConfig {
 
     type Id = String
 
@@ -30,7 +31,7 @@ trait Play2AuthConfig extends AuthConfig {
         Future.successful(Results.Redirect("/login"))
 
     def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-        Future.successful(Results.Redirect("/login"))
+        Future.successful(Results.Unauthorized)
 
     override def authorizationFailed(request: RequestHeader, user: User, authority: Option[Authority])(implicit context: ExecutionContext): Future[Result] = {
         Future.successful(Results.Forbidden("no permission"))
@@ -43,5 +44,7 @@ trait Play2AuthConfig extends AuthConfig {
             case _                                  => false
         }
     }
+
+    override lazy val tokenAccessor: TokenAccessor = new AuthTokenAccessor()
 
 }

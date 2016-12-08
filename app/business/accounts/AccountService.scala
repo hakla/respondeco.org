@@ -3,7 +3,7 @@ package business.accounts
 import java.sql.Connection
 import javax.inject.Inject
 
-import anorm.{RowParser, SqlParser, _}
+import anorm._
 import authentication.{Role, User}
 import common.Database
 import persistence.Queries
@@ -11,9 +11,9 @@ import persistence.Queries
 /**
   * Created by Clemens Puehringer on 28/11/15.
   */
-class AccountService @Inject()(db: Database) {
+class AccountService @Inject()(implicit val db: Database) extends Queries[Account] {
 
-    val parser: RowParser[Account] = {
+    implicit val parser: RowParser[Account] = {
         SqlParser.get[Long]("id") ~
             SqlParser.get[String]("email") ~
             SqlParser.get[String]("password") ~
@@ -21,7 +21,6 @@ class AccountService @Inject()(db: Database) {
             case id ~ email ~ pwd ~ role => Account(id, email, pwd, role)
         }
     }
-    val queries = new Queries[Account]("Account", parser)
 
     def create(account: AccountNew): Option[Account] = {
         create(account.email, account.password)
@@ -29,7 +28,7 @@ class AccountService @Inject()(db: Database) {
 
     def create(email: String, password: String): Option[Account] = {
         db.withConnection { implicit connection =>
-            SQL("insert into Account (email, password, role) " +
+            SQL(s"insert into $table (email, password, role) " +
                 "values({email}, {password}, {role})").on(
                 'email -> email,
                 'password -> password,
@@ -40,41 +39,21 @@ class AccountService @Inject()(db: Database) {
         }
     }
 
-    def findById(id: Long): Option[Account] = {
-        db.withConnection { implicit connection =>
-            SQL("SELECT * FROM Account WHERE id = {id}").on(
-                'id -> id
-            ).executeQuery().as(parser.*) match {
-                case x :: _ => Some(x)
-                case _ => None
-            }
-        }
-    }
-
     def findByEmail(email: String): Option[Account] = {
         db.withConnection { implicit c =>
-            SQL("select * from Account where email = {email}").on(
+            first(
                 'email -> email
-            ).executeQuery().as(parser.*) match {
-                case acc :: _ => Some(acc)
-                case _ => None
-            }
-        }
-    }
-
-    def findAll(): List[Account] = {
-        db.withConnection { implicit c =>
-            SQL("SELECT * FROM Account").executeQuery().as(parser.*)
+            )
         }
     }
 
     def update(id: Long, account: AccountPublic): Option[Account] = {
         db.withConnection { implicit c =>
-            SQL("update Account set email = {email} where id = {id}").on(
+            SQL(s"update $table set email = {email} where id = {id}").on(
                 'id -> id,
                 'email -> account.email
             ).executeUpdate() match {
-                case 1 => findById(id)
+                case 1 => byId(id)
                 case _ => None
             }
         }

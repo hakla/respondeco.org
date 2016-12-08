@@ -2,20 +2,20 @@ package business.organisations
 
 import javax.inject.Inject
 
-import authentication.AuthenticatedController
-import business.accounts.AccountService
+import authentication.{AuthenticatedController, User}
+import business.accounts.{AccountNew, AccountService}
 import play.api.mvc._
 
 class OrganisationCtrl @Inject()(organisationService: OrganisationService, val accountService: AccountService) extends AuthenticatedController {
 
-    def findAll = Action {
-        Ok(organisationService.findAll())
+    def findAll = StackAction(AuthorityKey -> User) { implicit request =>
+        Ok(organisationService.all())
     }
 
     def findById(id: Long) = Action {
-        organisationService.findById(id) match {
+        organisationService.byId(id) match {
             case Some(org) => Ok(org)
-            case None => BadRequest("No such Organization")
+            case None => NotFound("No such organisation")
         }
     }
 
