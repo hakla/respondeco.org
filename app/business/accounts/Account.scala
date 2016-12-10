@@ -20,7 +20,9 @@ case class AccountPublic(id: Long, email: String)
 object AccountPublic extends MyWriteable[AccountPublic] {
     implicit val formatter: OFormat[AccountPublic] = Json.format[AccountPublic]
 
+    def apply(account: Account): AccountPublic = AccountPublic(account.id, account.email)
+
     def from(a: Account): AccountPublic = {
-        AccountPublic(a.id, a.email)
+        AccountPublic(a)
     }
 }

@@ -1,6 +1,6 @@
 package authentication
 
-import business.accounts.AccountService
+import business.accounts.{AccountPublic, AccountService}
 import jp.t2v.lab.play2.auth.{AuthElement, LoginLogout}
 import play.api.mvc._
 
@@ -14,7 +14,9 @@ trait AuthenticatedController extends Controller with LoginLogout with AuthConfi
     def resolveUser(id: Id)(implicit context: ExecutionContext): Future[Option[User]] = Future(accountService.findByEmail(id))
 
     override def gotoLoginSucceeded(userId: String)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-        super.gotoLoginSucceeded(userId, Future.successful(play.api.mvc.Results.Ok))
+        super.gotoLoginSucceeded(userId, resolveUser(userId) map { x =>
+            play.api.mvc.Results.Ok(AccountPublic from x.get)
+        })
     }
 }
 

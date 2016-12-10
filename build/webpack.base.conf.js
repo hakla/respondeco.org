@@ -12,7 +12,8 @@ var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
   entry: {
-    app: './app/assets/vue/admin/main.js',
+    admin: './app/assets/vue/admin/main.js',
+    app: './app/assets/vue/app/main.js',
     vendor: ['jquery']
   },
   output: {
@@ -27,7 +28,9 @@ module.exports = {
       'vue$': 'vue/dist/vue.common.js',
       'src': path.resolve(__dirname, '../src'),
       'assets': path.resolve(__dirname, '../src/assets'),
-      'components': path.resolve(__dirname, '../src/components')
+      'components': path.resolve(__dirname, '../src/components'),
+      'unify': path.resolve(__dirname, '../public/unify/assets'),
+      'common': path.resolve(__dirname, '../app/assets/vue/common')
     }
   },
   resolveLoader: {

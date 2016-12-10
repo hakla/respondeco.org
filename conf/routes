@@ -4,8 +4,8 @@
 
 # Home page
 GET         /                                           common.Application.index
-GET         /app                                        common.Application.app
-GET         /admin                                      common.Application.admin
+GET         /app/                                       common.Application.app
+GET         /admin/                                     common.Application.admin
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                               controllers.Assets.versioned(path="/public", file: Asset)
@@ -19,6 +19,8 @@ GET         /api/accounts                               business.accounts.Accoun
 POST        /api/accounts                               business.accounts.AccountCtrl.create
 GET         /api/accounts/*id                           business.accounts.AccountCtrl.findById(id: Long)
 PUT         /api/accounts/*id                           business.accounts.AccountCtrl.update(id: Long)
+
+GET         /api/user                                   business.accounts.AccountCtrl.currentUser
 
 ## Authentication
 POST        /api/auth/obtain-session                    authentication.AuthController.handleLogin

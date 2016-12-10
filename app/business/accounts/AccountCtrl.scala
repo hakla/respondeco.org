@@ -2,7 +2,7 @@ package business.accounts
 
 import javax.inject.Inject
 
-import authentication.AuthenticatedController
+import authentication.{AuthenticatedController, User}
 import play.api.libs.json.Json
 import play.api.mvc.Action
 
@@ -38,5 +38,9 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
             case Some(account) => Ok(AccountPublic from account)
             case None => BadRequest("Couldn't update")
         }
+    }
+
+    def currentUser() = StackAction(AuthorityKey -> User) { implicit request =>
+        Ok(AccountPublic from loggedIn)
     }
 }

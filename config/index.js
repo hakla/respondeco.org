@@ -1,9 +1,24 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
 var proxy = {
-    target: 'http://localhost:9000',
-    secure: false
-}
+  target: 'http://localhost:9000',
+  secure: false
+};
+
+var proxyTable = {};
+
+[
+  '/admin/',
+  '/api/',
+  '/app/',
+  '/assets/fonts/',
+  '/assets/img/',
+  '/assets/images/',
+  '/assets/i18n/',
+  '/assets/partials/',
+  '/assets/unify',
+  '/assets/views/'
+].forEach((x) => proxyTable[x] = proxy);
 
 module.exports = {
   build: {
@@ -11,7 +26,7 @@ module.exports = {
     index: path.resolve(__dirname, '../public/index.html'),
     assetsRoot: path.resolve(__dirname, '../public'),
     assetsSubDirectory: '/',
-    assetsPublicPath: '/assets/javascripts/',
+    assetsPublicPath: '/assets',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -24,15 +39,8 @@ module.exports = {
     env: require('./dev.env'),
     port: 8080,
     assetsSubDirectory: '/',
-    assetsPublicPath: '/assets/javascripts/',
-    proxyTable: {
-        '/api/': proxy,
-        '/assets/images/': proxy,
-        '/assets/i18n/': proxy,
-        '/assets/partials/': proxy,
-        '/assets/views/': proxy,
-        '/admin': proxy
-    },
+    assetsPublicPath: '/assets',
+    proxyTable: proxyTable,
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
