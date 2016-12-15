@@ -8,7 +8,7 @@ import {
 
 Vue.use(VueResource);
 
-Vue.http.options.root = '/api';
+Vue.http.options.root = '/api/v1';
 Vue.http.headers.common['X-Access-Token'] = "";
 Vue.http.interceptors.push((request, next) => {
 

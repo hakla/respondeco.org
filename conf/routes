@@ -15,19 +15,19 @@ GET         /images/*file                               controllers.Assets.at(pa
 
 # API stuff
 ## Account CRUD
-GET         /api/accounts                               business.accounts.AccountCtrl.findAll
-POST        /api/accounts                               business.accounts.AccountCtrl.create
-GET         /api/accounts/*id                           business.accounts.AccountCtrl.findById(id: Long)
-PUT         /api/accounts/*id                           business.accounts.AccountCtrl.update(id: Long)
+GET         /api/v1/accounts                               business.accounts.AccountCtrl.findAll
+POST        /api/v1/accounts                               business.accounts.AccountCtrl.create
+GET         /api/v1/accounts/*id                           business.accounts.AccountCtrl.findById(id: Long)
+PUT         /api/v1/accounts/*id                           business.accounts.AccountCtrl.update(id: Long)
 
-GET         /api/user                                   business.accounts.AccountCtrl.currentUser
+GET         /api/v1/user                                   business.accounts.AccountCtrl.currentUser
 
 ## Authentication
-POST        /api/auth/obtain-session                    authentication.AuthController.handleLogin
-POST        /api/auth/invalidate-session                authentication.AuthController.handleLogout
+POST        /api/v1/auth/obtain-session                    authentication.AuthController.handleLogin
+POST        /api/v1/auth/invalidate-session                authentication.AuthController.handleLogout
 
 ## Organization CRUD
-GET         /api/organisations                          business.organisations.OrganisationCtrl.findAll
-GET         /api/organisations/*id                      business.organisations.OrganisationCtrl.findById(id: Long)
-PUT         /api/organisations/*id                      business.organisations.OrganisationCtrl.update(id: Long)
-POST        /api/organisations                          business.organisations.OrganisationCtrl.create
+GET         /api/v1/organisations                          business.organisations.OrganisationCtrl.findAll
+GET         /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.findById(id: Long)
+PUT         /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.update(id: Long)
+POST        /api/v1/organisations                          business.organisations.OrganisationCtrl.create
