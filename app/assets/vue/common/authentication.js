@@ -16,8 +16,14 @@ export default class Authentication {
     this.onLoggedIn = new FunctionQueue();
     this.onLoggedOut = new FunctionQueue();
 
+    this.refreshUser();
+  }
+
+  refreshUser() {
     Vue.http.get('user').then(response => {
       activeUser.pushState(response.body);
+    }, response => {
+      activeUser.pushState(undefined);
     });
   }
 
@@ -28,19 +34,18 @@ export default class Authentication {
     }).then(response => {
       TokenHolder.set(response.headers.get('x-access-token'));
 
-      activeUser = response.body;
-
-      this.onLoggedIn.apply(activeUser);
+      this.refreshUser();
+      this.onLoggedIn.apply(response.body);
     }, response => {
       this.onError(response.body);
     });
   }
 
   logout() {
-    Vue.http.post('auth/invalidate-session').then(reponse => {
+    Vue.http.post('auth/invalidate-session', {}).then(reponse => {
       TokenHolder.empty();
-      activeUser = undefined;
 
+      this.refreshUser();
       this.onLoggedOut.apply();
     });
   }

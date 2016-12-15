@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './app';
 
 import Login from './authentication/login';
+import Logout from './authentication/logout';
 import Organisations from './organisations/organisations';
 import Projects from './projects/projects';
 
@@ -21,6 +22,9 @@ export const routes = [{
 }, {
   path: '/login',
   component: Login
+}, {
+  path: '/logout',
+  component: Logout
 }];
 
 export const router = new VueRouter({
