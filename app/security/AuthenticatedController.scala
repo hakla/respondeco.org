@@ -1,4 +1,4 @@
-package authentication
+package security
 
 import business.accounts.{AccountPublic, AccountService}
 import jp.t2v.lab.play2.auth.{AuthElement, LoginLogout}

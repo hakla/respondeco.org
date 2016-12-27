@@ -14,7 +14,9 @@ libraryDependencies ++= Seq(
     evolutions,
     "com.typesafe.play" %% "anorm" % "3.0.0-M1",
     "jp.t2v" %% "play2-auth"        % "0.14.1",
-    "org.typelevel" %% "cats" % "0.8.1"
+    "org.typelevel" %% "cats" % "0.8.1",
+    "org.yaml" % "snakeyaml" % "1.17",
+    "de.mkammerer" % "argon2-jvm" % "2.1"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

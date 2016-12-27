@@ -26,3 +26,5 @@ respondeco.iws
 .java-version
 .sbtserver*
 respondeco.sublime-*
+.sbtopts
+index.html

@@ -1,0 +1,13 @@
+{
+    "users": [{
+        "email": "admin@respondeco.org",
+        "name": "admin",
+        "password": "admin",
+        "role": 1
+    }, {
+        "email": "test@test.at",
+        "name": "test",
+        "password": "test",
+        "role": 2
+    }]
+}

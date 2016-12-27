@@ -1,7 +1,9 @@
 <template>
 <div class="container-fluid">
   <div class="row equal-height-columns">
-    <div class="col-md-6 col-sm-6 hidden-xs image-block equal-height-column"></div>
+    <div class="col-md-6 col-sm-6 hidden-xs image-block equal-height-column">
+      <!-- <img src="/assets/images/login.jpg" /> -->
+    </div>
 
     <div class="col-md-6 col-sm-6 form-block equal-height-column">
       <a href="index.html">

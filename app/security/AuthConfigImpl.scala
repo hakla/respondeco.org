@@ -1,4 +1,4 @@
-package authentication
+package security
 
 import business.accounts.Account
 import common.AuthTokenAccessor
@@ -41,6 +41,7 @@ trait AuthConfigImpl extends AuthConfig {
         (user.role, authority) match {
             case (Administrator, Administrator)     => true
             case (User, User)                       => true
+            case (Administrator, User)              => true
             case _                                  => false
         }
     }

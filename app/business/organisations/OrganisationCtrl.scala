@@ -2,32 +2,31 @@ package business.organisations
 
 import javax.inject.Inject
 
-import authentication.{AuthenticatedController, User}
-import business.accounts.{AccountNew, AccountService}
-import play.api.mvc._
+import business.accounts.AccountService
+import security.{AuthenticatedController, Authorization}
 
-class OrganisationCtrl @Inject()(organisationService: OrganisationService, val accountService: AccountService) extends AuthenticatedController {
+class OrganisationCtrl @Inject()(organisationService: OrganisationService, val accountService: AccountService) extends AuthenticatedController with Authorization {
 
-    def findAll = StackAction(AuthorityKey -> User) { implicit request =>
+    def findAll = Unauthenticated {
         Ok(organisationService.all())
     }
 
-    def findById(id: Long) = Action {
+    def findById(id: Long) = Unauthenticated {
         organisationService.byId(id) match {
             case Some(org) => Ok(org)
             case None => NotFound("No such organisation")
         }
     }
 
-    def update(id: Long) = Action(parse.json[OrganisationInsert]) { request =>
-        organisationService.update(id, request.body) match {
+    def update(id: Long) = AuthenticatedUser(parse.json[OrganisationInsert]) { organisation =>
+        organisationService.update(id, organisation) match {
             case Some(org) => Ok(org)
             case None => BadRequest("Could not update")
         }
     }
 
-    def create = Action(parse.json[OrganisationInsert]) { request =>
-        organisationService.create(request.body) match {
+    def create = AuthenticatedUser(parse.json[OrganisationInsert]) { organisation =>
+        organisationService.create(organisation) match {
             case Some(org) => Ok(org)
             case None => BadRequest("Could not create")
         }

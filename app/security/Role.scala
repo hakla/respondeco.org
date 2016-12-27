@@ -1,12 +1,11 @@
-package authentication
+package security
 
 import anorm.{RowParser, SqlParser}
-import play.api.libs.json.Json
 
 /**
   * Created by Clemens Puehringer on 06/03/16.
   */
-sealed abstract case class Role(value: Int)
+sealed abstract case class Role(value: Int, name: String)
 
 object Role {
 
@@ -20,7 +19,10 @@ object Role {
             case User.value => User
         }
     }
+
+    implicit def role2String(role: Role): String = role.name
+
 }
 
-object Administrator   extends Role(1)
-object User            extends Role(2)
+object Administrator   extends Role(1, "Administrator")
+object User            extends Role(2, "User")

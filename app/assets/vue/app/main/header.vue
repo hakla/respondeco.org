@@ -60,6 +60,8 @@ import Authentication from 'common/authentication';
 export default {
   created() {
     Authentication.activeUser().then(user => {
+      console.log('blabla');
+      console.log(user);
       this.user = user;
     });
   },
