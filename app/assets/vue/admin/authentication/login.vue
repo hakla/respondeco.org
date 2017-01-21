@@ -19,30 +19,32 @@
 </template>
 
 <script>
-import TokenHolder from '../authentication/token-holder';
+import Authentication from 'common/authentication';
 import { router } from '../router';
 
 export default {
   name: 'Login',
 
+  created() {
+    Authentication
+      .get()
+      .error(error => this.error = error)
+      .loggedIn(() => router.push('/'));
+  },
+
   data() {
     return {
+      error: undefined,
       user: '',
       password: ''
-    };
+    }
   },
 
   methods: {
     login() {
-      this.$http.post('auth/obtain-session', {
-        email: this.user,
-        password: this.password
-      }).then(response => {
-        TokenHolder.set(response.headers.get("x-access-token"));
-        router.push('/');
-      }, reponse => {
-        TokenHolder.empty();
-      });
+      Authentication
+        .get()
+        .login(this.user, this.password);
     }
   }
 }

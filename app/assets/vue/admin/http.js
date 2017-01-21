@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
-import TokenHolder from './authentication/token-holder';
+import TokenHolder from 'common/token-holder';
 import { router } from './router';
 
 Vue.use(VueResource);
@@ -16,7 +16,7 @@ Vue.http.interceptors.push((request, next) => {
         console.log(response);
 
         if (response.status === 401) {
-            router.push('login');
+            router.push('/login');
         }
     });
 });

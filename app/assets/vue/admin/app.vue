@@ -13,7 +13,7 @@
           <!-- menu profile quick info -->
           <div class="profile">
             <div class="profile_pic">
-              <img src="bower_components/gentelella/production/images/img.jpg" alt="..." class="img-circle profile_img">
+              <img src="/assets/images/logo.png" alt="..." class="img-circle profile_img">
             </div>
             <div class="profile_info">
               <span>Welcome,</span>
@@ -176,6 +176,7 @@ import jQuery from 'jquery';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'gentelella/build/css/custom.min.css';
+import 'font-awesome/css/font-awesome.css';
 
 export default {
   name: 'app',
@@ -188,7 +189,6 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 </style>

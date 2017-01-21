@@ -3,8 +3,13 @@
 import Vue from 'vue'
 import App from './app'
 
+import Authentication from 'common/authentication'
+
 import { router } from './router'
 import { http } from './http'
+
+Authentication
+  .init(router);
 
 const app = new Vue({
     router

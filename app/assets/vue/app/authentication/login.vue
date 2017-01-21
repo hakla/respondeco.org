@@ -73,7 +73,6 @@
 import 'unify/css/pages/page_log_reg_v4.css';
 import 'unify/plugins/brand-buttons/brand-buttons.css';
 
-import TokenHolder from 'common/token-holder';
 import Authentication from 'common/authentication';
 import {
   router

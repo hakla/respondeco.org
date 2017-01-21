@@ -25,7 +25,8 @@
         <div class="x_title">
           <h2>Organisationen</h2>
           <ul class="nav navbar-right panel_toolbox">
-            <li><a class="collapse-link" ui-sref="organisations.details({ id: '-1' })"><i class="fa fa-plus"></i></a>
+            <li>
+              <router-link class="collapse-link" :to="{ name: 'organisation', params: { id: 'new' } }"><i class="fa fa-plus"></i></router-link>
             </li>
           </ul>
           <div class="clearfix"></div>
@@ -79,7 +80,7 @@
 export default {
   name: 'OrganisationsOverview',
 
-  created () {
+  created() {
     this.resource = this.$resource('organisations{/id}');
     this.fetchData();
   },
