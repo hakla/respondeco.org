@@ -35,7 +35,7 @@ export default {
   methods: {
     login() {
       this.$http.post('auth/obtain-session', {
-        email: this.user,
+        user: this.user,
         password: this.password
       }).then(response => {
         TokenHolder.set(response.headers.get("x-access-token"));

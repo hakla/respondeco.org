@@ -29,7 +29,7 @@ export default class Authentication {
 
   login(email, password, router) {
     Vue.http.post('auth/obtain-session', {
-      email,
+      user: email,
       password
     }).then(response => {
       TokenHolder.set(response.headers.get('x-access-token'));
