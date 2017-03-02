@@ -16,18 +16,18 @@ var proxyTable = {};
   '/assets/images/',
   '/assets/i18n/',
   '/assets/partials/',
-  '/assets/unify',
+  '/assets/unify/',
   '/assets/views/'
 ].forEach((x) => proxyTable[x] = proxy);
 
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../public/index.html'),
+    index: path.resolve(__dirname, '../app/views/admin.scala.html'),
     assetsRoot: path.resolve(__dirname, '../public'),
     assetsSubDirectory: '/',
     assetsPublicPath: '/assets',
-    productionSourceMap: true,
+    productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:

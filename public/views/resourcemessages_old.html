@@ -1,9 +1,0 @@
-<table class="table">
-    <tr ng-repeat="item in oldResourceMessages">
-        <td ng-bind-html="item.text"></td>
-        <td style="min-width:210px;">
-            <button class="btn btn-default pull-right" type="button" ng-show="item.accepted == false" translate="resourcemessages.declinedButton" disabled="disabled" style="width:105px;">decline</button>
-            <button class="btn btn-default pull-right" type="button" ng-show="item.accepted" translate="resourcemessages.acceptedButton" disabled="disabled" style="width:105px;">accept</button>
-        </td>
-    </tr>
-</table>
