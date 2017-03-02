@@ -32,4 +32,12 @@ class OrganisationCtrl @Inject()(organisationService: OrganisationService, val a
         }
     }
 
+    def delete(id: Long) = AuthenticatedUser {
+        if (organisationService.delete(id)) {
+            Ok
+        } else {
+            BadRequest
+        }
+    }
+
 }

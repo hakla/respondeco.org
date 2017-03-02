@@ -4,6 +4,12 @@
 CREATE TABLE organisation (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
+    description TEXT,
+    email VARCHAR(255),
+    website VARCHAR(255),
+    location VARCHAR(255),
+    category VARCHAR(255),
+    subcategory VARCHAR(255),
     PRIMARY KEY (id)
 );
 

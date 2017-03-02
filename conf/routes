@@ -31,3 +31,4 @@ GET         /api/v1/organisations                  business.organisations.Organi
 GET         /api/v1/organisations/*id              business.organisations.OrganisationCtrl.findById(id: Long)
 PUT         /api/v1/organisations/*id              business.organisations.OrganisationCtrl.update(id: Long)
 POST        /api/v1/organisations                  business.organisations.OrganisationCtrl.create
+DELETE      /api/v1/organisations/*id              business.organisations.OrganisationCtrl.delete(id: Long)

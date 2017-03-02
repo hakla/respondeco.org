@@ -61,9 +61,8 @@
                   <small>57% Complete</small>
                 </td>
                 <td>
-                  <router-link :to="'./organisations/' + organisation.id" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </router-link>
-                  <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
-                  <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
+                  <router-link :to="'./organisations/' + organisation.id" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit </router-link>
+                  <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(organisation.id)"><i class="fa fa-trash-o"></i> Delete </a>
                 </td>
               </tr>
             </tbody>
@@ -93,6 +92,10 @@ export default {
   },
 
   methods: {
+    remove(id) {
+      console.log(id)
+      this.resource.delete({id}).then(response => this.fetchData())
+    },
     fetchData() {
       this.resource.get().then(response => {
         this.organisations = response.body;

@@ -19,17 +19,80 @@
         <div class="x_content">
           <br>
           <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate @submit.stop.prevent="save()">
+
+            <!-- Name -->
             <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Name der Organisation <span class="required">*</span>
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name der Organisation <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12" v-model="organisation.name">
+                <input type="text" id="name" required="required" class="form-control col-md-7 col-xs-12" v-model="organisation.name">
+              </div>
+            </div>
+
+            <!-- Beschreibung -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">Beschreibung <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <textarea id="description" required="required" rows="10" class="form-control col-md-7 col-xs-12" v-model="organisation.description">
+                </textarea>
+              </div>
+            </div>
+
+            <!-- Kategorie -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="category">Kategorie <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select id="category" v-model="organisation.category" @change="updateSubCategories()">
+                  <option>---</option>
+                  <option v-for="category in categories">{{ category }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Unterkategorie -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="category">Unterkategorie <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select id="subcategory" v-model="organisation.subcategory">
+                  <option>---</option>
+                  <option v-for="subcategory in subcategories">{{ subcategory }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- E-Mail -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">E-Mail <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="email" required="required" class="form-control col-md-7 col-xs-12" v-model="organisation.email">
+              </div>
+            </div>
+
+            <!-- Website -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website">Website <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="website" required="required" class="form-control col-md-7 col-xs-12" v-model="organisation.website">
+              </div>
+            </div>
+
+            <!-- Standort -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="location">Standort <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="location" required="required" class="form-control col-md-7 col-xs-12" v-model="organisation.location">
               </div>
             </div>
             <div class="ln_solid"></div>
             <div class="form-group">
               <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                <button class="btn btn-primary" @onclick="cancel()">Abbrechen</button>
+                <button type="button" class="btn btn-primary" @click="cancel()">Abbrechen</button>
                 <button type="submit" class="btn btn-success">Speichern</button>
               </div>
             </div>
@@ -47,16 +110,58 @@ import {
   router
 } from '../router';
 
+let subcategories = {
+  "Ökonomie": [
+    'Produkt',
+    'Beschäftigungsverhältnisse',
+    'Arbeitsbedingungen und Sozialschutz',
+    'Gesundheit und Sicherheit am Arbeitsplatz',
+    'Menschliche Entwicklung am Arbeitsplatz',
+    'Schulungen und Weiterbildungen ',
+    'Korruptionsbekämpfung',
+    'Kundendienst, Beschwerdemanagement',
+    'Schutz und Vertraulichkeit von Kundendaten'
+  ],
+  "Umwelt": [
+    'Inanspruchnahme natürlicher Ressourcen',
+    'Ressourcenmanagement',
+    'Klimarelevante Emissionen'
+  ],
+  "Gesellschaft": [
+    'Demokratie/Menschenrechte',
+    'Einbindung der Gemeinschaft',
+    'Bildung/ Kultur',
+    'Schaffen von Arbeitsplätzen und berufliche Qualifizierung ',
+    'Chancengerechtigkeit',
+    'Anti-Diskriminierung/ schutzbedürftige Gruppen',
+    'Stadtteil',
+    'Unterstützung von Social Businesses'
+  ]
+}
+
 export default {
   name: "organisation",
   created() {
-    this.resource = this.$resource('organisations/{id}')
-    this.fetchData()
+    this.resource = this.$resource('organisations{/id}')
+
+    if (this.$route.params.id !== 'new') {
+      this.fetchData();
+    } else {
+      this.isNew = true
+      this.organisation.name = 'Neue Organisation'
+    }
   },
   data() {
     return {
+      categories: [
+        'Ökonomie',
+        'Umwelt',
+        'Gesellschaft'
+      ],
+      isNew: false,
       loading: false,
-      organisation: null
+      organisation: {},
+      subcategories: []
     }
   },
   methods: {
@@ -70,15 +175,25 @@ export default {
         id: this.$route.params.id
       }).then(response => {
         this.organisation = response.body
+        this.updateSubCategories()
         this.loading = false
       })
     },
     save() {
-      this.resource.update({
-        id: this.$route.params.id
-      }, this.organisation).then((response) => {
-        this.cancel()
-      });
+      if (this.isNew) {
+        this.resource.save(null, this.organisation).then(response => {
+          this.cancel()
+        });
+      } else {
+        this.resource.update({
+          id: this.$route.params.id
+        }, this.organisation).then((response) => {
+          this.cancel()
+        });
+      }
+    },
+    updateSubCategories() {
+      this.subcategories = subcategories[this.organisation.category]
     }
   }
 }
