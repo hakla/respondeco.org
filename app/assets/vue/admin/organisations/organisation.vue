@@ -147,8 +147,7 @@ export default {
     if (this.$route.params.id !== 'new') {
       this.fetchData();
     } else {
-      this.isNew = true
-      this.organisation.name = 'Neue Organisation'
+      this.isNew = true;
     }
   },
   data() {

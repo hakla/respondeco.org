@@ -16,7 +16,7 @@ class OrganisationService @Inject() (implicit val db: Database) extends Queries[
     implicit val parser: RowParser[Organisation] = Macro.namedParser[Organisation]
 
     def create(organisation: OrganisationInsert) : Option[Organisation] = db.withConnection { implicit c =>
-        SQL(s"insert into $table (name) values({name})").on(
+        SQL(s"insert into $table (name, description, email, website, location, category, subcategory) values({name}, {description}, {email}, {website}, {location}, {category}, {subcategory})").on(
             'name -> organisation.name,
             'description -> organisation.description,
             'email -> organisation.email,
