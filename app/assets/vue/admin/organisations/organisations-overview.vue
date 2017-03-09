@@ -8,7 +8,7 @@
     <div class="title_right">
       <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for...">
+          <input type="text" class="form-control" placeholder="Search for..." v-model="filter" @input="updateList(filter)">
           <span class="input-group-btn">
               <button class="btn btn-default" type="button">Go!</button>
           </span>
@@ -48,7 +48,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="organisation in organisations">
+              <tr v-for="organisation in list">
                 <td @click="gotoOrganisation(organisation.id)">{{ organisation.id }}</td>
                 <td @click="gotoOrganisation(organisation.id)">
                   <a>{{ organisation.name }}</a>
@@ -83,23 +83,31 @@ export default {
 
   data() {
     return {
-      heading: "asdf",
+      filter: '',
+      list: [],
       organisations: []
     }
   },
 
   methods: {
+    fetchData() {
+      this.resource.get().then(response => {
+        this.organisations = response.body;
+        this.updateList();
+      });
+    },
     gotoOrganisation (id) {
       router.push(`/organisations/${id}`)
     },
     remove(id) {
-      console.log(id)
       this.resource.delete({id}).then(response => this.fetchData())
     },
-    fetchData() {
-      this.resource.get().then(response => {
-        this.organisations = response.body;
-      });
+    updateList (filter) {
+      if (filter) {
+        this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1);
+      } else {
+        this.list = this.organisations;
+      }
     }
   }
 }
