@@ -147,7 +147,9 @@ export default {
       ],
       isNew: false,
       loading: false,
-      organisation: {},
+      organisation: {
+        name: "Neue Organisation"
+      },
       subcategories: []
     }
   },

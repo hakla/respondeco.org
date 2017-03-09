@@ -26,7 +26,9 @@
           <h2>Organisationen</h2>
           <ul class="nav navbar-right panel_toolbox">
             <li>
-              <router-link class="collapse-link" :to="{ name: 'organisation', params: { id: 'new' } }"><i class="fa fa-plus"></i></router-link>
+              <router-link class="collapse-link" :to="{ name: 'organisation', params: { id: 'new' } }">
+                <button class="btn btn-primary">Neue Organisation</button>
+              </router-link>
             </li>
           </ul>
           <div class="clearfix"></div>
@@ -46,12 +48,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="organisation in organisations" @click="gotoOrganisation(organisation.id)">
-                <td>{{ organisation.id }}</td>
-                <td>
+              <tr v-for="organisation in organisations">
+                <td @click="gotoOrganisation(organisation.id)">{{ organisation.id }}</td>
+                <td @click="gotoOrganisation(organisation.id)">
                   <a>{{ organisation.name }}</a>
                 </td>
-                <td>
+                <td @click="gotoOrganisation(organisation.id)">
                   {{ organisation.description }}
                 </td>
                 <td class="text-right">
