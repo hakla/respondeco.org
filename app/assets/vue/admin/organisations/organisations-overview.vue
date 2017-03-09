@@ -41,27 +41,20 @@
               <tr>
                 <th style="width: 1%">#</th>
                 <th style="width: 20%">Name</th>
-                <th>Status</th>
-                <th style="width: 20%">#Edit</th>
+                <th>Beschreibung</th>
+                <th style="width: 20%"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="organisation in organisations">
+              <tr v-for="organisation in organisations" @click="gotoOrganisation(organisation.id)">
                 <td>{{ organisation.id }}</td>
                 <td>
                   <a>{{ organisation.name }}</a>
                 </td>
                 <td>
-
+                  {{ organisation.description }}
                 </td>
-                <td class="project_progress">
-                  <div class="progress progress_sm">
-                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="57"></div>
-                  </div>
-                  <small>57% Complete</small>
-                </td>
-                <td>
-                  <router-link :to="'./organisations/' + organisation.id" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit </router-link>
+                <td class="text-right">
                   <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(organisation.id)"><i class="fa fa-trash-o"></i> Delete </a>
                 </td>
               </tr>
@@ -76,6 +69,8 @@
 </template>
 
 <script>
+import { router } from '../router';
+
 export default {
   name: 'OrganisationsOverview',
 
@@ -92,6 +87,9 @@ export default {
   },
 
   methods: {
+    gotoOrganisation (id) {
+      router.push(`/organisations/${id}`)
+    },
     remove(id) {
       console.log(id)
       this.resource.delete({id}).then(response => this.fetchData())
@@ -104,3 +102,9 @@ export default {
   }
 }
 </script>
+
+<style>
+  tbody tr {
+    cursor: pointer;
+  }
+</style>

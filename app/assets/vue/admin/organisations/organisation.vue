@@ -44,21 +44,9 @@
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="category">Kategorie <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <select id="category" v-model="organisation.category" @change="updateSubCategories()">
+                <select class="form-control" id="category" v-model="organisation.category">
                   <option>---</option>
                   <option v-for="category in categories">{{ category }}</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Unterkategorie -->
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="category">Unterkategorie <span class="required">*</span>
-              </label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <select id="subcategory" v-model="organisation.subcategory">
-                  <option>---</option>
-                  <option v-for="subcategory in subcategories">{{ subcategory }}</option>
                 </select>
               </div>
             </div>
@@ -180,15 +168,11 @@ export default {
     },
     save() {
       if (this.isNew) {
-        this.resource.save(null, this.organisation).then(response => {
-          this.cancel()
-        });
+        this.resource.save(null, this.organisation).then(this.cancel);
       } else {
         this.resource.update({
           id: this.$route.params.id
-        }, this.organisation).then((response) => {
-          this.cancel()
-        });
+        }, this.organisation).then(this.cancel);
       }
     },
     updateSubCategories() {

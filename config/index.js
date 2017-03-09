@@ -25,7 +25,7 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../app/views/admin.scala.html'),
     assetsRoot: path.resolve(__dirname, '../public'),
-    assetsSubDirectory: '/',
+    assetsSubDirectory: '',
     assetsPublicPath: '/assets',
     productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
