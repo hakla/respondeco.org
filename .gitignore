@@ -15,7 +15,6 @@ src/main/webapp/dist
 deploy
 coverage
 *.map
-unify*
 respondeco.sublime-workspace
 logs
 .idea_modules
