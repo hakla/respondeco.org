@@ -23,8 +23,8 @@ var proxyTable = {};
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../app/views/admin.scala.html'),
-    assetsRoot: path.resolve(__dirname, '../public'),
+    index: resolve('app/views/admin.scala.html'),
+    assetsRoot: resolve('public'),
     assetsSubDirectory: '',
     assetsPublicPath: '/assets',
     productionSourceMap: false,
@@ -53,4 +53,8 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false
   }
+}
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
 }

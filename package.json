@@ -4,8 +4,8 @@
   "description": "Description for respondeco",
   "repository": "https://github.com/hakla/respondeco.org",
   "scripts": {
-    "dev": "node build/dev-server.js",
-    "build": "node build/build.js"
+    "dev": "node frontend/build/dev-server.js",
+    "build": "node frontend/build/build.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.16.0",
