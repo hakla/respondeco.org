@@ -6,7 +6,7 @@ import common.MyWriteable
 import persistence.Queries
 import play.api.libs.json.{Format, Json}
 
-case class ProjectModel (id: Long, name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String])
+case class ProjectModel (id: Long, name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String], price: Option[Long])
 
 object ProjectModel extends MyWriteable[ProjectModel] {
     implicit val formatter: Format[ProjectModel] = Json.format
@@ -20,19 +20,13 @@ object ProjectModel extends MyWriteable[ProjectModel] {
         subcategory = project.subcategory,
         start = project.start,
         end = project.end,
-        benefits = project.benefits
+        benefits = project.benefits,
+        price = project.price
     )
-
 }
 
-case class ProjectWriteModel (id: Option[Long], name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String])
+case class ProjectWriteModel (id: Option[Long], name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String], price: Option[Long])
 
 object ProjectWriteModel extends MyWriteable[ProjectWriteModel] {
     implicit val formatter: Format[ProjectWriteModel] = Json.format
-}
-
-case class ProjectPublicModel (id: Long, name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String])
-
-object ProjectPublicModel extends MyWriteable[ProjectPublicModel] {
-    implicit val formatter: Format[ProjectPublicModel] = Json.format
 }

@@ -81,6 +81,15 @@
               </div>
             </div>
 
+            <!-- Preis -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website">Preis <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="price" required="required" class="form-control col-md-7 col-xs-12" v-model="project.price">
+              </div>
+            </div>
+
             <!-- Beginn -->
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website">Beginn <span class="required">*</span>
@@ -135,13 +144,14 @@
 <script>
 import {
   router
-} from '../router';
+} from '../router'
 
 // import jQuery from 'jquery';
-import moment from 'moment';
 
-import OrganisationService from 'admin/organisations/organisations-service';
-import ProjectService from './projects-service';
+import OrganisationService from 'admin/organisations/organisations-service'
+import ProjectService from './projects-service'
+
+import Utils from 'common/utils'
 
 // import dateRangePickerOptions from 'common/daterangepicker-options';
 
@@ -209,25 +219,33 @@ export default {
     fetchData() {
       this.loading = true
 
-      OrganisationService.all().then(response => this.organisations = response.body);
+      OrganisationService.all().then(response => this.organisations = response.body)
 
       ProjectService.get(this.$route.params.id).then(response => {
         this.project = response.body
+
+        this.project.start = Utils.formatDate(this.project.start)
+        this.project.end = Utils.formatDate(this.project.end)
+
         this.updateSubCategories()
         this.loading = false
       })
     },
     save() {
-      console.log()
+      let o = Object.assign({}, this.project, {
+        end: Utils.convertDate(this.project.end),
+        price: parseInt(this.project.price),
+        start: Utils.convertDate(this.project.start)
+      })
 
       if (this.isNew) {
-        ProjectService.save(this.project).then(this.cancel);
+        ProjectService.save(o).then(this.cancel)
       } else {
-        ProjectService.update(this.$route.params.id, this.project).then(this.cancel);
+        ProjectService.update(this.$route.params.id, o).then(this.cancel)
       }
     },
     setModel(model, value) {
-      this[model] = value;
+      this[model] = value
     },
     updateSubCategories() {
       this.subcategories = subcategories[this.project.category]
