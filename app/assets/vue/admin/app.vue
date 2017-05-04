@@ -32,6 +32,9 @@
                 <li>
                   <router-link to="/organisations"><i class="fa fa-organisation"></i> Organisationen</router-link>
                 </li>
+                <li>
+                  <router-link to="/projects"><i class="fa fa-project"></i> Projekte</router-link>
+                </li>
               </ul>
             </div>
 
@@ -61,10 +64,12 @@
 
 <script>
 import jQuery from 'jquery';
+import moment from 'moment';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'gentelella/build/css/custom.min.css';
 import 'font-awesome/css/font-awesome.css';
+import daterangepicker from 'gentelella/production/js/datepicker/daterangepicker.js';
 
 export default {
   name: 'app',

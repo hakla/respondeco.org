@@ -3,6 +3,8 @@ import App from './app';
 
 import VueRouter from 'vue-router';
 
+import Projects from './projects/projects';
+import Project from './projects/project';
 import Organisations from './organisations/organisations';
 import Organisation from './organisations/organisation';
 import Login from './authentication/login';
@@ -20,6 +22,13 @@ export const routes = [{
     name: 'organisation',
     path: 'organisations/:id',
     component: Organisation
+  }, {
+    path: 'projects',
+    component: Projects
+  }, {
+    name: 'project',
+    path: 'projects/:id',
+    component: Project
   }]
 }, {
   path: '/login',

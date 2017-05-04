@@ -14,6 +14,7 @@ import scala.util.{Failure, Try}
 class OrganisationService @Inject() (implicit val db: Database) extends Queries[Organisation] {
 
     implicit val parser: RowParser[Organisation] = Macro.namedParser[Organisation]
+    implicit val table: String = "organisation"
 
     def create(organisation: OrganisationInsert) : Option[Organisation] = db.withConnection { implicit c =>
         SQL(s"insert into $table (name, description, email, website, location, category, subcategory) values({name}, {description}, {email}, {website}, {location}, {category}, {subcategory})").on(

@@ -26,9 +26,16 @@ GET         /api/v1/user                           business.accounts.AccountCtrl
 POST        /api/v1/auth/obtain-session            security.AuthController.handleLogin
 POST        /api/v1/auth/invalidate-session        security.AuthController.handleLogout
 
-## Organization CRUD
+## Organisation CRUD
 GET         /api/v1/organisations                  business.organisations.OrganisationCtrl.findAll
 GET         /api/v1/organisations/*id              business.organisations.OrganisationCtrl.findById(id: Long)
 PUT         /api/v1/organisations/*id              business.organisations.OrganisationCtrl.update(id: Long)
 POST        /api/v1/organisations                  business.organisations.OrganisationCtrl.create
 DELETE      /api/v1/organisations/*id              business.organisations.OrganisationCtrl.delete(id: Long)
+
+## Project CRUD
+GET         /api/v1/projects                       business.projects.ProjectCtrl.findAll
+GET         /api/v1/projects/*id                   business.projects.ProjectCtrl.findById(id: Long)
+PUT         /api/v1/projects/*id                   business.projects.ProjectCtrl.update(id: Long)
+POST        /api/v1/projects                       business.projects.ProjectCtrl.create
+DELETE      /api/v1/projects/*id                   business.projects.ProjectCtrl.delete(id: Long)

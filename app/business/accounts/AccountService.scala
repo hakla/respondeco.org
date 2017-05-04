@@ -12,6 +12,7 @@ import security.{Role, User}
   */
 class AccountService @Inject()(implicit val db: Database) extends Queries[Account] {
 
+    implicit val table: String = "account"
     implicit val parser: RowParser[Account] =
         SqlParser.get[Long]("id") ~
             SqlParser.get[String]("email") ~

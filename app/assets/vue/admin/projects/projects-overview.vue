@@ -2,7 +2,7 @@
 <div class="">
   <div class="page-title">
     <div class="title_left">
-      <h3>Alle Organisationen ({{ organisations.length }})</h3>
+      <h3>Alle Projekte ({{ projects.length }})</h3>
     </div>
 
     <div class="title_right">
@@ -23,11 +23,11 @@
     <div class="col-md-12">
       <div class="x_panel">
         <div class="x_title">
-          <h2>Organisationen</h2>
+          <h2>Projekte</h2>
           <ul class="nav navbar-right panel_toolbox">
             <li>
-              <router-link class="collapse-link" :to="{ name: 'organisation', params: { id: 'new' } }">
-                <button class="btn btn-primary">Neue Organisation</button>
+              <router-link class="collapse-link" :to="{ name: 'project', params: { id: 'new' } }">
+                <button class="btn btn-primary">Neues Projekt</button>
               </router-link>
             </li>
           </ul>
@@ -35,7 +35,7 @@
         </div>
         <div class="x_content">
 
-          <p>Übersicht aller registrierten Organisationen</p>
+          <p>Übersicht aller Projekte</p>
 
           <!-- start project list -->
           <table class="table table-striped projects">
@@ -48,16 +48,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="organisation in list">
-                <td @click="gotoOrganisation(organisation.id)">{{ organisation.id }}</td>
-                <td @click="gotoOrganisation(organisation.id)">
-                  <a>{{ organisation.name }}</a>
+              <tr v-for="project in list">
+                <td @click="gotoProject(project.id)">{{ project.id }}</td>
+                <td @click="gotoProject(project.id)">
+                  <a>{{ project.name }}</a>
                 </td>
-                <td @click="gotoOrganisation(organisation.id)">
-                  {{ organisation.description }}
+                <td @click="gotoProject(project.id)">
+                  {{ project.description }}
                 </td>
                 <td class="text-right">
-                  <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(organisation.id)"><i class="fa fa-trash-o"></i> Delete </a>
+                  <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(project.id)"><i class="fa fa-trash-o"></i> Delete </a>
                 </td>
               </tr>
             </tbody>
@@ -72,13 +72,12 @@
 
 <script>
 import { router } from '../router';
-import OrganisationService  from './organisations-service'
 
 export default {
-  name: 'OrganisationsOverview',
+  name: 'ProjectsOverview',
 
   created() {
-    OrganisationService.init(this);
+    this.resource = this.$resource('projects{/id}');
     this.fetchData();
   },
 
@@ -86,28 +85,28 @@ export default {
     return {
       filter: '',
       list: [],
-      organisations: []
+      projects: []
     }
   },
 
   methods: {
     fetchData() {
-      OrganisationService.all().then(response => {
-        this.organisations = response.body;
+      this.resource.get().then(response => {
+        this.projects = response.body;
         this.updateList();
       });
     },
-    gotoOrganisation (id) {
-      router.push(`/organisations/${id}`)
+    gotoProject (id) {
+      router.push(`/projects/${id}`)
     },
     remove(id) {
-      OrganisationService.remove({id}).then(response => this.fetchData())
+      this.resource.delete({id}).then(response => this.fetchData())
     },
     updateList (filter) {
       if (filter) {
-        this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1);
+        this.list = this.projects.filter(project => project.name.indexOf(filter) > -1);
       } else {
-        this.list = this.organisations;
+        this.list = this.projects;
       }
     }
   }

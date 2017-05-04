@@ -12,7 +12,7 @@ abstract class Queries[A: ClassTag] {
 
     implicit val parser: RowParser[A]
     implicit val db: Database
-    val table: String = classTag[A].runtimeClass.getSimpleName.toLowerCase()
+    implicit val table: String
 
     def all(namedParameter: NamedParameter*): List[A] = db.withConnection { implicit connection =>
         where(namedParameter).executeQuery().as(parser.*)
