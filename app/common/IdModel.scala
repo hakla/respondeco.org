@@ -1,8 +1,10 @@
-package business.projects
+package common
 
 /**
   * Created by Klaus on 12.03.2017.
   */
-class Project {
+trait IdModel {
+
+    def id: Long
 
 }

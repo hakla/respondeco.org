@@ -4,6 +4,7 @@ import anorm._
 import common.Database
 
 import scala.reflect.{ClassTag, _}
+import scala.reflect.runtime.{universe => ru}
 
 /**
   * Created by Clemens Puehringer on 28/11/15.
@@ -12,7 +13,7 @@ abstract class Queries[A: ClassTag] {
 
     implicit val parser: RowParser[A]
     implicit val db: Database
-    val table: String = classTag[A].runtimeClass.getSimpleName.toLowerCase()
+    val table: String
 
     def all(namedParameter: NamedParameter*): List[A] = db.withConnection { implicit connection =>
         where(namedParameter).executeQuery().as(parser.*)
@@ -23,6 +24,12 @@ abstract class Queries[A: ClassTag] {
             case x :: _ => Some(x)
             case _ => None
         }
+    }
+
+    def delete(id: Long): Boolean = db.withConnection { implicit c =>
+        SQL(s"delete from $table where id = {id}").on(
+            'id -> id
+        ).executeUpdate() == 1
     }
 
     def byId(id: Long): Option[A] = first('id -> id)

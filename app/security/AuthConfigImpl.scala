@@ -1,6 +1,6 @@
 package security
 
-import business.accounts.Account
+import business.accounts.AccountModel
 import common.AuthTokenAccessor
 import jp.t2v.lab.play2.auth.{AuthConfig, TokenAccessor}
 import play.Routes
@@ -16,7 +16,7 @@ trait AuthConfigImpl extends AuthConfig {
 
     type Id = String
 
-    type User = Account
+    type User = AccountModel
 
     type Authority = Role
 
