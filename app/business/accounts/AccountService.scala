@@ -3,43 +3,41 @@ package business.accounts
 import javax.inject.Inject
 
 import anorm._
-import common.Database
-import persistence.Queries
+import common.{CrudService, Database}
 import security.{Role, User}
 
-/**
-  * Created by Clemens Puehringer on 28/11/15.
-  */
-class AccountService @Inject()(implicit val db: Database) extends Queries[Account] {
+class AccountService @Inject()(implicit val db: Database) extends CrudService[AccountModel, AccountWriteModel] {
 
-    implicit val table: String = "account"
-    implicit val parser: RowParser[Account] =
+    implicit val parser: RowParser[AccountModel] =
         SqlParser.get[Long]("id") ~
             SqlParser.get[String]("email") ~
             SqlParser.get[String]("name") ~
             SqlParser.get[String]("password") ~
             Role.parser map {
-            case id ~ email ~ name ~ pwd ~ role => Account(id, email, name, pwd, role)
+            case id ~ email ~ name ~ pwd ~ role => AccountModel(id, email, name, pwd, role)
         }
 
-    def create(account: AccountNew): Option[Account] = {
-        create(account.email, account.name, account.password)
+    val table: String = "account"
+
+    def create(account: AccountWriteModel): Option[AccountModel] = {
+        if (account.password.isDefined)
+            create(account.email, account.name, account.password.get)
+        else
+            None
     }
 
-    def create(email: String, name: String, password: String): Option[Account] = db.withConnection { implicit connection =>
+    def create(email: String, name: String, password: String): Option[AccountModel] = db.withConnection { implicit connection =>
         SQL(s"insert into $table (email, name, password, role) values({email}, {name}, {password}, {role})").on(
             'email -> email,
             'name -> name,
             'password -> password,
             'role -> User.value
         ).executeInsert().asInstanceOf[Option[Long]].map { id =>
-            Account(id, email, name, password, User)
+            AccountModel(id, email, name, password, User)
         }
     }
 
-    def findByEmail(email: String): Option[Account] = first('email -> email)
-
-    def update(id: Long, account: AccountPublic): Option[Account] = db.withConnection { implicit c =>
+    def update(id: Long, account: AccountWriteModel): Option[AccountModel] = db.withConnection { implicit c =>
         SQL(s"update $table set email = {email}, name = {name} where id = {id}").on(
             'id -> id,
             'email -> account.email,
@@ -49,6 +47,8 @@ class AccountService @Inject()(implicit val db: Database) extends Queries[Accoun
             case _ => None
         }
     }
+
+    def findByEmail(email: String): Option[AccountModel] = first('email -> email)
 
 
 }

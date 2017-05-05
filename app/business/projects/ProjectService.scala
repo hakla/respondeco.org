@@ -50,10 +50,4 @@ class ProjectService @Inject()(implicit val db: Database) extends Queries[Projec
         first('name -> name)
     }
 
-    def delete(id: Long): Boolean = db.withConnection { implicit c =>
-        SQL(s"delete from $table where id = {id}").on(
-            'id -> id
-        ).executeUpdate() == 1
-    }
-
 }
