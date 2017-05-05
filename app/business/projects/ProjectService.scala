@@ -15,7 +15,7 @@ class ProjectService @Inject()(implicit val db: Database) extends Queries[Projec
     implicit val table: String = "project"
 
     def create(project: ProjectWriteModel) : Option[ProjectModel] = db.withConnection { implicit c =>
-        SQL(s"insert into $table (id, name, location, description, category, subcategory, start, end, benefits) values(null, {name}, {location}, {description}, {category}, {subcategory}, {start}, {end}, {benefits}, {price})").on(
+        SQL(s"insert into $table (id, name, location, description, category, subcategory, start, end, benefits, price) values(null, {name}, {location}, {description}, {category}, {subcategory}, {start}, {end}, {benefits}, {price})").on(
             'name -> project.name,
             'location -> project.location,
             'description -> project.description,
