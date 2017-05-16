@@ -24,7 +24,7 @@ module.exports = {
   build: {
     env: require('./prod.env'),
     index: resolve('app/views/admin.scala.html'),
-    assetsRoot: resolve('public'),
+    assetsRoot: resolve('../public'),
     assetsSubDirectory: '',
     assetsPublicPath: '/assets',
     productionSourceMap: false,
