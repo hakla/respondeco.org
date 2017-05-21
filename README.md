@@ -1,6 +1,8 @@
 README for respondeco
 ==========================
 
+[ ![Codeship Status for hakla/respondeco.org](https://app.codeship.com/projects/ad40b220-1485-0135-3518-024468c76a36/status?branch=develop)](https://app.codeship.com/projects/217787)
+
 # run project
 
 In order to run the application you have to start the backend and the frontend seperately.
