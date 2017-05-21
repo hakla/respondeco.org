@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import App from './app';
+import App from 'admin/app';
 
 import VueRouter from 'vue-router';
 
-import Projects from './projects/projects';
-import Project from './projects/project';
-import Organisations from './organisations/organisations';
-import Organisation from './organisations/organisation';
-import Login from './authentication/login';
-import Logout from './authentication/logout';
+import Projects from 'admin/projects/projects';
+import Project from 'admin/projects/project';
+import Organisations from 'admin/organisations/organisations';
+import Organisation from 'admin/organisations/organisation';
+import Login from 'admin/authentication/login';
+import Logout from 'admin/authentication/logout';
 
 Vue.use(VueRouter);
 

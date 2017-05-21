@@ -13,7 +13,6 @@
          <span class="state">Log in</span>
        </button>
     </form>
-    </p>
   </div>
 </div>
 </template>
