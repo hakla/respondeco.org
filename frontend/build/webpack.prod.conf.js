@@ -46,7 +46,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: '../../app/views/app.scala.html',
+      filename: '../app/views/app.scala.html',
       template: 'app/views/app.template',
       inject: true,
       minify: {
@@ -61,7 +61,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       chunksSortMode: 'dependency'
     }),
     new HtmlWebpackPlugin({
-      filename: '../../app/views/admin.scala.html',
+      filename: '../app/views/admin.scala.html',
       template: 'app/views/admin.template',
       inject: true,
       minify: {
