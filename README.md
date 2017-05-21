@@ -14,13 +14,7 @@ In order to run the application you first need the following software
 * [node.js](http://nodejs.org/)
 * [sbt](http://www.scala-sbt.org/)
 
-### commands
-
-```
-npm install                   # in the applications root directory!
-```
-
-After these steps you should be able to run the backend and the frontend.
+Run `npm install`.
 
 ## backend
 
