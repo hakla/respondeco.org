@@ -29,6 +29,17 @@
               </div>
             </div>
 
+            <!-- Organisation -->
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="organisation">Organisation <span class="required">*</span>
+              </label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <select class="form-control" id="organisation" v-model="project.organisation">
+                  <option v-bind:value="organisation.id" v-for="organisation in organisations">{{ organisation.name }}</option>
+                </select>
+              </div>
+            </div>
+
             <!-- Beschreibung -->
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">Beschreibung <span class="required">*</span>
