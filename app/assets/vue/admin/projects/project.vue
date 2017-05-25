@@ -201,6 +201,8 @@ export default {
     ProjectService.init(this)
     OrganisationService.init(this)
 
+    OrganisationService.all().then(response => this.organisations = response.body)
+
     if (this.$route.params.id !== 'new') {
       this.fetchData();
     } else {
@@ -229,8 +231,6 @@ export default {
     },
     fetchData() {
       this.loading = true
-
-      OrganisationService.all().then(response => this.organisations = response.body)
 
       ProjectService.get(this.$route.params.id).then(response => {
         this.project = response.body
