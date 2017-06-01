@@ -3,39 +3,44 @@
 # ~~~~
 
 # Home page
-GET         /                                      common.Application.index
-GET         /app/                                  common.Application.app
-GET         /admin/                                common.Application.admin
+GET           /                                              common.Application.index
+GET           /app/                                          common.Application.app
+GET           /admin/                                        common.Application.admin
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                          controllers.Assets.versioned(path="/public", file: Asset)
-GET         /i18n/*file                            controllers.Assets.at(path="/public/i18n", file)
-GET         /views/*file                           controllers.Assets.at(path="/public/views", file)
-GET         /images/*file                          controllers.Assets.at(path="/public/images", file)
+GET           /assets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)
+GET           /i18n/*file                                    controllers.Assets.at(path="/public/i18n", file)
+GET           /views/*file                                   controllers.Assets.at(path="/public/views", file)
+GET           /images/*file                                  controllers.Assets.at(path="/public/images", file)
 
 # API stuff
 ## Account CRUD
-GET         /api/v1/accounts                       business.accounts.AccountCtrl.findAll
-POST        /api/v1/accounts                       business.accounts.AccountCtrl.create
-GET         /api/v1/accounts/*id                   business.accounts.AccountCtrl.findById(id: Long)
-PUT         /api/v1/accounts/*id                   business.accounts.AccountCtrl.update(id: Long)
+GET           /api/v1/accounts                               business.accounts.AccountCtrl.findAll
+POST          /api/v1/accounts                               business.accounts.AccountCtrl.create
+GET           /api/v1/accounts/*id                           business.accounts.AccountCtrl.findById(id: Long)
+PUT           /api/v1/accounts/*id                           business.accounts.AccountCtrl.update(id: Long)
 
-GET         /api/v1/user                           business.accounts.AccountCtrl.currentUser
+GET           /api/v1/user                                   business.accounts.AccountCtrl.currentUser
 
 ## Authentication
-POST        /api/v1/auth/obtain-session            security.AuthController.handleLogin
-POST        /api/v1/auth/invalidate-session        security.AuthController.handleLogout
+POST          /api/v1/auth/obtain-session                    security.AuthController.handleLogin
+POST          /api/v1/auth/invalidate-session                security.AuthController.handleLogout
 
 ## Organisation CRUD
-GET         /api/v1/organisations                  business.organisations.OrganisationCtrl.findAll
-GET         /api/v1/organisations/*id              business.organisations.OrganisationCtrl.findById(id: Long)
-PUT         /api/v1/organisations/*id              business.organisations.OrganisationCtrl.update(id: Long)
-POST        /api/v1/organisations                  business.organisations.OrganisationCtrl.create
-DELETE      /api/v1/organisations/*id              business.organisations.OrganisationCtrl.delete(id: Long)
+GET           /api/v1/organisations                          business.organisations.OrganisationCtrl.findAll
+GET           /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.findById(id: Long)
+PUT           /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.update(id: Long)
+POST          /api/v1/organisations                          business.organisations.OrganisationCtrl.create
+DELETE        /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.delete(id: Long)
 
 ## Project CRUD
-GET         /api/v1/projects                       business.projects.ProjectCtrl.findAll
-GET         /api/v1/projects/*id                   business.projects.ProjectCtrl.findById(id: Long)
-PUT         /api/v1/projects/*id                   business.projects.ProjectCtrl.update(id: Long)
-POST        /api/v1/projects                       business.projects.ProjectCtrl.create
-DELETE      /api/v1/projects/*id                   business.projects.ProjectCtrl.delete(id: Long)
+GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll
+GET           /api/v1/projects/:id                           business.projects.ProjectCtrl.findById(id: Long)
+PUT           /api/v1/projects/:id                           business.projects.ProjectCtrl.update(id: Long)
+POST          /api/v1/projects                               business.projects.ProjectCtrl.create
+DELETE        /api/v1/projects/:id                           business.projects.ProjectCtrl.delete(id: Long)
+
+## Project history
+GET           /api/v1/projects/:id/history                   business.projectHistory.ProjectHistoryCtrl.findByProject(id: Long)
+GET           /api/v1/projects/:id/history/:historyId        business.projectHistory.ProjectHistoryCtrl.findById(id: Long, historyId: Long)
+POST          /api/v1/projects/:id/history                   business.projectHistory.ProjectHistoryCtrl.create(id: Long)
