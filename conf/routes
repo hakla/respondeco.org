@@ -40,7 +40,11 @@ PUT           /api/v1/projects/:id                           business.projects.P
 POST          /api/v1/projects                               business.projects.ProjectCtrl.create
 DELETE        /api/v1/projects/:id                           business.projects.ProjectCtrl.delete(id: Long)
 
-## Project history
-GET           /api/v1/projects/:id/history                   business.projectHistory.ProjectHistoryCtrl.findByProject(id: Long)
-GET           /api/v1/projects/:id/history/:historyId        business.projectHistory.ProjectHistoryCtrl.findById(id: Long, historyId: Long)
-POST          /api/v1/projects/:id/history                   business.projectHistory.ProjectHistoryCtrl.create(id: Long)
+## Project history CRUD
+GET           /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.findAll
+GET           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.findById(id: Long)
+PUT           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.update(id: Long)
+POST          /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.create
+DELETE        /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.delete(id: Long)
+
+GET           /api/v1/projects/:id/finished                  business.finishedProjects.FinishedProjectCtrl.findByProject(id: Long)

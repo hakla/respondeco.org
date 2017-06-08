@@ -34,8 +34,8 @@ export default {
   data() {
     return {
       error: undefined,
-      user: '',
-      password: ''
+      user: 'admin@respondeco.org',
+      password: 'admin'
     }
   },
 

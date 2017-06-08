@@ -111,7 +111,7 @@
                     <div class="col-md-12 xdisplay_inputx form-group has-feedback">
                       <input type="text" data-type="daterange" class="form-control has-feedback-left" id="single_cal2" placeholder="Beginn" aria-describedby="inputSuccess2Status2" v-model="project.start">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                      <span id="inputSuccess2Status2" class="sr-only">(success)</span>
+                      <span id="inputSuccess2Status1" class="sr-only">(success)</span>
                     </div>
                   </div>
                 </div>

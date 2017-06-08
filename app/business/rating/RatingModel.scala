@@ -11,7 +11,7 @@ case class RatingModel(
     liked: Boolean,
     testimonial: Option[String]
 ) {
-    def toWriteModel: RatingWriteModel = RatingWriteModel(liked = liked, testimonial = testimonial)
+    def toWriteModel: RatingWriteModel = RatingWriteModel(id = Some(id), liked = liked, testimonial = testimonial)
 }
 
 object RatingModel extends MyWriteable[RatingModel] {
@@ -21,6 +21,7 @@ object RatingModel extends MyWriteable[RatingModel] {
 }
 
 case class RatingWriteModel(
+    id: Option[Long] = None,
     liked: Boolean = false,
     testimonial: Option[String] = None
 )

@@ -21,8 +21,11 @@ class RatingService @Inject()(implicit val db: Database) extends Queries[RatingM
         ).executeInsert().asInstanceOf[Option[Long]].flatMap(byId)
     }
 
+    def update(rating: RatingWriteModel): Option[RatingModel] = update(rating.id.get, rating)
+
     def update(id: Long, rating: RatingWriteModel): Option[RatingModel] = db.withConnection { implicit c =>
         SQL(s"update $table set id = {id}, liked = {liked}, testimonial = {testimonial} where id = {id}").on(
+            'id -> id,
             'liked -> rating.liked,
             'testimonial -> rating.testimonial
         ).executeUpdate() match {

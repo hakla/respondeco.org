@@ -6,14 +6,13 @@ import common.Database
 import scala.reflect.{ClassTag, _}
 import scala.reflect.runtime.{universe => ru}
 
-/**
-  * Created by Clemens Puehringer on 28/11/15.
-  */
 abstract class Queries[A: ClassTag] {
 
     implicit val parser: RowParser[A]
     implicit val db: Database
     val table: String
+
+    def all: List[A] = all()
 
     def all(namedParameter: NamedParameter*): List[A] = db.withConnection { implicit connection =>
         where(namedParameter).executeQuery().as(parser.*)
