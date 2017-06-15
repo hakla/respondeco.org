@@ -1,8 +1,14 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import de from './i18n/de';
+import en from './i18n/en';
 
-Vue.use(VueI18n);
+Vue.use(VueI18n)
 
-Vue.config.lang = 'de';
-Vue.locale('de', de);
+export const i18n = new VueI18n({
+  locale: 'de',
+  messages: {
+    de,
+    en
+  }
+})

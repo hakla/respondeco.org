@@ -5,11 +5,9 @@
   <!--=== End Header v6 ===-->
 
   <!--=== Content ===-->
-  <div class="container content-md">
-    <transition name="fade" mode="out-in">
-      <router-view></router-view>
-    </transition>
-  </div>
+  <transition name="fade" mode="out-in">
+    <router-view></router-view>
+  </transition>
   <!--=== End Content ===-->
 
   <!--=== Footer Version 1 ===-->

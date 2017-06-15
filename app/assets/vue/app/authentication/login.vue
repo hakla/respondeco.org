@@ -6,16 +6,16 @@
     </div>
 
     <div class="col-md-6 col-sm-6 form-block equal-height-column">
-      <a href="index.html">
-        <img src="/assets/unify/assets/img/themes/logo1-blue.png" alt="">
-      </a>
+      <router-link to="/">
+        <img src="/assets/images/logo-small.png" alt="">
+      </router-link>
       <h2 class="margin-bottom-30">Login To Your Account</h2>
       <p v-if="error != undefined">Test</p>
       <form action="#" v-on:submit.prevent="login">
         <div class="login-block">
           <div class="input-group margin-bottom-20">
             <span class="input-group-addon rounded-left"><i class="icon-user color-blue"></i></span>
-            <input type="text" class="form-control rounded-right" placeholder="Username" v-model="user">
+            <input type="text" class="form-control rounded-right" placeholder="Username" v-model="user" autofocus>
           </div>
 
           <div class="input-group margin-bottom-20">
@@ -107,4 +107,7 @@ export default {
 </script>
 
 <style lang="css">
+  body {
+    margin-bottom: 0 !important;
+  }
 </style>
