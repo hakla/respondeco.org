@@ -7,25 +7,28 @@
 
     <div :id="'grid_' + _uid" class="cbp-l-grid-agency">
       <div class="cbp-item" v-for="item in items">
-        <div class="cbp-caption margin-bottom-20">
-          <div class="cbp-caption-defaultWrap">
-            <img :src="item.image" alt="">
-          </div>
-          <div class="cbp-caption-activeWrap">
-            <div class="cbp-l-caption-alignCenter">
-              <div class="cbp-l-caption-body">
-                <ul class="link-captions no-bottom-space">
-                  <li><a href="portfolio_single_item.html"><i class="rounded-x fa fa-link"></i></a></li>
-                  <li><a href="assets/img/main/img3.jpg" class="cbp-lightbox" data-title="Design Object"><i class="rounded-x fa fa-search"></i></a></li>
-                </ul>
+        <router-link :to="'/organisations/' + item.id">
+          <div class="cbp-caption margin-bottom-20">
+            <div class="cbp-caption-defaultWrap">
+              <img :src="item.image" alt="">
+            </div>
+            <div class="cbp-caption-activeWrap">
+              <div class="cbp-l-caption-alignCenter">
+                <div class="cbp-l-caption-body">
+                  <ul class="link-captions no-bottom-space">
+                    <li>
+                      <i class="rounded-x fa fa-angle-right"></i>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="cbp-title-dark">
-          <div class="cbp-l-grid-agency-title">{{ item.title }}</div>
-          <div class="cbp-l-grid-agency-desc">{{ item.description }}</div>
-        </div>
+          <div class="cbp-title-dark">
+            <div class="cbp-l-grid-agency-title">{{ item.title }}</div>
+            <div class="cbp-l-grid-agency-desc">{{ item.description }}</div>
+          </div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -136,3 +139,22 @@
     }
   }
 </script>
+
+<style>
+  .cbp-l-grid-agency-desc {
+    min-height: 21px;
+  }
+
+  .cbp-l-caption-body:hover .link-captions li i {
+    color: #fff;
+    background: rgba(114, 192, 44, 0.8);
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+  }
+
+  .cbp-l-caption-body:hover .link-captions li i:hover {
+    background: #72c02c;
+  }
+</style>

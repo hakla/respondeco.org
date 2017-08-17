@@ -48,7 +48,7 @@ abstract class Queries[A: ClassTag] {
             case false => ""
         })
 
-        var query: SimpleSql[Row] = SQL(statement)
+        var query: SimpleSql[Row] = SQL(statement + " ORDER BY id")
 
         parameters.foldLeft(query)((query, b) => query.on(b))
     }

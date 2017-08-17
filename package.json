@@ -19,7 +19,8 @@
     "vue": "^2.2.2",
     "vue-i18n": "^7.0",
     "vue-resource": "^1.2.1",
-    "vue-router": "^2.2.0"
+    "vue-router": "^2.2.0",
+    "vue2-dropzone": "^2.3.5"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
@@ -48,6 +49,8 @@
     "ora": "^1.1.0",
     "rimraf": "^2.6.0",
     "semver": "^5.3.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
     "url-loader": "^0.5.7",
     "vue-loader": "^11.1.4",
     "vue-style-loader": "^2.0.0",

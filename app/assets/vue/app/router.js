@@ -3,6 +3,7 @@ import App from './app';
 
 import Login from './authentication/login';
 import Logout from './authentication/logout';
+import Organisation from './organisations/organisation'
 import Organisations from './organisations/organisations';
 import Projects from './projects/projects';
 
@@ -15,6 +16,9 @@ export const routes = [{
   children: [{
     path: 'organisations',
     component: Organisations
+  }, {
+    path: 'organisations/:id',
+    component: Organisation
   }, {
     path: 'projects',
     component: Projects

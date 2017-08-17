@@ -107,7 +107,7 @@ export default {
 </script>
 
 <style lang="css">
-  body {
-    margin-bottom: 0 !important;
-  }
+    body {
+      margin-bottom: 0 !important;
+    }
 </style>

@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
     "jp.t2v" %% "play2-auth"        % "0.14.1",
     "org.typelevel" %% "cats" % "0.8.1",
     "org.yaml" % "snakeyaml" % "1.17",
-    "de.mkammerer" % "argon2-jvm" % "2.1"
+    "de.mkammerer" % "argon2-jvm" % "2.1",
+    "se.digiplant" %% "play-res" % "1.2.0"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

@@ -1,41 +1,41 @@
 <template>
-<div class="wrapper">
-  <!--=== Header v6 ===-->
-  <respondeco-header></respondeco-header>
-  <!--=== End Header v6 ===-->
+  <div class="wrapper">
+    <!--=== Header v6 ===-->
+    <respondeco-header></respondeco-header>
+    <!--=== End Header v6 ===-->
 
-  <!--=== Content ===-->
-  <transition name="fade" mode="out-in">
-    <router-view></router-view>
-  </transition>
-  <!--=== End Content ===-->
+    <!--=== Content ===-->
+    <transition name="fade" mode="out-in">
+      <router-view></router-view>
+    </transition>
+    <!--=== End Content ===-->
 
-  <!--=== Footer Version 1 ===-->
-  <respondeco-footer></respondeco-footer>
-</div>
+    <!--=== Footer Version 1 ===-->
+    <respondeco-footer></respondeco-footer>
+  </div>
 </template>
 
 <script>
-import RespondecoHeader from './main/header';
-import RespondecoFooter from './main/footer';
+  import RespondecoHeader from './main/header';
+  import RespondecoFooter from './main/footer';
 
-export default {
-  name: 'app',
-  components: {
-    RespondecoHeader,
-    RespondecoFooter
+  export default {
+    name: 'app',
+    components: {
+      RespondecoHeader,
+      RespondecoFooter
+    }
   }
-}
 </script>
 
 <style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .2s
-}
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity .2s
+  }
 
-.fade-enter,
-.fade-leave-active {
-  opacity: 0
-}
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0
+  }
 </style>

@@ -28,8 +28,8 @@ respondeco.sublime-*
 .sbtopts
 index.html
 public
-static/**
 public_backup
 .vscode
 unify-1.9.6
 public
+Unify-v1.9.9

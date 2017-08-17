@@ -113,9 +113,38 @@
   }
 </script>
 
-<style>
+<style lang="stylus">
+  footer-height = 420px;
+
   #logo-premium {
     margin-top: 50px;
     max-width: 250px;
   }
+
+  .wrapper {
+    margin-bottom: footer-height;
+    min-height: "calc(100vh - %s)" % footer-height;
+    position: relative;
+  }
+
+  .footer-v1 {
+    bottom: "-%s" % footer-height;
+    height: 376px;
+    position: absolute;
+    width: 100%;
+  }
+
+  /*body {*/
+    /*margin-bottom: 377px;*/
+  /*}*/
+
+  /*.footer-v1.sticky-footer {*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*width: 100%;*/
+    /*!* Set the fixed height of the footer here *!*/
+    /*height: 377px;*/
+    /*padding: 0;*/
+    /*background-color: #f5f5f5;*/
+  /*}*/
 </style>
