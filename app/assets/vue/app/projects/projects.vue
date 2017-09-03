@@ -9,7 +9,9 @@
   import RespondecoBreadcrumbs from 'app/main/breadcrumbs'
   import RespondecoPortfolio from 'app/main/portfolio'
   import ProjectService from 'app/projects/projects-service'
+  import Utils from 'app/utils'
 
+  let toPortfolioItem = Utils.toPortfolioItem("projects")
 
   export default {
     name: 'projects',
@@ -41,19 +43,11 @@
       },
       updateList (filter) {
         if (filter) {
-          this.list = this.projects.filter(organisation => organisation.name.indexOf(filter) > -1).map(toPortfolioItem);
+          this.list = this.projects.filter(project => project.name.indexOf(filter) > -1).map(toPortfolioItem);
         } else {
           this.list = this.projects.map(toPortfolioItem);
         }
       }
-    }
-  }
-
-  function toPortfolioItem (item) {
-    return {
-      title: item.name,
-      description: item.description,
-      image: '/assets/images/img3.jpg'
     }
   }
 </script>

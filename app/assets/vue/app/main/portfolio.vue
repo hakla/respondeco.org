@@ -7,7 +7,7 @@
 
     <div :id="'grid_' + _uid" class="cbp-l-grid-agency">
       <div class="cbp-item" v-for="item in items">
-        <router-link :to="'/organisations/' + item.id">
+        <router-link :to="item.href">
           <div class="cbp-caption margin-bottom-20">
             <div class="cbp-caption-defaultWrap">
               <img :src="item.image" alt="">

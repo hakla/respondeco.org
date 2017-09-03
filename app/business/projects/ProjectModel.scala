@@ -17,7 +17,9 @@ case class ProjectModel (
     end: Option[LocalDate],
     benefits: Option[String],
     price: Option[Long],
-    organisation: Option[Long]
+    organisation: Option[Long],
+    image: Option[String],
+    video: Option[String]
 )
 
 object ProjectModel extends MyWriteable[ProjectModel] {
@@ -34,11 +36,13 @@ object ProjectModel extends MyWriteable[ProjectModel] {
         end = project.end,
         benefits = project.benefits,
         price = project.price,
-        organisation = project.organisation
+        organisation = project.organisation,
+        image = project.image,
+        video = project.video
     )
 }
 
-case class ProjectWriteModel (id: Option[Long], name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String], price: Option[Long], organisation: Option[Long])
+case class ProjectWriteModel (id: Option[Long], name: Option[String], location: Option[String], description: Option[String], category: Option[String], subcategory: Option[String], start: Option[LocalDate], end: Option[LocalDate], benefits: Option[String], price: Option[Long], organisation: Option[Long], image: Option[String], video: Option[String])
 
 object ProjectWriteModel extends MyWriteable[ProjectWriteModel] {
     implicit val formatter: Format[ProjectWriteModel] = Json.format

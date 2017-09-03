@@ -15,7 +15,7 @@ class ProjectService @Inject()(implicit val db: Database) extends Queries[Projec
     implicit val table: String = "project"
 
     def create(project: ProjectWriteModel) : Option[ProjectModel] = db.withConnection { implicit c =>
-        SQL(s"insert into $table (id, name, location, description, category, subcategory, start, end, benefits, price, organisation) values(null, {name}, {location}, {description}, {category}, {subcategory}, {start}, {end}, {benefits}, {price}, {organisation})").on(
+        SQL(s"insert into $table (id, name, location, description, category, subcategory, start, end, benefits, price, organisation, image, video) values(null, {name}, {location}, {description}, {category}, {subcategory}, {start}, {end}, {benefits}, {price}, {organisation}, {image}, {video})").on(
             'name -> project.name,
             'location -> project.location,
             'description -> project.description,
@@ -25,12 +25,14 @@ class ProjectService @Inject()(implicit val db: Database) extends Queries[Projec
             'end -> project.end.map(_.atStartOfDay),
             'benefits -> project.benefits,
             'price -> project.price,
-            'organisation -> project.organisation
+            'organisation -> project.organisation,
+            'image -> project.image,
+            'video -> project.video
         ).executeInsert().asInstanceOf[Option[Long]].map(ProjectModel.fromWriteModel(_, project))
     }
 
     def update(id: Long, project: ProjectWriteModel): Option[ProjectModel] = db.withConnection { implicit c =>
-        SQL(s"update $table set id = {id}, name = {name}, location = {location}, description = {description}, category = {category}, subcategory = {subcategory}, start = {start}, end = {end}, benefits = {benefits}, price = {price}, organisation = {organisation} where id = {id}").on(
+        SQL(s"update $table set id = {id}, name = {name}, location = {location}, description = {description}, category = {category}, subcategory = {subcategory}, start = {start}, end = {end}, benefits = {benefits}, price = {price}, organisation = {organisation}, image = {image}, video = {video} where id = {id}").on(
             'id -> id,
             'name -> project.name,
             'location -> project.location,
@@ -41,7 +43,9 @@ class ProjectService @Inject()(implicit val db: Database) extends Queries[Projec
             'end -> project.end.map(_.atStartOfDay),
             'benefits -> project.benefits,
             'price -> project.price,
-            'organisation -> project.organisation
+            'organisation -> project.organisation,
+            'image -> project.image,
+            'video -> project.video
         ).executeUpdate() match {
             case 1 => byId(id)
             case _ => None

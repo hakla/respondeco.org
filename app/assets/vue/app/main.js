@@ -19,6 +19,7 @@ import 'unify/plugins/font-awesome/css/font-awesome.min.css';
 
 // Libraries
 import Vue from 'vue';
+import VueYoutubeEmbed from 'vue-youtube-embed'
 
 // App
 import Authentication from 'common/authentication';
@@ -34,3 +35,5 @@ const app = new Vue({
   router,
   i18n
 }).$mount('#app')
+
+Vue.use(VueYoutubeEmbed)

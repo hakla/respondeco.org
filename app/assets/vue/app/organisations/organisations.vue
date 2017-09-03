@@ -11,6 +11,8 @@
   import OrganisationService from 'app/organisations/organisations-service'
   import Utils from 'app/utils'
 
+  let toPortfolioItem = Utils.toPortfolioItem("organisations")
+
   export default {
     name: 'organisations',
 
@@ -41,9 +43,9 @@
       },
       updateList (filter) {
         if (filter) {
-          this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1).map(Utils.toPortfolioItem);
+          this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1).map(toPortfolioItem);
         } else {
-          this.list = this.organisations.map(Utils.toPortfolioItem);
+          this.list = this.organisations.map(toPortfolioItem);
         }
       }
     }

@@ -1,18 +1,18 @@
 <template>
   <div class="wrapper">
     <youtube
-      v-if="this.organisation.video"
-      :video-id="this.youtubeId(this.organisation)"
+      v-if="this.project.video"
+      :video-id="this.youtubeId(this.project)"
       player-height="400px"
       player-width="100%"
       :player-vars="this.playerVars"></youtube>
-    <div v-if="!this.organisation.video" class="breadcrumbs-v3 text-center" :style="backgroundImage(organisation.image)">
+    <div v-if="!this.project.video" class="breadcrumbs-v3 text-center" :style="backgroundImage(project.image)">
     </div>
     <div class="service-block-v4">
       <div class="container">
         <div class="row">
           <div class="col-xs-12">
-            <h1>{{ organisation.name }}</h1>
+            <h1>{{ project.name }}</h1>
           </div>
         </div>
       </div>
@@ -30,15 +30,15 @@
   } from '../router'
 
   export default {
-    name: 'organisation',
+    name: 'project',
 
     components: {
       RespondecoBreadcrumbs
     },
 
     created () {
-      this.organisation = {}
-      this.resource = this.$resource('organisations{/id}')
+      this.project = {}
+      this.resource = this.$resource('projects{/id}')
 
       if (this.$route.params.id !== 'new') {
         this.fetchData()
@@ -57,7 +57,7 @@
           rel: 0,
           showinfo: 0
         },
-        organisation: this.organisation
+        project: this.project
       }
     },
 
@@ -70,13 +70,13 @@
         this.resource.get({
           id: this.$route.params.id
         }).then(response => {
-          this.organisation = response.body
+          this.project = response.body
           this.loading = false
         })
       },
 
-      youtubeId (organisation) {
-        return getIdFromURL(organisation.video)
+      youtubeId (project) {
+        return getIdFromURL(project.video)
       }
     }
   }
