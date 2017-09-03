@@ -17,6 +17,7 @@
     "jquery": "^3.1.1",
     "moment": "^2.17.1",
     "vue": "^2.2.2",
+    "vue-cropperjs": "^2.1.1",
     "vue-i18n": "^7.0",
     "vue-resource": "^1.2.1",
     "vue-router": "^2.2.0",

@@ -21,7 +21,20 @@
             <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate
                   @submit.stop.prevent="save()">
 
-              <img :src="'/api/v1/images/' + organisation.image" class="logo">
+              <h2>Banner</h2>
+              <div class="banner" :style="backgroundImage(organisation.image)"></div>
+
+              <dropzone id="myVueDropzone"
+                        ref="dropzone"
+                        :url="Config.ImageBaseUrl"
+                        @vdropzone-success="showSuccess"
+                        @vdropzone-sending="transformRequest"
+                        :use-custom-dropzone-options="true"
+                        :dropzone-options="Config.DropzoneOptions">
+              </dropzone>
+              <hr>
+
+              <h2>Über die Organisation</h2>
 
               <!-- Name -->
               <div class="form-group">
@@ -92,9 +105,6 @@
               </div>
               <div class="ln_solid"></div>
 
-              <dropzone id="myVueDropzone" :url="'/api/v1/organisations/' + organisation.id + '/image'" @vdropzone-success="showSuccess" @vdropzone-sending="transformRequest">
-              </dropzone>
-
               <div class="form-group">
                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                   <button type="button" class="btn btn-primary" @click="cancel()">Abbrechen</button>
@@ -112,6 +122,8 @@
 
 <script>
   import Dropzone from 'vue2-dropzone'
+  import Config from 'common/config';
+  import Utils from 'common/utils'
   import TokenHolder from 'common/token-holder';
   import {
     router
@@ -170,6 +182,7 @@
           'Umwelt',
           'Gesellschaft'
         ],
+        Config,
         isNew: false,
         loading: false,
         organisation: {
@@ -180,7 +193,7 @@
     },
 
     methods: {
-      cancel () {
+      cancel() {
         router.push('/organisations')
       },
 
@@ -196,6 +209,8 @@
         })
       },
 
+      backgroundImage: Utils.backgroundImage,
+
       save() {
         if (this.isNew) {
           this.resource.save(null, this.organisation).then(this.cancel);
@@ -206,11 +221,13 @@
         }
       },
 
-      showSuccess (_, response) {
+      showSuccess(_, response) {
         this.organisation.image = response
+
+        this.$refs.dropzone.removeAllFiles()
       },
 
-      transformRequest (_, xhr) {
+      transformRequest(_, xhr) {
         TokenHolder.get(token => xhr.setRequestHeader('X-Access-Token', token))
       },
 
@@ -222,7 +239,14 @@
 </script>
 
 <style scoped>
-  .logo {
-    max-height: 200px;
+  .banner {
+    height: 300px;
+    width: 100%;
+
+    margin-bottom: 50px;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: 50%;
   }
 </style>

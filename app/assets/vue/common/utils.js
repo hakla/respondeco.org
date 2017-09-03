@@ -1,6 +1,7 @@
 import moment from 'moment'
+import Config from './config'
 
-const formats = [ "DD.MM.YYYY", "YYYY-MM-DD", "MM/DD/YYYY" ]
+const formats = ["DD.MM.YYYY", "YYYY-MM-DD", "MM/DD/YYYY"]
 
 export default class Utils {
 
@@ -18,6 +19,16 @@ export default class Utils {
     }
 
     return formatted
+  }
+
+  static backgroundImage(image) {
+    let style = ""
+
+    if (image !== undefined) {
+      style = `background-image: url("${Config.ImageBaseUrl}/${image}"); `
+    }
+
+    return style
   }
 
 }

@@ -5,13 +5,14 @@ import javax.inject.Inject
 import anorm.{Macro, RowParser, _}
 import common.{CrudService, Database}
 import persistence.{ImageService, Queries}
+import se.digiplant.res.api.Res
 
 import scala.util.{Failure, Try}
 
 /**
   * Created by Klaus on 17.11.2016.
   */
-class OrganisationService @Inject() (implicit val db: Database) extends CrudService[OrganisationModel, OrganisationWriteModel] with ImageService[OrganisationModel, OrganisationWriteModel] {
+class OrganisationService @Inject() (implicit val db: Database, val res: Res) extends CrudService[OrganisationModel, OrganisationWriteModel] with ImageService[OrganisationModel, OrganisationWriteModel] {
 
     implicit val parser: RowParser[OrganisationModel] = Macro.namedParser[OrganisationModel]
     val table: String = "organisation"
@@ -30,6 +31,9 @@ class OrganisationService @Inject() (implicit val db: Database) extends CrudServ
     }
 
     def update(id: Long, organisation: OrganisationWriteModel): Option[OrganisationModel] = db.withConnection { implicit c =>
+        // remove old image (if there was one)
+        byId(id).flatMap { _.image } map { image => res.delete(image) }
+
         SQL(s"update $table set name = {name}, description = {description}, email = {email}, website = {website}, location = {location}, category = {category}, subcategory = {subcategory}, image = {image} where id = {id}").on(
             'id -> id,
             'name -> organisation.name,

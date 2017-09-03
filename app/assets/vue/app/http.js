@@ -15,7 +15,7 @@ Vue.http.interceptors.push((request, next) => {
 
   next(response => {
     if (response.status === 401) {
-      router.push('login');
+      router.push('/login');
     }
   });
 });

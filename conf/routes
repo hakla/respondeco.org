@@ -32,7 +32,6 @@ GET           /api/v1/organisations/*id                      business.organisati
 PUT           /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.update(id: Long)
 POST          /api/v1/organisations                          business.organisations.OrganisationCtrl.create
 DELETE        /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.delete(id: Long)
-POST          /api/v1/organisations/*id/image                business.organisations.OrganisationCtrl.uploadImage(id: Long)
 
 ## Project CRUD
 GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll
@@ -51,4 +50,5 @@ DELETE        /api/v1/finishedProjects/:id                   business.finishedPr
 GET           /api/v1/projects/:id/finished                  business.finishedProjects.FinishedProjectCtrl.findByProject(id: Long)
 
 ## Images
-GET           /api/v1/images/*id                             se.digiplant.res.ResAssets.at(id)
+GET           /api/v1/images/*id                             se.digiplant.res.ResAssets.at(id, source = "tmp")
+POST          /api/v1/images                                 common.FileCtrl.uploadImage()
