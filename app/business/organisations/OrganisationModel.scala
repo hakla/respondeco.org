@@ -13,6 +13,7 @@ case class OrganisationModel(
     category: Option[String],
     subcategory: Option[String],
     image: Option[String],
+    logo: Option[String],
     video: Option[String]
 ) extends IdModel
 
@@ -20,7 +21,7 @@ object OrganisationModel extends MyWriteable[OrganisationModel] {
     implicit val formatter: OFormat[OrganisationModel] = Json.format[OrganisationModel]
 
     def fromWriteModel(id: Long, organisation: OrganisationWriteModel): OrganisationModel =
-        new OrganisationModel(id, organisation.name, organisation.description, organisation.email, organisation.website, organisation.location, organisation.category, organisation.subcategory, organisation.image, organisation.video)
+        new OrganisationModel(id, organisation.name, organisation.description, organisation.email, organisation.website, organisation.location, organisation.category, organisation.subcategory, organisation.image, organisation.logo, organisation.video)
 
 }
 
@@ -34,6 +35,7 @@ case class OrganisationWriteModel(
     category: Option[String],
     subcategory: Option[String],
     image: Option[String],
+    logo: Option[String],
     video: Option[String]
 )
 

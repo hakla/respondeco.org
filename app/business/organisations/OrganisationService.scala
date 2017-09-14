@@ -18,7 +18,7 @@ class OrganisationService @Inject() (implicit val db: Database, val res: Res) ex
     val table: String = "organisation"
 
     def create(organisation: OrganisationWriteModel) : Option[OrganisationModel] = db.withConnection { implicit c =>
-        SQL(s"insert into $table (name, description, email, website, location, category, subcategory, image) values({name}, {description}, {email}, {website}, {location}, {category}, {subcategory}, {image}, {video})").on(
+        SQL(s"insert into $table (name, description, email, website, location, category, subcategory, image) values({name}, {description}, {email}, {website}, {location}, {category}, {subcategory}, {image}, {logo}, {video})").on(
             'name -> organisation.name,
             'description -> organisation.description,
             'email -> organisation.email,
@@ -27,6 +27,7 @@ class OrganisationService @Inject() (implicit val db: Database, val res: Res) ex
             'category -> organisation.category,
             'subcategory -> organisation.subcategory,
             'image -> organisation.image,
+            'logo -> organisation.logo,
             'video -> organisation.video
         ).executeInsert().asInstanceOf[Option[Long]].map { byId } getOrElse None
     }
@@ -35,7 +36,7 @@ class OrganisationService @Inject() (implicit val db: Database, val res: Res) ex
         // remove old image (if there was one)
         byId(id).flatMap { _.image } map { image => res.delete(image) }
 
-        SQL(s"update $table set name = {name}, description = {description}, email = {email}, website = {website}, location = {location}, category = {category}, subcategory = {subcategory}, image = {image}, video = {video} where id = {id}").on(
+        SQL(s"update $table set name = {name}, description = {description}, email = {email}, website = {website}, location = {location}, category = {category}, subcategory = {subcategory}, image = {image}, logo = {logo}, video = {video} where id = {id}").on(
             'id -> id,
             'name -> organisation.name,
             'description -> organisation.description,
@@ -45,6 +46,7 @@ class OrganisationService @Inject() (implicit val db: Database, val res: Res) ex
             'category -> organisation.category,
             'subcategory -> organisation.subcategory,
             'image -> organisation.image,
+            'logo -> organisation.logo,
             'video -> organisation.video
         ).executeUpdate() match {
             case 1 => byId(id)

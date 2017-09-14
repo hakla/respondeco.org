@@ -12,7 +12,9 @@
       <div class="container">
         <div class="row">
           <div class="col-xs-12">
+            <div class="logo" :style="backgroundImage(organisation.logo, expanded)"></div>
             <h1>{{ organisation.name }}</h1>
+            <!--<i :class="className()" @click="expand()"></i>-->
           </div>
         </div>
       </div>
@@ -49,6 +51,7 @@
 
     data () {
       return {
+        expanded: false,
         playerVars: {
           autoplay: 0,
           controls: 1,
@@ -63,6 +66,18 @@
 
     methods: {
       backgroundImage: Utils.backgroundImage,
+
+      bannerImage(image) {
+        return Utils.backgroundImage(image) + `; height: ${this.expanded ? "400px" : "800px"};`
+      },
+
+      className() {
+        return this.expanded ? "fa fa-compress" : "fa fa-expand"
+      },
+
+      expand() {
+        this.expanded = !this.expanded
+      },
 
       fetchData() {
         this.loading = true
@@ -90,10 +105,35 @@
     background-size: cover;
     background-position-y: 50%;
 
-    height: 400px;
+    height: 800px;
   }
 
   iframe {
     margin-bottom: 0
   }
+
+  .service-block-v4
+    position: relative
+    padding: 20px
+
+    .logo
+      height: 200px
+      width: 200px
+
+      position: absolute;
+      left: -50px
+      top -400px
+      z-index: 100
+
+      border-radius: 100px;
+      padding: 10px
+
+      background-color: rgba(255, 255, 255, .5);
+      background-repeat: no-repeat;
+      background-size: 80%;
+      background-position: 50%;
+
+      + h1
+        position: relative
+        z-index: 101
 </style>

@@ -22,16 +22,30 @@
                   @submit.stop.prevent="save()">
 
               <h2>Banner</h2>
-              <div class="banner" :style="backgroundImage(organisation.image)"></div>
+              <div class="banner" :style="banner()"></div>
 
-              <dropzone id="myVueDropzone"
-                        ref="dropzone"
+              <dropzone id="dropzone_image"
+                        ref="dropzone_image"
                         :url="Config.ImageBaseUrl"
-                        @vdropzone-success="showSuccess"
+                        @vdropzone-success="showSuccessImage"
                         @vdropzone-sending="transformRequest"
                         :use-custom-dropzone-options="true"
                         :dropzone-options="Config.DropzoneOptions">
               </dropzone>
+              <hr>
+
+              <h2>Logo</h2>
+              <div class="logo" :style="backgroundImage(organisation.logo)"></div>
+
+              <dropzone id="dropzone_logo"
+                        ref="dropzone_logo"
+                        :url="Config.ImageBaseUrl"
+                        @vdropzone-success="showSuccessLogo"
+                        @vdropzone-sending="transformRequest"
+                        :use-custom-dropzone-options="true"
+                        :dropzone-options="Config.DropzoneOptions">
+              </dropzone>
+
               <hr>
 
               <h2>Über die Organisation</h2>
@@ -209,6 +223,10 @@
         router.push('/organisations')
       },
 
+      banner() {
+        return Utils.backgroundImage(this.organisation.image)
+      },
+
       fetchData() {
         this.loading = true
 
@@ -216,12 +234,25 @@
           id: this.$route.params.id
         }).then(response => {
           this.organisation = response.body
+
+          if (this.organisation.image === undefined) {
+            this.$set(this.organisation, 'image', undefined)
+          }
+
+          if (this.organisation.logo === undefined) {
+            this.$set(this.organisation, 'logo', undefined)
+          }
+
           this.updateSubCategories()
           this.loading = false
         })
       },
 
-      backgroundImage: Utils.backgroundImage,
+      backgroundImage(image) {
+        setTimeout(this.$forceUpdate, 0)
+
+        return Utils.backgroundImage(image)
+      },
 
       save() {
         if (this.isNew) {
@@ -233,10 +264,19 @@
         }
       },
 
-      showSuccess(_, response) {
+      showSuccessImage(_, response) {
         this.organisation.image = response
 
-        this.$refs.dropzone.removeAllFiles()
+        console.log(this.organisation)
+
+        this.$refs[`dropzone_image`].removeAllFiles()
+      },
+
+      showSuccessLogo(_, response) {
+        console.log(this.organisation)
+        this.organisation.logo = response
+
+        this.$refs[`dropzone_logo`].removeAllFiles()
       },
 
       transformRequest(_, xhr) {
@@ -256,6 +296,15 @@
     width: 100%;
 
     margin-bottom: 50px;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: 50%;
+  }
+
+  .logo {
+    height: 150px;
+    width: 150px;
 
     background-repeat: no-repeat;
     background-size: cover;
