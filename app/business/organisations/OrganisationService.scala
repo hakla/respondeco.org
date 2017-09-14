@@ -18,7 +18,7 @@ class OrganisationService @Inject() (implicit val db: Database, val res: Res) ex
     val table: String = "organisation"
 
     def create(organisation: OrganisationWriteModel) : Option[OrganisationModel] = db.withConnection { implicit c =>
-        SQL(s"insert into $table (name, description, email, website, location, category, subcategory, image) values({name}, {description}, {email}, {website}, {location}, {category}, {subcategory}, {image}, {logo}, {video})").on(
+        SQL(s"insert into $table (name, description, email, website, location, category, subcategory, image, logo, video) values({name}, {description}, {email}, {website}, {location}, {category}, {subcategory}, {image}, {logo}, {video})").on(
             'name -> organisation.name,
             'description -> organisation.description,
             'email -> organisation.email,
