@@ -39,11 +39,17 @@
 <script>
   export default {
     name: "Rating",
+
     methods: {
       update() {
         this.$emit('input', this.value)
       }
     },
+
+    mounted () {
+      this.$emit('input', this.value)
+    },
+
     props: {
       name: String,
       value: {
