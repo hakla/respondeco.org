@@ -17,6 +17,9 @@ import 'unify/css/theme-skins/dark.css';
 import 'unify/plugins/line-icons/line-icons.css';
 import 'unify/plugins/font-awesome/css/font-awesome.min.css';
 
+import 'unify/plugins/sky-forms-pro/skyforms/css/sky-forms.css'
+import 'unify/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css'
+
 // Libraries
 import Vue from 'vue';
 import VueYoutubeEmbed from 'vue-youtube-embed'
@@ -24,7 +27,8 @@ import VueYoutubeEmbed from 'vue-youtube-embed'
 // App
 import Authentication from 'common/authentication';
 
-import { router } from './router';
+import { router } from './router'
+import filters from './filters'
 import './http';
 import { i18n } from './i18n';
 
@@ -37,3 +41,4 @@ const app = new Vue({
 }).$mount('#app')
 
 Vue.use(VueYoutubeEmbed)
+Vue.filter('formatDate', filters.formatDate)

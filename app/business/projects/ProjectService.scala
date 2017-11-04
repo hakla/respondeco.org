@@ -3,13 +3,15 @@ package business.projects
 import javax.inject.Inject
 
 import anorm.{Macro, RowParser, _}
+import business.comments.CommentService
+import business.organisations.OrganisationService
 import common.Database
 import persistence.Queries
 
 /**
   * Created by Klaus on 17.11.2016.
   */
-class ProjectService @Inject()(implicit val db: Database) extends Queries[ProjectModel] {
+class ProjectService @Inject()(organisationService: OrganisationService, implicit val db: Database) extends Queries[ProjectModel] {
 
     implicit val parser: RowParser[ProjectModel] = Macro.namedParser[ProjectModel]
     implicit val table: String = "project"
@@ -54,6 +56,24 @@ class ProjectService @Inject()(implicit val db: Database) extends Queries[Projec
 
     def findByName(name: String): Option[ProjectModel] = db.withConnection { implicit c =>
         first('name -> name)
+    }
+
+    def toPublicModel(project: ProjectModel): ProjectPublicModel = {
+        ProjectPublicModel(
+            id = project.id,
+            name = project.name,
+            location = project.location,
+            description = project.description,
+            category = project.category,
+            subcategory = project.subcategory,
+            start = project.start,
+            end = project.end,
+            benefits = project.benefits,
+            price = project.price,
+            organisation = project.organisation.flatMap(organisationService.byId),
+            image = project.image,
+            video = project.video
+        )
     }
 
 }

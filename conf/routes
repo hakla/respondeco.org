@@ -28,10 +28,10 @@ POST          /api/v1/auth/invalidate-session                security.AuthContro
 
 ## Organisation CRUD
 GET           /api/v1/organisations                          business.organisations.OrganisationCtrl.findAll
-GET           /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.findById(id: Long)
-PUT           /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.update(id: Long)
+GET           /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.findById(id: Long)
+PUT           /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.update(id: Long)
 POST          /api/v1/organisations                          business.organisations.OrganisationCtrl.create
-DELETE        /api/v1/organisations/*id                      business.organisations.OrganisationCtrl.delete(id: Long)
+DELETE        /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.delete(id: Long)
 
 ## Project CRUD
 GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll
@@ -42,12 +42,18 @@ DELETE        /api/v1/projects/:id                           business.projects.P
 
 ## Project history CRUD
 GET           /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.findAll
-GET           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.findById(id: Long)
+GET           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.findById(id: Long, public: Option[String])
 PUT           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.update(id: Long)
 POST          /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.create
 DELETE        /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.delete(id: Long)
 
+GET           /api/v1/finishedProjects/:id/comments          business.comments.CommentCtrl.findByProject(id: Long)
+
+GET           /api/v1/comments                               business.comments.CommentCtrl.findAll
+POST          /api/v1/comments                               business.comments.CommentCtrl.create
+
 GET           /api/v1/projects/:id/finished                  business.finishedProjects.FinishedProjectCtrl.findByProject(id: Long)
+GET           /api/v1/organisations/:id/projects/finished    business.finishedProjects.FinishedProjectCtrl.findByOrganisation(id: Long)
 
 ## Images
 GET           /api/v1/images/*id                             se.digiplant.res.ResAssets.at(id, source = "tmp")

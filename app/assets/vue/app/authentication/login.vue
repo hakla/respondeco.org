@@ -82,10 +82,12 @@ export default {
   name: 'Login',
 
   created() {
+    let route = router.currentRoute.query.route || '/'
+
     Authentication
       .get()
       .error(error => this.error = error)
-      .loggedIn(() => router.push('/'));
+      .loggedIn(() => { router.push(route) })
   },
 
   data() {

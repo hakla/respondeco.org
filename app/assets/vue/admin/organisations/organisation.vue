@@ -212,7 +212,9 @@
         isNew: false,
         loading: false,
         organisation: {
-          name: "Neue Organisation"
+          name: "Neue Organisation",
+          image: "",
+          banner: ""
         },
         subcategories: []
       }
@@ -267,13 +269,10 @@
       showSuccessImage(_, response) {
         this.organisation.image = response
 
-        console.log(this.organisation)
-
         this.$refs[`dropzone_image`].removeAllFiles()
       },
 
       showSuccessLogo(_, response) {
-        console.log(this.organisation)
         this.organisation.logo = response
 
         this.$refs[`dropzone_logo`].removeAllFiles()

@@ -3,8 +3,8 @@ package business.finishedProjects
 import java.time.LocalDate
 
 import business.organisations.OrganisationModel
-import business.projects.ProjectModel
-import business.rating.{RatingModel, RatingWriteModel}
+import business.projects.ProjectPublicModel
+import business.rating.{RatingPublicModel, RatingWriteModel}
 import common.MyWriteable
 import play.api.libs.json.{Format, Json}
 
@@ -40,11 +40,12 @@ object FinishedProjectWriteModel extends MyWriteable[FinishedProjectWriteModel] 
 
 case class FinishedProjectPublicModel(
     id: Long,
-    project: Option[ProjectModel],
+    project: Option[ProjectPublicModel],
     organisation: Option[OrganisationModel],
-    ratingOwner: Option[RatingModel],
-    ratingOrganisation: Option[RatingModel],
-    date: LocalDate
+    ratingOwner: Option[RatingPublicModel],
+    ratingOrganisation: Option[RatingPublicModel],
+    date: LocalDate,
+    comments: Long = 0
 )
 
 object FinishedProjectPublicModel extends MyWriteable[FinishedProjectPublicModel] {

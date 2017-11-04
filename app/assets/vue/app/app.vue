@@ -29,6 +29,8 @@
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600');
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity .2s

@@ -25,10 +25,22 @@ export default class Utils {
     let style = ""
 
     if (image !== undefined) {
-      style = `background-image: url("${Config.ImageBaseUrl}/${image}"); `
+      style = `background-image: url("${Utils.imageUrl(image)}"); `
     }
 
     return style
+  }
+
+  static imageUrl(image) {
+    let url = image
+
+    console.log(image)
+
+    if (/^[0-9a-z]*\.(png|jpe?g)/.test(image)) {
+      url = `${Config.ImageBaseUrl}/${image}`
+    }
+
+    return url
   }
 
 }

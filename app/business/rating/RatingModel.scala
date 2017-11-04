@@ -11,6 +11,7 @@ case class RatingModel(
     liked: Boolean,
     testimonial: Option[String]
 ) {
+    def toPublicModel: RatingPublicModel = RatingPublicModel(liked = liked, testimonial = testimonial)
     def toWriteModel: RatingWriteModel = RatingWriteModel(id = Some(id), liked = liked, testimonial = testimonial)
 }
 
@@ -29,5 +30,16 @@ case class RatingWriteModel(
 object RatingWriteModel extends MyWriteable[RatingWriteModel] {
 
     implicit val formatter: Format[RatingWriteModel] = Json.format[RatingWriteModel]
+
+}
+
+case class RatingPublicModel(
+    liked: Boolean = false,
+    testimonial: Option[String] = None
+)
+
+object RatingPublicModel extends MyWriteable[RatingPublicModel] {
+
+    implicit val formatter: Format[RatingPublicModel] = Json.format[RatingPublicModel]
 
 }

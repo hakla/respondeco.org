@@ -16,7 +16,7 @@ trait Authorization {
 
     def AuthenticatedUser(block: RequestWithAttributes[AnyContent] => Result): Action[AnyContent] = StackAction(AuthorityKey -> User) { implicit request => block(request) }
     def AuthenticatedUser(block: => Result): Action[AnyContent] = StackAction(AuthorityKey -> User) { implicit request => block }
-    def AuthenticatedUser[A](bodyParser: BodyParser[A])(block: A => Result): Action[A] = StackAction[A](bodyParser, AuthorityKey -> User) { implicit request => block(request.body) }
+    def AuthenticatedUser[A](bodyParser: BodyParser[A])(block: (A, RequestWithAttributes[A]) => Result): Action[A] = StackAction[A](bodyParser, AuthorityKey -> User) { implicit request => block(request.body, request) }
 
     def AuthenticatedAdmin(block: RequestWithAttributes[AnyContent] => Result): Action[AnyContent] = StackAction(AuthorityKey -> Administrator) { implicit request => block(request) }
     def AuthenticatedAdmin(block: => Result): Action[AnyContent] = StackAction(AuthorityKey -> Administrator) { implicit request => block }

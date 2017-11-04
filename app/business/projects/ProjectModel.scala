@@ -2,6 +2,7 @@ package business.projects
 
 import java.time.LocalDate
 
+import business.organisations.OrganisationModel
 import common.MyWriteable
 import persistence.Queries
 import play.api.libs.json.{Format, Json}
@@ -46,4 +47,26 @@ case class ProjectWriteModel (id: Option[Long], name: Option[String], location: 
 
 object ProjectWriteModel extends MyWriteable[ProjectWriteModel] {
     implicit val formatter: Format[ProjectWriteModel] = Json.format
+}
+
+case class ProjectPublicModel (
+    id: Long,
+    name: Option[String],
+    location: Option[String],
+    description: Option[String],
+    category: Option[String],
+    subcategory: Option[String],
+    start: Option[LocalDate],
+    end: Option[LocalDate],
+    benefits: Option[String],
+    price: Option[Long],
+    organisation: Option[OrganisationModel],
+    image: Option[String],
+    video: Option[String]
+)
+
+object ProjectPublicModel extends MyWriteable[ProjectPublicModel] {
+
+    implicit val formatter: Format[ProjectPublicModel] = Json.format
+
 }

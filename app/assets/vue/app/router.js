@@ -6,7 +6,8 @@ import Logout from './authentication/logout';
 import Organisation from './organisations/organisation'
 import Organisations from './organisations/organisations'
 import Project from './projects/project'
-import Projects from './projects/projects';
+import Projects from './projects/projects'
+import FinishedProject from './projects/finished-project'
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -24,8 +25,13 @@ export const routes = [{
     path: 'projects',
     component: Projects
   }, {
+    name: 'project',
     path: 'projects/:id',
     component: Project
+  }, {
+    name: 'finishedProject',
+    path: 'finished-project/:id',
+    component: FinishedProject
   }]
 }, {
   path: '/login',

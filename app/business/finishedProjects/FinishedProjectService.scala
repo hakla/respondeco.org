@@ -3,13 +3,14 @@ package business.finishedProjects
 import javax.inject.Inject
 
 import anorm.{Macro, RowParser, SQL}
+import business.comments.CommentService
 import business.organisations.OrganisationService
-import business.projects.{ProjectModel, ProjectService}
-import business.rating.{RatingService, RatingWriteModel}
+import business.projects.{ProjectModel, ProjectPublicModel, ProjectService}
+import business.rating.{RatingPublicModel, RatingService, RatingWriteModel}
 import common.Database
 import persistence.Queries
 
-class FinishedProjectService @Inject()(organisationService: OrganisationService, projectService: ProjectService, ratingService: RatingService, implicit val db: Database) extends Queries[FinishedProjectModel] {
+class FinishedProjectService @Inject()(commentService: CommentService, organisationService: OrganisationService, projectService: ProjectService, ratingService: RatingService, implicit val db: Database) extends Queries[FinishedProjectModel] {
 
     implicit val parser: RowParser[FinishedProjectModel] = Macro.namedParser[FinishedProjectModel]
     implicit val table: String = "project_history"
@@ -59,18 +60,25 @@ class FinishedProjectService @Inject()(organisationService: OrganisationService,
     def toPublicModel(finishedProject: FinishedProjectModel): FinishedProjectPublicModel = {
         FinishedProjectPublicModel(
             id = finishedProject.id,
-            project = projectService.byId(finishedProject.project),
+            project = projectService.byId(finishedProject.project).map(projectService.toPublicModel),
             organisation = organisationService.byId(finishedProject.organisation),
-            ratingOwner = ratingService.byId(finishedProject.rating_owner),
-            ratingOrganisation = ratingService.byId(finishedProject.rating_organisation),
-            date = finishedProject.date
+            ratingOwner = ratingService.byId(finishedProject.rating_owner).map(_.toPublicModel),
+            ratingOrganisation = ratingService.byId(finishedProject.rating_organisation).map(_.toPublicModel),
+            date = finishedProject.date,
+            comments = commentService.all('project_history -> finishedProject.id).size
         )
     }
 
-    def findByProject(projectId: Long): List[FinishedProjectWriteModel] = {
+    def findByOrganisation(organisationId: Long): List[FinishedProjectPublicModel] = {
+        all(
+            'organisation -> organisationId
+        ).map(toPublicModel)
+    }
+
+    def findByProject(projectId: Long): List[FinishedProjectPublicModel] = {
         all(
             'project -> projectId
-        ).map(toWriteModel)
+        ).map(toPublicModel)
     }
 
     def byIdAsWriteModel(id: Long): Option[FinishedProjectWriteModel] = byId(id).map(toWriteModel)

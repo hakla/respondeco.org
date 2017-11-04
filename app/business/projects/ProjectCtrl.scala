@@ -18,14 +18,14 @@ class ProjectCtrl @Inject()(projectService: ProjectService, val accountService: 
         }
     }
 
-    def update(id: Long) = AuthenticatedUser(parse.json[ProjectWriteModel]) { project =>
+    def update(id: Long) = AuthenticatedUser(parse.json[ProjectWriteModel]) { (project, _) =>
         projectService.update(id, project) match {
             case Some(org) => Ok(org)
             case None => BadRequest("Could not update")
         }
     }
 
-    def create = AuthenticatedUser(parse.json[ProjectWriteModel]) { project =>
+    def create = AuthenticatedUser(parse.json[ProjectWriteModel]) { (project, _) =>
         projectService.create(project) match {
             case Some(org) => Ok(org)
             case None => BadRequest("Could not create")
