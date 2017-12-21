@@ -16,6 +16,10 @@ export default {
 
   remove(id) {
     return $resource.remove({id});
+  },
+
+  projects () {
+    console.log($resource)
   }
 
 }

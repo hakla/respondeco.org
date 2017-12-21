@@ -1,160 +1,96 @@
 <template>
-  <div class="cube-portfolio container margin-bottom-60">
-    <div class="content-xs">
-      <div :id="'filters_' + _uid" class="cbp-l-filters-text content-xs">
-      </div><!--/end Filters Container-->
-    </div>
-
-    <div :id="'grid_' + _uid" class="cbp-l-grid-agency">
-      <div class="cbp-item" v-for="item in items">
-        <router-link :to="item.href">
-          <div class="cbp-caption margin-bottom-20">
-            <div class="cbp-caption-defaultWrap">
-              <img :src="item.image" alt="">
+  <div class="container g-py-100">
+    <div v-masonry transition-duration="0.3s" column-width=".masonry-grid-item" item-selector=".item" class="masonry-grid row g-mb-70">
+      <div v-masonry-tile class="masonry-grid-item col-sm-6 col-lg-4 g-mb-30" :key="index" v-for="(item, index) in paginatedItems">
+        <article class="u-shadow-v11">
+          <router-link :to="item.href" class="u-link-v5 g-color-black g-color-primary--hover g-cursor-pointer" href="#">
+            <img class="img-fluid w-100" :src="item.image">
+            <div class="g-bg-white g-pa-30">
+              <h2 class="h5 g-color-black g-font-weight-600 mb-3">
+                {{ item.title }}
+              </h2>
             </div>
-            <div class="cbp-caption-activeWrap">
-              <div class="cbp-l-caption-alignCenter">
-                <div class="cbp-l-caption-body">
-                  <ul class="link-captions no-bottom-space">
-                    <li>
-                      <i class="rounded-x fa fa-angle-right"></i>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="cbp-title-dark">
-            <div class="cbp-l-grid-agency-title">{{ item.title }}</div>
-            <div class="cbp-l-grid-agency-desc">{{ item.description }}</div>
-          </div>
-        </router-link>
+          </router-link>
+        </article>
       </div>
     </div>
+
+    <!-- Pagination -->
+    <nav class="text-center" aria-label="Page Navigation">
+      <ul class="list-inline">
+        <li class="list-inline-item float-left g-hidden-xs-down">
+          <a class="u-pagination-v1__item u-pagination-v1-4 g-brd-gray-light-v3 g-brd-primary--hover g-rounded-50 g-pa-7-16" href="#"
+            aria-label="Previous" @click.prevent="set('previous')">
+            <span aria-hidden="true">
+              <i class="fa fa-angle-left g-mr-5"></i> Zurück
+            </span>
+            <span class="sr-only">Zurück</span>
+          </a>
+        </li>
+        <li class="list-inline-item" :key="value" v-for="value in pages">
+          <a class="u-pagination-v1__item u-pagination-v1-4 g-rounded-50 g-pa-7-14" :class="{ 'u-pagination-v1-4--active': value === page }"
+            href="#" @click.prevent="set(value)">{{ value }}</a>
+        </li>
+        <li class="list-inline-item float-right g-hidden-xs-down">
+          <a class="u-pagination-v1__item u-pagination-v1-4 g-brd-gray-light-v3 g-brd-primary--hover g-rounded-50 g-pa-7-16" href="#"
+            aria-label="Next" @click.prevent="set('next')">
+            <span aria-hidden="true">
+              Weiter
+              <i class="fa fa-angle-right g-ml-5"></i>
+            </span>
+            <span class="sr-only">Weiter</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- End Pagination -->
   </div>
+  <!-- End Blog Classic Blocks -->
 </template>
 
 <script>
   export default {
     name: 'portfolio',
 
-    props: ['items'],
+    computed: {
+      pages() {
+        return Math.ceil(this.items.length / this.pageSize)
+      },
 
-    updated () {
-      setTimeout(() => {
-        let vm = this
+      paginatedItems() {
+        let begin = (this.page - 1) * this.pageSize
+        let end = this.page * this.pageSize
 
-        var gridContainer = $(`#grid_${this._uid}`),
-          filtersContainer = $(`#filter_${this._uid}`),
-          wrap, filtersCallback;
+        return this.items.filter((item, index) => index >= begin && index < end)
+      }
+    },
 
+    data: () => ({
+      page: 1,
+      pageSize: 12
+    }),
 
-        /*********************************
-         init cubeportfolio
-         *********************************/
-        gridContainer.cubeportfolio({
-          layoutMode: 'grid',
-          rewindNav: true,
-          scrollByPage: false,
-          defaultFilter: '*',
-          animationType: 'slideLeft',
-          gapHorizontal: 20,
-          gapVertical: 20,
-          gridAdjustment: 'responsive',
-          mediaQueries: [{
-            width: 800,
-            cols: 3
-          }, {
-            width: 500,
-            cols: 2
-          }, {
-            width: 320,
-            cols: 1
-          }],
-          caption: 'zoom',
-          displayType: 'lazyLoading',
-          displayTypeSpeed: 100
-        });
-
-
-        /*********************************
-         add listener for filters
-         *********************************/
-        if (filtersContainer.hasClass('cbp-l-filters-dropdown')) {
-          wrap = filtersContainer.find('.cbp-l-filters-dropdownWrap');
-
-          wrap.on({
-            'mouseover.cbp': function() {
-              wrap.addClass('cbp-l-filters-dropdownWrap-open');
-            },
-            'mouseleave.cbp': function() {
-              wrap.removeClass('cbp-l-filters-dropdownWrap-open');
-            }
-          });
-
-          filtersCallback = function(me) {
-            wrap.find('.cbp-filter-item').removeClass('cbp-filter-item-active');
-            wrap.find('.cbp-l-filters-dropdownHeader').text(me.text());
-            me.addClass('cbp-filter-item-active');
-            wrap.trigger('mouseleave.cbp');
-          };
-        } else {
-          filtersCallback = function(me) {
-            me.addClass('cbp-filter-item-active').siblings().removeClass('cbp-filter-item-active');
-          };
+    methods: {
+      set(value) {
+        if (value === 'previous') {
+          value = this.page - 1
+        } else if (value === 'next') {
+          value = this.page + 1
         }
 
-        filtersContainer.on('click.cbp', '.cbp-filter-item', function() {
-          var me = $(this);
+        if (value > 0 && value <= this.pages) {
+          this.page = value
+        }
+      }
+    },
 
-          if (me.hasClass('cbp-filter-item-active')) {
-            return;
-          }
-
-          // get cubeportfolio data and check if is still animating (reposition) the items.
-          if (!$.data(gridContainer[0], 'cubeportfolio').isAnimating) {
-            filtersCallback.call(null, me);
-          }
-
-          // filter the items
-          gridContainer.cubeportfolio('filter', me.data('filter'), function() {});
-        });
-
-
-        /*********************************
-         activate counter for filters
-         *********************************/
-        gridContainer.cubeportfolio('showCounter', filtersContainer.find('.cbp-filter-item'), function() {
-          // read from url and change filter active
-          var match = /#cbpf=(.*?)([#|?&]|$)/gi.exec(location.href),
-            item;
-          if (match !== null) {
-            item = filtersContainer.find('.cbp-filter-item').filter('[data-filter="' + match[1] + '"]');
-            if (item.length) {
-              filtersCallback.call(null, item);
-            }
-          }
-        });
-      }, 0)
-    }
+    props: ['items']
   }
+
 </script>
 
 <style>
-  .cbp-l-grid-agency-desc {
-    min-height: 21px;
-  }
-
-  .cbp-l-caption-body:hover .link-captions li i {
-    color: #fff;
-    background: rgba(114, 192, 44, 0.8);
-    -webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    -o-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;
-  }
-
-  .cbp-l-caption-body:hover .link-captions li i:hover {
-    background: #72c02c;
+  .masonry-grid {
+    height: auto !important;
   }
 </style>

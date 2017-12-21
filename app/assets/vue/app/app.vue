@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <main>
     <!--=== Header v6 ===-->
     <respondeco-header></respondeco-header>
     <!--=== End Header v6 ===-->
@@ -12,7 +12,7 @@
 
     <!--=== Footer Version 1 ===-->
     <respondeco-footer></respondeco-footer>
-  </div>
+  </main>
 </template>
 
 <script>

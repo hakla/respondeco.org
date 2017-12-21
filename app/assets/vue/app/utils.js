@@ -5,7 +5,7 @@ export default class Utils {
       description: item.description,
       href: `/${type}/${item.id}`,
       id: item.id,
-      image: item.image ?('/api/v1/images/' + item.image) : '/assets/images/img3.jpg',
+      image: item.logo ?('/api/v1/images/' + item.logo) : '/assets/images/img3.jpg',
       title: item.name
     })
   }

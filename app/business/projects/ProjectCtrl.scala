@@ -40,4 +40,8 @@ class ProjectCtrl @Inject()(projectService: ProjectService, val accountService: 
         }
     }
 
+    def byOrganisationId(id: Long) = Unauthenticated {
+        Ok(projectService.findByOrganisation(id))
+    }
+
 }

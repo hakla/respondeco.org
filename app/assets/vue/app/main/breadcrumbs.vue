@@ -1,9 +1,8 @@
 <template>
   <div class="breadcrumbs-v3 img-v1" :style="backgroundImage">
     <div class="container text-center">
-      <p>{{ breadcrumb }}</p>
       <h1>{{ heading }}</h1>
-    </div><!--/end container-->
+    </div>
   </div>
 </template>
 

@@ -1,22 +1,25 @@
 <template>
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse mega-menu navbar-responsive-collapse">
-    <div class="container">
-      <ul class="nav navbar-nav">
-        <li>
-          <router-link to="/projects">{{ $tc('common.project', 2) }}</router-link>
-        </li>
-        <li>
-          <router-link to="/organisations">{{ $tc('common.organisation', 2) }}</router-link>
-        </li>
-      </ul>
-    </div>
-  </div><!-- /navbar-collapse -->
+  <div class="collapse navbar-collapse align-items-center flex-sm-row g-pt-10 g-pt-5--lg" id="navBar">
+    <ul class="navbar-nav ml-auto text-uppercase g-font-weight-600 u-main-nav-v3 u-sub-menu-v3">
+      <router-link to="/projects" class="nav-item g-mx-2--md g-mx-5--xl g-mb-5 g-mb-0--lg" tag="li">
+        <a class="nav-link">{{ $tc('common.project', 2) }}</a>
+      </router-link>
+      <router-link to="/organisations" class="nav-item g-mx-2--md g-mx-5--xl g-mb-5 g-mb-0--lg" tag="li">
+        <a class="nav-link">{{ $tc('common.organisation', 2) }}</a>
+      </router-link>
+    </ul>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'menu'
+  name: 'menu',
+
+  data: () => ({
+    routes: [{
+      name: ''
+    }]
+  })
 }
 </script>
 

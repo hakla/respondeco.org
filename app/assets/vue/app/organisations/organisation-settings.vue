@@ -1,0 +1,10 @@
+<template>
+  <div class="col-lg-9">
+    <h2>Einstellungen</h2>
+  </div>
+</template>
+<script>
+export default {
+  name: 'OrganisationAbout'
+}
+</script>

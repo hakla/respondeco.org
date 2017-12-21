@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <section class="g-pt-100">
     <respondeco-breadcrumbs :heading="$tc('common.project', 2)"></respondeco-breadcrumbs>
     <respondeco-portfolio :items="list"></respondeco-portfolio>
-  </div>
+  </section>
 </template>
 
 <script>

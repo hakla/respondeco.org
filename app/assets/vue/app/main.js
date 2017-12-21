@@ -1,44 +1,62 @@
-import 'unify/plugins/bootstrap/css/bootstrap.min.css';
-import 'unify/css/style.css';
+// Unify v2.2.0 styles
+import 'unify/css/unify-core.css'
+import 'unify/css/unify-components.css'
+import 'unify/css/unify-globals.css'
 
-import 'unify/css/headers/header-default.css';
-import 'unify/css/footers/footer-v1.css';
-import 'unify/plugins/animate.css';
+import 'unify/vendor/cubeportfolio/css/cubeportfolio.css'
+import 'unify/vendor/hs-megamenu/src/hs.megamenu.css'
+import 'unify/vendor/icon-awesome/css/font-awesome.css'
+import 'unify/vendor/icon-line/css/simple-line-icons.css'
 
-import 'unify/plugins/cube-portfolio/cubeportfolio/css/cubeportfolio.min.css'
-import 'unify/plugins/cube-portfolio/cubeportfolio/custom/custom-cubeportfolio.css'
+// Unify v2.2.0 scripts
+import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
+import 'unify/vendor/jquery.easing/js/jquery.easing.js'
+import 'unify/vendor/masonry/dist/masonry.pkgd.js'
 
-import 'unify/plugins/cube-portfolio/cubeportfolio/js/jquery.cubeportfolio.min.js'
+// hs.* scripts
+import 'unify/js/hs.core.js'
+import 'unify/js/components/hs.header.js'
+import 'unify/js/helpers/hs.hamburgers.js'
 
-// Theme
-import 'unify/css/theme-colors/default.css';
-import 'unify/css/theme-skins/dark.css';
-
-import 'unify/plugins/line-icons/line-icons.css';
-import 'unify/plugins/font-awesome/css/font-awesome.min.css';
-
-import 'unify/plugins/sky-forms-pro/skyforms/css/sky-forms.css'
-import 'unify/plugins/sky-forms-pro/skyforms/custom/custom-sky-forms.css'
+import 'unify/vendor/cubeportfolio/js/jquery.cubeportfolio.js'
 
 // Libraries
-import Vue from 'vue';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import { VueMasonryPlugin } from 'vue-masonry'
 import VueYoutubeEmbed from 'vue-youtube-embed'
 
 // App
-import Authentication from 'common/authentication';
+import Authentication from 'common/authentication'
 
-import { router } from './router'
 import filters from './filters'
-import './http';
 import { i18n } from './i18n';
+import { router } from './router'
+import store from './store/index.js'
+import './http';
 
 Authentication
   .init(router);
 
 const app = new Vue({
   router,
+  store,
   i18n
 }).$mount('#app')
 
+Vue.use(VueMasonryPlugin)
 Vue.use(VueYoutubeEmbed)
 Vue.filter('formatDate', filters.formatDate)
+
+$(window).on('load', function () {
+  // initialization of header
+  $.HSCore.components.HSHeader.init($('#js-header'));
+  $.HSCore.helpers.HSHamburgers.init('.hamburger');
+
+  // initialization of HSMegaMenu component
+  $('.js-mega-menu').HSMegaMenu({
+    event: 'hover',
+    pageContainer: $('.container'),
+    breakpoint: 991
+  });
+});

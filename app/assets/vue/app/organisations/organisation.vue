@@ -1,68 +1,103 @@
 <template>
-  <div class="wrapper">
-    <youtube
-      v-if="this.organisation.video"
-      :video-id="this.youtubeId(this.organisation)"
-      player-height="400px"
-      player-width="100%"
-      :player-vars="this.playerVars"></youtube>
-    <div v-if="!this.organisation.video" class="breadcrumbs-v3 text-center" :style="backgroundImage(organisation.image)">
-    </div>
-    <div class="service-block-v4">
-      <div class="container">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="logo" :style="backgroundImage(organisation.logo, expanded)"></div>
-            <h1>{{ organisation.name }}</h1>
-            <!--<i :class="className()" @click="expand()"></i>-->
-          </div>
-        </div>
-      </div>
-    </div>
+  <section class="g-mb-100 g-mt-50">
     <div class="container">
       <div class="row">
-        <div class="col-xs-12">
-          <ul class="timeline-v1">
-            <li v-for="entry in timeline">
-              <div class="timeline-badge primary"><i class="glyphicon glyphicon-record"></i></div>
-              <div class="timeline-panel">
-                <div class="timeline-heading">
-                  <img class="img-responsive" :src="imageUrl(entry.image)" alt=""/>
-                </div>
-                <div class="timeline-body text-justify">
-                  <h2><a href="#">{{ entry.title }}</a></h2>
-                  <p>
-                    {{ entry.content }}
-                  </p>
-                  <a :href="entry.href" class="btn-u btn-u-sm">Mehr Infos</a>
-                </div>
-                <div class="timeline-footer">
-                  <ul class="list-unstyled list-inline blog-info">
-                    <li><i class="fa fa-clock-o"></i> {{ entry.date | formatDate }}</li>
-                    <li><i class="fa fa-comments-o"></i> <a href="#">{{ entry.comments }} Kommentare</a></li>
-                  </ul>
-                  <a class="likes" href="#"><i class="fa fa-heart"></i>{{ entry.likes }}</a>
-                </div>
+        <!-- Profile Sidebar -->
+        <div class="col-lg-3 g-mb-50 g-mb-0--lg">
+          <!-- User Image -->
+          <div class="u-block-hover g-pos-rel">
+            <figure class="g-mb-10">
+              <img class="img-fluid w-100 u-block-hover__main--zoom-v1" :src="imageUrl(organisation.logo)" alt="Image Description">
+            </figure>
+
+            <!-- Figure Caption -->
+            <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30">
+              <div class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle">
+                <!-- Figure Social Icons -->
+                <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-20">
+                  <li class="list-inline-item align-middle g-mx-7">
+                    <a class="u-icon-v1 u-icon-size--md g-color-white" href="#">
+                      <i class="icon-note u-line-icon-pro"></i>
+                    </a>
+                  </li>
+                  <li class="list-inline-item align-middle g-mx-7">
+                    <a class="u-icon-v1 u-icon-size--md g-color-white" href="#">
+                      <i class="icon-notebook u-line-icon-pro"></i>
+                    </a>
+                  </li>
+                  <li class="list-inline-item align-middle g-mx-7">
+                    <a class="u-icon-v1 u-icon-size--md g-color-white" href="#">
+                      <i class="icon-settings u-line-icon-pro"></i>
+                    </a>
+                  </li>
+                </ul>
+                <!-- End Figure Social Icons -->
               </div>
-            </li>
-            <li class="clearfix" style="float: none;"></li>
-          </ul>
+            </figcaption>
+            <!-- End Figure Caption -->
+
+            <!-- User Info -->
+            <span class="g-pos-abs g-top-20 g-left-0">
+              <a class="btn btn-sm u-btn-primary rounded-0" href="#">{{ organisation.name }}</a>
+            </span>
+            <!-- End User Info -->
+          </div>
+          <!-- User Image -->
+
+          <!-- Sidebar Navigation -->
+          <div class="list-group list-group-border-0 g-mb-40">
+            <!-- Profile -->
+            <router-link :to="{ name: 'organisation-about', params: { id: organisation.id } }" class="list-group-item list-group-item-action justify-content-between">
+              <span><i class="icon-cursor g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.about_organisation') }}</span>
+            </router-link>
+            <!-- End Profile -->
+
+            <!-- My Projects -->
+            <router-link :to="{ name: 'organisation-projects', params: { id: organisation.id } }" class="list-group-item list-group-item-action justify-content-between">
+              <span><i class="icon-layers g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.projects') }}</span>
+              <span class="u-label g-font-size-11 g-bg-primary g-rounded-20 g-px-10">{{ projects.length }}</span>
+            </router-link>
+            <!-- End My Projects -->
+
+            <!-- Comments -->
+            <router-link :to="{ name: 'organisation-comments', params: { id: organisation.id } }" class="list-group-item list-group-item-action justify-content-between">
+              <span><i class="icon-bubbles g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.comments') }}</span>
+              <span class="u-label g-font-size-11 g-bg-pink g-rounded-20 g-px-8">24</span>
+            </router-link>
+            <!-- End Comments -->
+
+            <!-- Reviews -->
+            <router-link :to="{ name: 'organisation-ratings', params: { id: organisation.id } }" class="list-group-item list-group-item-action justify-content-between">
+              <span><i class="icon-heart g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.ratings') }}</span>
+            </router-link>
+            <!-- End Reviews -->
+
+            <!-- Settings -->
+            <router-link :to="{ name: 'organisation-settings', params: { id: organisation.id } }" class="list-group-item list-group-item-action justify-content-between">
+              <span><i class="icon-settings g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.settings') }}</span>
+              <span class="u-label g-font-size-11 g-bg-cyan g-rounded-20 g-px-8">3</span>
+            </router-link>
+            <!-- End Settings -->
+          </div>
+          <!-- End Sidebar Navigation -->
         </div>
+        <!-- End Profile Sidebar -->
+
+        <!-- Profile Content -->
+        <router-view></router-view>
+        <!-- End Profle Content -->
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
-  import { getIdFromURL } from 'vue-youtube-embed'
   import Config from 'common/config'
   import Utils from 'common/utils'
   import RespondecoBreadcrumbs from 'app/main/breadcrumbs'
-  import {
-    router
-  } from '../router'
-
-  import 'unify/css/pages/shortcode_timeline1.css';
+  import { getIdFromURL } from 'vue-youtube-embed'
+  import { router } from '../router'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'organisation',
@@ -71,8 +106,11 @@
       RespondecoBreadcrumbs
     },
 
+    computed: {
+      ...mapGetters(['organisation', 'projects'])
+    },
+
     created () {
-      this.organisation = {}
       this.resource = this.$resource('organisations{/id}')
 
       if (this.$route.params.id !== 'new') {
@@ -93,7 +131,6 @@
           rel: 0,
           showinfo: 0
         },
-        organisation: this.organisation,
         timeline: []
       }
     },
@@ -116,10 +153,12 @@
       fetchData() {
         this.loading = true
 
+        let actions = mapActions(['finishedProjects', 'projects'])
+
         this.resource.get({
           id: this.$route.params.id
         }).then(response => {
-          this.organisation = response.body
+          this.current(response.body)
           this.loading = false
         })
 
@@ -127,19 +166,14 @@
           .$http
           .get(`organisations/${this.$route.params.id}/projects/finished`)
           .then(response => {
-            this.timeline = this.timeline.concat(
-              response
-                .data
-                .map(_ => ({
-                  comments: _.comments,
-                  content: _.project.description,
-                  date: _.date,
-                  href: this.$router.resolve({ name: 'finishedProject', params: { id: _.id } }).href,
-                  image: _.project.image,
-                  likes: 198,
-                  title: _.project.name
-                }))
-            )
+            actions.finishedProjects.bind(this)(response.body)
+          })
+
+        this
+          .$http
+          .get(`organisations/${this.$route.params.id}/projects`)
+          .then(response => {
+            actions.projects.bind(this)(response.body)
           })
       },
 
@@ -147,7 +181,11 @@
 
       youtubeId (organisation) {
         return getIdFromURL(organisation.video)
-      }
+      },
+
+      ...mapActions({
+        current: 'current'
+      })
     }
   }
 </script>

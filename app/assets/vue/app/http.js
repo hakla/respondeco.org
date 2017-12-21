@@ -14,14 +14,14 @@ Vue.http.interceptors.push((request, next) => {
   TokenHolder.get(token => request.headers.set('X-Access-Token', token))
 
   next(response => {
-    if (response.status === 401) {
-      let path = ""
-
-      if (!/^(\/|\/login|\/logout)$/.test(router.currentRoute.path)) {
-        path = `?route=${router.currentRoute.path}`
-      }
-
-      router.push(`/login${path}`)
-    }
+    // if (response.status === 401) {
+    //   let path = ""
+    //
+    //   if (!/^(\/|\/login|\/logout)$/.test(router.currentRoute.path)) {
+    //     path = `?route=${router.currentRoute.path}`
+    //   }
+    //
+    //   router.push(`/login${path}`)
+    // }
   });
 });

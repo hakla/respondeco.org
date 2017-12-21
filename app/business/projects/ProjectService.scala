@@ -58,6 +58,10 @@ class ProjectService @Inject()(organisationService: OrganisationService, implici
         first('name -> name)
     }
 
+    def findByOrganisation(organisationId: Long): List[ProjectModel] = db.withConnection { implicit c =>
+        all('organisation -> organisationId)
+    }
+
     def toPublicModel(project: ProjectModel): ProjectPublicModel = {
         ProjectPublicModel(
             id = project.id,

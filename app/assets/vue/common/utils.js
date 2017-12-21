@@ -34,13 +34,18 @@ export default class Utils {
   static imageUrl(image) {
     let url = image
 
-    console.log(image)
-
     if (/^[0-9a-z]*\.(png|jpe?g)/.test(image)) {
       url = `${Config.ImageBaseUrl}/${image}`
     }
 
     return url
+  }
+
+  static methods () {
+    return {
+      backgroundImage: this.backgroundImage,
+      imageUrl: this.imageUrl
+    }
   }
 
 }

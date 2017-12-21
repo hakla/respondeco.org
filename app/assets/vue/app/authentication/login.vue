@@ -1,115 +1,136 @@
 <template>
-<div class="container-fluid">
-  <div class="row equal-height-columns">
-    <div class="col-md-6 col-sm-6 hidden-xs image-block equal-height-column">
-      <!-- <img src="/assets/images/login.jpg" /> -->
-    </div>
+  <main>
+    <respondeco-header type="static"></respondeco-header>
+    <section class="clearfix">
+      <div class="row no-gutters align-items-center">
+        <div class="col-lg-6">
+        </div>
 
-    <div class="col-md-6 col-sm-6 form-block equal-height-column">
-      <router-link to="/">
-        <img src="/assets/images/logo-small.png" alt="">
-      </router-link>
-      <h2 class="margin-bottom-30">Login To Your Account</h2>
-      <p v-if="error != undefined">Test</p>
-      <form action="#" v-on:submit.prevent="login">
-        <div class="login-block">
-          <div class="input-group margin-bottom-20">
-            <span class="input-group-addon rounded-left"><i class="icon-user color-blue"></i></span>
-            <input type="text" class="form-control rounded-right" placeholder="Username" v-model="user" autofocus>
-          </div>
+        <div class="col-lg-6">
+          <div class="g-pa-50 g-mx-70--xl">
+            <!-- Form -->
+            <form class="g-py-15" v-on:submit.prevent="login">
+              <h2 class="h3 g-color-black mb-4">Login</h2>
 
-          <div class="input-group margin-bottom-20">
-            <span class="input-group-addon rounded-left"><i class="icon-lock color-blue"></i></span>
-            <input type="password" class="form-control rounded-right" placeholder="Password" v-model="password">
-          </div>
+              <div class="mb-4">
+                <div class="input-group g-brd-primary--focus">
+                  <span class="input-group-addon g-width-45 g-brd-gray-light-v4 g-color-primary">
+                      <i class="icon-finance-067 u-line-icon-pro"></i>
+                    </span>
+                  <input
+                    class="form-control g-color-black g-brd-left-none g-bg-white g-brd-gray-light-v4 g-pl-0 g-pr-15 g-py-15"
+                    type="email" placeholder="Username" v-model="user">
+                </div>
+              </div>
 
-          <div class="checkbox">
-            <ul class="list-inline">
-              <li>
-                <label>
-									<input type="checkbox"> Remember me
-								</label>
-              </li>
+              <div class="mb-4">
+                <div class="input-group g-brd-primary--focus">
+                  <span class="input-group-addon g-width-45 g-brd-gray-light-v4 g-color-primary">
+                      <i class="icon-media-094 u-line-icon-pro"></i>
+                    </span>
+                  <input
+                    class="form-control g-color-black g-brd-left-none g-bg-white g-brd-gray-light-v4 g-pl-0 g-pr-15 g-py-15"
+                    type="password" placeholder="Password" v-model="password">
+                </div>
+              </div>
 
-              <li class="pull-right">
-                <a href="#">Forgot password?</a>
-              </li>
-            </ul>
-          </div>
+              <div class="row justify-content-between mb-4">
+                <div class="col align-self-center">
+                  <label class="form-check-inline u-check g-pl-25 mb-0">
+                    <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" type="checkbox">
+                    <div class="u-check-icon-checkbox-v6 g-absolute-centered--y g-left-0">
+                      <i class="fa g-rounded-2" data-check-icon=""></i>
+                    </div>
+                    Keep signed in
+                  </label>
+                </div>
+                <div class="col align-self-center text-right">
+                  <a class="g-color-gray-dark-v4 g-color-primary--hover" href="#">Forgot password?</a>
+                </div>
+              </div>
 
-          <div class="row margin-bottom-70">
-            <div class="col-md-12">
-              <button type="submit" class="btn-u btn-u-blue btn-block rounded">Sign In</button>
-            </div>
-          </div>
+              <div class="g-mb-50">
+                <button class="btn btn-md btn-block u-btn-primary rounded text-uppercase g-py-13" type="button">Login
+                </button>
+              </div>
 
-          <div class="social-login text-center">
-            <div class="hidden">
-              <div class="or rounded-x">Or</div>
-              <ul class="list-inline margin-bottom-20">
-                <li>
-                  <button class="btn rounded btn-lg btn-facebook">
-                    <i class="fa fa-facebook"></i> Facebook Sign in
+              <div class="text-center g-pos-rel pb-2 g-mb-50">
+                <div class="d-inline-block g-width-200 g-height-1 g-bg-gray-light-v4"></div>
+                <span
+                  class="u-icon-v2 u-icon-size--lg g-brd-gray-light-v4 g-color-gray-dark-v4 g-bg-white g-font-size-default rounded-circle text-uppercase g-absolute-centered g-pa-24">OR</span>
+              </div>
+
+              <div class="row justify-content-between no-gutters mb-4">
+                <div class="col-6 text-right">
+                  <button class="btn u-btn-outline-facebook rounded text-uppercase g-py-13 g-px-30 mr-1" type="button">
+                    <i class="mr-1 fa fa-facebook"></i>
+                    Facebook
                   </button>
-                </li>
-                <li>
-                  <button class="btn rounded btn-lg btn-twitter">
-                    <i class="fa fa-twitter"></i> Twitter Sign in
+                </div>
+                <div class="col-6">
+                  <button class="btn u-btn-outline-twitter rounded text-uppercase g-py-13 g-px-30 ml-1" type="button">
+                    <i class="mr-1 fa fa-twitter"></i>
+                    Twitter
                   </button>
-                </li>
-              </ul>
-            </div>
-            <p>Don't have an account? <a href="page_registration2.html">Create New</a></p>
+                </div>
+              </div>
+
+              <p class="g-font-size-13 text-center mb-0">Don't have an account? <a class="g-font-weight-600"
+                                                                                   href="page-signup-11.html">signup</a>
+              </p>
+            </form>
+            <!-- End Form -->
           </div>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
+      </div>
+    </section>
+  </main>
 <!--/container-->
 </template>
 
 <script>
-import 'unify/css/pages/page_log_reg_v4.css';
-import 'unify/plugins/brand-buttons/brand-buttons.css';
+  import Authentication from 'common/authentication'
+  import RespondecoHeader from 'app/main/header';
+  import {
+    router
+  } from '../router';
 
-import Authentication from 'common/authentication';
-import {
-  router
-} from '../router';
+  export default {
+    name: 'Login',
 
-export default {
-  name: 'Login',
-
-  created() {
-    let route = router.currentRoute.query.route || '/'
-
-    Authentication
-      .get()
-      .error(error => this.error = error)
-      .loggedIn(() => { router.push(route) })
-  },
-
-  data() {
-    return {
-      error: undefined,
-      user: 'admin@respondeco.org',
-      password: 'admin'
-    }
-  },
-
-  methods: {
-    fetchData () {
-
+    components: {
+      RespondecoHeader
     },
 
-    login() {
+    created() {
+      let route = router.currentRoute.query.route || '/'
+
       Authentication
         .get()
-        .login(this.user, this.password);
+        .error(error => this.error = error)
+        .loggedIn(() => { router.push(route) })
+    },
+
+    data() {
+      return {
+        error: undefined,
+        user: 'admin@respondeco.org',
+        password: 'admin'
+      }
+    },
+
+    methods: {
+      fetchData () {
+
+      },
+
+      login() {
+        Authentication
+          .get()
+          .login(this.user, this.password);
+      }
     }
   }
-}
 </script>
 
 <style lang="css">

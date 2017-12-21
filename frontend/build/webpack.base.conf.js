@@ -1,4 +1,5 @@
 var path = require('path')
+var webpack = require('webpack')
 var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
@@ -11,7 +12,7 @@ module.exports = {
   entry: {
     admin: './app/assets/vue/admin/main.js',
     app: './app/assets/vue/app/main.js',
-    vendor: ['jquery']
+    vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', 'jquery', 'popper.js']
   },
   output: {
     path: config.build.assetsRoot,
@@ -20,6 +21,17 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "vendor",
+      // filename: "vendor.js"
+      // (Give the chunk a different name)
+
+      minChunks: Infinity,
+      // (with more entries, this ensures that no other module
+      //  goes into the vendor chunk)
+    })
+  ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
@@ -30,7 +42,7 @@ module.exports = {
       'assets': resolve('src/assets'),
       'common': resolve('app/assets/vue/common'),
       'components': resolve('src/components'),
-      'unify': resolve('unify')
+      'unify': resolve('unify-v2/assets')
     }
   },
   module: {

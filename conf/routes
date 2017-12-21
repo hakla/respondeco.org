@@ -40,6 +40,8 @@ PUT           /api/v1/projects/:id                           business.projects.P
 POST          /api/v1/projects                               business.projects.ProjectCtrl.create
 DELETE        /api/v1/projects/:id                           business.projects.ProjectCtrl.delete(id: Long)
 
+GET           /api/v1/organisations/:id/projects             business.projects.ProjectCtrl.byOrganisationId(id: Long)
+
 ## Project history CRUD
 GET           /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.findAll
 GET           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.findById(id: Long, public: Option[String])

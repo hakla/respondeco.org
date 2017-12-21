@@ -4,6 +4,11 @@ import App from './app';
 import Login from './authentication/login';
 import Logout from './authentication/logout';
 import Organisation from './organisations/organisation'
+import OrganisationAbout from './organisations/organisation-about'
+import OrganisationComments from './organisations/organisation-comments'
+import OrganisationRatings from './organisations/organisation-ratings'
+import OrganisationProjects from './organisations/organisation-projects'
+import OrganisationSettings from './organisations/organisation-settings'
 import Organisations from './organisations/organisations'
 import Project from './projects/project'
 import Projects from './projects/projects'
@@ -20,7 +25,28 @@ export const routes = [{
     component: Organisations
   }, {
     path: 'organisations/:id',
-    component: Organisation
+    component: Organisation,
+    children: [{
+      path: 'about',
+      name: 'organisation-about',
+      component: OrganisationAbout
+    }, {
+      path: 'comments',
+      name: 'organisation-comments',
+      component: OrganisationComments
+    }, {
+      path: 'ratings',
+      name: 'organisation-ratings',
+      component: OrganisationRatings
+    }, {
+      path: '',
+      name: 'organisation-projects',
+      component: OrganisationProjects
+    }, {
+      path: 'settings',
+      name: 'organisation-settings',
+      component: OrganisationSettings
+    }]
   }, {
     path: 'projects',
     component: Projects
@@ -42,5 +68,6 @@ export const routes = [{
 }];
 
 export const router = new VueRouter({
-  routes
+  routes,
+  linkExactActiveClass: 'active'
 })
