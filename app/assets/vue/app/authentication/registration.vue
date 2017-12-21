@@ -1,6 +1,6 @@
 <template>
   <main>
-    <respondeco-header type="static"></respondeco-header>
+    <respondeco-header></respondeco-header>
 
     <section class="dzsparallaxer auto-init height-is-based-on-content use-loading mode-scroll loaded dzsprx-readyall" data-options="{direction: 'reverse', settings_mode_oneelement_max_offset: '150'}">
       <!-- Parallax Image -->
@@ -9,6 +9,42 @@
 
       <div class="container g-pt-100 g-pb-20">
         <div class="row justify-content-between">
+          <div class="col-md-6 col-lg-5 flex-md-unordered align-self-center g-mb-80">
+            <div class="u-shadow-v21 g-bg-white rounded g-pa-50">
+              <header class="text-center mb-4">
+                <h2 class="h2 g-color-black g-font-weight-600">{{ 'common.register' | translate }}</h2>
+              </header>
+
+              <!-- Form -->
+              <form class="g-py-15">
+                <div class="mb-4">
+                  <input class="form-control g-color-black g-bg-white g-bg-white--focus g-brd-gray-light-v4 g-brd-primary--hover rounded g-py-15 g-px-15"
+                    type="text" :placeholder="translate('common.organisation')">
+                </div>
+
+                <div class="mb-4">
+                  <input class="form-control g-color-black g-bg-white g-bg-white--focus g-brd-gray-light-v4 g-brd-primary--hover rounded g-py-15 g-px-15"
+                    type="email" :placeholder="translate('common.email')">
+                </div>
+
+                <div class="g-mb-30">
+                  <input class="form-control g-color-black g-bg-white g-bg-white--focus g-brd-gray-light-v4 g-brd-primary--hover rounded g-py-15 g-px-15"
+                    type="tel" :placeholder="translate('common.password')">
+                </div>
+
+                <div class="text-center mb-5">
+                  <button class="btn btn-block u-btn-primary rounded g-py-13" type="button">{{ translate('registration.go') }}</button>
+                </div>
+              </form>
+              <!-- End Form -->
+
+              <footer class="text-center">
+                <p class="g-color-gray-dark-v5 mb-0">{{ translate('registration.existingAccount') }}
+                  <router-link to='login' class="g-font-weight-600">{{ translate('registration.login') }}</router-link>
+                </p>
+              </footer>
+            </div>
+          </div>
 
           <div class="col-md-6 flex-md-first align-self-center g-mb-80">
             <div class="mb-5">
@@ -59,101 +95,35 @@
               </div>
             </div>
           </div>
-
-          <div class="col-md-6 col-lg-5 flex-md-unordered align-self-center g-mb-80">
-            <div class="u-shadow-v21 g-bg-white rounded g-pa-50">
-              <header class="text-center mb-4">
-                <h2 class="h2 g-color-black g-font-weight-600">{{ translate('common.login') }}</h2>
-              </header>
-
-              <!-- Form -->
-              <form class="g-py-15" @submit.prevent="login">
-                <div class="mb-4">
-                  <input class="form-control g-color-black g-bg-white g-bg-white--focus g-brd-gray-light-v4 g-brd-primary--hover rounded g-py-15 g-px-15"
-                    type="email" :value="user" :placeholder="translate('common.email')">
-                </div>
-
-                <div class="g-mb-30">
-                  <input class="form-control g-color-black g-bg-white g-bg-white--focus g-brd-gray-light-v4 g-brd-primary--hover rounded g-py-15 g-px-15"
-                    type="tel" :value="password" :placeholder="translate('common.password')">
-                </div>
-
-                <div class="text-center mb-5">
-                  <button class="btn btn-block u-btn-primary rounded g-py-13" type="submit">{{ translate('login.go') }}</button>
-                </div>
-              </form>
-              <!-- End Form -->
-
-              <footer class="text-center">
-                <p class="g-color-gray-dark-v5 mb-0">{{ translate('login.notRegistered') }}
-                  <router-link to='/registration' class="g-font-weight-600">{{ translate('login.goToRegistration') }}</router-link>
-                </p>
-              </footer>
-            </div>
-          </div>
         </div>
       </div>
     </section>
 
     <respondeco-footer></respondeco-footer>
   </main>
-<!--/container-->
 </template>
 
 <script>
-  import 'unify/vendor/dzsparallaxer/dzsparallaxer'
-  import 'unify/vendor/dzsparallaxer/dzsparallaxer.css'
+import 'unify/vendor/dzsparallaxer/dzsparallaxer'
+import 'unify/vendor/dzsparallaxer/dzsparallaxer.css'
 
-  import Authentication from 'common/authentication'
-  import RespondecoHeader from 'app/main/header'
-  import RespondecoFooter from 'app/main/footer'
-  import Translate from 'mixins/translate'
+import RespondecoHeader from '../main/header'
+import RespondecoFooter from '../main/footer'
 
-  import { router } from '../router'
+import Translate from 'mixins/translate'
 
-  export default {
-    name: 'Login',
+export default {
+  name: 'Registration',
 
-    components: {
-      RespondecoFooter,
-      RespondecoHeader
-    },
+  components: {
+    RespondecoHeader,
+    RespondecoFooter
+  },
 
-    created() {
-      let route = router.currentRoute.query.route || '/'
-
-      Authentication
-        .get()
-        .error(error => this.error = error)
-        .loggedIn(() => { router.push(route) })
-    },
-
-    data() {
-      return {
-        error: undefined,
-        user: 'admin@respondeco.org',
-        password: 'admin'
-      }
-    },
-
-    methods: {
-      fetchData () {
-
-      },
-
-      login() {
-        Authentication
-          .get()
-          .login(this.user, this.password);
-      }
-    },
-
-    mixins: [Translate]
-  }
+  mixins: [Translate]
+}
 </script>
 
-<style lang="css">
-    body {
-      margin-bottom: 0 !important;
-    }
+<style>
+
 </style>

@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import App from './app';
 
-import Login from './authentication/login';
-import Logout from './authentication/logout';
+import Login from './authentication/login'
+import Logout from './authentication/logout'
+
+import Registration from './authentication/registration.vue'
+
 import Organisation from './organisations/organisation'
 import OrganisationAbout from './organisations/organisation-about'
 import OrganisationComments from './organisations/organisation-comments'
@@ -65,6 +68,9 @@ export const routes = [{
 }, {
   path: '/logout',
   component: Logout
+}, {
+  path: '/registration',
+  component: Registration
 }];
 
 export const router = new VueRouter({

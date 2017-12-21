@@ -38,15 +38,17 @@ import './http';
 Authentication
   .init(router);
 
+Vue.filter('formatDate', filters.formatDate)
+Vue.filter('translate', filters.translate)
+
+Vue.use(VueMasonryPlugin)
+Vue.use(VueYoutubeEmbed)
+
 const app = new Vue({
   router,
   store,
   i18n
 }).$mount('#app')
-
-Vue.use(VueMasonryPlugin)
-Vue.use(VueYoutubeEmbed)
-Vue.filter('formatDate', filters.formatDate)
 
 $(window).on('load', function () {
   // initialization of header

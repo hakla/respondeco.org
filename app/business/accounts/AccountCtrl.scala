@@ -32,7 +32,6 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
         }
     }
 
-
     def update(id: Long) = AuthenticatedUser(parse.json[AccountWriteModel]) { (obj, _) =>
         service.update(id, obj) match {
             case Some(updatedObj) => Ok(AccountPublicModel.from(updatedObj))
