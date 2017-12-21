@@ -3,15 +3,7 @@
     <!-- User Block -->
     <div class="g-brd-around g-brd-gray-light-v4 g-pa-20 g-mb-40">
       <div class="row">
-        <div class="col-lg-4 g-mb-40 g-mb-0--lg">
-          <!-- User Image -->
-          <div class="g-mb-20">
-            <img class="img-fluid w-100" alt="Image Description" :src="imageUrl(organisation.logo)">
-          </div>
-          <!-- User Image -->
-        </div>
-
-        <div class="col-lg-8">
+        <div class="col-lg-12">
           <!-- User Details -->
           <div class="d-flex align-items-center justify-content-sm-between g-mb-5">
             <h2 class="g-font-weight-300 g-mr-10">{{ organisation.name }}</h2>
