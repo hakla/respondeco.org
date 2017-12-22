@@ -80,7 +80,7 @@
     name: 'app',
     components: {},
     data () {
-      let isDev = window.respondeco === 'dev';
+      let isDev = window.respondeco === 'dev'
 
       return {
         isDev,

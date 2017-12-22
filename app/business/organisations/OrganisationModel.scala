@@ -26,17 +26,17 @@ object OrganisationModel extends MyWriteable[OrganisationModel] {
 }
 
 case class OrganisationWriteModel(
-    id: Option[Long],
+    id: Option[Long] = None,
     name: String,
-    description: Option[String],
-    email: Option[String],
-    website: Option[String],
-    location: Option[String],
-    category: Option[String],
-    subcategory: Option[String],
-    image: Option[String],
-    logo: Option[String],
-    video: Option[String]
+    description: Option[String] = None,
+    email: Option[String] = None,
+    website: Option[String] = None,
+    location: Option[String] = None,
+    category: Option[String] = None,
+    subcategory: Option[String] = None,
+    image: Option[String] = None,
+    logo: Option[String] = None,
+    video: Option[String] = None
 )
 
 object OrganisationWriteModel extends MyWriteable[OrganisationWriteModel] {

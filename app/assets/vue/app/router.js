@@ -12,6 +12,8 @@ import OrganisationComments from './organisations/organisation-comments'
 import OrganisationRatings from './organisations/organisation-ratings'
 import OrganisationProjects from './organisations/organisation-projects'
 import OrganisationSettings from './organisations/organisation-settings'
+import OrganisationSettingsProfile from './organisations/organisation-settings-profile'
+import OrganisationSettingsSecurity from './organisations/organisation-settings-security'
 import Organisations from './organisations/organisations'
 import Project from './projects/project'
 import Projects from './projects/projects'
@@ -25,9 +27,11 @@ export const routes = [{
   component: App,
   children: [{
     path: 'organisations',
+    name: 'organisations',
     component: Organisations
   }, {
     path: 'organisations/:id',
+    name: 'organisation',
     component: Organisation,
     children: [{
       path: 'about',
@@ -48,7 +52,17 @@ export const routes = [{
     }, {
       path: 'settings',
       name: 'organisation-settings',
-      component: OrganisationSettings
+      component: OrganisationSettings,
+      alias: 'organisation-settings-profile',
+      children: [{
+        path: '',
+        name: 'organisation-settings-profile',
+        component: OrganisationSettingsProfile
+      }, {
+        path: 'security',
+        name: 'organisation-settings-security',
+        component: OrganisationSettingsSecurity
+      }]
     }]
   }, {
     path: 'projects',
@@ -61,16 +75,16 @@ export const routes = [{
     name: 'finishedProject',
     path: 'finished-project/:id',
     component: FinishedProject
+  }, {
+    path: '/login',
+    component: Login
+  }, {
+    path: '/logout',
+    component: Logout
+  }, {
+    path: '/registration',
+    component: Registration
   }]
-}, {
-  path: '/login',
-  component: Login
-}, {
-  path: '/logout',
-  component: Logout
-}, {
-  path: '/registration',
-  component: Registration
 }];
 
 export const router = new VueRouter({

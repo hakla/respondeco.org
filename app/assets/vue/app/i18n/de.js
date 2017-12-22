@@ -15,14 +15,27 @@ export default {
   },
 
   login: {
+    error: 'Fehler bei der Anmeldung',
     go: 'Anmelden',
     goToRegistration: 'Zur Registrierung',
     notRegistered: 'Noch keinen Account?'
+  },
+
+  menu: {
+    settings: 'Profil bearbeiten',
+    logout: 'Abmelden'
   },
 
   registration: {
     existingAccount: 'Bereits angemeldet?',
     go: 'Registrieren',
     login: 'Zum Login'
+  },
+
+  organisation: {
+    settings: {
+      editProfile: 'Profil bearbeiten',
+      security: 'Sicherheitseinstellungen'
+    }
   }
 }

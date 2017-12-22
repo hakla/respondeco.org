@@ -1,93 +1,96 @@
-import Vue from 'vue';
-import TokenHolder from './token-holder';
+import Vue from 'vue'
 
-import StateObject from 'common/state-object';
-import FunctionQueue from 'common/function-queue';
+import StateObject from 'common/state-object'
+import FunctionQueue from 'common/function-queue'
 
-let authentication = undefined;
-let activeUser = new StateObject();
+import TokenHolder from './token-holder'
+
+let authentication = undefined
+let activeUser = new StateObject()
 
 export default class Authentication {
 
-  constructor(router) {
-    this.router = router;
+  constructor (router) {
+    this.router = router
 
-    this.onError = new FunctionQueue();
-    this.onLoggedIn = new FunctionQueue();
-    this.onLoggedOut = new FunctionQueue();
+    this.onError = new FunctionQueue()
+    this.onLoggedIn = new FunctionQueue()
+    this.onLoggedOut = new FunctionQueue()
 
-    this.refreshUser();
+    this.refreshUser()
   }
 
-  refreshUser() {
+  refreshUser () {
     Vue.http.get('user').then(response => {
-      activeUser.pushState(response.body);
+      activeUser.pushState(response.body)
     }, response => {
-      activeUser.pushState(undefined);
+      activeUser.pushState(undefined)
     });
   }
 
-  login(user, password, router) {
-    Vue.http.post('auth/obtain-session', {
+  login (user, password, router) {
+    return Vue.http.post('auth/obtain-session', {
       user,
       password
     }).then(response => {
-      TokenHolder.set(response.headers.get('x-access-token'));
+      TokenHolder.set(response.headers.get('x-access-token'))
 
-      this.refreshUser();
-      this.onLoggedIn.apply(response.body);
+      this.refreshUser()
+      this.onLoggedIn.apply(response.body)
     }, response => {
-      this.onError(response.body);
-    });
+      this.onError.apply(response.body)
+    })
   }
 
-  logout() {
-    Vue.http.post('auth/invalidate-session', {}).then(reponse => {
-      TokenHolder.empty();
+  logout () {
+    return Vue.http.post('auth/invalidate-session', {}).then(reponse => {
+      TokenHolder.empty()
 
-      this.refreshUser();
-      this.onLoggedOut.apply();
-    });
+      activeUser.pushState(undefined)
+      this.onLoggedOut.apply()
+    }, error => {
+      console.error(error)
+
+      this.router.push('/')
+    })
   }
 
   // Events
+  error (cb) {
+    this.onError.push(cb)
 
-  error(cb) {
-    this.onError.push(cb);
-
-    return this;
+    return this
   }
 
-  loggedIn(cb) {
-    this.onLoggedIn.push(cb);
+  loggedIn (cb) {
+    this.onLoggedIn.push(cb)
 
-    return this;
+    return this
   }
 
-  loggedOut(cb) {
-    this.onLoggedOut.push(cb);
+  loggedOut (cb) {
+    this.onLoggedOut.push(cb)
 
-    return this;
+    return this
   }
 
   // Static
-
-  static activeUser() {
-    return activeUser;
+  static activeUser () {
+    return activeUser
   }
 
-  static get() {
+  static get () {
     if (authentication == undefined) {
-      throw new Error("Authentication isn't initialized!");
+      throw new Error("Authentication isn't initialized!")
     }
 
-    return authentication;
+    return authentication
   }
 
-  static init(router) {
-    authentication = new Authentication(router);
+  static init (router) {
+    authentication = new Authentication(router)
 
-    return authentication;
+    return authentication
   }
 
 }

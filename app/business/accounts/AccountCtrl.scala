@@ -12,7 +12,7 @@ import security.{AuthenticatedController, Authorization}
   */
 class AccountCtrl @Inject()(val accountService: AccountService) extends AuthenticatedController with Authorization {
 
-    val service: CrudService[AccountModel, AccountWriteModel] = accountService
+    val service: AccountService = accountService
 
     def findAll = Unauthenticated {
         Ok(service.all().map(AccountPublicModel.from))
@@ -25,7 +25,7 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
         }
     }
 
-    def create: Action[AccountWriteModel] = AuthenticatedAdmin(parse.json[AccountWriteModel]) { obj =>
+    def create: Action[RegistrationModel] = AuthenticatedAdmin(parse.json[RegistrationModel]) { obj =>
         service.create(obj) match {
             case Some(createdObj) => Ok(AccountPublicModel.from(createdObj))
             case None => BadRequest("Couldn't create")

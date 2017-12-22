@@ -1,7 +1,8 @@
 <template>
   <section class="g-pt-100">
     <respondeco-breadcrumbs :heading="$tc('common.project', 2)"></respondeco-breadcrumbs>
-    <respondeco-portfolio :items="list"></respondeco-portfolio>
+    <respondeco-portfolio :items="list" v-if="!loading"></respondeco-portfolio>
+    <vue-simple-spinner class="g-mb-100 g-mt-100" v-else></vue-simple-spinner>
   </section>
 </template>
 
@@ -10,6 +11,7 @@
   import RespondecoPortfolio from 'app/main/portfolio'
   import ProjectService from 'app/projects/projects-service'
   import Utils from 'app/utils'
+  import VueSimpleSpinner from 'vue-simple-spinner'
 
   let toPortfolioItem = Utils.toPortfolioItem("projects")
 
@@ -17,8 +19,9 @@
     name: 'projects',
 
     components: {
-      'respondecoPortfolio': RespondecoPortfolio,
-      'respondecoBreadcrumbs': RespondecoBreadcrumbs
+      RespondecoPortfolio,
+      RespondecoBreadcrumbs,
+      VueSimpleSpinner
     },
 
     created () {
@@ -30,15 +33,20 @@
       return {
         filter: '',
         list: [],
+        loading: false,
         projects: []
       }
     },
 
     methods: {
       fetchData () {
+        this.loading = true
+
         ProjectService.all().then(response => {
-          this.projects = response.body;
-          this.updateList();
+          this.projects = response.body
+          this.updateList()
+
+          this.loading = false
         });
       },
       updateList (filter) {

@@ -1,12 +1,13 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
+import Vue from 'vue'
+import VueResource from 'vue-resource'
 
-import TokenHolder from '../common/token-holder';
-import {
+import TokenHolder from 'common/token-holder'
+
+/*import {
   router
-} from './router';
+} from './router';*/
 
-Vue.use(VueResource);
+Vue.use(VueResource)
 
 Vue.http.options.root = '/api/v1'
 Vue.http.headers.common['X-Access-Token'] = ""
@@ -23,5 +24,5 @@ Vue.http.interceptors.push((request, next) => {
     //
     //   router.push(`/login${path}`)
     // }
-  });
-});
+  })
+})

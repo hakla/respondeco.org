@@ -1,7 +1,8 @@
 <template>
   <section class="g-pt-100">
     <respondeco-breadcrumbs :heading="$tc('common.organisation', 2)"></respondeco-breadcrumbs>
-    <respondeco-portfolio :items="list"></respondeco-portfolio>
+    <respondeco-portfolio :items="list" v-if="!loading"></respondeco-portfolio>
+    <vue-simple-spinner class="g-mb-100 g-mt-100" v-else></vue-simple-spinner>
   </section>
 </template>
 
@@ -10,6 +11,7 @@
   import RespondecoPortfolio from 'app/main/portfolio'
   import OrganisationService from 'app/organisations/organisations-service'
   import Utils from 'app/utils'
+  import VueSimpleSpinner from 'vue-simple-spinner'
 
   import { mapGetters, mapActions } from 'vuex'
 
@@ -19,8 +21,9 @@
     name: 'organisations',
 
     components: {
-      'respondecoPortfolio': RespondecoPortfolio,
-      'respondecoBreadcrumbs': RespondecoBreadcrumbs
+      RespondecoPortfolio,
+      RespondecoBreadcrumbs,
+      VueSimpleSpinner
     },
 
     computed: {
@@ -35,7 +38,8 @@
     data() {
       return {
         filter: '',
-        list: []
+        list: [],
+        loading: false
       }
     },
 
@@ -43,10 +47,13 @@
       ...mapActions(['all']),
 
       fetchData () {
+        this.loading = true
+
         OrganisationService.all().then(response => {
           this.all(response.body)
+          this.updateList()
 
-          this.updateList();
+          this.loading = false
         });
       },
 

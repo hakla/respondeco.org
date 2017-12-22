@@ -1,45 +1,46 @@
 <template>
   <section class="g-mb-100 g-mt-50">
-    <div class="container">
+    <vue-simple-spinner class="g-mb-100 g-mt-100" v-if="loading"></vue-simple-spinner>
+    <div class="container" v-if="!loading">
       <div class="row">
         <!-- Profile Sidebar -->
         <div class="col-lg-3 g-mb-50 g-mb-0--lg">
           <!-- User Image -->
           <div class="u-block-hover g-pos-rel">
-            <figure class="g-mb-10">
-              <img class="img-fluid w-100 u-block-hover__main--zoom-v1" :src="imageUrl(organisation.logo)" alt="Image Description">
+            <figure class="g-mb-10 g-mt-50">
+              <img class="img-fluid w-100" :src="imageUrl(organisation.logo)" alt="Image Description">
             </figure>
 
             <!-- Figure Caption -->
-            <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30">
-              <div class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle">
-                <!-- Figure Social Icons -->
-                <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-20">
-                  <li class="list-inline-item align-middle g-mx-7">
-                    <a class="u-icon-v1 u-icon-size--md g-color-white" href="#">
-                      <i class="icon-note u-line-icon-pro"></i>
-                    </a>
-                  </li>
-                  <li class="list-inline-item align-middle g-mx-7">
-                    <a class="u-icon-v1 u-icon-size--md g-color-white" href="#">
-                      <i class="icon-notebook u-line-icon-pro"></i>
-                    </a>
-                  </li>
-                  <li class="list-inline-item align-middle g-mx-7">
-                    <a class="u-icon-v1 u-icon-size--md g-color-white" href="#">
-                      <i class="icon-settings u-line-icon-pro"></i>
-                    </a>
-                  </li>
-                </ul>
-                <!-- End Figure Social Icons -->
-              </div>
-            </figcaption>
+            <!--   <figcaption class="u-block-hover__additional&#45;&#45;fade g-bg-black-opacity-0_5 g-pa-30">
+                 <div class="u-block-hover__additional&#45;&#45;fade u-block-hover__additional&#45;&#45;fade-up g-flex-middle">
+                   &lt;!&ndash; Figure Social Icons &ndash;&gt;
+                   <ul class="list-inline text-center g-flex-middle-item&#45;&#45;bottom g-mb-20">
+                     <li class="list-inline-item align-middle g-mx-7">
+                       <a class="u-icon-v1 u-icon-size&#45;&#45;md g-color-white" href="#">
+                         <i class="icon-note u-line-icon-pro"></i>
+                       </a>
+                     </li>
+                     <li class="list-inline-item align-middle g-mx-7">
+                       <a class="u-icon-v1 u-icon-size&#45;&#45;md g-color-white" href="#">
+                         <i class="icon-notebook u-line-icon-pro"></i>
+                       </a>
+                     </li>
+                     <li class="list-inline-item align-middle g-mx-7">
+                       <a class="u-icon-v1 u-icon-size&#45;&#45;md g-color-white" href="#">
+                         <i class="icon-settings u-line-icon-pro"></i>
+                       </a>
+                     </li>
+                   </ul>
+                   &lt;!&ndash; End Figure Social Icons &ndash;&gt;
+                 </div>
+               </figcaption>-->
             <!-- End Figure Caption -->
 
             <!-- User Info -->
             <span class="g-pos-abs g-top-20 g-left-0">
-              <a class="btn btn-sm u-btn-primary rounded-0" href="#">{{ organisation.name }}</a>
-            </span>
+            <a class="btn btn-sm u-btn-primary rounded-0" href="#">{{ organisation.name }}</a>
+          </span>
             <!-- End User Info -->
           </div>
           <!-- User Image -->
@@ -73,7 +74,7 @@
             <!-- End Reviews -->
 
             <!-- Settings -->
-            <router-link :to="{ name: 'organisation-settings', params: { id: organisation.id } }" class="list-group-item list-group-item-action justify-content-between">
+            <router-link :to="{ name: 'organisation-settings-profile', params: { id: organisation.id } }" v-if="activeUserIsOwner" active-class="active" class="list-group-item list-group-item-action justify-content-between">
               <span><i class="icon-settings g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.settings') }}</span>
               <span class="u-label g-font-size-11 g-bg-cyan g-rounded-20 g-px-8">3</span>
             </router-link>
@@ -92,22 +93,26 @@
 </template>
 
 <script>
-  import Config from 'common/config'
   import Utils from 'common/utils'
   import RespondecoBreadcrumbs from 'app/main/breadcrumbs'
   import { getIdFromURL } from 'vue-youtube-embed'
-  import { router } from '../router'
   import { mapGetters, mapActions } from 'vuex'
+  import VueSimpleSpinner from 'vue-simple-spinner'
 
   export default {
     name: 'organisation',
 
     components: {
-      RespondecoBreadcrumbs
+      RespondecoBreadcrumbs,
+      VueSimpleSpinner
     },
 
     computed: {
-      ...mapGetters(['organisation', 'projects'])
+      ...mapGetters(['organisation', 'projects', 'activeUser']),
+
+      activeUserIsOwner () {
+        return this.activeUser && this.organisation && this.activeUser.organisationId === this.organisation.id
+      }
     },
 
     created () {
@@ -123,6 +128,7 @@
     data () {
       return {
         expanded: false,
+        loading: false,
         playerVars: {
           autoplay: 0,
           controls: 1,
@@ -186,6 +192,14 @@
       ...mapActions({
         current: 'current'
       })
+    },
+
+    watch: {
+      '$route.params.id' (newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.fetchData()
+        }
+      }
     }
   }
 </script>

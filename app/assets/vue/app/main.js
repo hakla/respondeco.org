@@ -7,6 +7,7 @@ import 'unify/vendor/cubeportfolio/css/cubeportfolio.css'
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.css'
 import 'unify/vendor/icon-awesome/css/font-awesome.css'
 import 'unify/vendor/icon-line/css/simple-line-icons.css'
+import 'unify/vendor/icon-hs/style.css'
 
 // Unify v2.2.0 scripts
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
@@ -22,9 +23,9 @@ import 'unify/vendor/cubeportfolio/js/jquery.cubeportfolio.js'
 
 // Libraries
 import Vue from 'vue'
-import Vuex from 'vuex'
 import { VueMasonryPlugin } from 'vue-masonry'
 import VueYoutubeEmbed from 'vue-youtube-embed'
+import { mapGetters } from 'vuex'
 
 // App
 import Authentication from 'common/authentication'
@@ -33,10 +34,12 @@ import filters from './filters'
 import { i18n } from './i18n';
 import { router } from './router'
 import store from './store/index.js'
-import './http';
+import './http'
 
 Authentication
-  .init(router);
+  .init(router)
+
+Vue.config.productionTip = false
 
 Vue.filter('formatDate', filters.formatDate)
 Vue.filter('translate', filters.translate)
@@ -47,18 +50,31 @@ Vue.use(VueYoutubeEmbed)
 const app = new Vue({
   router,
   store,
-  i18n
+  i18n,
+  computed: {
+    ...mapGetters('loading', [
+      /*
+        `isLoading` returns a function with a parameter of loader name.
+        e.g. `isLoading('creating user')` will return you a boolean value.
+      */
+      'isLoading',
+      /*
+        `anyLoading` returns a boolean value if any loader name exists on store.
+      */
+      'anyLoading',
+    ])
+  }
 }).$mount('#app')
 
 $(window).on('load', function () {
   // initialization of header
-  $.HSCore.components.HSHeader.init($('#js-header'));
-  $.HSCore.helpers.HSHamburgers.init('.hamburger');
+  $.HSCore.components.HSHeader.init($('#js-header'))
+  $.HSCore.helpers.HSHamburgers.init('.hamburger')
 
   // initialization of HSMegaMenu component
   $('.js-mega-menu').HSMegaMenu({
     event: 'hover',
     pageContainer: $('.container'),
     breakpoint: 991
-  });
-});
+  })
+})

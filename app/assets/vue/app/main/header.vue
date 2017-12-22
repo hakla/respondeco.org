@@ -34,31 +34,21 @@
 <script>
   import RespondecoMenu from './menu'
   import RespondecoTopbar from './topbar'
-  import Authentication from 'common/authentication'
 
   export default {
-    created() {
-      Authentication.activeUser().then(user => {
-        console.log('blabla');
-        console.log(user);
-        this.user = user;
-      });
+    name: 'RespondecoHeader',
 
+    components: {
+      RespondecoMenu,
+      RespondecoTopbar
+    },
+
+    created() {
       $(window).on('load', function () {
         // initialization of header
         $.HSCore.components.HSHeader.init($('#js-header'));
         $.HSCore.helpers.HSHamburgers.init('.hamburger');
       });
-    },
-    data() {
-      return {
-        user: undefined
-      }
-    },
-    name: 'RespondecoHeader',
-    components: {
-      RespondecoMenu,
-      RespondecoTopbar
     }
   }
 </script>

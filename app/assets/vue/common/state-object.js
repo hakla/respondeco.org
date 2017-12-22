@@ -1,26 +1,26 @@
-import FunctionQueue from './function-queue';
+import FunctionQueue from './function-queue'
 
 export default class StateObject {
 
-  constructor() {
-    this.queue = new FunctionQueue();
-    this.state = undefined;
+  constructor () {
+    this.queue = new FunctionQueue()
+    this.state = undefined
   }
 
-  pushState(state) {
-    this.state = state;
+  pushState (state) {
+    this.state = state
 
-    this.queue.apply(state);
+    this.queue.apply(state)
   }
 
-  then(cb) {
-    this.queue.push(cb);
+  then (cb) {
+    this.queue.push(cb)
 
     if (this.state !== undefined) {
-      cb(this.state);
+      cb(this.state)
     }
 
-    return this;
+    return this
   }
 
 }
