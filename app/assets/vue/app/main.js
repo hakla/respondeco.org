@@ -1,18 +1,25 @@
-// Unify v2.2.0 styles
-import 'unify/css/unify-core.css'
-import 'unify/css/unify-components.css'
-import 'unify/css/unify-globals.css'
-
+// Unify v2.4.0 styles
 import 'unify/vendor/cubeportfolio/css/cubeportfolio.css'
+import 'unify/vendor/hamburgers/hamburgers.css'
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.css'
 import 'unify/vendor/icon-awesome/css/font-awesome.css'
 import 'unify/vendor/icon-line/css/simple-line-icons.css'
 import 'unify/vendor/icon-hs/style.css'
 
-// Unify v2.2.0 scripts
-import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
+// Unify has to be more specific than plugins
+import 'unify/css/unify-core.css'
+import 'unify/css/unify-components.css'
+import 'unify/css/unify-globals.css'
+
+// Unify v2.4.0 scripts
 import 'unify/vendor/jquery.easing/js/jquery.easing.js'
 import 'unify/vendor/masonry/dist/masonry.pkgd.js'
+
+import 'unify/js/hs.core.js'
+import 'unify/js/components/hs.header.js'
+import 'unify/js/helpers/hs.hamburgers.js'
+import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
+import 'unify/js/components/hs.navigation.js'
 
 // hs.* scripts
 import 'unify/js/hs.core.js'

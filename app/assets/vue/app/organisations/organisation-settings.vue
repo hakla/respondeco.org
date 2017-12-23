@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-9">
+  <div class="col-lg-12">
     <ul class="nav nav-justified u-nav-v1-1 u-nav-primary g-brd-bottom--md g-brd-bottom-2 g-brd-primary g-mb-20"
         role="tablist" data-target="nav-1-1-default-hor-left-underline" data-tabs-mobile-type="slide-up-down"
         data-btn-classes="btn btn-md btn-block rounded-0 u-btn-outline-primary g-mb-20">

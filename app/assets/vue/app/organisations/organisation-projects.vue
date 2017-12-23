@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-9">
+  <div class="col-lg-12">
     <!-- Panel Body -->
     <div class="card-block u-info-v1-1 g-pa-0">
       <ul class="list-unstyled">

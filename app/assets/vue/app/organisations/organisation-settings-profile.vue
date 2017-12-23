@@ -1,145 +1,68 @@
 <template>
-  <div id="nav-1-1-default-hor-left-underline" class="tab-content">
+  <div id="nav-1-1-default-hor-left-underline">
     <!-- Edit Profile -->
     <div class="tab-pane fade active show" id="nav-1-1-default-hor-left-underline--1" role="tabpanel"
          aria-expanded="true">
       <h2 class="h4 g-font-weight-300">Manage your Name, ID and Email Addresses</h2>
       <p>Below are name, email addresse, contacts and more on file for your account.</p>
 
-      <ul class="list-unstyled g-mb-30">
-        <!-- Name -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Name</strong>
-            <span class="align-top">John Doe</span>
-          </div>
-          <span>
-            <i class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-          </span>
-        </li>
-        <!-- End Name -->
+      <form @submit.prevent="save">
+        <unify-list>
+          <!-- name -->
+          <unify-list-item>
+            <unify-list-item-label>{{ $t('organisation.settings.name') }}</unify-list-item-label>
 
-        <!-- Your ID -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Your ID</strong>
-            <span class="align-top">FKJ-032440</span>
-          </div>
-          <span>
-            <i class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-          </span>
-        </li>
-        <!-- End Your ID -->
+            <unify-list-item-content>
+              <unify-form-input v-model="organisation.name"></unify-form-input>
+            </unify-list-item-content>
+          </unify-list-item>
 
-        <!-- Company Name -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Company name</strong>
-            <span class="align-top">Htmlstream</span>
-          </div>
-          <span>
-            <i class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-          </span>
-        </li>
-        <!-- End Company Name -->
+          <!-- email -->
+          <unify-list-item>
+            <unify-list-item-label>{{ $t('organisation.settings.email') }}</unify-list-item-label>
 
-        <!-- Position -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Position</strong>
-            <span class="align-top">Project Manager</span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Position -->
+            <unify-list-item-content>
+              <unify-form-input v-model="organisation.email" type="email"></unify-form-input>
+            </unify-list-item-content>
+          </unify-list-item>
 
-        <!-- Primary Email Address -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Primary email
-              address</strong>
-            <span class="align-top">john.doe@htmlstream.com</span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Primary Email Address -->
+          <!-- location -->
+          <unify-list-item>
+            <unify-list-item-label>{{ $t('organisation.settings.location') }}</unify-list-item-label>
 
-        <!-- Linked Account -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Linked account</strong>
-            <span class="align-top">Facebook</span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Linked Account -->
+            <unify-list-item-content>
+              <unify-form-input v-model="organisation.location"></unify-form-input>
+            </unify-list-item-content>
+          </unify-list-item>
 
-        <!-- Website -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Website</strong>
-            <span class="align-top">https://htmlstream.com</span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Website -->
+          <!-- website -->
+          <unify-list-item>
+            <unify-list-item-label>{{ $t('organisation.settings.website') }}</unify-list-item-label>
 
-        <!-- Phone Number -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Phone number</strong>
-            <span class="align-top">(+123) 456 7890</span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Phone Number -->
+            <unify-list-item-content>
+              <unify-form-input v-model="organisation.website"></unify-form-input>
+            </unify-list-item-content>
+          </unify-list-item>
 
-        <!-- Office Number -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Office number</strong>
-            <span class="align-top">(+123) 456 7891</span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Office Number -->
+          <!-- website -->
+          <unify-list-item>
+            <unify-list-item-label>{{ $t('organisation.settings.description') }}</unify-list-item-label>
 
-        <!-- Address -->
-        <li class="d-flex align-items-center justify-content-between g-brd-bottom g-brd-gray-light-v4 g-py-15">
-          <div class="g-pr-10">
-            <strong class="d-block d-md-inline-block g-color-gray-dark-v2 g-width-200 g-pr-10">Address</strong>
-            <span class="align-top">795 Folsom Ave, Suite 600, San Francisco CA, US </span>
-          </div>
-          <span>
-                        <i
-                          class="icon-pencil g-color-gray-dark-v5 g-color-primary--hover g-cursor-pointer g-pos-rel g-top-1"></i>
-                      </span>
-        </li>
-        <!-- End Address -->
-      </ul>
+            <unify-list-item-content>
+              <unify-textarea rows="10" v-model="organisation.description"></unify-textarea>
+            </unify-list-item-content>
+          </unify-list-item>
+        </unify-list>
 
-      <div class="text-sm-right">
-        <a class="btn u-btn-darkgray rounded-0 g-py-12 g-px-25 g-mr-10" href="#">Cancel</a>
-        <a class="btn u-btn-primary rounded-0 g-py-12 g-px-25" href="#">Save Changes</a>
-      </div>
+        <div class="text-sm-right">
+          <unify-button class="btn-text g-mr-10" size="small" @click="reset">
+            {{ $t('common.cancel') }}
+          </unify-button>
+          <unify-button class="u-btn-primary g-mr-10" loading="organisation.settings.saving" size="medium" type="submit">
+            {{ $t('common.save') }}
+          </unify-button>
+        </div>
+      </form>
     </div>
     <!-- End Edit Profile -->
 
@@ -147,11 +70,60 @@
 </template>
 
 <script>
+  import { mapActions, mapGetters } from 'vuex'
+  import UnifyButton from 'common/components/unify-button'
+  import UnifyFormInput from 'common/components/unify-form-input'
+  import UnifyList from 'common/components/unify-list'
+  import UnifyListItem from 'common/components/unify-list-item'
+  import UnifyListItemLabel from 'common/components/unify-list-item-label'
+  import UnifyListItemContent from 'common/components/unify-list-item-content'
+  import UnifyTextarea from 'common/components/unify-textarea'
+
   export default {
-    name: "OrganisationSettingsProfile"
+    name: "OrganisationSettingsProfile",
+
+    components: {
+      UnifyButton,
+      UnifyFormInput,
+      UnifyList,
+      UnifyListItem,
+      UnifyListItemContent,
+      UnifyListItemLabel,
+      UnifyTextarea
+    },
+
+    data () {
+      return {
+        organisation: Object.assign({}, this.$store.state.organisation.current)
+      }
+    },
+
+    methods: {
+      ...mapActions(['current']),
+
+      reset () {
+        this.organisation = Object.assign({}, this.$store.state.organisation.current)
+      },
+
+      save () {
+        this.$startLoading('organisation.settings.saving')
+        this.current(this.organisation)
+        this.reset()
+
+        setTimeout(() => {
+          this.$endLoading('organisation.settings.saving')
+        }, 2500)
+      }
+    }
   }
 </script>
 
 <style scoped>
+  .unify-list-item-label {
+    flex-basis: 200px;
+  }
 
+  .unify-list-item-content {
+    flex-grow: 1;
+  }
 </style>

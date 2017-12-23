@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-9">
+  <div class="col-lg-12">
     <h2>Kommentare</h2>
   </div>
 </template>

@@ -1,16 +1,18 @@
 export default {
   common: {
-    logout: 'Abmelden',
-    organisation: 'Organisation | Organisationen',
-    project: 'Projekt | Projekte',
     about_organisation: 'Über das Unternehmen',
+    cancel: 'Abbrechen',
     comments: 'Kommentare',
     email: 'E-Mail',
     login: 'Login',
+    logout: 'Abmelden',
+    organisation: 'Organisation | Organisationen',
     password: 'Passwort',
+    project: 'Projekt | Projekte',
     projects: 'Projekte',
     ratings: 'Bewertungen',
     register: 'Registrierung',
+    save: 'Speichern',
     settings: 'Einstellungen',
   },
 
@@ -26,16 +28,21 @@ export default {
     logout: 'Abmelden'
   },
 
+  organisation: {
+    settings: {
+      description: 'Beschreibung',
+      editProfile: 'Profil bearbeiten',
+      email: 'E-Mail',
+      location: 'Standort',
+      name: 'Name der Organisation',
+      security: 'Sicherheitseinstellungen',
+      website: 'Webseite'
+    }
+  },
+
   registration: {
     existingAccount: 'Bereits angemeldet?',
     go: 'Registrieren',
     login: 'Zum Login'
-  },
-
-  organisation: {
-    settings: {
-      editProfile: 'Profil bearbeiten',
-      security: 'Sicherheitseinstellungen'
-    }
   }
 }

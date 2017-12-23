@@ -87,5 +87,11 @@ export const routes = [{
 
 export const router = new VueRouter({
   routes,
-  linkExactActiveClass: 'active'
+  linkExactActiveClass: 'active',
+
+  scrollBehavior (to, from, savedPosition) {
+    $('html, body').animate({
+      scrollTop: 0
+    })
+  }
 })

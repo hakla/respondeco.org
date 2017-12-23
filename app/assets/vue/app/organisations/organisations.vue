@@ -1,5 +1,5 @@
 <template>
-  <section class="g-pt-100">
+  <section class="g-pt-100--md g-pt-40">
     <respondeco-breadcrumbs :heading="$tc('common.organisation', 2)"></respondeco-breadcrumbs>
     <respondeco-portfolio :items="list" v-if="!loading"></respondeco-portfolio>
     <vue-simple-spinner class="g-mb-100 g-mt-100" v-else></vue-simple-spinner>

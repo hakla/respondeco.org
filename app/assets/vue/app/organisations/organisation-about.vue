@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-9">
+  <div class="col-lg-12">
     <!-- User Block -->
     <div class="g-brd-around g-brd-gray-light-v4 g-pa-20 g-mb-40">
       <div class="row">

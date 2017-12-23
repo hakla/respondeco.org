@@ -4,10 +4,7 @@
       <nav class="js-mega-menu navbar navbar-expand-lg py-0">
         <div class="container">
           <!-- Responsive Toggle Button -->
-          <button
-            class="navbar-toggler navbar-toggler-right btn g-line-height-1 g-brd-none g-pa-0 g-pos-abs g-top-3 g-right-0"
-            type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navBar"
-            data-toggle="collapse" data-target="#navBar">
+          <button class="navbar-toggler navbar-toggler-right btn g-line-height-1 g-brd-none g-pa-0 g-pos-abs g-top-3 g-right-0" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navBar" data-toggle="collapse" data-target="#navBar">
               <span class="hamburger hamburger--slider">
             <span class="hamburger-box">
               <span class="hamburger-inner"></span>

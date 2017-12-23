@@ -1,5 +1,5 @@
 <template>
-  <div class="container g-py-100">
+  <div class="container g-py-100--md g-py-40">
     <div v-masonry transition-duration="0.3s" column-width=".masonry-grid-item" item-selector=".item" class="masonry-grid row g-mb-70">
       <div v-masonry-tile class="masonry-grid-item col-sm-6 col-lg-4 g-mb-30" :key="index" v-for="(item, index) in paginatedItems">
         <article class="u-shadow-v11">
@@ -80,6 +80,10 @@
 
         if (value > 0 && value <= this.pages) {
           this.page = value
+
+          $('html, body').animate({
+            scrollTop: 0
+          })
         }
       }
     },

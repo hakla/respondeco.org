@@ -10,7 +10,7 @@
       <router-link to="/login" class="nav-item g-mx-2--md g-mx-5--xl g-mb-5 g-mb-0--lg" tag="li" v-if="!activeUser">
         <a class="nav-link">{{ translate('common.login', 2) }}</a>
       </router-link>
-      <li active-class="active" class="hs-has-sub-menu nav-item g-mx-2--md g-mx-5--xl g-mb-5 g-mb-0--lg" tag="li" v-else>
+      <li active-class="active" class="hs-has-sub-menu nav-item g-mx-2--md g-mx-5--xl g-mb-5 g-mb-0--lg user-menu" v-else>
         <a class="nav-link" id="nav-link-1" aria-haspopup="true" aria-expanded="false" aria-controls="nav-submenu-1">Angemeldet als {{ activeUser.name }}</a>
 
         <ul class="hs-sub-menu list-unstyled g-text-transform-none g-brd-top g-brd-primary g-brd-top-2 g-mt-10 g-min-width-300" id="nav-submenu-1" aria-labelledby="nav-link-1">
@@ -31,7 +31,7 @@ import Translate from 'mixins/translate'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'menu',
+  name: 'RespondecoMenu',
 
   computed: {
     ...mapGetters([
@@ -52,5 +52,9 @@ export default {
 <style lang="css" scoped>
   .navbar .u-main-nav-v3 .hs-sub-menu .nav-link {
     border-bottom: 4px solid transparent !important;
+  }
+
+  .user-menu > a {
+    cursor: default;
   }
 </style>
