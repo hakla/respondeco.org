@@ -49,5 +49,8 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
+  .navbar .u-main-nav-v3 .hs-sub-menu .nav-link {
+    border-bottom: 4px solid transparent !important;
+  }
 </style>

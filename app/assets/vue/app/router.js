@@ -31,7 +31,6 @@ export const routes = [{
     component: Organisations
   }, {
     path: 'organisations/:id',
-    name: 'organisation',
     component: Organisation,
     children: [{
       path: 'about',
@@ -51,7 +50,6 @@ export const routes = [{
       component: OrganisationProjects
     }, {
       path: 'settings',
-      name: 'organisation-settings',
       component: OrganisationSettings,
       alias: 'organisation-settings-profile',
       children: [{

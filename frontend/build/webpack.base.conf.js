@@ -12,7 +12,8 @@ module.exports = {
   entry: {
     admin: './app/assets/vue/admin/main.js',
     app: './app/assets/vue/app/main.js',
-    vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', 'jquery', 'popper.js']
+    vendor_admin: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', 'jquery'],
+    vendor_app: ['./unify/assets/vendor/bootstrap/bootstrap.js', './unify/assets/vendor/bootstrap/bootstrap.css', './unify/assets/vendor/jquery/jquery.js', 'popper.js']
   },
   output: {
     path: config.build.assetsRoot,
@@ -23,7 +24,7 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      name: "vendor",
+      name: "common",
       // filename: "vendor.js"
       // (Give the chunk a different name)
 
@@ -43,7 +44,7 @@ module.exports = {
       'common': resolve('app/assets/vue/common'),
       'components': resolve('src/components'),
       'mixins': resolve('app/assets/vue/app/mixins'),
-      'unify': resolve('unify-v2/assets')
+      'unify': resolve('unify/assets')
     }
   },
   module: {
