@@ -1,12 +1,12 @@
 <template>
-  <ul class="list-unstyled g-mb-30 g-min-width-100x">
+  <div class="input-group">
     <slot></slot>
-  </ul>
+  </div>
 </template>
 
 <script>
   export default {
-    name: "unify-list"
+    name: "unify-form-input-group"
   }
 </script>
 

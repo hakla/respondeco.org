@@ -28,7 +28,7 @@ export default {
     Authentication
       .get()
       .error(error => this.error = error)
-      .loggedIn(() => router.push('/organisations'));
+      .loggedIn(() => router.push('/'));
   },
 
   data() {

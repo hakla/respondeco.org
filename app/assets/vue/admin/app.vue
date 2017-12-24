@@ -1,5 +1,7 @@
 <template>
   <div class="nav-md">
+    <notifications position="top right"></notifications>
+
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col">
@@ -30,13 +32,17 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <li>
-                    <router-link to="/organisations"><i class="fa fa-organisation"></i> Organisationen</router-link>
+                    <router-link to="/accounts"><i class="fa fa-organisation"></i> Accounts</router-link>
+                  </li>
+                  <li>
+                    <router-link to="/"><i class="fa fa-organisation"></i> Organisationen</router-link>
                   </li>
                   <li>
                     <router-link to="/projects"><i class="fa fa-project"></i> Projekte</router-link>
                   </li>
                   <li>
-                    <router-link to="/finishedProjects"><i class="fa fa-project"></i> Abgeschlossene Projekte</router-link>
+                    <router-link to="/finishedProjects"><i class="fa fa-project"></i> Abgeschlossene Projekte
+                    </router-link>
                   </li>
                 </ul>
               </div>
@@ -69,12 +75,10 @@
 </template>
 
 <script>
-  import jQuery from 'jquery';
-  import moment from 'moment';
-  import 'bootstrap/dist/js/bootstrap.min.js';
-  import 'bootstrap/dist/css/bootstrap.min.css';
-  import 'gentelella/build/css/custom.min.css';
-  import 'font-awesome/css/font-awesome.css';
+  import 'bootstrap/dist/js/bootstrap.min.js'
+  import 'bootstrap/dist/css/bootstrap.min.css'
+  import 'gentelella/build/css/custom.min.css'
+  import 'font-awesome/css/font-awesome.css'
 
   export default {
     name: 'app',

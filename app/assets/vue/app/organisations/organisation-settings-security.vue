@@ -1,104 +1,57 @@
 <template>
   <!-- Security Settings -->
   <div class="tab-pane" id="nav-1-1-default-hor-left-underline--2">
-    <h2 class="h4 g-font-weight-300">Security Settings</h2>
-    <p class="g-mb-25">Reset your password, change verifications and so on.</p>
+    <h2 class="h4 g-font-weight-300">{{ $t('organisation.settings.security.title') }}</h2>
+    <p class="g-mb-25">{{ $t('organisation.settings.security.description') }}</p>
 
-    <form>
-      <!-- Current Password -->
-      <div class="form-group row g-mb-25">
-        <label class="col-sm-3 col-form-label g-color-gray-dark-v2 g-font-weight-700 text-sm-right g-mb-10">Current password</label>
-        <div class="col-sm-9">
-          <div class="input-group g-brd-primary--focus">
-            <input class="form-control form-control-md border-right-0 rounded-0 g-py-13 pr-0" type="password" placeholder="Current password">
-            <div class="input-group-addon d-flex align-items-center g-bg-white g-color-gray-light-v1 rounded-0">
-              <i class="icon-lock"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Current Password -->
+    <form @submit.prevent="save">
+      <unify-list>
+        <!-- current password -->
+        <unify-list-item>
+          <unify-list-item-label for="current">{{ $t('organisation.settings.security.password.current') }}
+          </unify-list-item-label>
 
-      <!-- New Password -->
-      <div class="form-group row g-mb-25">
-        <label class="col-sm-3 col-form-label g-color-gray-dark-v2 g-font-weight-700 text-sm-right g-mb-10">New password</label>
-        <div class="col-sm-9">
-          <div class="input-group g-brd-primary--focus">
-            <input class="form-control form-control-md border-right-0 rounded-0 g-py-13 pr-0" type="password" placeholder="New password">
-            <div class="input-group-addon d-flex align-items-center g-bg-white g-color-gray-light-v1 rounded-0">
-              <i class="icon-lock"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End New Password -->
+          <unify-list-item-content>
+            <unify-form-input id="current" type="password" v-model="password.oldPassword">
+              <i class="icon-lock" slot="addon"></i>
+            </unify-form-input>
+          </unify-list-item-content>
+        </unify-list-item>
 
-      <!-- Verify Password -->
-      <div class="form-group row g-mb-25">
-        <label class="col-sm-3 col-form-label g-color-gray-dark-v2 g-font-weight-700 text-sm-right g-mb-10">Verify password</label>
-        <div class="col-sm-9">
-          <div class="input-group g-brd-primary--focus">
-            <input class="form-control form-control-md border-right-0 rounded-0 g-py-13 pr-0" type="password" placeholder="Verify password">
-            <div class="input-group-addon d-flex align-items-center g-bg-white g-color-gray-light-v1 rounded-0">
-              <i class="icon-lock"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Verify Password -->
+        <!-- new password -->
+        <unify-list-item>
+          <unify-list-item-label for="new">{{ $t('organisation.settings.security.password.new') }}
+          </unify-list-item-label>
 
-      <!-- Login Verification -->
-      <div class="form-group row g-mb-25">
-        <label class="col-sm-3 col-form-label g-color-gray-dark-v2 g-font-weight-700 text-sm-right g-mb-10">Login verification</label>
-        <div class="col-sm-9">
-          <label class="form-check-inline u-check g-pl-25">
-            <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" type="checkbox">
-            <div class="u-check-icon-checkbox-v4 g-absolute-centered--y g-left-0">
-              <i class="fa" data-check-icon=""></i>
-            </div>
-            Verify login requests
-          </label>
-          <small class="d-block text-muted">You need to add a phone to your profile account to enable this feature.</small>
-        </div>
-      </div>
-      <!-- End Login Verification -->
+          <unify-list-item-content>
+            <unify-form-input id="new" type="password" v-model="password.newPassword">
+              <i class="icon-lock" slot="addon"></i>
+            </unify-form-input>
+          </unify-list-item-content>
+        </unify-list-item>
 
-      <!-- Password Reset -->
-      <div class="form-group row g-mb-25">
-        <label class="col-sm-3 col-form-label g-color-gray-dark-v2 g-font-weight-700 text-sm-right g-mb-10">Password reset</label>
-        <div class="col-sm-9">
-          <label class="form-check-inline u-check g-pl-25">
-            <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" type="checkbox">
-            <div class="u-check-icon-checkbox-v4 g-absolute-centered--y g-left-0">
-              <i class="fa" data-check-icon=""></i>
-            </div>
-            Require personal information to reset my password
-          </label>
-          <small class="d-block text-muted">When you check this box, you will be required to verify additional information before you can request a password reset with just your email address.</small>
-        </div>
-      </div>
-      <!-- End Password Reset -->
+        <!-- current password -->
+        <unify-list-item>
+          <unify-list-item-label for="verify">{{ $t('organisation.settings.security.password.verify') }}
+          </unify-list-item-label>
 
-      <!-- Save Password -->
-      <div class="form-group row g-mb-25">
-        <label class="col-sm-3 col-form-label g-color-gray-dark-v2 g-font-weight-700 text-sm-right g-mb-10">Save password</label>
-        <div class="col-sm-9">
-          <label class="form-check-inline u-check mx-0">
-            <input class="g-hidden-xs-up g-pos-abs g-top-0 g-right-0" name="savePassword" type="checkbox">
-            <div class="u-check-icon-radio-v7">
-              <i class="d-inline-block"></i>
-            </div>
-          </label>
-          <small class="d-block text-muted">When you check this box, you will be saved automatically login to your profile account. Also, you will be always logged in all our services.</small>
-        </div>
-      </div>
-      <!-- End Save Password -->
+          <unify-list-item-content>
+            <unify-form-input id="verify" type="password" v-model="password.verifiedPassword">
+              <i class="icon-lock" slot="addon"></i>
+            </unify-form-input>
+          </unify-list-item-content>
+        </unify-list-item>
+      </unify-list>
 
       <hr class="g-brd-gray-light-v4 g-my-25">
 
       <div class="text-sm-right">
-        <a class="btn u-btn-darkgray rounded-0 g-py-12 g-px-25 g-mr-10" href="#">Cancel</a>
-        <a class="btn u-btn-primary rounded-0 g-py-12 g-px-25" href="#">Save Changes</a>
+        <unify-button class="u-btn-darkgray g-mr-10" size="medium" @click="reset">
+          {{ $t('common.cancel') }}
+        </unify-button>
+        <unify-button class="u-btn-primary g-mr-10" loading="global-loader" size="medium" type="submit">
+          {{ $t('common.save') }}
+        </unify-button>
       </div>
     </form>
   </div>
@@ -106,11 +59,58 @@
 </template>
 
 <script>
+  import Accounts from 'common/services/accounts'
+  import { Notifications } from 'common/utils'
+
   export default {
-    name: "OrganisationSettingsSecurity"
+    name: "OrganisationSettingsSecurity",
+
+    computed: {
+      isLoading () {
+        return Notifications.isLoading(vm)
+      }
+    },
+
+    data () {
+      return {
+        password: {
+          oldPassword: '',
+          newPassword: '',
+          verifiedPassword: ''
+        }
+      }
+    },
+
+    methods: {
+      reset () {
+        this.password = {
+          current: '',
+          new: '',
+          verify: ''
+        }
+      },
+
+      save () {
+        Notifications.startLoading(this)
+
+        Accounts.updatePassword(this.password).then(
+          Notifications.success(this),
+          Notifications.error(this, {
+            400: this.$t('organisation.settings.security.password.badRequest'),
+            403: this.$t('organisation.settings.security.password.forbidden')
+          })
+        )
+      }
+    }
   }
 </script>
 
 <style scoped>
+  .unify-list-item-label {
+    flex-basis: 200px;
+  }
 
+  .unify-list-item-content {
+    flex-grow: 1;
+  }
 </style>

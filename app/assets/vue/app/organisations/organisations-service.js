@@ -1,25 +1,7 @@
-let $resource;
+import { BaseService, Singleton } from 'common/http/base-service'
 
-export default {
-
-  all() {
-    return $resource.get();
-  },
-
-  get(id) {
-    return $resource.get({id});
-  },
-
-  init(o) {
-    $resource = o.$resource('organisations{/id}');
-  },
-
-  remove(id) {
-    return $resource.remove({id});
-  },
-
-  projects () {
-    console.log($resource)
+export default class OrganisationsService extends BaseService {
+  constructor () {
+    super('organisations{/id}')
   }
-
 }

@@ -4,9 +4,9 @@ import common.{FromIdModel, IdModel, MyWriteable}
 import play.api.libs.json.{Json, OFormat}
 import security.Role
 
-case class AccountModel(id: Long, email: String, name: String, password: String, role: Role, organisationId: Long) extends IdModel
+case class AccountModel(id: Long, email: String, name: String, password: String, role: Role, organisationId: Option[Long]) extends IdModel
 
-case class AccountWriteModel(id: Option[Long], email: String, name: String, role: String, password: Option[String])
+case class AccountWriteModel(id: Option[Long], email: String, name: String, role: String, password: Option[String], organisationId: Option[Long])
 
 object AccountWriteModel extends MyWriteable[AccountWriteModel] {
     implicit val formatter: OFormat[AccountWriteModel] = Json.format[AccountWriteModel]
@@ -16,7 +16,8 @@ object AccountWriteModel extends MyWriteable[AccountWriteModel] {
         email = account.email,
         name = account.name,
         role = account.role.name,
-        password = None
+        password = None,
+        organisationId = account.organisationId
     )
 }
 
@@ -26,7 +27,7 @@ object RegistrationModel extends MyWriteable[RegistrationModel] {
     implicit val formatter: OFormat[RegistrationModel] = Json.format[RegistrationModel]
 }
 
-case class AccountPublicModel (id: Long, email: String, name: String, role: String, organisationId: Long) extends IdModel
+case class AccountPublicModel (id: Long, email: String, name: String, role: String, organisationId: Option[Long]) extends IdModel
 
 object AccountPublicModel extends MyWriteable[AccountPublicModel] {
 
@@ -48,4 +49,10 @@ case class AccountAuthenticationTry(user: String, password: String)
 
 object AccountAuthenticationTry extends MyWriteable[AccountAuthenticationTry] {
     implicit val formatter: OFormat[AccountAuthenticationTry] = Json.format[AccountAuthenticationTry]
+}
+
+case class PasswordChangeRequest(oldPassword: String, newPassword: String, verifiedPassword: String)
+
+object PasswordChangeRequest extends MyWriteable[PasswordChangeRequest] {
+    implicit val formatter: OFormat[PasswordChangeRequest] = Json.format[PasswordChangeRequest]
 }

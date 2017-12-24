@@ -14,7 +14,7 @@
         <a class="nav-link" id="nav-link-1" aria-haspopup="true" aria-expanded="false" aria-controls="nav-submenu-1">Angemeldet als {{ activeUser.name }}</a>
 
         <ul class="hs-sub-menu list-unstyled g-text-transform-none g-brd-top g-brd-primary g-brd-top-2 g-mt-10 g-min-width-300" id="nav-submenu-1" aria-labelledby="nav-link-1">
-          <li class="dropdown-item">
+          <li class="dropdown-item" v-if="activeUser.organisationId">
             <router-link :to="{ name: 'organisation-settings-profile', params: { id: activeUser.organisationId } }"  class="nav-link" href="#">{{ $t('menu.settings') }}</router-link>
           </li>
           <li class="dropdown-item">

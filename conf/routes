@@ -14,26 +14,33 @@ GET           /views/*file                                   controllers.Assets.
 GET           /images/*file                                  controllers.Assets.at(path="/public/images", file)
 
 # API stuff
-## Account CRUD
+## Admin
+### Account
+POST          /api/v1/admin/accounts                         business.accounts.AccountCtrl.create
+PUT           /api/v1/admin/accounts/*id                     business.accounts.AccountCtrl.updateAdmin(id: Long)
+
+## User
+### Account CRUD
 GET           /api/v1/accounts                               business.accounts.AccountCtrl.findAll
-POST          /api/v1/accounts                               business.accounts.AccountCtrl.create
+POST          /api/v1/accounts                               business.accounts.AccountCtrl.register
 GET           /api/v1/accounts/*id                           business.accounts.AccountCtrl.findById(id: Long)
 PUT           /api/v1/accounts/*id                           business.accounts.AccountCtrl.update(id: Long)
 
+POST          /api/v1/user/change-password                    business.accounts.AccountCtrl.changePassword
 GET           /api/v1/user                                   business.accounts.AccountCtrl.currentUser
 
-## Authentication
+### Authentication
 POST          /api/v1/auth/obtain-session                    security.AuthController.handleLogin
 POST          /api/v1/auth/invalidate-session                security.AuthController.handleLogout
 
-## Organisation CRUD
+### Organisation CRUD
 GET           /api/v1/organisations                          business.organisations.OrganisationCtrl.findAll
 GET           /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.findById(id: Long)
 PUT           /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.update(id: Long)
 POST          /api/v1/organisations                          business.organisations.OrganisationCtrl.create
 DELETE        /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.delete(id: Long)
 
-## Project CRUD
+### Project CRUD
 GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll
 GET           /api/v1/projects/:id                           business.projects.ProjectCtrl.findById(id: Long)
 PUT           /api/v1/projects/:id                           business.projects.ProjectCtrl.update(id: Long)
@@ -42,7 +49,7 @@ DELETE        /api/v1/projects/:id                           business.projects.P
 
 GET           /api/v1/organisations/:id/projects             business.projects.ProjectCtrl.byOrganisationId(id: Long)
 
-## Project history CRUD
+### Project history CRUD
 GET           /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.findAll
 GET           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.findById(id: Long, public: Option[String])
 PUT           /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.update(id: Long)
@@ -57,6 +64,6 @@ POST          /api/v1/comments                               business.comments.C
 GET           /api/v1/projects/:id/finished                  business.finishedProjects.FinishedProjectCtrl.findByProject(id: Long)
 GET           /api/v1/organisations/:id/projects/finished    business.finishedProjects.FinishedProjectCtrl.findByOrganisation(id: Long)
 
-## Images
+### Images
 GET           /api/v1/images/*id                             se.digiplant.res.ResAssets.at(id, source = "tmp")
 POST          /api/v1/images                                 common.FileCtrl.uploadImage()

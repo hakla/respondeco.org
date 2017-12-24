@@ -79,14 +79,9 @@
                 </div>
 
                 <div class="text-center mb-5">
-                  <button class="btn btn-block u-btn-primary rounded g-py-13" type="submit" :disabled="$isLoading('login')">
-                    <transition name="fade">
-                      <span v-if="$isLoading('login')" class="spinner" :class="{ 'g-mr-20': $isLoading('login') }">
-                          <vue-simple-spinner size="small"></vue-simple-spinner>
-                      </span>
-                    </transition>
+                  <unify-button class="u-btn-primary btn-block rounded g-py-13" type="submit" loading="login">
                     {{ $t('login.go') }}
-                  </button>
+                  </unify-button>
                 </div>
               </form>
               <!-- End Form -->
@@ -113,6 +108,9 @@
   import Authentication from 'common/authentication'
   import Alert from 'app/main/alert'
   import Config from 'app/config'
+  import { i18n } from 'app/i18n'
+
+  import UnifyButton from 'common/components/unify-button'
 
   import { router } from '../router'
 
@@ -121,6 +119,7 @@
 
     components: {
       Alert,
+      UnifyButton,
       VueSimpleSpinner
     },
 
@@ -131,7 +130,7 @@
         .get()
         .error(error => {
           this.$endLoading('login')
-          this.error = this.$t('login.error')
+          this.error = i18n.t('login.error')
           this.showAlert = true
         })
         .loggedIn(() => {

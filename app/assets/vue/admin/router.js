@@ -1,24 +1,26 @@
-import Vue from 'vue';
-import App from 'admin/app';
+import Vue from 'vue'
+import App from 'admin/app'
 
-import VueRouter from 'vue-router';
+import VueRouter from 'vue-router'
 
-import Projects from 'admin/projects/projects';
-import Project from 'admin/projects/project';
+import Accounts from 'admin/accounts/accounts'
+import Account from 'admin/accounts/account'
+import Projects from 'admin/projects/projects'
+import Project from 'admin/projects/project'
 import FinishedProject from 'admin/finishedProjects/finished-project'
 import FinishedProjects from 'admin/finishedProjects/finished-projects'
-import Organisations from 'admin/organisations/organisations';
-import Organisation from 'admin/organisations/organisation';
-import Login from 'admin/authentication/login';
-import Logout from 'admin/authentication/logout';
+import Organisations from 'admin/organisations/organisations'
+import Organisation from 'admin/organisations/organisation'
+import Login from 'admin/authentication/login'
+import Logout from 'admin/authentication/logout'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 export const routes = [{
   path: '/',
   component: App,
   children: [{
-    path: 'organisations',
+    path: '',
     component: Organisations
   }, {
     name: 'organisation',
@@ -38,6 +40,14 @@ export const routes = [{
     name: 'finishedProject',
     path: 'finishedProjects/:id',
     component: FinishedProject
+  }, {
+    name: 'accounts',
+    path: 'accounts',
+    component: Accounts
+  }, {
+    name: 'account',
+    path: 'account/:id',
+    component: Account
   }]
 }, {
   path: '/login',
@@ -45,7 +55,7 @@ export const routes = [{
 }, {
   path: '/logout',
   component: Logout
-}];
+}]
 
 export const router = new VueRouter({
   routes

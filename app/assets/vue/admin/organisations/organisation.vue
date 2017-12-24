@@ -18,7 +18,7 @@
           </div>
           <div class="x_content">
             <br>
-            <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate
+            <form id="demo-form2" class="form-horizontal form-label-left" novalidate
                   @submit.stop.prevent="save()">
 
               <h2>Banner</h2>
@@ -221,12 +221,12 @@
     },
 
     methods: {
-      cancel() {
-        router.push('/organisations')
-      },
-
       banner() {
         return Utils.backgroundImage(this.organisation.image)
+      },
+
+      cancel() {
+        router.push('/')
       },
 
       fetchData() {

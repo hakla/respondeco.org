@@ -3,62 +3,64 @@
     <!-- Edit Profile -->
     <div class="tab-pane fade active show" id="nav-1-1-default-hor-left-underline--1" role="tabpanel"
          aria-expanded="true">
-      <h2 class="h4 g-font-weight-300">Manage your Name, ID and Email Addresses</h2>
-      <p>Below are name, email addresse, contacts and more on file for your account.</p>
+      <h2 class="h4 g-font-weight-300">{{ $t('organisation.settings.profile.title') }}</h2>
+      <p>{{ $t('organisation.settings.profile.description') }}</p>
 
       <form @submit.prevent="save">
         <unify-list>
           <!-- name -->
           <unify-list-item>
-            <unify-list-item-label>{{ $t('organisation.settings.name') }}</unify-list-item-label>
+            <unify-list-item-label for="name">{{ $t('organisation.settings.name') }}</unify-list-item-label>
 
             <unify-list-item-content>
-              <unify-form-input v-model="organisation.name"></unify-form-input>
+              <unify-form-input id="name" v-model="organisation.name"></unify-form-input>
             </unify-list-item-content>
           </unify-list-item>
 
           <!-- email -->
           <unify-list-item>
-            <unify-list-item-label>{{ $t('organisation.settings.email') }}</unify-list-item-label>
+            <unify-list-item-label for="email">{{ $t('organisation.settings.email') }}</unify-list-item-label>
 
             <unify-list-item-content>
-              <unify-form-input v-model="organisation.email" type="email"></unify-form-input>
+              <unify-form-input id="email" v-model="organisation.email" type="email"></unify-form-input>
             </unify-list-item-content>
           </unify-list-item>
 
           <!-- location -->
           <unify-list-item>
-            <unify-list-item-label>{{ $t('organisation.settings.location') }}</unify-list-item-label>
+            <unify-list-item-label for="location">{{ $t('organisation.settings.location') }}</unify-list-item-label>
 
             <unify-list-item-content>
-              <unify-form-input v-model="organisation.location"></unify-form-input>
+              <unify-form-input id="location" v-model="organisation.location"></unify-form-input>
             </unify-list-item-content>
           </unify-list-item>
 
           <!-- website -->
           <unify-list-item>
-            <unify-list-item-label>{{ $t('organisation.settings.website') }}</unify-list-item-label>
+            <unify-list-item-label for="website">{{ $t('organisation.settings.website') }}</unify-list-item-label>
 
             <unify-list-item-content>
-              <unify-form-input v-model="organisation.website"></unify-form-input>
+              <unify-form-input id="website" v-model="organisation.website"></unify-form-input>
             </unify-list-item-content>
           </unify-list-item>
 
           <!-- website -->
           <unify-list-item>
-            <unify-list-item-label>{{ $t('organisation.settings.description') }}</unify-list-item-label>
+            <unify-list-item-label for="description">{{ $t('organisation.settings.description') }}
+            </unify-list-item-label>
 
             <unify-list-item-content>
-              <unify-textarea rows="10" v-model="organisation.description"></unify-textarea>
+              <unify-textarea id="description" rows="10" v-model="organisation.description"></unify-textarea>
             </unify-list-item-content>
           </unify-list-item>
         </unify-list>
 
         <div class="text-sm-right">
-          <unify-button class="btn-text g-mr-10" size="small" @click="reset">
+          <unify-button class="u-btn-darkgray g-mr-10" size="medium" @click="reset">
             {{ $t('common.cancel') }}
           </unify-button>
-          <unify-button class="u-btn-primary g-mr-10" loading="organisation.settings.saving" size="medium" type="submit">
+          <unify-button class="u-btn-primary g-mr-10" loading="global-loader" size="medium"
+                        type="submit">
             {{ $t('common.save') }}
           </unify-button>
         </div>
@@ -70,27 +72,12 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex'
-  import UnifyButton from 'common/components/unify-button'
-  import UnifyFormInput from 'common/components/unify-form-input'
-  import UnifyList from 'common/components/unify-list'
-  import UnifyListItem from 'common/components/unify-list-item'
-  import UnifyListItemLabel from 'common/components/unify-list-item-label'
-  import UnifyListItemContent from 'common/components/unify-list-item-content'
-  import UnifyTextarea from 'common/components/unify-textarea'
+  import { mapActions } from 'vuex'
+  import { Notifications } from 'common/utils'
+  import OrganisationsService from 'app/organisations/organisations-service'
 
   export default {
     name: "OrganisationSettingsProfile",
-
-    components: {
-      UnifyButton,
-      UnifyFormInput,
-      UnifyList,
-      UnifyListItem,
-      UnifyListItemContent,
-      UnifyListItemLabel,
-      UnifyTextarea
-    },
 
     data () {
       return {
@@ -106,13 +93,20 @@
       },
 
       save () {
-        this.$startLoading('organisation.settings.saving')
-        this.current(this.organisation)
-        this.reset()
+        Notifications.startLoading(this)
 
-        setTimeout(() => {
+        OrganisationsService.update(this.organisation).then(
+          Notifications.success(this, response => {
+            this.current(this.organisation)
+            this.reset()
+          }),
+
+          Notifications.error(this)
+        )
+
+        /*setTimeout(() => {
           this.$endLoading('organisation.settings.saving')
-        }, 2500)
+        }, 2500)*/
       }
     }
   }

@@ -8,46 +8,81 @@ import common.Database
 import persistence.Queries
 import security.{Role, User}
 
-class AccountService @Inject()(implicit val db: Database, val organisationService: OrganisationService) extends Queries[AccountModel] {
+class AccountService @Inject()(implicit val db: Database) extends Queries[AccountModel] {
 
     implicit val parser: RowParser[AccountModel] =
         SqlParser.get[Long]("id") ~
             SqlParser.get[String]("email") ~
             SqlParser.get[String]("name") ~
             SqlParser.get[String]("password") ~
-            SqlParser.get[Long]("organisation") ~
+            SqlParser.get[Option[Long]]("organisation") ~
             Role.parser map {
             case id ~ email ~ name ~ pwd ~ organisation ~ role => AccountModel(id, email, name, pwd, role, organisation)
         }
 
     val table: String = "account"
 
-    def create(account: RegistrationModel): Option[AccountModel] = {
-        create(account.email, account.name, account.password, account.organisation)
+    /**
+      * Admin creates a new account
+      */
+    def createByAdmin(account: AccountWriteModel): Option[AccountModel] = {
+        create(account.email, account.name, account.password, account.organisationId)
     }
 
-    def create(email: String, name: String, password: String, organisationName: String): Option[AccountModel] = db.withConnection { implicit connection =>
+    /**
+      * Registration by the user
+      */
+    def createFromRegistration(account: RegistrationModel, organisationId: Option[Long]): Option[AccountModel] = {
+        create(account.email, account.name, Some(account.password), organisationId)
+    }
+
+    def create(email: String, name: String, password: Option[String], organisationId: Option[Long]): Option[AccountModel] = db.withConnection { implicit connection =>
         SQL(s"insert into $table (email, name, password, role) values({email}, {name}, {password}, {role})").on(
             'email -> email,
             'name -> name,
             'password -> password,
             'role -> User.value
         ).executeInsert().asInstanceOf[Option[Long]].map { id =>
-            // Account has been created, now we create the organisation for it
-            organisationService.create(OrganisationWriteModel(
-                name = organisationName
-            )).map(organisation => {
-                AccountModel(id, email, name, password, User, organisation.id)
-            }).get
-            // TODO .get isn't safe
+            AccountModel(id, email, name, password.getOrElse(""), User, organisationId)
         }
     }
 
+    def changePassword(id: Long, changeRequest: PasswordChangeRequest): Boolean = db.withConnection { implicit connection =>
+        import security.Password.StringExtensions
+
+        byId(id).exists(account =>
+            if (changeRequest.oldPassword.verifyPassword(account.password))
+                SQL(s"update $table set password = {password} where id = {id}").on(
+                    'id -> id,
+                    'password -> changeRequest.newPassword.hashedPassword
+                ).executeUpdate() == 1
+            else false
+        )
+    }
+
+    def updateByUser(id: Long, account: AccountWriteModel): Option[AccountModel] = db.withConnection { implicit c =>
+        // User cannot change the password this way (has to use changePassword)
+        update(id, account.copy(
+            password = None
+        ))
+    }
+
     def update(id: Long, account: AccountWriteModel): Option[AccountModel] = db.withConnection { implicit c =>
-        SQL(s"update $table set email = {email}, name = {name} where id = {id}").on(
-            'id -> id,
-            'email -> account.email,
-            'name -> account.name
+        import security.Password.StringExtensions
+
+        account.password.map(password =>
+          SQL(s"update $table set email = {email}, name = {name}, password = {password} where id = {id}").on(
+              'id -> id,
+              'email -> account.email,
+              'name -> account.name,
+              'password -> password.hashedPassword
+          )
+        ).getOrElse(
+            SQL(s"update $table set email = {email}, name = {name} where id = {id}").on(
+                'id -> id,
+                'email -> account.email,
+                'name -> account.name
+            )
         ).executeUpdate() match {
             case 1 => byId(id)
             case _ => None

@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import App from './app';
 
+import Authentication from 'common/authentication'
+
 import Login from './authentication/login'
 import Logout from './authentication/logout'
 
@@ -20,6 +22,7 @@ import Projects from './projects/projects'
 import FinishedProject from './projects/finished-project'
 
 import VueRouter from 'vue-router';
+
 Vue.use(VueRouter);
 
 export const routes = [{
@@ -52,6 +55,14 @@ export const routes = [{
       path: 'settings',
       component: OrganisationSettings,
       alias: 'organisation-settings-profile',
+      beforeEnter (to, from, next) {
+        /*if (Authentication.activeUser().state === undefined) {
+          // not logged in, redirect to login
+          next('/login')
+        }*/
+
+        next()
+      },
       children: [{
         path: '',
         name: 'organisation-settings-profile',
@@ -90,8 +101,10 @@ export const router = new VueRouter({
   linkExactActiveClass: 'active',
 
   scrollBehavior (to, from, savedPosition) {
-    $('html, body').animate({
-      scrollTop: 0
-    })
+    if (to.name && to.name.indexOf('organisation-settings') === -1 || from.name && from.name.indexOf('organisation-settings') === -1) {
+      $('html, body').animate({
+        scrollTop: 0
+      })
+    }
   }
 })

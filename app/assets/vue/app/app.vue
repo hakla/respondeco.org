@@ -1,5 +1,7 @@
 <template>
   <main>
+    <notifications position="top center"></notifications>
+
     <!--=== Header v6 ===-->
     <respondeco-header></respondeco-header>
     <!--=== End Header v6 ===-->
@@ -16,8 +18,8 @@
 </template>
 
 <script>
-  import RespondecoHeader from './main/header';
-  import RespondecoFooter from './main/footer';
+  import RespondecoHeader from './main/header'
+  import RespondecoFooter from './main/footer'
 
   export default {
     name: 'app',
@@ -39,5 +41,14 @@
   .fade-enter,
   .fade-leave-active {
     opacity: 0
+  }
+
+  .notifications {
+    margin-top: 30px;
+  }
+
+  .notification {
+    font-size: 1rem;
+    padding: 1rem;
   }
 </style>

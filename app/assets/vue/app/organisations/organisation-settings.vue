@@ -4,10 +4,15 @@
         role="tablist" data-target="nav-1-1-default-hor-left-underline" data-tabs-mobile-type="slide-up-down"
         data-btn-classes="btn btn-md btn-block rounded-0 u-btn-outline-primary g-mb-20">
       <li class="nav-item">
-        <router-link :to="{ name: 'organisation-settings-profile', params: { id: organisation.id } }" class="nav-link g-py-10">{{ $t('organisation.settings.editProfile') }}</router-link>
+        <router-link :to="{ name: 'organisation-settings-profile', params: { id: organisation.id } }" class="nav-link g-py-10">
+          <i class="icon-user"></i> {{ $t('organisation.settings.profile.title') }}
+        </router-link>
       </li>
       <li class="nav-item">
-        <router-link :to="{ name: 'organisation-settings-security', params: { id: organisation.id } }" class="nav-link g-py-10">{{ $t('organisation.settings.security') }}</router-link>
+        <router-link :to="{ name: 'organisation-settings-security', params: { id: organisation.id } }" class="nav-link g-py-10">
+          <i class="icon-key"></i>
+          {{ $t('organisation.settings.security.title') }}
+        </router-link>
       </li>
     </ul>
 

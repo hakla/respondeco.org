@@ -1,117 +1,89 @@
 <template>
-<div class="">
-  <div class="page-title">
-    <div class="title_left">
-      <h3>Alle Organisationen ({{ organisations.length }})</h3>
-    </div>
+  <admin-page title="Übersicht Organisationen">
+    <h3 slot="title">Alle Organisationen ({{ items.length }})</h3>
 
-    <div class="title_right">
-      <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for..." v-model="filter" @input="updateList(filter)">
-          <span class="input-group-btn">
-              <button class="btn btn-default" type="button">Go!</button>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
+    <admin-filter slot="title-right" @filter="updateFilter"></admin-filter>
 
-  <div class="clearfix"></div>
+    <router-link class="collapse-link" :to="{ name: 'organisation', params: { id: 'new' } }" slot="action">
+      <button class="btn btn-primary">Neue Organisation</button>
+    </router-link>
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="x_panel">
-        <div class="x_title">
-          <h2>Organisationen</h2>
-          <ul class="nav navbar-right panel_toolbox">
-            <li>
-              <router-link class="collapse-link" :to="{ name: 'organisation', params: { id: 'new' } }">
-                <button class="btn btn-primary">Neue Organisation</button>
-              </router-link>
-            </li>
-          </ul>
-          <div class="clearfix"></div>
-        </div>
-        <div class="x_content">
-
-          <p>Übersicht aller registrierten Organisationen</p>
-
-          <!-- start project list -->
-          <table class="table table-striped projects">
-            <thead>
-              <tr>
-                <th style="width: 1%">#</th>
-                <th style="width: 20%">Name</th>
-                <th>Beschreibung</th>
-                <th style="width: 20%"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="organisation in list">
-                <td @click="gotoOrganisation(organisation.id)">{{ organisation.id }}</td>
-                <td @click="gotoOrganisation(organisation.id)">
-                  <a>{{ organisation.name }}</a>
-                </td>
-                <td @click="gotoOrganisation(organisation.id)">
-                  {{ organisation.description }}
-                </td>
-                <td class="text-right">
-                  <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(organisation.id)"><i class="fa fa-trash-o"></i> Delete </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- end project list -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    <table class="table table-striped" slot="body">
+      <thead>
+        <tr>
+          <th style="width: 1%">#</th>
+          <th style="width: 20%">Name</th>
+          <th>Beschreibung</th>
+          <th style="width: 20%"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="organisation in list" :key="organisation.id">
+          <td @click="openOrganisation(organisation.id)">{{ organisation.id }}</td>
+          <td @click="openOrganisation(organisation.id)">
+            <a>{{ organisation.name }}</a>
+          </td>
+          <td @click="openOrganisation(organisation.id)">
+            {{ organisation.description }}
+          </td>
+          <td class="text-right">
+            <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(organisation.id)"><i
+              class="fa fa-trash-o"></i> Delete </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </admin-page>
 </template>
 
 <script>
-import { router } from '../router';
-import OrganisationService  from './organisations-service'
+  import { router } from '../router'
+  import Organisations from 'common/services/organisations'
 
-export default {
-  name: 'OrganisationsOverview',
+  export default {
+    name: 'OrganisationsOverview',
 
-  created() {
-    OrganisationService.init(this);
-    this.fetchData();
-  },
-
-  data() {
-    return {
-      filter: '',
-      list: [],
-      organisations: []
-    }
-  },
-
-  methods: {
-    fetchData() {
-      OrganisationService.all().then(response => {
-        this.organisations = response.body;
-        this.updateList();
-      });
+    computed: {
+      list () {
+        return this.items.filter(item => item.name.toLowerCase().indexOf(this.filter) > -1)
+      }
     },
-    gotoOrganisation (id) {
-      router.push(`/organisations/${id}`)
+
+    created () {
+      this.fetchData()
     },
-    remove(id) {
-      OrganisationService.remove({id}).then(response => this.fetchData())
+
+    data () {
+      return {
+        filter: '',
+        items: []
+      }
     },
-    updateList (filter) {
-      if (filter) {
-        this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1);
-      } else {
-        this.list = this.organisations;
+
+    methods: {
+      fetchData () {
+        this.$startLoading('admin-page-loader')
+
+        Organisations.all().then(response => {
+          this.items = response.body
+
+          this.$endLoading('admin-page-loader')
+        })
+      },
+
+      openOrganisation (id) {
+        router.push(`/organisations/${id}`)
+      },
+
+      remove (id) {
+        Organisations.remove({id}).then(response => this.fetchData())
+      },
+
+      updateFilter (filter) {
+        this.filter = filter
       }
     }
   }
-}
 </script>
 
 <style>

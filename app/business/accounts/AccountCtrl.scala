@@ -2,8 +2,6 @@ package business.accounts
 
 import javax.inject.Inject
 
-import common.CrudService
-import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Action
 import security.{AuthenticatedController, Authorization}
 
@@ -14,33 +12,57 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
 
     val service: AccountService = accountService
 
-    def findAll = Unauthenticated {
+    def findAll = AuthenticatedAdmin {
         Ok(service.all().map(AccountPublicModel.from))
     }
 
     def findById(id: Long) = AuthenticatedAdmin {
         service.byId(id) match {
-            case Some(obj) => Ok(Json.toJson(AccountPublicModel.from(obj)))
+            case Some(obj) => Ok(AccountPublicModel.from(obj))
             case None => BadRequest("No such Account")
         }
     }
 
-    def create: Action[RegistrationModel] = AuthenticatedAdmin(parse.json[RegistrationModel]) { obj =>
-        service.create(obj) match {
+    def create: Action[AccountWriteModel] = AuthenticatedAdmin(parse.json[AccountWriteModel]) { account =>
+        service.createByAdmin(account) match {
             case Some(createdObj) => Ok(AccountPublicModel.from(createdObj))
             case None => BadRequest("Couldn't create")
         }
     }
 
-    def update(id: Long) = AuthenticatedUser(parse.json[AccountWriteModel]) { (obj, _) =>
+    def register: Action[RegistrationModel] = Unauthenticated(parse.json[RegistrationModel]) { (registration, request) =>
+        val organisationId = None
+
+        service.createFromRegistration(registration, organisationId) match {
+            case Some(createdObj) => Ok(AccountPublicModel.from(createdObj))
+            case None => BadRequest("Couldn't create")
+        }
+    }
+
+    def changePassword(): Action[PasswordChangeRequest] = AuthenticatedUser(parse.json[PasswordChangeRequest]) { (changeRequest, request) =>
+        val user = loggedIn(request)
+
+        if (changeRequest.newPassword != changeRequest.verifiedPassword) BadRequest("New password doesn't match verification!")
+        else service.changePassword(user.id, changeRequest) match {
+            case true => Ok
+            case false => Forbidden
+        }
+    }
+
+    def update(id: Long) = AuthenticatedUser(parse.json[AccountWriteModel]) { (obj, request) =>
+        assertUser(id == _.id, request) {
+            service.updateByUser(id, obj) match {
+                case Some(updatedObj) => Ok(AccountPublicModel.from(updatedObj))
+                case None => BadRequest("Couldn't update")
+            }
+        }
+    }
+
+    def updateAdmin(id: Long) = AuthenticatedAdmin(parse.json[AccountWriteModel]) { (obj) =>
         service.update(id, obj) match {
             case Some(updatedObj) => Ok(AccountPublicModel.from(updatedObj))
             case None => BadRequest("Couldn't update")
         }
-    }
-
-    def register: Action[JsValue] = Action(parse.json) { request =>
-        Ok
     }
 
     def currentUser() = AuthenticatedUser { implicit request =>

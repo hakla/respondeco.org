@@ -31,7 +31,6 @@
     },
 
     created () {
-      OrganisationService.init(this);
       this.fetchData();
     },
 

@@ -14,6 +14,15 @@ export default {
     register: 'Registrierung',
     save: 'Speichern',
     settings: 'Einstellungen',
+    success: 'Erfolg!',
+  },
+
+  http: {
+    status: {
+      200: 'OK',
+      401: 'UNAUTHENTICATED',
+      403: 'FORBIDDEN'
+    }
   },
 
   login: {
@@ -31,11 +40,24 @@ export default {
   organisation: {
     settings: {
       description: 'Beschreibung',
-      editProfile: 'Profil bearbeiten',
       email: 'E-Mail',
       location: 'Standort',
       name: 'Name der Organisation',
-      security: 'Sicherheitseinstellungen',
+      profile: {
+        description: 'Hier kannst du allgemeine Informationen deiner Organisation bearbeiten.',
+        title: 'Profil'
+      },
+      security: {
+        description: 'Hier kannst du dein Passwort ändern.',
+        password: {
+          badRequest: 'Neues Passwort stimmt nicht mit der Bestätigung überein',
+          current: 'Derzeitiges Passwort',
+          forbidden: 'Derzeitiges Passwort stimmt nicht mit unseren Aufzeichnungen überein',
+          new: 'Neues Passwort',
+          verify: 'Passwort bestätigen'
+        },
+        title: 'Sicherheitseinstellungen'
+      },
       website: 'Webseite'
     }
   },

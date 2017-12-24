@@ -5,11 +5,11 @@ const formats = ["DD.MM.YYYY", "YYYY-MM-DD", "MM/DD/YYYY"]
 
 export default class Utils {
 
-  static convertDate(date, to) {
+  static convertDate (date, to) {
     return Utils.formatDate(date, to || "YYYY-MM-DD")
   }
 
-  static formatDate(date, format) {
+  static formatDate (date, format) {
     let formatted = undefined
 
     format = format || "DD.MM.YYYY"
@@ -21,7 +21,7 @@ export default class Utils {
     return formatted
   }
 
-  static backgroundImage(image) {
+  static backgroundImage (image) {
     let style = ""
 
     if (image !== undefined) {
@@ -31,7 +31,7 @@ export default class Utils {
     return style
   }
 
-  static imageUrl(image) {
+  static imageUrl (image) {
     let url = image
 
     if (/^[0-9a-z]*\.(png|jpe?g)/.test(image)) {
@@ -48,4 +48,44 @@ export default class Utils {
     }
   }
 
+}
+
+export const Notifications = {
+  error (vm, status = {}) {
+    let transformer = (error) => {
+      return status[error.status] || vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown')
+    }
+
+    return (error) => {
+      vm.$endLoading('global-loader')
+
+      vm.$notify({
+        duration: 2500,
+        title: transformer(error),
+        type: 'error'
+      })
+    }
+  },
+
+  isLoading (vm) {
+    return vm.$isLoading('global-loader')
+  },
+
+  startLoading (vm) {
+    vm.$startLoading('global-loader')
+  },
+
+  success (vm, cb = result => {}) {
+    return (result) => {
+      cb(result)
+
+      vm.$endLoading('global-loader')
+
+      vm.$notify({
+        duration: 1000,
+        title: vm.$t('common.success'),
+        type: 'success'
+      })
+    }
+  }
 }

@@ -30,7 +30,7 @@
 
 <style scoped lang="stylus">
   textarea {
-    border: 1px solid transparent
+    border: 1px solid #f8f8f8
 
     &:focus {
       border: 1px solid #ccc
