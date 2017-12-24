@@ -74,10 +74,6 @@
       ...mapGetters(['organisation'])
     },
 
-    created () {
-      console.log(this)
-    },
-
     methods: {
       ...Utils.methods()
     },
