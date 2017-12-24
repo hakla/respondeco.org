@@ -5,7 +5,7 @@
     <form class="form-horizontal" @submit.prevent="save" slot="body">
 
       <!-- Name -->
-      <form-group id="name" label="Name der Organisation">
+      <form-group id="name" label="Name">
         <input type="text" class="form-control" id="name" slot="body" v-model="account.name">
       </form-group>
 
@@ -29,8 +29,8 @@
 
       <form-group id="organisation" label="Organisation">
         <select class="form-control" name="organisation" id="organisation" v-model="account.organisationId" slot="body">
-          <option v-for="organisation in organisations" :key="organisation.id" :value="organisation.id">{{
-            organisation.name }}
+          <option v-for="organisation in organisations" :key="organisation.id" :value="organisation.id">
+            {{ organisation.name }}
           </option>
         </select>
       </form-group>
@@ -49,15 +49,15 @@
 <script>
   import Accounts from 'common/services/accounts'
   import Organisations from 'common/services/organisations'
-  import { Notifications } from '../utils'
+  import { Notifications } from 'common/utils'
 
   export default {
     name: "account",
 
     created () {
-      if (this.$route.params.id !== 'new') {
-        this.fetchData()
-      }
+      this.isNew = this.$route.params.id === 'new'
+
+      this.fetchData()
     },
 
     data () {
@@ -65,10 +65,11 @@
         account: {
           email: '',
           password: '',
-          organisation: null,
+          organisationId: null,
           role: 'User',
           title: 'Neuer Account'
         },
+        isNew: false,
         organisations: []
       }
     },
@@ -82,16 +83,23 @@
         let done = 0
         this.$startLoading('admin-page-loader')
 
-        Accounts.get(this.$route.params.id).then(response => {
-          this.account = response.body
+        if (!this.isNew) {
+          Accounts.byId(this.$route.params.id).then(response => {
+            this.account = response.body
 
-          if (++done === 2) {
-            this.$endLoading('admin-page-loader')
-          }
-        })
+            if (++done === 2) {
+              this.$endLoading('admin-page-loader')
+            }
+          })
+        } else {
+          ++done
+        }
 
         Organisations.all().then(response => {
-          this.organisations = response.body
+          this.organisations = [{
+            id: null,
+            name: 'Keiner Organisation zuordnen'
+          }].concat(response.body)
 
           if (++done === 2) {
             this.$endLoading('admin-page-loader')
@@ -100,9 +108,17 @@
       },
 
       save () {
-        Accounts.update(this.account).then(
-          Notifications.success(this.$notify),
-          Notifications.error(this.$notify)
+        let request
+
+        if (this.isNew) {
+          request = Accounts.post('admin/accounts', this.account)
+        } else {
+          request = Accounts.put(`admin/accounts/${this.account.id}`, this.account)
+        }
+
+        request.then(
+          Notifications.success(this),
+          Notifications.error(this)
         )
       }
     }

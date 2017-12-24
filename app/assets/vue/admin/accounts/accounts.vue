@@ -39,6 +39,7 @@
 <script>
   import Accounts from 'common/services/accounts'
   import { router } from 'admin/router'
+  import { Notifications } from 'common/utils'
 
   export default {
     name: "accounts",
@@ -79,7 +80,13 @@
       },
 
       remove (id) {
-        console.log(id)
+        Accounts.delete(`admin/accounts/${id}`).then(
+          Notifications.success(this, result => {
+            this.fetchData()
+          }),
+
+          Notifications.error(this)
+        )
       },
 
       updateFilter (filter) {

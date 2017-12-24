@@ -9,14 +9,21 @@ sealed abstract case class Role(value: Int, name: String)
 
 object Role {
 
-    val parser : RowParser[Role] = {
+    val parser: RowParser[Role] = {
         SqlParser.get[Int]("role") map Role.getRole
     }
 
-    def getRole(value : Int) : Role = {
+    def getRole(value: Int): Role = {
         value match {
             case Administrator.value => Administrator
             case User.value => User
+        }
+    }
+
+    def getRole(value: String): Role = {
+        value match {
+            case Administrator.name => Administrator
+            case User.name => User
         }
     }
 
@@ -24,5 +31,6 @@ object Role {
 
 }
 
-object Administrator   extends Role(1, "Administrator")
-object User            extends Role(2, "User")
+object Administrator extends Role(1, "Administrator")
+
+object User extends Role(2, "User")

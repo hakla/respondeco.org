@@ -12,6 +12,13 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
 
     val service: AccountService = accountService
 
+    def delete(id: Long) = AuthenticatedAdmin {
+        service.delete(id) match {
+            case true => Ok
+            case false => BadRequest
+        }
+    }
+
     def findAll = AuthenticatedAdmin {
         Ok(service.all().map(AccountPublicModel.from))
     }

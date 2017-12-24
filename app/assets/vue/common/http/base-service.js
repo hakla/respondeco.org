@@ -12,12 +12,28 @@ export class BaseService {
     return this.i().resource.get()
   }
 
-  static get (id) {
-    return this.i().resource.get({id})
+  static byId (id) {
+    return this.i().resource.get({ id })
+  }
+
+  static delete (url) {
+    return this.i().http.delete(url)
+  }
+
+  static get (url) {
+    return this.i().http.get(url)
   }
 
   static i () {
     return Singleton.from(this).get()
+  }
+
+  static post (url, body) {
+    return this.i().http.post(url, body)
+  }
+
+  static put (url, body) {
+    return this.i().http.put(url, body)
   }
 
   static remove (id) {

@@ -16,8 +16,11 @@ GET           /images/*file                                  controllers.Assets.
 # API stuff
 ## Admin
 ### Account
+GET           /api/v1/admin/accounts                         business.accounts.AccountCtrl.findAll
 POST          /api/v1/admin/accounts                         business.accounts.AccountCtrl.create
+GET           /api/v1/admin/accounts/*id                     business.accounts.AccountCtrl.findById(id: Long)
 PUT           /api/v1/admin/accounts/*id                     business.accounts.AccountCtrl.updateAdmin(id: Long)
+DELETE        /api/v1/admin/accounts/*id                     business.accounts.AccountCtrl.delete(id: Long)
 
 ## User
 ### Account CRUD
@@ -26,7 +29,7 @@ POST          /api/v1/accounts                               business.accounts.A
 GET           /api/v1/accounts/*id                           business.accounts.AccountCtrl.findById(id: Long)
 PUT           /api/v1/accounts/*id                           business.accounts.AccountCtrl.update(id: Long)
 
-POST          /api/v1/user/change-password                    business.accounts.AccountCtrl.changePassword
+POST          /api/v1/user/change-password                   business.accounts.AccountCtrl.changePassword
 GET           /api/v1/user                                   business.accounts.AccountCtrl.currentUser
 
 ### Authentication

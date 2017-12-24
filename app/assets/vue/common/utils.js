@@ -53,7 +53,7 @@ export default class Utils {
 export const Notifications = {
   error (vm, status = {}) {
     let transformer = (error) => {
-      return status[error.status] || vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown')
+      return status[error.status] || (vm.$t && (vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown'))) || ('Fehler: ' + error.status)
     }
 
     return (error) => {
@@ -83,7 +83,7 @@ export const Notifications = {
 
       vm.$notify({
         duration: 1000,
-        title: vm.$t('common.success'),
+        title: vm.$t && vm.$t('common.success') || 'Erfolg!',
         type: 'success'
       })
     }
