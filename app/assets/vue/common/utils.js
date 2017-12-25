@@ -50,10 +50,34 @@ export default class Utils {
 
 }
 
+export const ObjectNormaliser = {
+  organisation (organisation) {
+    return Object.assign({
+      description: '',
+      email: '',
+      image: '',
+      location: '',
+      logo: '',
+      name: '',
+      website: ''
+    }, organisation)
+  }
+}
+
 export const Notifications = {
   error (vm, status = {}) {
     let transformer = (error) => {
-      return status[error.status] || (vm.$t && (vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown'))) || ('Fehler: ' + error.status)
+      let message = ''
+
+      if (typeof status === 'string') {
+        message = status
+      } else if (error && error.status) {
+        message = status[error.status] || (vm.$t && (vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown'))) || ('Fehler: ' + error.status)
+      } else {
+        message = vm.$t('common.error.undefined')
+      }
+
+      return message
     }
 
     return (error) => {
@@ -87,5 +111,14 @@ export const Notifications = {
         type: 'success'
       })
     }
+  }
+}
+
+export const ScrollHelper = {
+  to (x, y) {
+    $('html, body').animate({
+      scrollTop: y,
+      scollLeft: x
+    })
   }
 }

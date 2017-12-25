@@ -16,13 +16,14 @@ import 'unify/css/unify-globals.css'
 import 'unify/vendor/jquery.easing/js/jquery.easing.js'
 import 'unify/vendor/masonry/dist/masonry.pkgd.js'
 
+import 'unify/vendor/cubeportfolio/js/jquery.cubeportfolio.js'
+
 import 'unify/js/hs.core.js'
+import 'unify/js/components/hs.cubeportfolio.js'
 import 'unify/js/components/hs.header.js'
+import 'unify/js/components/hs.navigation.js'
 import 'unify/js/helpers/hs.hamburgers.js'
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
-import 'unify/js/components/hs.navigation.js'
-
-import 'unify/vendor/cubeportfolio/js/jquery.cubeportfolio.js'
 //</editor-fold>
 
 //<editor-fold desc="Libraries">
@@ -32,9 +33,15 @@ import VueYoutubeEmbed from 'vue-youtube-embed'
 import Notifications from 'vue-notification'
 import VeeValidate from 'vee-validate'
 import { mapGetters } from 'vuex'
+import VModal from 'vue-js-modal'
+import VueUploadComponent from 'vue-upload-component'
+
+import 'libs/font-awesome/js/fontawesome.js'
+import 'libs/font-awesome/js/fa-light.js'
 //</editor-fold>
 
 //<editor-fold desc="Custom components">
+import UnifyBlock from 'common/components/unify-block'
 import UnifyButton from 'common/components/unify-button'
 import UnifyFormInput from 'common/components/unify-form-input'
 import UnifyFormInputAddon from 'common/components/unify-form-input-addon'
@@ -44,6 +51,7 @@ import UnifyListItemLabel from 'common/components/unify-list-item-label'
 import UnifyListItemContent from 'common/components/unify-list-item-content'
 import UnifyTextarea from 'common/components/unify-textarea'
 
+Vue.component(UnifyBlock.name, UnifyBlock)
 Vue.component(UnifyButton.name, UnifyButton)
 Vue.component(UnifyFormInput.name, UnifyFormInput)
 Vue.component(UnifyFormInputAddon.name, UnifyFormInputAddon)
@@ -79,6 +87,9 @@ Vue.use(VueMasonryPlugin)
 Vue.use(VueYoutubeEmbed)
 Vue.use(Notifications)
 Vue.use(VeeValidate)
+Vue.use(VModal, { dialog: true })
+
+Vue.component('file-upload', VueUploadComponent)
 
 // Create application
 const app = new Vue({
@@ -106,6 +117,9 @@ $(window).on('load', function () {
   // initialization of header
   $.HSCore.components.HSHeader.init($('#js-header'))
   $.HSCore.helpers.HSHamburgers.init('.hamburger')
+
+  // initialization of cubeportfolio
+  $.HSCore.components.HSCubeportfolio.init('.cbp')
 
   // initialization of HSMegaMenu component
   $('.js-mega-menu').HSMegaMenu({

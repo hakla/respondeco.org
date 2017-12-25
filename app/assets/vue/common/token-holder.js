@@ -1,15 +1,19 @@
 export default class TokenHolder {
 
     static empty () {
-        localStorage.setItem("token", undefined);
+        localStorage.setItem('token', undefined);
     }
 
     static get (f) {
-        return f(localStorage.getItem("token") || "");
+        return f(this.sync());
     }
 
     static set (token) {
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token);
+    }
+
+    static sync () {
+      return localStorage.getItem('token' || '')
     }
 
 }

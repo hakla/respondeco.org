@@ -7,7 +7,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>respondeco Admin</span></a>
+              <a href="/admin/" class="site_title"><i class="fa fa-paw"></i> <span>respondeco Admin</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -32,17 +32,20 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <li>
-                    <router-link to="/accounts"><i class="fa fa-organisation"></i> Accounts</router-link>
+                    <router-link to="/accounts"><i class="fa fa-users"></i> Accounts</router-link>
                   </li>
                   <li>
-                    <router-link to="/"><i class="fa fa-organisation"></i> Organisationen</router-link>
+                    <router-link to="/"><i class="fa fa-building"></i> Organisationen</router-link>
                   </li>
                   <li>
-                    <router-link to="/projects"><i class="fa fa-project"></i> Projekte</router-link>
+                    <router-link to="/projects"><i class="fa fa-bullhorn"></i> Projekte</router-link>
                   </li>
                   <li>
-                    <router-link to="/finishedProjects"><i class="fa fa-project"></i> Abgeschlossene Projekte
+                    <router-link to="/finishedProjects"><i class="fa fa-trophy"></i> Abgeschlossene Projekte
                     </router-link>
+                  </li>
+                  <li>
+                    <a href="/app/">Zu respondeco.org</a>
                   </li>
                 </ul>
               </div>
@@ -124,5 +127,10 @@
   footer.development {
     background-color: #9c3737;
     color: #fff;
+  }
+
+  .side-menu .svg-inline--fa {
+    font-size: 16px;
+    width: 30px;
   }
 </style>

@@ -43,6 +43,7 @@ module.exports = {
       'assets': resolve('src/assets'),
       'common': resolve('app/assets/vue/common'),
       'components': resolve('src/components'),
+      'libs': resolve('frontend/libs'),
       'mixins': resolve('app/assets/vue/app/mixins'),
       'unify': resolve('unify/assets')
     }

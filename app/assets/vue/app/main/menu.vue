@@ -17,6 +17,9 @@
           <li class="dropdown-item" v-if="activeUser.organisationId">
             <router-link :to="{ name: 'organisation-settings-profile', params: { id: activeUser.organisationId } }"  class="nav-link" href="#">{{ $t('menu.settings') }}</router-link>
           </li>
+          <li class="dropdown-item" v-if="activeUser.role === 'Administrator'">
+            <a href="/admin/" class="nav-link">Zur Administration</a>
+          </li>
           <li class="dropdown-item">
             <router-link to="/logout" class="nav-link" href="#">{{ $t('menu.logout') }}</router-link>
           </li>

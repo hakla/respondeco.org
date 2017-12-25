@@ -13,7 +13,9 @@
   import Utils from 'app/utils'
   import VueSimpleSpinner from 'vue-simple-spinner'
 
-  import { mapGetters, mapActions } from 'vuex'
+  import { ObjectNormaliser } from 'common/utils'
+
+  import { mapActions, mapGetters } from 'vuex'
 
   let toPortfolioItem = Utils.toPortfolioItem("organisations")
 
@@ -31,10 +33,10 @@
     },
 
     created () {
-      this.fetchData();
+      this.fetchData()
     },
 
-    data() {
+    data () {
       return {
         filter: '',
         list: [],
@@ -49,18 +51,20 @@
         this.loading = true
 
         OrganisationService.all().then(response => {
+          let organisations = response.body.map(organisation => ObjectNormaliser.organisation(organisation))
+
           this.all(response.body)
           this.updateList()
 
           this.loading = false
-        });
+        })
       },
 
       updateList (filter) {
         if (filter) {
-          this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1).map(toPortfolioItem);
+          this.list = this.organisations.filter(organisation => organisation.name.indexOf(filter) > -1).map(toPortfolioItem)
         } else {
-          this.list = this.organisations.map(toPortfolioItem);
+          this.list = this.organisations.map(toPortfolioItem)
         }
       }
     }

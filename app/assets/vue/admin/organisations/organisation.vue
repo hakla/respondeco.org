@@ -148,12 +148,11 @@
 
 <script>
   import Dropzone from 'vue2-dropzone'
-  import Config from 'common/config';
+  import Config from 'common/config'
   import Utils from 'common/utils'
-  import TokenHolder from 'common/token-holder';
-  import {
-    router
-  } from '../router'
+  import TokenHolder from 'common/token-holder'
+  import { router } from '../router'
+  import { ObjectNormaliser } from 'common/utils'
 
   let subcategories = {
     "Ökonomie": [
@@ -191,7 +190,7 @@
       Dropzone
     },
 
-    created() {
+    created () {
       this.resource = this.$resource('organisations{/id}')
 
       if (this.$route.params.id !== 'new') {
@@ -201,7 +200,7 @@
       }
     },
 
-    data() {
+    data () {
       return {
         categories: [
           'Ökonomie',
@@ -211,25 +210,23 @@
         Config,
         isNew: false,
         loading: false,
-        organisation: {
-          name: "Neue Organisation",
-          image: "",
-          banner: ""
-        },
+        organisation: ObjectNormaliser.organisation({
+          name: "Neue Organisation"
+        }),
         subcategories: []
       }
     },
 
     methods: {
-      banner() {
+      banner () {
         return Utils.backgroundImage(this.organisation.image)
       },
 
-      cancel() {
+      cancel () {
         router.push('/')
       },
 
-      fetchData() {
+      fetchData () {
         this.loading = true
 
         this.resource.get({
@@ -250,39 +247,39 @@
         })
       },
 
-      backgroundImage(image) {
+      backgroundImage (image) {
         setTimeout(this.$forceUpdate, 0)
 
         return Utils.backgroundImage(image)
       },
 
-      save() {
+      save () {
         if (this.isNew) {
-          this.resource.save(null, this.organisation).then(this.cancel);
+          this.resource.save(null, this.organisation).then(this.cancel)
         } else {
           this.resource.update({
             id: this.$route.params.id
-          }, this.organisation).then(this.cancel);
+          }, this.organisation).then(this.cancel)
         }
       },
 
-      showSuccessImage(_, response) {
+      showSuccessImage (_, response) {
         this.organisation.image = response
 
         this.$refs[`dropzone_image`].removeAllFiles()
       },
 
-      showSuccessLogo(_, response) {
+      showSuccessLogo (_, response) {
         this.organisation.logo = response
 
         this.$refs[`dropzone_logo`].removeAllFiles()
       },
 
-      transformRequest(_, xhr) {
+      transformRequest (_, xhr) {
         TokenHolder.get(token => xhr.setRequestHeader('X-Access-Token', token))
       },
 
-      updateSubCategories() {
+      updateSubCategories () {
         this.subcategories = subcategories[this.organisation.category]
       }
     }

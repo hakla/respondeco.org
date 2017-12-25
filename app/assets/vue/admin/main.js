@@ -7,6 +7,8 @@ import AdminPage from 'admin/components/admin-page'
 import AdminFilter from 'admin/components/admin-filter'
 import FormGroup from 'admin/components/form-group'
 
+import 'libs/font-awesome/js/fontawesome-all.js'
+
 import { router } from './router'
 import { http } from './http'
 import store from './store'

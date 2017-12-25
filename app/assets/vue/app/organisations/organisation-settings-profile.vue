@@ -19,10 +19,10 @@
 
           <!-- email -->
           <unify-list-item>
-            <unify-list-item-label for="email">{{ $t('organisation.settings.email') }}</unify-list-item-label>
+            <unify-list-item-label for="email">{{ $t('organisation.settings.contact') }}</unify-list-item-label>
 
             <unify-list-item-content>
-              <unify-form-input id="email" v-model="organisation.email" type="email"></unify-form-input>
+              <unify-form-input id="email" v-model="organisation.email"></unify-form-input>
             </unify-list-item-content>
           </unify-list-item>
 
@@ -103,10 +103,6 @@
 
           Notifications.error(this)
         )
-
-        /*setTimeout(() => {
-          this.$endLoading('organisation.settings.saving')
-        }, 2500)*/
       }
     }
   }

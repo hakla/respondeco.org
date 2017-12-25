@@ -7,45 +7,45 @@
           <!-- User Details -->
           <div class="d-flex align-items-center justify-content-sm-between g-mb-5">
             <h2 class="g-font-weight-300 g-mr-10">{{ organisation.name }}</h2>
-            <ul class="list-inline mb-0">
+            <!--<ul class="list-inline mb-0">
               <li class="list-inline-item g-mx-2">
-                <a class="u-icon-v1 u-icon-size--sm u-icon-slide-up--hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1--hover rounded-circle"
+                <a class="u-icon-v1 u-icon-size&#45;&#45;sm u-icon-slide-up&#45;&#45;hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1&#45;&#45;hover rounded-circle"
                   href="#">
                   <i class="g-font-size-default g-line-height-1 u-icon__elem-regular fa fa-facebook"></i>
                   <i class="g-font-size-default g-line-height-0_8 u-icon__elem-hover fa fa-facebook"></i>
                 </a>
               </li>
               <li class="list-inline-item g-mx-2">
-                <a class="u-icon-v1 u-icon-size--sm u-icon-slide-up--hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1--hover rounded-circle"
+                <a class="u-icon-v1 u-icon-size&#45;&#45;sm u-icon-slide-up&#45;&#45;hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1&#45;&#45;hover rounded-circle"
                   href="#">
                   <i class="g-font-size-default g-line-height-1 u-icon__elem-regular fa fa-twitter"></i>
                   <i class="g-font-size-default g-line-height-0_8 u-icon__elem-hover fa fa-twitter"></i>
                 </a>
               </li>
               <li class="list-inline-item g-mx-2">
-                <a class="u-icon-v1 u-icon-size--sm u-icon-slide-up--hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1--hover rounded-circle"
+                <a class="u-icon-v1 u-icon-size&#45;&#45;sm u-icon-slide-up&#45;&#45;hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1&#45;&#45;hover rounded-circle"
                   href="#">
                   <i class="g-font-size-default g-line-height-1 u-icon__elem-regular fa fa-dribbble"></i>
                   <i class="g-font-size-default g-line-height-0_8 u-icon__elem-hover fa fa-dribbble"></i>
                 </a>
               </li>
               <li class="list-inline-item g-mx-2">
-                <a class="u-icon-v1 u-icon-size--sm u-icon-slide-up--hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1--hover rounded-circle"
+                <a class="u-icon-v1 u-icon-size&#45;&#45;sm u-icon-slide-up&#45;&#45;hover g-color-gray-light-v1 g-bg-gray-light-v5 g-color-gray-light-v1&#45;&#45;hover rounded-circle"
                   href="#">
                   <i class="g-font-size-default g-line-height-1 u-icon__elem-regular fa fa-linkedin"></i>
                   <i class="g-font-size-default g-line-height-0_8 u-icon__elem-hover fa fa-linkedin"></i>
                 </a>
               </li>
-            </ul>
+            </ul>-->
           </div>
           <!-- End User Details -->
 
           <!-- User Info -->
           <ul class="list-inline g-font-weight-300">
-            <li class="list-inline-item g-mr-20">
+            <li class="list-inline-item g-mr-20" v-if="organisation.location">
               <i class="icon-location-pin g-pos-rel g-top-1 g-color-gray-dark-v5 g-mr-5"></i> {{ organisation.location }}
             </li>
-            <li class="list-inline-item g-mr-20">
+            <li class="list-inline-item g-mr-20" v-if="organisation.email">
               <i class="icon-envelope g-pos-rel g-top-1 g-color-gray-dark-v5 g-mr-5"></i>
               <a class="g-color-main g-color-primary--hover" href="#">{{ organisation.email }}</a>
             </li>
@@ -54,15 +54,14 @@
 
           <hr class="g-brd-gray-light-v4 g-my-20">
 
-          <p class="lead g-line-height-1_8">
-            {{ organisation.description }}
-          </p>
+          <p class="lead g-line-height-1_8 description">{{ organisation.description }}</p>
         </div>
       </div>
     </div>
     <!-- End User Block -->
   </div>
 </template>
+
 <script>
   import { mapGetters } from 'vuex'
   import Utils from 'common/utils'
@@ -80,5 +79,10 @@
 
     props: ['model']
   }
-
 </script>
+
+<style scoped>
+  .description {
+    white-space: pre-line;
+  }
+</style>

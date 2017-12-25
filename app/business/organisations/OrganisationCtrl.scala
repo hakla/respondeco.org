@@ -20,10 +20,12 @@ class OrganisationCtrl @Inject()(organisationService: OrganisationService, val a
         }
     }
 
-    def update(id: Long) = AuthenticatedUser(parse.json[OrganisationWriteModel]) { (organisation, _) =>
-        organisationService.update(id, organisation) match {
-            case Some(org) => Ok(org)
-            case None => BadRequest("Could not update")
+    def update(id: Long) = AuthenticatedUser(parse.json[OrganisationWriteModel]) { (organisation, request) =>
+        assertUser(_.organisationId == id, request) {
+            organisationService.update(id, organisation) match {
+                case Some(org) => Ok(org)
+                case None => BadRequest("Could not update")
+            }
         }
     }
 

@@ -4,9 +4,18 @@ export default {
     cancel: 'Abbrechen',
     comments: 'Kommentare',
     email: 'E-Mail',
+    error: {
+      unauthenticated: 'Nicht berechtigt für diese Aktion',
+      undefined: 'Unbekannter Fehler ist aufgetreten',
+      upload: 'Fehler beim Upload'
+    },
     login: 'Login',
     logout: 'Abmelden',
     organisation: 'Organisation | Organisationen',
+    pagination: {
+      next: 'Weiter',
+      previous: 'Zurück'
+    },
     password: 'Passwort',
     project: 'Projekt | Projekte',
     projects: 'Projekte',
@@ -39,8 +48,8 @@ export default {
 
   organisation: {
     settings: {
+      contact: 'Kontakt',
       description: 'Beschreibung',
-      email: 'E-Mail',
       location: 'Standort',
       name: 'Name der Organisation',
       profile: {
