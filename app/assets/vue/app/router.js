@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import App from './app'
 
+import FinishedProject from './projects/finished-project'
+
+import Home from './home'
+
 import Login from './authentication/login'
 import Logout from './authentication/logout'
-
-import Registration from './authentication/registration.vue'
 
 import Organisation from './organisations/organisation'
 import OrganisationAbout from './organisations/organisation-about'
@@ -15,24 +17,40 @@ import OrganisationSettings from './organisations/organisation-settings'
 import OrganisationSettingsProfile from './organisations/organisation-settings-profile'
 import OrganisationSettingsSecurity from './organisations/organisation-settings-security'
 import Organisations from './organisations/organisations'
+
 import Project from './projects/project'
 import Projects from './projects/projects'
-import FinishedProject from './projects/finished-project'
+
+import Registration from './authentication/registration.vue'
 
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const scrollToHero = {
-  scroll: '.unify-hero'
-}
+const meta = {
+  noFooter: {
+    footer: false,
+  },
 
-const scrollToTop = {
-  scroll: (to) => {
-    if (!to.query.page) {
-      return 0
-    } else {
-      return false
+  noHeader: {
+    header: false
+  },
+
+  scrollToHero: {
+    scroll: '.unify-hero'
+  },
+
+  scrollToListGroup: {
+    scroll: false // for now
+  },
+
+  scrollToTop: {
+    scroll: (to) => {
+      if (!to.query.page) {
+        return 0
+      } else {
+        return false
+      }
     }
   }
 }
@@ -41,10 +59,15 @@ export const routes = [{
   path: '/',
   component: App,
   children: [{
+    path: '',
+    name: 'home',
+    component: Home,
+    meta: Object.assign({}, meta.noFooter, meta.noHeader, meta.scrollToTop)
+  }, {
     path: 'organisations',
     name: 'organisations',
     component: Organisations,
-    meta: scrollToTop,
+    meta: meta.scrollToTop,
   }, {
     path: 'organisations/:id',
     component: Organisation,
@@ -52,22 +75,22 @@ export const routes = [{
       path: 'about',
       name: 'organisation-about',
       component: OrganisationAbout,
-      meta: scrollToHero,
+      meta: meta.scrollToListGroup,
     }, {
       path: 'comments',
       name: 'organisation-comments',
       component: OrganisationComments,
-      meta: scrollToHero,
+      meta: meta.scrollToListGroup,
     }, {
       path: 'ratings',
       name: 'organisation-ratings',
       component: OrganisationRatings,
-      meta: scrollToHero,
+      meta: meta.scrollToListGroup,
     }, {
       path: '',
       name: 'organisation-projects',
       component: OrganisationProjects,
-      meta: scrollToHero,
+      meta: meta.scrollToListGroup,
     }, {
       path: 'settings',
       component: OrganisationSettings,
@@ -93,12 +116,12 @@ export const routes = [{
   }, {
     path: 'projects',
     component: Projects,
-    meta: scrollToTop,
+    meta: meta.scrollToTop,
   }, {
     name: 'project',
     path: 'projects/:id',
     component: Project,
-    meta: scrollToHero
+    meta: meta.scrollToHero
   }, {
     name: 'finishedProject',
     path: 'finished-project/:id',

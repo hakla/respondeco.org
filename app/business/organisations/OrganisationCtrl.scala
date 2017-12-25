@@ -3,14 +3,17 @@ package business.organisations
 import javax.inject.Inject
 
 import business.accounts.AccountService
-import business.projects.ProjectService
+import common.Pagination
+import play.api.libs.json._
 import se.digiplant.res.api.Res
 import security.{AuthenticatedController, Authorization}
 
-class OrganisationCtrl @Inject()(organisationService: OrganisationService, val accountService: AccountService, val res: Res) extends AuthenticatedController with Authorization {
+class OrganisationCtrl @Inject()(organisationService: OrganisationService, val accountService: AccountService, val res: Res) extends AuthenticatedController with Authorization with Pagination {
 
-    def findAll = Unauthenticated {
-        Ok(organisationService.all())
+    def findAll = Unauthenticated { request =>
+        Ok(
+            Json.toJson(paginated(request, organisationService.all))
+        )
     }
 
     def findById(id: Long) = Unauthenticated {

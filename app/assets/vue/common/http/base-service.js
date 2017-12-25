@@ -8,8 +8,8 @@ export class BaseService {
     this.startLoading = Vue.prototype.$startLoading
   }
 
-  static all () {
-    return this.i().resource.get()
+  static all (o) {
+    return this.i().resource.get(o)
   }
 
   static byId (id) {

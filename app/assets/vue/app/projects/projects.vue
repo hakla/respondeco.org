@@ -1,17 +1,12 @@
 <script>
   import Paginated from 'app/mixins/paginated'
-  import ProjectService from 'app/projects/projects-service'
+  import Projects from 'common/services/projects'
   import Utils from 'app/utils'
 
   let toPortfolioItem = Utils.toPortfolioItem("projects")
 
   export default {
     name: 'projects',
-
-    created () {
-      ProjectService.init(this)
-      this.fetchData()
-    },
 
     data () {
       return {
@@ -21,14 +16,13 @@
 
     methods: {
       fetchData () {
-        this.$startLoading('portfolio')
+        return Projects.all({
+          page: this.page,
+          pageSize: this.pageSize
+        }).then(response => {
+          let projects = response.body.items
 
-        ProjectService.all().then(response => {
-          let projects = response.body
-
-          this.updateList(projects)
-
-          this.$endLoading('portfolio')
+          this.updateList(projects, response.body.total)
         })
       },
 

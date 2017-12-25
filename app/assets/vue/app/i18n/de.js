@@ -30,6 +30,16 @@ export default {
     placeholder: 'Wähle eine Datei'
   },
 
+  home: {
+    header: {
+      sub: '',
+      sup: 'Willkommen bei',
+      title: 'respondeco.org'
+    },
+    organisations: 'Entdecke Organisationen',
+    projects: 'Entdecke Projekte'
+  },
+
   http: {
     status: {
       200: 'OK',

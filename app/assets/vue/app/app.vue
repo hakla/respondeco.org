@@ -3,7 +3,7 @@
     <notifications position="top center"></notifications>
 
     <!--=== Header v6 ===-->
-    <respondeco-header></respondeco-header>
+    <respondeco-header v-if="$route.meta.header !== false"></respondeco-header>
     <!--=== End Header v6 ===-->
 
     <!--=== Content ===-->
@@ -13,7 +13,7 @@
     <!--=== End Content ===-->
 
     <!--=== Footer Version 1 ===-->
-    <respondeco-footer></respondeco-footer>
+    <respondeco-footer v-if="$route.meta.footer !== false"></respondeco-footer>
   </main>
 </template>
 

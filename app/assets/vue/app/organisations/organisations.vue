@@ -5,16 +5,10 @@
 
   import { ObjectNormaliser } from 'common/utils'
 
-  import { mapActions, mapGetters } from 'vuex'
-
   let toPortfolioItem = Utils.toPortfolioItem("organisations")
 
   export default {
     name: 'organisations',
-
-    created () {
-      this.fetchData()
-    },
 
     data () {
       return {
@@ -23,18 +17,14 @@
     },
 
     methods: {
-      ...mapActions(['all']),
+      fetchData (page, pageSize) {
+        return OrganisationService.all({
+          page: this.page,
+          pageSize: this.pageSize
+        }).then(response => {
+          let organisations = response.body.items.map(organisation => ObjectNormaliser.organisation(organisation))
 
-      fetchData () {
-        this.$startLoading('portfolio')
-
-        OrganisationService.all().then(response => {
-          let organisations = response.body.map(organisation => ObjectNormaliser.organisation(organisation))
-
-          this.all(organisations)
-          this.updateList(organisations)
-
-          this.$endLoading('portfolio')
+          this.updateList(organisations, response.body.total)
         })
       },
 

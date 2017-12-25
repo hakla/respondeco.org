@@ -7,7 +7,10 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/admin/" class="site_title"><i class="fa fa-paw"></i> <span>respondeco Admin</span></a>
+              <a href="/admin/" class="site_title">
+                <respondeco-icon icon="wrench"></respondeco-icon>
+                <span>respondeco Admin</span>
+              </a>
             </div>
 
             <div class="clearfix"></div>
@@ -32,16 +35,27 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <li>
-                    <router-link to="/accounts"><i class="fa fa-users"></i> Accounts</router-link>
+                    <router-link to="/accounts">
+                      <respondeco-icon icon="users" />
+                      Accounts
+                    </router-link>
                   </li>
                   <li>
-                    <router-link to="/"><i class="fa fa-building"></i> Organisationen</router-link>
+                    <router-link to="/">
+                      <respondeco-icon icon="fal building" />
+                      Organisationen
+                    </router-link>
                   </li>
                   <li>
-                    <router-link to="/projects"><i class="fa fa-bullhorn"></i> Projekte</router-link>
+                    <router-link to="/projects">
+                      <respondeco-icon icon="bullhorn" />
+                      Projekte
+                    </router-link>
                   </li>
                   <li>
-                    <router-link to="/finishedProjects"><i class="fa fa-trophy"></i> Abgeschlossene Projekte
+                    <router-link to="/finishedProjects">
+                      <respondeco-icon icon="trophy" />
+                      Abgeschlossene Projekte
                     </router-link>
                   </li>
                   <li>
@@ -81,7 +95,6 @@
   import 'bootstrap/dist/js/bootstrap.min.js'
   import 'bootstrap/dist/css/bootstrap.min.css'
   import 'gentelella/build/css/custom.min.css'
-  import 'font-awesome/css/font-awesome.css'
 
   export default {
     name: 'app',

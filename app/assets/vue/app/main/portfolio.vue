@@ -1,6 +1,6 @@
 <template>
   <div v-masonry transition-duration="0.3s" column-width=".masonry-grid-item" item-selector=".item" class="masonry-grid row g-mb-70--md g-mb-50">
-    <div class="masonry-grid-item col-sm-6 col-lg-3 g-mb-30" :key="index" v-for="(item, index) in items" v-masonry-tile>
+    <div :class="columns" class="masonry-grid-item g-mb-30" :key="index" v-for="(item, index) in items" v-masonry-tile>
       <article class="u-shadow-v11">
         <router-link :to="item.href" class="u-link-v5 g-color-black g-color-primary--hover g-cursor-pointer" href="#">
           <img class="img-fluid w-100" :src="item.image">
@@ -21,7 +21,13 @@
   export default {
     name: 'portfolio',
 
-    props: ['items']
+    props: {
+      columns: {
+        type: String,
+        default: 'col-sm-6 col-lg-3'
+      },
+      items: null
+    }
   }
 
 </script>

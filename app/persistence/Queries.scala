@@ -33,7 +33,7 @@ abstract class Queries[A: ClassTag] {
 
     def byId(id: Long): Option[A] = first('id -> id)
 
-    private def where(parameters: NamedParameter*): SimpleSql[Row] = where(parameters)
+    private def where(size: Option[Long])(parameters: NamedParameter*): SimpleSql[Row] = where(parameters)
 
     private def where(parameters: Seq[NamedParameter]): SimpleSql[Row] = {
         val statement: String = s"SELECT * FROM $table" + (parameters.nonEmpty match {

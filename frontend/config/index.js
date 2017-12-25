@@ -10,14 +10,7 @@ var proxyTable = {};
 [
   '/admin/',
   '/api/',
-  '/app/',
-  '/assets/fonts/',
-  '/assets/img/',
-  '/assets/images/',
-  '/assets/i18n/',
-  '/assets/partials/',
-  '/assets/unify/',
-  '/assets/views/'
+  '/app/'
 ].forEach((x) => proxyTable[x] = proxy);
 
 module.exports = {

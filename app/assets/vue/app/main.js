@@ -2,7 +2,6 @@
 import 'unify/vendor/cubeportfolio/css/cubeportfolio.css'
 import 'unify/vendor/hamburgers/hamburgers.css'
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.css'
-import 'unify/vendor/icon-awesome/css/font-awesome.css'
 import 'unify/vendor/icon-line/css/simple-line-icons.css'
 import 'unify/vendor/icon-hs/style.css'
 
@@ -37,13 +36,19 @@ import { VueMasonryPlugin } from 'vue-masonry'
 import VueUploadComponent from 'vue-upload-component'
 import VueYoutubeEmbed from 'vue-youtube-embed'
 
-import 'vue-croppa/dist/vue-croppa.css'
+import fontawesome from '@fortawesome/fontawesome'
 
-import 'libs/font-awesome/js/fontawesome.js'
-import 'libs/font-awesome/js/fa-light.js'
+import faAngleDown from '@fortawesome/fontawesome-pro-light/faAngleDown'
+import faAngleLeft from '@fortawesome/fontawesome-pro-light/faAngleLeft'
+import faAngleRight from '@fortawesome/fontawesome-pro-light/faAngleRight'
+
+fontawesome.library.add(faAngleDown, faAngleLeft, faAngleRight)
+
+import 'vue-croppa/dist/vue-croppa.css'
 //</editor-fold>
 
 //<editor-fold desc="Custom components">
+import RespondecoIcon from 'common/components/respondeco-icon'
 import UnifyBlock from 'common/components/unify-block'
 import UnifyButton from 'common/components/unify-button'
 import UnifyFormInput from 'common/components/unify-form-input'
@@ -55,6 +60,7 @@ import UnifyListItemLabel from 'common/components/unify-list-item-label'
 import UnifyListItemContent from 'common/components/unify-list-item-content'
 import UnifyTextarea from 'common/components/unify-textarea'
 
+Vue.component(RespondecoIcon.name, RespondecoIcon)
 Vue.component(UnifyBlock.name, UnifyBlock)
 Vue.component(UnifyButton.name, UnifyButton)
 Vue.component(UnifyFormInput.name, UnifyFormInput)

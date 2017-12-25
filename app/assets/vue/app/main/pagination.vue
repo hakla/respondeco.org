@@ -8,7 +8,8 @@
                 type="button"
                 aria-label="Previous">
           <span aria-hidden="true">
-            <i class="fa fa-angle-left g-mr-5"></i> {{ $t('common.pagination.previous') }}
+            <font-awesome-icon class="g-mr-5" :icon="['fal', 'angle-left']"></font-awesome-icon>
+            {{ $t('common.pagination.previous') }}
           </span>
           <span class="sr-only">{{ $t('common.pagination.previous') }}</span>
         </button>
@@ -27,7 +28,8 @@
           type="button">
             <span aria-hidden="true">
               {{ $t('common.pagination.next') }}
-              <i class="fa fa-angle-right g-ml-5"></i>
+              <!--<i class="fa fa-angle-right g-ml-5"></i>-->
+              <font-awesome-icon class="g-ml-5" :icon="['fal', 'angle-right']"></font-awesome-icon>
             </span>
           <span class="sr-only">{{ $t('common.pagination.next') }}</span>
         </button>
@@ -41,19 +43,12 @@
     name: "pagination",
 
     created () {
-      this.$emit('page', this.activePage, this.paginatedItems)
+      this.$emit('page', this.activePage)
     },
 
     computed: {
       pages () {
-        return Math.ceil(this.items.length / this.pageSize)
-      },
-
-      paginatedItems () {
-        let begin = (this.activePage - 1) * this.pageSize
-        let end = this.activePage * this.pageSize
-
-        return this.items.filter((item, index) => index >= begin && index < end)
+        return Math.ceil(this.total / this.pageSize)
       }
     },
 
@@ -74,7 +69,7 @@
         if (value > 0 && value <= this.pages) {
           this.activePage = value
 
-          this.$emit('page', this.activePage, this.paginatedItems)
+          this.$emit('page', this.activePage)
 
           if (this.scroll) {
             let scrollTop = 0
@@ -93,15 +88,15 @@
     },
 
     props: {
-      items: {
-        type: Array,
-        default: []
-      },
       page: Number,
       pageSize: Number,
       scroll: {
         type: null,
         default: true
+      },
+      total: {
+        type: Number,
+        default: 1
       }
     },
 
