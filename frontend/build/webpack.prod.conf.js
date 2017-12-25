@@ -29,6 +29,12 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default']
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
@@ -56,9 +62,9 @@ var webpackConfig = merge(baseWebpackConfig, {
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
-      excludeChunks: ['admin', 'vendor_admin'],
+      chunks: ['manifest', 'vendor_app', 'app'],
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'manual'
     }),
     new HtmlWebpackPlugin({
       filename: '../app/views/admin.scala.html',
@@ -71,9 +77,9 @@ var webpackConfig = merge(baseWebpackConfig, {
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
-      excludeChunks: ['app', 'vendor_app'],
+      chunks: ['manifest', 'vendor_admin', 'admin'],
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'manual'
     }),
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
