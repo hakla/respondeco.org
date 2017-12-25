@@ -26,6 +26,10 @@ export default {
     success: 'Erfolg!',
   },
 
+  filechooser: {
+    placeholder: 'Wähle eine Datei'
+  },
+
   http: {
     status: {
       200: 'OK',

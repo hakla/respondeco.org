@@ -27,14 +27,17 @@ import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
 //</editor-fold>
 
 //<editor-fold desc="Libraries">
+import { mapGetters } from 'vuex'
+import Croppa from 'vue-croppa'
+import Notifications from 'vue-notification'
+import VModal from 'vue-js-modal'
+import VeeValidate from 'vee-validate'
 import Vue from 'vue'
 import { VueMasonryPlugin } from 'vue-masonry'
-import VueYoutubeEmbed from 'vue-youtube-embed'
-import Notifications from 'vue-notification'
-import VeeValidate from 'vee-validate'
-import { mapGetters } from 'vuex'
-import VModal from 'vue-js-modal'
 import VueUploadComponent from 'vue-upload-component'
+import VueYoutubeEmbed from 'vue-youtube-embed'
+
+import 'vue-croppa/dist/vue-croppa.css'
 
 import 'libs/font-awesome/js/fontawesome.js'
 import 'libs/font-awesome/js/fa-light.js'
@@ -45,6 +48,7 @@ import UnifyBlock from 'common/components/unify-block'
 import UnifyButton from 'common/components/unify-button'
 import UnifyFormInput from 'common/components/unify-form-input'
 import UnifyFormInputAddon from 'common/components/unify-form-input-addon'
+import UnifyHero from 'common/components/unify-hero'
 import UnifyList from 'common/components/unify-list'
 import UnifyListItem from 'common/components/unify-list-item'
 import UnifyListItemLabel from 'common/components/unify-list-item-label'
@@ -55,6 +59,7 @@ Vue.component(UnifyBlock.name, UnifyBlock)
 Vue.component(UnifyButton.name, UnifyButton)
 Vue.component(UnifyFormInput.name, UnifyFormInput)
 Vue.component(UnifyFormInputAddon.name, UnifyFormInputAddon)
+Vue.component(UnifyHero.name, UnifyHero)
 Vue.component(UnifyList.name, UnifyList)
 Vue.component(UnifyListItem.name, UnifyListItem)
 Vue.component(UnifyListItemLabel.name, UnifyListItemLabel)
@@ -83,11 +88,12 @@ Vue.filter('formatDate', filters.formatDate)
 Vue.filter('translate', filters.translate)
 
 // Vue plugins
-Vue.use(VueMasonryPlugin)
-Vue.use(VueYoutubeEmbed)
+Vue.use(Croppa)
 Vue.use(Notifications)
+Vue.use(VueYoutubeEmbed)
 Vue.use(VeeValidate)
 Vue.use(VModal, { dialog: true })
+Vue.use(VueMasonryPlugin)
 
 Vue.component('file-upload', VueUploadComponent)
 

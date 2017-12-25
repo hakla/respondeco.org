@@ -1,6 +1,7 @@
 <template>
-  <section class="g-pt-100--md g-pt-40">
-    <respondeco-breadcrumbs :heading="$tc('common.organisation', 2)"></respondeco-breadcrumbs>
+  <section class="g-pt-40--md g-pb-80--md g-pb-150--lg g-pt-20">
+    <unify-hero class="g-mb-40">{{ $tc('common.organisation', 2) }}</unify-hero>
+
     <respondeco-portfolio :items="list" v-if="!loading"></respondeco-portfolio>
     <vue-simple-spinner class="g-mb-100 g-mt-100" v-else></vue-simple-spinner>
   </section>

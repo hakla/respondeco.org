@@ -3,7 +3,7 @@
     <ul class="list-inline">
       <li class="list-inline-item float-left g-hidden-xs-down">
         <button @click.prevent="set('previous')"
-                :disabled="page == 1"
+                :disabled="activePage === 1"
                 class="u-pagination-v1__item u-pagination-v1-4 g-brd-gray-light-v3 g-brd-primary--hover g-rounded-50 g-pa-7-16"
                 type="button"
                 aria-label="Previous">
@@ -16,12 +16,13 @@
       <li class="list-inline-item" :key="value" v-for="value in pages">
         <a class="u-pagination-v1__item u-pagination-v1-4 g-rounded-50 g-pa-7-14"
            href=""
-           :class="{ 'u-pagination-v1-4--active': value === page }"
+           :class="{ 'u-pagination-v1-4--active': value === activePage }"
            @click.prevent="set(value)">{{ value }}</a>
       </li>
       <li class="list-inline-item float-right g-hidden-xs-down">
         <button
           @click.prevent="set('next')"
+          :disabled="activePage === pages"
           class="u-pagination-v1__item u-pagination-v1-4 g-brd-gray-light-v3 g-brd-primary--hover g-rounded-50 g-pa-7-16"
           type="button">
             <span aria-hidden="true">
@@ -40,7 +41,7 @@
     name: "pagination",
 
     created () {
-      this.$emit('page', this.paginatedItems)
+      this.$emit('page', this.page, this.paginatedItems)
     },
 
     computed: {
@@ -49,8 +50,8 @@
       },
 
       paginatedItems () {
-        let begin = (this.page - 1) * this.pageSize
-        let end = this.page * this.pageSize
+        let begin = (this.activePage - 1) * this.pageSize
+        let end = this.activePage * this.pageSize
 
         return this.items.filter((item, index) => index >= begin && index < end)
       }
@@ -58,24 +59,35 @@
 
     data () {
       return {
-        page: 1,
+        activePage: 1,
       }
     },
 
     methods: {
       set (value) {
         if (value === 'previous') {
-          value = this.page - 1
+          value = this.activePage - 1
         } else if (value === 'next') {
-          value = this.page + 1
+          value = this.activePage + 1
         }
 
         if (value > 0 && value <= this.pages) {
-          this.page = value
+          this.activePage = value
 
-          $('html, body').animate({
-            scrollTop: 0
-          })
+          this.$emit('page', this.activePage, this.paginatedItems)
+
+          if (this.scroll) {
+            let scrollTop = 0
+
+            if (this.scroll.$el) {
+              // Vue reference
+              scrollTop = $(this.scroll.$el).offset().top - 50
+            }
+
+            $('html, body').animate({
+              scrollTop: scrollTop
+            })
+          }
         }
       }
     },
@@ -85,12 +97,17 @@
         type: Array,
         default: []
       },
-      pageSize: Number
+      page: Number,
+      pageSize: Number,
+      scroll: {
+        type: null,
+        default: true
+      }
     },
 
     watch: {
-      paginatedItems (val) {
-        this.$emit('page', val)
+      page (val) {
+        this.activePage = val
       }
     }
   }
