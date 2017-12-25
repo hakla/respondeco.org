@@ -41,7 +41,7 @@
     name: "pagination",
 
     created () {
-      this.$emit('page', this.page, this.paginatedItems)
+      this.$emit('page', this.activePage, this.paginatedItems)
     },
 
     computed: {
@@ -59,7 +59,7 @@
 
     data () {
       return {
-        activePage: 1,
+        activePage: this.page,
       }
     },
 

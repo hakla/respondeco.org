@@ -1,5 +1,5 @@
 <template>
-  <section class="text-center g-pt-100--lg g-pb-100--lg g-pt-50 g-pb-30">
+  <section class="text-center g-pt-100--lg g-pb-100--lg g-pt-50 g-pb-30 unify-hero">
     <div class="container">
       <div class="u-heading-v2-5--bottom g-brd-primary">
         <h2 class="u-heading-v2__title text-uppercase g-font-weight-300 mb-0"><slot></slot></h2>

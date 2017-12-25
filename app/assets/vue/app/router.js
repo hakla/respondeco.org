@@ -1,7 +1,5 @@
-import Vue from 'vue';
-import App from './app';
-
-import Authentication from 'common/authentication'
+import Vue from 'vue'
+import App from './app'
 
 import Login from './authentication/login'
 import Logout from './authentication/logout'
@@ -21,9 +19,23 @@ import Project from './projects/project'
 import Projects from './projects/projects'
 import FinishedProject from './projects/finished-project'
 
-import VueRouter from 'vue-router';
+import VueRouter from 'vue-router'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
+
+const scrollToHero = {
+  scroll: '.unify-hero'
+}
+
+const scrollToTop = {
+  scroll: (to) => {
+    if (!to.query.page) {
+      return 0
+    } else {
+      return false
+    }
+  }
+}
 
 export const routes = [{
   path: '/',
@@ -31,26 +43,31 @@ export const routes = [{
   children: [{
     path: 'organisations',
     name: 'organisations',
-    component: Organisations
+    component: Organisations,
+    meta: scrollToTop,
   }, {
     path: 'organisations/:id',
     component: Organisation,
     children: [{
       path: 'about',
       name: 'organisation-about',
-      component: OrganisationAbout
+      component: OrganisationAbout,
+      meta: scrollToHero,
     }, {
       path: 'comments',
       name: 'organisation-comments',
-      component: OrganisationComments
+      component: OrganisationComments,
+      meta: scrollToHero,
     }, {
       path: 'ratings',
       name: 'organisation-ratings',
-      component: OrganisationRatings
+      component: OrganisationRatings,
+      meta: scrollToHero,
     }, {
       path: '',
       name: 'organisation-projects',
-      component: OrganisationProjects
+      component: OrganisationProjects,
+      meta: scrollToHero,
     }, {
       path: 'settings',
       component: OrganisationSettings,
@@ -75,11 +92,13 @@ export const routes = [{
     }]
   }, {
     path: 'projects',
-    component: Projects
+    component: Projects,
+    meta: scrollToTop,
   }, {
     name: 'project',
     path: 'projects/:id',
-    component: Project
+    component: Project,
+    meta: scrollToHero
   }, {
     name: 'finishedProject',
     path: 'finished-project/:id',
@@ -94,17 +113,41 @@ export const routes = [{
     path: '/registration',
     component: Registration
   }]
-}];
+}]
 
 export const router = new VueRouter({
   routes,
   linkExactActiveClass: 'active',
 
   scrollBehavior (to, from, savedPosition) {
-    if (to.name && to.name.indexOf('organisation-settings') === -1 || from.name && from.name.indexOf('organisation-settings') === -1) {
-      $('html, body').animate({
-        scrollTop: 0
-      })
-    }
+    setTimeout(() => {
+      if (to.meta.scroll != null && to.meta.scroll !== false) {
+        let position = 0
+
+        if (savedPosition) {
+          position = savedPosition.y
+        } else if (typeof to.meta.scroll === 'string') {
+          let $el = $(to.meta.scroll)
+
+          if ($el.length > 0) {
+            try {
+              position = $el.offset().top
+            } catch (e) {
+              return
+            }
+          }
+        } else if (typeof to.meta.scroll === 'number') {
+          position = to.meta.scroll
+        } else if (typeof to.meta.scroll === 'function') {
+          position = to.meta.scroll(to, from, savedPosition)
+        }
+
+        if (position !== false) {
+          $('html, body').animate({
+            scrollTop: position
+          })
+        }
+      }
+    }, 10)
   }
 })
