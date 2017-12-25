@@ -41,8 +41,9 @@ import fontawesome from '@fortawesome/fontawesome'
 import faAngleDown from '@fortawesome/fontawesome-pro-light/faAngleDown'
 import faAngleLeft from '@fortawesome/fontawesome-pro-light/faAngleLeft'
 import faAngleRight from '@fortawesome/fontawesome-pro-light/faAngleRight'
+import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
 
-fontawesome.library.add(faAngleDown, faAngleLeft, faAngleRight)
+fontawesome.library.add(faAngleDown, faAngleLeft, faAngleRight, faTimes)
 
 import 'vue-croppa/dist/vue-croppa.css'
 //</editor-fold>

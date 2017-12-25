@@ -9,6 +9,9 @@
     "postinstall": "node frontend/fix-gentelella.js",
     "start": "npm run dev"
   },
+  "config": {
+    "@fortawesome:registry": "${FORTAWESOME_REGISTRY}"
+  },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.0",
     "@fortawesome/fontawesome-pro-light": "^5.0.2",

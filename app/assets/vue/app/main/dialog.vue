@@ -17,7 +17,7 @@
       <div class="dialog-c-title">
         {{ title }}
         <div class="g-font-size-22 g-pos-abs g-right-10 g-top-3 g-cursor-pointer" @click="$modal.hide(name)">
-          <i class="fal fa-times"></i>
+          <respondeco-icon icon="fal times"></respondeco-icon>
         </div>
       </div>
       <div class="dialog-c-text">
