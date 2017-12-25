@@ -1,5 +1,5 @@
 <template>
-  <section class="g-pt-40--md g-pb-80--md g-pb-150--lg g-pt-20">
+  <section class="g-pt-40--md g-pb-80--md g-pb-150--lg g-pt-20 g-pb-60">
     <unify-hero class="g-mb-40">{{ $tc(this.heading, 2) }}</unify-hero>
 
     <section class="container" v-if="!$isLoading('portfolio')">
