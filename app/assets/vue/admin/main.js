@@ -29,6 +29,7 @@ import { http } from './http'
 import store from './store'
 import { mapGetters } from 'vuex'
 import Notifications from 'vue-notification'
+import Utils from '../common/utils'
 
 Authentication
   .init(router)
@@ -37,6 +38,8 @@ Vue.component(AdminFilter.name, AdminFilter)
 Vue.component(AdminPage.name, AdminPage)
 Vue.component(FormGroup.name, FormGroup)
 Vue.component(RespondecoIcon.name, RespondecoIcon)
+
+Vue.filter('formatDate', Utils.formatDate)
 
 Vue.use(Notifications)
 

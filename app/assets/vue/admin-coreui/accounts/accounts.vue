@@ -1,13 +1,17 @@
 <template>
   <admin-page>
     <admin-card>
-      <span slot="header">{{ title }}</span>
+      <div class="d-flex" slot="header">
+        <span class="flex-grow-1">{{ title }}</span>
+        <button class="btn btn-primary btn-sm" @click="open('new')">Neuer Eintrag</button>
+      </div>
 
       <admin-table>
         <tr>
           <th>#</th>
           <th>Name</th>
           <th>Rolle</th>
+          <th>Organisation</th>
           <th></th>
         </tr>
 
@@ -20,9 +24,14 @@
             <td>
               {{ item.role }}
             </td>
+            <td>
+              {{ item.organisationId }}
+            </td>
             <td class="text-right" @click.prevent.stop>
-              <a href="#" class="btn btn-danger btn-xs" @click.prevent="remove(item.id)"><i
-                class="fa fa-trash-o"></i> Delete </a>
+              <admin-button class="btn-danger btn-sm" :loader="`deleting-${item.id}`" @click="remove(item.id)">
+                <respondeco-icon icon="trash"></respondeco-icon>
+                Löschen
+              </admin-button>
             </td>
           </tr>
         </tbody>
@@ -32,16 +41,17 @@
 </template>
 
 <script>
-  import Accounts from 'common/services/accounts'
   import { ObjectNormaliser } from 'common/utils'
   import Overview from '../mixins/overview'
+  import { AdminAccounts } from '../../common/services/accounts'
 
   export default {
     name: 'accounts',
 
     data () {
       return {
-        service: Accounts,
+        route: 'account',
+        service: AdminAccounts,
         title: 'Alle Accounts'
       }
     },

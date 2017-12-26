@@ -128,6 +128,23 @@ export const Notifications = {
 }
 
 export const ObjectNormaliser = {
+  account (account = {}) {
+    return Object.assign({
+      email: undefined,
+      id: undefined,
+      name: undefined,
+      password: undefined,
+      organisationId: null,
+      role: 'User'
+    })
+  },
+
+  finishedProject (finishedProject = {}) {
+    return Object.assign({
+
+    }, finishedProject)
+  },
+
   organisation (organisation = {}) {
     return Object.assign({
       description: '',

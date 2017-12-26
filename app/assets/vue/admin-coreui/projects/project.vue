@@ -148,18 +148,13 @@
 
   import Organisations from 'common/services/organisations'
   import Projects from 'common/services/projects'
-  import Spinner from 'vue-simple-spinner'
 
   export default {
     name: 'project',
 
-    components: {
-      Spinner
-    },
-
     computed: {
       isNew () {
-        return !this.item.id
+        return this.id === 'new'
       },
 
       method () {
@@ -172,11 +167,12 @@
     },
 
     created () {
-      this.fetchData()
+      this.fetchData(this.id)
     },
 
     data () {
       return {
+        activeId: this.id,
         categories: Categories,
         dateConfig: DateConfig,
         image: {},
@@ -187,7 +183,9 @@
 
     methods: {
       back () {
-        this.$router.back()
+        this.$router.push({
+          name: 'projects'
+        })
       },
 
       fetchData (id = this.activeId) {

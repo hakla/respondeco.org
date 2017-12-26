@@ -6,6 +6,7 @@ import Notifications from 'vue-notification'
 
 import Croppa from 'vue-croppa'
 import 'vue-croppa/dist/vue-croppa.css'
+import Spinner from 'vue-simple-spinner'
 
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
@@ -21,6 +22,7 @@ import faBullhorn from '@fortawesome/fontawesome-pro-solid/faBullhorn'
 import faCalendar from '@fortawesome/fontawesome-pro-light/faCalendar'
 import faLock from '@fortawesome/fontawesome-pro-light/faLock'
 import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
+import faTrash from '@fortawesome/fontawesome-pro-solid/faTrash'
 import faTrophy from '@fortawesome/fontawesome-pro-solid/faTrophy'
 import faUser from '@fortawesome/fontawesome-pro-solid/faUser'
 import faUsers from '@fortawesome/fontawesome-pro-solid/faUsers'
@@ -29,9 +31,11 @@ import faDotCircle from '@fortawesome/fontawesome-pro-solid/faDotCircle'
 
 import Authentication from 'common/authentication'
 
+import AdminButton from './components/button'
 import AdminCard from './components/card'
 import AdminFileChooser from './components/file-chooser'
 import AdminPage from './components/page'
+import AdminPageItem from './components/page-item'
 import AdminTable from './components/table'
 
 import RespondecoIcon from 'common/components/respondeco-icon'
@@ -50,17 +54,21 @@ fontawesome.library.add(
   faDotCircle,
   faLock,
   faTimes,
+  faTrash,
   faTrophy,
   faUser,
   faUsers,
   faWrench
 )
 
+Vue.component(AdminButton.name, AdminButton)
 Vue.component(AdminCard.name, AdminCard)
 Vue.component(AdminFileChooser.name, AdminFileChooser)
 Vue.component(AdminPage.name, AdminPage)
+Vue.component(AdminPageItem.name, AdminPageItem)
 Vue.component(AdminTable.name, AdminTable)
 Vue.component(RespondecoIcon.name, RespondecoIcon)
+Vue.component('spinner', Spinner)
 
 Vue.use(Croppa)
 Vue.use(flatPickr)

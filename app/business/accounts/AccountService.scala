@@ -13,10 +13,10 @@ class AccountService @Inject()(implicit val db: Database) extends Queries[Accoun
         SqlParser.get[Long]("id") ~
             SqlParser.get[String]("email") ~
             SqlParser.get[String]("name") ~
-            SqlParser.get[String]("password") ~
+            SqlParser.get[Option[String]]("password") ~
             SqlParser.get[Option[Long]]("organisation") ~
             Role.parser map {
-            case id ~ email ~ name ~ pwd ~ organisation ~ role => AccountModel(id, email, name, pwd, role, organisation)
+            case id ~ email ~ name ~ pwd ~ organisation ~ role => AccountModel(id, email, name, pwd.getOrElse("leer"), role, organisation)
         }
 
     val table: String = "account"

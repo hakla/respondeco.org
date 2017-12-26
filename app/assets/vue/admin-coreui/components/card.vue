@@ -6,7 +6,7 @@
       </div>
       <div class="card-body">
         <transition name="fade" mode="out-in">
-          <slot v-if="!$isLoading('card')"></slot>
+          <slot v-if="!isLoading()"></slot>
           <spinner v-else></spinner>
         </transition>
       </div>
@@ -18,16 +18,20 @@
 </template>
 
 <script>
-  import Spinner from 'vue-simple-spinner'
+  import LoaderHelper from '../mixins/loader-helper'
 
   export default {
     name: 'admin-card',
 
-    components: {
-      Spinner
-    },
+    mixins: [LoaderHelper],
 
-    props: ['title']
+    props: {
+      loader: {
+        type: Array|String,
+        default: 'card'
+      },
+      title: String
+    }
   }
 </script>
 

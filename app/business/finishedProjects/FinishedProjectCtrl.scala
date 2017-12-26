@@ -4,16 +4,18 @@ import javax.inject.Inject
 
 import business.accounts.AccountService
 import business.projects.ProjectService
+import common.Pagination
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import security.{AuthenticatedController, Authorization}
 
-class FinishedProjectCtrl @Inject()(finishedProjectService: FinishedProjectService, val accountService: AccountService) extends AuthenticatedController with Authorization {
+class FinishedProjectCtrl @Inject()(finishedProjectService: FinishedProjectService, val accountService: AccountService) extends AuthenticatedController with Authorization with Pagination {
 
-    def findAll = Unauthenticated {
+    def findAll = Unauthenticated { request =>
         Ok(
-            finishedProjectService
-                .all
-                .map(finishedProjectService.toPublicModel)
+            Json.toJson(
+                paginated(request, finishedProjectService.all.map(finishedProjectService.toPublicModel))
+            )
         )
     }
 

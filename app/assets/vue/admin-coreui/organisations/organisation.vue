@@ -77,16 +77,12 @@
       </form>
 
       <div class="text-right" slot="footer">
-        <button @click="back" type="button" class="btn btn-link">Abbrechen</button>
-        <button @click="save" :disabled="$isLoading('global-loader')" type="submit" class="btn btn-primary d-inline-flex align-items-center">
-          <transition name="fade" mode="out-in">
-            <spinner style="margin-right: 8px" size="small" v-if="$isLoading('global-loader')"></spinner>
-          </transition>
-
-          <span>
-            Speichern
-          </span>
-        </button>
+        <admin-button @click="back" type="button" class="btn-link">
+          Abbrechen
+        </admin-button>
+        <admin-button class="btn-primary" loader="global-loader" @click="save">
+          Speichern
+        </admin-button>
       </div>
     </admin-card>
   </admin-page>
@@ -95,14 +91,10 @@
 <script>
   import { Categories, ImageHelper, ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
   import Organisations from 'common/services/organisations'
-  import Spinner from 'vue-simple-spinner'
+  import ItemPage from '../mixins/item-page'
 
   export default {
     name: 'organisation',
-
-    components: {
-      Spinner,
-    },
 
     created () {
       this.fetchData()
@@ -114,25 +106,15 @@
         categories: Categories,
         image: {},
         item: ObjectNormaliser.organisation(),
-        logo: {}
+        logo: {},
+        routeBack: {
+          name: 'organisations'
+        },
+        service: Organisations
       }
     },
 
     methods: {
-      back () {
-        this.$router.back()
-      },
-
-      fetchData () {
-        this.$startLoading('card')
-
-        Organisations.byId(this.id).then(response => {
-          this.item = response.body
-
-          this.$endLoading('card')
-        })
-      },
-
       save () {
         this.$startLoading('global-loader')
 
@@ -148,8 +130,10 @@
             item = Object.assign({}, item, values[i])
           }
 
-          Organisations.update(item).then(
-            Notifications.success(this),
+          Organisations[this.method](item).then(
+            Notifications.success(this, response => {
+              this.updateRoute(response.body)
+            }),
             Notifications.error(this)
           )
         }, Notifications.error(this, "Fehler beim Bildupload"))
@@ -157,7 +141,8 @@
     },
 
     mixins: [
-      ImageMixin
+      ImageMixin,
+      ItemPage
     ],
 
     props: ['id']

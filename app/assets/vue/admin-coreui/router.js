@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import Account from './accounts/account'
 import Accounts from './accounts/accounts'
+
+import FinishedProject from './finishedProjects/finished-project'
+import FinishedProjects from './finishedProjects/finished-projects'
 
 import App from './app'
 
@@ -20,13 +24,38 @@ export const routes = [{
   path: '/',
   component: App,
   children: [{
+    name: 'accounts',
     path: '/accounts',
     component: Accounts,
     meta: {
       title: 'Accounts'
     }
   }, {
+    name: 'account',
+    path: 'accounts/:id',
+    component: Account,
+    props: true,
+    meta: {
+      title: 'Account anlegen / bearbeiten'
+    }
+  }, {
+    path: '/finishedProjects',
+    name: 'finishedProjects',
+    component: FinishedProjects,
+    meta: {
+      title: 'Abgeschlossene Projekte'
+    }
+  }, {
+    name: 'finishedProject',
+    path: 'finishedProjects/:id',
+    component: FinishedProject,
+    props: true,
+    meta: {
+      title: 'Abgeschlossenes Projekt anlegen / bearbeiten'
+    }
+  }, {
     path: '/organisations',
+    name: 'organisations',
     component: Organisations,
     meta: {
       title: 'Organisationen'
@@ -41,6 +70,7 @@ export const routes = [{
     }
   }, {
     path: '/projects',
+    name: 'projects',
     component: Projects,
     meta: {
       title: 'Projekte'

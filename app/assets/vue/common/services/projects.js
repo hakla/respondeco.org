@@ -1,6 +1,6 @@
 import { BaseService } from 'common/http/base-service'
 
-export default class Organisations extends BaseService {
+export default class Projects extends BaseService {
   constructor () {
     super('projects{/id}')
   }

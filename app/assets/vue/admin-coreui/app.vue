@@ -41,5 +41,8 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .flex-grow-1 {
+    flex-grow: 1;
+  }
 </style>
