@@ -36,25 +36,25 @@
                 <ul class="nav side-menu">
                   <li>
                     <router-link to="/accounts">
-                      <respondeco-icon icon="users" />
+                      <respondeco-icon icon="users"/>
                       Accounts
                     </router-link>
                   </li>
                   <li>
                     <router-link to="/">
-                      <respondeco-icon icon="fal building" />
+                      <respondeco-icon icon="fal building"/>
                       Organisationen
                     </router-link>
                   </li>
                   <li>
                     <router-link to="/projects">
-                      <respondeco-icon icon="bullhorn" />
+                      <respondeco-icon icon="bullhorn"/>
                       Projekte
                     </router-link>
                   </li>
                   <li>
                     <router-link to="/finishedProjects">
-                      <respondeco-icon icon="trophy" />
+                      <respondeco-icon icon="trophy"/>
                       Abgeschlossene Projekte
                     </router-link>
                   </li>

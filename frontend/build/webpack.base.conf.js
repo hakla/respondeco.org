@@ -10,7 +10,7 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    admin: './app/assets/vue/admin/main.js',
+    admin: './app/assets/vue/admin-coreui/main.js',
     app: './app/assets/vue/app/main.js',
     vendor_admin: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', 'jquery'],
     vendor_app: ['./unify/assets/vendor/bootstrap/bootstrap.js', './unify/assets/vendor/bootstrap/bootstrap.css', './unify/assets/vendor/jquery/jquery.js', 'popper.js']

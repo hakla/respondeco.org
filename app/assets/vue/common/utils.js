@@ -1,7 +1,81 @@
 import { format, parse } from 'date-fns'
+import { German } from 'flatpickr/dist/l10n/de.js'
 import Config from './config'
+import Images from './services/images'
 
-const formats = ["DD.MM.YYYY", "YYYY-MM-DD", "MM/DD/YYYY"]
+const formats = ['DD.MM.YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY']
+
+export const Categories = [
+  'Ökonomie',
+  'Umwelt',
+  'Gesellschaft'
+]
+
+export const DateConfig = {
+  wrap: true, // set wrap to true only when using 'input-group'
+  altFormat: 'd.m.Y',
+  altInput: true,
+  dateFormat: 'Y-m-d',
+  locale: German
+}
+
+export const ImageHelper = {
+  backgroundImage (image) {
+    let style = ''
+
+    if (image !== undefined) {
+      style = `background-image: url("${Utils.imageUrl(image)}"); `
+    }
+
+    return style
+  },
+
+  imageUrl (image) {
+    let url = image
+
+    if (/^[0-9a-z]*\.(png|jpe?g)/.test(image)) {
+      url = `${Config.ImageBaseUrl}/${image}`
+    }
+
+    return url
+  },
+
+  saveFromCroppa (croppa, name, attr, croppaOptions = {}) {
+    let promise = Promise.resolve({})
+
+    // If the object does not have the hasImage function then the image wasn't changed
+    if (croppa.hasImage) {
+      if (croppa.hasImage()) {
+        // Logo changed --> save
+        promise = new Promise((resolve, reject) => {
+          croppa.generateBlob(blob => {
+            blob.name = name
+
+            Images.save(blob).then(response => {
+              resolve({
+                [attr]: response.body
+              })
+            }, error => reject(error))
+          }, ...croppaOptions)
+        })
+      } else {
+        // Image removed
+        promise = new Promise(resolve => resolve({
+          [attr]: ''
+        }))
+      }
+    }
+
+    return promise
+  }
+}
+
+export const ImageMixin = {
+  methods: {
+    backgroundImage: ImageHelper.backgroundImage,
+    imageUrl: ImageHelper.imageUrl
+  }
+}
 
 export const Notifications = {
   error (vm, status = {}) {
@@ -13,7 +87,7 @@ export const Notifications = {
       } else if (error && error.status) {
         message = status[error.status] || (vm.$t && (vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown'))) || ('Fehler: ' + error.status)
       } else {
-        message = vm.$t('common.error.undefined')
+        message = vm.$t && vm.$t('common.error.undefined') || 'Undefinierter Fehler'
       }
 
       return message
@@ -54,7 +128,7 @@ export const Notifications = {
 }
 
 export const ObjectNormaliser = {
-  organisation (organisation) {
+  organisation (organisation = {}) {
     return Object.assign({
       description: '',
       email: '',
@@ -64,6 +138,22 @@ export const ObjectNormaliser = {
       name: '',
       website: ''
     }, organisation)
+  },
+
+  project (project = {}) {
+    return Object.assign({
+      category: undefined,
+      description: undefined,
+      end: undefined,
+      id: undefined,
+      location: undefined,
+      name: undefined,
+      organisation: undefined,
+      price: 0,
+      start: undefined,
+      subcategory: undefined,
+      video: undefined
+    }, project)
   }
 }
 
@@ -76,16 +166,45 @@ export const ScrollHelper = {
   }
 }
 
+export const Subcategories = {
+  'Ökonomie': [
+    'Produkt',
+    'Beschäftigungsverhältnisse',
+    'Arbeitsbedingungen und Sozialschutz',
+    'Gesundheit und Sicherheit am Arbeitsplatz',
+    'Menschliche Entwicklung am Arbeitsplatz',
+    'Schulungen und Weiterbildungen ',
+    'Korruptionsbekämpfung',
+    'Kundendienst, Beschwerdemanagement',
+    'Schutz und Vertraulichkeit von Kundendaten'
+  ],
+  'Umwelt': [
+    'Inanspruchnahme natürlicher Ressourcen',
+    'Ressourcenmanagement',
+    'Klimarelevante Emissionen'
+  ],
+  'Gesellschaft': [
+    'Demokratie/Menschenrechte',
+    'Einbindung der Gemeinschaft',
+    'Bildung/ Kultur',
+    'Schaffen von Arbeitsplätzen und berufliche Qualifizierung ',
+    'Chancengerechtigkeit',
+    'Anti-Diskriminierung/ schutzbedürftige Gruppen',
+    'Stadtteil',
+    'Unterstützung von Social Businesses'
+  ]
+}
+
 export default class Utils {
 
   static convertDate (date, to) {
-    return Utils.formatDate(date, to || "YYYY-MM-DD")
+    return Utils.formatDate(date, to || 'YYYY-MM-DD')
   }
 
   static formatDate (date, dateFormat) {
     let formatted = undefined
 
-    dateFormat = dateFormat || "DD.MM.YYYY"
+    dateFormat = dateFormat || 'DD.MM.YYYY'
 
     if (date) {
       date = Utils.parseDate(date)
@@ -107,7 +226,7 @@ export default class Utils {
   }
 
   static backgroundImage (image) {
-    let style = ""
+    let style = ''
 
     if (image !== undefined) {
       style = `background-image: url("${Utils.imageUrl(image)}"); `

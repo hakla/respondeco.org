@@ -2,13 +2,15 @@ package business.accounts
 
 import javax.inject.Inject
 
+import common.Pagination
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import security.{AuthenticatedController, Authorization}
 
 /**
   * Created by Clemens Puehringer on 28/11/15.
   */
-class AccountCtrl @Inject()(val accountService: AccountService) extends AuthenticatedController with Authorization {
+class AccountCtrl @Inject()(val accountService: AccountService) extends AuthenticatedController with Authorization with Pagination {
 
     val service: AccountService = accountService
 
@@ -19,8 +21,12 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
         }
     }
 
-    def findAll = AuthenticatedAdmin {
-        Ok(service.all().map(AccountPublicModel.from))
+    def findAll = AuthenticatedAdmin { request =>
+        Ok(
+            Json.toJson(
+                paginated(request, service.all().map(AccountPublicModel.from))
+            )
+        )
     }
 
     def findById(id: Long) = AuthenticatedAdmin {
