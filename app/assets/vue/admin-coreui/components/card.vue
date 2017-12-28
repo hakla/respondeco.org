@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import LoaderHelper from '../mixins/loader-helper'
+  import LoaderHelper from '../../common/mixins/loader-helper'
 
   export default {
     name: 'admin-card',
@@ -27,7 +27,7 @@
 
     props: {
       loader: {
-        type: Array|String,
+        type: Array | String,
         default: 'card'
       },
       title: String

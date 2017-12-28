@@ -23,86 +23,69 @@ import Projects from './projects/projects'
 
 import Registration from './authentication/registration.vue'
 
+import { RouteHelper } from './utils'
+
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
-
-const meta = {
-  noFooter: {
-    footer: false,
-  },
-
-  noHeader: {
-    header: false
-  },
-
-  scrollToHero: {
-    scroll: '.unify-hero'
-  },
-
-  scrollToListGroup: {
-    scroll: false // for now
-  },
-
-  scrollToTop: {
-    scroll: (to) => {
-      if (!to.query.page) {
-        return 0
-      } else {
-        return false
-      }
-    }
-  }
-}
 
 export const routes = [{
   path: '/',
   component: App,
   children: [{
-    path: '',
-    name: 'home',
+    component: FinishedProject,
+    name: 'finishedProject',
+    path: 'finished-project/:id',
+  }, {
     component: Home,
-    meta: Object.assign({}, meta.noFooter, meta.noHeader, meta.scrollToTop)
+    meta: Object.assign(
+      {},
+      RouteHelper.meta.noFooter,
+      RouteHelper.meta.noHeader,
+      RouteHelper.meta.scrollToTop
+    ),
+    name: 'home',
+    path: '',
   }, {
-    path: 'organisations',
-    name: 'organisations',
+    component: Login,
+    name: 'login',
+    path: '/login',
+  }, {
+    component: Logout,
+    name: 'logout',
+    path: '/logout',
+  }, {
     component: Organisations,
-    meta: meta.scrollToTop,
+    meta: RouteHelper.meta.scrollToTop,
+    name: 'organisations',
+    path: 'organisations',
   }, {
-    path: 'organisations/:id',
     component: Organisation,
+    path: 'organisations/:id',
     children: [{
-      path: 'about',
-      name: 'organisation-about',
       component: OrganisationAbout,
-      meta: meta.scrollToListGroup,
+      meta: RouteHelper.meta.scrollToListGroup,
+      name: 'organisation-about',
+      path: 'about',
     }, {
-      path: 'comments',
-      name: 'organisation-comments',
       component: OrganisationComments,
-      meta: meta.scrollToListGroup,
+      meta: RouteHelper.meta.scrollToListGroup,
+      name: 'organisation-comments',
+      path: 'comments',
     }, {
-      path: 'ratings',
-      name: 'organisation-ratings',
-      component: OrganisationRatings,
-      meta: meta.scrollToListGroup,
-    }, {
-      path: '',
-      name: 'organisation-projects',
       component: OrganisationProjects,
-      meta: meta.scrollToListGroup,
+      meta: RouteHelper.meta.scrollToListGroup,
+      name: 'organisation-projects',
+      path: '',
     }, {
-      path: 'settings',
-      component: OrganisationSettings,
+      component: OrganisationRatings,
+      meta: RouteHelper.meta.scrollToListGroup,
+      name: 'organisation-ratings',
+      path: 'ratings',
+    }, {
       alias: 'organisation-settings-profile',
-      beforeEnter (to, from, next) {
-        /*if (Authentication.activeUser().state === undefined) {
-          // not logged in, redirect to login
-          next('/login')
-        }*/
-
-        next()
-      },
+      component: OrganisationSettings,
+      path: 'settings',
       children: [{
         path: '',
         name: 'organisation-settings-profile',
@@ -114,27 +97,20 @@ export const routes = [{
       }]
     }]
   }, {
-    path: 'projects',
     component: Projects,
-    meta: meta.scrollToTop,
+    name: 'projects',
+    path: 'projects',
+    meta: RouteHelper.meta.scrollToTop,
   }, {
+    component: Project,
+    meta: RouteHelper.meta.scrollToHero,
     name: 'project',
     path: 'projects/:id',
-    component: Project,
-    meta: meta.scrollToHero
+    props: true
   }, {
-    name: 'finishedProject',
-    path: 'finished-project/:id',
-    component: FinishedProject
-  }, {
-    path: '/login',
-    component: Login
-  }, {
-    path: '/logout',
-    component: Logout
-  }, {
+    component: Registration,
+    name: 'registration',
     path: '/registration',
-    component: Registration
   }]
 }]
 
@@ -142,35 +118,5 @@ export const router = new VueRouter({
   routes,
   linkExactActiveClass: 'active',
 
-  scrollBehavior (to, from, savedPosition) {
-    setTimeout(() => {
-      if (to.meta.scroll != null && to.meta.scroll !== false) {
-        let position = 0
-
-        if (savedPosition) {
-          position = savedPosition.y
-        } else if (typeof to.meta.scroll === 'string') {
-          let $el = $(to.meta.scroll)
-
-          if ($el.length > 0) {
-            try {
-              position = $el.offset().top
-            } catch (e) {
-              return
-            }
-          }
-        } else if (typeof to.meta.scroll === 'number') {
-          position = to.meta.scroll
-        } else if (typeof to.meta.scroll === 'function') {
-          position = to.meta.scroll(to, from, savedPosition)
-        }
-
-        if (position !== false) {
-          $('html, body').animate({
-            scrollTop: position
-          })
-        }
-      }
-    }, 10)
-  }
+  scrollBehavior: RouteHelper.scrollBehavior
 })

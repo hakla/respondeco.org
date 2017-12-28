@@ -4,9 +4,9 @@ import common.{FromIdModel, IdModel, MyWriteable}
 import play.api.libs.json.{Json, OFormat}
 import security.Role
 
-case class AccountModel(id: Long, email: String, name: String, password: String, role: Role, organisationId: Option[Long]) extends IdModel
+case class AccountModel(id: Long, email: String, name: String, password: String, role: Role, organisationId: Option[Long], image: Option[String]) extends IdModel
 
-case class AccountWriteModel(id: Option[Long], email: String, name: String, role: String, password: Option[String], organisationId: Option[Long])
+case class AccountWriteModel(id: Option[Long], email: String, name: String, role: String, password: Option[String], organisationId: Option[Long], image: Option[String])
 
 object AccountWriteModel extends MyWriteable[AccountWriteModel] {
     implicit val formatter: OFormat[AccountWriteModel] = Json.format[AccountWriteModel]
@@ -17,7 +17,8 @@ object AccountWriteModel extends MyWriteable[AccountWriteModel] {
         name = account.name,
         role = account.role.name,
         password = None,
-        organisationId = account.organisationId
+        organisationId = account.organisationId,
+        image = account.image
     )
 }
 
@@ -27,7 +28,7 @@ object RegistrationModel extends MyWriteable[RegistrationModel] {
     implicit val formatter: OFormat[RegistrationModel] = Json.format[RegistrationModel]
 }
 
-case class AccountPublicModel (id: Long, email: String, name: String, role: String, organisationId: Option[Long]) extends IdModel
+case class AccountPublicModel (id: Long, email: String, name: String, role: String, organisationId: Option[Long], image: Option[String]) extends IdModel
 
 object AccountPublicModel extends MyWriteable[AccountPublicModel] {
 
@@ -35,11 +36,12 @@ object AccountPublicModel extends MyWriteable[AccountPublicModel] {
 
     def from(a: AccountModel): AccountPublicModel = {
         AccountPublicModel(
-            a.id,
-            a.email,
-            a.name,
-            a.role.name,
-            a.organisationId
+            id = a.id,
+            email = a.email,
+            name = a.name,
+            role = a.role.name,
+            organisationId = a.organisationId,
+            image = a.image
         )
     }
 

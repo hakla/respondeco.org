@@ -40,15 +40,23 @@
           </select>
         </div>
       </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Profilbild</label>
+
+          <admin-file-chooser :initial="imageUrl(item.image)" :quality="2" v-model="image"></admin-file-chooser>
+        </div>
+      </div>
     </div>
   </admin-page-item>
 </template>
 
 <script>
-  import { ObjectNormaliser } from '../../common/utils'
+  import { ImageHelper, ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
   import { AdminAccounts } from '../../common/services/accounts'
   import ItemPage from '../mixins/item-page'
   import Organisations from '../../common/services/organisations'
+  import LoaderHelper from '../../common/mixins/loader-helper'
 
   export default {
     name: 'account',
@@ -65,6 +73,7 @@
 
     data () {
       return {
+        image: {},
         item: ObjectNormaliser.account(),
         organisations: [],
         routeBack: {
@@ -74,7 +83,20 @@
       }
     },
 
-    mixins: [ItemPage]
+    methods: {
+      save () {
+        this.promiseLoading(
+          ImageHelper.saveFromCroppa(this.image, 'image.jpeg', 'image', ['image/jpeg', 0.9]).then(value =>
+            AdminAccounts[this.method](Object.assign(this.item, value)).then(
+              Notifications.success(this),
+              Notifications.error(this)
+            )
+          )
+        )
+      }
+    },
+
+    mixins: [ItemPage, ImageMixin, LoaderHelper]
   }
 </script>
 

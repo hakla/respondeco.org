@@ -43,6 +43,9 @@ PUT           /api/v1/organisations/:id                      business.organisati
 POST          /api/v1/organisations                          business.organisations.OrganisationCtrl.create
 DELETE        /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.delete(id: Long)
 
+GET           /api/v1/organisations/:id/projects             business.projects.ProjectCtrl.byOrganisationId(id: Long)
+GET           /api/v1/organisations/:id/projects/finished    business.finishedProjects.FinishedProjectCtrl.findByOrganisation(id: Long)
+
 ### Project CRUD
 GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll
 GET           /api/v1/projects/:id                           business.projects.ProjectCtrl.findById(id: Long)
@@ -50,7 +53,9 @@ PUT           /api/v1/projects/:id                           business.projects.P
 POST          /api/v1/projects                               business.projects.ProjectCtrl.create
 DELETE        /api/v1/projects/:id                           business.projects.ProjectCtrl.delete(id: Long)
 
-GET           /api/v1/organisations/:id/projects             business.projects.ProjectCtrl.byOrganisationId(id: Long)
+GET           /api/v1/projects/:id/finished                  business.finishedProjects.FinishedProjectCtrl.findByProject(id: Long)
+GET           /api/v1/projects/:id/comments                  business.comments.CommentCtrl.findByProject(id: Long)
+
 
 ### Project history CRUD
 GET           /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.findAll
@@ -59,13 +64,13 @@ PUT           /api/v1/finishedProjects/:id                   business.finishedPr
 POST          /api/v1/finishedProjects                       business.finishedProjects.FinishedProjectCtrl.create
 DELETE        /api/v1/finishedProjects/:id                   business.finishedProjects.FinishedProjectCtrl.delete(id: Long)
 
-GET           /api/v1/finishedProjects/:id/comments          business.comments.CommentCtrl.findByProject(id: Long)
+GET           /api/v1/finishedProjects/:id/comments          business.comments.CommentCtrl.findByFinishedProject(id: Long)
 
 GET           /api/v1/comments                               business.comments.CommentCtrl.findAll
-POST          /api/v1/comments                               business.comments.CommentCtrl.create
-
-GET           /api/v1/projects/:id/finished                  business.finishedProjects.FinishedProjectCtrl.findByProject(id: Long)
-GET           /api/v1/organisations/:id/projects/finished    business.finishedProjects.FinishedProjectCtrl.findByOrganisation(id: Long)
+GET           /api/v1/comments/:id                           business.comments.CommentCtrl.byId(id: Long)
+PUT           /api/v1/comments/:id                           business.comments.CommentCtrl.update(id: Long)
+POST          /api/v1/comments                               business.comments.CommentCtrl.create(commentType: String, linkId: Long)
+DELETE        /api/v1/comments/:id                           business.comments.CommentCtrl.delete(id: Long)
 
 ### Images
 GET           /api/v1/images/*id                             se.digiplant.res.ResAssets.at(id, source = "tmp")

@@ -29,6 +29,7 @@ import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
 import { mapGetters } from 'vuex'
 import Croppa from 'vue-croppa'
 import Notifications from 'vue-notification'
+import Spinner from 'vue-simple-spinner'
 import VModal from 'vue-js-modal'
 import VeeValidate from 'vee-validate'
 import Vue from 'vue'
@@ -62,6 +63,7 @@ import UnifyListItemContent from 'common/components/unify-list-item-content'
 import UnifyTextarea from 'common/components/unify-textarea'
 
 Vue.component(RespondecoIcon.name, RespondecoIcon)
+Vue.component('spinner', Spinner)
 Vue.component(UnifyBlock.name, UnifyBlock)
 Vue.component(UnifyButton.name, UnifyButton)
 Vue.component(UnifyFormInput.name, UnifyFormInput)

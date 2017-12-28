@@ -8,16 +8,9 @@
 
         <div class="text-right" slot="footer">
           <button @click="back" type="button" class="btn btn-link">Abbrechen</button>
-          <button :disabled="$isLoading('global-loader')" type="submit"
-                  class="btn btn-primary d-inline-flex align-items-center">
-            <transition name="fade" mode="out-in">
-              <spinner style="margin-right: 8px" size="small" v-if="$isLoading('global-loader')"></spinner>
-            </transition>
-
-            <span>
-              Speichern
-            </span>
-          </button>
+          <admin-button class="btn-primary">
+            Speichern
+          </admin-button>
         </div>
       </admin-card>
     </admin-page>
@@ -40,7 +33,11 @@
 
     methods: {
       back () {
-        this.$router.push(this.routeBack)
+        if (this.routeBack != null) {
+          this.$router.push(this.routeBack)
+        } else {
+          this.$emit('back')
+        }
       },
 
       submit (event) {

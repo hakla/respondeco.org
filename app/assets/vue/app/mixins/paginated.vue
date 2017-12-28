@@ -28,9 +28,7 @@
     name: "paginated",
 
     beforeRouteUpdate (to, from, next) {
-      console.log('before - check')
       if (this.runBeforeRouteUpdate) {
-        console.log('before - go')
         this.page = this.pageFromRoute(to)
 
         if (!this.$isLoading('portfolio')) {

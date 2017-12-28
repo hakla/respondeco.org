@@ -1,9 +1,17 @@
 <script>
   import Paginated from 'app/mixins/paginated'
   import Projects from 'common/services/projects'
-  import Utils from 'app/utils'
+  import { ImageHelper } from '../../common/utils'
 
-  let toPortfolioItem = Utils.toPortfolioItem("projects")
+  function toPortfolioItem (item) {
+    return {
+      description: item.description,
+      href: `/projects/${item.id}`,
+      id: item.id,
+      image: item.image ?('/api/v1/images/' + item.image) : '/assets/images/demo-square.jpg',
+      title: item.name
+    }
+  }
 
   export default {
     name: 'projects',

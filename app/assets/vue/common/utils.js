@@ -132,11 +132,20 @@ export const ObjectNormaliser = {
     return Object.assign({
       email: undefined,
       id: undefined,
+      image: undefined,
       name: undefined,
       password: undefined,
       organisationId: null,
       role: 'User'
-    })
+    }, account)
+  },
+
+  comment (comment = {}) {
+    return Object.assign({
+      author: {
+        data: {}
+      }
+    }, comment)
   },
 
   finishedProject (finishedProject = {}) {

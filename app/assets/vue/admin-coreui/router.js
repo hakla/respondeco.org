@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import Account from './accounts/account'
 import Accounts from './accounts/accounts'
 
+import Comment from './comments/comment'
+
 import FinishedProject from './finishedProjects/finished-project'
 import FinishedProjects from './finishedProjects/finished-projects'
 
@@ -24,72 +26,80 @@ export const routes = [{
   path: '/',
   component: App,
   children: [{
-    name: 'accounts',
-    path: '/accounts',
     component: Accounts,
     meta: {
       title: 'Accounts'
-    }
+    },
+    name: 'accounts',
+    path: '/accounts',
   }, {
-    name: 'account',
-    path: 'accounts/:id',
     component: Account,
-    props: true,
     meta: {
       title: 'Account anlegen / bearbeiten'
-    }
+    },
+    name: 'account',
+    path: 'accounts/:id',
+    props: true,
   }, {
-    path: '/finishedProjects',
-    name: 'finishedProjects',
+    component: Comment,
+    meta: {
+      title: 'Kommentar anlegen / bearbeiten'
+    },
+    name: 'comment',
+    path: '/:type/:typeId/comments/:id',
+    props: true
+  }, {
     component: FinishedProjects,
     meta: {
       title: 'Abgeschlossene Projekte'
-    }
+    },
+    name: 'finishedProjects',
+    path: '/finishedProjects',
   }, {
-    name: 'finishedProject',
-    path: 'finishedProjects/:id',
     component: FinishedProject,
-    props: true,
     meta: {
       title: 'Abgeschlossenes Projekt anlegen / bearbeiten'
-    }
+    },
+    name: 'finishedProject',
+    path: 'finishedProjects/:id',
+    props: true,
   }, {
-    path: '/organisations',
-    name: 'organisations',
     component: Organisations,
     meta: {
       title: 'Organisationen'
-    }
+    },
+    name: 'organisations',
+    path: '/organisations',
   }, {
-    name: 'organisation',
-    path: 'organisations/:id',
     component: Organisation,
-    props: true,
     meta: {
       title: 'Organisation anlegen / bearbeiten'
-    }
+    },
+    name: 'organisation',
+    path: 'organisations/:id',
+    props: true,
   }, {
-    path: '/projects',
-    name: 'projects',
     component: Projects,
     meta: {
       title: 'Projekte'
-    }
+    },
+    name: 'projects',
+    path: '/projects',
   }, {
-    name: 'project',
-    path: 'projects/:id',
     component: Project,
-    props: true,
     meta: {
       title: 'Projekt anlegen / bearbeiten'
-    }
+    },
+    name: 'project',
+    path: 'projects/:id',
+    props: true,
   }]
 }, {
+  component: Login,
   path: '/login',
-  component: Login
 }, {
+  component: Logout,
   path: '/logout',
-  component: Logout
 }]
 
 export const router = new VueRouter({

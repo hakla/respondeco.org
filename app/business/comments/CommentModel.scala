@@ -1,12 +1,12 @@
 package business.comments
 
-import business.finishedProjects.FinishedProjectPublicModel
+import business.accounts.AccountPublicModel
+import business.organisations.OrganisationModel
 import common.MyWriteable
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, JsValue, Json, OFormat}
 
 case class CommentModel(
     id: Long,
-    project_history: Long,
     author: Long,
     title: Option[String],
     content: Option[String],
@@ -22,7 +22,6 @@ object CommentModel extends MyWriteable[CommentModel] {
 
 case class CommentWriteModel(
     id: Option[Long],
-    project_history: Long,
     author: Long,
     title: Option[String],
     content: Option[String],
@@ -37,7 +36,8 @@ object CommentWriteModel extends MyWriteable[CommentWriteModel] {
 }
 
 case class CommentPublicModel(
-    author: Option[String],
+    id: Long,
+    author: Option[Author],
     title: Option[String],
     content: Option[String],
     video: Option[String],
@@ -50,3 +50,53 @@ object CommentPublicModel extends MyWriteable[CommentPublicModel] {
 
 }
 
+sealed trait Author {
+    def id: Long
+    def image: Option[String]
+    def name: String
+}
+
+object Author {
+
+    def unapply(author: Author): Option[JsValue] = {
+        val o = author match {
+            case o: AuthorUser => Json.toJson(o)(AuthorUser.formatter)
+            case o: AuthorOrganisation => Json.toJson(o)(AuthorOrganisation.formatter)
+        }
+
+        Some(o)
+    }
+
+    def apply(data: JsValue): Author = {
+        data.validate[AuthorUser].orElse(data.validate[AuthorOrganisation]).get
+    }
+
+    implicit val formatter: OFormat[Author] = Json.format[Author]
+
+}
+
+case class AuthorOrganisation(
+    id: Long,
+    image: Option[String],
+    name: String,
+    organisation: OrganisationModel
+) extends Author
+
+object AuthorOrganisation extends MyWriteable[AuthorOrganisation] {
+
+    implicit val formatter: OFormat[AuthorOrganisation] = Json.format[AuthorOrganisation]
+
+}
+
+case class AuthorUser(
+    id: Long,
+    image: Option[String],
+    name: String,
+    user: AccountPublicModel
+) extends Author
+
+object AuthorUser extends MyWriteable[AuthorUser] {
+
+    implicit val formatter: OFormat[AuthorUser] = Json.format[AuthorUser]
+
+}

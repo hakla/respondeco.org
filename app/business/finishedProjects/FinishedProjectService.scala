@@ -65,7 +65,7 @@ class FinishedProjectService @Inject()(commentService: CommentService, organisat
             ratingOwner = ratingService.byId(finishedProject.rating_owner).map(_.toPublicModel),
             ratingOrganisation = ratingService.byId(finishedProject.rating_organisation).map(_.toPublicModel),
             date = finishedProject.date,
-            comments = commentService.all('project_history -> finishedProject.id).size
+            comments = commentService.byFinishedProject(finishedProject.id).size
         )
     }
 

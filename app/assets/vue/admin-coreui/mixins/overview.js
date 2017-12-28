@@ -1,4 +1,5 @@
 import { Notifications } from 'common/utils'
+import LoaderHelper from '../../common/mixins/loader-helper'
 
 const Overview = {
   name: 'admin-overview',
@@ -9,6 +10,8 @@ const Overview = {
 
   data () {
     return {
+      loader: ['card'],
+
       list: [],
 
       // Used to normalise an entry - overridden
@@ -24,13 +27,11 @@ const Overview = {
 
   methods: {
     fetchData () {
-      this.$startLoading('card')
-
-      this.service.all().then(response => {
-        this.list = response.body.items.map(this.normaliser)
-
-        this.$endLoading('card')
-      })
+      this.promiseLoading(
+        this.service.all().then(response => {
+          this.list = response.body.items.map(this.normaliser)
+        })
+      )
     },
 
     open (id) {
@@ -52,7 +53,9 @@ const Overview = {
         Notifications.error(this)
       )
     }
-  }
+  },
+
+  mixins: [LoaderHelper]
 }
 
 export default Overview

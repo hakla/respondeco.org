@@ -96,10 +96,6 @@
   export default {
     name: 'organisation',
 
-    created () {
-      this.fetchData()
-    },
-
     data () {
       return {
         banner: {},

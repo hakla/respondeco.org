@@ -17,8 +17,10 @@ class ProjectCtrl @Inject()(projectService: ProjectService, val accountService: 
 
     def findById(id: Long) = Unauthenticated {
         projectService.byId(id) match {
-            case Some(org) => Ok(org)
-            case None => NotFound("No such organisation")
+            case Some(project) => Ok(
+                projectService.toPublicModel(project)
+            )
+            case None => NotFound("No such project")
         }
     }
 

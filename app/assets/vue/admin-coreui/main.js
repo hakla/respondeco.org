@@ -6,6 +6,10 @@ import Notifications from 'vue-notification'
 
 import Croppa from 'vue-croppa'
 import 'vue-croppa/dist/vue-croppa.css'
+
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+
 import Spinner from 'vue-simple-spinner'
 
 import flatPickr from 'vue-flatpickr-component'

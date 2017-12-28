@@ -2,36 +2,58 @@ package business.comments
 
 import javax.inject.Inject
 
-import anorm.{Macro, RowParser, SQL}
-import business.finishedProjects.FinishedProjectWriteModel
-import business.organisations.{OrganisationModel, OrganisationService, OrganisationWriteModel}
+import anorm.{Macro, NamedParameter, RowParser, SQL}
+import business.accounts.{AccountPublicModel, AccountService}
+import business.organisations.OrganisationService
 import common.Database
 import persistence.Queries
 import se.digiplant.res.api.Res
 
-class CommentService @Inject()(implicit val db: Database, val res: Res, val organisationService: OrganisationService) extends Queries[CommentModel] {
+class CommentService @Inject()(implicit val db: Database, val res: Res, val accountService: AccountService, val organisationService: OrganisationService) extends Queries[CommentModel] {
 
     implicit val parser: RowParser[CommentModel] = Macro.namedParser[CommentModel]
     implicit val table: String = "comment"
 
-    def create(comment: CommentWriteModel) : Option[CommentModel] = db.withConnection { implicit c =>
-        SQL(s"insert into $table (project_history, author, title, content, image, video) values({project_history}, {author}, {title}, {content}, {image}, {video})").on(
-            'project_history -> comment.project_history,
+    override def all: List[CommentModel] = super.all(
+        'status -> false
+    )
+
+    override def all(namedParameter: NamedParameter*): List[CommentModel] = db.withConnection { implicit connection =>
+        where(
+            namedParameter :+ NamedParameter.symbol('status -> false)
+        ).executeQuery().as(parser.*)
+    }
+
+    def create(comment: CommentWriteModel, commentType: String, linkId: Long): Option[CommentModel] = db.withConnection { implicit c =>
+        val newComment: Option[CommentModel] = SQL(s"insert into $table (author, title, content, image, video) values({author}, {title}, {content}, {image}, {video})").on(
             'author -> comment.author,
             'title -> comment.title,
             'content -> comment.content,
             'image -> comment.image,
             'video -> comment.video
-        ).executeInsert().asInstanceOf[Option[Long]].map { byId } getOrElse None
+        ).executeInsert() match {
+            case Some(id: Long) => byId(id)
+            case _ => None
+        }
+
+        newComment.map(c => {
+            commentType match {
+                case "project" => createProjectLink(c, linkId)
+                case "finishedProject" => createFinishedProjectLink(c, linkId)
+            }
+        })
+
+        newComment
     }
 
     def update(id: Long, comment: CommentWriteModel): Option[CommentModel] = db.withConnection { implicit c =>
         // remove old image (if there was one)
-        byId(id).flatMap { _.image } map { image => res.delete(image) }
+        byId(id).flatMap {
+            _.image
+        } map { image => res.delete(image) }
 
-        SQL(s"update $table set project_history = {project_history}, author = {author}, title = {title}, content = {content}, image = {image}, video = {video} where id = {id}").on(
+        SQL(s"update $table set author = {author}, title = {title}, content = {content}, image = {image}, video = {video} where id = {id}").on(
             'id -> id,
-            'project_history -> comment.project_history,
             'author -> comment.author,
             'title -> comment.title,
             'content -> comment.content,
@@ -43,12 +65,76 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val orga
         }
     }
 
-    def toPublicModel(commentModel: CommentModel) : CommentPublicModel = CommentPublicModel(
-        author = organisationService.byId(commentModel.author).map(_.name),
+    def authorFromUser(comment: CommentModel): Option[Author] = {
+        accountService
+            .byId(comment.author)
+            .map(author => AuthorUser(
+                author.id,
+                author.image,
+                author.name,
+                AccountPublicModel.from(author)
+            ))
+    }
+
+    def authorFromOrganisation(comment: CommentModel): Option[Author] = {
+        organisationService.byId(comment.author)
+            .map(author => AuthorOrganisation(
+                author.id,
+                author.logo,
+                author.name,
+                author
+            ))
+    }
+
+    def authorFromComment(comment: CommentModel): Option[Author] = {
+        authorFromUser(comment).orElse(authorFromOrganisation(comment))
+    }
+
+    def toPublicModel(commentModel: CommentModel): CommentPublicModel = CommentPublicModel(
+        id = commentModel.id,
+        author = authorFromComment(commentModel),
         title = commentModel.title,
         content = commentModel.content,
         video = commentModel.video,
         image = commentModel.image
     )
+
+    override def delete(id: Long): Boolean = db.withConnection { implicit c =>
+        SQL(s"update $table set status = false where id = {id}").on(
+            'id -> id
+        ).executeUpdate() == 1
+    }
+
+    def byProject(id: Long): List[CommentModel] = db.withConnection { implicit c =>
+        SQL(s"select c.* from comment c join comment_project cp on c.id = cp.comment where cp.project = $id and status = true")
+            .executeQuery()
+            .as(parser.*)
+    }
+
+    def byFinishedProject(id: Long): List[CommentModel] = db.withConnection { implicit c =>
+        SQL(s"select c.* from comment c join comment_project_history cph on c.id = cph.comment where cph.project_history = $id and status = true")
+            .executeQuery()
+            .as(parser.*)
+    }
+
+    def createProjectLink(comment: CommentModel, projectId: Long): CommentModel = db.withConnection { implicit c =>
+        SQL(s"insert into comment_project (comment, project) values ({comment}, {project})")
+            .on(
+                'comment -> comment.id,
+                'project -> projectId
+            ).executeInsert()
+
+        comment
+    }
+
+    def createFinishedProjectLink(comment: CommentModel, projectId: Long): CommentModel = db.withConnection { implicit c =>
+        SQL(s"insert into comment_project_history (comment, project_history) values ({comment}, {project_history})")
+            .on(
+                'comment -> comment.id,
+                'project_history -> projectId
+            ).executeInsert()
+
+        comment
+    }
 
 }
