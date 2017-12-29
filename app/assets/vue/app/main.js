@@ -42,14 +42,16 @@ import fontawesome from '@fortawesome/fontawesome'
 import faAngleDown from '@fortawesome/fontawesome-pro-light/faAngleDown'
 import faAngleLeft from '@fortawesome/fontawesome-pro-light/faAngleLeft'
 import faAngleRight from '@fortawesome/fontawesome-pro-light/faAngleRight'
+import faImage from '@fortawesome/fontawesome-pro-light/faImage'
 import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
 
-fontawesome.library.add(faAngleDown, faAngleLeft, faAngleRight, faTimes)
+fontawesome.library.add(faAngleDown, faAngleLeft, faAngleRight, faImage, faTimes)
 
 import 'vue-croppa/dist/vue-croppa.css'
 //</editor-fold>
 
 //<editor-fold desc="Custom components">
+import Autosize from '../common/directives/autosize'
 import RespondecoIcon from 'common/components/respondeco-icon'
 import UnifyBlock from 'common/components/unify-block'
 import UnifyButton from 'common/components/unify-button'
@@ -74,6 +76,7 @@ Vue.component(UnifyListItem.name, UnifyListItem)
 Vue.component(UnifyListItemLabel.name, UnifyListItemLabel)
 Vue.component(UnifyListItemContent.name, UnifyListItemContent)
 Vue.component(UnifyTextarea.name, UnifyTextarea)
+Vue.directive('autosize', Autosize)
 //</editor-fold>
 
 //<editor-fold desc="App">

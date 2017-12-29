@@ -19,6 +19,22 @@ export const DateConfig = {
   locale: German
 }
 
+export const DateHelper = {
+  formatAsDateTime (date) {
+    let formatted = undefined
+
+    if (date && !isNaN(date)) {
+      formatted = format(date, 'YYYY-MM-DDTHH:mm:ss')
+    }
+
+    return formatted
+  },
+
+  parseDateTime (s) {
+    return parse(s)
+  }
+}
+
 export const ImageHelper = {
   backgroundImage (image) {
     let style = ''
@@ -142,9 +158,12 @@ export const ObjectNormaliser = {
 
   comment (comment = {}) {
     return Object.assign({
-      author: {
-        data: {}
-      }
+      author: undefined,
+      content: undefined,
+      date: undefined,
+      image: undefined,
+      title: undefined,
+      video: undefined,
     }, comment)
   },
 

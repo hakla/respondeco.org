@@ -1,12 +1,14 @@
 <template>
   <modal class="vue-dialog"
+         ref="dialog"
          :name="name"
-         height="auto"
+         :height="height"
+         :width="width"
          :classes="['v--modal', 'vue-dialog']"
-         :width="400"
          :pivot-y="0.3"
-         :adaptive="true"
-         :scrollable="true"
+         :adaptive="adaptive"
+         :scrollable="scrollable"
+         :reset="true"
          :clickToClose="clickToClose"
          @before-open="$emit('beforeOpen')"
          @before-close="$emit('beforeClose')"
@@ -35,13 +37,41 @@
     name: 'respondeco-dialog',
 
     props: {
+      adaptive: {
+        type: Boolean,
+        default: true
+      },
       buttons: Array,
       clickToClose: {
         type: Boolean,
         default: true
       },
+      height: {
+        type: Number|String,
+        default: 'auto'
+      },
       name: String,
-      title: null
+      scrollable: {
+        type: Boolean,
+        default: true
+      },
+      title: null,
+      width: {
+        type: Number|String,
+        default: 400
+      }
+    },
+
+    watch: {
+      height (newValue) {
+        // hack because the height and width are not reactive
+        this.$refs.dialog._data.modal.height = newValue
+      },
+
+      width (newValue) {
+        // hack because the height and width are not reactive
+        this.$refs.dialog._data.modal.width = newValue
+      }
     }
   }
 </script>

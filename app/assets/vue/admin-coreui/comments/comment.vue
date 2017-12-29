@@ -1,5 +1,6 @@
 <template>
-  <admin-page-item :item="item" :loader="['card', 'accounts', 'organisations']" :routeBack="routeBack" :title="`Account bearbeiten`" @back="back" @submit="save">
+  <admin-page-item :item="item" :loader="['card', 'accounts', 'organisations']" :routeBack="routeBack"
+                   :title="`Account bearbeiten`" @back="back" @submit="save">
     <div class="row">
       <div class="col-9">
         <!-- author -->
@@ -28,7 +29,26 @@
         <!-- content -->
         <div class="form-group">
           <label for="content">Inhalt</label>
-          <textarea name="content" id="content" rows="5" class="form-control" v-model="item.content"></textarea>
+          <textarea name="content" id="content" rows="5" class="form-control" v-autosize
+                    v-model="item.content"></textarea>
+        </div>
+
+        <!-- date -->
+        <div class="form-group">
+          <label>Datum</label>
+          <div class="input-group">
+            <flat-pickr v-model="item.date" :config="dateConfig" class="form-control" placeholder="Wähle ein Datum"
+                        name="date">
+            </flat-pickr>
+            <div class="input-group-btn">
+              <button class="btn btn-default" type="button" title="Toggle" data-toggle>
+                <respondeco-icon icon="fal calendar"></respondeco-icon>
+              </button>
+              <button class="btn btn-default" type="button" title="Clear" data-clear>
+                <respondeco-icon icon="fal times"></respondeco-icon>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- video -->
@@ -40,7 +60,8 @@
       <div class="col-3">
         <div class="form-group">
           <label>Bild</label>
-          <admin-file-chooser :height="168" :initial="imageUrl(item.image)" :quality="2" v-model="image"></admin-file-chooser>
+          <admin-file-chooser :height="168" :initial="imageUrl(item.image)" :quality="2"
+                              v-model="image"></admin-file-chooser>
         </div>
       </div>
     </div>
@@ -51,7 +72,7 @@
   import Comments from '../../common/services/comments'
   import ItemPage from '../mixins/item-page'
   import LoaderHelper from '../../common/mixins/loader-helper'
-  import { ImageHelper, ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
+  import { DateHelper, ImageHelper, ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
 
   import Multiselect from 'vue-multiselect'
   import { AdminAccounts } from '../../common/services/accounts'
@@ -128,7 +149,8 @@
         } else {
           ImageHelper.saveFromCroppa(this.image, 'image.jpeg', 'image', ['image/jpeg', 0.9]).then(value => {
             let item = Object.assign({}, this.item, {
-              author: this.item.author.data.id
+              author: this.item.author.data.id,
+              date: DateHelper.formatAsDateTime(this.item.date)
             }, value)
 
             this.promiseLoading(

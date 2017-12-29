@@ -44,7 +44,7 @@
   import Overview from '../mixins/overview'
   import { ObjectNormaliser } from '../../common/utils'
   import FinishedProjects from '../../common/services/finished-projects'
-  import DateFilter from '../../common/mixins/DateFilter'
+  import DateFilter from '../../common/mixins/date-filter'
 
   export default {
     name: 'finished-projects',

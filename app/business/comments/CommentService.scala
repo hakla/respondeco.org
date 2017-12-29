@@ -1,5 +1,6 @@
 package business.comments
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 import anorm.{Macro, NamedParameter, RowParser, SQL}
@@ -11,6 +12,8 @@ import se.digiplant.res.api.Res
 
 class CommentService @Inject()(implicit val db: Database, val res: Res, val accountService: AccountService, val organisationService: OrganisationService) extends Queries[CommentModel] {
 
+    import common.DateImplicits._
+
     implicit val parser: RowParser[CommentModel] = Macro.namedParser[CommentModel]
     implicit val table: String = "comment"
 
@@ -20,14 +23,15 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
 
     override def all(namedParameter: NamedParameter*): List[CommentModel] = db.withConnection { implicit connection =>
         where(
-            namedParameter :+ NamedParameter.symbol('status -> false)
+            namedParameter :+ NamedParameter.symbol('status -> false): _*
         ).executeQuery().as(parser.*)
     }
 
     def create(comment: CommentWriteModel, commentType: String, linkId: Long): Option[CommentModel] = db.withConnection { implicit c =>
-        val newComment: Option[CommentModel] = SQL(s"insert into $table (author, title, content, image, video) values({author}, {title}, {content}, {image}, {video})").on(
+        val newComment: Option[CommentModel] = SQL(s"insert into $table (author, date, title, content, image, video) values({author}, {date}, {title}, {content}, {image}, {video})").on(
             'author -> comment.author,
             'title -> comment.title,
+            'date -> comment.date.flatMap(_.formatted).orElse(LocalDateTime.now().formatted),
             'content -> comment.content,
             'image -> comment.image,
             'video -> comment.video
@@ -52,9 +56,10 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
             _.image
         } map { image => res.delete(image) }
 
-        SQL(s"update $table set author = {author}, title = {title}, content = {content}, image = {image}, video = {video} where id = {id}").on(
+        SQL(s"update $table set author = {author}, date = {date}, title = {title}, content = {content}, image = {image}, video = {video} where id = {id}").on(
             'id -> id,
             'author -> comment.author,
+            'date -> comment.date.flatMap(_.formatted).orElse(LocalDateTime.now().formatted),
             'title -> comment.title,
             'content -> comment.content,
             'image -> comment.image,
@@ -90,14 +95,17 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
         authorFromUser(comment).orElse(authorFromOrganisation(comment))
     }
 
-    def toPublicModel(commentModel: CommentModel): CommentPublicModel = CommentPublicModel(
-        id = commentModel.id,
-        author = authorFromComment(commentModel),
-        title = commentModel.title,
-        content = commentModel.content,
-        video = commentModel.video,
-        image = commentModel.image
-    )
+    def toPublicModel(commentModel: CommentModel): CommentPublicModel = {
+        CommentPublicModel(
+            id = commentModel.id,
+            author = authorFromComment(commentModel),
+            date = commentModel.date.formatted,
+            title = commentModel.title,
+            content = commentModel.content,
+            video = commentModel.video,
+            image = commentModel.image
+        )
+    }
 
     override def delete(id: Long): Boolean = db.withConnection { implicit c =>
         SQL(s"update $table set status = false where id = {id}").on(
@@ -106,13 +114,13 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
     }
 
     def byProject(id: Long): List[CommentModel] = db.withConnection { implicit c =>
-        SQL(s"select c.* from comment c join comment_project cp on c.id = cp.comment where cp.project = $id and status = true")
+        SQL(s"select c.* from comment c join comment_project cp on c.id = cp.comment where cp.project = $id and status = true order by c.date desc")
             .executeQuery()
             .as(parser.*)
     }
 
     def byFinishedProject(id: Long): List[CommentModel] = db.withConnection { implicit c =>
-        SQL(s"select c.* from comment c join comment_project_history cph on c.id = cph.comment where cph.project_history = $id and status = true")
+        SQL(s"select c.* from comment c join comment_project_history cph on c.id = cph.comment where cph.project_history = $id and status = true order by c.date desc")
             .executeQuery()
             .as(parser.*)
     }

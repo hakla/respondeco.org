@@ -1,5 +1,7 @@
 package business.comments
 
+import java.time.LocalDateTime
+
 import business.accounts.AccountPublicModel
 import business.organisations.OrganisationModel
 import common.MyWriteable
@@ -8,6 +10,7 @@ import play.api.libs.json.{Format, JsValue, Json, OFormat}
 case class CommentModel(
     id: Long,
     author: Long,
+    date: Option[LocalDateTime],
     title: Option[String],
     content: Option[String],
     video: Option[String],
@@ -23,6 +26,7 @@ object CommentModel extends MyWriteable[CommentModel] {
 case class CommentWriteModel(
     id: Option[Long],
     author: Long,
+    date: Option[LocalDateTime],
     title: Option[String],
     content: Option[String],
     video: Option[String],
@@ -37,6 +41,7 @@ object CommentWriteModel extends MyWriteable[CommentWriteModel] {
 
 case class CommentPublicModel(
     id: Long,
+    date: Option[String],
     author: Option[Author],
     title: Option[String],
     content: Option[String],

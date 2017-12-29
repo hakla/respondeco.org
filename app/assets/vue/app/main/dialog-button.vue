@@ -1,5 +1,5 @@
 <template>
-  <button class="vue-dialog-button" @click.stop.prevent="click">
+  <button class="vue-dialog-button" type="button" @click="click">
     <slot></slot>
   </button>
 </template>
@@ -9,8 +9,8 @@
     name: "dialog-button",
 
     methods: {
-      click () {
-        this.$emit('click')
+      click (event) {
+        this.$emit('click', event)
       }
     }
   }

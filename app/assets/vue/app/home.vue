@@ -56,7 +56,7 @@
   import { mapActions, mapGetters } from 'vuex'
 
   import Organisations from 'common/services/organisations'
-  import Projects from 'common/services/organisations'
+  import Projects from 'common/services/projects'
 
   export default {
     name: "home",
@@ -87,9 +87,9 @@
         page: 1,
         pageSize: 8
       }).then(response => {
-        let toPortfolioItem = Utils.toPortfolioItem("projects")
+        let toPortfolioItem = Utils.projectToPortfolioItem
 
-        this.projects = response.body.items.map(toPortfolioItem)
+        this.projects = response.body.items.map((item) => toPortfolioItem(item))
 
         this.$endLoading('projects')
       })

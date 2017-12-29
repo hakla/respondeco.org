@@ -61,7 +61,7 @@
 
     data () {
       return {
-        activeFile: '',
+        activeImage: '',
         croppa: {},
         files: [],
         progress: 0,
@@ -110,7 +110,7 @@
 
       reset () {
         this.progress = 0
-        this.activeFile = this.file
+        this.activeImage = this.file
       },
 
       upload () {
@@ -129,7 +129,7 @@
 
     watch: {
       file (newValue) {
-        this.activeFile = newValue
+        this.activeImage = newValue
       }
     }
   }

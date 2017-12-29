@@ -3,7 +3,7 @@ package persistence
 import anorm._
 import common.Database
 
-import scala.reflect.{ClassTag, _}
+import scala.reflect.ClassTag
 import scala.reflect.runtime.{universe => ru}
 
 abstract class Queries[A: ClassTag] {
@@ -12,14 +12,16 @@ abstract class Queries[A: ClassTag] {
     implicit val db: Database
     val table: String
 
-    def all: List[A] = all()
+    def all: List[A] = all("asc")
 
-    def all(namedParameter: NamedParameter*): List[A] = db.withConnection { implicit connection =>
-        where(namedParameter).executeQuery().as(parser.*)
+    def all(namedParameter: NamedParameter*): List[A] = all("asc", namedParameter:_*)
+
+    def all(order: String, namedParameter: NamedParameter*): List[A] = db.withConnection { implicit connection =>
+        where(order, namedParameter).executeQuery().as(parser.*)
     }
 
     def first(parameters: NamedParameter*): Option[A] = db.withConnection { implicit connection =>
-        where(parameters).executeQuery().as(parser.*) match {
+        where(parameters:_*).executeQuery().as(parser.*) match {
             case x :: _ => Some(x)
             case _ => None
         }
@@ -33,9 +35,9 @@ abstract class Queries[A: ClassTag] {
 
     def byId(id: Long): Option[A] = first('id -> id)
 
-    protected def where(size: Option[Long])(parameters: NamedParameter*): SimpleSql[Row] = where(parameters)
+    protected def where(parameters: NamedParameter*): SimpleSql[Row] = where("asc", parameters)
 
-    protected def where(parameters: Seq[NamedParameter]): SimpleSql[Row] = {
+    protected def where(order: String, parameters: Seq[NamedParameter]): SimpleSql[Row] = {
         val statement: String = s"SELECT * FROM $table" + (parameters.nonEmpty match {
             case true =>
                 val x: Seq[String] = parameters.map { x =>
@@ -48,7 +50,7 @@ abstract class Queries[A: ClassTag] {
             case false => ""
         })
 
-        var query: SimpleSql[Row] = SQL(statement + " ORDER BY id")
+        var query: SimpleSql[Row] = SQL(statement + s" ORDER BY id $order")
 
         parameters.foldLeft(query)((query, b) => query.on(b))
     }

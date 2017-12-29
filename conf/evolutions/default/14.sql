@@ -1,0 +1,7 @@
+# --- !Ups
+
+ALTER TABLE comment ADD COLUMN date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+# --- !Downs
+
+ALTER TABLE comment DROP COLUMN date;

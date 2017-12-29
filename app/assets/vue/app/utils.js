@@ -10,6 +10,16 @@ export default class Utils {
     })
   }
 
+  static projectToPortfolioItem (item) {
+    return {
+      description: item.description,
+      href: `/projects/${item.id}`,
+      id: item.id,
+      image: item.image ?('/api/v1/images/' + item.image) : '/assets/images/demo-square.jpg',
+      title: item.name
+    }
+  }
+
 }
 
 export const RouteHelper = {

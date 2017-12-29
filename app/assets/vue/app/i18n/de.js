@@ -1,6 +1,7 @@
 export default {
   common: {
     about_organisation: 'Über das Unternehmen',
+    add: 'Hinzufügen',
     cancel: 'Abbrechen',
     comments: 'Kommentare',
     email: 'E-Mail',
@@ -48,6 +49,14 @@ export default {
     }
   },
 
+  image: {
+    dialog: {
+      choose: 'Wähle ein Bild',
+      chooseAnother: 'Wähle ein anderes Bild',
+      orDragAndDrop: 'oder ziehe eines in das Fenster',
+    }
+  },
+
   login: {
     error: 'Fehler bei der Anmeldung',
     go: 'Anmelden',
@@ -82,6 +91,16 @@ export default {
         title: 'Sicherheitseinstellungen'
       },
       website: 'Webseite'
+    }
+  },
+
+  project: {
+    new: {
+      action: 'Erzähle mehr über dein Projekt!',
+      changeImage: 'Ändere das Bild!',
+      chooseImage: 'Füge ein Bild hinzu!',
+      content: '...',
+      title: 'Neuer Eintrag'
     }
   },
 

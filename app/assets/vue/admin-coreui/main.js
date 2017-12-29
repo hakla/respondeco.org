@@ -42,6 +42,8 @@ import AdminPage from './components/page'
 import AdminPageItem from './components/page-item'
 import AdminTable from './components/table'
 
+import Autosize from '../common/directives/autosize'
+
 import RespondecoIcon from 'common/components/respondeco-icon'
 
 import { router } from './router'
@@ -73,6 +75,8 @@ Vue.component(AdminPageItem.name, AdminPageItem)
 Vue.component(AdminTable.name, AdminTable)
 Vue.component(RespondecoIcon.name, RespondecoIcon)
 Vue.component('spinner', Spinner)
+
+Vue.directive('autosize', Autosize)
 
 Vue.use(Croppa)
 Vue.use(flatPickr)
