@@ -1,8 +1,12 @@
 <template>
   <form @submit.prevent.stop="save">
+
+    <!-- editable view -->
     <article class="g-mb-100 position-relative" v-if="editable">
       <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-0 g-font-size-20"
-         @click="deleteComment(comment.id)" v-if="editable && comment.id != null">
+         @click="deleteComment(comment.id)" v-if="editable && comment.id != null"
+         v-tooltip data-placement="top" title="Kommentar löschen" ref="removeIcon"
+      >
         <respondeco-icon icon="fal times"></respondeco-icon>
       </i>
 
@@ -24,12 +28,19 @@
         <ul
           class="d-flex justify-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-45 g-mb-25">
           <li class="list-inline-item mr-5">
+            <!-- new image -> show author image -->
             <img class="g-width-40 g-height-40 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
                  :src="imageUrl(activeUser.image)" v-if="activeUser.image"
                  alt="Image Description">
+
+            <!-- existing comment -> show comment author image -->
+            <img class="g-width-40 g-height-40 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
+                 :src="imageUrl(comment.author.data.image)" v-if="comment.author && comment.author.data.image && comment.author.data.image"
+                 alt="Image Description">
             <span class="d-block g-width-40 g-height-40" v-else></span>
             <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0">
-              {{ activeUser.name }}
+              <span v-if="isNew">{{ activeUser.name }}</span>
+              <span v-if="!isNew && comment.author">{{ comment.author.data.name }}</span>
             </h4>
           </li>
           <li class="list-inline-item">
@@ -46,20 +57,18 @@
         </p>
 
         <div class="form-group text-right">
-          <button
+          <unify-button
+            type="submit"
             class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
             <span v-if="comment.id">{{ $t('common.save') }}</span>
             <span v-else>{{ $t('common.add') }}</span>
-          </button>
+          </unify-button>
         </div>
       </div>
     </article>
-    <article class="g-mb-100 position-relative" v-else>
-      <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-0 g-font-size-20"
-         @click="deleteComment(comment.id)" v-if="editable">
-        <respondeco-icon icon="fal times"></respondeco-icon>
-      </i>
 
+    <!-- public view -->
+    <article class="g-mb-100 position-relative" v-else>
       <img class="img-fluid w-100 g-rounded-5 g-mb-25" :src="imageUrl(comment.image)" v-if="comment.image"
            alt="Image Description">
 
@@ -73,7 +82,13 @@
             <span class="d-block g-width-40 g-height-40" v-else></span>
             <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0">
               <router-link :to="{ name: 'organisation-projects', params: { id: comment.author.data.id } }"
-                           class="g-color-gray-dark-v4" href="#">{{ comment.author.data.name }}
+                           class="g-color-gray-dark-v4" v-if="comment.author.data.organisation">
+                {{ comment.author.data.name }}
+              </router-link>
+
+              <router-link :to="{ name: 'organisation-projects', params: { id: comment.author.data.user.organisationId } }"
+                           class="g-color-gray-dark-v4" v-if="comment.author.data.user">
+                {{ comment.author.data.name }}
               </router-link>
             </h4>
           </li>
@@ -94,11 +109,13 @@
 </template>
 
 <script>
+  import $ from 'jquery'
   import { mapGetters } from 'vuex'
   import { ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
   import Comments from '../../common/services/comments'
   import ImageDialog from '../main/image-dialog'
   import Images from '../../common/services/images'
+  import LoaderHelper from '../../common/mixins/loader-helper'
 
   export default {
     name: 'project-comment',
@@ -114,6 +131,10 @@
         let id = this.comment.id || 'new'
 
         return 'image-dialog-' + id
+      },
+
+      isNew () {
+        return !this.comment.id
       }
     },
 
@@ -127,10 +148,13 @@
 
     methods: {
       deleteComment (id) {
+        $(this.$refs.removeIcon).tooltip('hide')
+
         Comments.remove(id).then(
           Notifications.success(this, () => {
-            this.$emit('change')
+            this.$emit('removed', id)
           }),
+
           Notifications.error(this)
         )
       },
@@ -140,14 +164,19 @@
       },
 
       save () {
+        this.$startLoading('global-loader')
+
+        let comment = Object.assign({}, this.comment, {
+          author: this.comment.author ? this.comment.author.data.id : this.activeUser.id
+        })
+
+        let method = this.isNew ? 'save' : 'update'
+
         if (this.previewImage) {
           Images.save(this.previewImage).then(response => {
-            let comment = Object.assign({}, this.comment, {
-              author: this.activeUser.id,
-              image: response.body
-            })
+            comment.image = response.body
 
-            Comments.save(comment, 'project', this.projectId).then(
+            Comments[method](comment, 'project', this.projectId).then(
               Notifications.success(this, () => {
                 this.$emit('change')
 
@@ -159,11 +188,7 @@
             )
           })
         } else {
-          let comment = Object.assign({}, this.comment, {
-            author: this.comment.author.data.id
-          })
-
-          Comments.update(comment, 'project', this.projectId).then(
+          Comments[method](comment, 'project', this.projectId).then(
             Notifications.success(this, () => {
               this.$emit('change')
             }),
@@ -189,7 +214,7 @@
       }
     },
 
-    mixins: [ImageMixin],
+    mixins: [ImageMixin, LoaderHelper],
 
     mounted () {
       if (this.comment && this.comment.id) {

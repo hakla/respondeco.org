@@ -1,5 +1,6 @@
 package business.finishedProjects
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 import anorm.{Macro, RowParser, SQL}
@@ -34,7 +35,7 @@ class FinishedProjectService @Inject()(commentService: CommentService, organisat
         ratingService.update(finishedProject.ratingOwner)
         ratingService.update(finishedProject.ratingOrganisation)
 
-        SQL(s"update $table set id = {id}, project = {project}, organisation = {organisation}, date = {date} where id = {id}").on(
+        SQL(s"update $table set id = {id}, project = {project}, organisation = {organisation}, date = {date}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id,
             'project -> finishedProject.project,
             'organisation -> finishedProject.organisation,

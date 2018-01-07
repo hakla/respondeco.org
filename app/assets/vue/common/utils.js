@@ -129,6 +129,8 @@ export const Notifications = {
   },
 
   success (vm, cb = result => {}) {
+    let i18n = vm.$i18n
+
     return (result) => {
       cb(result)
 
@@ -136,7 +138,7 @@ export const Notifications = {
 
       vm.$notify({
         duration: 1000,
-        title: vm.$t && vm.$t('common.success') || 'Erfolg!',
+        title: i18n && i18n.t && i18n.t('common.success') || 'Erfolg!',
         type: 'success'
       })
     }

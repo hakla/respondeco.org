@@ -44,7 +44,8 @@
 
     props: {
       loading: {
-        type: String
+        type: String,
+        default: 'global-loader'
       },
       size: {
         type: String,

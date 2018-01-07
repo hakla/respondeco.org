@@ -1,5 +1,6 @@
 package business.accounts
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 import anorm._
@@ -8,6 +9,8 @@ import persistence.Queries
 import security.{Role, User}
 
 class AccountService @Inject()(implicit val db: Database) extends Queries[AccountModel] {
+
+    import common.DateImplicits._
 
     implicit val parser: RowParser[AccountModel] =
         SqlParser.get[Long]("id") ~
@@ -75,7 +78,7 @@ class AccountService @Inject()(implicit val db: Database) extends Queries[Accoun
         import security.Password.StringExtensions
 
         account.password.map(password =>
-            SQL(s"update $table set email = {email}, name = {name}, organisation = {organisationId}, password = {password}, role = {role}, image = {image} where id = {id}").on(
+            SQL(s"update $table set email = {email}, name = {name}, organisation = {organisationId}, password = {password}, role = {role}, image = {image}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
                 'id -> id,
                 'email -> account.email,
                 'name -> account.name,
@@ -85,7 +88,7 @@ class AccountService @Inject()(implicit val db: Database) extends Queries[Accoun
                 'image -> account.image
             )
         ).getOrElse(
-            SQL(s"update $table set email = {email}, name = {name}, organisation = {organisationId}, role = {role}, image = {image} where id = {id}").on(
+            SQL(s"update $table set email = {email}, name = {name}, organisation = {organisationId}, role = {role}, image = {image}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
                 'id -> id,
                 'email -> account.email,
                 'name -> account.name,

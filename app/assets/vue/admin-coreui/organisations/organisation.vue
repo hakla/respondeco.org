@@ -62,6 +62,17 @@
           <!-- Bilder -->
           <div class="col-md-3">
             <div class="form-group">
+              <label class="mr-1">
+                Verifiziert
+              </label>
+              <label class="switch switch-text switch-pill switch-primary">
+                <input type="checkbox" class="switch-input" :checked="item.verified" v-model="item.verified">
+                <span class="switch-label" data-on="Ja" data-off="Nop"></span>
+                <span class="switch-handle"></span>
+              </label>
+            </div>
+
+            <div class="form-group">
               <label>Logo</label>
 
               <admin-file-chooser :initial="imageUrl(item.logo)" :quality="2" v-model="logo"></admin-file-chooser>

@@ -6,6 +6,18 @@
       <!-- Hero Info #01 -->
       <unify-hero type="1">
         {{ organisation.name }}
+        <span
+          class="fa-layers fa-fw fa-xs verification-badge"
+          v-tooltip
+          :data-content="'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur debitis doloremque dolorum error excepturi illum ipsa ipsam modi. Nesciunt nulla obcaecati porro quibusdam repellendus reprehenderit saepe sequi, velit veniam voluptates!'"
+          data-placement="top"
+          data-trigger="hover"
+          title="Verifizierte Organisation"
+          v-if="organisation.verified"
+        >
+          <respondeco-icon style="color: #feb334" size="lg" icon="far shield-alt"></respondeco-icon>
+          <respondeco-icon transform="right-1 shrink-5" icon="fas check"></respondeco-icon>
+        </span>
       </unify-hero>
       <!-- End Hero Info #01 -->
 
@@ -283,4 +295,7 @@
 
   .main
     margin-bottom: 200px
+
+  .verification-badge
+    vertical-align super
 </style>

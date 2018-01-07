@@ -1,5 +1,6 @@
 package business.rating
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 import anorm.{Macro, RowParser, SQL}
@@ -10,6 +11,8 @@ import persistence.Queries
   * Created by klaus on 01.06.17.
   */
 class RatingService @Inject()(implicit val db: Database) extends Queries[RatingModel] {
+
+    import common.DateImplicits.LocalDateTimeExtensions
 
     implicit val parser: RowParser[RatingModel] = Macro.namedParser[RatingModel]
     implicit val table: String = "rating"
@@ -24,7 +27,7 @@ class RatingService @Inject()(implicit val db: Database) extends Queries[RatingM
     def update(rating: RatingWriteModel): Option[RatingModel] = update(rating.id.get, rating)
 
     def update(id: Long, rating: RatingWriteModel): Option[RatingModel] = db.withConnection { implicit c =>
-        SQL(s"update $table set id = {id}, liked = {liked}, testimonial = {testimonial} where id = {id}").on(
+        SQL(s"update $table set id = {id}, liked = {liked}, testimonial = {testimonial}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id,
             'liked -> rating.liked,
             'testimonial -> rating.testimonial

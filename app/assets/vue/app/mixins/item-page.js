@@ -20,7 +20,7 @@ const ItemPage = {
       this.promiseLoading(
         this.service.byId(this.id).then(result => {
           this.item = result.body
-        })
+        }, 'item-page')
       )
     }
   },

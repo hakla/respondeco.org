@@ -1,6 +1,6 @@
 <template>
   <main>
-    <respondeco-header></respondeco-header>
+    <!--<respondeco-header></respondeco-header>-->
 
     <main class="g-pb-100">
       <!-- Promo Block -->
@@ -40,7 +40,7 @@
       </transition>
     </main>
 
-    <respondeco-footer></respondeco-footer>
+    <!--<respondeco-footer></respondeco-footer>-->
   </main>
 </template>
 

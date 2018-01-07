@@ -40,8 +40,6 @@ export const routes = [{
     component: Home,
     meta: Object.assign(
       {},
-      RouteHelper.meta.noFooter,
-      RouteHelper.meta.noHeader,
       RouteHelper.meta.scrollToTop
     ),
     name: 'home',

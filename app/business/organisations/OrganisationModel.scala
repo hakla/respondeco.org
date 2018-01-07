@@ -1,5 +1,7 @@
 package business.organisations
 
+import java.time.LocalDateTime
+
 import common.{IdModel, MyWriteable}
 import play.api.libs.json.{Json, OFormat}
 
@@ -14,14 +16,30 @@ case class OrganisationModel(
     subcategory: Option[String],
     image: Option[String],
     logo: Option[String],
-    video: Option[String]
+    video: Option[String],
+    verified: Option[Boolean],
+    verifiedAt: Option[LocalDateTime]
 ) extends IdModel
 
 object OrganisationModel extends MyWriteable[OrganisationModel] {
     implicit val formatter: OFormat[OrganisationModel] = Json.format[OrganisationModel]
 
     def fromWriteModel(id: Long, organisation: OrganisationWriteModel): OrganisationModel =
-        new OrganisationModel(id, organisation.name, organisation.description, organisation.email, organisation.website, organisation.location, organisation.category, organisation.subcategory, organisation.image, organisation.logo, organisation.video)
+        new OrganisationModel(
+            id = id,
+            name = organisation.name,
+            description = organisation.description,
+            email = organisation.email,
+            website = organisation.website,
+            location = organisation.location,
+            category = organisation.category,
+            subcategory = organisation.subcategory,
+            image = organisation.image,
+            logo = organisation.logo,
+            video = organisation.video,
+            verified = organisation.verified,
+            verifiedAt = organisation.verifiedAt
+        )
 
 }
 
@@ -36,7 +54,9 @@ case class OrganisationWriteModel(
     subcategory: Option[String] = None,
     image: Option[String] = None,
     logo: Option[String] = None,
-    video: Option[String] = None
+    video: Option[String] = None,
+    verified: Option[Boolean] = None,
+    verifiedAt: Option[LocalDateTime] = None
 )
 
 object OrganisationWriteModel extends MyWriteable[OrganisationWriteModel] {

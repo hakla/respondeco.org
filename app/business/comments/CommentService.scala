@@ -34,7 +34,8 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
             'date -> comment.date.flatMap(_.formatted).orElse(LocalDateTime.now().formatted),
             'content -> comment.content,
             'image -> comment.image,
-            'video -> comment.video
+            'video -> comment.video,
+            'updatedAt -> LocalDateTime.now().formatted
         ).executeInsert() match {
             case Some(id: Long) => byId(id)
             case _ => None
@@ -56,7 +57,7 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
             _.image
         } map { image => res.delete(image) }
 
-        SQL(s"update $table set author = {author}, date = {date}, title = {title}, content = {content}, image = {image}, video = {video} where id = {id}").on(
+        SQL(s"update $table set author = {author}, date = {date}, title = {title}, content = {content}, image = {image}, video = {video}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id,
             'author -> comment.author,
             'date -> comment.date.flatMap(_.formatted).orElse(LocalDateTime.now().formatted),
@@ -108,7 +109,7 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
     }
 
     override def delete(id: Long): Boolean = db.withConnection { implicit c =>
-        SQL(s"update $table set status = false where id = {id}").on(
+        SQL(s"update $table set status = false, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id
         ).executeUpdate() == 1
     }

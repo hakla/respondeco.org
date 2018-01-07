@@ -2,6 +2,12 @@
   <div class="sidebar">
     <nav class="sidebar-nav">
       <ul class="nav">
+        <li class="nav-item open">
+          <router-link active-class="active" class="nav-link" :to="{ name: 'dashboard' }">
+            <i class="icon-speedometer"></i>
+            Dashboard
+          </router-link>
+        </li>
         <li class="nav-title">
           Administration
         </li>

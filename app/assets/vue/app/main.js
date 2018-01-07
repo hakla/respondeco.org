@@ -37,22 +37,15 @@ import { VueMasonryPlugin } from 'vue-masonry'
 import VueUploadComponent from 'vue-upload-component'
 import VueYoutubeEmbed from 'vue-youtube-embed'
 
-import fontawesome from '@fortawesome/fontawesome'
-
-import faAngleDown from '@fortawesome/fontawesome-pro-light/faAngleDown'
-import faAngleLeft from '@fortawesome/fontawesome-pro-light/faAngleLeft'
-import faAngleRight from '@fortawesome/fontawesome-pro-light/faAngleRight'
-import faImage from '@fortawesome/fontawesome-pro-light/faImage'
-import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
-
-fontawesome.library.add(faAngleDown, faAngleLeft, faAngleRight, faImage, faTimes)
-
 import 'vue-croppa/dist/vue-croppa.css'
 //</editor-fold>
 
 //<editor-fold desc="Custom components">
-import Autosize from '../common/directives/autosize'
+import Autosize from 'common/directives/autosize'
+import 'app/font-awesome'
+import Popover from 'common/directives/popover'
 import RespondecoIcon from 'common/components/respondeco-icon'
+import Tooltip from 'common/directives/tooltip'
 import UnifyBlock from 'common/components/unify-block'
 import UnifyButton from 'common/components/unify-button'
 import UnifyFormInput from 'common/components/unify-form-input'
@@ -77,6 +70,8 @@ Vue.component(UnifyListItemLabel.name, UnifyListItemLabel)
 Vue.component(UnifyListItemContent.name, UnifyListItemContent)
 Vue.component(UnifyTextarea.name, UnifyTextarea)
 Vue.directive('autosize', Autosize)
+Vue.directive('popover', Popover)
+Vue.directive('tooltip', Tooltip)
 //</editor-fold>
 
 //<editor-fold desc="App">
@@ -131,7 +126,7 @@ const app = new Vue({
 }).$mount('#app')
 
 // window onload to call unify specific scripts
-$(window).on('load', function () {
+$(window).on('load respondeco-refresh-js-libraries', function () {
   // initialization of header
   $.HSCore.components.HSHeader.init($('#js-header'))
   $.HSCore.helpers.HSHamburgers.init('.hamburger')

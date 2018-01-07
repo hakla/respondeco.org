@@ -1,7 +1,7 @@
 <template>
   <section class="main g-min-height-50vh g-pb-100">
     <transition name="fade" mode="out-in">
-      <div v-if="isntLoading()">
+      <div v-if="isntLoading('project')">
         <!-- Hero Info #01 -->
         <unify-hero type="1">
           {{ item.name }}
@@ -94,6 +94,7 @@
       return {
         comments: [],
         item: ObjectNormaliser.project(),
+        loader: ['project'],
         service: Projects
       }
     },
@@ -103,7 +104,9 @@
         this.promiseLoading(
           Comments.byProject(this.id).then(result => {
             this.comments = result.body
-          })
+          }),
+
+          'project'
         )
       },
     },

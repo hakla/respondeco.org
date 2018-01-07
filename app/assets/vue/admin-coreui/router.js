@@ -11,6 +11,8 @@ import FinishedProjects from './finishedProjects/finished-projects'
 
 import App from './app'
 
+import Dashboard from './home/dashboard'
+
 import Login from './authentication/login'
 import Logout from './authentication/logout'
 
@@ -70,6 +72,13 @@ export const routes = [{
     },
     name: 'organisations',
     path: '/organisations',
+  }, {
+    component: Dashboard,
+    meta: {
+      title: 'Übersicht'
+    },
+    name: 'dashboard',
+    path: '/',
   }, {
     component: Organisation,
     meta: {

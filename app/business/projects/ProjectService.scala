@@ -3,7 +3,6 @@ package business.projects
 import javax.inject.Inject
 
 import anorm.{Macro, RowParser, _}
-import business.comments.CommentService
 import business.organisations.OrganisationService
 import common.Database
 import persistence.Queries
@@ -34,7 +33,7 @@ class ProjectService @Inject()(organisationService: OrganisationService, implici
     }
 
     def update(id: Long, project: ProjectWriteModel): Option[ProjectModel] = db.withConnection { implicit c =>
-        SQL(s"update $table set id = {id}, name = {name}, location = {location}, description = {description}, category = {category}, subcategory = {subcategory}, start = {start}, end = {end}, benefits = {benefits}, price = {price}, organisation = {organisation}, image = {image}, video = {video} where id = {id}").on(
+        SQL(s"update $table set id = {id}, name = {name}, location = {location}, description = {description}, category = {category}, subcategory = {subcategory}, start = {start}, end = {end}, benefits = {benefits}, price = {price}, organisation = {organisation}, image = {image}, video = {video}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id,
             'name -> project.name,
             'location -> project.location,
