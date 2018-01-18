@@ -13,8 +13,8 @@
           <div class="form-group">
             <label for="organisation">Organisation</label>
 
-            <select class="form-control" id="organisation" v-model="item.organisation">
-              <option :value="organisation.id" v-for="organisation in organisations">{{ organisation.name }}</option>
+            <select class="form-control" id="organisation" v-model="item.organisation.id">
+              <option :value="organisation.id" v-for="organisation in organisations" :key="organisation.id">{{ organisation.name }}</option>
             </select>
           </div>
 
@@ -32,7 +32,7 @@
 
             <select class="form-control" id="category" v-model="item.category">
               <option>---</option>
-              <option v-for="category in categories">{{ category }}</option>
+              <option v-for="(category, index) in categories" :key="index">{{ category }}</option>
             </select>
           </div>
 
@@ -42,7 +42,7 @@
 
             <select class="form-control" id="subcategory" v-model="item.subcategory">
               <option>---</option>
-              <option v-for="subcategory in subcategories">{{ subcategory }}</option>
+              <option v-for="(subcategory, index) in subcategories" :key="index">{{ subcategory }}</option>
             </select>
           </div>
 
