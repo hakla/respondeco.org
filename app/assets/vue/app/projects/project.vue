@@ -14,7 +14,7 @@
               <project-comment @change="loadComments" :project-id="item.id" v-if="activeUserIsOwner"></project-comment>
 
               <!-- list of comments -->
-              <project-comment @change="loadComments" :editable="activeUserIsOwner" :project-id="item.id" :value="comment" v-for="comment in comments" :key="comment.id"></project-comment>
+              <project-comment @change="loadComments" @removed="loadComments" :editable="activeUserIsOwner" :project-id="item.id" :value="comment" v-for="comment in comments" :key="comment.id"></project-comment>
             </div>
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
