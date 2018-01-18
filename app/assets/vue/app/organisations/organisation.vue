@@ -60,28 +60,13 @@
               </router-link>
               <!-- End Profile -->
 
-              <!-- My Projects -->
+              <!-- Projects -->
               <router-link :to="{ name: 'organisation-projects', params: { id: organisation.id } }"
                            class="list-group-item list-group-item-action justify-content-between">
                 <span><i class="icon-layers g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.projects') }}</span>
                 <span class="u-label g-font-size-11 g-bg-primary g-rounded-20 g-px-10">{{ projects.length }}</span>
               </router-link>
-              <!-- End My Projects -->
-
-              <!-- Comments -->
-              <router-link :to="{ name: 'organisation-comments', params: { id: organisation.id } }"
-                           class="list-group-item list-group-item-action justify-content-between">
-                <span><i class="icon-bubbles g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.comments') }}</span>
-                <span class="u-label g-font-size-11 g-bg-pink g-rounded-20 g-px-8">24</span>
-              </router-link>
-              <!-- End Comments -->
-
-              <!-- Reviews -->
-              <router-link :to="{ name: 'organisation-ratings', params: { id: organisation.id } }"
-                           class="list-group-item list-group-item-action justify-content-between">
-                <span><i class="icon-heart g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.ratings') }}</span>
-              </router-link>
-              <!-- End Reviews -->
+              <!-- End Projects -->
 
               <!-- Settings -->
               <router-link :to="{ name: 'organisation-settings-profile', params: { id: organisation.id } }"
