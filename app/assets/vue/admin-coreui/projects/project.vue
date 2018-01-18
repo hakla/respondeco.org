@@ -193,6 +193,8 @@
               item.start = undefined
             }
 
+            item.organisation = item.organisation.id
+
             Projects[this.method](item).then(
               Notifications.success(this, (response) => {
                 if (this.isNew) {
