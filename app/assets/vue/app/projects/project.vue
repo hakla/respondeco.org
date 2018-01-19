@@ -19,34 +19,41 @@
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
               <div class="g-pl-20--lg">
-                <!-- Links -->
+                <!-- Description -->
                 <div class="g-mb-50">
-                  <h3 class="h5 g-color-black g-font-weight-600 mb-4">Links</h3>
-                  <ul class="list-unstyled g-font-size-13 mb-0">
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> People</a>
-                    </li>
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> News Publications</a>
-                    </li>
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> Marketing &amp; IT</a>
-                    </li>
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> Business Strategy</a>
-                    </li>
-                    <li>
-                      <a
-                        class="d-block active u-link-v5 g-color-black g-bg-gray-light-v5 g-font-weight-600 g-rounded-50 g-px-20 g-py-8"
-                        href="#"><i class="mr-2 fa fa-angle-right"></i> Untold Stories</a>
-                    </li>
-                  </ul>
+                  <h5 class="mb-4">{{ $t('project.description.title') }}</h5>
+                  <div v-if="activeUserIsOwner" class="text-right">
+                    <textarea v-autosize class="form-control" v-model="item.description"></textarea>
+
+                    <unify-button
+                      @click="save"
+                      class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
+                      <span>{{ $t('common.save') }}</span>
+                    </unify-button>
+                  </div>
+                  <span v-else>
+                    {{ item.description }}
+                  </span>
                 </div>
-                <!-- End Links -->
+
+                <!-- Sticky block -->
+                <div id="sticky-block" v-stickyblock data-start-point="#sticky-block" data-end-point="footer" class="sidebar--stickyblock">
+                  <!-- Share -->
+                  <div class="g-mb-50">
+                    <h5 class="mb-4">{{ $t('project.share') }} </h5>
+                    <div>
+                      <a class="u-icon-v3 g-bg-facebook g-color-white g-color-white--hover g-mr-20 g-mb-20" href="#!">
+                        <i class="icon-social-facebook"></i>
+                      </a>
+                      <a class="u-icon-v3 g-bg-linkedin g-color-white g-color-white--hover g-mr-20 g-mb-20" href="#!">
+                        <i class="icon-social-linkedin"></i>
+                      </a>
+                      <a class="u-icon-v3 g-bg-twitter g-color-white g-color-white--hover g-mr-20 g-mb-20" href="#!">
+                        <i class="icon-social-twitter"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -109,6 +116,10 @@
           'project'
         )
       },
+
+      save () {
+        // Projects.update()
+      },
     },
 
     mixins: [DateFilter, ImageMixin, ItemPage]
@@ -116,4 +127,16 @@
 </script>
 
 <style lang="stylus" scoped>
+  .sidebar--stickyblock
+    padding-top: 30px
+
+  .form-control
+    border-color: transparent
+    border-radius: 0
+    margin: -8px
+    padding: 8px
+    transition: .2s ease border-color
+
+    &:focus
+      border-color: #eee
 </style>

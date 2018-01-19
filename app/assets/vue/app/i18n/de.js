@@ -101,7 +101,11 @@ export default {
       chooseImage: 'Füge ein Bild hinzu!',
       content: '...',
       title: 'Neuer Eintrag'
-    }
+    },
+    description: {
+      title: 'Beschreibung'
+    },
+    share: 'Teilen'
   },
 
   registration: {

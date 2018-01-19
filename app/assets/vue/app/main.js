@@ -21,6 +21,7 @@ import 'unify/js/hs.core.js'
 import 'unify/js/components/hs.cubeportfolio.js'
 import 'unify/js/components/hs.header.js'
 import 'unify/js/components/hs.navigation.js'
+import 'unify/js/components/hs.sticky-block.js'
 import 'unify/js/helpers/hs.hamburgers.js'
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
 //</editor-fold>
@@ -45,6 +46,7 @@ import Autosize from 'common/directives/autosize'
 import 'app/font-awesome'
 import Popover from 'common/directives/popover'
 import RespondecoIcon from 'common/components/respondeco-icon'
+import StickyBlock from 'common/directives/sticky-block'
 import Tooltip from 'common/directives/tooltip'
 import UnifyBlock from 'common/components/unify-block'
 import UnifyButton from 'common/components/unify-button'
@@ -71,6 +73,7 @@ Vue.component(UnifyListItemContent.name, UnifyListItemContent)
 Vue.component(UnifyTextarea.name, UnifyTextarea)
 Vue.directive('autosize', Autosize)
 Vue.directive('popover', Popover)
+Vue.directive('stickyblock', StickyBlock)
 Vue.directive('tooltip', Tooltip)
 //</editor-fold>
 

@@ -195,7 +195,7 @@ export const ObjectNormaliser = {
       id: undefined,
       location: undefined,
       name: undefined,
-      organisation: undefined,
+      organisation: {},
       price: 0,
       start: undefined,
       subcategory: undefined,
