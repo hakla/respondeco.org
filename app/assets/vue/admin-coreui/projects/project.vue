@@ -177,6 +177,21 @@
     },
 
     methods: {
+      fetchData (id = this.activeId) {
+        if (!this.isNew) {
+          this.$startLoading('card')
+
+          this.service.byId(id).then(response => {
+            // older data could have empty organisation entries
+            this.item = Object.assign({
+              organisation: {}
+            }, response.body)
+
+            this.$endLoading('card')
+          })
+        }
+      },
+
       save () {
         this.$startLoading('global-loader')
 
