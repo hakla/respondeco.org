@@ -164,6 +164,7 @@ export const ObjectNormaliser = {
       content: undefined,
       date: undefined,
       image: undefined,
+      pinned: false,
       title: undefined,
       video: undefined,
     }, comment)

@@ -14,39 +14,65 @@
               <project-comment @change="loadComments" :project-id="item.id" v-if="activeUserIsOwner"></project-comment>
 
               <!-- list of comments -->
-              <project-comment @change="loadComments" @removed="loadComments" :editable="activeUserIsOwner" :project-id="item.id" :value="comment" v-for="comment in comments" :key="comment.id"></project-comment>
+              <project-comment @change="loadComments" @pinned="loadComments" @removed="loadComments"
+                               @unpinned="loadComments" :editable="activeUserIsOwner" :project-id="item.id"
+                               :value="comment" v-for="comment in comments" :key="comment.id"></project-comment>
             </div>
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
               <div class="g-pl-20--lg">
-                <!-- Links -->
+                <!-- Description -->
                 <div class="g-mb-50">
-                  <h3 class="h5 g-color-black g-font-weight-600 mb-4">Links</h3>
+                  <h5 class="mb-4">{{ $t('project.description.title') }}</h5>
+                  <div v-if="activeUserIsOwner" class="text-right">
+                    <textarea v-autosize class="form-control" v-model="item.description"></textarea>
+
+                    <unify-button
+                      @click="save"
+                      loading="saveDescription"
+                      class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md g-mr-10 g-mt-20">
+                      <span>{{ $t('common.save') }}</span>
+                    </unify-button>
+                  </div>
+                  <span v-else>
+                    {{ item.description }}
+                  </span>
+                </div>
+
+                <!-- Sticky block -->
+                <div id="sticky-block" v-stickyblock data-start-point="#sticky-block" data-end-point="footer" class="sidebar--stickyblock">
+                  <!-- Share -->
+                  <div class="g-mb-50">
+                    <h5 class="mb-4">{{ $t('project.share') }} </h5>
+                    <div>
+                      <a class="u-icon-v3 g-bg-facebook g-color-white g-color-white--hover g-mr-20 g-mb-20" href="#!">
+                        <i class="icon-social-facebook"></i>
+                      </a>
+                      <a class="u-icon-v3 g-bg-linkedin g-color-white g-color-white--hover g-mr-20 g-mb-20" href="#!">
+                        <i class="icon-social-linkedin"></i>
+                      </a>
+                      <a class="u-icon-v3 g-bg-twitter g-color-white g-color-white--hover g-mr-20 g-mb-20" href="#!">
+                        <i class="icon-social-twitter"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="g-mt-50">
+                  <h5 class="mb-4">{{ $t('project.partners') }}</h5>
+
                   <ul class="list-unstyled g-font-size-13 mb-0">
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> People</a>
-                    </li>
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> News Publications</a>
-                    </li>
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> Marketing &amp; IT</a>
-                    </li>
-                    <li>
-                      <a class="d-block u-link-v5 g-color-gray-dark-v4 rounded g-px-20 g-py-8" href="#"><i
-                        class="mr-2 fa fa-angle-right"></i> Business Strategy</a>
-                    </li>
-                    <li>
-                      <a
-                        class="d-block active u-link-v5 g-color-black g-bg-gray-light-v5 g-font-weight-600 g-rounded-50 g-px-20 g-py-8"
-                        href="#"><i class="mr-2 fa fa-angle-right"></i> Untold Stories</a>
+                    <li v-for="partner in partners" :key="partner.id">
+                      <article class="media g-mb-35">
+                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.image)"
+                             alt="Image Description">
+                        <div class="media-body">
+                          <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.name }}</h4>
+                        </div>
+                      </article>
                     </li>
                   </ul>
                 </div>
-                <!-- End Links -->
               </div>
             </div>
           </div>
@@ -68,6 +94,7 @@
   import DateFilter from '../../common/mixins/date-filter'
 
   import ProjectComment from './comment'
+  import FinishedProjects from "../../common/services/finished-projects";
 
   export default {
     name: 'project',
@@ -88,6 +115,7 @@
     created () {
       this.fetchData()
       this.loadComments()
+      this.loadPartners()
     },
 
     data () {
@@ -95,6 +123,7 @@
         comments: [],
         item: ObjectNormaliser.project(),
         loader: ['project'],
+        partners: [],
         service: Projects
       }
     },
@@ -109,6 +138,31 @@
           'project'
         )
       },
+
+      loadPartners() {
+        this.promiseLoading(
+          FinishedProjects.byProject(this.id).then(result => {
+            this.partners = result.body.map(_ => _.organisation)
+          }),
+
+          'partners'
+        )
+      },
+
+      save () {
+        let project = this.item
+
+        project.organisation = project.organisation.id
+
+        this.promiseLoading(
+          Projects.update(project).then(
+            Notifications.success(this),
+            Notifications.error(this)
+          ),
+
+          'saveDescription'
+        )
+      }
     },
 
     mixins: [DateFilter, ImageMixin, ItemPage]
@@ -116,4 +170,18 @@
 </script>
 
 <style lang="stylus" scoped>
+  .sidebar--stickyblock
+    padding-top: 30px
+    background: #fff
+    z-index: 1
+
+  .form-control
+    border-color: transparent
+    border-radius: 0
+    margin: -8px
+    padding: 8px
+    transition: .2s ease border-color
+
+    &:focus
+      border-color: #eee
 </style>

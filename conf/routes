@@ -71,6 +71,8 @@ GET           /api/v1/comments/:id                           business.comments.C
 PUT           /api/v1/comments/:id                           business.comments.CommentCtrl.update(id: Long)
 POST          /api/v1/comments                               business.comments.CommentCtrl.create(commentType: String, linkId: Long)
 DELETE        /api/v1/comments/:id                           business.comments.CommentCtrl.delete(id: Long)
+POST          /api/v1/comments/:id/pin                       business.comments.CommentCtrl.pin(id: Long)
+DELETE        /api/v1/comments/:id/pin                       business.comments.CommentCtrl.unpin(id: Long)
 
 ### Images
 GET           /api/v1/images/*id                             se.digiplant.res.ResAssets.at(id, source = "tmp")

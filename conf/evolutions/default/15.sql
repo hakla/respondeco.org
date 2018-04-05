@@ -35,3 +35,24 @@ ALTER TABLE organisation DROP COLUMN createdAt;
 ALTER TABLE organisation DROP COLUMN updatedAt;
 ALTER TABLE organisation DROP COLUMN verified;
 ALTER TABLE organisation DROP COLUMN verifiedAt;
+
+ALTER TABLE account DROP COLUMN createdAt;
+ALTER TABLE account DROP COLUMN updatedAt;
+
+ALTER TABLE comment DROP COLUMN createdAt;
+ALTER TABLE comment DROP COLUMN updatedAt;
+
+ALTER TABLE comment_project DROP COLUMN createdAt;
+ALTER TABLE comment_project DROP COLUMN updatedAt;
+
+ALTER TABLE comment_project_history DROP COLUMN createdAt;
+ALTER TABLE comment_project_history DROP COLUMN updatedAt;
+
+ALTER TABLE project DROP COLUMN createdAt;
+ALTER TABLE project DROP COLUMN updatedAt;
+
+ALTER TABLE project_history DROP COLUMN createdAt;
+ALTER TABLE project_history DROP COLUMN updatedAt;
+
+ALTER TABLE rating DROP COLUMN createdAt;
+ALTER TABLE rating DROP COLUMN updatedAt;

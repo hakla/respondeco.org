@@ -3,6 +3,19 @@
 
     <!-- editable view -->
     <article class="g-mb-100 position-relative" v-if="editable">
+      <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-30 g-font-size-20"
+         @click="pin()" v-if="editable && comment.id != null && !comment.pinned"
+         v-tooltip data-placement="top" :title="$t('project.comment.pin')" ref="pinIcon"
+      >
+        <respondeco-icon icon="far thumbtack"></respondeco-icon>
+      </i>
+      <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-30 g-font-size-20"
+         @click="unpin()" v-if="editable && comment.id != null && comment.pinned"
+         v-tooltip data-placement="top" :title="$t('project.comment.unpin')" ref="pinIcon"
+    >
+      <respondeco-icon icon="fas thumbtack"></respondeco-icon>
+    </i>
+
       <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-0 g-font-size-20"
          @click="deleteComment(comment.id)" v-if="editable && comment.id != null"
          v-tooltip data-placement="top" title="Kommentar löschen" ref="removeIcon"
@@ -60,11 +73,13 @@
           <unify-button
             type="submit"
             class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
-            <span v-if="comment.id">{{ $t('common.save') }}</span>
-            <span v-else>{{ $t('common.add') }}</span>
+            <span v-if="comment.id">{{ $t('comment.save') }}</span>
+            <span v-else>{{ $t('comment.add') }}</span>
           </unify-button>
         </div>
       </div>
+
+      <hr class="g-my-100">
     </article>
 
     <!-- public view -->
@@ -163,6 +178,17 @@
         this.$modal.show(this.dialogName)
       },
 
+      pin () {
+        $(this.$refs.pinIcon).tooltip('hide')
+
+        Comments.pin(this.comment.id).then(
+          Notifications.success(this, () => {
+            this.$emit('pinned', this.comment)
+          }),
+          Notifications.error(this)
+        )
+      },
+
       save () {
         this.$startLoading('global-loader')
 
@@ -206,6 +232,17 @@
           this.previewImageUrl = event.target.result
         }
         fileReader.readAsDataURL(blob)
+      },
+
+      unpin () {
+        $(this.$refs.pinIcon).tooltip('hide')
+
+        Comments.unpin(this.comment.id).then(
+          Notifications.success(this, () => {
+            this.$emit('unpinned', this.comment)
+          }),
+          Notifications.error(this)
+        )
       },
 
       unsetImage () {

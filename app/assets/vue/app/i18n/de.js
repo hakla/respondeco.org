@@ -1,4 +1,9 @@
 export default {
+  comment: {
+    add: 'Als neuen Beitrag speichern',
+    save: 'Diesen Beitrag speichern'
+  },
+
   common: {
     about_organisation: 'Über das Unternehmen',
     add: 'Hinzufügen',
@@ -101,7 +106,12 @@ export default {
       chooseImage: 'Füge ein Bild hinzu!',
       content: '...',
       title: 'Neuer Eintrag'
-    }
+    },
+    description: {
+      title: 'Beschreibung'
+    },
+    partners: 'Partner',
+    share: 'Teilen'
   },
 
   registration: {
