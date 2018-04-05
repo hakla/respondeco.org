@@ -105,6 +105,7 @@ export default {
     description: {
       title: 'Beschreibung'
     },
+    partners: 'Partner',
     share: 'Teilen'
   },
 

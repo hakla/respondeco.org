@@ -115,13 +115,13 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
     }
 
     def byProject(id: Long): List[CommentModel] = db.withConnection { implicit c =>
-        SQL(s"select c.* from comment c join comment_project cp on c.id = cp.comment where cp.project = $id and status = true order by c.date desc")
+        SQL(s"select c.* from comment c join comment_project cp on c.id = cp.comment where cp.project = $id and status = true order by c.pinned desc, c.date desc")
             .executeQuery()
             .as(parser.*)
     }
 
     def byFinishedProject(id: Long): List[CommentModel] = db.withConnection { implicit c =>
-        SQL(s"select c.* from comment c join comment_project_history cph on c.id = cph.comment where cph.project_history = $id and status = true order by c.date desc")
+        SQL(s"select c.* from comment c join comment_project_history cph on c.id = cph.comment where cph.project_history = $id and status = true order by c.pinned desc, c.date desc")
             .executeQuery()
             .as(parser.*)
     }

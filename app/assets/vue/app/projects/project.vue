@@ -14,7 +14,9 @@
               <project-comment @change="loadComments" :project-id="item.id" v-if="activeUserIsOwner"></project-comment>
 
               <!-- list of comments -->
-              <project-comment @change="loadComments" @removed="loadComments" :editable="activeUserIsOwner" :project-id="item.id" :value="comment" v-for="comment in comments" :key="comment.id"></project-comment>
+              <project-comment @change="loadComments" @pinned="loadComments" @removed="loadComments"
+                               @unpinned="loadComments" :editable="activeUserIsOwner" :project-id="item.id"
+                               :value="comment" v-for="comment in comments" :key="comment.id"></project-comment>
             </div>
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
@@ -27,7 +29,8 @@
 
                     <unify-button
                       @click="save"
-                      class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
+                      loading="saveDescription"
+                      class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md g-mr-10 g-mt-20">
                       <span>{{ $t('common.save') }}</span>
                     </unify-button>
                   </div>
@@ -54,6 +57,22 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="g-mt-50">
+                  <h5 class="mb-4">{{ $t('project.partners') }}</h5>
+
+                  <ul class="list-unstyled g-font-size-13 mb-0">
+                    <li v-for="partner in partners" :key="partner.id">
+                      <article class="media g-mb-35">
+                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.image)"
+                             alt="Image Description">
+                        <div class="media-body">
+                          <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.name }}</h4>
+                        </div>
+                      </article>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -75,6 +94,7 @@
   import DateFilter from '../../common/mixins/date-filter'
 
   import ProjectComment from './comment'
+  import FinishedProjects from "../../common/services/finished-projects";
 
   export default {
     name: 'project',
@@ -95,6 +115,7 @@
     created () {
       this.fetchData()
       this.loadComments()
+      this.loadPartners()
     },
 
     data () {
@@ -102,6 +123,7 @@
         comments: [],
         item: ObjectNormaliser.project(),
         loader: ['project'],
+        partners: [],
         service: Projects
       }
     },
@@ -117,9 +139,30 @@
         )
       },
 
-      save () {
-        // Projects.update()
+      loadPartners() {
+        this.promiseLoading(
+          FinishedProjects.byProject(this.id).then(result => {
+            this.partners = result.body.map(_ => _.organisation)
+          }),
+
+          'partners'
+        )
       },
+
+      save () {
+        let project = this.item
+
+        project.organisation = project.organisation.id
+
+        this.promiseLoading(
+          Projects.update(project).then(
+            Notifications.success(this),
+            Notifications.error(this)
+          ),
+
+          'saveDescription'
+        )
+      }
     },
 
     mixins: [DateFilter, ImageMixin, ItemPage]
@@ -129,6 +172,8 @@
 <style lang="stylus" scoped>
   .sidebar--stickyblock
     padding-top: 30px
+    background: #fff
+    z-index: 1
 
   .form-control
     border-color: transparent
