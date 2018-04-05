@@ -73,11 +73,13 @@
           <unify-button
             type="submit"
             class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
-            <span v-if="comment.id">{{ $t('common.save') }}</span>
-            <span v-else>{{ $t('common.add') }}</span>
+            <span v-if="comment.id">{{ $t('comment.save') }}</span>
+            <span v-else>{{ $t('comment.add') }}</span>
           </unify-button>
         </div>
       </div>
+
+      <hr class="g-my-100">
     </article>
 
     <!-- public view -->

@@ -1,4 +1,9 @@
 export default {
+  comment: {
+    add: 'Als neuen Beitrag speichern',
+    save: 'Diesen Beitrag speichern'
+  },
+
   common: {
     about_organisation: 'Über das Unternehmen',
     add: 'Hinzufügen',
