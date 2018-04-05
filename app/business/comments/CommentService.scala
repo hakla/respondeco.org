@@ -28,14 +28,15 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
     }
 
     def create(comment: CommentWriteModel, commentType: String, linkId: Long): Option[CommentModel] = db.withConnection { implicit c =>
-        val newComment: Option[CommentModel] = SQL(s"insert into $table (author, date, title, content, image, video) values({author}, {date}, {title}, {content}, {image}, {video})").on(
+        val newComment: Option[CommentModel] = SQL(s"insert into $table (author, date, title, content, image, video, pinned) values({author}, {date}, {title}, {content}, {image}, {video}, {pinned})").on(
             'author -> comment.author,
             'title -> comment.title,
             'date -> comment.date.flatMap(_.formatted).orElse(LocalDateTime.now().formatted),
             'content -> comment.content,
             'image -> comment.image,
             'video -> comment.video,
-            'updatedAt -> LocalDateTime.now().formatted
+            'updatedAt -> LocalDateTime.now().formatted,
+            'pinned -> comment.pinned
         ).executeInsert() match {
             case Some(id: Long) => byId(id)
             case _ => None
@@ -57,14 +58,15 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
             _.image
         } map { image => res.delete(image) }
 
-        SQL(s"update $table set author = {author}, date = {date}, title = {title}, content = {content}, image = {image}, video = {video}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
+        SQL(s"update $table set author = {author}, date = {date}, title = {title}, content = {content}, image = {image}, video = {video}, pinned = {pinned}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id,
             'author -> comment.author,
             'date -> comment.date.flatMap(_.formatted).orElse(LocalDateTime.now().formatted),
             'title -> comment.title,
             'content -> comment.content,
             'image -> comment.image,
-            'video -> comment.video
+            'video -> comment.video,
+            'pinned -> comment.pinned
         ).executeUpdate() match {
             case 1 => byId(id)
             case _ => None
@@ -104,7 +106,8 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
             title = commentModel.title,
             content = commentModel.content,
             video = commentModel.video,
-            image = commentModel.image
+            image = commentModel.image,
+            pinned = Some(commentModel.pinned)
         )
     }
 
@@ -144,6 +147,49 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
             ).executeInsert()
 
         comment
+    }
+
+    def pin(id: Long): Boolean = db.withConnection { implicit c =>
+        // Unpin all previously pinned comments for the project this comment is assigned to
+        unpinAllByCommentId(id)
+
+        // And pin the comment
+        SQL(s"update $table set pinned = true where $id = id").executeUpdate() == 1
+    }
+
+    def togglePin(id: Long): Boolean = db.withConnection { implicit c =>
+        byId(id).forall { comment =>
+            if (comment.pinned) {
+                unpin(comment.id)
+            } else {
+                pin(comment.id)
+            }
+        }
+    }
+
+    def unpin(id: Long): Boolean = db.withConnection { implicit c =>
+      SQL(s"UPDATE COMMENT SET PINNED = FALSE WHERE id = $id").executeUpdate() == 1
+    }
+
+    /**
+      * Unpin all comments that are assigned to the project the given comment (id) is assigned to
+      * @param id Comment id
+      */
+    def unpinAllByCommentId(id: Long): Boolean = db.withConnection { implicit c =>
+        SQL(s"""
+            UPDATE
+                COMMENT
+            SET
+                PINNED = FALSE
+            WHERE
+                ID IN (
+                    -- Find all comments that are assigned to a specific project
+                    SELECT COMMENT FROM COMMENT_PROJECT WHERE PROJECT = (
+                        -- Find the project this comment is assigned to
+                        SELECT PROJECT FROM COMMENT_PROJECT WHERE COMMENT = 2
+                    )
+                )
+           """).executeUpdate() > 0
     }
 
 }

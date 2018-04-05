@@ -14,7 +14,8 @@ case class CommentModel(
     title: Option[String],
     content: Option[String],
     video: Option[String],
-    image: Option[String]
+    image: Option[String],
+    pinned: Boolean
 )
 
 object CommentModel extends MyWriteable[CommentModel] {
@@ -30,7 +31,8 @@ case class CommentWriteModel(
     title: Option[String],
     content: Option[String],
     video: Option[String],
-    image: Option[String]
+    image: Option[String],
+    pinned: Option[Boolean]
 )
 
 object CommentWriteModel extends MyWriteable[CommentWriteModel] {
@@ -46,7 +48,8 @@ case class CommentPublicModel(
     title: Option[String],
     content: Option[String],
     video: Option[String],
-    image: Option[String]
+    image: Option[String],
+    pinned: Option[Boolean]
 )
 
 object CommentPublicModel extends MyWriteable[CommentPublicModel] {

@@ -179,8 +179,12 @@
       pin () {
         $(this.$refs.pinIcon).tooltip('hide')
 
-        this.comment.pinned = true
-        this.$emit('pinned', this.comment)
+        Comments.pin(this.comment.id).then(
+          Notifications.success(this, () => {
+            this.$emit('pinned', this.comment)
+          }),
+          Notifications.error(this)
+        )
       },
 
       save () {
@@ -231,8 +235,12 @@
       unpin () {
         $(this.$refs.pinIcon).tooltip('hide')
 
-        this.comment.pinned = false
-        this.$emit('unpinned', this.comment)
+        Comments.unpin(this.comment.id).then(
+          Notifications.success(this, () => {
+            this.$emit('unpinned', this.comment)
+          }),
+          Notifications.error(this)
+        )
       },
 
       unsetImage () {

@@ -57,4 +57,20 @@ class CommentCtrl @Inject()(commentService: CommentService, val accountService: 
             commentService.byFinishedProject(id).map(commentService.toPublicModel)
         )
     }
+
+    def pin (id: Long) = AuthenticatedUser(parse.empty) { (_, request) =>
+        if (commentService.pin(id)) {
+            Ok
+        } else {
+            BadRequest
+        }
+    }
+
+    def unpin (id: Long) = AuthenticatedUser(parse.empty) { (_, request) =>
+        if (commentService.unpin(id)) {
+            Ok
+        } else {
+            BadRequest
+        }
+    }
 }

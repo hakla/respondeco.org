@@ -13,11 +13,19 @@ export default class Comments extends BaseService {
     return this.i().http.get(`/api/v1/finishedProjects/${id}/comments`)
   }
 
+  static pin (id) {
+    return this.i().http.post(`/api/v1/comments/${id}/pin`)
+  }
+
   static save (obj, commentType, linkId) {
     return this.i().resource.save({
       commentType,
       linkId
     }, obj)
+  }
+
+  static unpin (id) {
+    return this.i().http.delete(`/api/v1/comments/${id}/pin`)
   }
 
   static update (obj, commentType, linkId) {
