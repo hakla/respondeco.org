@@ -38,7 +38,9 @@ import { VueMasonryPlugin } from 'vue-masonry'
 import VueUploadComponent from 'vue-upload-component'
 import VueYoutubeEmbed from 'vue-youtube-embed'
 
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'vue-croppa/dist/vue-croppa.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 //</editor-fold>
 
 //<editor-fold desc="Custom components">
@@ -72,7 +74,7 @@ Vue.component(UnifyListItemLabel.name, UnifyListItemLabel)
 Vue.component(UnifyListItemContent.name, UnifyListItemContent)
 Vue.component(UnifyTextarea.name, UnifyTextarea)
 Vue.directive('autosize', Autosize)
-Vue.directive('popover', Popover)
+// Vue.directive('popover', Popover)
 Vue.directive('stickyblock', StickyBlock)
 Vue.directive('tooltip', Tooltip)
 //</editor-fold>

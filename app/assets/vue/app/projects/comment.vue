@@ -2,7 +2,7 @@
   <form @submit.prevent.stop="save">
 
     <!-- editable view -->
-    <article class="g-mb-100 position-relative" v-if="editable">
+    <article class="g-mb-100 position-relative" v-if="editable || activeUserOwnsComment">
       <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-30 g-font-size-20"
          @click="pin()" v-if="editable && comment.id != null && !comment.pinned"
          v-tooltip data-placement="top" :title="$t('project.comment.pin')" ref="pinIcon"
@@ -141,6 +141,10 @@
 
     computed: {
       ...mapGetters(['activeUser']),
+
+      activeUserOwnsComment () {
+        return this.comment.id && this.comment.author.data.user && this.activeUser && this.activeUser.organisationId === this.comment.author.data.user.organisationId
+      },
 
       dialogName () {
         let id = this.comment.id || 'new'

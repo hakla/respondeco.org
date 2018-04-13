@@ -100,6 +100,9 @@ export default {
   },
 
   project: {
+    description: {
+      title: 'Beschreibung'
+    },
     new: {
       action: 'Erzähle mehr über dein Projekt!',
       changeImage: 'Ändere das Bild!',
@@ -107,10 +110,13 @@ export default {
       content: '...',
       title: 'Neuer Eintrag'
     },
-    description: {
-      title: 'Beschreibung'
+    partner: {
+      add: 'Partner hinzufügen',
+      dialog: {
+        title: 'Neuen Partner hinzufügen'
+      },
+      listTitle: 'Partner'
     },
-    partners: 'Partner',
     share: 'Teilen'
   },
 

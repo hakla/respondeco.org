@@ -11,7 +11,7 @@
           <div class="row">
             <div class="col-lg-9">
               <!-- new entry -->
-              <project-comment @change="loadComments" :project-id="item.id" v-if="activeUserIsOwner"></project-comment>
+              <project-comment @change="loadComments" :project-id="item.id" v-if="activeUserIsOwner || userIsAllowedToWriteComments"></project-comment>
 
               <!-- list of comments -->
               <project-comment @change="loadComments" @pinned="loadComments" @removed="loadComments"
@@ -21,6 +21,21 @@
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
               <div class="g-pl-20--lg">
+                <!-- Organisation -->
+                <h5>Ein Projekt von</h5>
+                <ul class="list-unstyled g-font-size-13 mb-0" v-if="item.organisation != null">
+                  <li>
+                    <router-link :to="`/organisations/${item.organisation.id}`" class="media g-mb-35">
+                      <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(item.organisation.logo)"
+                           alt="Image Description"
+                           v-if="item.organisation.logo">
+                      <div class="media-body">
+                        <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ item.organisation.name }}</h4>
+                      </div>
+                    </router-link>
+                  </li>
+                </ul>
+
                 <!-- Description -->
                 <div class="g-mb-50">
                   <h5 class="mb-4">{{ $t('project.description.title') }}</h5>
@@ -59,19 +74,23 @@
                 </div>
 
                 <div class="g-mt-50">
-                  <h5 class="mb-4">{{ $t('project.partners') }}</h5>
+                  <h5 class="mb-4">{{ $t('project.partner.listTitle') }}</h5>
 
                   <ul class="list-unstyled g-font-size-13 mb-0">
                     <li v-for="partner in partners" :key="partner.id">
-                      <article class="media g-mb-35">
+                      <router-link :to="`/organisations/${partner.id}`" class="media g-mb-35">
                         <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.image)"
-                             alt="Image Description">
+                             alt="Image Description" v-if="partner.image">
                         <div class="media-body">
                           <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.name }}</h4>
                         </div>
-                      </article>
+                      </router-link>
                     </li>
                   </ul>
+
+                  <div class="text-right">
+                    <project-partner-chooser></project-partner-chooser>
+                  </div>
                 </div>
               </div>
             </div>
@@ -88,20 +107,27 @@
   import { mapGetters } from 'vuex'
   import { ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
   import Comments from '../../common/services/comments'
-  import ImageDialog from '../main/image-dialog'
-  import Projects from '../../common/services/projects'
-  import ItemPage from '../mixins/item-page'
   import DateFilter from '../../common/mixins/date-filter'
+  import ImageDialog from '../main/image-dialog'
+  import ItemPage from '../mixins/item-page'
+  import Multiselect from 'vue-multiselect'
+  import ProjectPartnerChooser from './project-partner-chooser'
+  import Projects from '../../common/services/projects'
 
   import ProjectComment from './comment'
-  import FinishedProjects from "../../common/services/finished-projects";
+  import FinishedProjects from "../../common/services/finished-projects"
+
+  import bPopover from 'bootstrap-vue/es/components/popover/popover'
 
   export default {
     name: 'project',
 
     components: {
+      'b-popover': bPopover,
       ImageDialog,
-      ProjectComment
+      Multiselect,
+      ProjectComment,
+      ProjectPartnerChooser
     },
 
     computed: {
@@ -109,6 +135,10 @@
 
       activeUserIsOwner () {
         return !!(this.activeUser && this.item && (this.activeUser.role === 'Administrator' || this.activeUser.organisationId === this.item.organisation.id))
+      },
+
+      userIsAllowedToWriteComments () {
+        return this.activeUser !== undefined && (this.partners || []).filter(partner => partner.id === this.activeUser.organisationId && (this.item || {}).id !== this.activeUser).length > 0
       }
     },
 
@@ -123,12 +153,19 @@
         comments: [],
         item: ObjectNormaliser.project(),
         loader: ['project'],
+        partner: {
+          id: -1
+        },
         partners: [],
         service: Projects
       }
     },
 
     methods: {
+      addPartner () {
+        this.$modal.show('addPartnerDialog')
+      },
+
       loadComments () {
         this.promiseLoading(
           Comments.byProject(this.id).then(result => {

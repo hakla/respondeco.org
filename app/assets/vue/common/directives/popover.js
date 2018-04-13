@@ -1,8 +1,8 @@
 import $ from 'jquery'
 
 const Popover = {
-  inserted (el) {
-    $(el).popover()
+  inserted (el, binding) {
+    $(el).popover(binding.value || {})
   }
 }
 
