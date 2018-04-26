@@ -23,6 +23,7 @@ import 'unify/js/components/hs.header.js'
 import 'unify/js/components/hs.navigation.js'
 import 'unify/js/components/hs.sticky-block.js'
 import 'unify/js/helpers/hs.hamburgers.js'
+import 'unify/js/helpers/hs.focus-state.js'
 import 'unify/vendor/hs-megamenu/src/hs.megamenu.js'
 //</editor-fold>
 

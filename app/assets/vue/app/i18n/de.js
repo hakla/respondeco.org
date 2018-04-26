@@ -115,7 +115,8 @@ export default {
       dialog: {
         title: 'Neuen Partner hinzufügen'
       },
-      listTitle: 'Partner'
+      listTitle: 'Partner',
+      placeholder: 'Partner suchen'
     },
     share: 'Teilen'
   },

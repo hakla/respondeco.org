@@ -79,8 +79,8 @@
                   <ul class="list-unstyled g-font-size-13 mb-0">
                     <li v-for="partner in partners" :key="partner.id">
                       <router-link :to="`/organisations/${partner.id}`" class="media g-mb-35">
-                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.image)"
-                             alt="Image Description" v-if="partner.image">
+                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.logo)"
+                             alt="Image Description" v-if="partner.logo">
                         <div class="media-body">
                           <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.name }}</h4>
                         </div>
@@ -89,7 +89,7 @@
                   </ul>
 
                   <div class="text-right">
-                    <project-partner-chooser></project-partner-chooser>
+                    <project-partner-chooser @submit="addPartner" v-if="activeUserIsOwner"></project-partner-chooser>
                   </div>
                 </div>
               </div>
@@ -162,8 +162,23 @@
     },
 
     methods: {
-      addPartner () {
-        this.$modal.show('addPartnerDialog')
+      addPartner (organisationId) {
+        const finishedProject = ObjectNormaliser.finishedProject({
+          organisation: organisationId,
+          project: this.item.id
+        })
+
+        this.promiseLoading(
+          FinishedProjects.save(finishedProject).then(
+            () => {
+              Notifications.success(this)
+
+              this.loadPartners()
+            },
+            Notifications.error(this)
+          ),
+          'partner-chooser'
+        )
       },
 
       loadComments () {

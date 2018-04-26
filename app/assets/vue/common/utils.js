@@ -172,7 +172,12 @@ export const ObjectNormaliser = {
 
   finishedProject (finishedProject = {}) {
     return Object.assign({
-
+      id: undefined,
+      project: undefined,
+      organisation: undefined,
+      ratingOwner: { liked: true },
+      ratingOrganisation: { liked: true },
+      date: (new Date()).toISOString().substring(0, 10)
     }, finishedProject)
   },
 
