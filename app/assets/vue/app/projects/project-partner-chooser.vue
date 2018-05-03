@@ -62,6 +62,7 @@
 
       selected (value) {
         this.partner = value ? value.id : undefined
+        this.model = value ? value.name : undefined
       },
 
       submit () {

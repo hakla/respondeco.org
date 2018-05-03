@@ -26,7 +26,7 @@
 
               <select class="form-control" id="category" v-model="item.category">
                 <option>---</option>
-                <option v-for="category in categories">{{ category }}</option>
+                <option v-for="category in categories" :key="category">{{ category }}</option>
               </select>
             </div>
 

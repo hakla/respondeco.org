@@ -15,7 +15,21 @@ const getters = {
   finishedProjects: state => state.finishedProjects,
   organisation: state => state.current,
   organisations: state => state.all,
-  projects: state => state.projects
+  projects: state => state.projects,
+  allProjects: state => {
+    const projects = state.projects
+
+    // Used to check for duplicates
+    const projectNames = projects.map(project => project.name)
+
+    const finishedProjects = state.finishedProjects
+      .map(_ => _.project)
+      .filter(_ => projectNames.indexOf(_.name) === -1)
+
+    const all = projects.concat(finishedProjects)
+
+    return all
+  }
 }
 
 // actions

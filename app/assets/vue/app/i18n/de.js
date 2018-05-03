@@ -100,6 +100,9 @@ export default {
   },
 
   project: {
+    comment: {
+      pin: 'Anpinnen'
+    },
     description: {
       title: 'Beschreibung'
     },
@@ -116,7 +119,8 @@ export default {
         title: 'Neuen Partner hinzufügen'
       },
       listTitle: 'Partner',
-      placeholder: 'Partner suchen'
+      placeholder: 'Partner suchen',
+      remove: 'Partner entfernen',
     },
     share: 'Teilen'
   },

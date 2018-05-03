@@ -5,7 +5,7 @@
       <ul class="list-unstyled">
         <li @click="openProject(item.id)"
             class="media g-brd-around g-brd-gray-light-v4 g-brd-left-3 g-brd-blue-left rounded g-pa-20 g-mb-10"
-            :key="index" v-for="(item, index) in projects">
+            :key="index" v-for="(item, index) in allProjects">
           <div class="d-flex g-mt-2 g-mr-15">
             <img class="g-width-40 g-height-40 rounded-circle" :src="imageUrl(item.image)">
           </div>
@@ -32,7 +32,7 @@
     name: 'OrganisationProjects',
 
     computed: {
-      ...mapGetters(['projects'])
+      ...mapGetters(['allProjects'])
     },
 
     methods: {

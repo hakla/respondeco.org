@@ -64,7 +64,7 @@
               <router-link :to="{ name: 'organisation-projects', params: { id: organisation.id } }"
                            class="list-group-item list-group-item-action justify-content-between">
                 <span><i class="icon-layers g-pos-rel g-top-1 g-mr-8"></i> {{ $tc('common.projects') }}</span>
-                <span class="u-label g-font-size-11 g-bg-primary g-rounded-20 g-px-10">{{ projects.length }}</span>
+                <span class="u-label g-font-size-11 g-bg-primary g-rounded-20 g-px-10">{{ allProjects.length }}</span>
               </router-link>
               <!-- End Projects -->
 
@@ -112,7 +112,7 @@
     },
 
     computed: {
-      ...mapGetters(['organisation', 'projects', 'activeUser']),
+      ...mapGetters(['organisation', 'allProjects', 'activeUser']),
 
       activeUserIsOwner () {
         return this.activeUser && this.organisation && (this.activeUser.role === 'Administrator' || this.activeUser.organisationId === this.organisation.id)

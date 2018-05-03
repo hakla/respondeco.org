@@ -54,6 +54,29 @@
                   </span>
                 </div>
 
+                <div class="g-mt-50">
+                  <h5 class="mb-4">{{ $t('project.partner.listTitle') }}</h5>
+
+                  <ul class="list-unstyled g-font-size-13 mb-0 partner-list">
+                    <li v-for="partner in partners" :key="partner.id">
+                      <router-link :to="`/organisations/${partner.organisation.id}`" class="media g-mb-35">
+                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.organisation.logo)"
+                             alt="Image Description" v-if="partner.organisation.logo">
+                        <div class="media-body">
+                          <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.organisation.name }}</h4>
+                        </div>
+                      </router-link>
+                      <div class="remove-partner" @click="removePartner(partner.id)" v-tooltip :title="$t('project.partner.remove')" data-placement="top" :ref="`removeIcon-${partner.id}`">
+                        <respondeco-icon icon="fal times"></respondeco-icon>
+                      </div>
+                    </li>
+                  </ul>
+
+                  <div class="text-right">
+                    <project-partner-chooser @submit="addPartner" v-if="activeUserIsOwner"></project-partner-chooser>
+                  </div>
+                </div>
+
                 <!-- Sticky block -->
                 <div id="sticky-block" v-stickyblock data-start-point="#sticky-block" data-end-point="footer" class="sidebar--stickyblock">
                   <!-- Share -->
@@ -70,26 +93,6 @@
                         <i class="icon-social-twitter"></i>
                       </a>
                     </div>
-                  </div>
-                </div>
-
-                <div class="g-mt-50">
-                  <h5 class="mb-4">{{ $t('project.partner.listTitle') }}</h5>
-
-                  <ul class="list-unstyled g-font-size-13 mb-0">
-                    <li v-for="partner in partners" :key="partner.id">
-                      <router-link :to="`/organisations/${partner.id}`" class="media g-mb-35">
-                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.logo)"
-                             alt="Image Description" v-if="partner.logo">
-                        <div class="media-body">
-                          <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.name }}</h4>
-                        </div>
-                      </router-link>
-                    </li>
-                  </ul>
-
-                  <div class="text-right">
-                    <project-partner-chooser @submit="addPartner" v-if="activeUserIsOwner"></project-partner-chooser>
                   </div>
                 </div>
               </div>
@@ -194,11 +197,19 @@
       loadPartners() {
         this.promiseLoading(
           FinishedProjects.byProject(this.id).then(result => {
-            this.partners = result.body.map(_ => _.organisation)
+            this.partners = result.body
           }),
 
           'partners'
         )
+      },
+
+      removePartner (partnerId) {
+        $(this.$refs[`removeIcon-${partnerId}`]).tooltip('hide')
+
+        FinishedProjects.remove(partnerId).then(result => {
+          this.partners = this.partners.filter(partner => partner.id !== partnerId)
+        })
       },
 
       save () {
@@ -236,4 +247,21 @@
 
     &:focus
       border-color: #eee
+
+  .partner-list
+    li
+      position relative
+
+  .remove-partner
+    background: #fff;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateX(100%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    cursor: pointer;
+
 </style>

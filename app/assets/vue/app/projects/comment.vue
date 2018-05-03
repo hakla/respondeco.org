@@ -30,6 +30,8 @@
         <img class="img-fluid w-100 g-rounded-5 g-mb-25" :src="previewImageUrl" v-if="previewImageUrl"
              alt="Image Description" @click="openFileChooser">
 
+        <youtube :video-id="comment.video" v-else-if="comment.video" player-width="100%"></youtube>
+
         <div
           class="d-flex align-items-center g-cursor-pointer justify-content-center image-placeholder img-fluid w-100 g-rounded-5 g-mb-25 g-height-200 g-brd-1 g-brd-teal g-brd-style-solid"
           @click="openFileChooser" v-else>
@@ -39,19 +41,19 @@
 
       <div class="px-4">
         <ul
-          class="d-flex justify-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-45 g-mb-25">
+          class="d-flex justify-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-65 g-mb-25">
           <li class="list-inline-item mr-5">
             <!-- new image -> show author image -->
-            <img class="g-width-40 g-height-40 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
-                 :src="imageUrl(activeUser.image)" v-if="activeUser.image"
+            <img class="g-width-80 g-height-80 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
+                 :src="imageUrl(activeUser.image)" v-if="activeUser.image && !comment.author"
                  alt="Image Description">
 
             <!-- existing comment -> show comment author image -->
-            <img class="g-width-40 g-height-40 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
-                 :src="imageUrl(comment.author.data.image)" v-if="comment.author && comment.author.data.image && comment.author.data.image"
+            <img class="g-width-80 g-height-80 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
+                 :src="imageUrl(comment.author.data.image)" v-if="comment.author && comment.author.data && comment.author.data.image"
                  alt="Image Description">
             <span class="d-block g-width-40 g-height-40" v-else></span>
-            <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0">
+            <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0 text-center">
               <span v-if="isNew">{{ activeUser.name }}</span>
               <span v-if="!isNew && comment.author">{{ comment.author.data.name }}</span>
             </h4>
@@ -84,18 +86,20 @@
 
     <!-- public view -->
     <article class="g-mb-100 position-relative" v-else>
-      <img class="img-fluid w-100 g-rounded-5 g-mb-25" :src="imageUrl(comment.image)" v-if="comment.image"
+      <img class="img-fluid w-100 g-rounded-5" :src="imageUrl(comment.image)" v-if="comment.image"
            alt="Image Description">
+
+      <youtube :video-id="comment.video" v-if="!comment.image && comment.video" player-width="100%"></youtube>
 
       <div class="px-4">
         <ul
           class="d-flex justify-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-45 g-mb-25">
           <li class="list-inline-item mr-5">
-            <img class="g-width-40 g-height-40 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
+            <img class="g-width-80 g-height-80 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
                  :src="imageUrl(comment.author.data.image)" v-if="comment.author.data.image"
                  alt="Image Description">
             <span class="d-block g-width-40 g-height-40" v-else></span>
-            <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0">
+            <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0 text-center">
               <router-link :to="{ name: 'organisation-projects', params: { id: comment.author.data.id } }"
                            class="g-color-gray-dark-v4" v-if="comment.author.data.organisation">
                 {{ comment.author.data.name }}

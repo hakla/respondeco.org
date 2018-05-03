@@ -1,6 +1,6 @@
 <template>
   <admin-page-item :item="item" :loader="['card', 'accounts', 'organisations']" :routeBack="routeBack"
-                   :title="`Account bearbeiten`" @back="back" @submit="save">
+                   :title="`Kommentar bearbeiten`" @back="back" @submit="save">
     <div class="row">
       <div class="col-9">
         <!-- author -->
@@ -95,7 +95,9 @@
       return {
         authors: [],
         image: {},
-        item: ObjectNormaliser.comment(),
+        item: ObjectNormaliser.comment({
+          author: {}
+        }),
         routeBack: {
           name: this.type,
           params: {
@@ -156,7 +158,7 @@
             this.promiseLoading(
               Comments[this.method](item, this.type, this.typeId).then(
                 Notifications.success(this, response => {
-                  this.updateRoute(response.body)
+                  this.updateRoute(Object.assign({}, response.body, this.item))
                 }),
                 Notifications.error(this)
               )

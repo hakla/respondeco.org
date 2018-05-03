@@ -88,7 +88,9 @@
         this.promiseLoading(
           ImageHelper.saveFromCroppa(this.image, 'image.jpeg', 'image', ['image/jpeg', 0.9]).then(value =>
             AdminAccounts[this.method](Object.assign(this.item, value)).then(
-              Notifications.success(this),
+              Notifications.success(this, response => {
+                this.updateRoute(response.body)
+              }),
               Notifications.error(this)
             )
           )
