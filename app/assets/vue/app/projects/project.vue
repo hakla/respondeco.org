@@ -66,7 +66,7 @@
                           <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.organisation.name }}</h4>
                         </div>
                       </router-link>
-                      <div class="remove-partner" @click="removePartner(partner.id)" v-tooltip :title="$t('project.partner.remove')" data-placement="top" :ref="`removeIcon-${partner.id}`">
+                      <div class="remove-partner" @click="removePartner(partner.id)" v-tooltip :title="$t('project.partner.remove')" data-placement="top" :ref="`removeIcon-${partner.id}`" v-if="activeUserIsOwner">
                         <respondeco-icon icon="fal times"></respondeco-icon>
                       </div>
                     </li>
