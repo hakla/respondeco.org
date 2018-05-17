@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="submit()">
-    <vue-simple-suggest ref="suggest" mode="select" @select="selected" type="search" pattern="[a-z]+" :list="filter" display-attribute="name" value-attribute="id">
+    <vue-simple-suggest ref="suggest" :filter-by-query="true" :min-length="0" mode="select" @select="selected" type="search" pattern="[a-z]+" :list="suggestions" display-attribute="name" value-attribute="id">
       <div class="form-group g-mb-20">
         <div class="input-group g-brd-primary--focus">
           <div class="input-group-addon d-flex align-items-center g-bg-white g-color-gray-light-v1 rounded-0">
@@ -54,10 +54,6 @@
 
           return this.suggestions
         })
-      },
-
-      filter (query) {
-        return this.suggestions.filter(suggestion => suggestion.name.toLowerCase().indexOf(query.toLowerCase()) > -1)
       },
 
       selected (value) {
