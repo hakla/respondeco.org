@@ -38,6 +38,23 @@
           <spinner v-if="$isLoading('projects')"></spinner>
         </div>
       </transition>
+
+      <unify-hero>{{ $t('home.values') }}</unify-hero>
+
+      <transition name="fade" mode="out-in">
+        <div class="container">
+          <respondeco-our-values></respondeco-our-values>
+        </div>
+      </transition>
+
+      <unify-hero>{{ $t('home.about_us') }}</unify-hero>
+
+      <transition name="fade" mode="out-in">
+        <div class="container">
+          <respondeco-about-us></respondeco-about-us>
+        </div>
+      </transition>
+
     </main>
 
     <!--<respondeco-footer></respondeco-footer>-->
@@ -45,8 +62,10 @@
 </template>
 
 <script>
+  import RespondecoAboutUs from 'app/main/about-us'
   import RespondecoFooter from 'app/main/footer'
   import RespondecoHeader from 'app/main/header'
+  import RespondecoOurValues from 'app/main/our-values'
   import RespondecoPortfolio from 'app/main/portfolio'
 
   import Spinner from 'vue-simple-spinner'
@@ -62,8 +81,10 @@
     name: "home",
 
     components: {
+      RespondecoAboutUs,
       RespondecoFooter,
       RespondecoHeader,
+      RespondecoOurValues,
       RespondecoPortfolio,
       Spinner
     },

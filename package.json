@@ -1,22 +1,28 @@
 {
   "name": "respondeco",
-  "version": "0.0.1",
+  "version": "1.0.0-Vorschau",
   "description": "Description for respondeco",
   "repository": "https://github.com/hakla/respondeco.org",
   "scripts": {
-    "dev": "node frontend/build/dev-server.js",
     "build": "node frontend/build/build.js",
+    "dev": "node frontend/build/dev-server.js",
+    "predist": "npm run build",
+    "dist": "sbt dist",
+    "postdist": "docker build -t respondeco:$npm_package_version . && docker tag respondeco:$npm_package_version $npm_package_config_docker_repo/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_repo/$npm_package_name:$npm_package_version",
     "start": "npm run dev"
   },
   "config": {
-    "@fortawesome:registry": "${FORTAWESOME_REGISTRY}"
+    "@fortawesome:registry": "${FORTAWESOME_REGISTRY}",
+    "docker": {
+      "repo": "nexus.hakla.at:18443"
+    }
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1.0",
-    "@fortawesome/fontawesome-pro-light": "^5.0.2",
-    "@fortawesome/fontawesome-pro-regular": "^5.0.2",
-    "@fortawesome/fontawesome-pro-solid": "^5.0.2",
-    "@fortawesome/vue-fontawesome": "0.0.22",
+    "@fortawesome/fontawesome-svg-core": "^1.2.4",
+    "@fortawesome/pro-light-svg-icons": "^5.3.1",
+    "@fortawesome/pro-regular-svg-icons": "^5.3.1",
+    "@fortawesome/pro-solid-svg-icons": "^5.3.1",
+    "@fortawesome/vue-fontawesome": "^0.1.1",
     "autosize": "^4.0.0",
     "babel-polyfill": "^6.16.0",
     "bootstrap": "4.0.0-beta.2",

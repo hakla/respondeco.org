@@ -37,13 +37,39 @@ export default {
   },
 
   home: {
+    about_us: 'Über uns',
     header: {
       sub: '',
       sup: 'Willkommen bei',
       title: 'respondeco.org'
     },
     organisations: 'Entdecke Organisationen',
-    projects: 'Entdecke Projekte'
+    our_values: {
+      'heading': 'Engagement zeigen',
+      icon1: {
+        list: {
+          item1: 'Neue Zielgruppen',
+          item2: 'Herstellung gesellschaftlicher Legitimation',
+          item3: 'Unternehmensreputation und Glaubwürdigkeit'
+        },
+        message: 'Ergänzen Sie ihre Nachhaltigkeitskommunikation mit einem vollkommen neuen Ansatz',
+        title: 'Erzähle',
+      },
+      icon2: {
+        message: 'Finden Sie nachhaltige Projekte und verantwortungsvolle Organisationen',
+        title: 'Finde'
+      },
+      icon3: {
+        message: 'Präsentieren Sie ihre nachhaltigen Dienstleistungen wie Weiterbildungs- und Beratungsangebote ',
+        title: 'Zeige'
+      },
+      icon4: {
+        message: 'Stellen Sie ihr nachhaltiges Projekt vor und sammeln Sie Ressourcen, die sie dafür brauchen',
+        title: 'Sammle'
+      }
+    },
+    projects: 'Entdecke Projekte',
+    values: 'Worum geht\'s?'
   },
 
   http: {

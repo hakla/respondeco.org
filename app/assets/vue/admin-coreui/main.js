@@ -18,20 +18,25 @@ import 'flatpickr/dist/themes/material_blue.css'
 
 import 'simple-line-icons/css/simple-line-icons.css'
 
-import fontawesome from '@fortawesome/fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
 
-import faBan from '@fortawesome/fontawesome-pro-solid/faBan'
-import faBuilding from '@fortawesome/fontawesome-pro-light/faBuilding'
-import faBullhorn from '@fortawesome/fontawesome-pro-solid/faBullhorn'
-import faCalendar from '@fortawesome/fontawesome-pro-light/faCalendar'
-import faLock from '@fortawesome/fontawesome-pro-light/faLock'
-import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
-import faTrash from '@fortawesome/fontawesome-pro-solid/faTrash'
-import faTrophy from '@fortawesome/fontawesome-pro-solid/faTrophy'
-import faUser from '@fortawesome/fontawesome-pro-solid/faUser'
-import faUsers from '@fortawesome/fontawesome-pro-solid/faUsers'
-import faWrench from '@fortawesome/fontawesome-pro-solid/faWrench'
-import faDotCircle from '@fortawesome/fontawesome-pro-solid/faDotCircle'
+import {
+  faBuilding,
+  faCalendar,
+  faLock,
+  faTimes
+} from '@fortawesome/pro-light-svg-icons'
+
+import {
+  faBan,
+  faBullhorn,
+  faDotCircle,
+  faTrash,
+  faTrophy,
+  faUser,
+  faUsers,
+  faWrench,
+} from '@fortawesome/pro-solid-svg-icons'
 
 import Authentication from 'common/authentication'
 
@@ -52,7 +57,7 @@ import store from './store'
 
 Authentication.init(router)
 
-fontawesome.library.add(
+library.add(
   faBan,
   faBuilding,
   faBullhorn,
