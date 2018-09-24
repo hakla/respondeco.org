@@ -99,7 +99,7 @@
 
 		this.forward = $('<div></div>', {
 			class: self.config.forwardClass,
-			style: 'position: absolute; left: 0; top: 0; height: 100%; overflow: hidden;'
+			style: $('html[dir="rtl"]').length ? 'position: absolute; right: 0; top: 0; height: 100%; overflow: hidden;' : 'position: absolute; left: 0; top: 0; height: 100%; overflow: hidden;'
 		});
 
 		this.backward = $('<div></div>', {

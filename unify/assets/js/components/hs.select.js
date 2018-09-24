@@ -61,12 +61,14 @@
           searchMaxSelections = $this.data('max-selections'),
           setControlClasses = $this.data('control-classes'),
           setOpenIcon = $this.data('open-icon'),
-          setCloseIcon = $this.data('close-icon');
+          setCloseIcon = $this.data('close-icon'),
+          setRtl = Boolean($this.data('rtl'));
 
         $this.chosen({
           inherit_select_classes: true,
           max_selected_options: searchMaxSelections ? searchMaxSelections : Infinity,
-          disable_search: true
+          disable_search: true,
+          rtl: setRtl ? setRtl : false
         });
 
         if (setControlClasses) {

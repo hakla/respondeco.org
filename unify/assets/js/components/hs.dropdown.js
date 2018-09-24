@@ -199,7 +199,8 @@
 
       var $dropdown = $($invoker.data('dropdown-target'));
 
-      if (eventType == 'hover' && !_isTouch()) {
+      // if (eventType == 'hover' && !_isTouch()) {
+      if (eventType == 'hover') {
 
         $invoker.on('mouseenter.HSDropDown', function (e) {
 

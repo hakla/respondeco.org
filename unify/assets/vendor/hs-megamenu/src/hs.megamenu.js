@@ -209,7 +209,8 @@
 				selector;
 
 		// Hover case
-		if(this.options.event === 'hover' && !_isTouch()) {
+		// if(this.options.event === 'hover' && !_isTouch()) {
+		if(this.options.event === 'hover') {
 			this.$element
 				.on(
 					'mouseenter.HSMegaMenu',

@@ -46,11 +46,11 @@ $(document).on('ready', function () {
     $this.parent().addClass('active');
 
     if (filterKey == 'all') {
-      $('.js-shortcode-filter-result').children('.js-shortcode-filter__item').show();
+      $('.js-shortcode-filter-result').find('.js-shortcode-filter__item').show();
     }
     else {
-      $('.js-shortcode-filter-result').children(':not(.' + filterKey + ')').hide();
-      $('.js-shortcode-filter-result').children('.' + filterKey).show();
+      $('.js-shortcode-filter-result').find('li:not(.' + filterKey + ')').hide();
+      $('.js-shortcode-filter-result').find('li.' + filterKey).show();
     }
 
     return false;

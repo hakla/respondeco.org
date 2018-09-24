@@ -30,14 +30,14 @@
 
     /**
      * Contains collection of all initialized items on the page.
-     * 
+     *
      * @private
      */
     _pageCollection: $(),
 
     /**
      * Initializtion of the component.
-     * 
+     *
      * @param {jQuery} collection
      * @param {Object} config
      *
@@ -73,8 +73,8 @@
 
     /**
      * Binds necessary global events.
-     * 
-     * @private 
+     *
+     * @private
      */
     _bindGlobalEvents: function() {
 
@@ -105,32 +105,32 @@
 
       });
 
-      $(document).on('keyup.HSHeaderSide', function(e){
+      // $(document).on('keyup.HSHeaderSide', function(e){
 
-        if(e.keyCode && e.keyCode === 27) {
+      //   if(e.keyCode && e.keyCode === 27) {
 
-          _self._pageCollection.each(function(i,el){
+      //     _self._pageCollection.each(function(i,el){
 
-            var HSHeaderSide = $(el).data('HSHeaderSide'),
-                hamburgers = HSHeaderSide.invoker;
+      //       var HSHeaderSide = $(el).data('HSHeaderSide'),
+      //           hamburgers = HSHeaderSide.invoker;
 
-            if(!HSHeaderSide) return;
-            if(hamburgers.length && hamburgers.find('.is-active').length) hamburgers.find('.is-active').removeClass('is-active');
-            HSHeaderSide.hide();
+      //       if(!HSHeaderSide) return;
+      //       if(hamburgers.length && hamburgers.find('.is-active').length) hamburgers.find('.is-active').removeClass('is-active');
+      //       HSHeaderSide.hide();
 
-          });
+      //     });
 
-        }
+      //   }
 
-      });
+      // });
 
     },
 
     /**
      * Returns an object which would be describe the Header behavior.
-     * 
-     * @private 
-     * @returns {HSHeaderSide*} 
+     *
+     * @private
+     * @returns {HSHeaderSide*}
      */
     _factoryMethod: function(element, config) {
 
@@ -138,15 +138,15 @@
       if( !config.headerBehavior ) {
         return new (config['headerPosition'] == "left" ? HSHeaderSideStaticLeft : HSHeaderSideStaticRight)(element, config);
       }
-      
+
       // overlay
       if( config.headerBehavior && config.headerBehavior == 'overlay' ) {
-        return new (config['headerPosition'] == "left" ? HSHeaderSideOverlayLeft : HSHeaderSideOverlayRight)(element, config); 
+        return new (config['headerPosition'] == "left" ? HSHeaderSideOverlayLeft : HSHeaderSideOverlayRight)(element, config);
       }
 
       // push
       if( config.headerBehavior && config.headerBehavior == 'push' ) {
-        return new (config['headerPosition'] == "left" ? HSHeaderSidePushLeft : HSHeaderSidePushRight)(element, config); 
+        return new (config['headerPosition'] == "left" ? HSHeaderSidePushLeft : HSHeaderSidePushRight)(element, config);
       }
 
     }
@@ -155,23 +155,23 @@
 
   /**
    * Provides an abstract interface for the side header.
-   * 
+   *
    * @param {jQuery} element
    * @param {Object} config
-   * 
+   *
    */
   function _HSHeaderSideAbstract(element, config) {
 
     /**
      * Contains link to the current element.
-     * 
+     *
      * @public
      */
     this.element = element;
 
     /**
      * Contains configuration object.
-     * 
+     *
      * @public
      */
     this.config = config;
@@ -179,15 +179,15 @@
 
     /**
      * Contains link to the window object.
-     * 
+     *
      * @public
      */
     this.$w = $(window);
 
     /**
-     * Contains name of methods which should be implemented in derived class. 
+     * Contains name of methods which should be implemented in derived class.
      * Each of these methods except 'isInit' must return link to the current object.
-     * 
+     *
      * @private
      */
     this._abstractMethods = ['init', 'destroy', 'show', 'hide', 'isInit'];
@@ -195,8 +195,8 @@
 
     /**
      * Runs initialization of the object.
-     * 
-     * @private 
+     *
+     * @private
      */
     this._build = function() {
 
@@ -213,8 +213,8 @@
 
     /**
      * Checks whether derived class implements necessary abstract events.
-     * 
-     * @private 
+     *
+     * @private
      */
     this._isCorrectDerrivedClass = function() {
 
@@ -240,7 +240,7 @@
 
   /**
    * HSHeaderSide constructor function.
-   * 
+   *
    * @extends _HSHeaderSideAbstract
    *
    * @param {jQuery} element
@@ -265,7 +265,7 @@
 
   /**
    * Initialization of the HSHeaderSideStaticLeft instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticLeft}
    */
@@ -283,7 +283,7 @@
 
   /**
    * Destroys the HSHeaderSideStaticLeft instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticLeft}
    */
@@ -301,7 +301,7 @@
 
   /**
    * Checks whether instance has been initialized.
-   * 
+   *
    * @public
    * @returns {Boolean}
    */
@@ -313,7 +313,7 @@
 
   /**
    * Shows the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticLeft}
    */
@@ -323,7 +323,7 @@
 
   /**
    * Hides the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticLeft}
    */
@@ -333,7 +333,7 @@
 
   /**
    * HSHeaderSide constructor function.
-   * 
+   *
    * @extends _HSHeaderSideAbstract
    *
    * @param {jQuery} element
@@ -358,7 +358,7 @@
 
   /**
    * Initialization of the HSHeaderSideStaticRight instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticRight}
    */
@@ -376,7 +376,7 @@
 
   /**
    * Destroys the HSHeaderSideStaticRight instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticRight}
    */
@@ -394,7 +394,7 @@
 
   /**
    * Checks whether instance has been initialized.
-   * 
+   *
    * @public
    * @returns {Boolean}
    */
@@ -406,7 +406,7 @@
 
   /**
    * Shows the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticRight}
    */
@@ -416,7 +416,7 @@
 
   /**
    * Hides the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideStaticRight}
    */
@@ -426,7 +426,7 @@
 
   /**
    * HSHeaderSide constructor function.
-   * 
+   *
    * @extends _HSHeaderSideAbstract
    *
    * @param {jQuery} element
@@ -470,7 +470,7 @@
 
   /**
    * Initialization of the HSHeaderSideOverlayLeft instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayLeft}
    */
@@ -520,7 +520,7 @@
 
   /**
    * Destroys the HSHeaderSideOverlayLeft instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayLeft}
    */
@@ -549,7 +549,7 @@
 
   /**
    * Checks whether instance has been initialized.
-   * 
+   *
    * @public
    * @returns {Boolean}
    */
@@ -561,7 +561,7 @@
 
   /**
    * Shows the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayLeft}
    */
@@ -574,7 +574,7 @@
 
   /**
    * Hides the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayLeft}
    */
@@ -590,7 +590,7 @@
 
   /**
    * HSHeaderSide constructor function.
-   * 
+   *
    * @extends _HSHeaderSideAbstract
    *
    * @param {jQuery} element
@@ -640,7 +640,7 @@
 
   /**
    * Initialization of the HSHeaderSidePushLeft instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushLeft}
    */
@@ -691,7 +691,7 @@
 
   /**
    * Destroys the HSHeaderSidePushLeft instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushLeft}
    */
@@ -721,7 +721,7 @@
 
   /**
    * Checks whether instance has been initialized.
-   * 
+   *
    * @public
    * @returns {Boolean}
    */
@@ -733,7 +733,7 @@
 
   /**
    * Shows the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushLeft}
    */
@@ -746,7 +746,7 @@
 
   /**
    * Hides the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushLeft}
    */
@@ -759,7 +759,7 @@
 
   /**
    * HSHeaderSide constructor function.
-   * 
+   *
    * @extends _HSHeaderSideAbstract
    *
    * @param {jQuery} element
@@ -803,7 +803,7 @@
 
   /**
    * Initialization of the HSHeaderSideOverlayRight instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayRight}
    */
@@ -853,7 +853,7 @@
 
   /**
    * Destroys the HSHeaderSideOverlayRight instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayRight}
    */
@@ -882,7 +882,7 @@
 
   /**
    * Checks whether instance has been initialized.
-   * 
+   *
    * @public
    * @returns {Boolean}
    */
@@ -894,7 +894,7 @@
 
   /**
    * Shows the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayRight}
    */
@@ -907,7 +907,7 @@
 
   /**
    * Hides the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSideOverlayRight}
    */
@@ -923,7 +923,7 @@
 
   /**
    * HSHeaderSide constructor function.
-   * 
+   *
    * @extends _HSHeaderSideAbstract
    *
    * @param {jQuery} element
@@ -973,7 +973,7 @@
 
   /**
    * Initialization of the HSHeaderSidePushRight instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushRight}
    */
@@ -1024,7 +1024,7 @@
 
   /**
    * Destroys the HSHeaderSidePushRight instance.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushRight}
    */
@@ -1054,7 +1054,7 @@
 
   /**
    * Checks whether instance has been initialized.
-   * 
+   *
    * @public
    * @returns {Boolean}
    */
@@ -1066,7 +1066,7 @@
 
   /**
    * Shows the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushRight}
    */
@@ -1079,7 +1079,7 @@
 
   /**
    * Hides the Header.
-   * 
+   *
    * @public
    * @returns {HSHeaderSidePushRight}
    */

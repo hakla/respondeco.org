@@ -2,7 +2,7 @@
  * Datepicker wrapper.
  *
  * @author Htmlstream
- * @version 1.1
+ * @version 1.0
  *
  */
 ;(function ($) {
@@ -72,39 +72,9 @@
         //Variables
         var $this = $(el),
           to = $this.data('to'),
-          type = $this.data('type'),
-          minDate,
-          maxDate;
+          rangeBoolean = $this.data('range');
 
-        if (type == 'one-field-range') {
-          var datePicker = $this.datepicker({
-            dateFormat: config['dateFormat'],
-            defaultDate: '+1w',
-            dayNamesMin: config['dayNamesMin'],
-            numberOfMonths: 1,
-            showOtherMonths: true,
-            prevText: config['prevText'],
-            nextText: config['nextText'],
-            beforeShow: $self.datepickerCustomClass,
-            onSelect: function(dateText, inst) {
-              console.log(inst);
-            }
-          }).on('change', function () {
-            var activeDate = datePicker.datepicker("getDate");
-
-            if(minDate == null) {
-              minDate = activeDate;
-            } else if(activeDate < minDate) {
-              minDate = activeDate;
-            }
-
-            if(maxDate == null && activeDate > minDate) {
-              maxDate = activeDate;
-            } else if(activeDate > maxDate) {
-              maxDate = activeDate;
-            }
-          });
-        } else if (type == 'range') {
+        if (rangeBoolean == 1) {
           var dateFrom = $this.datepicker({
             dateFormat: config['dateFormat'],
             defaultDate: '+1w',
@@ -173,5 +143,7 @@
 
       return date;
     }
+
   };
+
 })(jQuery);
