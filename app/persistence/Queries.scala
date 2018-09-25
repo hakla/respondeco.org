@@ -20,12 +20,7 @@ abstract class Queries[A: ClassTag] {
         where(order, namedParameter).executeQuery().as(parser.*)
     }
 
-    def first(parameters: NamedParameter*): Option[A] = db.withConnection { implicit connection =>
-        where(parameters:_*).executeQuery().as(parser.*) match {
-            case x :: _ => Some(x)
-            case _ => None
-        }
-    }
+    def byId(id: Long): Option[A] = first('id -> id)
 
     def delete(id: Long): Boolean = db.withConnection { implicit c =>
         SQL(s"delete from $table where id = {id}").on(
@@ -33,7 +28,12 @@ abstract class Queries[A: ClassTag] {
         ).executeUpdate() == 1
     }
 
-    def byId(id: Long): Option[A] = first('id -> id)
+    def first(parameters: NamedParameter*): Option[A] = db.withConnection { implicit connection =>
+        where(parameters:_*).executeQuery().as(parser.*) match {
+            case x :: _ => Some(x)
+            case _ => None
+        }
+    }
 
     protected def where(parameters: NamedParameter*): SimpleSql[Row] = where("asc", parameters)
 

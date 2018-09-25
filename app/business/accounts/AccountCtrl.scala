@@ -1,11 +1,13 @@
 package business.accounts
 
+import business.organisations.OrganisationExists
 import javax.inject.Inject
-
 import common.Pagination
 import play.api.libs.json.Json
 import play.api.mvc.Action
 import security.{AuthenticatedController, Authorization}
+
+import scala.util.Success
 
 /**
   * Created by Clemens Puehringer on 28/11/15.
@@ -44,11 +46,15 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
     }
 
     def register: Action[RegistrationModel] = Unauthenticated(parse.json[RegistrationModel]) { (registration, request) =>
-        val organisationId = None
+        try {
+            val user = service.createFromRegistration(registration)
 
-        service.createFromRegistration(registration, organisationId) match {
-            case Some(createdObj) => Ok(AccountPublicModel.from(createdObj))
-            case None => BadRequest("Couldn't create")
+            Ok(AccountPublicModel.from(user))
+        } catch {
+            case e: AccountCreationFailed => BadRequest("user.creation.failed")
+            case e: AccountWithEmailExists => BadRequest("user.already.registered.with.email")
+            case e: AccountWithNameExists => BadRequest("user.already.registered.with.name")
+            case e: OrganisationExists => BadRequest("organisation.exists")
         }
     }
 

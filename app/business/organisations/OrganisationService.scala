@@ -37,7 +37,23 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
         ).executeInsert().asInstanceOf[Option[Long]].flatMap(byId)
     }
 
+    /**
+      * Verify that the update of the given organisation will not violate unique constraints
+      * @param id Id of the organisation
+      * @param organisation New organisation values
+      * @return false if this update MUST NOT work
+      */
+    def verifyOrganisationUpdate(id: Long, organisation: OrganisationWriteModel): Boolean = db.withConnection { implicit c =>
+        SQL(s"select * from $table where name = {name} and id != {id}").on(
+            'id -> id,
+            'name -> organisation.name
+        ).executeQuery().as(parser.singleOpt).isEmpty
+    }
+
     def update(id: Long, organisation: OrganisationWriteModel): Option[OrganisationModel] = db.withConnection { implicit c =>
+        if (!verifyOrganisationUpdate(id, organisation))
+            throw new OrganisationExists
+
         SQL(s"update $table set name = {name}, description = {description}, email = {email}, website = {website}, location = {location}, category = {category}, subcategory = {subcategory}, image = {image}, logo = {logo}, video = {video}, verified = {verified}, verifiedAt = {verifiedAt}, updatedAt = CURRENT_TIMESTAMP where id = {id}").on(
             'id -> id,
             'name -> organisation.name,

@@ -22,7 +22,7 @@ object AccountWriteModel extends MyWriteable[AccountWriteModel] {
     )
 }
 
-case class RegistrationModel (email: String, name: String, password: String, organisation: String)
+case class RegistrationModel (email: String, name: String, password: String)
 
 object RegistrationModel extends MyWriteable[RegistrationModel] {
     implicit val formatter: OFormat[RegistrationModel] = Json.format[RegistrationModel]

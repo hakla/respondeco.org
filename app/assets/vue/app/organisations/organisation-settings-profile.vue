@@ -59,7 +59,7 @@
           <unify-button class="u-btn-darkgray g-mr-10" size="medium" @click="reset">
             {{ $t('common.cancel') }}
           </unify-button>
-          <unify-button class="u-btn-primary g-mr-10" loading="global-loader" size="medium"
+          <unify-button class="u-btn-primary g-mr-10" loading="saving" size="medium"
                         type="submit">
             {{ $t('common.save') }}
           </unify-button>
@@ -93,15 +93,19 @@
       },
 
       save () {
-        Notifications.startLoading(this)
+        Notifications.startLoading(this, 'saving')
 
         OrganisationsService.update(this.organisation).then(
           Notifications.success(this, response => {
             this.current(this.organisation)
             this.reset()
-          }),
+          }, 'saving'),
 
-          Notifications.error(this)
+          Notifications.error(this, {
+            400: {
+              'organisation.exists': this.$t('organisation.update.errors.organisation_exists')
+            }
+          }, 'saving')
         )
       }
     }

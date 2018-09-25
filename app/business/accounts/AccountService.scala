@@ -1,14 +1,17 @@
 package business.accounts
 
 import java.time.LocalDateTime
-import javax.inject.Inject
 
+import javax.inject.Inject
 import anorm._
+import business.organisations.{OrganisationExists, OrganisationService, OrganisationWriteModel}
 import common.Database
 import persistence.Queries
 import security.{Role, User}
 
-class AccountService @Inject()(implicit val db: Database) extends Queries[AccountModel] {
+import scala.util.{Failure, Try}
+
+class AccountService @Inject()(val organisationService: OrganisationService, implicit val db: Database) extends Queries[AccountModel] {
 
     import common.DateImplicits._
 
@@ -35,8 +38,19 @@ class AccountService @Inject()(implicit val db: Database) extends Queries[Accoun
     /**
       * Registration by the user
       */
-    def createFromRegistration(account: RegistrationModel, organisationId: Option[Long]): Option[AccountModel] = {
-        create(account.email, account.name, Some(account.password), organisationId)
+    def createFromRegistration(account: RegistrationModel): AccountModel = db.withConnection { implicit connection =>
+        val organisation = organisationService.first('name -> account.name)
+        val user = first('name -> account.name)
+
+        validateRegistration(account) {
+            val createdAccount = organisationService.create(OrganisationWriteModel(
+                name = account.name
+            )).flatMap(organisation =>
+                create(account.email, account.name, Some(account.password), Some(organisation.id))
+            )
+
+            createdAccount.getOrElse(throw new AccountCreationFailed)
+        }
     }
 
     def create(email: String, name: String, password: Option[String], organisationId: Option[Long], image: Option[String] = None): Option[AccountModel] = db.withConnection { implicit connection =>
@@ -103,5 +117,30 @@ class AccountService @Inject()(implicit val db: Database) extends Queries[Accoun
     }
 
     def findByEmail(email: String): Option[AccountModel] = first('email -> email)
+
+    private def validateRegistration(registrationModel: RegistrationModel)(block: => AccountModel): AccountModel = db.withConnection { implicit connection =>
+        val rowParser: RowParser[Option[Int] ~ Option[Int] ~ Option[Int]] =
+            SqlParser.get[Option[Int]]("organisation") ~
+                SqlParser.get[Option[Int]]("account_name") ~
+                SqlParser.get[Option[Int]]("account_email")
+
+        val registrationChecks = SQL(
+            s"""
+               | select
+               | (select 1 from organisation where lower(name) = {name}) as organisation,
+               | (select 1 from account where lower(name) = {name}) as account_name,
+               | (select 1 from account where lower(email) = {email}) as account_email
+               | from dual
+           """.stripMargin
+        ).on(
+            'email -> registrationModel.email.toLowerCase,
+            'name -> registrationModel.name.toLowerCase
+        ).as(rowParser.single)
+
+        if (registrationChecks._1._1.isDefined) throw new OrganisationExists
+        else if (registrationChecks._1._2.isDefined) throw new AccountWithNameExists
+        else if (registrationChecks._2.isDefined) throw new AccountWithEmailExists
+        else block
+    }
 
 }

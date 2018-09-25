@@ -23,6 +23,7 @@ export default {
       previous: 'Zurück'
     },
     password: 'Passwort',
+    passwordConfirmation: 'Passwortbestätigung',
     project: 'Projekt | Projekte',
     projects: 'Projekte',
     ratings: 'Bewertungen',
@@ -121,6 +122,11 @@ export default {
         },
         title: 'Sicherheitseinstellungen'
       },
+      update: {
+        errors: {
+          'organisation_exists': 'Dieser Name ist bereits vergeben'
+        }
+      },
       website: 'Webseite'
     }
   },
@@ -152,6 +158,11 @@ export default {
   },
 
   registration: {
+    errors: {
+      'organisation_exists': 'Eine Organisation mit diesem Namen existiert bereits',
+      'user_already_registered': 'Ein Benutzer mit dieser E-Mail Adresse existiert bereits',
+      'user_creation_failed': 'Bei der Registrierung ist ein Fehler aufgetreten'
+    },
     existingAccount: 'Bereits angemeldet?',
     go: 'Registrieren',
     login: 'Zum Login'

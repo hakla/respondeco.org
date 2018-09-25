@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <notifications position="top center"></notifications>
 
     <!--=== Header v6 ===-->
@@ -14,7 +14,7 @@
 
     <!--=== Footer Version 1 ===-->
     <respondeco-footer v-if="$route.meta.footer !== false"></respondeco-footer>
-  </main>
+  </div>
 </template>
 
 <script>

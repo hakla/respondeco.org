@@ -94,14 +94,20 @@ export const ImageMixin = {
 }
 
 export const Notifications = {
-  error (vm, status = {}) {
+  error (vm, status = {}, loader = 'global-loader') {
     let transformer = (error) => {
       let message = ''
 
       if (typeof status === 'string') {
         message = status
+      } else if (typeof status === 'function') {
+        message = status(error)
       } else if (error && error.status) {
-        message = status[error.status] || (vm.$t && (vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown'))) || ('Fehler: ' + error.status)
+        if (typeof status[error.status] === 'object') {
+          message = status[error.status][error.body]
+        } else {
+          message = status[error.status] || (vm.$t && (vm.$t(`http.status.${error.status}`) || vm.$t('http.status.unknown'))) || ('Fehler: ' + error.status)
+        }
       } else {
         message = vm.$t && vm.$t('common.error.undefined') || 'Undefinierter Fehler'
       }
@@ -110,7 +116,7 @@ export const Notifications = {
     }
 
     return (error) => {
-      vm.$endLoading('global-loader')
+      vm.$endLoading(loader)
 
       vm.$notify({
         duration: 2500,
@@ -120,21 +126,21 @@ export const Notifications = {
     }
   },
 
-  isLoading (vm) {
-    return vm.$isLoading('global-loader')
+  isLoading (vm, loader = 'global-loader') {
+    return vm.$isLoading(loader)
   },
 
-  startLoading (vm) {
-    vm.$startLoading('global-loader')
+  startLoading (vm, loader = 'global-loader') {
+    vm.$startLoading(loader)
   },
 
-  success (vm, cb = result => {}) {
+  success (vm, cb = result => {}, loader = 'global-loader') {
     let i18n = vm.$i18n
 
     return (result) => {
       cb(result)
 
-      vm.$endLoading('global-loader')
+      vm.$endLoading(loader)
 
       vm.$notify({
         duration: 1000,

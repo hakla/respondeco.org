@@ -50,7 +50,7 @@ const Overview = {
 
           this.list = this.list.filter(item => item.id !== id)
         }),
-        Notifications.error(this)
+        Notifications.error(this, undefined, `deleting-${id}`)
       )
     }
   },

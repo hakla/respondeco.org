@@ -47,7 +47,7 @@
             </li>
             <li class="list-inline-item g-mr-20" v-if="organisation.email">
               <i class="icon-envelope g-pos-rel g-top-1 g-color-gray-dark-v5 g-mr-5"></i>
-              <a class="g-color-main g-color-primary--hover" href="#">{{ organisation.email }}</a>
+              <a class="g-color-main g-color-primary--hover" :href="'mailto:' + organisation.email">{{ organisation.email }}</a>
             </li>
           </ul>
           <!-- End User Info -->

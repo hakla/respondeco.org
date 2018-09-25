@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
     ws,
     specs2 % Test,
     evolutions,
-    "com.typesafe.play" %% "anorm" % "3.0.0-M1",
+    "com.typesafe.play" %% "anorm" % "2.5.3",
     "jp.t2v" %% "play2-auth" % "0.14.1",
     "org.typelevel" %% "cats" % "0.8.1",
     "org.yaml" % "snakeyaml" % "1.17",

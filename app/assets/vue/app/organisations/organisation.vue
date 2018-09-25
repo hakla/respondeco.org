@@ -30,7 +30,7 @@
             <!-- User Image -->
             <div class="u-block-hover g-pos-rel">
               <figure class="g-mb-10">
-                <img class="img-fluid w-100" :src="imageUrl(organisation.logo)" alt="Image Description">
+                <img class="img-fluid w-100" :src="imageUrl(organisation.logo) || '/assets/images/demo-square.jpg'" alt="Image Description">
               </figure>
 
               <!-- Figure Caption -->
