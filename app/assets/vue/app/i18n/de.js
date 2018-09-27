@@ -1,4 +1,23 @@
 export default {
+  about_us: {
+    jan: {
+      citation: '«Eine andere Arbeitswelt ist möglich.»',
+      description: `Jan Draxler wollte schon immer die Welt retten. Sowohl im Laufe seines privaten als auch beruflichen Lebens musste er sich davon schrittweise verabschieden. 
+Trotzdem gab er nie auf. Er studierte Politikwissenschaften und Sozialwirtschaft, arbeitete als Vortragender, Sozialarbeiter und Projektmanager.
+
+Dann wurden ihm zwei Kinder geschenkt. Und im beruflichen Setting bastelte er an respondeco.org. Seitdem hat er wieder ein wenig Hoffnung geschöpft, vielleicht doch noch die Welt retten zu können.
+    `
+    },
+    klaus: {
+      citation: '«Ernsthaft? nice!»',
+      description: `Für Klaus Harrer gibt es eigentlich nichts Uninteressantes. Egal ob es Wissenschaft, Sport , Musik oder Technik ist. 
+Er studierte und arbeitete...
+
+Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß wie seine Interessen.
+    `
+    }
+  },
+
   comment: {
     add: 'Als neuen Beitrag speichern',
     save: 'Diesen Beitrag speichern'
@@ -44,7 +63,35 @@ export default {
       sup: 'Willkommen bei',
       title: 'respondeco.org'
     },
+    meaning: {
+      mission: {
+        description: 'Wir wollen anders arbeiten. Verantwortungsvoll und transparent. Dafür stellen wir innovative Werkzeuge zur Verfügung.',
+        title: 'Unsere Mission'
+      },
+      vision: {
+        description: 'Organisationen kooperieren, um sich und die Welt nachhaltiger zu machen.',
+        title: 'Unsere Vision'
+      }
+    },
     organisations: 'Entdecke Organisationen',
+    our_principles: {
+      item1: {
+        description: 'Weil gemeinsam mehr Sinn macht',
+        title: 'Sozial'
+      },
+      item2: {
+        description: 'Weil das unsere Geschäftsidee ist',
+        title: 'Nachhaltig'
+      },
+      item3: {
+        description: 'Weil das fair ist',
+        title: 'Transparent'
+      },
+      item4: {
+        description: 'Weil das gut ist',
+        title: 'Demokratisch'
+      }
+    },
     our_values: {
       'heading': 'Engagement zeigen',
       icon1: {
@@ -70,7 +117,7 @@ export default {
       }
     },
     projects: 'Entdecke Projekte',
-    values: 'Worum geht\'s?'
+    values: 'Worum\'s geht?'
   },
 
   http: {

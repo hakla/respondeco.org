@@ -1,8 +1,7 @@
 <template>
-  <main class="g-pb-100">
+  <main>
     <!-- Promo Block -->
-    <section class="u-bg-overlay g-bg-img-hero g-bg-bluegray-opacity-0_3--after"
-             style="background-image: url('/assets/images/home_bg.jpg');">
+    <section class="u-bg-overlay g-bg-img-hero g-bg-bluegray-opacity-0_3--after background-image">
       <div class="container u-bg-overlay__inner text-center g-pt-150 g-pb-70">
         <div class="g-mb-100">
           <span class="d-block g-color-white g-font-size-20 text-uppercase g-letter-spacing-5 mb-4">{{
@@ -22,41 +21,63 @@
     </section>
     <!-- End Promo Block -->
 
-    <unify-hero>{{ $t('home.organisations') }}</unify-hero>
+    <unify-page>
+      <unify-hero>{{ $t('home.organisations') }}</unify-hero>
 
-    <transition name="fade" mode="out-in">
-      <div class="container">
-        <respondeco-portfolio columns="col-sm-6 col-md-3" :items="organisations"
-                              v-if="!$isLoading('organisations')"></respondeco-portfolio>
-        <spinner v-if="$isLoading('organisations')"></spinner>
-      </div>
-    </transition>
+      <transition name="fade" mode="out-in">
+        <div class="container">
+          <respondeco-portfolio columns="col-sm-6 col-md-3" :items="organisations"
+                                v-if="!$isLoading('organisations')"></respondeco-portfolio>
+          <spinner v-if="$isLoading('organisations')"></spinner>
+        </div>
+      </transition>
+    </unify-page>
 
-    <unify-hero>{{ $t('home.projects') }}</unify-hero>
+    <unify-page class="g-bg-gray-light-v5">
+      <unify-hero>{{ $t('home.projects') }}</unify-hero>
 
-    <transition name="fade" mode="out-in">
-      <div class="container">
-        <respondeco-portfolio columns="col-sm-6 col-md-3" :items="projects"
-                              v-if="!$isLoading('projects')"></respondeco-portfolio>
-        <spinner v-if="$isLoading('projects')"></spinner>
-      </div>
-    </transition>
+      <transition name="fade" mode="out-in">
+        <div class="container">
+          <respondeco-portfolio columns="col-sm-6 col-md-3" :items="projects"
+                                v-if="!$isLoading('projects')"></respondeco-portfolio>
+          <spinner v-if="$isLoading('projects')"></spinner>
+        </div>
+      </transition>
+    </unify-page>
 
-    <unify-hero>{{ $t('home.values') }}</unify-hero>
+    <unify-page>
+      <unify-hero>{{ $t('home.values') }}</unify-hero>
 
-    <transition name="fade" mode="out-in">
-      <div class="container">
-        <respondeco-our-values></respondeco-our-values>
-      </div>
-    </transition>
+      <transition name="fade" mode="out-in">
+        <div class="container">
+          <respondeco-our-values></respondeco-our-values>
+        </div>
+      </transition>
+    </unify-page>
 
-    <unify-hero>{{ $t('home.about_us') }}</unify-hero>
+    <unify-page class="g-bg-gray-light-v5">
+      <unify-hero>Sinn der Sache</unify-hero>
 
-    <transition name="fade" mode="out-in">
-      <div class="container">
-        <respondeco-about-us></respondeco-about-us>
-      </div>
-    </transition>
+      <respondeco-meaning></respondeco-meaning>
+    </unify-page>
+
+    <unify-page>
+      <unify-hero>Unsere Arbeitsprinzipien</unify-hero>
+
+      <transition name="fade" mode="out-in">
+        <respondeco-our-principles></respondeco-our-principles>
+      </transition>
+    </unify-page>
+
+    <unify-page class="g-color-white u-bg-overlay g-bg-blue-lineargradient g-bg-bluegray-opacity-0_3--after">
+      <unify-hero class="g-pos-rel g-z-index-1">{{ $t('home.about_us') }}</unify-hero>
+
+      <transition name="fade" mode="out-in">
+        <div class="container g-pos-rel g-z-index-1">
+          <respondeco-about-us></respondeco-about-us>
+        </div>
+      </transition>
+    </unify-page>
 
   </main>
 </template>
@@ -65,6 +86,8 @@
   import RespondecoAboutUs from 'app/main/about-us'
   import RespondecoFooter from 'app/main/footer'
   import RespondecoHeader from 'app/main/header'
+  import RespondecoMeaning from 'app/main/meaning'
+  import RespondecoOurPrinciples from 'app/main/our-principles'
   import RespondecoOurValues from 'app/main/our-values'
   import RespondecoPortfolio from 'app/main/portfolio'
 
@@ -72,7 +95,7 @@
 
   import Utils from 'app/utils'
 
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
 
   import Organisations from 'common/services/organisations'
   import Projects from 'common/services/projects'
@@ -84,6 +107,8 @@
       RespondecoAboutUs,
       RespondecoFooter,
       RespondecoHeader,
+      RespondecoMeaning,
+      RespondecoOurPrinciples,
       RespondecoOurValues,
       RespondecoPortfolio,
       Spinner
@@ -130,5 +155,8 @@
 </script>
 
 <style scoped>
-
+  .background-image {
+    background-image: url('/assets/images/home_bg.jpg');
+    background-position: 82% 57%;
+  }
 </style>

@@ -12,15 +12,14 @@
           <div class="row">
             <div class="col-md-5">
               <!-- Consultants Info -->
-              <div class="g-bg-secondary text-center g-pa-20">
+              <div class="text-center g-pa-20">
                 <div
                   class="u-shadow-v19 g-width-110 g-height-110 g-brd-around g-brd-5 g-brd-white rounded-circle mx-auto mb-4">
                   <img class="img-fluid rounded-circle" src="/assets/images/jan.jpg"
                        alt="Image description">
                 </div>
-                <h3 class="h6 mb-3">«Do you find it difficult to choose? - I will assist you.»</h3>
-                <span class="d-block g-font-size-11 g-color-gray-dark-v5">Jan</span>
-                <span class="d-block g-font-size-11 g-color-gray-dark-v5"></span>
+                <h3 class="h6 mb-3">{{ $t('about_us.jan.citation') }}</h3>
+                <span class="d-block g-font-size-11">Jan</span>
               </div>
               <!-- End Consultants Info -->
             </div>
@@ -28,35 +27,7 @@
             <div class="col-md-7">
               <!-- Consultants Content -->
               <h3 class="h5">Jan</h3>
-              <p class="g-line-height-2">This is where I sit down, grab a cup of coffee and dial in the details.
-                Understanding the task at hand and ironing out the wrinkles is key.</p>
-              <ul class="list-unstyled g-color-gray-dark-v5 mb-0">
-                <li class="my-2">
-                  <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                  Business
-                  transformation
-                </li>
-                <li class="my-2">
-                  <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                  Growth
-                  strategy
-                </li>
-                <li class="my-2">
-                  <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                  M&amp;A
-                  transaction support
-                </li>
-                <li class="my-2">
-                  <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                  Restructuring
-                  and turnaround
-                </li>
-                <li class="my-2">
-                  <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                  Growth
-                  strategy
-                </li>
-              </ul>
+              <p class="g-line-height-2 pre-wrap">{{ $t('about_us.jan.description' )}}</p>
               <!-- End Consultants Content -->
             </div>
           </div>
@@ -128,15 +99,14 @@
             <div class="row">
               <div class="col-md-5">
                 <!-- Consultants Info -->
-                <div class="g-bg-secondary text-center g-pa-20">
+                <div class="text-center g-pa-20">
                   <div
                     class="u-shadow-v19 g-width-110 g-height-110 g-brd-around g-brd-5 g-brd-white rounded-circle mx-auto mb-4">
                     <img class="img-fluid rounded-circle" src="/assets/images/klaus.jpg"
                          alt="Image description">
                   </div>
-                  <h3 class="h6 mb-3">«Do you find it difficult to choose? - I will assist you.»</h3>
-                  <span class="d-block g-font-size-11 g-color-gray-dark-v5">Klaus</span>
-                  <span class="d-block g-font-size-11 g-color-gray-dark-v5"></span>
+                  <h3 class="h6 mb-3">{{ $t('about_us.klaus.citation') }}</h3>
+                  <span class="d-block g-font-size-11">Klaus</span>
                 </div>
                 <!-- End Consultants Info -->
               </div>
@@ -144,25 +114,7 @@
               <div class="col-md-7">
                 <!-- Consultants Content -->
                 <h3 class="h5">Klaus</h3>
-                <p class="g-line-height-2">This is where I sit down, grab a cup of coffee and dial in the details.
-                  Understanding the task at hand and ironing out the wrinkles is key.</p>
-                <ul class="list-unstyled g-color-gray-dark-v5 mb-0">
-                  <li class="my-2">
-                    <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                    Business
-                    transformation
-                  </li>
-                  <li class="my-2">
-                    <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                    M&amp;A
-                    transaction support
-                  </li>
-                  <li class="my-2">
-                    <respondeco-icon class="g-color-primary g-mr-3" icon="fal angle-right"></respondeco-icon>
-                    Restructuring
-                    and turnaround
-                  </li>
-                </ul>
+                <p class="g-line-height-2 pre-wrap">{{ $t('about_us.klaus.description') }}</p>
                 <!-- End Consultants Content -->
               </div>
             </div>
@@ -237,5 +189,7 @@
 </script>
 
 <style scoped>
-
+  .pre-wrap {
+    white-space: pre-line;
+  }
 </style>

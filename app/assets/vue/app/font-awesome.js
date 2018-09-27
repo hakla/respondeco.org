@@ -7,11 +7,14 @@ import {
   faBullhorn,
   faHandshake,
   faImage,
+  faLifeRing,
   faMegaphone,
   faPresentation,
   faSearch,
+  faSync,
   faThumbtack,
-  faTimes
+  faTimes,
+  faUsers
 } from '@fortawesome/pro-light-svg-icons'
 
 import {
@@ -23,4 +26,21 @@ import {
   faThumbtack as faSolidThumbtack
 } from '@fortawesome/pro-regular-svg-icons'
 
-library.add(faAngleDown, faAngleLeft, faAngleRight, faBullhorn, faCheck, faHandshake, faImage, faMegaphone, faPresentation, faSearch, faShieldAlt, faSolidThumbtack, faThumbtack, faTimes)
+library.add(faAngleDown,
+  faAngleLeft,
+  faAngleRight,
+  faBullhorn,
+  faCheck,
+  faHandshake,
+  faImage,
+  faLifeRing,
+  faMegaphone,
+  faPresentation,
+  faSearch,
+  faShieldAlt,
+  faSolidThumbtack,
+  faSync,
+  faThumbtack,
+  faTimes,
+  faUsers
+)

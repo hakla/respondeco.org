@@ -4,7 +4,6 @@
     <!-- Icon Blocks -->
     <div class="row">
       <div class="col-lg-6 g-pb-40">
-        <h2 class="h3 g-color-black g-font-weight-600 text-uppercase mb-0">{{ $t('home.our_values.heading') }}</h2>
         <span class="d-block g-color-primary g-font-weight-300 g-font-size-20 g-mb-30"></span>
         <div class="row">
           <div class="col-md-4 g-mb-30 g-mb-0--md">

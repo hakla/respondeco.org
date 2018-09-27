@@ -60,6 +60,7 @@ import UnifyList from 'common/components/unify-list'
 import UnifyListItem from 'common/components/unify-list-item'
 import UnifyListItemLabel from 'common/components/unify-list-item-label'
 import UnifyListItemContent from 'common/components/unify-list-item-content'
+import UnifyPage from 'common/components/unify-page'
 import UnifyTextarea from 'common/components/unify-textarea'
 
 Vue.component(RespondecoIcon.name, RespondecoIcon)
@@ -73,6 +74,7 @@ Vue.component(UnifyList.name, UnifyList)
 Vue.component(UnifyListItem.name, UnifyListItem)
 Vue.component(UnifyListItemLabel.name, UnifyListItemLabel)
 Vue.component(UnifyListItemContent.name, UnifyListItemContent)
+Vue.component(UnifyPage.name, UnifyPage)
 Vue.component(UnifyTextarea.name, UnifyTextarea)
 Vue.directive('autosize', Autosize)
 // Vue.directive('popover', Popover)
