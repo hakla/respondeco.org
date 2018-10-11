@@ -95,7 +95,7 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
     }
 
     def authorFromComment(comment: CommentModel): Option[Author] = {
-        authorFromUser(comment).orElse(authorFromOrganisation(comment))
+        authorFromOrganisation(comment).orElse(authorFromUser(comment))
     }
 
     def toPublicModel(commentModel: CommentModel): CommentPublicModel = {

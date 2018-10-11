@@ -27,7 +27,7 @@
                     @changed="setNewImage"></image-dialog>
 
       <transition name="fade" mode="out-in">
-        <img class="img-fluid w-100 g-rounded-5 g-mb-25" :src="previewImageUrl" v-if="previewImageUrl"
+        <img class="img-fluid w-100 g-rounded-5 g-mb-25 g-z-index-1" :src="previewImageUrl" v-if="previewImageUrl"
              alt="Image Description" @click="openFileChooser">
 
         <youtube :video-id="comment.video" v-else-if="comment.video" player-width="100%"></youtube>
@@ -93,7 +93,7 @@
 
       <div class="px-4">
         <ul
-          class="d-flex justify-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-45 g-mb-25">
+          class="d-flex justi6fy-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-45 g-mb-25 g-pos-rel g-z-index-1">
           <li class="list-inline-item mr-5">
             <img class="g-width-80 g-height-80 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
                  :src="imageUrl(comment.author.data.image)" v-if="comment.author.data.image"

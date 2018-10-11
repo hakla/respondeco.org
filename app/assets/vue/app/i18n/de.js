@@ -5,7 +5,7 @@ export default {
       description: `Jan Draxler wollte schon immer die Welt retten. Sowohl im Laufe seines privaten als auch beruflichen Lebens musste er sich davon schrittweise verabschieden. 
 Trotzdem gab er nie auf. Er studierte Politikwissenschaften und Sozialwirtschaft, arbeitete als Vortragender, Sozialarbeiter und Projektmanager.
 
-Dann wurden ihm zwei Kinder geschenkt. Und im beruflichen Setting bastelte er an respondeco.org. Seitdem hat er wieder ein wenig Hoffnung geschöpft, vielleicht doch noch die Welt retten zu können.
+Dann wurden ihm zwei Kinder geschenkt und er bastelte an respondeco.org. Seitdem hat er wieder ein wenig Hoffnung geschöpft, vielleicht doch noch die Welt retten zu können.
     `
     },
     klaus: {
@@ -59,8 +59,8 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
   home: {
     about_us: 'Über uns',
     header: {
-      sub: '',
-      sup: 'Willkommen bei',
+      sub: 'Der Marktplatz für nachhaltige Projekte',
+      sup: '',
       title: 'respondeco.org'
     },
     meaning: {
@@ -117,7 +117,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
       }
     },
     projects: 'Entdecke Projekte',
-    values: 'Worum\'s geht?'
+    values: 'Was es bringt'
   },
 
   http: {

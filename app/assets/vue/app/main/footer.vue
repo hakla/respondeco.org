@@ -1,6 +1,6 @@
 <template>
 
-  <div class="shortcode-html">
+  <footer>
     <!-- Footer -->
     <div class="g-bg-secondary g-pt-100 g-pb-50">
       <div class="container">
@@ -13,21 +13,6 @@
           </div>
 
           <div class="offset-lg-2 col-lg-3 col-md-6 g-mb-40 g-mb-0--lg">
-            <div class="u-heading-v3-1 g-brd-white-opacity-0_3 g-mb-25">
-              <h2 class="u-heading-v3__title h6 text-uppercase g-brd-primary">Unterstützen</h2>
-            </div>
-
-            <nav class="text-uppercase1">
-              <ul class="list-unstyled g-mt-minus-10 mb-0">
-                <li class="g-pos-rel g-brd-bottom g-brd-white-opacity-0_1 g-py-10">
-                  <p>
-                    Profitieren Sie von den Vorteilen der Premiummitgliedschaft und unterstützen Sie gleichzeitig respondeco.
-                  </p>
-                  <img id="logo-premium" src="/assets/images/button_premiummitglied-werden.png"
-                        alt="Werden Sie jetzt Premiummitglied">
-                </li>
-              </ul>
-            </nav>
           </div>
 
           <div class="col-lg-3 col-md-6">
@@ -45,7 +30,7 @@
       </div>
     </div>
     <!-- End Footer -->
-  </div>
+  </footer>
 
   <!--<div class="g-bg-black-opacity-0_9 g-color-white-opacity-0_8 g-py-60">-->
     <!--<div class="footer">-->
