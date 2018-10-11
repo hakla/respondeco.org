@@ -39,7 +39,8 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
 
     /**
       * Verify that the update of the given organisation will not violate unique constraints
-      * @param id Id of the organisation
+      *
+      * @param id           Id of the organisation
       * @param organisation New organisation values
       * @return false if this update MUST NOT work
       */
@@ -92,6 +93,12 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
 
     def findByName(name: String): Option[OrganisationModel] = db.withConnection { implicit c =>
         first('name -> name)
+        SQL(
+            s"SELECT * FROM $table WHERE lower(name) = '${name.toLowerCase}'"
+        ).executeQuery().as(parser.*) match {
+            case x :: _ => Some(x)
+            case _ => None
+        }
     }
 
     def isVerified(id: Long): Boolean = db.withConnection { implicit c =>
@@ -100,6 +107,20 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
         ).executeQuery().as(
             SqlParser.bool("verified").single
         )
+    }
+
+    def query(query: String, categories: Seq[String]): List[OrganisationModel] = db.withConnection { implicit c =>
+        val filterName = s"LOWER(NAME) LIKE '%${query.toLowerCase}%'"
+
+        var where = filterName
+
+        if (categories.nonEmpty) {
+            where += " AND " + categories.map(category => s"category = '$category'").reduceLeft((a, b) => s"$a OR $b")
+        }
+
+        SQL(
+            s"SELECT * FROM $table WHERE $where ORDER BY ID ASC"
+        ).executeQuery().as(parser.*)
     }
 
 }

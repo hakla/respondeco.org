@@ -1,9 +1,8 @@
 package business.projects
 
 import javax.inject.Inject
-
 import anorm.{Macro, RowParser, _}
-import business.organisations.OrganisationService
+import business.organisations.{OrganisationModel, OrganisationService}
 import common.Database
 import persistence.Queries
 
@@ -15,7 +14,7 @@ class ProjectService @Inject()(organisationService: OrganisationService, implici
     implicit val parser: RowParser[ProjectModel] = Macro.namedParser[ProjectModel]
     implicit val table: String = "project"
 
-    def create(project: ProjectWriteModel) : Option[ProjectModel] = db.withConnection { implicit c =>
+    def create(project: ProjectWriteModel): Option[ProjectModel] = db.withConnection { implicit c =>
         SQL(s"insert into $table (id, name, location, description, category, subcategory, start, end, benefits, price, organisation, image, video) values(null, {name}, {location}, {description}, {category}, {subcategory}, {start}, {end}, {benefits}, {price}, {organisation}, {image}, {video})").on(
             'name -> project.name,
             'location -> project.location,
@@ -59,6 +58,60 @@ class ProjectService @Inject()(organisationService: OrganisationService, implici
 
     def findByOrganisation(organisationId: Long): List[ProjectModel] = db.withConnection { implicit c =>
         all('organisation -> organisationId)
+    }
+
+    def query(query: String, categories: Seq[String], price: Int, status: Int): List[ProjectModel] = db.withConnection {
+        def categoryFilter = {
+            if (categories.nonEmpty)
+                categories.map(category => s"category = '$category'").reduceLeft((a, b) => s"$a OR $b")
+            else ""
+        }
+
+        def nameFilter = {
+            val basicFilter = s"LOWER(NAME) LIKE '%${query.toLowerCase}%' OR LOWER(LOCATION) LIKE '%${query.toLowerCase}%'"
+
+            if (query.nonEmpty) {
+                val filter: String = organisationService
+                    .findByName(query)
+                    .map(organisation => s"organisation = ${organisation.id}")
+                    .getOrElse(basicFilter)
+
+                filter
+            } else
+                basicFilter
+        }
+
+        def priceFilter: String = {
+            price match {
+                case 1 => "PRICE > 0"
+                case 2 => "PRICE = 0 OR PRICE IS NULL"
+                case _ => ""
+            }
+        }
+
+        def statusFilter: String = {
+            // status 1 => Offen
+            // status 2 => Abgeschlossenes Projekt
+            status match {
+                case 1 => "END > CURRENT_TIME"
+                case 2 => "END IS NULL OR END <= CURRENT_TIME"
+                case _ => ""
+            }
+        }
+
+        implicit c =>
+            val filters: List[String] = List(
+                categoryFilter,
+                nameFilter,
+                priceFilter,
+                statusFilter
+            ).filter(_.nonEmpty)
+
+            val where = filters.reduceLeft((a, b) => s"($a) AND ($b)")
+
+            SQL(
+                s"SELECT * FROM $table WHERE $where ORDER BY ID ASC"
+            ).executeQuery().as(parser.*)
     }
 
     def toPublicModel(project: ProjectModel): ProjectPublicModel = {

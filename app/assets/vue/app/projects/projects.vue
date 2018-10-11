@@ -9,15 +9,20 @@
 
     data () {
       return {
-        heading: 'common.project'
+        heading: 'common.project',
+        pageSize: 9
       }
     },
 
     methods: {
-      fetchData () {
+      fetchData (page, pageSize, query, categories, price, status) {
         return Projects.all({
-          page: this.page,
-          pageSize: this.pageSize
+          page,
+          pageSize,
+          query,
+          categories: categories.join(','),
+          price,
+          status
         }).then(response => {
           let projects = response.body.items
 

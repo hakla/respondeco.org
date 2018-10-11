@@ -12,15 +12,18 @@
 
     data () {
       return {
+        filter: false,
         heading: 'common.organisation'
       }
     },
 
     methods: {
-      fetchData (page, pageSize) {
+      fetchData (page, pageSize, query, categories) {
         return OrganisationService.all({
-          page: this.page,
-          pageSize: this.pageSize
+          page,
+          pageSize,
+          query,
+          categories: categories.join(',')
         }).then(response => {
           let organisations = response.body.items.map(organisation => ObjectNormaliser.organisation(organisation))
 
