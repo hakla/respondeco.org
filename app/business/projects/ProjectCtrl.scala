@@ -9,14 +9,14 @@ import security.{AuthenticatedController, Authorization}
 
 class ProjectCtrl @Inject()(projectService: ProjectService, val accountService: AccountService) extends AuthenticatedController with Authorization with Pagination {
 
-    def findAll(query: Option[String], categories: Option[String], price: Int, status: Int) = Unauthenticated { request =>
+    def findAll(query: Option[String], categories: Option[String], price: Option[Int], status: Option[Int]) = Unauthenticated { request =>
         val cats = categories.getOrElse("").split(",").filter(_.nonEmpty)
 
         Ok(
             Json.toJson(
                 paginated(
                     request,
-                    query.map(projectService.query(_, cats, price, status)).getOrElse(projectService.all)
+                    query.map(projectService.query(_, cats, price.getOrElse(0), status.getOrElse(0))).getOrElse(projectService.all)
                 )
             )
         )

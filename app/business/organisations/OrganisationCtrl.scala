@@ -10,14 +10,12 @@ import security.{AuthenticatedController, Authorization}
 
 class OrganisationCtrl @Inject()(organisationService: OrganisationService, val accountService: AccountService, val res: Res) extends AuthenticatedController with Authorization with Pagination {
 
-    def findAll(query: Option[String], categories: Option[String]) = Unauthenticated { request =>
-        val cats = categories.getOrElse("").split(",").filter(_.nonEmpty)
-
+    def findAll(query: Option[String]) = Unauthenticated { request =>
         Ok(
             Json.toJson(
                 paginated(
                     request,
-                    query.map(organisationService.query(_, cats)).getOrElse(organisationService.all)
+                    query.map(organisationService.query).getOrElse(organisationService.all)
                 )
             )
         )

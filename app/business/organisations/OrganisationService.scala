@@ -92,10 +92,9 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
     }
 
     def findByName(name: String): Option[OrganisationModel] = db.withConnection { implicit c =>
-        first('name -> name)
         SQL(
-            s"SELECT * FROM $table WHERE lower(name) = '${name.toLowerCase}'"
-        ).executeQuery().as(parser.*) match {
+            s"SELECT * FROM $table WHERE trim(lower(name)) = {name}"
+        ).on('name -> name).executeQuery().as(parser.*) match {
             case x :: _ => Some(x)
             case _ => None
         }
@@ -109,17 +108,13 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
         )
     }
 
-    def query(query: String, categories: Seq[String]): List[OrganisationModel] = db.withConnection { implicit c =>
-        val filterName = s"LOWER(NAME) LIKE '%${query.toLowerCase}%'"
-
-        var where = filterName
-
-        if (categories.nonEmpty) {
-            where += " AND " + categories.map(category => s"category = '$category'").reduceLeft((a, b) => s"$a OR $b")
-        }
+    def query(query: String): List[OrganisationModel] = db.withConnection { implicit c =>
+        val filterName = s"LOWER(NAME) LIKE {name}"
 
         SQL(
-            s"SELECT * FROM $table WHERE $where ORDER BY ID ASC"
+            s"SELECT * FROM $table WHERE $filterName ORDER BY ID ASC"
+        ).on(
+            'name -> s"%$query%"
         ).executeQuery().as(parser.*)
     }
 

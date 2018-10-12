@@ -37,7 +37,7 @@ POST          /api/v1/auth/obtain-session                    security.AuthContro
 POST          /api/v1/auth/invalidate-session                security.AuthController.handleLogout
 
 ### Organisation CRUD
-GET           /api/v1/organisations                          business.organisations.OrganisationCtrl.findAll(query: Option[String], categories: Option[String])
+GET           /api/v1/organisations                          business.organisations.OrganisationCtrl.findAll(query: Option[String])
 GET           /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.findById(id: Long)
 PUT           /api/v1/organisations/:id                      business.organisations.OrganisationCtrl.update(id: Long)
 POST          /api/v1/organisations                          business.organisations.OrganisationCtrl.create
@@ -47,7 +47,7 @@ GET           /api/v1/organisations/:id/projects             business.projects.P
 GET           /api/v1/organisations/:id/projects/finished    business.finishedProjects.FinishedProjectCtrl.findByOrganisation(id: Long)
 
 ### Project CRUD
-GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll(query: Option[String], categories: Option[String], price: Int, status: Int)
+GET           /api/v1/projects                               business.projects.ProjectCtrl.findAll(query: Option[String], categories: Option[String], price: Option[Int], status: Option[Int])
 GET           /api/v1/projects/:id                           business.projects.ProjectCtrl.findById(id: Long)
 PUT           /api/v1/projects/:id                           business.projects.ProjectCtrl.update(id: Long)
 POST          /api/v1/projects                               business.projects.ProjectCtrl.create

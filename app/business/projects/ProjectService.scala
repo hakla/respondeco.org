@@ -5,6 +5,7 @@ import anorm.{Macro, RowParser, _}
 import business.organisations.{OrganisationModel, OrganisationService}
 import common.Database
 import persistence.Queries
+import play.api.Logger
 
 /**
   * Created by Klaus on 17.11.2016.
@@ -63,12 +64,12 @@ class ProjectService @Inject()(organisationService: OrganisationService, implici
     def query(query: String, categories: Seq[String], price: Int, status: Int): List[ProjectModel] = db.withConnection {
         def categoryFilter = {
             if (categories.nonEmpty)
-                categories.map(category => s"category = '$category'").reduceLeft((a, b) => s"$a OR $b")
+                s"category in ({categories})"
             else ""
         }
 
         def nameFilter = {
-            val basicFilter = s"LOWER(NAME) LIKE '%${query.toLowerCase}%' OR LOWER(LOCATION) LIKE '%${query.toLowerCase}%'"
+            val basicFilter = s"TRIM(LOWER(NAME)) LIKE {name} OR TRIM(LOWER(LOCATION)) LIKE {location}"
 
             if (query.nonEmpty) {
                 val filter: String = organisationService
@@ -108,9 +109,18 @@ class ProjectService @Inject()(organisationService: OrganisationService, implici
             ).filter(_.nonEmpty)
 
             val where = filters.reduceLeft((a, b) => s"($a) AND ($b)")
+            val statement = s"SELECT * FROM $table WHERE $where ORDER BY ID ASC"
+            val param = s"%$query%"
+
+            Logger("ProjectService").logger.info(statement)
+            Logger("ProjectService").logger.info(param)
 
             SQL(
-                s"SELECT * FROM $table WHERE $where ORDER BY ID ASC"
+                statement
+            ).on(
+                'name -> param,
+                'location -> param,
+                'categories -> categories
             ).executeQuery().as(parser.*)
     }
 
