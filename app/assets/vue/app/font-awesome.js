@@ -12,19 +12,19 @@ import {
   faPresentation,
   faSearch,
   faSync,
-  faThumbtack,
   faTimes,
   faUsers
 } from '@fortawesome/pro-light-svg-icons'
 
 import {
   faCheck,
-  faShieldAlt
+  faShieldAlt,
+  faThumbtack
 } from '@fortawesome/pro-regular-svg-icons'
 
 import {
   faThumbtack as faSolidThumbtack
-} from '@fortawesome/pro-regular-svg-icons'
+} from '@fortawesome/pro-solid-svg-icons'
 
 library.add(faAngleDown,
   faAngleLeft,
