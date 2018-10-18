@@ -141,7 +141,10 @@
       },
 
       userIsAllowedToWriteComments () {
-        return this.activeUser !== undefined && (this.partners || []).filter(partner => partner.id === this.activeUser.organisationId && (this.item || {}).id !== this.activeUser).length > 0
+        const isActiveUser = this.activeUser !== undefined
+        const isPartner = (partner) => partner.organisation.id === this.activeUser.organisationId
+
+        return isActiveUser && this.partners.filter(isPartner).length > 0
       }
     },
 
@@ -213,7 +216,7 @@
       },
 
       save () {
-        let project = this.item
+        let project = Object.assign({}, this.item)
 
         project.organisation = project.organisation.id
 

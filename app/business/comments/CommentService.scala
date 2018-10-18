@@ -1,11 +1,11 @@
 package business.comments
 
 import java.time.LocalDateTime
-import javax.inject.Inject
 
+import javax.inject.Inject
 import anorm.{Macro, NamedParameter, RowParser, SQL}
 import business.accounts.{AccountPublicModel, AccountService}
-import business.organisations.OrganisationService
+import business.organisations.{OrganisationModel, OrganisationService}
 import common.Database
 import persistence.Queries
 import se.digiplant.res.api.Res
@@ -73,29 +73,21 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
         }
     }
 
-    def authorFromUser(comment: CommentModel): Option[Author] = {
+    def authorFromUser(comment: CommentModel, organisationModel: Option[OrganisationModel]): Option[Author] = {
         accountService
             .byId(comment.author)
             .map(author => AuthorUser(
                 author.id,
-                author.image,
+                organisationModel.map(_.logo).getOrElse(author.image),
                 author.name,
-                AccountPublicModel.from(author)
-            ))
-    }
-
-    def authorFromOrganisation(comment: CommentModel): Option[Author] = {
-        organisationService.byId(comment.author)
-            .map(author => AuthorOrganisation(
-                author.id,
-                author.logo,
-                author.name,
-                author
+                accountService.toPublicModel(author)
             ))
     }
 
     def authorFromComment(comment: CommentModel): Option[Author] = {
-        authorFromOrganisation(comment).orElse(authorFromUser(comment))
+        val organisationModel = accountService.byId(comment.author).flatMap(_.organisationId).flatMap(organisationService.byId)
+
+        authorFromUser(comment, organisationModel)
     }
 
     def toPublicModel(commentModel: CommentModel): CommentPublicModel = {

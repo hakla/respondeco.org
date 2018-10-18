@@ -88,7 +88,6 @@
     created () {
       this.fetchData()
       this.loadUsers()
-      this.loadOrganisations()
     },
 
     data () {
@@ -110,21 +109,6 @@
     },
 
     methods: {
-      loadOrganisations () {
-        this.promiseLoading(
-          Organisations.all().then(response => {
-            this.authors.push({
-              category: 'Unternehmen',
-              values: response.body.items.map(item => ({
-                id: item.id,
-                name: item.name,
-                organisation: item
-              }))
-            })
-          })
-        )
-      },
-
       loadUsers () {
         this.promiseLoading(
           AdminAccounts.all().then(response => {

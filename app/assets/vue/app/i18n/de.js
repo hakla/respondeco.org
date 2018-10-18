@@ -144,8 +144,9 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
   },
 
   menu: {
+    logout: 'Abmelden',
+    myProjects: 'Meine Projekte',
     settings: 'Profil bearbeiten',
-    logout: 'Abmelden'
   },
 
   organisation: {
@@ -179,6 +180,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
   },
 
   project: {
+    add: 'Neues Projekt anlegen',
     comment: {
       pin: 'Anpinnen',
       unpin: 'Loslösen'

@@ -26,21 +26,21 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
     def findAll = AuthenticatedAdmin { request =>
         Ok(
             Json.toJson(
-                paginated(request, service.all().map(AccountPublicModel.from))
+                paginated(request, service.all().map(accountService.toPublicModel))
             )
         )
     }
 
     def findById(id: Long) = AuthenticatedAdmin {
         service.byId(id) match {
-            case Some(obj) => Ok(AccountPublicModel.from(obj))
+            case Some(obj) => Ok(accountService.toPublicModel(obj))
             case None => BadRequest("No such Account")
         }
     }
 
     def create: Action[AccountWriteModel] = AuthenticatedAdmin(parse.json[AccountWriteModel]) { account =>
         service.createByAdmin(account) match {
-            case Some(createdObj) => Ok(AccountPublicModel.from(createdObj))
+            case Some(createdObj) => Ok(accountService.toPublicModel(createdObj))
             case None => BadRequest("Couldn't create")
         }
     }
@@ -71,7 +71,7 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
     def update(id: Long) = AuthenticatedUser(parse.json[AccountWriteModel]) { (obj, request) =>
         assertUser(id == _.id, request) {
             service.updateByUser(id, obj) match {
-                case Some(updatedObj) => Ok(AccountPublicModel.from(updatedObj))
+                case Some(updatedObj) => Ok(accountService.toPublicModel(updatedObj))
                 case None => BadRequest("Couldn't update")
             }
         }
@@ -79,12 +79,12 @@ class AccountCtrl @Inject()(val accountService: AccountService) extends Authenti
 
     def updateAdmin(id: Long) = AuthenticatedAdmin(parse.json[AccountWriteModel]) { (obj) =>
         service.update(id, obj) match {
-            case Some(updatedObj) => Ok(AccountPublicModel.from(updatedObj))
+            case Some(updatedObj) => Ok(accountService.toPublicModel(updatedObj))
             case None => BadRequest("Couldn't update")
         }
     }
 
     def currentUser() = AuthenticatedUser { implicit request =>
-        Ok(AccountPublicModel from loggedIn)
+        Ok(accountService.toPublicModel(loggedIn))
     }
 }

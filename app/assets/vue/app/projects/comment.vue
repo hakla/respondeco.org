@@ -45,7 +45,7 @@
           <li class="list-inline-item mr-5">
             <!-- new image -> show author image -->
             <img class="g-width-80 g-height-80 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
-                 :src="imageUrl(activeUser.image)" v-if="activeUser.image && !comment.author"
+                 :src="imageUrl(activeUser.organisationImage)" v-if="activeUser.organisationImage && !comment.author"
                  alt="Image Description">
 
             <!-- existing comment -> show comment author image -->

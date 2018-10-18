@@ -143,4 +143,12 @@ class AccountService @Inject()(val organisationService: OrganisationService, imp
         else block
     }
 
+    def toPublicModel(accountModel: AccountModel): AccountPublicModel = {
+        AccountPublicModel.from(accountModel).copy(
+            organisationImage = accountModel.organisationId
+                .flatMap(organisationService.byId)
+                .map(organisation => organisation.logo.getOrElse(""))
+        )
+    }
+
 }
