@@ -22,11 +22,11 @@
     <!-- End Promo Block -->
 
     <unify-page>
-      <unify-hero>{{ $t('home.organisations') }}</unify-hero>
+      <unify-hero>{{ $t('home.organisations.title') }}</unify-hero>
 
       <transition name="fade" mode="out-in">
         <div class="container">
-          <respondeco-portfolio columns="col-sm-6 col-md-3" :items="organisations"
+          <respondeco-portfolio :callToAction="{ link: 'organisations', value: $t('home.organisations.discover') }" columns="col-sm-6 col-md-3" :items="organisations"
                                 v-if="!$isLoading('organisations')"></respondeco-portfolio>
           <spinner v-if="$isLoading('organisations')"></spinner>
         </div>
@@ -34,18 +34,19 @@
     </unify-page>
 
     <unify-page class="g-bg-gray-light-v5">
-      <unify-hero>{{ $t('home.projects') }}</unify-hero>
+      <unify-hero>{{ $t('home.projects.title') }}</unify-hero>
 
       <transition name="fade" mode="out-in">
         <div class="container">
-          <respondeco-portfolio columns="col-sm-6 col-md-3" :items="projects"
+          <respondeco-portfolio :callToAction="{ link: 'projects', value: 'Entdecke alle Projekte' }"
+                                columns="col-sm-6 col-md-3" :items="projects"
                                 v-if="!$isLoading('projects')"></respondeco-portfolio>
           <spinner v-if="$isLoading('projects')"></spinner>
         </div>
       </transition>
     </unify-page>
 
-    <unify-page>
+    <unify-page class="g-mb-50">
       <unify-hero>{{ $t('home.values') }}</unify-hero>
 
       <transition name="fade" mode="out-in">

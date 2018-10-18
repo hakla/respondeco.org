@@ -1,16 +1,21 @@
 <script>
   import Paginated from 'app/mixins/paginated'
   import Projects from 'common/services/projects'
-  import { ImageHelper } from '../../common/utils'
   import Utils from '../utils'
+  import Organisations from '../../common/services/organisations'
 
   export default {
     name: 'projects',
 
+    created () {
+      this.fetchOrganisations()
+    },
+
     data () {
       return {
         heading: 'common.project',
-        pageSize: 9
+        pageSize: 9,
+        suggestions: []
       }
     },
 
@@ -30,10 +35,18 @@
         })
       },
 
+      fetchOrganisations () {
+        return Organisations.all().then(data => {
+          this.suggestions = data.body.items
+
+          return this.suggestions
+        })
+      },
+
       toPortfolioItem: Utils.projectToPortfolioItem
     },
 
-    mixins: [Paginated],
+    mixins: [Paginated]
   }
 </script>
 

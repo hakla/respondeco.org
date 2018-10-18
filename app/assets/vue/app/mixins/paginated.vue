@@ -15,8 +15,12 @@
         <form class="g-width-60x--md mx-auto">
           <div class="form-group g-mb-20">
             <div class="input-group u-shadow-v21 rounded g-mb-15">
-              <input class="form-control form-control-md g-brd-white g-font-size-16 border-right-0 pr-0 g-py-15"
-                     type="text" placeholder="" v-model="query" @input="debounce">
+              <input v-model="query"
+                     class="form-control form-control-md g-brd-white g-font-size-16 border-right-0 pr-0 g-py-15"
+                     type="text" @input="debounce">
+              <div class="clear-query" @click="clearQuery" v-if="query">
+                <respondeco-icon icon="fal times"></respondeco-icon>
+              </div>
               <div
                 class="input-group-addon d-flex align-items-center g-bg-white g-brd-white g-color-gray-light-v1 g-pa-2">
                 <button class="btn u-btn-primary g-font-size-16 g-py-15 g-px-20" type="submit">
@@ -35,7 +39,7 @@
         <div class="row">
           <div class="col-lg-3 g-pr-40--lg g-mb-50 g-mb-0--lg" v-if="this.filter">
             <!-- Categories -->
-            <h2 class="h5 text-uppercase g-color-gray-dark-v1">Categories</h2>
+            <h2 class="h5 text-uppercase g-color-gray-dark-v1">{{ $t('paginated.filter.headings.categories') }}</h2>
             <hr class="g-brd-gray-light-v4 g-my-15">
             <ul class="list-unstyled g-mb-40">
               <li class="my-3" v-for="category in categories" :key="category.label">
@@ -49,45 +53,59 @@
             <!-- End Categories -->
 
             <!-- Status -->
-            <h2 class="h5 text-uppercase g-color-gray-dark-v1">Status</h2>
+            <h2 class="h5 text-uppercase g-color-gray-dark-v1">{{ $t('paginated.filter.headings.status') }}</h2>
             <hr class="g-brd-gray-light-v4 g-my-15">
             <div class="btn-group justified-content g-mb-40">
               <label class="u-check">
-                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn1_1" type="radio" :value="1" v-model="status" @change="update">
+                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn1_1" type="radio" :value="1"
+                       v-model="status" @change="update">
                 <span
-                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0">Offen
+                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0">
+                  {{ $t('paginated.filter.status.open') }}
                 </span>
               </label>
               <label class="u-check">
-                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn1_1" type="radio" :value="2" v-model="status" @change="update">
+                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn1_1" type="radio" :value="2"
+                       v-model="status" @change="update">
                 <span
-                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked g-brd-left-none--md rounded-0">Abgeschlossen</span>
+                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked g-brd-left-none--md rounded-0">
+                  {{ $t('paginated.filter.status.done') }}
+                </span>
               </label>
             </div>
             <!-- End Status -->
 
             <!-- Price -->
-            <h2 class="h5 text-uppercase g-color-gray-dark-v1">Preis</h2>
+            <h2 class="h5 text-uppercase g-color-gray-dark-v1">{{ $t('paginated.filter.headings.price') }}</h2>
             <hr class="g-brd-gray-light-v4 g-my-15">
             <div class="btn-group justified-content g-mb-40">
               <label class="u-check">
-                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn2_1" type="radio" :value="1" v-model="price" @change="update">
+                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn2_1" type="radio" :value="1"
+                       v-model="price" @change="update">
                 <span
-                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0">Gratis
+                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0">
+                  {{ $t('paginated.filter.price.free') }}
                 </span>
               </label>
               <label class="u-check">
-                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn2_1" type="radio" :value="2" v-model="price" @change="update">
+                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn2_1" type="radio" :value="2"
+                       v-model="price" @change="update">
                 <span
-                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked g-brd-left-none--md rounded-0">Kostenpflichtig</span>
+                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked g-brd-left-none--md rounded-0">
+                  {{ $t('paginated.filter.price.charged') }}
+                </span>
               </label>
             </div>
             <!-- End Price -->
 
-            <button class="g-mt-150 btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0" type="button" @click="resetFilters">Filter zurücksetzen</button>
+            <button
+              class="g-mt-150 btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0"
+              type="button" @click="resetFilters">
+              {{ $t('paginated.filter.reset') }}
+            </button>
           </div>
           <div :class="filter ? 'col-lg-9' : 'col-lg-12'">
-            <respondeco-pagination class="g-mb-100--md g-mb-50" :page="page" :pageSize="pageSize" @page="pageChanged"
+            <respondeco-pagination class="g-mb-50" :page="page" :pageSize="pageSize" @page="pageChanged"
                                    ref="topPagination" :scroll="false" :total="total"></respondeco-pagination>
 
             <transition name="fade" mode="out-in">
@@ -95,7 +113,8 @@
                                     v-if="!$isLoading('portfolio')"></respondeco-portfolio>
               <vue-simple-spinner class="g-mb-100 g-mt-100" v-else></vue-simple-spinner>
             </transition>
-            <respondeco-pagination :page="page" :pageSize="pageSize" @page="pageChanged" :scroll="$refs.topPagination"
+            <respondeco-pagination class="g-mt-50" :page="page" :pageSize="pageSize" @page="pageChanged"
+                                   :scroll="$refs.topPagination"
                                    :total="total"></respondeco-pagination>
           </div>
         </div>
@@ -168,6 +187,15 @@
     },
 
     methods: {
+      clearQuery () {
+        this.query = ''
+        this.update()
+
+        this.$nextTick(() => {
+          this.$refs.suggest.hideList()
+        })
+      },
+
       debounce: debounce(function () {
         this.update()
       }, 500),
@@ -233,6 +261,14 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+  .clear-query {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 70px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 15px;
+  }
 </style>

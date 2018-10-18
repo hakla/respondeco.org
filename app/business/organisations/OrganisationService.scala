@@ -94,7 +94,7 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
     def findByName(name: String): Option[OrganisationModel] = db.withConnection { implicit c =>
         SQL(
             s"SELECT * FROM $table WHERE trim(lower(name)) = {name}"
-        ).on('name -> name).executeQuery().as(parser.*) match {
+        ).on('name -> name.toLowerCase).executeQuery().as(parser.*) match {
             case x :: _ => Some(x)
             case _ => None
         }
@@ -114,7 +114,7 @@ class OrganisationService @Inject()(implicit val db: Database, val res: Res) ext
         SQL(
             s"SELECT * FROM $table WHERE $filterName ORDER BY ID ASC"
         ).on(
-            'name -> s"%$query%"
+            'name -> s"%${query.toLowerCase}%"
         ).executeQuery().as(parser.*)
     }
 

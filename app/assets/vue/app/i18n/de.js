@@ -29,6 +29,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     cancel: 'Abbrechen',
     comments: 'Kommentare',
     email: 'E-Mail',
+    emptyList: 'Keine Ergebnisse',
     error: {
       unauthenticated: 'Nicht berechtigt für diese Aktion',
       undefined: 'Unbekannter Fehler ist aufgetreten',
@@ -49,7 +50,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     register: 'Registrierung',
     save: 'Speichern',
     settings: 'Einstellungen',
-    success: 'Erfolg!',
+    success: 'Erfolg!'
   },
 
   filechooser: {
@@ -73,7 +74,10 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
         title: 'Unsere Vision'
       }
     },
-    organisations: 'Entdecke Organisationen',
+    organisations: {
+      discover: 'Entdecke alle Organisationen',
+      title: 'Entdecke Organisationen'
+    },
     our_principles: {
       item1: {
         description: 'Weil gemeinsam mehr Sinn macht',
@@ -101,7 +105,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
           item3: 'Unternehmensreputation und Glaubwürdigkeit'
         },
         message: 'Ergänzen Sie ihre Nachhaltigkeitskommunikation mit einem vollkommen neuen Ansatz',
-        title: 'Erzähle',
+        title: 'Erzähle'
       },
       icon2: {
         message: 'Finden Sie nachhaltige Projekte und verantwortungsvolle Organisationen',
@@ -116,7 +120,10 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
         title: 'Sammle'
       }
     },
-    projects: 'Entdecke Projekte',
+    projects: {
+      discover: 'Entdecke alle Projekte',
+      title: 'Entdecke Projekte'
+    },
     values: 'Was es bringt'
   },
 
@@ -132,7 +139,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     dialog: {
       choose: 'Wähle ein Bild',
       chooseAnother: 'Wähle ein anderes Bild',
-      orDragAndDrop: 'oder ziehe eines in das Fenster',
+      orDragAndDrop: 'oder ziehe eines in das Fenster'
     }
   },
 
@@ -146,7 +153,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
   menu: {
     logout: 'Abmelden',
     myProjects: 'Meine Projekte',
-    settings: 'Profil bearbeiten',
+    settings: 'Profil bearbeiten'
   },
 
   organisation: {
@@ -179,6 +186,29 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     }
   },
 
+  organisations: {
+    placeholder: 'Suchen Sie nach dem Namen einer Organisation'
+  },
+
+  paginated: {
+    filter: {
+      headings: {
+        categories: 'Kategorien',
+        price: 'Preis',
+        status: 'Status'
+      },
+      price: {
+        charged: 'Kostenpflichtig',
+        free: 'Gratis'
+      },
+      reset: 'Filter zurücksetzen',
+      status: {
+        done: 'Abgeschlossen',
+        open: 'Offen',
+      }
+    }
+  },
+
   project: {
     add: 'Neues Projekt anlegen',
     comment: {
@@ -202,9 +232,13 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
       },
       listTitle: 'Partner',
       placeholder: 'Partner suchen',
-      remove: 'Partner entfernen',
+      remove: 'Partner entfernen'
     },
     share: 'Teilen'
+  },
+
+  projects: {
+    placeholder: 'Suchen Sie nach Titel, Ort oder Organisation'
   },
 
   registration: {
