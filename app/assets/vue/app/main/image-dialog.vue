@@ -84,7 +84,7 @@
         }).toBlob(blob => {
           this.$emit('changed', blob)
           this.$modal.hide(this.name)
-        })
+        }, 'image/jpeg')
       },
 
       handleDrop (data, event) {

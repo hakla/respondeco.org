@@ -116,12 +116,12 @@
       upload () {
         this.croppa.generateBlob(blob => {
           blob.lastModifiedDate = new Date()
-          blob.name = 'image.png'
+          blob.name = 'image.jpg'
 
           this.$refs.upload.add(blob)
 
           this.$refs.upload.active = true
-        }, 'image/png')
+        }, 'image/jpeg')
       },
     },
 

@@ -180,7 +180,8 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
 
   project: {
     comment: {
-      pin: 'Anpinnen'
+      pin: 'Anpinnen',
+      unpin: 'Loslösen'
     },
     description: {
       title: 'Beschreibung'

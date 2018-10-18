@@ -233,7 +233,7 @@
 
       setNewImage (blob) {
         this.previewImage = blob
-        this.previewImage.name = 'image.png'
+        this.previewImage.name = 'image.jpg'
 
         let fileReader = new FileReader()
         fileReader.onload = (event) => {

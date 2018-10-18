@@ -186,7 +186,7 @@ class CommentService @Inject()(implicit val db: Database, val res: Res, val acco
                     -- Find all comments that are assigned to a specific project
                     SELECT COMMENT FROM COMMENT_PROJECT WHERE PROJECT = (
                         -- Find the project this comment is assigned to
-                        SELECT PROJECT FROM COMMENT_PROJECT WHERE COMMENT = 2
+                        SELECT PROJECT FROM COMMENT_PROJECT WHERE COMMENT = $id
                     )
                 )
            """).executeUpdate() > 0
