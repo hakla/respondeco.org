@@ -1,10 +1,10 @@
 <template>
   <form @submit.prevent="submit()">
-    <vue-simple-suggest ref="suggest" :filter-by-query="true" :min-length="0" mode="select" @select="selected" type="search" pattern="[a-z]+" :list="suggestions" display-attribute="name" value-attribute="id">
+    <vue-simple-suggest destyled ref="suggest" :filter-by-query="true" :min-length="0" mode="select" @select="selected" type="search" pattern="[a-z]+" :list="suggestions" display-attribute="name" value-attribute="id">
       <div class="form-group g-mb-20">
         <div class="input-group g-brd-primary--focus">
-          <div class="input-group-addon d-flex align-items-center g-bg-white g-color-gray-light-v1 rounded-0">
-            <i class="icon-user-follow"></i>
+          <div class="input-group-prepend">
+            <span class="input-group-text rounded-0 g-bg-white g-color-gray-light-v1"><i class="icon-user-follow"></i></span>
           </div>
           <input v-model="model" class="form-control form-control-md border-left-0 rounded-0 pl-0" type="text" :placeholder="$t('project.partner.placeholder')">
         </div>
@@ -81,5 +81,41 @@
 <style>
   .sbx-google {
     width: 100%;
+  }
+
+  .vue-simple-suggest {
+    position: relative;
+  }
+
+  .vue-simple-suggest .suggestions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    top: calc(100% + 5px);
+    border-radius: 3px;
+    border: 1px solid #72c02c;
+    background-color: #fff;
+    z-index: 1000;
+  }
+
+  .vue-simple-suggest .suggestions .suggest-item {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .vue-simple-suggest .suggestions .suggest-item,
+  .vue-simple-suggest .suggestions .misc-item {
+    padding: 5px 10px;
+  }
+
+  .vue-simple-suggest .suggestions .suggest-item.hover {
+    background-color: #18ba9b !important;
+    color: #fff !important;
+  }
+
+  .vue-simple-suggest .suggestions .suggest-item.selected {
+    background-color: #18ba9b;
+    color: #fff;
   }
 </style>
