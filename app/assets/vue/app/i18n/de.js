@@ -66,7 +66,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     },
     meaning: {
       mission: {
-        description: 'Wir wollen anders arbeiten. Verantwortungsvoll und transparent. Dafür stellen wir innovative Werkzeuge zur Verfügung.',
+        description: 'Wir wollen anders arbeiten: verantwortungsvoll und transparent. Wir schmieden nachhaltige Partnerschaften: fair und gut. Dafür stellen wir innovative Werkzeuge zur Verfügung.',
         title: 'Unsere Mission'
       },
       vision: {
@@ -112,7 +112,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
         title: 'Finde'
       },
       icon3: {
-        message: 'Präsentieren Sie ihre nachhaltigen Dienstleistungen wie Weiterbildungs- und Beratungsangebote ',
+        message: 'Präsentieren Sie ihre nachhaltigen Dienstleistungen wie Weiterbildungs- und Beratungsangebote, Veranstaltungen, Auszeichnungen und Zertifizierungen',
         title: 'Zeige'
       },
       icon4: {
