@@ -28,18 +28,21 @@
                     @changed="setNewImage"></image-dialog>
 
       <transition name="fade" mode="out-in">
-        <div class="image-edit-container" @click="openFileChooser" v-if="previewImageUrl">
-          <img class="img-fluid w-100 g-rounded-5 g-mb-25 g-z-index-1" :src="previewImageUrl"
-               alt="Image Description">
+        <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel g-rounded-4" @click="openFileChooser" v-if="previewImageUrl">
+          <figure>
+            <img class="img-fluid w-100 g-rounded-5 g-z-index-1" :src="previewImageUrl"
+                 alt="Image Description">
+          </figure>
+          <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30">
+            <div class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle g-flex-centered">
+              <font-awesome-layers class="fa-2x fa-fw image-edit-icon">
+                <respondeco-icon class="fa-inverse" icon="fas circle" size="2x"></respondeco-icon>
+                <respondeco-icon icon="fal pencil" transform="shrink-2"></respondeco-icon>
+              </font-awesome-layers>
 
-          <div class="image-edit-overlay"></div>
-
-          <font-awesome-layers class="fa-2x image-edit-icon">
-            <respondeco-icon class="fa-inverse" icon="fas circle" size="2x"></respondeco-icon>
-            <respondeco-icon icon="fal pencil" transform="right-8 shrink-2"></respondeco-icon>
-          </font-awesome-layers>
-
-          <span class="image-edit-icon-sub">Bild bearbeiten</span>
+              <span class="g-color-white">Bild bearbeiten</span>
+            </div>
+          </figcaption>
         </div>
 
         <youtube :video-id="comment.video" v-else-if="comment.video" player-width="100%"></youtube>
@@ -340,52 +343,8 @@
     background-color: #f2f2f2;
   }
 
-  .image-edit-container {
-    position: relative
-    z-index: 0;
-
-    &:hover {
-      .image-edit-icon, .image-edit-overlay, .image-edit-icon-sub {
-        opacity: 1;
-      }
-    }
-  }
-
-  .image-edit-overlay {
-    background-color: #0004;
-    border-radius: 4px;
-    cursor: pointer;
-    height: calc(100% - 1.78571rem);
-    left: 0;
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    transition: .25s ease opacity;
-    width: 100%;
-    z-index: 0;
-  }
-
   .image-edit-icon {
-    cursor: pointer;
-    left: 50%;
-    opacity: 0;
-    position: absolute;
-    top: 50%;
-    transform: translate(calc(-50% - .5rem), calc(-50% - 1.78571rem));
-    transition: .25s ease opacity;
-  }
-
-  .image-edit-icon-sub {
-    color: #fff;
-    cursor: pointer;
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    left: 50%;
-    opacity: 0;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, calc(-50% + 25px));
-    transition: .25s ease opacity;
+    width: 2em;
+    margin-bottom: 20px;
   }
 </style>
