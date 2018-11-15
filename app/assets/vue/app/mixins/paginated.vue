@@ -47,6 +47,8 @@
                    @click.prevent="updateChecked(category)"
                    :class="{ 'font-weight-bold': category.checked }">
                   {{ category.label }}
+
+                  <respondeco-icon icon="fal times" v-if="category.checked"></respondeco-icon>
                 </a>
               </li>
             </ul>
@@ -75,31 +77,8 @@
             </div>
             <!-- End Status -->
 
-            <!-- Price -->
-            <h2 class="h5 text-uppercase g-color-gray-dark-v1">{{ $t('paginated.filter.headings.price') }}</h2>
-            <hr class="g-brd-gray-light-v4 g-my-15">
-            <div class="btn-group justified-content g-mb-40">
-              <label class="u-check">
-                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn2_1" type="radio" :value="1"
-                       v-model="price" @change="update">
-                <span
-                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0">
-                  {{ $t('paginated.filter.price.free') }}
-                </span>
-              </label>
-              <label class="u-check">
-                <input class="g-hidden-xs-up g-pos-abs g-top-0 g-left-0" name="radGroupBtn2_1" type="radio" :value="2"
-                       v-model="price" @change="update">
-                <span
-                  class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked g-brd-left-none--md rounded-0">
-                  {{ $t('paginated.filter.price.charged') }}
-                </span>
-              </label>
-            </div>
-            <!-- End Price -->
-
             <button
-              class="g-mt-150 btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0"
+              class="btn btn-block u-btn-outline-lightgray g-color-white--checked g-bg-primary--checked rounded-0"
               type="button" @click="resetFilters">
               {{ $t('paginated.filter.reset') }}
             </button>
