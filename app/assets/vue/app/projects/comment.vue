@@ -35,12 +35,13 @@
           </figure>
           <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30">
             <div class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle g-flex-centered">
-              <font-awesome-layers class="fa-2x fa-fw image-edit-icon">
-                <respondeco-icon class="fa-inverse" icon="fas circle" size="2x"></respondeco-icon>
-                <respondeco-icon icon="fal pencil" transform="shrink-2"></respondeco-icon>
-              </font-awesome-layers>
-
-              <span class="g-color-white">Bild bearbeiten</span>
+              <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-40">
+                <li class="list-inline-item align-middle g-mx-7">
+                  <a class="u-icon-v1 u-icon-size--md g-color-white" href="#!" @click.prevent="openImageDialog">
+                    <i class="icon-note u-line-icon-pro"></i>
+                  </a>
+                </li>
+              </ul>
             </div>
           </figcaption>
         </div>

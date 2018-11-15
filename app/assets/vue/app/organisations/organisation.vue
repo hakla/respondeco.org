@@ -29,17 +29,17 @@
           <div class="col-lg-3">
             <!-- User Image -->
             <div class="u-block-hover g-pos-rel">
-              <figure class="g-mb-10">
+              <figure>
                 <img class="img-fluid w-100" :src="imageUrl(organisation.logo) || '/assets/images/demo-square.jpg'" alt="Image Description">
               </figure>
 
               <!-- Figure Caption -->
-              <figcaption v-if="activeUserIsOwner" class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30">
+              <figcaption v-if="activeUserIsOwner" class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30 g-cursor-pointer" @click.prevent="openImageDialog">
                 <div class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle">
                   <!-- Figure Social Icons -->
                   <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-20">
                     <li class="list-inline-item align-middle g-mx-7">
-                      <a class="u-icon-v1 u-icon-size--md g-color-white" href="#!" @click.prevent="openImageDialog">
+                      <a class="u-icon-v1 u-icon-size--md g-color-white" href="#!">
                         <i class="icon-note u-line-icon-pro"></i>
                       </a>
                     </li>
@@ -82,9 +82,11 @@
 
           <!-- Profile Content -->
           <div class="col-lg-9">
-            <router-view></router-view>
+            <transition mode="out-in" name="fade">
+              <router-view></router-view>
+            </transition>
           </div>
-          <!-- End Profle Content -->
+          <!-- End Profile Content -->
         </div>
       </div>
     </div>
@@ -94,6 +96,7 @@
 <script>
   import Utils from 'common/utils'
   import RespondecoBreadcrumbs from 'app/main/breadcrumbs'
+  import RespondecoUnsavedBar from '../main/unsaved-bar'
   import FileDialog from 'app/main/file-dialog'
   import { getIdFromURL } from 'vue-youtube-embed'
   import { mapActions, mapGetters } from 'vuex'
@@ -101,6 +104,7 @@
 
   import { Notifications } from 'common/utils'
   import Organisations from 'common/services/organisations'
+  import ItemPage from '../mixins/item-page'
 
   export default {
     name: 'organisation',
@@ -108,6 +112,7 @@
     components: {
       FileDialog,
       RespondecoBreadcrumbs,
+      RespondecoUnsavedBar,
       VueSimpleSpinner
     },
 
@@ -227,6 +232,8 @@
         current: 'current'
       })
     },
+
+    mixins: [ItemPage],
 
     watch: {
       '$route.params.id' (newValue, oldValue) {

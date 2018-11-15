@@ -1,4 +1,5 @@
 import LoaderHelper from '../../common/mixins/loader-helper'
+import Vue from 'vue'
 
 const ItemPage = {
   created () {
@@ -10,16 +11,29 @@ const ItemPage = {
       // overridden
       item: {},
 
+      original: {},
+
       // overridden
-      service: {}
+      service: {},
+
+      unsaved: false
     }
   },
 
   methods: {
+    cancel () {
+      this.item = Vue.util.extend({}, this.original)
+
+      this.unsaved = false
+    },
+
     fetchData () {
       this.promiseLoading(
         this.service.byId(this.id).then(result => {
-          this.item = result.body
+          this.original = result.body
+          this.item = Vue.util.extend({}, this.original)
+
+          this.unsaved = false
         }, 'item-page')
       )
     }

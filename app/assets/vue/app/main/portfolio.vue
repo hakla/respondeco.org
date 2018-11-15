@@ -3,9 +3,10 @@
     <div :class="columns" class="masonry-grid-item g-mb-30" :key="index" v-for="(item, index) in items" v-masonry-tile>
       <article class="u-shadow-v11">
         <router-link :to="item.href" class="u-link-v5 g-color-black g-color-primary--hover g-cursor-pointer" href="#">
-          <img class="img-fluid w-100" :src="item.image">
-          <div class="g-bg-white g-pa-30">
-            <h2 class="h5 g-color-black g-font-weight-600 mb-3 ellipsis">
+          <div class="background-image img-fluid w-100" :style="'background-image: url(' + item.image + ')'">
+          </div>
+          <div class="g-bg-white g-pa-20">
+            <h2 class="h6 g-color-black mb-0 ellipsis">
               {{ item.title }}
             </h2>
           </div>
@@ -46,6 +47,22 @@
 
 </script>
 
+<style scoped>
+  .background-image {
+    display: block;
+    height: 200px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .h6 {
+    align-items: center;
+    display: flex;
+    height: 60px;
+  }
+</style>
+
 <style>
   .masonry-grid {
     height: auto !important;
@@ -54,7 +71,6 @@
   .ellipsis {
     text-overflow: ellipsis;
     width: 100%;
-    white-space: nowrap;
     overflow: hidden;
   }
 

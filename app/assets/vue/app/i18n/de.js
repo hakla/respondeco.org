@@ -50,7 +50,8 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     register: 'Registrierung',
     save: 'Speichern',
     settings: 'Einstellungen',
-    success: 'Erfolg!'
+    success: 'Erfolg!',
+    unsavedChanges: 'Ungespeicherte Änderungen'
   },
 
   filechooser: {
@@ -234,6 +235,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
       placeholder: 'Partner suchen',
       remove: 'Partner entfernen'
     },
+    save: 'Projekt speichern',
     share: 'Teilen'
   },
 

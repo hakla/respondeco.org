@@ -2,16 +2,27 @@
   <section class="main g-min-height-50vh g-pb-100">
     <transition name="fade" mode="out-in">
       <div v-if="isntLoading('project')">
+        <respondeco-unsaved-bar @cancel="cancel" @save="save" :visible="unsaved"></respondeco-unsaved-bar>
+
         <!-- Hero Info #01 -->
         <unify-hero type="1">
-          {{ item.name }}
+          <div v-if="activeUserIsOwner" class="text-right">
+            <textarea v-autosize class="form-control textarea-title" v-model="item.name" @input="unsaved = true"></textarea>
+          </div>
+          <span v-else>
+            {{ item.name }}
+          </span>
         </unify-hero>
+
+        <file-dialog :file="imageUrl(item.image)" fileType="image/png" @error="uploadError"
+                     @uploaded="uploaded"></file-dialog>
 
         <div class="container">
           <div class="row">
             <div class="col-lg-9">
               <!-- new entry -->
-              <project-comment @change="loadComments" :project-id="item.id" v-if="activeUserIsOwner || userIsAllowedToWriteComments"></project-comment>
+              <project-comment @change="loadComments" :project-id="item.id"
+                               v-if="activeUserIsOwner || userIsAllowedToWriteComments"></project-comment>
 
               <!-- list of comments -->
               <project-comment @change="loadComments" @pinned="loadComments" @removed="loadComments"
@@ -20,13 +31,34 @@
             </div>
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
+              <div class="g-pl-20--lg g-mb-20">
+                <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel">
+                  <figure>
+                    <img class="d-flex g-max-width-100x mr-3" :src="imageUrl(item.image)"
+                         alt="Image Description">
+                  </figure>
+                  <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30" @click.prevent="openImageDialog">
+                    <div data-v-478dddb2=""
+                         class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle">
+                      <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-20">
+                        <li class="list-inline-item align-middle g-mx-7">
+                          <a class="u-icon-v1 u-icon-size--md g-color-white" href="#!">
+                            <i class="icon-note u-line-icon-pro"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </figcaption>
+                </div>
+              </div>
               <div class="g-pl-20--lg">
                 <!-- Organisation -->
                 <h5>Ein Projekt von</h5>
                 <ul class="list-unstyled g-font-size-13 mb-0" v-if="item.organisation != null">
                   <li>
                     <router-link :to="`/organisations/${item.organisation.id}`" class="media g-mb-35">
-                      <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(item.organisation.logo)"
+                      <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3"
+                           :src="imageUrl(item.organisation.logo)"
                            alt="Image Description"
                            v-if="item.organisation.logo">
                       <div class="media-body">
@@ -40,14 +72,7 @@
                 <div class="g-mb-50">
                   <h5 class="mb-4">{{ $t('project.description.title') }}</h5>
                   <div v-if="activeUserIsOwner" class="text-right">
-                    <textarea v-autosize class="form-control" v-model="item.description"></textarea>
-
-                    <unify-button
-                      @click="save"
-                      loading="saveDescription"
-                      class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md g-mr-10 g-mt-20">
-                      <span>{{ $t('common.save') }}</span>
-                    </unify-button>
+                    <textarea v-autosize class="form-control" v-model="item.description" @input="unsaved = true"></textarea>
                   </div>
                   <span v-else>
                     {{ item.description }}
@@ -60,13 +85,16 @@
                   <ul class="list-unstyled g-font-size-13 mb-0 partner-list">
                     <li v-for="partner in partners" :key="partner.id">
                       <router-link :to="`/organisations/${partner.organisation.id}`" class="media g-mb-35">
-                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3" :src="imageUrl(partner.organisation.logo)"
+                        <img class="d-flex g-width-40 g-height-40 rounded-circle mr-3"
+                             :src="imageUrl(partner.organisation.logo)"
                              alt="Image Description" v-if="partner.organisation.logo">
                         <div class="media-body">
                           <h4 class="g-mt-8 h6 g-color-black g-font-weight-600">{{ partner.organisation.name }}</h4>
                         </div>
                       </router-link>
-                      <div class="remove-partner" @click="removePartner(partner.id)" v-tooltip :title="$t('project.partner.remove')" data-placement="top" :ref="`removeIcon-${partner.id}`" v-if="activeUserIsOwner">
+                      <div class="remove-partner" @click="removePartner(partner.id)" v-tooltip
+                           :title="$t('project.partner.remove')" data-placement="top" :ref="`removeIcon-${partner.id}`"
+                           v-if="activeUserIsOwner">
                         <respondeco-icon icon="fal times"></respondeco-icon>
                       </div>
                     </li>
@@ -78,7 +106,8 @@
                 </div>
 
                 <!-- Sticky block -->
-                <div id="sticky-block" v-stickyblock data-start-point="#sticky-block" data-end-point="footer" class="sidebar--stickyblock">
+                <div id="sticky-block" v-stickyblock data-start-point="#sticky-block" data-end-point="footer"
+                     class="sidebar--stickyblock">
                   <!-- Share -->
                   <div class="g-mb-50">
                     <h5 class="mb-4">{{ $t('project.share') }} </h5>
@@ -111,14 +140,16 @@
   import { ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
   import Comments from '../../common/services/comments'
   import DateFilter from '../../common/mixins/date-filter'
+  import FileDialog from '../main/file-dialog'
   import ImageDialog from '../main/image-dialog'
   import ItemPage from '../mixins/item-page'
   import Multiselect from 'vue-multiselect'
   import ProjectPartnerChooser from './project-partner-chooser'
   import Projects from '../../common/services/projects'
+  import RespondecoUnsavedBar from '../main/unsaved-bar'
 
   import ProjectComment from './comment'
-  import FinishedProjects from "../../common/services/finished-projects"
+  import FinishedProjects from '../../common/services/finished-projects'
 
   import bPopover from 'bootstrap-vue/es/components/popover/popover'
 
@@ -127,10 +158,12 @@
 
     components: {
       'b-popover': bPopover,
+      FileDialog,
       ImageDialog,
       Multiselect,
       ProjectComment,
-      ProjectPartnerChooser
+      ProjectPartnerChooser,
+      RespondecoUnsavedBar
     },
 
     computed: {
@@ -197,7 +230,7 @@
         )
       },
 
-      loadPartners() {
+      loadPartners () {
         this.promiseLoading(
           FinishedProjects.byProject(this.id).then(result => {
             this.partners = result.body
@@ -205,6 +238,10 @@
 
           'partners'
         )
+      },
+
+      openImageDialog () {
+        this.$modal.show('file-dialog')
       },
 
       removePartner (partnerId) {
@@ -222,12 +259,35 @@
 
         this.promiseLoading(
           Projects.update(project).then(
-            Notifications.success(this),
+            () => {
+              Notifications.success(this)
+              this.unsaved = false
+            },
             Notifications.error(this)
           ),
 
           'saveDescription'
         )
+      },
+
+      uploadError (error) {
+        let message = this.$t('common.error.upload')
+
+        if (error === 'denied') {
+          message = this.$t('common.error.unauthenticated')
+        }
+
+        Notifications.error(this, message)()
+      },
+
+      uploaded (file) {
+        this.item = Object.assign({}, this.item, {
+          image: file
+        })
+
+        this.$modal.hide('file-dialog')
+
+        this.save()
       }
     },
 
@@ -266,5 +326,10 @@
     align-items: center;
     padding: 6px;
     cursor: pointer;
+
+  .textarea-title
+    font-size: 28px
+    height: 60px
+    text-align: center
 
 </style>

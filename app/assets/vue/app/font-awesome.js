@@ -20,6 +20,7 @@ import {
 
 import {
   faCheck,
+  faExclamationTriangle,
   faShieldAlt,
   faThumbtack
 } from '@fortawesome/pro-regular-svg-icons'
@@ -35,6 +36,7 @@ library.add(faAngleDown,
   faBullhorn,
   faCheck,
   faCircle,
+  faExclamationTriangle,
   faHandshake,
   faImage,
   faLifeRing,
