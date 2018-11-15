@@ -114,18 +114,38 @@
       },
 
       upload () {
+        const fileType = this.fileType
+
         this.croppa.generateBlob(blob => {
           blob.lastModifiedDate = new Date()
-          blob.name = 'image.jpg'
+          blob.name = 'image.' + fileType.split('/')[1]
 
           this.$refs.upload.add(blob)
 
           this.$refs.upload.active = true
-        }, 'image/jpeg')
+        }, this.fileType)
       },
     },
 
-    props: ['file'],
+    props: {
+      'file': String,
+      'fileType': {
+        type: String,
+        default () {
+          return 'image/jpeg'
+        },
+        validator (value) {
+          let returnValue = 'success'
+
+          if (value.indexOf('/') === -1) {
+            returnValue = 'danger'
+            console.error(`The filetype wasn't set correctly`)
+          }
+
+          return returnValue
+        }
+      }
+    },
 
     watch: {
       file (newValue) {

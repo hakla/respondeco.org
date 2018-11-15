@@ -21,7 +21,7 @@
       </unify-hero>
       <!-- End Hero Info #01 -->
 
-      <file-dialog :file="imageUrl(organisation.logo)" @error="uploadError" @uploaded="uploaded"></file-dialog>
+      <file-dialog :file="imageUrl(organisation.logo)" fileType="image/png" @error="uploadError" @uploaded="uploaded"></file-dialog>
 
       <div class="container">
         <div class="row">
