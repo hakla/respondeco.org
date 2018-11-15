@@ -9,6 +9,7 @@ import {
   faImage,
   faLifeRing,
   faMegaphone,
+  faPencil,
   faPlus,
   faPresentation,
   faSearch,
@@ -24,6 +25,7 @@ import {
 } from '@fortawesome/pro-regular-svg-icons'
 
 import {
+  faCircle,
   faThumbtack as faSolidThumbtack
 } from '@fortawesome/pro-solid-svg-icons'
 
@@ -32,10 +34,12 @@ library.add(faAngleDown,
   faAngleRight,
   faBullhorn,
   faCheck,
+  faCircle,
   faHandshake,
   faImage,
   faLifeRing,
   faMegaphone,
+  faPencil,
   faPlus,
   faPresentation,
   faSearch,

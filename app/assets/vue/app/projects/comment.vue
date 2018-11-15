@@ -12,9 +12,9 @@
       <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-30 g-font-size-20"
          @click="unpin()" v-if="editable && comment.id != null && comment.pinned"
          v-tooltip data-placement="top" :title="$t('project.comment.unpin')" ref="pinIcon"
-    >
-      <respondeco-icon icon="fas thumbtack"></respondeco-icon>
-    </i>
+      >
+        <respondeco-icon icon="fas thumbtack"></respondeco-icon>
+      </i>
 
       <i class="g-cursor-pointer position-absolute g-top-minus-30 g-right-0 g-font-size-20"
          @click="deleteComment(comment.id)" v-if="editable && comment.id != null"
@@ -23,12 +23,24 @@
         <respondeco-icon icon="fal times"></respondeco-icon>
       </i>
 
-      <image-dialog :file="comment ? comment.image : undefined" :name="dialogName" :viewMode="1"
+      <image-dialog :aspect-ratio="Number.NaN" :file="comment ? comment.image : undefined" :name="dialogName"
+                    :viewMode="1"
                     @changed="setNewImage"></image-dialog>
 
       <transition name="fade" mode="out-in">
-        <img class="img-fluid w-100 g-rounded-5 g-mb-25 g-z-index-1" :src="previewImageUrl" v-if="previewImageUrl"
-             alt="Image Description" @click="openFileChooser">
+        <div class="image-edit-container" @click="openFileChooser" v-if="previewImageUrl">
+          <img class="img-fluid w-100 g-rounded-5 g-mb-25 g-z-index-1" :src="previewImageUrl"
+               alt="Image Description">
+
+          <div class="image-edit-overlay"></div>
+
+          <font-awesome-layers class="fa-2x image-edit-icon">
+            <respondeco-icon class="fa-inverse" icon="fas circle" size="2x"></respondeco-icon>
+            <respondeco-icon icon="fal pencil" transform="right-8 shrink-2"></respondeco-icon>
+          </font-awesome-layers>
+
+          <span class="image-edit-icon-sub">Bild bearbeiten</span>
+        </div>
 
         <youtube :video-id="comment.video" v-else-if="comment.video" player-width="100%"></youtube>
 
@@ -39,7 +51,7 @@
         </div>
       </transition>
 
-      <div class="px-4">
+      <div class="px-4 position-relative">
         <ul
           class="d-flex justify-content-start align-items-end list-inline g-color-gray-dark-v5 g-font-size-13 g-mt-minus-65 g-mb-25">
           <li class="list-inline-item mr-5">
@@ -50,7 +62,8 @@
 
             <!-- existing comment -> show comment author image -->
             <img class="g-width-80 g-height-80 g-brd-around g-brd-2 g-brd-white rounded-circle mb-2"
-                 :src="imageUrl(comment.author.data.image)" v-if="comment.author && comment.author.data && comment.author.data.image"
+                 :src="imageUrl(comment.author.data.image)"
+                 v-if="comment.author && comment.author.data && comment.author.data.image"
                  alt="Image Description">
             <span class="d-block g-width-40 g-height-40" v-else></span>
             <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0 text-center">
@@ -105,8 +118,9 @@
                 {{ comment.author.data.name }}
               </router-link>
 
-              <router-link :to="{ name: 'organisation-projects', params: { id: comment.author.data.user.organisationId } }"
-                           class="g-color-gray-dark-v4" v-if="comment.author.data.user">
+              <router-link
+                :to="{ name: 'organisation-projects', params: { id: comment.author.data.user.organisationId } }"
+                class="g-color-gray-dark-v4" v-if="comment.author.data.user">
                 {{ comment.author.data.name }}
               </router-link>
             </h4>
@@ -324,5 +338,54 @@
 
   .image-placeholder {
     background-color: #f2f2f2;
+  }
+
+  .image-edit-container {
+    position: relative
+    z-index: 0;
+
+    &:hover {
+      .image-edit-icon, .image-edit-overlay, .image-edit-icon-sub {
+        opacity: 1;
+      }
+    }
+  }
+
+  .image-edit-overlay {
+    background-color: #0004;
+    border-radius: 4px;
+    cursor: pointer;
+    height: calc(100% - 1.78571rem);
+    left: 0;
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    transition: .25s ease opacity;
+    width: 100%;
+    z-index: 0;
+  }
+
+  .image-edit-icon {
+    cursor: pointer;
+    left: 50%;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(calc(-50% - .5rem), calc(-50% - 1.78571rem));
+    transition: .25s ease opacity;
+  }
+
+  .image-edit-icon-sub {
+    color: #fff;
+    cursor: pointer;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    left: 50%;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + 25px));
+    transition: .25s ease opacity;
   }
 </style>

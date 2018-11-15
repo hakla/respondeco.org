@@ -11,13 +11,13 @@
     :scrollable="false"
   >
     <respondeco-dialog-buttons slot="buttons" v-if="activeImage">
-      <respondeco-dialog-button @click.prevent.stop="choose">
+      <respondeco-dialog-button @click.prevent.stop="choose" class="u-btn-teal">
         <span>Auswählen</span>
       </respondeco-dialog-button>
     </respondeco-dialog-buttons>
 
     <drop @dragenter="highlight" @drop="handleDrop">
-      <div class="d-flex align-items-center justify-content-center" :style="{ height: height - 110 + 'px' }">
+      <div class="d-flex align-items-center justify-content-center" :style="{ height: height - 108 + 'px' }">
         <div class="row">
           <div class="col-12">
             <div class="text-center g-mt-20 cropper-wrapper">

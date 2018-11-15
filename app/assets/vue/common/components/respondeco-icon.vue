@@ -1,27 +1,27 @@
 <template>
-  <i>
-    <font-awesome-icon
-      :border="border"
-      :fixedWidth="fixedWidth"
-      :flip="flip"
-      :icon="normalisedIcon"
-      :mask="mask"
-      :listItem="listItem"
-      :pull="pull"
-      :pulse="pulse"
-      :rotation="rotation"
-      :size="size"
-      :spin="spin"
-      :transform="transform"
-      :symbol="symbol"></font-awesome-icon>
-  </i>
+  <font-awesome-icon
+    :border="border"
+    :fixedWidth="fixedWidth"
+    :flip="flip"
+    :icon="normalisedIcon"
+    :mask="mask"
+    :listItem="listItem"
+    :pull="pull"
+    :pulse="pulse"
+    :rotation="rotation"
+    :size="size"
+    :spin="spin"
+    :transform="transform"
+    :symbol="symbol"></font-awesome-icon>
 </template>
 
 <script>
-  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+  import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
   import Vue from 'vue'
 
   Vue.component('font-awesome-icon', FontAwesomeIcon)
+  Vue.component('font-awesome-layers', FontAwesomeLayers)
+  Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
 
   const mapping = {
     fal: 'light',
@@ -30,7 +30,7 @@
   }
 
   export default {
-    name: "respondeco-icon",
+    name: 'respondeco-icon',
 
     components: {
       FontAwesomeIcon
