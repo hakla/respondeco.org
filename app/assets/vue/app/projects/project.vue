@@ -33,7 +33,7 @@
 
             <div class="col-lg-3 g-brd-left--lg g-brd-gray-light-v4 g-mb-80">
               <div class="g-pl-20--lg g-mb-20">
-                <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel">
+                <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel" v-if="activeUserIsOwner">
                   <figure>
                     <img class="d-flex g-max-width-100x mr-3" :src="imageUrl(item.image)"
                          alt="Image Description" v-if="item.image !== undefined">
@@ -53,6 +53,8 @@
                     </div>
                   </figcaption>
                 </div>
+                <img class="d-flex g-max-width-100x mr-3" :src="imageUrl(item.image)"
+                     alt="Image Description" v-else-if="item.image !== undefined">
               </div>
               <div class="g-pl-20--lg">
                 <!-- Organisation -->
