@@ -2,10 +2,6 @@ import LoaderHelper from '../../common/mixins/loader-helper'
 import Vue from 'vue'
 
 const ItemPage = {
-  created () {
-    this.fetchData()
-  },
-
   data () {
     return {
       // overridden

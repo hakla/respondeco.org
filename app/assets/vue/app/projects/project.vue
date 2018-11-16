@@ -7,7 +7,8 @@
         <!-- Hero Info #01 -->
         <unify-hero type="1">
           <div v-if="activeUserIsOwner" class="text-right">
-            <textarea v-autosize class="form-control textarea-title" v-model="item.name" @input="unsaved = true"></textarea>
+            <textarea class="form-control textarea-title" :placeholder="$t('project.placeholder.name')" v-autosize
+                      v-model="item.name" @input="unsaved = true"></textarea>
           </div>
           <span v-else>
             {{ item.name }}
@@ -35,9 +36,11 @@
                 <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel">
                   <figure>
                     <img class="d-flex g-max-width-100x mr-3" :src="imageUrl(item.image)"
-                         alt="Image Description">
+                         alt="Image Description" v-if="item.image !== undefined">
+                    <img src="/assets/images/demo-square.jpg" width="100%" alt="Placeholder image" v-else>
                   </figure>
-                  <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30" @click.prevent="openImageDialog">
+                  <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30"
+                              @click.prevent="openImageDialog">
                     <div data-v-478dddb2=""
                          class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle">
                       <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-20">
@@ -72,7 +75,9 @@
                 <div class="g-mb-50">
                   <h5 class="mb-4">{{ $t('project.description.title') }}</h5>
                   <div v-if="activeUserIsOwner" class="text-right">
-                    <textarea v-autosize class="form-control" v-model="item.description" @input="unsaved = true"></textarea>
+                    <textarea class="form-control" :placeholder="$t('project.placeholder.description')" v-autosize
+                              v-model="item.description"
+                              @input="unsaved = true"></textarea>
                   </div>
                   <span v-else>
                     {{ item.description }}
@@ -136,7 +141,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import { ImageMixin, Notifications, ObjectNormaliser } from '../../common/utils'
   import Comments from '../../common/services/comments'
   import DateFilter from '../../common/mixins/date-filter'
@@ -144,6 +149,7 @@
   import ImageDialog from '../main/image-dialog'
   import ItemPage from '../mixins/item-page'
   import Multiselect from 'vue-multiselect'
+  import Organisations from '../../common/services/organisations'
   import ProjectPartnerChooser from './project-partner-chooser'
   import Projects from '../../common/services/projects'
   import RespondecoUnsavedBar from '../main/unsaved-bar'
@@ -167,7 +173,7 @@
     },
 
     computed: {
-      ...mapGetters(['activeUser']),
+      ...mapGetters(['activeUser', 'organisation']),
 
       activeUserIsOwner () {
         return !!(this.activeUser && this.item && (this.activeUser.role === 'Administrator' || this.activeUser.organisationId === this.item.organisation.id))
@@ -182,9 +188,16 @@
     },
 
     created () {
-      this.fetchData()
-      this.loadComments()
-      this.loadPartners()
+      if (this.id !== 'new') {
+        this.fetchData()
+        this.loadComments()
+        this.loadPartners()
+      } else {
+        if (this.organisation.id !== 'empty') {
+          // User got here by clicking on organisation -> new project
+          this.item.organisation = this.organisation
+        }
+      }
     },
 
     data () {
@@ -201,6 +214,8 @@
     },
 
     methods: {
+      ...mapActions(['current']),
+
       addPartner (organisationId) {
         const finishedProject = ObjectNormaliser.finishedProject({
           organisation: organisationId,
@@ -253,15 +268,22 @@
       },
 
       save () {
+        let method = 'update'
         let project = Object.assign({}, this.item)
+
+        if (this.id === 'new') {
+          method = 'save'
+        }
 
         project.organisation = project.organisation.id
 
         this.promiseLoading(
-          Projects.update(project).then(
-            () => {
-              Notifications.success(this)
+          Projects[method](project).then(
+            (result) => {
               this.unsaved = false
+              Notifications.success(this)(result)
+
+              this.$router.push({name: 'project', params: {id: result.body.id}})
             },
             Notifications.error(this)
           ),
@@ -286,8 +308,19 @@
         })
 
         this.$modal.hide('file-dialog')
+        this.unsaved = true
+      }
+    },
 
-        this.save()
+    watch: {
+      activeUser (activeUser) {
+        // wait for the activeUser to change (undefined on refresh)
+        Organisations.byId(activeUser.organisationId).then(
+            result => {
+              this.current(result.body)
+              this.item.organisation = result.body
+            }
+          )
       }
     },
 

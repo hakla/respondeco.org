@@ -28,13 +28,15 @@
                     @changed="setNewImage"></image-dialog>
 
       <transition name="fade" mode="out-in">
-        <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel g-rounded-4" @click="openFileChooser" v-if="previewImageUrl">
+        <div class="u-block-hover g-cursor-pointer g-mb-25 g-pos-rel g-rounded-4" @click="openFileChooser"
+             v-if="previewImageUrl">
           <figure>
             <img class="img-fluid w-100 g-rounded-5 g-z-index-1" :src="previewImageUrl"
                  alt="Image Description">
           </figure>
           <figcaption class="u-block-hover__additional--fade g-bg-black-opacity-0_5 g-pa-30">
-            <div class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle g-flex-centered">
+            <div
+              class="u-block-hover__additional--fade u-block-hover__additional--fade-up g-flex-middle g-flex-centered">
               <ul class="list-inline text-center g-flex-middle-item--bottom g-mb-40">
                 <li class="list-inline-item align-middle g-mx-7">
                   <a class="u-icon-v1 u-icon-size--md g-color-white" href="#!" @click.prevent="openImageDialog">
@@ -69,7 +71,6 @@
                  :src="imageUrl(comment.author.data.image)"
                  v-if="comment.author && comment.author.data && comment.author.data.image"
                  alt="Image Description">
-            <span class="d-block g-width-40 g-height-40" v-else></span>
             <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0 text-center">
               <span v-if="isNew">{{ activeUser.name }}</span>
               <span v-if="!isNew && comment.author">{{ comment.author.data.name }}</span>
@@ -81,15 +82,17 @@
         </ul>
 
         <h2 class="h5 g-color-black g-font-weight-600 article--heading">
-          <input type="text" class="form-control" v-model="comment.title" :placeholder="$t('project.new.title')">
+          <input type="text" class="form-control" v-model="comment.title" :placeholder="$t('project.new.title')"
+                 @input="unsaved = true">
         </h2>
         <p class="g-color-gray-dark-v4 article--content">
         <textarea class="form-control" :placeholder="$t('project.new.content')" v-autosize
-                  v-model="comment.content"></textarea>
+                  v-model="comment.content" @input="unsaved = true"></textarea>
         </p>
 
         <div class="form-group text-right">
           <unify-button
+            v-if="unsaved"
             type="submit"
             class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
             <span v-if="comment.id">{{ $t('comment.save') }}</span>
@@ -117,7 +120,7 @@
                  alt="Image Description">
             <span class="d-block g-width-40 g-height-40" v-else></span>
             <h4 class="h6 g-font-weight-600 g-font-size-13 mb-0 text-center">
-              <router-link :to="{ name: 'organisation-projects', params: { id: comment.author.data.id } }"
+              <router-link :to="{ name: 'organisation-projects', params: { id: comment.author.data.id }}"
                            class="g-color-gray-dark-v4" v-if="comment.author.data.organisation">
                 {{ comment.author.data.name }}
               </router-link>
@@ -183,7 +186,8 @@
       return {
         comment: ObjectNormaliser.comment(this.value),
         previewImage: undefined,
-        previewImageUrl: undefined
+        previewImageUrl: undefined,
+        unsaved: true
       }
     },
 
@@ -252,6 +256,7 @@
       setNewImage (blob) {
         this.previewImage = blob
         this.previewImage.name = 'image.jpg'
+        this.unsaved = true
 
         let fileReader = new FileReader()
         fileReader.onload = (event) => {

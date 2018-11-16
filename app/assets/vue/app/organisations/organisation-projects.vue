@@ -1,10 +1,12 @@
 <template>
   <div>
     <div class="col-lg-12 add-project" v-if="activeUserIsOwner">
-      <unify-button class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
-        <respondeco-icon class="g-mr-8" icon="fal plus"></respondeco-icon>
-        {{ $t('project.add') }}
-      </unify-button>
+      <router-link :to="{ name: 'project', params: { id: 'new' }}">
+        <unify-button class="btn u-btn-outline-teal g-font-weight-600 g-letter-spacing-0_5 g-brd-2 g-rounded-0--md">
+          <respondeco-icon class="g-mr-8" icon="fal plus"></respondeco-icon>
+          {{ $t('project.add') }}
+        </unify-button>
+      </router-link>
     </div>
     <div class="col-lg-12">
       <!-- Panel Body -->
@@ -32,7 +34,7 @@
 
 <script>
   import { router } from 'app/router'
-  import { mapGetters } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import Utils from 'common/utils'
 
   export default {
@@ -48,6 +50,7 @@
 
     methods: {
       ...Utils.methods(),
+      ...mapActions(['current']),
 
       openProject (id) {
         router.push(`/projects/${id}`)

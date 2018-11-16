@@ -27,6 +27,7 @@ import {
 
 import {
   faCircle,
+  faPencil as faSolidPencil,
   faThumbtack as faSolidThumbtack
 } from '@fortawesome/pro-solid-svg-icons'
 
@@ -46,6 +47,7 @@ library.add(faAngleDown,
   faPresentation,
   faSearch,
   faShieldAlt,
+  faSolidPencil,
   faSolidThumbtack,
   faSync,
   faThumbtack,

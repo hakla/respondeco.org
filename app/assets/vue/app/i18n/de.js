@@ -28,6 +28,7 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
     add: 'Hinzufügen',
     cancel: 'Abbrechen',
     comments: 'Kommentare',
+    edit: 'Bearbeiten',
     email: 'E-Mail',
     emptyList: 'Keine Ergebnisse',
     error: {
@@ -234,6 +235,10 @@ Nun will er sich auch noch mehr die Welt ansehen. Und die scheint genauso groß 
       listTitle: 'Partner',
       placeholder: 'Partner suchen',
       remove: 'Partner entfernen'
+    },
+    placeholder: {
+      description: 'Gib hier die Beschreibung des Projekts ein',
+      name: 'Gib hier den Namen des Projekts ein'
     },
     save: 'Projekt speichern',
     share: 'Teilen'
