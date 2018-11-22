@@ -50,7 +50,7 @@
     transition: .25s ease all;
     transform: translateY(-75px);
     width: 100%;
-    z-index: 1000;
+    z-index: 500;
 
     &.alert-warning {
       transform: translateY(0);
